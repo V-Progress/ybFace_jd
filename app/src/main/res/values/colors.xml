@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="setting_yellow">#DB8400</color>
+
+    <color name="WHITE">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="bg_all_white">#F2F2F2</color>
+    <color name="gray_low">#cccccc</color>
+    <color name="blue_all_title_bg">#009556</color>
+
+    <drawable name="red">#f00</drawable>
+    <drawable name="green">#0f0</drawable>
+    <drawable name="gray">#ccc</drawable>
+
+    <color name="paleturquoise">#AFEEEE</color><!--苍宝石绿 -->
+    <color name="theme_green">#64DCFE</color><!--主题绿 -->
+    <color name="theme_blue">#487caa</color><!--主题蓝 -->
+
+    <color name="font_green">#00C7FF</color><!--字体绿 -->
+
+    <color name="exit_yellow">#fee303</color>
+
+    <color name="text_color_h">#00d7fe</color>
+    <color name="text_color_sign_number">#67FE99</color>
+
+    <color name="horizontal_chart_female">#67FF9A</color>
+    <color name="horizontal_chart_male">#00D7FE</color>
+    <color name="horizontal_item_visitor">#0c1953</color>
+    <color name="horizontal_item_visitor_name">#034da6</color>
+</resources>

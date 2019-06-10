@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="502dp"
+    android:layout_height="700dp"
+    android:orientation="vertical">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="448dp"
+    android:background="@mipmap/bg_head_show">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_userPhoto"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+       android:layout_gravity="center_horizontal"
+        android:layout_marginTop="70dp"
+        android:src="@mipmap/avatar"
+        />
+</FrameLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1A71BB">
+    <TextView
+        android:id="@+id/tv_nameAndJob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/white"
+        android:textSize="50dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text=" "/>
+    <TextView
+        android:id="@+id/tv_sign"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/white"
+        android:textSize="32dp"
+        android:gravity="center_horizontal"
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:text=""/>
+
+</LinearLayout>
+
+</LinearLayout>

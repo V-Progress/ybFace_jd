@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@drawable/shape_employ_button"
+    android:orientation="vertical">
+
+    <TextView
+        android:textColor="@color/white"
+        android:layout_margin="20dp"
+        android:textSize="26dp"
+        android:text="系统密码设置"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:background="@drawable/line_net_edt"
+        android:textColorHint="@color/gray_low"
+        android:textColor="@color/white"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:maxLength="12"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
+        android:layout_margin="10dp"
+        android:padding="20dp"
+        android:textSize="26dp"
+        android:hint="请输入6-12位密码（数字、字母）"
+        android:id="@+id/edt_set_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:background="@drawable/line_net_edt"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_low"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:maxLength="12"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
+        android:layout_margin="10dp"
+        android:padding="20dp"
+        android:textSize="26dp"
+        android:hint="请再次输入密码"
+        android:id="@+id/edt_set_pwd_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_marginRight="30dp"
+            android:textColor="@color/white"
+            android:background="@drawable/selector_btn_take_photo"
+            android:textSize="26dp"
+            android:text="取消"
+            android:id="@+id/btn_pwd_cancel"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="65dp" />
+        <Button
+            android:textColor="@color/white"
+            android:background="@drawable/selector_btn_take_photo"
+            android:textSize="26dp"
+            android:text="确定"
+            android:id="@+id/btn_pwd_confirm"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="65dp" />
+    </LinearLayout>
+
+</LinearLayout>

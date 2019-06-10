@@ -1,0 +1,361 @@
+package com.yunbiao.ybsmartcheckin_live_id.business;
+
+import android.app.Activity;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
+import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
+/**
+ * Created by Administrator on 2019/3/18.
+ */
+
+public class SignManager {
+    private final String TAG = getClass().getSimpleName();
+    private static SignManager instance;
+    private SignDao signDao;
+    private String signThreadName = "sign";
+    private final int UPDATE_TIME = 10 * 60 * 1000;
+//    private final long UPDATE_DATE_TIME = 60 * 60 * 1000;
+    private Handler signHandler;
+    private final HandlerThread signThread;
+    private List<VIPDetail> mList;//签到人员list
+    private SignEventListener listener;
+    private String today;
+    private Activity mAct;
+    private boolean isInited = false;
+    private DateFormat signTimeFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static SignManager instance() {
+        if (instance == null) {
+            synchronized (SignManager.class) {
+                if (instance == null) {
+                    instance = new SignManager();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private SignManager() {
+        //初始化当前时间
+        initToday();
+        signThread = new HandlerThread(signThreadName);
+        signThread.start();
+        signHandler = new Handler(signThread.getLooper());
+    }
+
+
+    public interface SignEventListener {
+        void onPrepared(List<VIPDetail> mList);
+
+        void onSigned(List<VIPDetail> mList, String vipDetail, int signType);
+    }
+
+    public SignManager init(@NonNull Activity mAct, @NonNull SignEventListener signEventListener) {
+        this.mAct = mAct;
+        signDao = new SignDao(mAct);
+        listener = signEventListener;
+
+        //读取列表
+        ThreadUitls.runInThread(initRunnable);
+
+        //开始自动更新签到列表的操作
+        startAutoUpdate(signDao);
+
+        return instance();
+    }
+
+    //初始化线程
+    private Runnable initRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mList = new ArrayList<>();
+            List<SignBean> mSignList = signDao.queryByDate(today);
+            if (mSignList != null) {
+                d("今日签到数据..." + mSignList.size()+"条");
+            }
+            if (mSignList != null && mSignList.size() > 0) {
+                for (int i = 0; i < mSignList.size(); i++) {
+                    SignBean bean = mSignList.get(i);
+                    Log.e(TAG, "run: ----- " + bean.toString());
+                    VIPDetail vip = new VIPDetail(bean.getFaceId(),bean.getName(), bean.getSex(), bean.getAge(), bean.getJob(), bean.getImgUrl(), bean.getTime(), bean.getDepart(), bean.getSignature());
+                    mList.add(vip);
+                }
+            }
+
+            if (listener != null) {
+                mAct.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onPrepared(mList);
+                    }
+                });
+            }
+
+            isInited = true;
+        }
+    };
+
+    private void initToday() {
+        Calendar calendar = Calendar.getInstance();
+        String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
+        String monthStr = calendar.get(Calendar.MONTH) + 1 + "";//获取月份
+        String dayStr = calendar.get(Calendar.DAY_OF_MONTH) + "";//获取天
+        today = yearStr + "年" + monthStr + "月" + dayStr + "日";
+        d("更新日期..."+today);
+    }
+
+    /***
+     * 签到
+     * @param signList
+     */
+    public void sign(final List<VIPDetail> signList) {
+        if (!isInited) {
+            return;
+        }
+
+        Log.e(TAG, "sign: ---------- " + signList.toString());
+
+        ThreadUitls.runInThread(new Runnable() {
+            @Override
+            public void run() {
+                int tempSize = mList.size();
+                for (int i = 0; i < signList.size(); i++) {
+                    final VIPDetail vipBean = signList.get(i);
+                    boolean isADD = isBaohan(mList, vipBean.getName(), vipBean.getTime());//检测主list中是否包含
+                    if (!isADD) {//不包含则添加并发送
+                        mList.add(0, vipBean);
+
+                        final Map<String, String> map = new HashMap<>();
+                        map.put("entryid", vipBean.getEmpId() + "");
+                        map.put("signTime", vipBean.getTime() + "");
+                        MyXutils.getInstance().post(ResourceUpdate.SIGNLOG, map, new MyXutils.XCallBack() {
+                            @Override
+                            public void onSuccess(String result) {
+                                d("发送成功--------> " + result);
+                                try {
+                                    JSONObject json = new JSONObject(result);
+                                    if (json.getInt("status") == 1) {//成功
+                                        signDao.insert(new SignBean(vipBean.getEmpId(), vipBean.getName(), vipBean.getJob(), vipBean.getImgUrl(), vipBean.getTime(), vipBean.getDepart(), today, vipBean.getSex(), true));
+                                    } else {//失败
+                                        signDao.insert(new SignBean(vipBean.getEmpId(), vipBean.getName(), vipBean.getJob(), vipBean.getImgUrl(), vipBean.getTime(), vipBean.getDepart(), today, vipBean.getSex(), false));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable ex) {
+                                d("发送失败--->" + ex.getMessage());//失败
+                                signDao.insert(new SignBean(vipBean.getEmpId(), vipBean.getName(), vipBean.getJob(), vipBean.getImgUrl(), vipBean.getTime(), vipBean.getDepart(), today, vipBean.getSex(), false));
+                                ex.printStackTrace();
+                            }
+
+                            @Override
+                            public void onFinish() {
+                            }
+                        });
+                    }
+                }
+                //判断是否有变化，有变化再回调
+                if (mList.size() > tempSize) {
+                    //获取当前签到类型
+                    final int signType = getCurrentTime();
+
+                    //签到者的名字
+                    String callName = "";
+                    long time = new Date().getTime();
+                    for (int i = 0; i < signList.size(); i++) {
+                        callName = callName + signList.get(i).getName();
+                        time = signList.get(i).getTime();
+                    }
+                    d("签到---> " + signTimeFormate.format(time) + " --- " + callName);
+
+                    //回调
+                    if (listener != null) {
+                        final String finalCallName = callName;
+                        mAct.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onSigned(mList, finalCallName, signType);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+
+    /***
+     * 开始发送签到数据
+     * @param signDao
+     */
+    private void startAutoUpdate(SignDao signDao) {
+        this.signDao = signDao;
+        if (signHandler != null) {
+            signHandler.removeCallbacks(sendSignDataRunnable);
+        }
+        signHandler.postDelayed(sendSignDataRunnable, 10 * 1000);
+    }
+
+    //定时发送签到数据
+    private Runnable sendSignDataRunnable = new Runnable() {
+        @Override
+        public void run() {
+            initToday();
+
+            d("定时上送签到数据...");
+            if (signDao != null) {
+                final List<SignBean> signList = signDao.queryByDate(today);
+                if (signList != null) {
+                    JSONArray jsonArray = new JSONArray();
+                    int size = 0;
+                    for (int i = 0; i < signList.size(); i++) {
+                        final SignBean bean = signList.get(i);
+                        if (!bean.isUpload()) {
+                            try {
+                                size++;
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("entryid", bean.getEmpId() + "");
+                                jsonObject.put("signTime", bean.getTime() + "");
+                                jsonArray.put(jsonObject);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    d("上送列表..." + size);
+
+                    if (size > 0) {
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put("signstr", jsonArray.toString() + "");
+                        if (jsonArray.length() > 0) {
+                            d("准备上送..." + map.toString());
+                            MyXutils.getInstance().post(ResourceUpdate.SIGNARRAY, map, new MyXutils.XCallBack() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    d("上送成功---> " + result);
+                                    try {
+                                        JSONObject json = new JSONObject(result);
+                                        if (json.getInt("status") == 1) {
+                                            for (int i = 0; i < signList.size(); i++) {
+                                                final SignBean bean = signList.get(i);
+                                                if (bean.isUpload() == false) {
+                                                    List<SignBean> signList = signDao.queryByTime(bean.getTime());
+                                                    if (signList != null && signList.size() > 0) {
+                                                        signList.get(0).setUpload(true);
+                                                        signDao.update(signList.get(0));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable ex) {
+                                    d("上送失败--->" + ex.getMessage());
+                                    ex.printStackTrace();
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                }
+                            });
+                        }
+                    } else {
+                        d("上送数据..."+size);
+                    }
+                } else {
+                    d("签到列表...NULL");
+                }
+            } else {
+                d("签到库...NULL");
+            }
+            signHandler.postDelayed(sendSignDataRunnable, UPDATE_TIME);
+        }
+    };
+
+    private boolean isBaohan(List<VIPDetail> mList, String name, long offtime) {
+        for (int i = 0; i < mList.size(); i++) {
+            return TextUtils.equals(name, mList.get(i).getName()) && offtime - (mList.get(i).getTime()) < 10000;
+        }
+        return false;
+    }
+
+    private int getCurrentTime() {//得到现在的时间与获取到的上下班时间对比
+        Date dateCurrent = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        try {
+            Date hourDate = sdf.parse(sdf.format(dateCurrent));//现在的时间
+
+            Date dataMorn = sdf.parse(SpUtils.getStr(SpUtils.GOTIME, "09:00"));//上班时间
+            Date dataNoon = sdf.parse(SpUtils.getStr(SpUtils.DOWNTIME, "18:00"));//下班时间
+
+            if (hourDate.getTime() < dataMorn.getTime() + 1000 * 60 * 30) {//现在的时间小于上班时间+半个小时，就返回type1
+                return 1;
+            } else if (hourDate.getTime() >= dataMorn.getTime() + 1000 * 60 * 30 && hourDate.getTime() < dataNoon.getTime()) {//其他时间，就返回type0
+                return 0;
+            } else if (hourDate.getTime() > dataNoon.getTime()) {//现在的时间大于下班时间，就返回type2
+                return 2;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private void tsetSign() {
+        List<SignBean> mSignList = signDao.queryByDate(today);
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+
+        Log.e(TAG, "SignList.size----------------------> " + mSignList.size());
+        for (int i = 0; i < mSignList.size(); i++) {
+
+            if (!mSignList.get(i).isUpload()) {
+                Log.e(TAG, "name:----------------->" + mSignList.get(i).getName());
+                Log.e(TAG, "isupload:----------------->" + mSignList.get(i).isUpload());
+                Log.e(TAG, "time:----------------->" + df.format(mSignList.get(i).getTime()));
+            }
+        }
+    }
+
+    private boolean isDebug = true;
+
+    private void d(@NonNull String msg) {
+        if (isDebug) {
+            Log.d(TAG, msg);
+        }
+    }
+}

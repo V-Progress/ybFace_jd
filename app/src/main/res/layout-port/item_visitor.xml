@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="310dp"
+    android:layout_height="198dp"
+    android:background="@mipmap/bg_visitor">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_userPhoto"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+      android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_toRightOf="@+id/iv_userPhoto"
+        android:layout_marginLeft="22dp"
+        android:textColor="#fff600"
+        android:textSize="32dp"
+        android:text="老王"
+        />
+
+    <TextView
+        android:id="@+id/tv_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@+id/iv_userPhoto"
+        android:layout_marginLeft="22dp"
+        android:layout_below="@+id/tv_name"
+        android:textColor="#bed7e3"
+        android:textSize="24dp"
+        android:text="java开发"
+        />
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/iv_userPhoto"
+        android:layout_marginLeft="22dp"
+        android:layout_below="@+id/tv_job"
+        android:textColor="#bed7e3"
+        android:textSize="24dp"
+        android:text="14:35"
+        />
+</RelativeLayout>

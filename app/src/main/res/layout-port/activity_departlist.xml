@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bj">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32dp"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:text="部门列表"
+        android:layout_marginTop="36dp" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="36dp"
+        android:src="@mipmap/icon_back"
+        android:layout_marginRight="40dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="54dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/shape_employ_list"
+        android:padding="30dp"
+        android:layout_below="@+id/tv_title">
+
+
+
+        <Button
+            android:id="@+id/btn_addDepart"
+            android:layout_width="108dp"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_employ_button"
+            android:layout_alignParentRight="true"
+            android:drawableLeft="@mipmap/icon_add"
+            android:paddingLeft="18dp"
+            android:text="新增"
+            android:textColor="#64DCFE"
+            android:textSize="20dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_employ_list"
+            android:layout_below="@+id/btn_addDepart"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="序号"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="部门名称"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="操作"
+                android:gravity="center"/>
+
+        </LinearLayout>
+        <ListView
+            android:id="@+id/lv_depart_List"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_title"></ListView>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_head"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:elevation="10dp"
+    android:background="#013058">
+
+    <ImageView
+        android:scaleType="centerInside"
+        android:maxWidth="200dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="75dp"
+        android:src="@mipmap/logo_yb" />
+
+    <TextView
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/iv_logo"
+        android:text="云标智能签到"
+        android:textColor="@color/white"
+        android:textSize="36dp" />
+
+    <TextView
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_title"
+        android:layout_marginLeft="16dp"
+        android:text="智能人脸签到，让企业更放心~"
+        android:textColor="@color/white"
+        android:textSize="26dp" />
+
+    <TextClock
+        android:layout_centerVertical="true"
+        android:id="@+id/tc_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:format12Hour="yyyy-MM-dd EEEE hh:mm"
+        android:textColor="@color/white"
+        android:textSize="42dp"
+        android:textStyle="bold" />
+
+    <!--<TextClock-->
+        <!--android:id="@+id/tc"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/tc_hour"-->
+        <!--android:layout_toLeftOf="@+id/tc_hour"-->
+        <!--android:format24Hour="yyyy-MM-dd EEEE  "-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="36dp" />-->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/tc_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_wea"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/tc_hour"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="14dp"
+            android:layout_toLeftOf="@+id/tv_tem" />
+        <TextView
+            android:id="@+id/tv_tem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tc_hour"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/white"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/tv_deviceNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_tem"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/iv_wea"
+            android:textColor="@color/white"
+            android:textSize="26dp" />
+    </LinearLayout>
+
+</RelativeLayout>

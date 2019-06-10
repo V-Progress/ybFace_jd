@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">云标智能签到</string>
+    <string name="used">已用:</string>
+    <string name="no_used">/可用:</string>
+</resources>

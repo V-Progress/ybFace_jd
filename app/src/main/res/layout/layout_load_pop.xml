@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:circleview="http://schemas.android.com/apk/res-auto"
+    xmlns:match="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/ll_loading_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_title_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="同步"
+                android:textColor="#2d2a2a"
+                android:textSize="18dp" />
+
+            <ProgressBar
+                android:id="@+id/pb_load"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/tv_title_load" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_step_load"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minWidth="50dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:text="1/4"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_info_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:minWidth="110dp"
+                android:text="查询公司信息"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+            <rjsv.circularview.CircleView
+                android:background="@color/black"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+
+                android:focusable="false"
+                circleview:textEnabled="false"
+                circleview:textSize="36sp"
+                circleview:arcBorderColor="@color/white"
+                circleview:arcColor="@color/white"
+                circleview:arcHasBorder="true"
+                circleview:arcWidth="3dp"
+                circleview:enabled="false"
+                circleview:progressBarSquared="true"
+                circleview:progressColor="#ff0000"
+                circleview:progressWidth="5dp" />
+
+            <ProgressBar
+                android:visibility="invisible"
+                android:id="@+id/pb_download"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:max="100"
+                android:progress="40" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_err_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="16dp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_count_root"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_addsucc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="员工总数："
+            android:textColor="@color/font_green" />
+
+        <TextView
+            android:id="@+id/tv_staff_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_addsucc"
+            android:textColor="@color/black" />
+    </RelativeLayout>
+</LinearLayout>
