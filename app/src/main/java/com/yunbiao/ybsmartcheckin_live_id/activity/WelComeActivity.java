@@ -63,7 +63,6 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CameraError;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
@@ -100,7 +99,7 @@ import static com.yunbiao.ybsmartcheckin_live_id.APP.getContext;
  * Created by Administrator on 2018/11/26.
  */
 
-public class WelComeActivity extends BaseGateActivity/* implements ServiceConnection*/ {
+public class WelComeActivity extends BaseGateActivity {
 
     private static final String TAG = "WelComeActivity";
     private ImageView iv_logo;//首页头部logo

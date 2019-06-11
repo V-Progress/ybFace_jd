@@ -7,13 +7,21 @@ import android.graphics.Rect;
  */
 
 public class FaceBoxUtil {
+    private static float previewWidth = 960;
+    private static float previewHeight = 540;
+
+    public static void setPreviewWidth(float previewWidth,float previewHeight) {
+        FaceBoxUtil.previewWidth = previewWidth;
+        FaceBoxUtil.previewHeight = previewHeight;
+    }
+
     public static Rect getPreviewBox(Rect cameraBox) {
         
-        final int cameraImageWidth = 1280;
-        final int cameraImageHeight = 720;
+        final int cameraImageWidth = CameraManager.getWidth();
+        final int cameraImageHeight = CameraManager.getHeight();
         
-        final float scaleX = ((float) 960) / cameraImageWidth;
-        final float scaleY = ((float) 540) / cameraImageHeight;
+        final float scaleX = previewWidth / cameraImageWidth;
+        final float scaleY = previewHeight / cameraImageHeight;
         
         int scaleLeft = (int) (cameraBox.left * scaleX);
         int scaleTop = (int) (cameraBox.top * scaleY);

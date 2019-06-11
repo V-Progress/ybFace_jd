@@ -61,6 +61,12 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         mainHandler.post(runnable);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        FaceBoxUtil.setPreviewWidth(getWidth(),getHeight());//布局完成的时候修改预览宽高
+    }
+
     public void init(Context context){
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView,LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
@@ -494,23 +500,6 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         face.setFaceRect(previewRect);
     }
 
-    private void transformLandmarks(BaseProperty face) {
-        final ArrayList<Point> landmarkList = face.getLandmarks();
-        for (Point point : landmarkList) {
-            if (!true) {
-                point.x = 960 - point.x;
-            }
-//            if (!mirrorPortrait) {
-//                point.y = DisplaySize.HEIGHT - point.y;
-//            }
-
-            if (!true) {
-                point.x = 960 - point.x;
-            }
-
-        }
-        face.setLandmarks(landmarkList);
-    }
     private void appendVerifyResult(BaseProperty face) {
         final long faceId = face.getFaceId();
         final String userId = getVerifyResult(faceId);

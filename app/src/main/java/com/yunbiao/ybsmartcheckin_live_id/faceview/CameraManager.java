@@ -149,7 +149,9 @@ public class CameraManager {
     }
 
     private void setCallback(){
-        mCamera.setErrorCallback(errorCallback);
+        if(mCamera != null){
+            mCamera.setErrorCallback(errorCallback);
+        }
     }
 
     private void setParameters(){

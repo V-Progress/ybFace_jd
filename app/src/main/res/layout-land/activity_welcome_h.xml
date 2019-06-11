@@ -60,15 +60,8 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
 
-                <SurfaceView
-                    android:id="@+id/surfaceViewCamera"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center" />
-
-                <com.yunbiao.ybsmartcheckin_live_id.views.FaceCanvasView
-                    android:layout_gravity="center"
-                    android:id="@+id/canvasview_draw"
+                <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+                    android:id="@+id/face_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 

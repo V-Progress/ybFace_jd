@@ -53,30 +53,11 @@
                 android:background="@color/colorAccent"
                 android:orientation="vertical">
 
-                <SurfaceView
-                    android:id="@+id/surfaceViewCamera"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="center"></SurfaceView>
-                <!--<com.yunbiao.ybsmartcheckin_live_id.views.FaceCanvasView-->
-                <!--android:id="@+id/canvasview_draw"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="fill_parent"-->
-                <!--android:scaleType="fitXY" />-->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#33000000"
-                    android:padding="15dp"
-                    android:text="请将面部置于中框内"
-                    android:textSize="30dp" />
-
-                <FrameLayout
-                    android:id="@+id/fl_face_frame"
-                    android:layout_width="400dp"
-                    android:layout_height="400dp"
+                <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
                     android:layout_gravity="center"
-                    android:background="@mipmap/scan"></FrameLayout>
+                    android:id="@+id/face_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
                 <TextView
                     android:id="@+id/tv_takephoto_tips"

@@ -40,13 +40,7 @@
             android:layout_gravity="center"
             android:id="@+id/face_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView>
-
-        <!--<com.yunbiao.ybsmartcheckin_live_id.views.FaceCanvasView-->
-        <!--android:id="@+id/canvasview_draw"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:scaleType="fitXY" />-->
+            android:layout_height="match_parent"/>
 
         <TextView
             android:layout_width="wrap_content"
