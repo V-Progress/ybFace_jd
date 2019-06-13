@@ -10,6 +10,17 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
+import com.elvishew.xlog.LogConfiguration;
+import com.elvishew.xlog.LogLevel;
+import com.elvishew.xlog.XLog;
+import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor;
+import com.elvishew.xlog.printer.AndroidPrinter;
+import com.elvishew.xlog.printer.ConsolePrinter;
+import com.elvishew.xlog.printer.Printer;
+import com.elvishew.xlog.printer.file.FilePrinter;
+import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy;
+import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
+import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -56,6 +67,8 @@ public class APP extends Application {
         super.onCreate();
         instance = this;
 
+        initXLog();
+
         initDB();
 
         cauchException();
@@ -66,6 +79,39 @@ public class APP extends Application {
 
         initUtils();
 
+    }
+
+    private void initXLog(){
+        LogConfiguration config = new LogConfiguration.Builder()
+                .tag("MY_TAG")                                         // 指定 TAG，默认为 "X-LOG"
+                .t()                                                   // 允许打印线程信息，默认禁止
+                .st(2)                                                 // 允许打印深度为2的调用栈信息，默认禁止
+                .b()                                                   // 允许打印日志边框，默认禁止
+//                .jsonFormatter(new MyJsonFormatter())                  // 指定 JSON 格式化器，默认为 DefaultJsonFormatter
+//                .xmlFormatter(new MyXmlFormatter())                    // 指定 XML 格式化器，默认为 DefaultXmlFormatter
+//                .throwableFormatter(new MyThrowableFormatter())        // 指定可抛出异常格式化器，默认为 DefaultThrowableFormatter
+//                .threadFormatter(new MyThreadFormatter())              // 指定线程信息格式化器，默认为 DefaultThreadFormatter
+//                .stackTraceFormatter(new MyStackTraceFormatter())      // 指定调用栈信息格式化器，默认为 DefaultStackTraceFormatter
+//                .borderFormatter(new MyBoardFormatter())               // 指定边框格式化器，默认为 DefaultBorderFormatter
+//                .addObjectFormatter(AnyClass.class,                    // 为指定类添加格式化器
+//                        new AnyClassObjectFormatter())                 // 默认使用 Object.toString()
+                .build();
+
+        Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
+        Printer consolePrinter = new ConsolePrinter();             // Printer that print the log to console using System.out
+        Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
+                .Builder(Environment.getExternalStorageDirectory().getPath() + "/ybLog")                              // Specify the path to save log file
+                .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
+                .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+//                .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
+//                .flattener(new MyFlattener())                          // Default: DefaultFlattener
+                .build();
+
+        XLog.init(                                                 // Initialize XLog
+                LogLevel.ALL,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
+                androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter(for Android)/ConsolePrinter(for java) will be used.
+                consolePrinter,
+                filePrinter);
     }
 
     private void initDB(){

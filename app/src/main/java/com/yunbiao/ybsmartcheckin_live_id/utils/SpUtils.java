@@ -49,6 +49,8 @@ public class SpUtils {
     public static final String DEVICE_TYPE = "deviceType";
     public static final String CURR_VOLUME = "currentVolume";
 
+    public static final String CAMERA_ANGLE = "cameraAngle";//摄像头角度
+
     static {
         sp = APP.getContext().getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
     }

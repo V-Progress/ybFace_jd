@@ -76,8 +76,8 @@ public class FaceSDK {
         FaceSettings.setCaptureFace(true);//保存人脸
         FaceSettings.setCaptureDir(captureDir);
         FaceSettings.setPullAuto(false);
-        FaceSettings.setCheckType(FaceSettings.CHECK_NONE);//关闭防伪
-//        FaceSettings.setCheckType(FaceSettings.CHECK_RGB);//RGB防伪（只彩色防伪，防伪效果差）
+//        FaceSettings.setCheckType(FaceSettings.CHECK_NONE);//关闭防伪
+        FaceSettings.setCheckType(FaceSettings.CHECK_RGB);//RGB防伪（只彩色防伪，防伪效果差）
         //FaceSettings.setCheckType(FaceSettings.CHECK_NIR);//NIR防伪（防伪效果好）
 
         startFaceService();
@@ -130,7 +130,6 @@ public class FaceSDK {
 
     private void startDetect(){
         FaceFrameManager.setFaceType(FaceFrameManager.TYPE_FACE_PROCESS);
-
         FaceFrameManager.startDetectFace();
     }
 
@@ -172,11 +171,13 @@ public class FaceSDK {
         FaceUserManager.getInstance().updateUserAsync(mContext,faceUser,callback);
     }
 
-    public boolean removeUser(long grpId, String userId){
+    public boolean removeUser(String userId){
         if(TextUtils.isEmpty(userId)){
             return false;
         }
-        return FaceUserManager.getInstance().removeUserSync(mContext,grpId,userId);
+        FaceUser faceUser = new FaceUser();
+        faceUser.setUserId(userId);
+        return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
     }
 
     public void removeAllUser(FaceUserManager.FaceUserCallback callback){

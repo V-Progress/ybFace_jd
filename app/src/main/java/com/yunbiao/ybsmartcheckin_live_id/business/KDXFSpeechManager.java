@@ -3,10 +3,18 @@ package com.yunbiao.ybsmartcheckin_live_id.business;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
+import android.view.Window;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.HandleMessageUtils;
 
 import java.util.ArrayList;
@@ -29,6 +37,7 @@ public class KDXFSpeechManager {
     private static List<String> ontimeList = new ArrayList<>();
     private static Integer CURRENT_SOUND = 0;
     private final String UTTERANCE_WELCOME = "欢迎使用云标智能签到系统";
+    private int mTTSSupport = 0;
 
     public static KDXFSpeechManager instance() {
         if (instance == null) {
@@ -61,17 +70,35 @@ public class KDXFSpeechManager {
                                     isInited = true;
                                     // 设置朗读语言
                                     int supported = mTextToSpeech.setLanguage(Locale.CHINA);
+                                    mTTSSupport = supported;
 
                                     checkQueue();
 
                                     if ((supported != TextToSpeech.LANG_AVAILABLE)
                                             && (supported != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
 
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                                context);
-                                        builder.setMessage("请设置支持中文语音");
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         builder.setTitle("警告");
-                                        builder.create().show();
+                                        builder.setCancelable(false);
+                                        builder.setMessage("语音引擎初始化失败，请设置支持中文语音\n不设置引擎，将默认使用系统通知铃声");
+                                        builder.setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                context.startActivity(new Intent("com.android.settings.TTS_SETTINGS"));
+                                            }
+                                        });
+
+                                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+
+                                        AlertDialog alertDialog = builder.create();
+                                        Window window = alertDialog.getWindow();
+                                        window.setWindowAnimations(R.style.mystyle);  //添加动画
+                                        alertDialog.show();
                                     }
                                 }
                             }
@@ -125,6 +152,12 @@ public class KDXFSpeechManager {
      * @param message
      */
     public void playText(final String message){
+        if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
+                && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
+            playRing();
+            return;
+        }
+
         playText(message,null);
     }
 
@@ -204,5 +237,10 @@ public class KDXFSpeechManager {
 
     public interface VoicePlayListener{
         void playComplete(String uttId);
+    }
+    private void playRing(){
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone rt = RingtoneManager.getRingtone(APP.getContext(), uri);
+        rt.play();
     }
 }

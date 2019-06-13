@@ -41,6 +41,7 @@ import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.PropsUtil;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
@@ -450,6 +451,22 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
+    public void setAngle(View view){
+        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        if(anInt == CameraManager.L){
+            anInt = CameraManager.P;
+        } else if(anInt == CameraManager.P) {
+            anInt = CameraManager.L_R;
+        } else if(anInt == CameraManager.L_R){
+            anInt = CameraManager.P_R;
+        } else {
+            anInt = CameraManager.L;
+        }
+        CameraManager.instance().setOrientation(anInt);
+        ((Button)view).setText("角度：" + anInt);
+        SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
+    }
+
     public void showSetting() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -499,6 +516,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         tvNetState = (TextView) dialog.findViewById(R.id.tv_setting_net_state);
         tvCameraInfo = (TextView) dialog.findViewById(R.id.tv_setting_camera_info);
         cbMirror = (CheckBox) dialog.findViewById(R.id.cb_mirror);
+
+        Button btn = (Button) dialog.findViewById(R.id.btn_setAngle);
+        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        btn.setText("角度：" + anInt);
+
 //        setCamOri(dialog);
         checkDataSize();
 

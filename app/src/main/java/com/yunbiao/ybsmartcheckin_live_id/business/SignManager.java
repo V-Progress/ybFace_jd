@@ -1,27 +1,37 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyCallBack;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,11 +39,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import okhttp3.Call;
 
@@ -82,6 +89,8 @@ public class SignManager {
         void onPrepared(List<VIPDetail> mList);
 
         void onSigned(List<VIPDetail> mList, String vipDetail, int signType);
+
+        void onMakeUped(Bitmap bitmap, boolean makeUpSuccess);
     }
 
     public SignManager init(@NonNull Activity mAct, @NonNull SignEventListener signEventListener) {
@@ -366,4 +375,88 @@ public class SignManager {
             Log.d(TAG, msg);
         }
     }
+
+    private static boolean canMakeUp = true;
+    public static boolean canMakeUp(){
+        return canMakeUp;
+    }
+    public void makeUpSign(byte[] faceImage){
+        canMakeUp = false;
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        final Bitmap image = BitmapFactory.decodeByteArray(faceImage, 0, faceImage.length, options);
+        String strFileAdd = saveBitmap(image);
+
+        int companyid = SpUtils.getInt(SpUtils.COMPANYID);
+        final Map<String, String> map = new HashMap<>();
+        map.put("comId", companyid + "");
+        File imgFile = new File(strFileAdd);
+
+        Log.e("HAHA", "makeUpSign: -----" + imgFile.exists() +"-----" +imgFile.length());
+
+        Log.e("HAHA", "makeUpSign: " + ResourceUpdate.BULUSIGN + "-----" + map.toString());
+        OkHttpUtils.post()
+                .url(ResourceUpdate.BULUSIGN)
+                .params(map)
+                .addFile("head",imgFile.getName(),imgFile)
+                .build()
+                .execute(new StringCallback() {
+            boolean makeUpSuccess = false;
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e("HAHA", "补录失败--->" + e != null? e.getMessage() :"NULL");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e("HAHA", "onResponse: " + response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int status = jsonObject.getInt("status");
+                    makeUpSuccess = status == 1;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onAfter(int id) {
+                canMakeUp = true;
+                if(listener != null){
+                    listener.onMakeUped(image,makeUpSuccess);
+                }
+            }
+        });
+    }
+    /**
+     * 保存bitmap到本地
+     *
+     * @param mBitmap
+     * @return
+     */
+    public String saveBitmap(Bitmap mBitmap) {
+        File filePic;
+        try {
+            //格式化时间
+            long time = System.currentTimeMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String sdfTime = sdf.format(time);
+            filePic = new File(SCREEN_BASE_PATH + today + "/" + sdfTime + ".jpg");
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return filePic.getAbsolutePath();
+    }
+    private static String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static String SCREEN_BASE_PATH = sdPath + "/mnt/sdcard/photo/";//人脸头像存储路径
 }

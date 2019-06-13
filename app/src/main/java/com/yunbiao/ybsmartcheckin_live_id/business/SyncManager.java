@@ -291,7 +291,7 @@ public class SyncManager extends BroadcastReceiver {
             int faceId = vipDetail.getFaceId();
             if (staffMap.containsKey(faceId))
                 continue;
-            FaceSDK.instance().removeUser(0,String.valueOf(faceId));
+            FaceSDK.instance().removeUser(String.valueOf(faceId));
         }
 
         for (Map.Entry<Integer, StaffInfoBean> integerStaffInfoBeanEntry : staffMap.entrySet()) {
@@ -435,7 +435,7 @@ public class SyncManager extends BroadcastReceiver {
 
                 } else if (ctrlType == TYPE_UPDATE_HEAD) {
 
-                    boolean b = FaceSDK.instance().removeUser(0, String.valueOf(vipDetail.getFaceId()));
+                    boolean b = FaceSDK.instance().removeUser(String.valueOf(vipDetail.getFaceId()));
                     if(!b){
                         vipDetail.setDownloadTag(false);
                         //vipDetail.setMark("更新头像失败：删除旧头像失败");

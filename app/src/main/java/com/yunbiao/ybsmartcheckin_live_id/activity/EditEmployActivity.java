@@ -374,7 +374,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                                     }
 
                                     if (!TextUtils.equals(strFileSource, strFileAdd)) {
-                                        FaceSDK.instance().removeUser(0,String.valueOf(faceId));
+                                        FaceSDK.instance().removeUser(String.valueOf(faceId));
                                         FaceSDK.instance().addUser(String.valueOf(faceId), strFileAdd, new FaceUserManager.FaceUserCallback() {
                                             @Override
                                             public void onUserResult(boolean b, int i) {

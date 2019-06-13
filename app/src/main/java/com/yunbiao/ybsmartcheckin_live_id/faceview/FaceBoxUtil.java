@@ -9,6 +9,7 @@ import android.graphics.Rect;
 public class FaceBoxUtil {
     private static float previewWidth = 960;
     private static float previewHeight = 540;
+    private static boolean IS_MIRROR = false;
 
     public static void setPreviewWidth(float previewWidth,float previewHeight) {
         FaceBoxUtil.previewWidth = previewWidth;
@@ -16,10 +17,10 @@ public class FaceBoxUtil {
     }
 
     public static Rect getPreviewBox(Rect cameraBox) {
-        
+
         final int cameraImageWidth = CameraManager.getWidth();
         final int cameraImageHeight = CameraManager.getHeight();
-        
+
         final float scaleX = previewWidth / cameraImageWidth;
         final float scaleY = previewHeight / cameraImageHeight;
         
@@ -30,12 +31,12 @@ public class FaceBoxUtil {
         
         int finalLeft = scaleLeft;
         int finalRight = scaleRight;
-        
-        if (!true) {
+
+        if (!IS_MIRROR) {
             finalLeft = cameraImageWidth - scaleRight;
             finalRight = cameraImageWidth - scaleLeft;
         }
-        
+
         if (!true) {
             finalLeft = cameraImageWidth - scaleRight;
             finalRight = cameraImageWidth - scaleLeft;

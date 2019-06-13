@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
@@ -171,7 +170,7 @@ public class VipDialogManager {
     };
 
 
-    public static void showBuluDialog(final Activity context, final Bitmap bitmap) {
+    public static void showBuluDialog(final Activity context, final Bitmap bitmap, final boolean makeUpSuccess) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +182,7 @@ public class VipDialogManager {
                 TextView tv_nameAndJob = (TextView) vipDialog.findViewById(R.id.tv_nameAndJob);
                 TextView tv_sign = (TextView) vipDialog.findViewById(R.id.tv_sign);
                 civ_userPhoto.setImageBitmap(bitmap);
-                tv_nameAndJob.setText("补录成功！");
+                tv_nameAndJob.setText(makeUpSuccess ?"补录成功！":"补录失败！");
                 vipDialog.show();
 
                 handler.removeMessages(0);

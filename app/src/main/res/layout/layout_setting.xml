@@ -109,18 +109,6 @@
                 android:layout_height="wrap_content"
                 android:text="检测摄像头" />
 
-            <CheckBox
-                android:id="@+id/cb_mirror"
-                android:layout_marginLeft="20dp"
-                android:textSize="20dp"
-                android:checked="true"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/tv_setting_check_camera"
-                android:textColor="@color/white"
-                android:text="是否镜像"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
             <Spinner
                 android:visibility="gone"
                 android:dropDownSelector="@color/white"
@@ -142,6 +130,30 @@
                 android:layout_alignParentRight="true"
                 android:textSize="20dp" />
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:padding="28dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/cb_mirror"
+                android:layout_marginLeft="20dp"
+                android:textSize="20dp"
+                android:checked="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:text="是否镜像"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            
+            <Button
+                android:id="@+id/btn_setAngle"
+                android:onClick="setAngle"
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/cb_mirror"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
 
         <View

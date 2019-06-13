@@ -42,14 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#33000000"
-            android:padding="15dp"
-            android:text="请将面部置于中框内"
-            android:textSize="30dp" />
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/fl_face_frame"

@@ -6,7 +6,7 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 21
+        versionCode 22
         versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
@@ -77,7 +77,9 @@ dependencies {
     implementation files('libs/core-3.0.0.jar')
 
     implementation fileTree(dir: 'libs', includes: ['android_sdk-release.aar'])
-    implementation fileTree(dir: 'libs', includes: ['FaceLocalSDK-release_201905311717.aar'])
+    implementation fileTree(dir: 'libs', includes: ['FaceLocalSDK-release_201906101703.aar'])
 
     implementation 'com.android.support:recyclerview-v7:28+'
+
+    implementation 'com.elvishew:xlog:1.6.1'
 }

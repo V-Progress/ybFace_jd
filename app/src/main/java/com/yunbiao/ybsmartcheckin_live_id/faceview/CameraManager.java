@@ -14,12 +14,11 @@ import android.view.SurfaceHolder;
 
 import com.jdjr.risk.face.local.frame.FaceFrameManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2019/5/22.
@@ -27,27 +26,31 @@ import java.util.concurrent.Executors;
 
 public class CameraManager {
 
-    public static final int P = 0;
-    public static final int L = 90;
-    public static final int P_R = 180;
-    public static final int L_R = 270;
+    public static final int L = 0;
+    public static final int P = 90;
+    public static final int L_R = 180;
+    public static final int P_R = 270;
     private SurfaceHolder mHolder;
 
     private static int CAMERA_ORIENTATION = P;
-    private static int CAMERA_WIDTH = 1280;
-    private static int CAMERA_HEIGHT = 720;
+    private static int CAMERA_WIDTH = 1280;//720
+    private static int CAMERA_HEIGHT = 720;//1280
 
     private static final String TAG = "CameraManager";
     private static CameraManager instance;
-    private final ExecutorService cameraThread;
     private Camera mCamera;
     private CameraStateListener mListener;
     private byte[] mBuffer;
 
-    public static CameraManager instance(){
-        if(instance == null){
-            synchronized(CameraManager.class){
-                if(instance == null){
+    private final Object mLock = new Object();
+
+    //    private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
+
+    public static CameraManager instance() {
+        if (instance == null) {
+            synchronized (CameraManager.class) {
+                if (instance == null) {
                     instance = new CameraManager();
                 }
             }
@@ -55,15 +58,15 @@ public class CameraManager {
         return instance;
     }
 
-    private CameraManager(){
-        cameraThread = Executors.newSingleThreadExecutor();
+    private CameraManager() {
+        CAMERA_ORIENTATION = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         APP.getContext().registerReceiver(cameraReceiver, intentFilter);
     }
 
-    public void init(CameraStateListener listener){
+    public void init(CameraStateListener listener) {
         mListener = listener;
     }
 
@@ -75,10 +78,12 @@ public class CameraManager {
                 case UsbManager.ACTION_USB_DEVICE_ATTACHED:
 //                case UsbManager.ACTION_USB_DEVICE_DETACHED:
                     int i = checkCamera();
-                    if(i > 0){
+                    if (i > 0) {
+                        d("检测到摄像头已连接... ");
                         openCamera(mHolder);
                     } else {
-                        if(mListener != null){
+                        d("摄像头已移除... ");
+                        if (mListener != null) {
                             mListener.onNoneCamera();
                         }
                     }
@@ -93,123 +98,129 @@ public class CameraManager {
      */
     public void openCamera(final SurfaceHolder holder) {
         mHolder = holder;
-        if(mListener != null){
+
+        if (mListener != null) {
             mListener.onBeforeCamera();
         }
-        cameraThread.execute(new Runnable() {
-            @Override
-            public void run() {
 
-                Log.e(TAG, "run: 1");
-                releaseCamera();
+        releaseCamera();
 
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Log.e(TAG, "共有摄像头：" + Camera.getNumberOfCameras());
-                for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
-                    Camera.getCameraInfo(i, info);
-                    Log.e(TAG, "摄像头id：" + i + " 种类：" +info.facing);
-                }
+        doOpenCamera();
 
-                if(Camera.getNumberOfCameras() <= 0){
-                    Log.e(TAG, "run: 2");
-                    if(mListener != null){
-                        mListener.onNoneCamera();
-                    }
-                    return;
-                }
+        setCallback();
 
-                for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
-                    Log.e(TAG, "run: 3");
-                    Camera.getCameraInfo(i, info);
-                    Log.e(TAG, "run: 4");
-                    if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                        Log.e(TAG, "run: 5");
-                        Log.d(TAG, "run: 即将打开 " + i);
-                        mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
-                        break;
-                    }
-                }
+        setParameters();
 
-                setCallback();
+        setPreviewBuffer();
 
-                setParameters();
-
-                setPreviewBuffer();
-
-                if(mListener != null){
-                    mListener.onCameraOpened(mCamera);
-                }
-
-                if(mHolder != null){
-                    Log.e(TAG, "run: 6");
-                    startPreview();
-                }
-            }
-        });
+        startPreview();
     }
 
-    private void setCallback(){
-        if(mCamera != null){
+    private void doOpenCamera(){
+        d("准备开启摄像头... ");
+        synchronized (mLock) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            d("摄像头数量... " + Camera.getNumberOfCameras());
+            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                Camera.getCameraInfo(i, info);
+                d("摄像头id... " + i +" 种类：" + (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK ? "后置":"前置"));
+            }
+
+            if (Camera.getNumberOfCameras() <= 0) {
+                d("无可用摄像头... ");
+                if (mListener != null) {
+                    mListener.onNoneCamera();
+                }
+                return;
+            }
+
+            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                Camera.getCameraInfo(i, info);
+                if (info.facing == CAMERA_TYPE) {
+                    d("准备开启... " + i);
+                    mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
+                    if(mCamera != null){
+                        d("已开启... ");
+                        if (mListener != null) {
+                            mListener.onCameraOpened();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void setCallback() {
+        if (mCamera != null) {
+            d("设置Error回调... ");
             mCamera.setErrorCallback(errorCallback);
         }
     }
 
-    private void setParameters(){
-        if(mCamera == null || checkCamera() <= 0){
+    private void setParameters() {
+        if (mCamera == null || checkCamera() <= 0) {
             return;
         }
-        //设置参数
-        Camera.Parameters params = mCamera.getParameters();
-        final List<Camera.Size> sizes =  params.getSupportedPreviewSizes();
+        synchronized (mLock) {
+            d("设置参数... ");
+            //设置参数
+            Camera.Parameters params = mCamera.getParameters();
+            final List<Camera.Size> sizes = params.getSupportedPreviewSizes();
 
-        for (Camera.Size size : sizes) {
-            Log.d("FaceLocalCamera", "............ size width = " + size.width);
-            Log.d("FaceLocalCamera", "............ size height = " + size.height);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("[");
+            for (Camera.Size size : sizes) {
+                stringBuilder.append(size.width).append("*").append(size.height).append("; ");
+            }
+            stringBuilder.append("]");
+            d(stringBuilder.toString());
+
+            int width = CAMERA_WIDTH;
+            int height = CAMERA_HEIGHT;
+            params.setPreviewSize(width, height);
+            mCamera.setParameters(params);
+            mCamera.setDisplayOrientation(CAMERA_ORIENTATION);
         }
-
-        params.setPreviewSize(CAMERA_WIDTH, CAMERA_HEIGHT);
-        mCamera.setParameters(params);
     }
 
-    private void setPreviewBuffer(){
-        if(mCamera == null || checkCamera() <= 0){
+    private void setPreviewBuffer() {
+        if (mCamera == null || checkCamera() <= 0) {
             return;
         }
-        mCamera.setDisplayOrientation(CAMERA_ORIENTATION);
-        mBuffer = new byte[CAMERA_WIDTH * CAMERA_HEIGHT * 3 / 2];
-        mCamera.addCallbackBuffer(mBuffer);
-        mCamera.setPreviewCallbackWithBuffer(previewCallback);
+        synchronized (mLock) {
+            d("设置预览回调... ");
+            mBuffer = new byte[CAMERA_WIDTH * CAMERA_HEIGHT * 3 / 2];
+            mCamera.addCallbackBuffer(mBuffer);
+            mCamera.setPreviewCallbackWithBuffer(previewCallback);
+        }
     }
 
     private void startPreview() {
-        Log.e(TAG, "run: 7");
-        if(mHolder == null){
+        if (mHolder == null) {
+            d("开启预览失败... surfaceHolder can not be null");
             return;
         }
-        cameraThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: 8");
-                if(mCamera != null){
-                    Log.e(TAG, "run: 9");
-                    try {
-                        Log.e(TAG, "run: 10");
-                        mCamera.setPreviewDisplay(mHolder);
-                        mCamera.startPreview();
+        synchronized (mLock) {
+            d("开启预览... ");
 
-                        if(mListener != null){
-                            mListener.onPreviewReady();
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "run: 11");
-                        e.printStackTrace();
+            if (mCamera != null) {
+                try {
+                    mCamera.setPreviewDisplay(mHolder);
+                    mCamera.startPreview();
+
+                    if (mListener != null) {
+                        mListener.onPreviewReady();
                     }
-                } else {
-                    Log.e(TAG, "run: 12");
-                    openCamera(mHolder);
+                } catch (IOException e) {
+                    d("开启预览失败... " + e !=null?e.getMessage():"NULL");
+                    e.printStackTrace();
                 }
+            } else {
+                d("Camera为null，重新开启");
+                openCamera(mHolder);
             }
-        });
+        }
     }
 
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
@@ -227,22 +238,27 @@ public class CameraManager {
     private Camera.ErrorCallback errorCallback = new Camera.ErrorCallback() {
         @Override
         public void onError(int error, Camera camera) {
-            if(mListener != null){
+            d("摄像头异常... " + error);
+            if (mListener != null) {
                 mListener.onCameraError(error);
             }
+
             int i = checkCamera();
-            if(i <= 0){
-                if(mListener != null){
+            if (i <= 0) {
+                d("无可用摄像头... ");
+                if (mListener != null) {
                     mListener.onNoneCamera();
                 }
                 return;
             }
+
+            d("准备重启摄像头服务... ");
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     openCamera(mHolder);
                 }
-            },200);
+            }, 200);
         }
     };
 
@@ -251,6 +267,7 @@ public class CameraManager {
      */
     public void releaseCamera() {
         if (null != mCamera) {
+            d("释放摄像头... ");
             mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
@@ -267,62 +284,54 @@ public class CameraManager {
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i, info);
-            boolean isBack = info.facing == Camera.CameraInfo.CAMERA_FACING_BACK;
+            boolean isBack = info.facing == CAMERA_TYPE;
             cameraResult = isBack ? 1 : 0;
         }
         return cameraResult;
     }
 
-    public static void setCameraSize(int width,int height){
-        CAMERA_WIDTH = width;
-        CAMERA_HEIGHT = height;
-    }
-
-    public static int getWidth(){
+    public static int getWidth() {
         return CAMERA_WIDTH;
     }
 
-    public static int getHeight(){
+    public static int getHeight() {
         return CAMERA_HEIGHT;
     }
 
-    public boolean isInit(){
+    public boolean isInit() {
         return mCamera != null;
     }
 
-    public void setOrientation(int tag){
-        if(mCamera != null){
+    public void setOrientation(int tag) {
+        if (mCamera != null) {
             CAMERA_ORIENTATION = tag;
             mCamera.setDisplayOrientation(tag);
         }
     }
 
-    public static int getOrientation(){
+    public static int getOrientation() {
         return CAMERA_ORIENTATION;
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         releaseCamera();
         APP.getContext().unregisterReceiver(cameraReceiver);
     }
 
-//    public void setPreviewCallback(Camera.PreviewCallback previewCallback){
-//        if(mCamera != null){
-//            this.previewCallback = previewCallback;
-//            mCamera.setPreviewCallback(previewCallback);
-//        }
-//    }
-
-    public void setStateListener(CameraStateListener listener){
+    public void setStateListener(CameraStateListener listener) {
         mListener = listener;
     }
 
-    public abstract static class CameraStateListener{
-        public void onBeforeCamera(){}
-        public void onCameraOpened(Camera mCamera){}
-        public void onPreviewReady(){}
-        public void onCameraError(int errCode){}
-        public void onNoneCamera(){}
+    public abstract static class CameraStateListener {
+        void onBeforeCamera() { }
+
+        void onCameraOpened() { }
+
+        void onPreviewReady() { }
+
+        void onCameraError(int errCode) { }
+
+        void onNoneCamera() { }
     }
 
 
@@ -346,18 +355,17 @@ public class CameraManager {
             }, null, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(final byte[] data, Camera camera) {
-                    cameraThread.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 根据拍照所得的数据创建位图
-                            final Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-                            if (shotCallBack != null) {
-                                shotCallBack.onShoted(bm);
-                            }
-                        }
-                    });
+                    final Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    if (shotCallBack != null) {
+                        shotCallBack.onShoted(bm);
+                    }
                 }
             });
         }
+    }
+
+    private void d(String msg){
+//        XLog.d(TAG,msg);
+        Log.d(TAG,msg);
     }
 }

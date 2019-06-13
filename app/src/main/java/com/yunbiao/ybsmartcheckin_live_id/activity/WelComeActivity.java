@@ -1,20 +1,14 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.hardware.Camera;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
@@ -50,6 +44,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.Gson;
+import com.jdjr.risk.face.local.user.FaceUser;
+import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.VisitorAdapter;
@@ -64,28 +60,17 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
-import com.yunbiao.ybsmartcheckin_live_id.exception.CameraError;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.BaseGateActivity;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyCallBack;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,13 +116,6 @@ public class WelComeActivity extends BaseGateActivity {
     private TextView tvCameraError;
     private ImageView ivQrCodeAdd;
 
-    private Intent mIntent;
-    private IntentFilter intentFilter;
-
-    private static String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-    public static String SCREEN_BASE_PATH = sdPath + "/mnt/sdcard/photo/";//人脸头像存储路径
-    public static String SCREEN_BASE_PATH_IMGS = sdPath + "/mnt/sdcard/videos/";//广告视频图片存储路径
-
     private BaseAdapter mVisitorAdapter;//签到人员adapter
     private PieChart pieChart_h;//横屏饼图
 
@@ -152,7 +130,6 @@ public class WelComeActivity extends BaseGateActivity {
     private int mCurrentOrientation = 1;//横竖屏状态
 
     //摄像头分辨率
-    private int cameraState;
     private FaceView faceView;
 
     @Override
@@ -166,38 +143,29 @@ public class WelComeActivity extends BaseGateActivity {
             setContentView(R.layout.activity_welcome_h);
             initPieChart();
         }
-        //注册EvntBus
-        EventBus.getDefault().register(this);
 
         initViews();
 
         initData();
 
-        //检查摄像头
-        cameraState = checkCamera();
-
         //开启Xmpp
         startXmpp();
+
+        //开始初始化动画
+        startInitAnim();
+
+        //初始化语音系统//todo 7.0以上无法加载讯飞语音库
+        KDXFSpeechManager.instance().init(this).welcome(null);
 
         //初始化定位工具
         LocateManager.instance().init(this);
 
+        //开始获取天气
         WeatherManager.instance().start(WelComeActivity.this, new WeatherManager.ResultListener() {
             @Override
             public void updateWeather(int id, String weatherInfo) {
                 iv_wea.setImageResource(R.mipmap.icon_snow);
                 tv_tem.setText(weatherInfo);
-            }
-        });
-
-        //开始初始化动画
-        startInitAnim();
-
-        //初始化语音系统
-        KDXFSpeechManager.instance().init(this).welcome(new KDXFSpeechManager.VoicePlayListener() {
-            @Override
-            public void playComplete(String uttId) {
-                closeInitView(null);
             }
         });
 
@@ -237,6 +205,8 @@ public class WelComeActivity extends BaseGateActivity {
         SignManager.instance().init(WelComeActivity.this, new SignManager.SignEventListener() {
             @Override
             public void onPrepared(List<VIPDetail> mList) {
+                closeInitView(null);
+
                 if (mList == null) {
                     return;
                 }
@@ -265,12 +235,21 @@ public class WelComeActivity extends BaseGateActivity {
                     VipDialogManager.showVipDialog(WelComeActivity.this, today, mList.get(0));
                 }
             }
+
+            @Override
+            public void onMakeUped(Bitmap bitmap, boolean makeUpSuccess) {
+                isBulu = false;
+
+                VipDialogManager.showBuluDialog(WelComeActivity.this, bitmap,makeUpSuccess);
+                KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
+                aiv_bulu.setVisibility(View.GONE);
+                iv_record.setVisibility(View.VISIBLE);
+            }
         });
 
         faceView.setCallback(new FaceView.FaceCallback() {
             @Override
             public void onReady() {
-                Log.e(TAG, "onReady: 11111111111111111111111");
                 syncData();
             }
             @Override
@@ -287,11 +266,34 @@ public class WelComeActivity extends BaseGateActivity {
             }
 
             @Override
-            public void onFaceVerify(FaceView.FaceVerifyResult verifyResult) {
+            public void onFaceVerify(VerifyResult verifyResult) {
                 if(verifyResult == null){
                     return;
                 }
-                String userId = verifyResult.getUserId();
+
+                if(isBulu ){
+                    if(!SignManager.canMakeUp()){
+                        Log.e("HAHA", "onFaceVerify: 补录-1-1-1-1-1-1");
+                        return;
+                    }
+
+                    Log.e("HAHA", "onFaceVerify: 补录0000000000");
+                    byte[] faceImage = faceView.getFaceImage();
+                    if(faceImage == null){
+                        return;
+                    }
+
+                    Log.e("HAHA", "onFaceVerify: 补录11111111111");
+                    SignManager.instance().makeUpSign(faceImage);
+                    return;
+                }
+
+                FaceUser user = verifyResult.getUser();
+                if(user == null){
+                    return;
+                }
+
+                String userId = user.getUserId();
                 if(TextUtils.isEmpty(userId)){
                     return;
                 }
@@ -331,60 +333,49 @@ public class WelComeActivity extends BaseGateActivity {
 
     private void initViews() {
         faceView = findViewById(R.id.face_view);
-        iv_logo = (ImageView) findViewById(R.id.iv_logo);
-        tv_title = (TextView) findViewById(R.id.tv_title);
+        iv_logo = findViewById(R.id.iv_logo);
+        tv_title = findViewById(R.id.tv_title);
         ll_load_container = findViewById(R.id.ll_load_container);
-        tv_load_error = (TextView) findViewById(R.id.tv_load_error);
-        gridview = (GridView) findViewById(R.id.gridview);
+        tv_load_error = findViewById(R.id.tv_load_error);
+        gridview = findViewById(R.id.gridview);
         aiv_bulu = findViewById(R.id.aiv_bulu);
-        tv_tem = (TextView) findViewById(R.id.tv_tem);
-        iv_wea = (ImageView) findViewById(R.id.iv_wea);
-        tv_deviceNo = (TextView) findViewById(R.id.tv_deviceNo);
-        tv_checkInNum = (TextView) findViewById(R.id.tv_checkInNum);
-        imageView = (ImageView) findViewById(R.id.imageView_logo);
-        iv_record = (ImageView) findViewById(R.id.iv_record);
-        tv_comName = (TextView) findViewById(R.id.tv_comName);
-        tv_notice = (TextView) findViewById(R.id.tv_notice);
-        tv_topTitle = (TextView) findViewById(R.id.tv_topTitle);
-        tv_bottomTitle = (TextView) findViewById(R.id.tv_bottomTitle);
-        tvCameraError = (TextView) findViewById(R.id.tv_camera_error);
-        ivQrCodeAdd = (ImageView) findViewById(R.id.iv_qrCode_add);
+        tv_tem = findViewById(R.id.tv_tem);
+        iv_wea = findViewById(R.id.iv_wea);
+        tv_deviceNo = findViewById(R.id.tv_deviceNo);
+        tv_checkInNum = findViewById(R.id.tv_checkInNum);
+        imageView = findViewById(R.id.imageView_logo);
+        iv_record = findViewById(R.id.iv_record);
+        tv_comName = findViewById(R.id.tv_comName);
+        tv_notice = findViewById(R.id.tv_notice);
+        tv_topTitle = findViewById(R.id.tv_topTitle);
+        tv_bottomTitle = findViewById(R.id.tv_bottomTitle);
+        tvCameraError = findViewById(R.id.tv_camera_error);
+        ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
 
         layout_head = findViewById(R.id.layout_head);
         layout_wel = findViewById(R.id.layout_wel);
         iv_yuan = findViewById(R.id.iv_yuan);
         iv_line = findViewById(R.id.iv_line);
+    }
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                String pwd = SpUtils.getString(WelComeActivity.this, SpUtils.MENU_PWD, "");
-                String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-                if (!TextUtils.isEmpty(pwd)) {
-                    inputPwd();
-                    return;
-                }
-                startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
-            }
-        });
-        iv_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isBulu = true;
-                aiv_bulu.setVisibility(View.VISIBLE);
-                iv_record.setVisibility(View.GONE);
-            }
-        });
+    public void goMakeUp(View view){
+        isBulu = true;
+        aiv_bulu.setVisibility(View.VISIBLE);
+        iv_record.setVisibility(View.GONE);
+    }
+
+    //跳转设置界面
+    public void goSetting(View view){
+        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+        if (!TextUtils.isEmpty(pwd)) {
+            inputPwd();
+            return;
+        }
+        startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
     //初始化变量
     private void initData() {
-        //注册摄像头监听广播
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(cameraReceiver, intentFilter);
-
         //设置设备编号
         String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         if (!TextUtils.isEmpty(deviceSernum)) {
@@ -463,209 +454,6 @@ public class WelComeActivity extends BaseGateActivity {
         });
     }
     
-//    /***
-//     * 人脸检测Handler
-//     */
-//    private class CheckFaceHandler extends Handler implements MipsFaceService.PoseCallBack {
-//        private mipsFaceInfoTrackLiveness[] faceInfo;
-//        private boolean isCheckThreadRunning = false;
-//        private static final int MAX_CHECK_LIVENESS_TIME = 3;//活体检测最大时间（单位：秒）
-//        private static final int MAX_CHECK_FACE_TIME = 3;//人脸检测最大时间（单位：秒）
-//        private static final int MAX_HANDLER_RUNNING_TIME = 10;//Handler运行时长（单位：秒）
-//        private int checkHandlerRunningTime = MAX_HANDLER_RUNNING_TIME * 4;//检测handler运行时长
-//        private int checkLivenessOutTime = MAX_CHECK_LIVENESS_TIME * 4;//检测超时时长
-//        private int checkFaceOutTime = MAX_CHECK_FACE_TIME * 4;//检测超时时长
-//
-//        @Override
-//        public void onPosedetected(final String flag, int curFaceCnt, int cntFaceDB, final mipsFaceInfoTrackLiveness[] faceInfo) {
-//            this.faceInfo = faceInfo;
-//            if (!isCheckThreadRunning) {
-//                sendEmptyMessage(0);
-//            }
-//        }
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            isCheckThreadRunning = true;
-//            if (!isForeground) {
-//                isCheckThreadRunning = false;
-//                return;
-//            }
-//
-//            if (hasFace()) {
-//                checkHandlerRunningTime = MAX_HANDLER_RUNNING_TIME * 4;
-//                //如果动画正在播放，不响应检测
-//                if (!AdsManager.instance().isAniming()) {
-//                    //如果广告可见，收起广告
-//                    if (AdsManager.instance().isAdsShowing()) {
-//                        AdsManager.instance().openAds();
-//                    } else {
-//                        //重置倒计时
-//                        AdsManager.instance().startTimer();
-//                        List<VIPDetail> mainList = new ArrayList<>();
-//                        for (int i = 0; i < faceInfo.length; i++) {
-//                            if (faceInfo[i] != null) {//活体已开启并且是活体
-//                                if (faceInfo[i].mfaceFeature == null) {
-//                                    continue;
-//                                }
-//                                if (faceInfo[i].mfaceFeature.mBitmapFace == null) {
-//                                    continue;
-//                                }
-//
-//                                Log.e(TAG, "handleMessage: ---------" + faceInfo[i].FaceIdxDB + "--------" +checkFaceOutTime);
-//                                if(faceInfo[i].flgSetVIP <= 0){
-//                                    checkFaceOutTime--;
-//                                    if(checkFaceOutTime <= 0){
-//                                        checkFaceOutTime = MAX_CHECK_FACE_TIME * 4;
-//                                        tvCameraError.setVisibility(View.VISIBLE);
-//                                        tvCameraError.setText("检测失败\n请检查员工照片\n或将面部移出画面后重试");
-//                                    }
-//                                    continue;
-//                                }
-//
-//                                if (APP.isLiveness && faceInfo[i].flgLiveness != 1) {
-//                                    checkLivenessOutTime--;
-//                                    if(checkLivenessOutTime <= 0){
-//                                        Log.e(TAG, "handleMessage: 检测活体超时");
-//                                        checkLivenessOutTime = MAX_CHECK_LIVENESS_TIME * 4;
-//                                        tvCameraError.setVisibility(View.VISIBLE);
-//                                        tvCameraError.setText("面部认证失败\n请将面部移出画面后再重试");
-//                                    }
-//                                    continue;
-//                                }
-//                                checkFaceOutTime = MAX_CHECK_FACE_TIME * 4;
-//                                checkLivenessOutTime = MAX_CHECK_LIVENESS_TIME * 4;
-//                                tvCameraError.setVisibility(View.GONE);
-//                                //正常签到
-//                                try {
-//                                    final List<VIPDetail> mlist = SyncManager.instance().getUserDao().queryByFaceId(faceInfo[i].FaceIdxDB);
-//                                    if (mlist != null && mlist.size() > 0) {
-//                                        long time = System.currentTimeMillis();
-//                                        VIPDetail vip = mlist.get(0);
-//                                        if (faceInfo[i].mfaceFeature.mBitmapFace != null) {
-//                                            Bitmap bmp = faceInfo[i].mfaceFeature.mBitmapFace;
-//                                            vip.setBitmap(bmp);
-//                                        }
-//
-//                                        vip.setTime(time);
-//                                        mainList.add(vip);
-//                                    }
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                                //补录
-//                                if (faceInfo[i] != null && faceInfo[i].flgSetVIP == 1) {
-//                                    if (faceInfo[i].mfaceFeature.mBitmapFace != null) {
-//                                        if (isBulu) {
-//                                            goToBuLu(faceInfo[i].mfaceFeature.mBitmapFace);
-//                                            isBulu = false;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        SignManager.instance().sign(mainList);
-//                    }
-//                }
-//            } else {
-//                tvCameraError.setVisibility(View.GONE);
-//                checkHandlerRunningTime--;
-//                if (checkHandlerRunningTime <= 0) {
-//                    Log.e(TAG, "handleMessage: 到达十秒");
-//                    checkHandlerRunningTime = MAX_HANDLER_RUNNING_TIME;
-//                    isCheckThreadRunning = false;
-//                    removeMessages(0);
-//                    return;
-//                }
-//            }
-//            sendEmptyMessageDelayed(0, 250);
-//        }
-//
-//        //检查人脸
-//        private boolean hasFace() {
-//            boolean is = false;
-//            if (faceInfo != null) {
-//                for (int i = 0; i < faceInfo.length; i++) {
-//                    if (faceInfo[i] != null) {
-//                        is = true;
-//                    }
-//                }
-//            }
-//            return is;
-//        }
-//    }
-
-    private void goToBuLu(final Bitmap bitmap) {
-//        int companyid = SpUtils.getInt(WelComeActivity.this, SpUtils.COMPANYID, 0);
-        int companyid = SpUtils.getInt(SpUtils.COMPANYID);
-        final Map<String, String> map = new HashMap<>();
-        map.put("comId", companyid + "");
-        String strFileAdd = saveBitmap(bitmap);
-        map.put("head", strFileAdd);
-        File imgFile = new File(strFileAdd);
-        if (imgFile != null && imgFile.exists()) {
-            RequestParams params = new RequestParams(ResourceUpdate.BULUSIGN);
-            params.addBodyParameter("comId", companyid + "");
-            params.addBodyParameter("head", imgFile);
-
-            x.http().post(params, new MyCallBack<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    super.onSuccess(result);
-                    Log.d(TAG, "补录成功--->" + result);
-                    VipDialogManager.showBuluDialog(WelComeActivity.this, bitmap);
-                    KDXFSpeechManager.instance().playText("补录成功！");
-                    aiv_bulu.setVisibility(View.GONE);
-                    iv_record.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onError(Throwable ex, boolean isOnCallback) {
-                    super.onError(ex, isOnCallback);
-                    Log.d(TAG, "补录失败--->" + ex.getMessage());
-                    goToBuLu(bitmap);
-                    ex.printStackTrace();
-                }
-
-                @Override
-                public void onFinished() {
-                    super.onFinished();
-                }
-            });
-        }
-    }
-
-    /**
-     * 保存bitmap到本地
-     *
-     * @param mBitmap
-     * @return
-     */
-    public String saveBitmap(Bitmap mBitmap) {
-        File filePic;
-        try {
-            //格式化时间
-            long time = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            String sdfTime = sdf.format(time);
-            filePic = new File(SCREEN_BASE_PATH + today + "/" + sdfTime + ".jpg");
-            if (!filePic.exists()) {
-                filePic.getParentFile().mkdirs();
-                filePic.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(filePic);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return filePic.getAbsolutePath();
-    }
-
     private void startXmpp() {//开启xmpp
         serviceManager = new ServiceManager(this);
         serviceManager.startService();
@@ -705,7 +493,6 @@ public class WelComeActivity extends BaseGateActivity {
                     rootView.startAnimation(animation);
                     return;
                 }
-//                String spPwd = SpUtils.getString(WelComeActivity.this, SpUtils.MENU_PWD, "");
                 String spPwd = SpUtils.getStr(SpUtils.MENU_PWD);
                 if (!TextUtils.equals(pwd, spPwd)) {
                     edtPwd.setError("密码错了，重新输入吧");
@@ -775,59 +562,6 @@ public class WelComeActivity extends BaseGateActivity {
     }
 
     /*=======摄像头检测=============================================================================*/
-    //摄像头错误监听
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(CameraError cameraError) {
-        tvCameraError.setVisibility(View.VISIBLE);
-        tvCameraError.setText("Error:" + cameraError.errCode + "\n设备异常，请检查摄像头");
-        cameraState = checkCamera();
-
-        int cameraError1 = SpUtils.getInt("CameraError");
-        Log.e(TAG, "update: ------------" + cameraError1 );
-        cameraError1 += 1;
-        SpUtils.saveInt("CameraError",cameraError1);
-
-        Log.e(TAG, "update: 摄像头错误："+cameraError.errCode);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                RestartAPPTool.restartAPP(WelComeActivity.this);
-            }
-        },1 * 1000);
-    }
-
-    //USB摄像头监听
-    private BroadcastReceiver cameraReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action) {
-                case UsbManager.ACTION_USB_DEVICE_ATTACHED:
-//                case UsbManager.ACTION_USB_DEVICE_DETACHED:
-                    int ci = checkCamera();
-                    if (ci != cameraState) {
-                        RestartAPPTool.restartAPP(WelComeActivity.this);
-                    }
-                    break;
-            }
-        }
-    };
-
-    private int checkCamera() {
-        int cameraResult = 0;
-        int numberOfCameras = Camera.getNumberOfCameras();
-        if (numberOfCameras <= 0) {
-            cameraResult = 0;
-        }
-        for (int i = 0; i < numberOfCameras; i++) {
-            Camera.CameraInfo info = new Camera.CameraInfo();
-            Camera.getCameraInfo(i, info);
-            boolean isBack = info.facing == Camera.CameraInfo.CAMERA_FACING_BACK;
-            cameraResult = isBack ? 1 : 0;
-        }
-        return cameraResult;
-    }
-
     //语音播报
     private void speak(int signType, String signerName) {
         String speakStr = " 您好 %s ，欢迎光临";
@@ -836,12 +570,10 @@ public class WelComeActivity extends BaseGateActivity {
                 speakStr = String.format(yuyin, signerName);
                 break;
             case 1:
-//                String goTips = SpUtils.getString(WelComeActivity.this, SpUtils.GOTIPS, "上班签到成功");
                 String goTips = SpUtils.getStr(SpUtils.GOTIPS, "上班签到成功");
                 speakStr = String.format(" %s " + goTips, signerName);
                 break;
             case 2:
-//                String downTips = SpUtils.getString(WelComeActivity.this, SpUtils.DOWNTIPS, "下班签到成功");
                 String downTips = SpUtils.getStr(SpUtils.DOWNTIPS, "下班签到成功");
                 speakStr = String.format(" %s " + downTips, signerName);
                 break;
@@ -919,7 +651,6 @@ public class WelComeActivity extends BaseGateActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-//            String pwd = SpUtils.getString(WelComeActivity.this, SpUtils.MENU_PWD, "");
             String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
             if (!TextUtils.isEmpty(pwd)) {
                 inputPwd();
@@ -983,14 +714,11 @@ public class WelComeActivity extends BaseGateActivity {
             serviceManager.stopService();
             serviceManager = null;
         }
-        stopService(mIntent);
-        unregisterReceiver(cameraReceiver);
 
         SyncManager.instance().destory();
         AdsManager.instance().destory();
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
-        EventBus.getDefault().unregister(this);
     }
 
 }

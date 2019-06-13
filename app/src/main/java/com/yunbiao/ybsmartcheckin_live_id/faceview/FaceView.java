@@ -3,7 +3,6 @@ package com.yunbiao.ybsmartcheckin_live_id.faceview;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -22,14 +21,12 @@ import android.widget.TextView;
 import com.jdjr.risk.face.local.detect.BaseProperty;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.frame.FaceFrameManager;
-import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
     private static final String TAG = "FaceView";
@@ -41,6 +38,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
     private Handler mainHandler = new Handler();
     private byte[] mFaceImage;
     private LinearLayout alertView;
+    private CacheMap faceCacheMap = new CacheMap();
 
     public FaceView(Context context) {
         super(context);
@@ -64,6 +62,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        Log.e(TAG, "onLayout: " + getWidth() +" ----- " + getHeight());
         FaceBoxUtil.setPreviewWidth(getWidth(),getHeight());//布局完成的时候修改预览宽高
     }
 
@@ -159,7 +158,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
     public interface FaceCallback{
         void onReady();
         void onFaceDetection();
-        void onFaceVerify(FaceVerifyResult verifyResult);
+        void onFaceVerify(VerifyResult verifyResult);
     }
 
     @Override
@@ -181,198 +180,34 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         mFaceCanvasView.clearFaceFrame();
     }
 
-    public void resume(){
-        isPaused = false;
-        FaceSDK.instance().setCallback(basePropertyCallback,facePropertyCallback,verifyResultCallback);
-    }
-
-    public void pause(){
-        isPaused = true;
-    }
-
-    public void destory(){
-        isPaused = true;
-        mFaceCanvasView.clearFaceFrame();
-        CameraManager.instance().onDestroy();
-    }
-
-
-
-//    private CacheMap cacheMap = new CacheMap();
-//    private FaceBean getCacheBean(long faceId){
-//        FaceBean faceBean;
-//        if(cacheMap.containsKey(faceId)){//如果包含这个Key，则取值，
-//            faceBean = cacheMap.get(faceId);
-//            if (faceBean == null) {
-//                faceBean = new FaceBean();
-//            }
-//        } else {
-//            faceBean = new FaceBean();
-//        }
-//        return faceBean;
-//    }
-//    private void checkFace(List<BaseProperty> list){
-//        boolean isHas = false;
-//        for (Map.Entry<Long, FaceBean> longFaceBeanEntry : cacheMap.entrySet()) {
-//            Long key = longFaceBeanEntry.getKey();
-//            for (BaseProperty baseProperty : list) {
-//                if (baseProperty.getFaceId() == key) {
-//                    isHas = true;
-//                }
-//            }
-//            if(!isHas){
-//                cacheMap.remove(key);
-//            }
-//        }
-//    }
-//
-//    private void cacheRect(List<BaseProperty> list){
-//        for (BaseProperty face : list) {
-//            long faceId = face.getFaceId();
-//            FaceBean cacheBean = getCacheBean(faceId);
-//            final Rect cameraRect = face.getFaceRect();
-//            cacheBean.faceRect = FaceBoxUtil.getPreviewBox(cameraRect);
-//            cacheMap.put(faceId,cacheBean);
-//        }
-//        mFaceCanvasView.updateFaceBoxes(cacheMap);
-//    }
-//
-//    private void cacheProperty(FaceProperty faceProperty){
-//        Long faceId = faceProperty.getFaceId();
-//        FaceBean cacheBean = getCacheBean(faceId);
-//        cacheBean.age = faceProperty.getAge()+"";
-//        cacheBean.sex = faceProperty.getGender()==1?"男":"女";
-//        cacheMap.put(faceId,cacheBean);
-//    }
-//
-//    private void cacheResult(VerifyResult verifyResult){
-//        long faceId = verifyResult.getFaceId();
-//        FaceBean cacheBean = getCacheBean(faceId);
-//        cacheBean.resultCode = verifyResult.getResult();
-//        FaceUser user = verifyResult.getUser();
-//        if(user != null){
-//            cacheBean.userId = user.getUserId();
-//            cacheBean.groupId = user.getNativeGroupId();
-//        }
-//        cacheMap.put(faceId,cacheBean);
-//    }
-//
-//    static class CacheMap extends LinkedHashMap<Long,FaceBean>{
-//        private static final String TAG = "CacheMap";
-//        private int MAX_CACHE_NUM = 3;
-//        @Override
-//        protected boolean removeEldestEntry(Entry eldest) {
-//            return size() > MAX_CACHE_NUM;
-//        }
-//
-//        @Override
-//        public FaceBean put(Long key, FaceBean value) {
-//            Log.e(TAG, "put: " + toString() );
-//            return super.put(key, value);
-//        }
-//    }
-//    class FaceBean{
-//        String userId;
-//        String age;
-//        String sex;
-//        int resultCode = -9;
-//        Rect faceRect;
-//        long groupId;
-//
-//        @Override
-//        public String toString() {
-//            return "FaceBean{" +
-//                    "faceRect=" + faceRect +
-//                    '}';
-//        }
-//    }
-//    /*
-//     * 人脸区域回调
-//     * */
-//    FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
-//        @Override
-//        public void onBasePropertyResult(List<BaseProperty> list) {
-//            if(isPaused){
-//                mFaceCanvasView.clearFaceFrame();
-//                return;
-//            }
-//
-//            if(list != null && list.size() >0 ){
-//                if(callback != null){
-//                    callback.onFaceDetection();
-//                }
-//                cacheRect(list);
-//            } else {
-//                onFaceLost();
-    //        cacheMap.clear();
-//            }
-//        }
-//    };
-//    /*
-//     * 人脸属性回调
-//     * */
-//    private FaceFrameManager.FacePropertyCallback facePropertyCallback = new FaceFrameManager.FacePropertyCallback() {
-//        @Override
-//        public void onFacePropertyResult(FaceProperty faceProperty) {
-//            cacheProperty(faceProperty);
-//        }
-//    };
-//    /*
-//     * 人脸认证回调
-//     * */
-//    private FaceFrameManager.VerifyResultCallback verifyResultCallback = new FaceFrameManager.VerifyResultCallback() {
-//        @Override
-//        public void onDetectPause() {
-//            if(isPaused){
-//                return;
-//            }
-//            FaceFrameManager.resumeDetect();
-//        }
-//
-//        @Override
-//        public void onVerifyResult(VerifyResult verifyResult) {
-//            if(isPaused){
-//                return;
-//            }
-//            cacheResult(verifyResult);
-//        }
-//    };
-
-
-    /*
-     * 人脸区域回调
-     * */
-    FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
+    static class CacheMap extends LinkedHashMap<Long,FaceResult>{
+        private int MAX_CACHE_NUM = 9;
         @Override
-        public void onBasePropertyResult(List<BaseProperty> list) {
+        protected boolean removeEldestEntry(Entry eldest) {
+            return size() > MAX_CACHE_NUM;
+        }
+    }
+
+    private FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
+        @Override
+        public void onBasePropertyResult(Map<Long, BaseProperty> basePropertyMap) {
             if(isPaused){
                 mFaceCanvasView.clearFaceFrame();
                 return;
             }
-            if(list != null && list.size() >0 ){
+            if (basePropertyMap != null && basePropertyMap.values() != null && basePropertyMap.values().size() > 0) {
                 if(callback != null){
                     callback.onFaceDetection();
                 }
-                drawFaceBoxes(list);
+                drawFaceBoxes(basePropertyMap);
             } else {
                 onFaceLost();
             }
         }
     };
-
     /*
-    * 人脸属性回调
-    * */
-    private FaceFrameManager.FacePropertyCallback facePropertyCallback = new FaceFrameManager.FacePropertyCallback() {
-        @Override
-        public void onFacePropertyResult(FaceProperty faceProperty) {
-            cacheFaceProperty(faceProperty);
-        }
-    };
-
-    /*
-    * 人脸认证回调
-    * */
+     * 人脸认证回调
+     * */
     private FaceFrameManager.VerifyResultCallback verifyResultCallback = new FaceFrameManager.VerifyResultCallback() {
         @Override
         public void onDetectPause() {
@@ -387,41 +222,98 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
             if(isPaused){
                 return;
             }
-            long faceId = verifyResult.getFaceId();
-            int resultCode = verifyResult.getResult();
-            FaceUser user = verifyResult.getUser();
+            updateVerifyResult(verifyResult);
             mFaceImage = verifyResult.getFaceImageBytes();
-            long checkConsumeTime = verifyResult.getCheckConsumeTime();
-            long verifyConsumeTime = verifyResult.getVerifyConsumeTime();
-            long extractConsumeTime = verifyResult.getExtractConsumeTime();
 
-            e("检测耗时----------> " + checkConsumeTime +" 毫秒");
-            e("认证耗时----------> " + verifyConsumeTime +" 毫秒");
-            e("提取耗时----------> " + extractConsumeTime +" 毫秒");
+            e("检测耗时----------> " + verifyResult.getCheckConsumeTime() +" 毫秒");
+            e("认证耗时----------> " + verifyResult.getVerifyConsumeTime() +" 毫秒");
+            e("提取耗时----------> " + verifyResult.getExtractConsumeTime() +" 毫秒");
             e("*******************************************************");
 
-            handleSearchResult(faceId,resultCode,user);
+            handleSearchResult(verifyResult);
         }
     };
 
-
-    /***
-     * ====分析认证结果==============================================================================================
-     */
-    private LinkedList<FaceVerifyResult> mVerifyResults = new LinkedList<>();
-    private static final int TIMES_FAILURE = 3;
-    //分析认证结果
-    private void handleSearchResult(long faceId, int resultCode, FaceUser user) {
-        final FaceVerifyResult verifyResult = new FaceVerifyResult(faceId, resultCode);
-        if (user != null) {
-            String userId = user.getUserId();
-            verifyResult.setUserId(userId);
+    /*
+     * 人脸属性回调
+     * */
+    private FaceFrameManager.FacePropertyCallback facePropertyCallback = new FaceFrameManager.FacePropertyCallback() {
+        @Override
+        public void onFacePropertyResult(FaceProperty faceProperty) {
+            updateFaceProperty(faceProperty);
         }
-        cacheVerifyResult(verifyResult);
+    };
 
+    //无人脸
+    private void onFaceLost() {
+        mFaceCanvasView.clearFaceFrame();
+    }
+    //绘制人脸框
+    private void drawFaceBoxes(Map<Long, BaseProperty> basePropertyMap) {
+        if (basePropertyMap == null || basePropertyMap.values() == null || basePropertyMap.values().size() == 0) {
+            return;
+        }
+
+        //删除不可见的人脸
+        if(faceCacheMap.size() > 0){
+            final Set<Long> oldFaceIds = faceCacheMap.keySet();
+            final Set<Long> finalFaceIds = new HashSet<>();
+            for (long faceId : oldFaceIds) {
+                finalFaceIds.add(faceId);
+            }
+            for (long finalFaceId : finalFaceIds) {
+                if (!basePropertyMap.containsKey(finalFaceId)) {
+                    faceCacheMap.remove(finalFaceId);
+                }
+            }
+        }
+
+        // 更新可见的人脸
+        for (BaseProperty baseProperty : basePropertyMap.values()) {
+            transformFaceRect(baseProperty);
+
+            final long faceId = baseProperty.getFaceId();
+            if (!faceCacheMap.containsKey(faceId)) {
+                faceCacheMap.put(faceId, new FaceResult(baseProperty));
+            } else {
+                faceCacheMap.get(faceId).setBaseProperty(baseProperty);
+            }
+        }
+
+        mFaceCanvasView.updateFaceBoxes(faceCacheMap);
+    }
+    //处理人脸框
+    private void transformFaceRect(BaseProperty face) {
+        final Rect cameraRect = face.getFaceRect();
+        final Rect previewRect = FaceBoxUtil.getPreviewBox(cameraRect);
+        face.setFaceRect(previewRect);
+    }
+    //更新人脸认证信息
+    private void updateVerifyResult(VerifyResult verifyResult) {
+        if (faceCacheMap == null) {
+            return;
+        }
+        final long faceId = verifyResult.getFaceId();
+        if (faceCacheMap.containsKey(faceId)) {
+            faceCacheMap.get(faceId).setVerifyResult(verifyResult);
+        }
+    }
+    //更新人脸属性
+    private void updateFaceProperty(FaceProperty faceProperty) {
+        if (faceCacheMap == null) {
+            return;
+        }
+
+        final long faceId = faceProperty.getFaceId();
+        if (faceCacheMap.containsKey(faceId)) {
+            faceCacheMap.get(faceId).setFaceProperty(faceProperty);
+        }
+    }
+    //处理人脸认证
+    private void handleSearchResult(VerifyResult verifyResult) {
+        int resultCode = verifyResult.getResult();
         if(resultCode == VerifyResult.UNKNOWN_FACE){
             mFaceCanvasView.showProperty(false);
-            cacheSuccessVerifyResult(faceId, user.getUserId());
             e("handleSearchResult: 识别成功");
 
         } else {
@@ -442,175 +334,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         }
     }
 
-
-    //缓存认证结果
-    private void cacheVerifyResult(FaceVerifyResult result) {
-        if (mVerifyResults.size() >= TIMES_FAILURE) {
-            mVerifyResults.pollFirst();
-        }
-        mVerifyResults.add(result);
-        checkFailureResult(result);
-    }
-    //缓存认证失败的结果
-    private void checkFailureResult(FaceVerifyResult result) {
-        final int resultCode = result.getResultCode();
-        if (resultCode != VerifyResult.UNKNOWN_FACE) {
-            if (mVerifyResults != null && mVerifyResults.size() >= TIMES_FAILURE) {
-                boolean isFailureMax = true;
-                for (FaceVerifyResult verifyResult : mVerifyResults) {
-                    if (verifyResult.getFaceId() != result.getFaceId() || verifyResult.getResultCode() == VerifyResult.UNKNOWN_FACE) {
-                        isFailureMax = false;
-                        break;
-                    }
-                }
-                if (isFailureMax) {
-                    mVerifyResults.clear();
-                }
-            } else {
-            }
-        }
-    }
-
-
-
-
-
-    /***
-     * ====绘制人脸框==============================================================================================
-     */
-
-    private void drawFaceBoxes(List<BaseProperty> faces) {
-        if (faces != null && faces.size() > 0) {
-            for (BaseProperty face : faces) {
-                transformFaceBox(face);
-//                transformLandmarks(face);
-                appendVerifyResult(face);
-                appendFaceProperty(face);
-            }
-        }
-        mFaceCanvasView.updateFaceBoxes(faces);
-    }
-    public void onFaceLost() {
-        mFaceCanvasView.clearFaceFrame();
-    }
-
-    private void transformFaceBox(BaseProperty face) {
-        final Rect cameraRect = face.getFaceRect();
-        final Rect previewRect = FaceBoxUtil.getPreviewBox(cameraRect);
-        face.setFaceRect(previewRect);
-    }
-
-    private void appendVerifyResult(BaseProperty face) {
-        final long faceId = face.getFaceId();
-        final String userId = getVerifyResult(faceId);
-        face.setUserId(userId);
-    }
-    private void appendFaceProperty(BaseProperty face) {
-        if (face == null) {
-            return;
-        }
-
-        final FaceProperty faceProperty = getFaceProperty(face.getFaceId());
-
-        if (faceProperty != null) {
-            final int gender = faceProperty.getGender();
-            final int age = faceProperty.getAge();
-            final float[] emotionScores = faceProperty.getEmotionScore();
-
-            face.setGender(gender);
-            face.setAge(age);
-            face.setEmotionScores(emotionScores);
-        }
-
-    }
-
-
-    /***
-     * ====获取人脸属性==============================================================================================
-     */
-    private LinkedList<FaceVerifyResultTemp> mResultCache = new LinkedList<>();
-    private static final int CAPACITY_RESULT_MAP = 13;
-    //缓存认证成功结果
-    private void cacheSuccessVerifyResult(long faceId, String userId) {
-        if (mResultCache.size() >= CAPACITY_RESULT_MAP) {
-            mResultCache.removeFirst();
-        }
-        final FaceVerifyResultTemp verifyResult = new FaceVerifyResultTemp(faceId, userId);
-        mResultCache.add(verifyResult);
-    }
-    private String getVerifyResult(long faceId) {
-        String userId = null;
-        for (int i = mResultCache.size() - 1; i >= 0; i--) {
-            final FaceVerifyResultTemp resultTemp = mResultCache.get(i);
-            if (resultTemp.faceId == faceId && resultTemp.userId != null && resultTemp.userId.length() > 0) {
-                userId = resultTemp.userId;
-            }
-        }
-        return userId;
-    }
-
-    private static final int MAX_PROPERTY_SIZE = 3;
-    private LinkedList<FaceProperty> mFacePropertyCache = new LinkedList<FaceProperty>();
-    private void cacheFaceProperty(FaceProperty faceProperty) {
-        if (mFacePropertyCache.size() >= MAX_PROPERTY_SIZE) {
-            mFacePropertyCache.removeFirst();
-        }
-        mFacePropertyCache.add(faceProperty);
-    }
-    private FaceProperty getFaceProperty(long faceId) {
-        for (int i = mFacePropertyCache.size() - 1; i >= 0; i--) {
-            final FaceProperty faceProperty = mFacePropertyCache.get(i);
-            if (faceProperty.getFaceId() == faceId) {
-                return faceProperty;
-            }
-        }
-        return null;
-    }
-    private class FaceVerifyResultTemp {
-        public long faceId;
-        public String userId;
-        public FaceVerifyResultTemp(long faceId, String userId) {
-            this.faceId = faceId;
-            this.userId = userId;
-        }
-    }
-    public class FaceVerifyResult {
-        private long faceId;
-        private int resultCode;
-        public FaceVerifyResult(long faceId, int resultCode) {
-            this.faceId = faceId;
-            this.resultCode = resultCode;
-        }
-        public long getFaceId() {
-            return faceId;
-        }
-        public void setFaceId(long faceId) {
-            this.faceId = faceId;
-        }
-        public int getResultCode() {
-            return resultCode;
-        }
-        public void setResultCode(int resultCode) {
-            this.resultCode = resultCode;
-        }
-        private String userId;
-        public String getUserId() {
-            return userId;
-        }
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        @Override
-        public String toString() {
-            return "FaceVerifyResult{" +
-                    "faceId=" + faceId +
-                    ", resultCode=" + resultCode +
-                    ", userId='" + userId + '\'' +
-                    '}';
-        }
-    }
-
+    //隐藏错误提示
     private void hideAlertView(){
         if(alertView != null && alertView.isShown()){
             runOnUiThread(new Runnable() {
@@ -621,6 +345,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
             });
         }
     }
+    //显示错误提示
     private void showAlertView(final String alertMsg, final boolean showRetry, final OnClickListener onClickListener){
         if(alertView != null && alertView.isShown()){
             removeView(alertView);
@@ -662,6 +387,21 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
             }
         });
 
+    }
+
+    public void resume(){
+        isPaused = false;
+        FaceSDK.instance().setCallback(basePropertyCallback,facePropertyCallback,verifyResultCallback);
+    }
+
+    public void pause(){
+        isPaused = true;
+    }
+
+    public void destory(){
+        isPaused = true;
+        mFaceCanvasView.clearFaceFrame();
+        CameraManager.instance().onDestroy();
     }
 
     private boolean isLog = true;

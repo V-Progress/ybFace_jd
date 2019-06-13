@@ -7,10 +7,10 @@ package com.yunbiao.ybsmartcheckin_live_id.faceview;
 public class FrameHelper {
     public static byte[] getFrameRotate(byte[] frame, int width, int height) {
         final int rotation = CameraManager.getOrientation();
-        final byte[] frameRotate = FrameHelper.rotateFrame(rotation, frame, width, height);
-        if (rotation == 90 || rotation == 180) {
-            CameraManager.setCameraSize(height,width);
-        }
+        final byte[] frameRotate = rotateFrame(rotation, frame, width, height);
+//        if (rotation == 90 || rotation == 270) {
+//            CameraManager.instance().setCameraSize(height,width);
+//        }
         return frameRotate;
     }
 

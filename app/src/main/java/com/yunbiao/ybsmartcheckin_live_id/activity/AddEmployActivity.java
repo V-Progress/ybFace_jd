@@ -222,8 +222,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         }
-
-        KDXFSpeechManager.instance().playText("请将面部对准摄像头中间区域，然后点击拍照");
     }
 
     private void chooseBitmap(int requestCode) {

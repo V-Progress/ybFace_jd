@@ -67,8 +67,6 @@
         </activity>
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
-        <service android:name=".service.MipsIDFaceProService_ICLN" />
-        <service android:name=".service.MipsIDFaceProService_IC" />
 
         <receiver android:name=".USBBroadcastReceiver">
             <intent-filter android:priority="800">

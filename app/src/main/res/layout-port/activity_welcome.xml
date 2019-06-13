@@ -22,6 +22,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:onClick="goSetting"
                 android:id="@+id/imageView_logo"
                 android:layout_width="wrap_content"
                 android:maxWidth="200dp"
@@ -207,6 +208,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:onClick="goMakeUp"
                     android:layout_gravity="center"
                     android:id="@+id/iv_record"
                     android:layout_width="match_parent"
