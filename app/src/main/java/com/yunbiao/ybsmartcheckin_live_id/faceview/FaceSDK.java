@@ -12,6 +12,10 @@ import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class FaceSDK {
     public static final String USER_INFO = "QjFDOTM2MkFDMkU1MzNGQzI2MkVBOTdDOTZDRjJGMjhCOUY2MEZCNzNCOTMwRTZBQjBEOTU5QjBFNkRCNzg2NXxNSUlCSURBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVEwQU1JSUJDQUtDQVFFQTQ0ZElEQnVLclQ4U1JpaDMvT3hLVjhQdE1LUTBsNlU3YnpBTGNYeDBPQldSVWJLWS9IVkVOVUxFUVhBTGs4Wm5sdFFpWk9nSFdHSjRnRUVJME0xQ1N0Z2RRWFdLM0xjY3B1UHVlR00vTGsrdXVHb2JGanUyVlUwckZTeEh4cmxaZHpuSW9nZ1VNSjdmWTRlc2VKbXJZWWJoQmtib0J2b0RIbm5QWTFOZ3pqVVVSUkpITjUxdFRmNWRhNnZ5TTJFVU1iTUQ5bE8vSXdoOWxzb2oxelRGYk42V1ppZmdaK043aHprUHVuV2tuTmZwVmJCamdvRndZQk85aGhOMHZZakVOYzVnM1VoZU1QTFVFL21xbE9OYlNRSmxTdE8zZ2ozUy9oTUs1V1ByaTRQNkxYQkZPSkdZZnJwYzJ3ckwvd0hjNkc2cjFHdTh3enpuc3JSeFdBTTZGd0lCQXc9PXxNSUlCTXpDQjdBWUhLb1pJemowQ0FUQ0I0QUlCQVRBc0JnY3Foa2pPUFFFQkFpRUEvLy8vL3YvLy8vLy8vLy8vLy8vLy8vLy8vLzhBQUFBQS8vLy8vLy8vLy84d1JBUWcvLy8vL3YvLy8vLy8vLy8vLy8vLy8vLy8vLzhBQUFBQS8vLy8vLy8vLy93RUlDanArcDZkbjE0MFRWcWVTODlsQ2Fmemw0bjFGYXVQa3QyOHZVRk5sQTZUQkVFRU1zU3VMQjhaZ1JsZm1RUkdham5KbEkvakM3L3laZ3ZoY1ZwRmlUTk1kTWU4TnphaTlQWjNuRm05enVOcmFTRlQwS21IZk1ZcVIwQUMzekxsSVRud29BSWhBUC8vLy83Ly8vLy8vLy8vLy8vLy8vOXlBOTlySWNZRksxTzc5QWs1MVVFakFnRUJBMElBQlBmT0FVOEp1UHVyOW1VWCtkSnVHWTJJRkpqNE1hTGpoTXNoUXUwYlI2Sld0TXJoSlpOcXhWYXRPZDN4ZGhBNGd1YStReEZxejM0VFhwdC9jbWluT1E0PQ==";
     public static final String activeCode = "45e438f2402a4aefaaf2a2f84904ba70";
@@ -31,6 +35,8 @@ public class FaceSDK {
     public static final int STATE_COMPLETE = 2;//已启动(结束)
 
     private static int STATE_SDK = STATE_NOT_INIT;
+
+    private Map<String,FaceUser> allUserMap = new HashMap<>();
 
     public static int getState(){
         return STATE_SDK;
@@ -119,6 +125,7 @@ public class FaceSDK {
                     STATE_SDK = STATE_COMPLETE;
                     listen(STATE_SDK);
                     startDetect();
+                    getAllUser();
                 } else {
                     STATE_SDK = STATE_SERVER_FAILED;
                     listen(STATE_SDK);
@@ -131,6 +138,14 @@ public class FaceSDK {
     private void startDetect(){
         FaceFrameManager.setFaceType(FaceFrameManager.TYPE_FACE_PROCESS);
         FaceFrameManager.startDetectFace();
+    }
+
+    private void getAllUser(){
+        List<FaceUser> faceUserList = FaceUserManager.getAllUsersSync(mContext);
+        for (FaceUser faceUser : faceUserList) {
+            allUserMap.put(faceUser.getUserId(),faceUser);
+        }
+        Log.e(TAG, "getAllUser: " + allUserMap.toString());
     }
 
     public void setCallback(FaceFrameManager.BasePropertyCallback basePropertyCallback
@@ -161,23 +176,32 @@ public class FaceSDK {
         FaceUserManager.getInstance().registerImageAsync(mContext, userId, imgPath, null, callback);
     }
 
-    public void updateUser(FaceUser faceUser, FaceUserManager.FaceUserCallback callback){
-        if(faceUser == null){
+    public void updateUser(String userId,String imgPath,FaceUserManager.FaceUserCallback callback){
+        if(TextUtils.isEmpty(userId) || TextUtils.isEmpty(imgPath)){
             if(callback != null){
                 callback.onUserResult(false, FaceUserManager.RESULT_FAILURE);
             }
             return;
         }
-        FaceUserManager.getInstance().updateUserAsync(mContext,faceUser,callback);
+        if(allUserMap.containsKey(userId)){
+            FaceUser faceUser = allUserMap.get(userId);
+            faceUser.setImagePath(imgPath);
+            FaceUserManager.getInstance().updateUserAsync(mContext,faceUser,callback);
+        } else {
+            if(callback != null){
+                callback.onUserResult(false, FaceUserManager.RESULT_FAILURE);
+            }
+        }
     }
 
     public boolean removeUser(String userId){
-        if(TextUtils.isEmpty(userId)){
-            return false;
+        if(!TextUtils.isEmpty(userId)){
+            if(allUserMap.containsKey(userId)){
+                FaceUser faceUser = allUserMap.get(userId);
+                return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
+            }
         }
-        FaceUser faceUser = new FaceUser();
-        faceUser.setUserId(userId);
-        return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
+        return false;
     }
 
     public void removeAllUser(FaceUserManager.FaceUserCallback callback){

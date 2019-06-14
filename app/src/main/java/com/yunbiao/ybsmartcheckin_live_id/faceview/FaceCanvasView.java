@@ -6,8 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.jdjr.risk.face.local.detect.BaseProperty;
@@ -29,8 +31,6 @@ public class FaceCanvasView extends ImageView {
 
     private Paint mNamePaint;
     private Paint mRectPaint;
-    public Rect mOverRect;
-    private int flgPortrait = 0;//人脸框方向
     private Lock lockFace = new ReentrantLock();
     private StringBuilder contentText = new StringBuilder();
 
@@ -52,22 +52,6 @@ public class FaceCanvasView extends ImageView {
         reset();
     }
 
-    public void setCavasPortrait() {
-        flgPortrait = 1;
-    }
-
-    public void setCavasLandscape() {
-        flgPortrait = 0;
-    }
-
-    public void setCavasReversePortrait() {
-        flgPortrait = 3;
-    }
-
-    public void setCavasReverseLandscape() {
-        flgPortrait = 2;
-    }
-
     public void reset() {
         lockFace.lock();
         // 识别名
@@ -87,10 +71,6 @@ public class FaceCanvasView extends ImageView {
 //        scanBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.scan);
     }
 
-    public void setOverlayRect(int left, int right, int top, int bottom, int camWidth, int camHeight) {
-        mOverRect = new Rect(left, top, right, bottom);
-    }
-
     private boolean isShowProperty = true;
     public void showProperty(boolean isShow){
         isShowProperty = isShow;
@@ -105,11 +85,6 @@ public class FaceCanvasView extends ImageView {
     public void clearFaceFrame(){
         mFaceMap = null;
         invalidate();
-    }
-
-    private boolean verifyTag = false;
-    public void setTag(boolean isVerifyed){
-        verifyTag = isVerifyed;
     }
 
     @Override
@@ -127,7 +102,9 @@ public class FaceCanvasView extends ImageView {
             FaceProperty faceProperty = value.getFaceProperty();
             VerifyResult verifyResult = value.getVerifyResult();
             Rect faceRect = face.getFaceRect();
-            canvas.drawRect(faceRect,mRectPaint);
+            RectF rectF = FaceBoxUtil.setFaceFacingBack(faceRect);
+//            faceRect = FaceBoxUtil.getPreviewBox(faceRect);
+            canvas.drawRect(rectF,mRectPaint);
 
 //            int width = faceRect.right - faceRect.left;
 //            int height = faceRect.bottom - faceRect.top;
@@ -135,34 +112,38 @@ public class FaceCanvasView extends ImageView {
 //            canvas.drawBitmap(newBmp, faceRect.left, faceRect.top, null);
 
             getText(faceProperty,verifyResult);
-            canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
+//            canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
+            canvas.drawText(contentText.toString(), rectF.left, rectF.top - 20, mNamePaint);
         }
     }
 
     private void getText(FaceProperty faceProperty,VerifyResult verifyResult){
         contentText.setLength(0);
-        if(verifyResult == null || verifyResult.getUser() == null){
-            return;
-        }
-        String userId = verifyResult.getUser().getUserId();
-        if(!TextUtils.isEmpty(userId)){
-            Integer integer = Integer.valueOf(userId);
-            if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
-                List<VIPDetail> vipDetails = SyncManager.instance().getUserDao().queryByFaceId(integer);
-                if(vipDetails != null && vipDetails.size() > 0){
-                    String name = vipDetails.get(0).getName();
-                    cacheMap.put(integer,name);
-                    contentText.append(name);
-                }
-            } else {//存在就取缓存
-                contentText.append(cacheMap.get(integer));
-            }
-        } else {
-            if(faceProperty == null){
+        if (!isShowProperty) {
+            if(verifyResult == null || verifyResult.getUser() == null){
                 return;
             }
-            contentText.append(faceProperty.getGender() == 0 ? "女士" : faceProperty.getGender() == 1 ? "男士" : "未知").append(", ")
+            String userId = verifyResult.getUser().getUserId();
+            if(!TextUtils.isEmpty(userId)){
+                Integer integer = Integer.valueOf(userId);
+                if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
+                    List<VIPDetail> vipDetails = SyncManager.instance().getUserDao().queryByFaceId(integer);
+                    if(vipDetails != null && vipDetails.size() > 0){
+                        String name = vipDetails.get(0).getName();
+                        cacheMap.put(integer,name);
+                        contentText.append(name);
+                    }
+                } else {//存在就取缓存
+                    contentText.append(cacheMap.get(integer));
+                }
+            }
+        } else {
+            Log.e(TAG, "11111111111111111111111111111");
+            if(faceProperty != null){
+                Log.e(TAG, "3333333333333333333333333");
+                contentText.append(faceProperty.getGender() == 0 ? "女士" : faceProperty.getGender() == 1 ? "男士" : "未知").append(", ")
                     .append("年龄:").append(faceProperty.getAge());
+            }
         }
     }
 }

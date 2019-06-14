@@ -291,7 +291,9 @@ public class SyncManager extends BroadcastReceiver {
             int faceId = vipDetail.getFaceId();
             if (staffMap.containsKey(faceId))
                 continue;
-            FaceSDK.instance().removeUser(String.valueOf(faceId));
+            boolean isRemoveSucc = FaceSDK.instance().removeUser(String.valueOf(faceId));
+            userDao.delete(vipDetail);
+            Log.e(TAG, "syncUserDao: ----- 删除结果： " + isRemoveSucc + " ----- " + vipDetail.toString());
         }
 
         for (Map.Entry<Integer, StaffInfoBean> integerStaffInfoBeanEntry : staffMap.entrySet()) {

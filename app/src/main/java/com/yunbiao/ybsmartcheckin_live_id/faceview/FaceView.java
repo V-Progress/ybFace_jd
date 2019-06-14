@@ -3,7 +3,6 @@ package com.yunbiao.ybsmartcheckin_live_id.faceview;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -59,14 +58,8 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         mainHandler.post(runnable);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        Log.e(TAG, "onLayout: " + getWidth() +" ----- " + getHeight());
-        FaceBoxUtil.setPreviewWidth(getWidth(),getHeight());//布局完成的时候修改预览宽高
-    }
-
-    public void init(Context context){
+    //初始化
+    private void init(Context context){
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView,LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 
@@ -168,11 +161,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        mFaceCanvasView.setOverlayRect(mSurfaceView.getLeft()
-                , mSurfaceView.getRight()
-                , mSurfaceView.getTop()
-                , mSurfaceView.getBottom()
-                , CameraManager.getWidth(), CameraManager.getHeight());
+        FaceBoxUtil.setPreviewWidth(getLeft(),getRight(),getTop(),getBottom(),getWidth(),getHeight());//布局完成的时候修改预览宽高
     }
 
     @Override
@@ -270,8 +259,6 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
 
         // 更新可见的人脸
         for (BaseProperty baseProperty : basePropertyMap.values()) {
-            transformFaceRect(baseProperty);
-
             final long faceId = baseProperty.getFaceId();
             if (!faceCacheMap.containsKey(faceId)) {
                 faceCacheMap.put(faceId, new FaceResult(baseProperty));
@@ -279,15 +266,9 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
                 faceCacheMap.get(faceId).setBaseProperty(baseProperty);
             }
         }
-
         mFaceCanvasView.updateFaceBoxes(faceCacheMap);
     }
-    //处理人脸框
-    private void transformFaceRect(BaseProperty face) {
-        final Rect cameraRect = face.getFaceRect();
-        final Rect previewRect = FaceBoxUtil.getPreviewBox(cameraRect);
-        face.setFaceRect(previewRect);
-    }
+
     //更新人脸认证信息
     private void updateVerifyResult(VerifyResult verifyResult) {
         if (faceCacheMap == null) {

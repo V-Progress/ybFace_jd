@@ -113,7 +113,6 @@ public class WelComeActivity extends BaseGateActivity {
     private View iv_yuan;
     private View iv_line;
 
-    private TextView tvCameraError;
     private ImageView ivQrCodeAdd;
 
     private BaseAdapter mVisitorAdapter;//签到人员adapter
@@ -349,7 +348,6 @@ public class WelComeActivity extends BaseGateActivity {
         tv_notice = findViewById(R.id.tv_notice);
         tv_topTitle = findViewById(R.id.tv_topTitle);
         tv_bottomTitle = findViewById(R.id.tv_bottomTitle);
-        tvCameraError = findViewById(R.id.tv_camera_error);
         ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
 
         layout_head = findViewById(R.id.layout_head);

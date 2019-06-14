@@ -53,8 +53,8 @@ public class SignManager {
     private static SignManager instance;
     private SignDao signDao;
     private String signThreadName = "sign";
-//    private final int UPDATE_TIME = 10 * 60 * 1000;
-    private final int UPDATE_TIME = 10 * 1000;
+    private final int UPDATE_TIME = 10 * 60 * 1000;
+//    private final int UPDATE_TIME = 10 * 1000;
 //    private final long UPDATE_DATE_TIME = 60 * 60 * 1000;
     private Handler signHandler;
     private final HandlerThread signThread;
@@ -140,8 +140,11 @@ public class SignManager {
         String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
         String monthStr = calendar.get(Calendar.MONTH) + 1 + "";//获取月份
         String dayStr = calendar.get(Calendar.DAY_OF_MONTH) + "";//获取天
-        today = yearStr + "年" + monthStr + "月" + dayStr + "日";
-        d("更新日期..."+today);
+        String date = yearStr + "年" + monthStr + "月" + dayStr + "日";
+        if(!TextUtils.equals(date,today)){
+            today = date;
+            d("更新日期..."+today);
+        }
     }
 
     /***

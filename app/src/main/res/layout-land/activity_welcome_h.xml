@@ -21,65 +21,45 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <FrameLayout
-                android:padding="22dp"
-                android:background="@mipmap/camera_bg_h"
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_bottomTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_topTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_inside_ads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_deviceNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <ImageView
+                android:onClick="goMakeUp"
+                android:id="@+id/iv_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+                android:layout_centerInParent="true"
+                android:layout_margin="20dp"
+                android:id="@+id/face_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true">
-
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tv_bottomTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tv_topTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tv_notice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <ImageView
-                    android:visibility="gone"
-                    android:id="@+id/iv_inside_ads"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/tv_deviceNo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:onClick="goMakeUp"
-                    android:id="@+id/iv_record"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-                <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
-                    android:id="@+id/face_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <TextView
-                    android:padding="10dp"
-                    android:visibility="gone"
-                    android:background="@color/black"
-                    android:letterSpacing="0.2"
-                    android:lineSpacingMultiplier="1.2"
-                    android:textColor="@color/white"
-                    android:textSize="26dp"
-                    android:id="@+id/tv_camera_error"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </FrameLayout>
+                android:layout_height="match_parent"/>
 
             <RelativeLayout
                 android:layout_marginLeft="35dp"

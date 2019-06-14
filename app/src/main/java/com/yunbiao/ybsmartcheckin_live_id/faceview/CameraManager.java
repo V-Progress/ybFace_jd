@@ -44,7 +44,7 @@ public class CameraManager {
 
     private final Object mLock = new Object();
 
-    //    private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_FRONT;
+//        private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     public static CameraManager instance() {
@@ -217,7 +217,12 @@ public class CameraManager {
                     e.printStackTrace();
                 }
             } else {
-                d("Camera为null，重新开启");
+                int i = checkCamera();
+                if(i <= 0){
+                    d("无摄像头，停止... ");
+                    return;
+                }
+                d("Camera为null，重新开启... ");
                 openCamera(mHolder);
             }
         }

@@ -26,8 +26,11 @@ import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/8/7.
@@ -195,6 +200,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     public void itemDeleteClick(View v,final int postion) {
+        final VIPDetail vipDetail = employList.get(postion);
         //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
         AlertDialog.Builder builder = new AlertDialog.Builder(EmployListActivity.this);
 
@@ -203,44 +209,29 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         //    设置Content来显示一个信息
         builder.setMessage("确定删除吗？");
         //    设置一个PositiveButton
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
-        {
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
+
                 final Map<String, String> map = new HashMap<String, String>();
-                Log.e(TAG, "entryId------------->"+ employList.get(postion).getEmpId());
-                map.put("entryId", employList.get(postion).getEmpId()+"");
-                MyXutils.getInstance().post(ResourceUpdate.DELETESTAFF, map, new MyXutils.XCallBack() {
-
+                map.put("entryId", vipDetail.getEmpId()+"");
+                OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
-                    public void onSuccess(String result) {
-
-                        Log.e(TAG, "删除员工------------->"+result );
+                    public void onError(Call call, Exception e, int id) {
+                        UIUtils.showTitleTip("删除失败 " + e != null?e.getMessage():"NULL");
                     }
 
                     @Override
-                    public void onError(Throwable ex) {
-                        Log.e(TAG, "ex------------->"+ex.getMessage() );
-                    }
-
-                    @Override
-                    public void onFinish() {
-
+                    public void onResponse(String response, int id) {
+                        boolean b = FaceSDK.instance().removeUser(String.valueOf(vipDetail.getFaceId()));
+                        if(b){
+                            userDao.delete(employList.get(postion));
+                            employList.remove(postion);
+                            employAdapter.notifyDataSetChanged();
+                            UIUtils.showTitleTip("删除成功");
+                        }
                     }
                 });
-
-                // TODO: 2019/6/4
-//                int   ret= mipsFaceService.mipsDeleteVipFace(EmployListActivity.this,employList.get(postion).getFaceId());
-                        userDao.delete(employList.get(postion));
-                        employList.remove(postion);
-                        employAdapter.notifyDataSetChanged();
-                        Toast.makeText(EmployListActivity.this,"删除成功！",Toast.LENGTH_SHORT).show();
-
-
-
-
-
             }
         });
         //    设置一个NegativeButton
