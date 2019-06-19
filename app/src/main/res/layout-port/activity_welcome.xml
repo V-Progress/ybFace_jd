@@ -67,7 +67,7 @@
         <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
             android:layout_gravity="center_horizontal"
             android:id="@+id/face_view"
-            android:layout_width="960dp"
+            android:layout_width="match_parent"
             android:layout_height="540dp"/>
 
         <LinearLayout
@@ -243,12 +243,12 @@
     </LinearLayout>
 
     <!--广告头部布局-->
-    <include layout="@layout/layout_head"/>
+    <include android:visibility="gone" layout="@layout/layout_head"/>
 
     <!--广告布局-->
-    <include layout="@layout/layout_out_ads" />
+    <include android:visibility="gone" layout="@layout/layout_out_ads" />
 
     <!--初始化布局-->
-    <include layout="@layout/layout_init" />
+    <include android:visibility="gone" layout="@layout/layout_init" />
 
 </RelativeLayout>

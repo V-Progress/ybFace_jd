@@ -151,7 +151,7 @@ public class WelComeActivity extends BaseGateActivity {
         startXmpp();
 
         //开始初始化动画
-        startInitAnim();
+//        startInitAnim();
 
         //初始化语音系统//todo 7.0以上无法加载讯飞语音库
         KDXFSpeechManager.instance().init(this).welcome(null);
@@ -204,7 +204,7 @@ public class WelComeActivity extends BaseGateActivity {
         SignManager.instance().init(WelComeActivity.this, new SignManager.SignEventListener() {
             @Override
             public void onPrepared(List<VIPDetail> mList) {
-                closeInitView(null);
+//                closeInitView(null);
 
                 if (mList == null) {
                     return;
@@ -331,24 +331,24 @@ public class WelComeActivity extends BaseGateActivity {
     }
 
     private void initViews() {
-        faceView = findViewById(R.id.face_view);
-        iv_logo = findViewById(R.id.iv_logo);
-        tv_title = findViewById(R.id.tv_title);
+        faceView = (FaceView) findViewById(R.id.face_view);
+        iv_logo = (ImageView) findViewById(R.id.iv_logo);
+        tv_title = (TextView) findViewById(R.id.tv_title);
         ll_load_container = findViewById(R.id.ll_load_container);
-        tv_load_error = findViewById(R.id.tv_load_error);
-        gridview = findViewById(R.id.gridview);
+        tv_load_error = (TextView) findViewById(R.id.tv_load_error);
+        gridview = (GridView) findViewById(R.id.gridview);
         aiv_bulu = findViewById(R.id.aiv_bulu);
-        tv_tem = findViewById(R.id.tv_tem);
-        iv_wea = findViewById(R.id.iv_wea);
-        tv_deviceNo = findViewById(R.id.tv_deviceNo);
-        tv_checkInNum = findViewById(R.id.tv_checkInNum);
-        imageView = findViewById(R.id.imageView_logo);
-        iv_record = findViewById(R.id.iv_record);
-        tv_comName = findViewById(R.id.tv_comName);
-        tv_notice = findViewById(R.id.tv_notice);
-        tv_topTitle = findViewById(R.id.tv_topTitle);
-        tv_bottomTitle = findViewById(R.id.tv_bottomTitle);
-        ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
+        tv_tem = (TextView) findViewById(R.id.tv_tem);
+        iv_wea = (ImageView) findViewById(R.id.iv_wea);
+        tv_deviceNo = (TextView) findViewById(R.id.tv_deviceNo);
+        tv_checkInNum = (TextView) findViewById(R.id.tv_checkInNum);
+        imageView = (ImageView) findViewById(R.id.imageView_logo);
+        iv_record = (ImageView) findViewById(R.id.iv_record);
+        tv_comName = (TextView) findViewById(R.id.tv_comName);
+        tv_notice = (TextView) findViewById(R.id.tv_notice);
+        tv_topTitle = (TextView) findViewById(R.id.tv_topTitle);
+        tv_bottomTitle = (TextView) findViewById(R.id.tv_bottomTitle);
+        ivQrCodeAdd = (ImageView) findViewById(R.id.iv_qrCode_add);
 
         layout_head = findViewById(R.id.layout_head);
         layout_wel = findViewById(R.id.layout_wel);

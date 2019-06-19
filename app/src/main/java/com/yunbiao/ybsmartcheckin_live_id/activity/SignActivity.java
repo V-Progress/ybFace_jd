@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import java.util.List;
  * Created by Administrator on 2018/10/10.
  */
 
+
 public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "SignActivity";
@@ -35,13 +39,21 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private ListView lv_sign_List;
     private TextView tv_date;
     private ImageView iv_back;
-    private List<SignBean> mSignList;
-    private SignAdapter mSignAdapter;
     private SignDao signDao;
-    private String today="";
     private View pb_load_list;
     private TextView tv_load_tips;
     private TextView tv_export_sign_data;
+
+    private final int MODE_ALL = 0;
+    private final int MODE_SENDED = 1;
+    private final int MODE_UNSENDED = 2;
+    private int DATA_MODE = MODE_UNSENDED;
+
+    private String queryDate = "";
+
+    private List<SignBean> mSignList;
+    private List<SignBean> mShowList = new ArrayList<>();
+    private Spinner spnDataMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +69,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         signDao=new SignDao(this);
         initViews();
         initData();
+
+        initSpinner();
     }
 
     private void initViews() {
@@ -66,6 +80,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         pb_load_list = findViewById(R.id.pb_load_list);
         tv_load_tips = (TextView)findViewById(R.id.tv_load_tips);
         tv_export_sign_data = (TextView)findViewById(R.id.tv_export_sign_data);
+        spnDataMode = (Spinner) findViewById(R.id.spn_data_mode);
         tv_export_sign_data.setOnClickListener(this);
         tv_date.setOnClickListener(this);
         iv_back.setOnClickListener(this);
@@ -76,10 +91,89 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
         String monthStr = calendar.get(Calendar.MONTH)+1+"";//获取月份
         String dayStr = calendar.get(Calendar.DAY_OF_MONTH)+"";//获取天
-        today=yearStr+"年"+monthStr+"月"+dayStr+"日";
+        String today =yearStr+"年"+monthStr+"月"+dayStr+"日";
         Log.e(TAG, "today--------->"+today );
         tv_date.setText(today);
-        loadSignList(today);
+        queryDate = today;
+    }
+
+    private void initSpinner(){
+        final String[] modeArray = {"全部","已发送","未发送"};
+        ArrayAdapter<String> spnAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,modeArray);
+
+        spnDataMode.setAdapter(spnAdapter);
+        spnDataMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                DATA_MODE = position;
+                loadSignList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spnDataMode.setSelection(modeArray.length-1);
+    }
+
+    private void loadSignList(){
+        pb_load_list.setVisibility(View.VISIBLE);
+        lv_sign_List.setVisibility(View.GONE);
+        tv_load_tips.setVisibility(View.GONE);
+
+        ThreadUitls.runInThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "loadSignList: " + queryDate + " ----- " + DATA_MODE );
+
+                mShowList.clear();
+                mSignList = signDao.queryByDate(queryDate);
+                if(mSignList == null || mSignList.size()<=0){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_load_tips.setVisibility(View.VISIBLE);
+                            pb_load_list.setVisibility(View.GONE);
+                        }
+                    });
+                    return;
+                }
+
+                for (SignBean signBean : mSignList) {
+                    if(DATA_MODE == MODE_UNSENDED && !signBean.isUpload()){
+                        mShowList.add(signBean);
+                    } else if(DATA_MODE == MODE_SENDED && signBean.isUpload()){
+                        mShowList.add(signBean);
+                    } else if(DATA_MODE == MODE_ALL){
+                        mShowList.add(signBean);
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mShowList != null && mShowList.size()>0){
+                            SignAdapter adapter=new SignAdapter(SignActivity.this,mShowList);
+                            lv_sign_List.setAdapter(adapter);
+
+                            lv_sign_List.setVisibility(View.VISIBLE);
+                            pb_load_list.setVisibility(View.GONE);
+                            tv_load_tips.setVisibility(View.GONE);
+                        } else {
+                            if(DATA_MODE == MODE_UNSENDED){
+                                tv_load_tips.setText("数据已全部上传");
+                            } else {
+                                tv_load_tips.setText("暂无数据");
+                            }
+                            tv_load_tips.setVisibility(View.VISIBLE);
+                            lv_sign_List.setVisibility(View.GONE);
+                            pb_load_list.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -96,9 +190,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 Log.d("Orignal", "Got clicked");
-                                String  queryDay=year+"年"+(month+1)+"月"+dayOfMonth+"日";
-                                tv_date.setText(queryDay);
-                                loadSignList(queryDay);
+                                String date =year+"年"+(month+1)+"月"+dayOfMonth+"日";
+                                tv_date.setText(date);
+
+                                queryDate = date;
+                                loadSignList();
                             }
                         },
                         now.get(Calendar.YEAR),
@@ -119,36 +215,4 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void loadSignList(final String date){
-        mSignList=new ArrayList();
-
-        ThreadUitls.runInThread(new Runnable() {
-            @Override
-            public void run() {
-                List<SignBean> signBeen = signDao.queryByDate(date);
-                for (SignBean signBean : signBeen) {
-                    if (signBean.isUpload()) {
-                        continue;
-                    }
-                    mSignList.add(signBean);
-                }
-
-                if(mSignList.size()<=0){
-                    tv_load_tips.setVisibility(View.VISIBLE);
-                    pb_load_list.setVisibility(View.GONE);
-                    return;
-                }
-
-                mSignAdapter=new SignAdapter(SignActivity.this,mSignList);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        lv_sign_List.setAdapter(mSignAdapter);
-                        lv_sign_List.setVisibility(View.VISIBLE);
-                        pb_load_list.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-    }
 }

@@ -136,7 +136,26 @@ public class CameraManager {
 
             for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
                 Camera.getCameraInfo(i, info);
-                if (info.facing == CAMERA_TYPE) {
+                if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    d("准备开启... " + i);
+                    mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
+                    if(mCamera != null){
+                        d("已开启... ");
+                        if (mListener != null) {
+                            mListener.onCameraOpened();
+                        }
+                    }
+                    break;
+                }
+            }
+
+            if(mCamera != null){
+                return;
+            }
+
+            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                Camera.getCameraInfo(i, info);
+                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                     d("准备开启... " + i);
                     mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
                     if(mCamera != null){

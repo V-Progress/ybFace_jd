@@ -60,6 +60,18 @@
             android:textColor="#64DCFE"
             android:textSize="20dp" />
 
+        <Spinner
+            android:id="@+id/spn_data_mode"
+            android:layout_width="108dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/tv_date"
+            android:background="@drawable/selector_btn_take_photo"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#64DCFE"
+            android:textSize="20dp"/>
+
         <TextView
             android:visibility="gone"
             android:id="@+id/tv_export_sign_data"

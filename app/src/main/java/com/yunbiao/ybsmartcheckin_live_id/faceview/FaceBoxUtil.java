@@ -16,7 +16,7 @@ public class FaceBoxUtil {
     private static int mCameraWidth = 0;
     private static int mCameraHeight = 0;
 
-    private static boolean IS_MIRROR = false;
+    private static boolean IS_MIRROR = true;
     private static float mXRatio;
     private static float mYRatio;
 

@@ -18,7 +18,6 @@ import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,9 +101,9 @@ public class FaceCanvasView extends ImageView {
             FaceProperty faceProperty = value.getFaceProperty();
             VerifyResult verifyResult = value.getVerifyResult();
             Rect faceRect = face.getFaceRect();
-            RectF rectF = FaceBoxUtil.setFaceFacingBack(faceRect);
-//            faceRect = FaceBoxUtil.getPreviewBox(faceRect);
-            canvas.drawRect(rectF,mRectPaint);
+//            RectF rectF = FaceBoxUtil.setFaceFacingBack(faceRect);
+            faceRect = FaceBoxUtil.getPreviewBox(faceRect);
+            canvas.drawRect(faceRect,mRectPaint);
 
 //            int width = faceRect.right - faceRect.left;
 //            int height = faceRect.bottom - faceRect.top;
@@ -113,7 +112,7 @@ public class FaceCanvasView extends ImageView {
 
             getText(faceProperty,verifyResult);
 //            canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
-            canvas.drawText(contentText.toString(), rectF.left, rectF.top - 20, mNamePaint);
+            canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
         }
     }
 
