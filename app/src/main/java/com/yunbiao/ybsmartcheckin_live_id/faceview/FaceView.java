@@ -235,6 +235,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
 
     //无人脸
     private void onFaceLost() {
+        mFaceImage = null;
         mFaceCanvasView.clearFaceFrame();
     }
     //绘制人脸框

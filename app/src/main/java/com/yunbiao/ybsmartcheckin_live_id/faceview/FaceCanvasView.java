@@ -33,7 +33,6 @@ public class FaceCanvasView extends ImageView {
     private Lock lockFace = new ReentrantLock();
     private StringBuilder contentText = new StringBuilder();
 
-//    private Bitmap scanBitmap;//人脸框
     private Map<Integer,String> cacheMap = new HashMap<>();//名称缓存
 
     public FaceCanvasView(Context context) {
@@ -66,8 +65,6 @@ public class FaceCanvasView extends ImageView {
         mRectPaint.setStrokeWidth(2);
         mRectPaint.setTextSize(25);
         lockFace.unlock();
-
-//        scanBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.scan);
     }
 
     private boolean isShowProperty = true;
@@ -100,18 +97,10 @@ public class FaceCanvasView extends ImageView {
             BaseProperty face = value.getBaseProperty();
             FaceProperty faceProperty = value.getFaceProperty();
             VerifyResult verifyResult = value.getVerifyResult();
-            Rect faceRect = face.getFaceRect();
-//            RectF rectF = FaceBoxUtil.setFaceFacingBack(faceRect);
-            faceRect = FaceBoxUtil.getPreviewBox(faceRect);
+            RectF faceRect = FaceBoxUtil.getRect(face.getFaceRect());
             canvas.drawRect(faceRect,mRectPaint);
 
-//            int width = faceRect.right - faceRect.left;
-//            int height = faceRect.bottom - faceRect.top;
-//            Bitmap newBmp = Bitmap.createScaledBitmap(scanBitmap, width, height, true);
-//            canvas.drawBitmap(newBmp, faceRect.left, faceRect.top, null);
-
             getText(faceProperty,verifyResult);
-//            canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
             canvas.drawText(contentText.toString(), faceRect.left, faceRect.top - 20, mNamePaint);
         }
     }

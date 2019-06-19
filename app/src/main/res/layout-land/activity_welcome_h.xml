@@ -247,13 +247,13 @@
             android:background="@mipmap/lignt_line" />
     </LinearLayout>
     <!--广告头部布局-->
-    <include layout="@layout/layout_head_h"/>
+    <include android:visibility="gone" layout="@layout/layout_head_h"/>
 
     <!--广告布局-->
-    <include layout="@layout/layout_out_ads_h" />
+    <include android:visibility="gone" layout="@layout/layout_out_ads_h" />
 
     <!--初始化布局-->
-    <include layout="@layout/layout_init_h" />
+    <include android:visibility="gone" layout="@layout/layout_init_h" />
 
     <ImageView
         android:visibility="gone"

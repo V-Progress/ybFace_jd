@@ -525,20 +525,16 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         checkDataSize();
 
         final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(mirror);
+        cbMirror.setChecked(true);
         cbMirror.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAlert("更改摄像头配置需要重启应用才能生效，是否继续？", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SpUtils.setMirror(!mirror);
-
-                        // TODO: 2019/6/4
-//                        if (WelComeActivity.mFaceOverlay != null) {
-//                            WelComeActivity.mFaceOverlay.setMirror();
-//                        }
-                        RestartAPPTool.restartAPP(SystemActivity.this);
+//                        SpUtils.setMirror(!mirror);
+//                        cbMirror.setChecked(!mirror);
+//                        FaceBoxUtil.setIsMirror(!mirror);
                     }
                 }, new DialogInterface.OnDismissListener() {
                     @Override
@@ -548,6 +544,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 });
             }
         });
+        cbMirror.setEnabled(false);
+
 
         Button btn_close_setting = (Button) dialog.findViewById(R.id.btn_close_setting);
         btn_close_setting.setOnClickListener(new View.OnClickListener() {

@@ -1,8 +1,12 @@
 package com.yunbiao.ybsmartcheckin_live_id.faceview;
 
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+
+import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 /**
  * Created by michael on 19-3-15.
@@ -19,8 +23,17 @@ public class FaceBoxUtil {
     private static boolean IS_MIRROR = true;
     private static float mXRatio;
     private static float mYRatio;
+    private static int mOrientation = 1;
+    static {
+        mOrientation = APP.getContext().getResources().getConfiguration().orientation;
+    }
+    public static void setIsMirror(boolean isMirror){
+        IS_MIRROR = isMirror;
+    }
 
     public static void setPreviewWidth(int l,int r,int t,int b,float previewWidth,float previewHeight) {
+        IS_MIRROR = SpUtils.isMirror();
+
         mOverRect = new Rect(l,t,r,b);
         FaceBoxUtil.previewWidth = previewWidth;
         FaceBoxUtil.previewHeight = previewHeight;
@@ -40,7 +53,15 @@ public class FaceBoxUtil {
     private static RectF mDrawFaceRect = new RectF();
     private static Rect mOverRect = new Rect();
 
-    public static RectF setFaceFacingBack(Rect faceRect) {
+    public static RectF getRect(Rect faceRect){
+        if (mOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            return getPortraitRect(faceRect);
+        } else {
+            return getLandRect(faceRect);
+        }
+    }
+
+    private static RectF getLandRect(Rect faceRect) {
         if(IS_MIRROR){
             mDrawFaceRect.left = mOverRect.left + (float) faceRect.left * mXRatio;
             mDrawFaceRect.right = mOverRect.left + (float) faceRect.right * mXRatio;
@@ -55,7 +76,7 @@ public class FaceBoxUtil {
         return mDrawFaceRect;
     }
 
-    public static Rect getPreviewBox(Rect cameraBox) {
+    private static RectF getPortraitRect(Rect cameraBox) {
 
         final int cameraImageWidth = CameraManager.getWidth();
         final int cameraImageHeight = CameraManager.getHeight();
@@ -67,48 +88,16 @@ public class FaceBoxUtil {
         int scaleTop = (int) (cameraBox.top * scaleY);
         int scaleRight = (int) (cameraBox.right * scaleX);
         int scaleBottom = (int) (cameraBox.bottom * scaleY);
-        
-        int finalLeft = scaleLeft;
-        int finalRight = scaleRight;
 
         if (!IS_MIRROR) {
-            finalLeft = cameraImageWidth - scaleRight;
-            finalRight = cameraImageWidth - scaleLeft;
+            scaleLeft = cameraImageWidth - scaleRight;
+            scaleRight = cameraImageWidth - scaleLeft;
         }
 
-        if (!true) {
-            finalLeft = cameraImageWidth - scaleRight;
-            finalRight = cameraImageWidth - scaleLeft;
-        }
-        
-        int finalTop = scaleTop;
-        int finalBottom = scaleBottom;
-//        if (!CameraDisplayMirror.MIRROR_PORTRAIT) {
-//            finalTop = cameraImageHeight - scaleBottom;
-//            finalBottom = cameraImageHeight - scaleTop;
-//        }
-
-
-
-//        Log.d("FaceLocalScale", "@@@@@@@@@@@@@@@@@@@@@@@@ scaleLeft = " + scaleLeft);
-//        Log.d("FaceLocalScale", "@@@@@@@@@@@@@@@@@@@@@@@@ scaleTop = " + scaleTop);
-//        Log.d("FaceLocalScale", "@@@@@@@@@@@@@@@@@@@@@@@@ scaleRight = " + scaleRight);
-//        Log.d("FaceLocalScale", "@@@@@@@@@@@@@@@@@@@@@@@@ scaleBottom = " + scaleBottom);
-
-
-//        if (mRGBScaleY == -1) {
-//            scaleTop = DisplaySize.HEIGHT - scaleTop;
-//            scaleBottom = DisplaySize.HEIGHT - scaleBottom;
-//        }
-        
-        
-        
-        final Rect previewBox = new Rect(finalLeft, finalTop, finalRight, finalBottom);
-        
-        return previewBox;
+        mDrawFaceRect.left = scaleLeft;
+        mDrawFaceRect.right = scaleRight;
+        mDrawFaceRect.top = scaleTop;
+        mDrawFaceRect.bottom = scaleBottom;
+        return mDrawFaceRect;
     }
-
-
-
-
 }
