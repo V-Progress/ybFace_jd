@@ -3,17 +3,23 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
-    <string name="System_Setting_deviceNo">设备编号:</string>
-    <string name="System_Setting_bindCode">绑定码:</string>
-    <string name="System_Setting_Company">所属公司:</string>
-    <string name="System_Setting_Service">服务网络:</string>
-    <string name="System_Setting_ValiDate">有效期:</string>
-    <string name="System_Setting_Manage">人员管理</string>
-    <string name="System_Setting_Add">新增员工</string>
-    <string name="System_Setting_Record">通行记录</string>
-    <string name="System_Setting_Setting">系统设置</string>
-    <string name="System_setting_update">升级</string>
-    <string name="System_setting_copyright">版权所有:北京云标科技有限公司</string>
+    <string name="System_title">云标智能签到系统</string>
+    <string name="System_deviceNo">设备编号:</string>
+    <string name="System_bindCode">绑&#8194;定&#8194;码:</string>
+    <string name="System_Company">所属公司:</string>
+    <string name="System_Service">服务网络:</string>
+    <string name="System_ValiDate">有&#8194;效&#8194;期:</string>
+    <string name="System_Manage">人员管理</string>
+    <string name="System_Add">新增员工</string>
+    <string name="System_Record">离线数据</string>
+    <string name="System_Setting">系统设置</string>
+    <string name="System_update">升级</string>
+    <string name="System_copyright">版权所有:北京云标科技有限公司</string>
+
+    <string name="System_Service_cloud">云服务</string>
+    <string name="System_Service_local">本地服务</string>
+    <string name="System_Service_online">在线</string>
+    <string name="System_Service_offline">离线</string>
 
     <!--人员管理-->
     <string name="employ_list_title">员工列表</string>
@@ -28,13 +34,32 @@
     <string name="employ_list_field_control">操作</string>
 
     <!--新增员工-->
+
     <string name="employ_add_title">增加员工</string>
+    <string name="employ_add_info">基本信息</string>
     <string name="employ_add_takephoto">拍照</string>
     <string name="employ_add_retry">重置</string>
     <string name="employ_add_name">姓名:</string>
     <string name="employ_add_depart">部门:</string>
-    <string name="employ_add_number">编号:</string>
+    <string name="employ_add_number">员工编号:</string>
+    <string name="employ_add_job">职位:</string>
+    <string name="employ_add_birthday">出生日期:</string>
+    <string name="employ_add_signature">个性签名:</string>
     <string name="employ_add_confirm">确定</string>
     <string name="employ_add_cancel">取消</string>
+
+    <!--离线数据-->
+    <string name="sign_list_title">人员签到统计</string>
+    <string name="sign_list_date">日期</string>
+    <string name="sign_list_0">全部</string>
+    <string name="sign_list_1">已发送</string>
+    <string name="sign_list_2">未发送</string>
+    <string name="sign_list_filed_index">序号</string>
+    <string name="sign_list_filed_time">时间</string>
+    <string name="sign_list_filed_name">员工名</string>
+    <string name="sign_list_filed_depart">部门</string>
+    <string name="sign_list_filed_job">职位</string>
+    <string name="sign_list_filed_head">头像</string>
+
 
 </resources>

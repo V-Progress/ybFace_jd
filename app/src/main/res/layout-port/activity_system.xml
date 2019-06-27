@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="云标智能签到系统"
+            android:text="@string/System_title"
             android:textColor="@color/white"
             android:textSize="38dp" />
 
@@ -50,7 +50,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="在线"
+            android:text="@string/System_Service_offline"
             android:textColor="@color/white"
             android:textSize="30dp" />
 
@@ -71,7 +71,7 @@
 
         <TextView
             style="@style/system_item_lable_tv"
-            android:text="设备编号 :" />
+            android:text="@string/System_deviceNo" />
 
         <TextView
             android:id="@+id/tv_deviceno_system"
@@ -82,7 +82,7 @@
 
         <TextView
             style="@style/system_item_lable_tv"
-            android:text="绑&#8194;定&#8194;码 :" />
+            android:text="@string/System_bindCode" />
 
         <TextView
             android:id="@+id/tv_bindcode_syetem"
@@ -113,7 +113,7 @@
 
         <TextView
             style="@style/system_item_lable_tv"
-            android:text="所属公司 :" />
+            android:text="@string/System_Company" />
 
         <TextView
             android:id="@+id/tv_company_system"
@@ -125,7 +125,7 @@
 
         <TextView
             style="@style/system_item_lable_tv"
-            android:text="服务网络 :" />
+            android:text="@string/System_Service" />
 
         <TextView
             android:id="@+id/tv_server_system"
@@ -157,7 +157,7 @@
 
         <TextView
             style="@style/system_item_lable_tv"
-            android:text="有&#8194;效&#8194;期 :" />
+            android:text="@string/System_ValiDate" />
 
         <TextView
             android:id="@+id/tv_exp_system"
@@ -209,7 +209,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
-                android:text="员工管理"
+                android:text="@string/System_Manage"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
@@ -223,7 +223,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
-                android:text="新增员工"
+                android:text="@string/System_Add"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
         </TableRow>
@@ -243,7 +243,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
-                android:text="离线数据"
+                android:text="@string/System_Record"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
@@ -258,7 +258,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
-                android:text="系统设置"
+                android:text="@string/System_Setting"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:background="@drawable/selector_btn_take_photo"
-                    android:text="升级"
+                    android:text="@string/System_update"
                     android:textColor="@color/white"
                     android:textSize="25dp" />
             </LinearLayout>
@@ -316,7 +316,7 @@
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="版权所有：北京云标科技有限公司"
+            android:text="@string/System_copyright"
             android:textColor="@color/white"
             android:textSize="16dp" />
     </FrameLayout>

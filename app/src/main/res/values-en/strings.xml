@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">YBFaceAttendance</string>
+    <string name="used">已用:</string>
+    <string name="no_used">/可用:</string>
+
+    <string name="System_title">YBFaceAttendance</string>
+    <string name="System_deviceNo">device number:</string>
+    <string name="System_bindCode">bind code:</string>
+    <string name="System_Company">company:</string>
+    <string name="System_Service">service:</string>
+    <string name="System_ValiDate">validity:</string>
+    <string name="System_Manage">management</string>
+    <string name="System_Add">add staff</string>
+    <string name="System_Record">record</string>
+    <string name="System_Setting">setting</string>
+    <string name="System_update">upgrade</string>
+    <string name="System_copyright">copyright:北京云标科技有限公司</string>
+
+    <string name="System_Service_cloud">cloud service</string>
+    <string name="System_Service_local">local service</string>
+    <string name="System_Service_online">on-line</string>
+    <string name="System_Service_offline">off-line</string>
+
+    <!--人员管理-->
+    <string name="employ_list_title">staff list</string>
+    <string name="employ_list_depart_all">all</string>
+    <string name="employ_list_depart_add">add department</string>
+    <string name="employ_list_depart_sync">Sync</string>
+    <string name="employ_list_field_index">Index</string>
+    <string name="employ_list_field_number">No</string>
+    <string name="employ_list_field_name">Name</string>
+    <string name="employ_list_field_depart">Department</string>
+    <string name="employ_list_field_position">Position</string>
+    <string name="employ_list_field_control">Operation</string>
+
+    <!--新增员工-->
+
+    <string name="employ_add_title">Add Staff</string>
+    <string name="employ_add_info">information</string>
+    <string name="employ_add_takephoto">take</string>
+    <string name="employ_add_retry">reset</string>
+    <string name="employ_add_name">Name:</string>
+    <string name="employ_add_depart">Department:</string>
+    <string name="employ_add_number">Number:</string>
+    <string name="employ_add_job">Position:</string>
+    <string name="employ_add_birthday">Birthday:</string>
+    <string name="employ_add_signature">Signature:</string>
+    <string name="employ_add_confirm">OK</string>
+    <string name="employ_add_cancel">Cancel</string>
+
+    <!--离线数据-->
+    <string name="sign_list_title">Check-in Record</string>
+    <string name="sign_list_date">Date</string>
+    <string name="sign_list_0">all</string>
+    <string name="sign_list_1">sent</string>
+    <string name="sign_list_2">unsent</string>
+    <string name="sign_list_filed_index">Index</string>
+    <string name="sign_list_filed_time">Time</string>
+    <string name="sign_list_filed_name">Name</string>
+    <string name="sign_list_filed_depart">Department</string>
+    <string name="sign_list_filed_job">Position</string>
+    <string name="sign_list_filed_head">Head</string>
+
+
+</resources>

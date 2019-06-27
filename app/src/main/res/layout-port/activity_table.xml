@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
-        android:text="人员签到统计"
+        android:text="@string/sign_list_title"
         android:textColor="@color/white"
         android:textSize="32dp" />
 
@@ -44,7 +44,7 @@
             android:layout_marginLeft="20dp"
             android:background="@drawable/shape_employ_button"
             android:paddingLeft="5dp"
-            android:text="日期"
+            android:text="@string/sign_list_date"
             android:textColor="#64DCFE"
             android:textSize="20dp" />
 
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="序号"
+                android:text="@string/sign_list_filed_index"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:text="时间"
+                android:text="@string/sign_list_filed_time"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="员工名"
+                android:text="@string/sign_list_filed_name"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="部门"
+                android:text="@string/sign_list_filed_depart"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="职位"
+                android:text="@string/sign_list_filed_job"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:text="头像"
+                android:text="@string/sign_list_filed_head"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 

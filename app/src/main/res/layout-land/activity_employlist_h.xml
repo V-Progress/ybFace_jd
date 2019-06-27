@@ -21,7 +21,7 @@
         android:textSize="32dp"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:text="员工列表"
+        android:text="@string/employ_list_title"
         android:layout_marginTop="36dp" />
 
     <ImageView
@@ -53,6 +53,7 @@
             android:padding="2dp"></Spinner>
 
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_addDepart"
             android:layout_width="108dp"
             android:layout_height="44dp"
@@ -73,7 +74,7 @@
             android:background="@drawable/shape_bg_btnsync"
             android:drawableLeft="@mipmap/icon_sync"
             android:paddingLeft="18dp"
-            android:text="同步"
+            android:text="@string/employ_list_depart_sync"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:visibility="visible"/>
@@ -107,7 +108,7 @@
                 android:layout_weight="2"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="序号"
+                android:text="@string/employ_list_field_index"
                 android:gravity="center"/>
 
             <TextView
@@ -116,7 +117,7 @@
                 android:layout_weight="3"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="员工编号"
+                android:text="@string/employ_list_field_number"
                 android:gravity="center"/>
 
             <TextView
@@ -125,7 +126,7 @@
                 android:layout_weight="2"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="员工名"
+                android:text="@string/employ_list_field_name"
                 android:gravity="center"/>
 
             <TextView
@@ -134,7 +135,7 @@
                 android:layout_weight="2"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="部门"
+                android:text="@string/employ_list_field_depart"
                 android:gravity="center"/>
 
             <TextView
@@ -143,7 +144,7 @@
                 android:layout_weight="2"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="职位"
+                android:text="@string/employ_list_field_position"
                 android:gravity="center"/>
 
             <TextView
@@ -152,7 +153,7 @@
                 android:layout_weight="3"
                 android:textColor="@color/white"
                 android:textSize="20dp"
-                android:text="操作"
+                android:text="@string/employ_list_field_control"
                 android:gravity="center"/>
 
         </LinearLayout>

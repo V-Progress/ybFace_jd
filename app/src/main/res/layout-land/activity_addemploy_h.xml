@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="增加员工"
+            android:text="@string/employ_add_title"
             android:textColor="@color/white"
             android:textSize="32dp" />
 
@@ -99,7 +99,7 @@
                         android:background="@drawable/selector_btn_take_photo"
                         android:drawableLeft="@mipmap/icon_camera"
                         android:paddingLeft="18dp"
-                        android:text="拍照"
+                        android:text="@string/employ_add_takephoto"
                         android:textColor="@color/white"
                         android:textSize="20dp" />
 
@@ -123,7 +123,7 @@
                     android:background="@drawable/shape_bg_btnrepicture"
                     android:drawableLeft="@mipmap/icon_repicture"
                     android:paddingLeft="18dp"
-                    android:text="重置"
+                    android:text="@string/employ_add_retry"
                     android:textColor="@color/theme_green"
                     android:textSize="20dp" />
 
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="60dp"
-                    android:text="基本信息"
+                    android:text="@string/employ_add_info"
                     android:textColor="@color/font_green"
                     android:textSize="28dp" />
 
@@ -182,7 +182,7 @@
                     android:layout_marginTop="40dp"
                     android:layout_toLeftOf="@+id/et_name"
                     android:gravity="center"
-                    android:text="姓名:"
+                    android:text="@string/employ_add_name"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -209,7 +209,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/sp_depart"
                     android:gravity="center"
-                    android:text="部门:"
+                    android:text="@string/employ_add_depart"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -234,7 +234,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/et_job"
                     android:gravity="center"
-                    android:text="员工编号:"
+                    android:text="@string/employ_add_number"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -259,7 +259,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/et_job"
                     android:gravity="center"
-                    android:text="职位:"
+                    android:text="@string/employ_add_job"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -285,7 +285,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/tv_birth"
                     android:gravity="center"
-                    android:text="出生日期:"
+                    android:text="@string/employ_add_birthday"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -310,7 +310,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/et_sign"
                     android:gravity="center"
-                    android:text="个性签名:"
+                    android:text="@string/employ_add_signature"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
@@ -332,7 +332,7 @@
                     android:layout_marginTop="40dp"
                     android:layout_toLeftOf="@+id/view_middle2"
                     android:background="@drawable/shape_bg_btnsync"
-                    android:text="确定"
+                    android:text="@string/employ_add_confirm"
                     android:textColor="@color/white"
                     android:textSize="20dp" />
 
@@ -345,7 +345,7 @@
                     android:layout_marginTop="40dp"
                     android:layout_toRightOf="@+id/view_middle2"
                     android:background="@drawable/shape_bg_btnrepicture"
-                    android:text="取消"
+                    android:text="@string/employ_add_cancel"
                     android:textColor="@color/theme_green"
                     android:textSize="20dp" />
             </RelativeLayout>
