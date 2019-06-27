@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 
 
 import java.text.SimpleDateFormat;
@@ -25,10 +25,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class VisitorAdapter extends BaseAdapter {
 
     private Context context;
-    private List<VIPDetail> mVisitors;
+    private List<SignBean> mVisitors;
     private int layoutId;
 
-    public VisitorAdapter(Context context, List<VIPDetail> mVisitors,int screenOri) {
+    public VisitorAdapter(Context context, List<SignBean> mVisitors,int screenOri) {
         this.context = context;
         this.mVisitors = mVisitors;
         if (screenOri == Configuration.ORIENTATION_PORTRAIT) {
@@ -44,7 +44,7 @@ public class VisitorAdapter extends BaseAdapter {
     }
 
     @Override
-    public VIPDetail getItem(int position) {
+    public SignBean getItem(int position) {
         return mVisitors.get(position);
     }
 
@@ -68,7 +68,7 @@ public class VisitorAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        VIPDetail bean = mVisitors.get(position);
+        SignBean bean = mVisitors.get(position);
         viewHolder.tv_name.setText(bean.getName());
         if (bean.getName().contains("游客")) {
             viewHolder.tv_name.setText("游客");
@@ -87,6 +87,7 @@ public class VisitorAdapter extends BaseAdapter {
 
         return convertView;
     }
+
 
     class ViewHolder {
         protected CircleImageView iv_userPhoto;

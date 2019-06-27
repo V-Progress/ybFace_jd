@@ -13,17 +13,17 @@ import com.bumptech.glide.Glide;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
-import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.ConsolePrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy;
-import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
+import com.tencent.bugly.beta.download.DownloadListener;
+import com.tencent.bugly.beta.download.DownloadTask;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
@@ -34,9 +34,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.dbtest.CompDao;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
-import com.yunbiao.ybsmartcheckin_live_id.utils.PropsUtil;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -44,6 +42,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import org.xutils.x;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
@@ -56,11 +55,9 @@ import okhttp3.OkHttpClient;
 public class APP extends Application {
     private static APP instance;
     private static SmdtManager smdt;
-    public static boolean isLiveness = true;
     private static UserDao userDao;
     private static SignDao signDao;
     private static DepartDao departDao;
-    private static CompDao companyDao;
 
     @Override
     public void onCreate() {
@@ -119,11 +116,6 @@ public class APP extends Application {
         userDao = new UserDao(this);
         signDao = new SignDao(this);
         departDao = new DepartDao(this);
-        companyDao = new CompDao(this);
-    }
-
-    public static CompDao getCompanyDao() {
-        return companyDao;
     }
 
     public static UserDao getUserDao() {
@@ -161,11 +153,6 @@ public class APP extends Application {
 
     private void initUtils() {
 //        Log2FileUtil.startLogcatManager(this);
-        //初始化host参数
-        PropsUtil.instance().init(this);
-        Constants.init();
-        Integer boardType = PropsUtil.instance().getBoardType();
-        isLiveness = boardType == 0 || boardType == 2;
 
         //初始化xutils 3.0
         x.Ext.init(this);
@@ -224,7 +211,8 @@ public class APP extends Application {
         Beta.largeIconId = R.mipmap.ic_launcher;//通知栏大图标
         Beta.smallIconId = R.mipmap.ic_launcher;//通知栏小图标
         Beta.defaultBannerId = R.mipmap.ic_launcher;
-        Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);//更新资源保存目录
+//        Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);//更新资源保存目录
+        Beta.storageDir = new File(Constants.CACHE_PATH);//更新资源保存目录
         Beta.showInterruptedStrategy = false;//点击过确认的弹窗在APP下次启动自动检查更新时会再次显示
         Beta.autoDownloadOnWifi = true;//WIFI自动下载
         /**
@@ -243,6 +231,23 @@ public class APP extends Application {
                 }
             }
         };
+        Beta.registerDownloadListener(new DownloadListener() {
+            @Override
+            public void onReceive(DownloadTask downloadTask) {
+
+            }
+
+            @Override
+            public void onCompleted(DownloadTask downloadTask) {
+                File saveFile = downloadTask.getSaveFile();
+                Log.e("APPPPP", "onCompleted: 1111111111111111 ----- " + saveFile + " --- " + saveFile.length());
+            }
+
+            @Override
+            public void onFailed(DownloadTask downloadTask, int i, String s) {
+
+            }
+        });
 
     }
 

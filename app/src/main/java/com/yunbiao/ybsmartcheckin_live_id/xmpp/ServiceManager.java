@@ -22,8 +22,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.yunbiao.ybsmartcheckin_live_id.utils.PropsUtil;
-
 import java.util.Properties;
 
 /** 
@@ -63,9 +61,9 @@ public final class ServiceManager {
             callbackActivityClassName = callbackActivity.getClass().getName();
         }
 
-        apiKey = PropsUtil.instance().getApikey();
-        xmppHost = PropsUtil.instance().getHost();
-        xmppPort = PropsUtil.instance().getPort();
+        apiKey = com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.API_KEY;
+        xmppHost = com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.XMPP_HOST;
+        xmppPort = com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.XMPP_PORT;;
         Log.i(LOGTAG, "apiKey=" + apiKey);
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);

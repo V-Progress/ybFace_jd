@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
@@ -15,7 +17,7 @@ import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
@@ -132,13 +134,13 @@ public class VipDialogManager {
         window.setAttributes(lp);
     }
 
-    public static void showVipDialog(final Activity context, final String today, final VIPDetail vip) {
+    public static void showVipDialog(final Activity context, final String today, final SignBean signBean) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 init(context);
 
-                if (today.contains("3月8日") && vip.getSex().equals("女")) {
+                if (today.contains("3月8日") && signBean.getSex().equals("女")) {
                     vipDialog.setContentView(R.layout.dialog_vip_38);
                 } else {
                     vipDialog.setContentView(R.layout.dialog_vip);
@@ -147,17 +149,20 @@ public class VipDialogManager {
                 CircleImageView civ_userPhoto = (CircleImageView) vipDialog.findViewById(R.id.civ_userPhoto);
                 TextView tv_nameAndJob = (TextView) vipDialog.findViewById(R.id.tv_nameAndJob);
                 TextView tv_sign = (TextView) vipDialog.findViewById(R.id.tv_sign);
-                civ_userPhoto.setImageBitmap(vip.getBitmap());
+                if(!TextUtils.isEmpty(signBean.getImgUrl())){
+                    Bitmap bitmap = BitmapFactory.decodeFile(signBean.getImgUrl());
+                    civ_userPhoto.setImageBitmap(bitmap);
+                }
 
-                tv_nameAndJob.setText(vip.getName() + "  " + vip.getJob());
-                tv_sign.setText(vip.getSignature());
+                tv_nameAndJob.setText(signBean.getName() + "  " + signBean.getJob());
+                tv_sign.setText(signBean.getSignature());
 
                 if(!context.isFinishing()){
                     vipDialog.show();
                 }
 
                 handler.removeMessages(0);
-                handler.sendEmptyMessageDelayed(0,3000);
+                handler.sendEmptyMessageDelayed(0,2000);
             }
         });
     }
@@ -170,7 +175,7 @@ public class VipDialogManager {
     };
 
 
-    public static void showBuluDialog(final Activity context, final Bitmap bitmap, final boolean makeUpSuccess) {
+    public static void showBuluDialog(final Activity context, final String imgPath, final boolean makeUpSuccess) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -181,7 +186,10 @@ public class VipDialogManager {
                 CircleImageView civ_userPhoto = (CircleImageView) vipDialog.findViewById(R.id.civ_userPhoto);
                 TextView tv_nameAndJob = (TextView) vipDialog.findViewById(R.id.tv_nameAndJob);
                 TextView tv_sign = (TextView) vipDialog.findViewById(R.id.tv_sign);
-                civ_userPhoto.setImageBitmap(bitmap);
+                if(!TextUtils.isEmpty(imgPath)){
+                    Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
+                    civ_userPhoto.setImageBitmap(bitmap);
+                }
                 tv_nameAndJob.setText(makeUpSuccess ?"补录成功！":"补录失败！");
                 vipDialog.show();
 

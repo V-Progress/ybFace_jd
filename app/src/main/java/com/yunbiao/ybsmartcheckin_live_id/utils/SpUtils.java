@@ -88,6 +88,20 @@ public class SpUtils {
         return "";
     }
 
+    // TODO: 2019/6/27 ComById
+//    public static int getCompanyId(){
+//        if(sp != null){
+//            return sp.getInt(COMPANYID,56);
+//        }
+//        return -1;
+//    }
+//
+//    public static void saveCompanyId(int comId){
+//        if(sp != null){
+//            sp.edit().putInt(COMPANYID,comId).commit();
+//        }
+//    }
+
     public static int getInt(String key){
         if(sp != null){
             return sp.getInt(key,0);

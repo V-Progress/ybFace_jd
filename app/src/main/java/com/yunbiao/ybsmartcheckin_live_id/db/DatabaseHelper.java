@@ -9,7 +9,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.db.dbtest.bean.CompDBBean;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -99,7 +98,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override // 创建数据库时调用的方法
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, CompDBBean.class);
             TableUtils.createTable(connectionSource, VIPDetail.class);
             TableUtils.createTable(connectionSource, DepartBean.class);
             TableUtils.createTable(connectionSource, SignBean.class);
@@ -111,7 +109,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override // 数据库版本更新时调用的方法
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-            TableUtils.dropTable(connectionSource, CompDBBean.class, true);
             TableUtils.dropTable(connectionSource, VIPDetail.class, true);
             TableUtils.dropTable(connectionSource, DepartBean.class, true);
             TableUtils.dropTable(connectionSource, SignBean.class, true);

@@ -152,7 +152,7 @@ public class SignManager2 {
                     ,signTime
                     ,false
                     ,vipDetail.getSignature());
-            signBean.setCurrentImg(getBitmap(imgByteArray,vipDetail.getImgUrl()));
+//            signBean.setCurrentImg(getBitmap(imgByteArray,vipDetail.getImgUrl()));
             mList.add(0,signBean);
 
             d("打卡成功-------- " + signBean.toString());
@@ -274,23 +274,23 @@ public class SignManager2 {
                     @Override
                     public void onResponse(String response, int id) {
                         d("上送成功---> " + response);
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            if (json.getInt("status") == 1) {
-                                for (int i = 0; i < signList.size(); i++) {
-                                    final SignBean bean = signList.get(i);
-                                    if (bean.isUpload() == false) {
-                                        List<SignBean> signList = signDao.queryByTime(bean.getFaceId());
-                                        if (signList != null && signList.size() > 0) {
-                                            signList.get(0).setUpload(true);
-                                            signDao.update(signList.get(0));
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject json = new JSONObject(response);
+//                            if (json.getInt("status") == 1) {
+//                                for (int i = 0; i < signList.size(); i++) {
+//                                    final SignBean bean = signList.get(i);
+//                                    if (bean.isUpload() == false) {
+//                                        List<SignBean> signList = signDao.queryByTime(bean.getFaceId());
+//                                        if (signList != null && signList.size() > 0) {
+//                                            signList.get(0).setUpload(true);
+//                                            signDao.update(signList.get(0));
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 });
             }

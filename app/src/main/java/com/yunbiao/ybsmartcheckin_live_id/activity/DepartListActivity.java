@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartListAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -58,6 +59,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
             setContentView(R.layout.activity_departlist_h);
         }
 
+        departDao= APP.getDepartDao();
         initViews();
         initData();
 
@@ -71,7 +73,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
 
         mDepartList=new ArrayList<>();
 
-        departDao=new DepartDao(DepartListActivity.this);
+
         mDepartlist   =	 departDao.selectAll();
         if (mDepartlist!=null){
             for (int i = 0; i <mDepartlist.size() ; i++) {

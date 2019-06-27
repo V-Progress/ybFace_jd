@@ -89,6 +89,26 @@
             style="@style/sustem_item_info_shape" />
     </LinearLayout>
 
+    <!--TODO: 2019/6/27 ComById-->
+    <!--<LinearLayout style="@style/system_item_ll">-->
+        <!--<TextView-->
+            <!--style="@style/system_item_lable_tv"-->
+            <!--android:text="公&#8194;司&#8194;ID :" />-->
+
+        <!--<EditText-->
+            <!--android:textColor="@drawable/red"-->
+            <!--android:textColorHint="@color/white"-->
+            <!--android:id="@+id/edt_comid"-->
+            <!--android:maxLength="10"-->
+            <!--android:inputType="number"-->
+            <!--style="@style/sustem_item_info_shape" />-->
+
+        <!--<Button-->
+            <!--android:onClick="setComId"-->
+            <!--android:text="修改"-->
+            <!--style="@style/sustem_item_info_shape"/>-->
+    <!--</LinearLayout>-->
+
     <LinearLayout style="@style/system_item_ll">
 
         <TextView

@@ -79,9 +79,10 @@ public class FaceSDK {
         FaceSettings.setMinFaceArea(0);//最小识别区域
         FaceSettings.setExtractProperty(true);//抽取属性
         FaceSettings.setOnlyEmotion(false);//只抽取表情(开启以后将无法检测到性别和年龄)
-        FaceSettings.setCaptureFace(true);//保存人脸
-        FaceSettings.setCaptureDir(captureDir);
+        FaceSettings.setCaptureFace(false);//保存人脸
+        FaceSettings.setCaptureDir(null);
         FaceSettings.setPullAuto(false);
+        FaceSettings.setRecordVerify(false);
 //        FaceSettings.setCheckType(FaceSettings.CHECK_NONE);//关闭防伪
         FaceSettings.setCheckType(FaceSettings.CHECK_RGB);//RGB防伪（只彩色防伪，防伪效果差）
         //FaceSettings.setCheckType(FaceSettings.CHECK_NIR);//NIR防伪（防伪效果好）

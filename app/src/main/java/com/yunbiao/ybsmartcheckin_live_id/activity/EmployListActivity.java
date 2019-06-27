@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
@@ -24,8 +24,8 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -83,8 +83,8 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
         EventBus.getDefault().register(this);
 
-        departDao=new DepartDao(EmployListActivity.this);
-        userDao=new UserDao(EmployListActivity.this);
+        departDao= APP.getDepartDao();
+        userDao=APP.getUserDao();
 
         initViews();
 

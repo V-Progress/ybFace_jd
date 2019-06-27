@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,11 +15,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -36,8 +31,8 @@ import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -58,7 +53,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Request;
@@ -125,7 +119,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             setContentView(R.layout.activity_editemploy_h);
         }
 
-        userDao = new UserDao(EditEmployActivity.this);
+        userDao = APP.getUserDao();
+        departDao = APP.getDepartDao();
         initViews();
         initSpinnerData();
     }
@@ -160,7 +155,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     private void initSpinnerData() {
         mDepartList = new ArrayList<>();
-        departDao = new DepartDao(EditEmployActivity.this);
+
         mDepartlist = departDao.selectAll();
         for (int i = 0; i < mDepartlist.size(); i++) {
             mDepartList.add(mDepartlist.get(i).getName());

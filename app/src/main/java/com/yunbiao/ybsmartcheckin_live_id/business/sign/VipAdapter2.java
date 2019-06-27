@@ -3,8 +3,10 @@ package com.yunbiao.ybsmartcheckin_live_id.business.sign;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +36,11 @@ public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
     @Override
     public void onBindViewHolder(@NonNull VH vh, int i) {
         SignBean item = mList.get(i);
-        Bitmap currentImg = item.getCurrentImg();
-        vh.ivHead.setImageBitmap(currentImg);
+        String imgUrl = item.getImgUrl();
+        if(!TextUtils.isEmpty(imgUrl)){
+            Bitmap bitmap = BitmapFactory.decodeFile(imgUrl);
+            vh.ivHead.setImageBitmap(bitmap);
+        }
         vh.tvName.setText(item.getName());
         vh.tvSign.setText(item.getSignature());
     }

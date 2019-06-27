@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -19,17 +18,13 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,13 +34,14 @@ import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.PropsUtil;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -187,6 +183,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         tv_exp_system.setText(TextUtils.isEmpty(expDate) ? "无限期" : expDate);
 
         tv_online_system.setText(CoreInfoHandler.isOnline ? "在线" : "离线");
+
+        // TODO: 2019/6/27 ComById
+//        ((EditText)findViewById(R.id.edt_comid)).setHint("" +SpUtils.getCompanyId());
     }
 
     @Override
@@ -249,7 +248,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void updateServerState(){
-        String host = PropsUtil.instance().getHost();
+        String host = Constants.RESOURCE_URL;
         tv_server_system.setText("云服务");
         if (host.contains("192.168.")) {
             tv_server_system.setText("本地服务");
@@ -260,6 +259,29 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 //            tvQrLable.setVisibility(View.VISIBLE);
         }
     }
+
+    // TODO: 2019/6/27 ComById
+//    public void setComId(View view) {
+//        final String text = ((EditText) findViewById(R.id.edt_comid)).getText().toString();
+//        if(TextUtils.isEmpty(text)){
+//            UIUtils.showTitleTip("公司ID不可为空");
+//            return;
+//        }
+//        showAlert("公司ID修改为:" + text + "\n重启应用后生效，是否重启？", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                SpUtils.saveCompanyId(Integer.valueOf(text));
+//                finishAll();
+//                RestartAPPTool.restartAPP(SystemActivity.this);
+//            }
+//        }, new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialog) {
+//                ((EditText)findViewById(R.id.edt_comid)).setText("");
+//                ((EditText)findViewById(R.id.edt_comid)).setHint("" +SpUtils.getCompanyId());
+//            }
+//        });
+//    }
 
     public static class UpdateEvent {
     }
@@ -345,19 +367,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                             return;
                         }
 
-                        String ip = ip0 + "." + ip1 + "." + ip2 + "." + ip3;
-                        boolean b = PropsUtil.instance().setHost(ip);
-                        boolean b1 = PropsUtil.instance().setPort(sPort);
-
-                        String rip = rip0 + "." + rip1 +"." + rip2 + "." + rip3;
-                        boolean b2 = PropsUtil.instance().setResHost(rip);
-                        boolean b3 = PropsUtil.instance().setResPort(rport);
-
-                        if(!(b && b1 && b2 && b3)){
-                            tvTips.setText("云服务地址修改结果："+(b && b1) +"，资源地址修改结果："+(b2&&b3));
-                        }
-                        updateServerState();
-                        dialog.dismiss();
 
                         RestartAPPTool.restartAPP(SystemActivity.this);
                         break;
@@ -366,28 +375,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         };
         btnCancel.setOnClickListener(onClickListener);
         btnConfirm.setOnClickListener(onClickListener);
-
-        String host = PropsUtil.instance().getHost();
-        String port = PropsUtil.instance().getPort();
-        String[] ips = host.split("\\.");
-        if(ips!=null && ips.length==4){
-            tvIp0.setHint(ips[0]);
-            tvIp1.setHint(ips[1]);
-            tvIp2.setHint(ips[2]);
-            tvIp3.setHint(ips[3]);
-            tvSPort.setHint(port);
-        }
-
-        String resHost = PropsUtil.instance().getResHost();
-        String resPort = PropsUtil.instance().getResPort();
-        String[] hosts = resHost.replace("http://","").split("\\.");
-        if(hosts!=null&&hosts.length==4){
-            tvRIp0.setHint(hosts[0]);
-            tvRIp1.setHint(hosts[1]);
-            tvRIp2.setHint(hosts[2]);
-            tvRIp3.setHint(hosts[3]);
-            tvRPort.setHint(resPort);
-        }
 
         dialog.show();
         Window window = dialog.getWindow();

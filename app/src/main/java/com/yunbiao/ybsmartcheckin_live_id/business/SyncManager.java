@@ -15,18 +15,18 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.bean.StaffBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -38,6 +38,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -158,6 +159,46 @@ public class SyncManager extends BroadcastReceiver {
         return userDao;
     }
 
+    // TODO: 2019/6/27 ComById
+//    private void loadCompanyById(){
+//        setStep(1,null);
+//        int companyId = SpUtils.getCompanyId();
+//        d(ResourceUpdate.COMPANYINFO_ID + " --- " + companyId);
+//        Map<String,String> params = new HashMap<>();
+//        params.put("comId","" + companyId);
+//        OkHttpUtils.post()
+//                .url(ResourceUpdate.COMPANYINFO_ID)
+//                .params(params).build()
+//                .execute(new MyStringCallback<CompanyBean>(MyStringCallback.STEP_COMPANY){
+//                    @Override public void onRetryAfter5s() { }
+//                    @Override public void onFailed() { }
+//                    @Override public void onSucc(String response, final CompanyBean companyBean) {
+//                        COMPANY_ID = companyBean.getCompany().getComid();
+//                        String abbname = companyBean.getCompany().getAbbname();
+//                        SCREEN_BASE_PATH = Constants.HEAD_PATH + COMPANY_ID + "/";//人脸头像存储路径
+//
+//                        SpUtils.saveStr(SpUtils.COMPANY_INFO, response);
+//                        //保存公司信息
+//                        SpUtils.saveInt(SpUtils.COMPANYID, companyBean.getCompany().getComid());
+//                        SpUtils.saveStr(SpUtils.GOTIME, companyBean.getCompany().getGotime());
+//                        SpUtils.saveStr(SpUtils.GOTIPS, companyBean.getCompany().getGotips());
+//                        SpUtils.saveStr(SpUtils.DOWNTIME, companyBean.getCompany().getDowntime());
+//                        SpUtils.saveStr(SpUtils.DOWNTIPS, companyBean.getCompany().getDowntips());
+//                        SpUtils.saveStr(SpUtils.COMPANY_NAME, abbname);
+//
+//                        if(mListener != null){
+//                            mAct.runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    mListener.onLoaded(companyBean);
+//                                }
+//                            });
+//                        }
+//                        loadStaff(companyBean);
+//                    }
+//                });
+//    }
+
     private void loadCompany() {
         setStep(1,null);
         d("-------------" + ResourceUpdate.COMPANYINFO);
@@ -165,7 +206,6 @@ public class SyncManager extends BroadcastReceiver {
         String deviceNo = HeartBeatClient.getDeviceNo();
         Log.e(TAG, "loadCompany: " + deviceNo);
         map.put("deviceNo", deviceNo);
-        d("99999",map.toString());
         OkHttpUtils.post().params(map).tag(this).url(ResourceUpdate.COMPANYINFO).build().execute(new MyStringCallback<CompanyBean>(MyStringCallback.STEP_COMPANY) {
             @Override public void onRetryAfter5s() {
                 loadCompany();
@@ -244,9 +284,11 @@ public class SyncManager extends BroadcastReceiver {
         }
         setStep(3,null);
         List<CompanyBean.CompanyEntity.DeparrayEntity> departList = companyBean.getCompany().getDeparray();
+        if(departList == null){
+            return;
+        }
         for (CompanyBean.CompanyEntity.DeparrayEntity deparrayEntity : departList) {
             String depName = deparrayEntity.getDepName();
-            Log.e(TAG, "syncDepartDao: -----" + depName);
             int depId = deparrayEntity.getDepId();
             List<DepartBean> list = departDao.queryByName(depName);
             if (list == null || list.size() <= 0) {
@@ -261,8 +303,6 @@ public class SyncManager extends BroadcastReceiver {
         }
         setStep(4,null);
         Queue<UpdateBean> updateQueue = new LinkedList<>();
-        List<VIPDetail> localDataList = userDao.selectAll();
-
         Map<Integer, StaffInfoBean> staffMap = new HashMap<>();
         List<StaffBean.DepEntity> dep = staffBean.getDep();
         for (StaffBean.DepEntity depEntity : dep) {
@@ -278,9 +318,18 @@ public class SyncManager extends BroadcastReceiver {
             }
         }
 
-        if(localDataList != null){
-            localCount = localDataList.size();
+        for (UpdateBean updateBean : updateQueue) {
+            d(updateBean.toString());
         }
+
+        for (Map.Entry<Integer, StaffInfoBean> integerStaffInfoBeanEntry : staffMap.entrySet()) {
+            d(integerStaffInfoBeanEntry.toString());
+        }
+
+        List<VIPDetail> localDataList = new ArrayList<>();
+        localDataList.addAll(userDao.selectAll());
+        localCount = localDataList.size();
+
         if(staffMap != null){
             remoteCount = staffMap.size();
         }
@@ -473,6 +522,15 @@ public class SyncManager extends BroadcastReceiver {
         int depId;
         String depName;
         StaffBean.DepEntity.EntryEntity staffInfo;
+
+        @Override
+        public String toString() {
+            return "StaffInfoBean{" +
+                    "depId=" + depId +
+                    ", depName='" + depName + '\'' +
+                    ", staffInfo=" + staffInfo +
+                    '}';
+        }
     }
 
     //更新bean
@@ -480,6 +538,15 @@ public class SyncManager extends BroadcastReceiver {
         int ctrlType = -1;
         String head;
         VIPDetail vipDetail;
+
+        @Override
+        public String toString() {
+            return "UpdateBean{" +
+                    "ctrlType=" + ctrlType +
+                    ", head='" + head + '\'' +
+                    ", vipDetail=" + vipDetail +
+                    '}';
+        }
     }
 
     /***
@@ -548,7 +615,20 @@ public class SyncManager extends BroadcastReceiver {
             d(TAG,response);
             Object o = null;
             if (step == STEP_COMPANY) {
+                if(TextUtils.isEmpty(response)){
+                    setFailed("失败", "Response is null");
+                    onFailed();
+                    return;
+                }
+
+                if(!isJSONValid(response)){
+                    setFailed("失败", "Response is not JSON");
+                    onFailed();
+                    return;
+                }
+
                 CompanyBean bean = new Gson().fromJson(response, CompanyBean.class);
+
                 if (bean.getStatus() != 1) {
                     String err = "同步失败，请检查网络或重启设备";
                     switch (bean.getStatus()) {
@@ -899,5 +979,14 @@ public class SyncManager extends BroadcastReceiver {
 
         Log.d(tag, msg);
 
+    }
+
+    public final static boolean isJSONValid(String jsonInString) {
+        try {
+            new Gson().fromJson(jsonInString, Object.class);
+            return true;
+        } catch(JsonSyntaxException ex) {
+            return false;
+        }
     }
 }

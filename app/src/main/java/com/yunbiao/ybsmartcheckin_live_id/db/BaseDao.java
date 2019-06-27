@@ -1,10 +1,8 @@
-package com.yunbiao.ybsmartcheckin_live_id.db.dbtest;
+package com.yunbiao.ybsmartcheckin_live_id.db;
 
 import android.content.Context;
 
 import com.j256.ormlite.dao.Dao;
-import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -78,4 +76,12 @@ public class BaseDao<T> {
         return null;
     }
 
+    public List<T> queryByLong(String key,long value){
+        try {
+            return dao.queryBuilder().where().eq(key,value).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

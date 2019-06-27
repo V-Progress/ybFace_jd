@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +12,6 @@ import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +41,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.Gson;
-import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -59,12 +55,13 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.BaseGateActivity;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -130,7 +127,7 @@ public class WelComeActivity extends BaseGateActivity {
 
     //摄像头分辨率
     private FaceView faceView;
-
+    private List<SignBean> mSignList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,7 +177,7 @@ public class WelComeActivity extends BaseGateActivity {
 ////                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
 ////                gridview.setAdapter(mVisitorAdapter);
 ////
-////                updateList(mList);
+////                updateNumber(mList);
 //
 //                tv_load_error.setVisibility(View.GONE);
 //                ll_load_container.setVisibility(View.GONE);
@@ -189,7 +186,7 @@ public class WelComeActivity extends BaseGateActivity {
 //
 //            @Override
 //            public void onSigned(List<SignBean> mList, SignBean signBean, int signType) {
-////                updateList(mList);
+////                updateNumber(mList);
 //                speak(signType,signBean.getName());
 //                MultipleSignDialog.instance().sign(signBean);
 //
@@ -203,17 +200,14 @@ public class WelComeActivity extends BaseGateActivity {
         //开始定时更新签到列表
         SignManager.instance().init(WelComeActivity.this, new SignManager.SignEventListener() {
             @Override
-            public void onPrepared(List<VIPDetail> mList) {
-//                closeInitView(null);
-
+            public void onPrepared(List<SignBean> mList) {
                 if (mList == null) {
                     return;
                 }
 
-                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
-                gridview.setAdapter(mVisitorAdapter);
-
-                updateList(mList);
+                mSignList.addAll(mList);
+                mVisitorAdapter.notifyDataSetChanged();
+                updateNumber();
 
                 tv_load_error.setVisibility(View.GONE);
                 ll_load_container.setVisibility(View.GONE);
@@ -221,25 +215,27 @@ public class WelComeActivity extends BaseGateActivity {
             }
 
             @Override
-            public void onSigned(List<VIPDetail> mList, String signerName, int signType) {
-                updateList(mList);
+            public void onSigned(SignBean signBean, int signType) {
+                mSignList.add(0,signBean);
+                mVisitorAdapter.notifyDataSetChanged();
+                updateNumber();
 
                 if (mGateIsAlive) {
                     mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
                 }
 
-                speak(signType, signerName);
+                speak(signType, signBean.getName());
 
                 if (!AdsManager.instance().isAdsShowing()) {
-                    VipDialogManager.showVipDialog(WelComeActivity.this, today, mList.get(0));
+                    VipDialogManager.showVipDialog(WelComeActivity.this, today, signBean);
                 }
             }
 
             @Override
-            public void onMakeUped(Bitmap bitmap, boolean makeUpSuccess) {
+            public void onMakeUped(String imgPath, boolean makeUpSuccess) {
                 isBulu = false;
 
-                VipDialogManager.showBuluDialog(WelComeActivity.this, bitmap,makeUpSuccess);
+                VipDialogManager.showBuluDialog(WelComeActivity.this, imgPath,makeUpSuccess);
                 KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
                 aiv_bulu.setVisibility(View.GONE);
                 iv_record.setVisibility(View.VISIBLE);
@@ -270,62 +266,21 @@ public class WelComeActivity extends BaseGateActivity {
                     return;
                 }
 
+                int result = verifyResult.getResult();
+
                 if(isBulu ){
                     if(!SignManager.canMakeUp()){
-                        Log.e("HAHA", "onFaceVerify: 补录-1-1-1-1-1-1");
                         return;
                     }
-
-                    Log.e("HAHA", "onFaceVerify: 补录0000000000");
-                    byte[] faceImage = faceView.getFaceImage();
-                    if(faceImage == null){
-                        return;
-                    }
-
-                    Log.e("HAHA", "onFaceVerify: 补录11111111111");
-                    SignManager.instance().makeUpSign(faceImage);
+                    SignManager.instance().makeUpSign(verifyResult.getFaceImageBytes());
                     return;
                 }
 
-                FaceUser user = verifyResult.getUser();
-                if(user == null){
+                if(result != VerifyResult.UNKNOWN_FACE){
                     return;
                 }
 
-                String userId = user.getUserId();
-                if(TextUtils.isEmpty(userId)){
-                    return;
-                }
-
-                Log.e(TAG, "onFaceVerify: -----------" + userId);
-
-                // TODO: 2019/6/10 多人
-//                long time = System.currentTimeMillis();
-//                SignManager2.instance().sign(Integer.valueOf(userId),faceView.getFaceImage(),time);
-
-                //正常签到
-                try {
-                    List<VIPDetail> mainList = new ArrayList<>();
-                    final List<VIPDetail> mlist = SyncManager.instance().getUserDao().queryByFaceId(Integer.valueOf(userId));
-                    if (mlist != null && mlist.size() > 0) {
-                        long time = System.currentTimeMillis();
-                        VIPDetail vip = mlist.get(0);
-                        byte[] faceImage = faceView.getFaceImage();
-                        if(faceImage != null && faceImage.length > 0){
-                            final BitmapFactory.Options options = new BitmapFactory.Options();
-                            final Bitmap image = BitmapFactory.decodeByteArray(faceImage, 0, faceImage.length, options);
-                            vip.setBitmap(image);
-                        }
-
-                        vip.setTime(time);
-                        mainList.add(vip);
-                    }
-
-                    SignManager.instance().sign(mainList);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                SignManager.instance().checkSign(verifyResult);
             }
         });
     }
@@ -354,6 +309,9 @@ public class WelComeActivity extends BaseGateActivity {
         layout_wel = findViewById(R.id.layout_wel);
         iv_yuan = findViewById(R.id.iv_yuan);
         iv_line = findViewById(R.id.iv_line);
+
+        mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
+        gridview.setAdapter(mVisitorAdapter);
     }
 
     public void goMakeUp(View view){
@@ -457,6 +415,13 @@ public class WelComeActivity extends BaseGateActivity {
         serviceManager.startService();
     }
 
+    private void destoryXmpp(){
+        if(serviceManager != null){
+            serviceManager.stopService();
+            serviceManager = null;
+        }
+    }
+
     //设置饼图属性
     private void initPieChart() {
         pieChart_h = (PieChart) findViewById(R.id.pie_chart);
@@ -513,50 +478,58 @@ public class WelComeActivity extends BaseGateActivity {
     }
 
     //更新签到列表
-    private void updateList(List<VIPDetail> mList) {
-        int male = 0;
-        for (int i = 0; i < mList.size(); i++) {
-            if (mList.get(i) != null && mList.get(i).getSex() != null && mList.get(i).getSex().equals("男")) {
-                male = male + 1;
+    private void updateNumber() {
+        ThreadUitls.runInThread(new Runnable() {
+            @Override
+            public void run() {
+                int male = 0;
+                for (int i = 0; i < mSignList.size(); i++) {
+                    if (mSignList.get(i) != null && mSignList.get(i).getSex() != null && mSignList.get(i).getSex().equals("男")) {
+                        male = male + 1;
+                    }
+                }
+
+                final int total = mSignList.size();
+                final int female = total - male;
+                final int maleNum = male;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                            String signTips = "已签到   <font color='#fff600'>" + total + "</font>   人 （男 <font color='#fff600'>" + maleNum + "</font>   女  <font color='#fff600'>" + female + "</font> ） ";
+                            tv_checkInNum.setText(Html.fromHtml(signTips));
+                        } else {
+                            tv_checkInNum.setText("" + total);
+                            ((TextView) findViewById(R.id.tv_sign_number_male)).setText("男: " + maleNum + "人");
+                            ((TextView) findViewById(R.id.tv_sign_number_female)).setText("女: " + female + "人");
+
+                            //设置饼图数据
+                            List<PieEntry> dataEntry = new ArrayList<>();
+                            List<Integer> dataColors = new ArrayList<>();
+
+                            if (maleNum == 0 && female == 0) {
+                                dataEntry.add(new PieEntry(100, ""));
+                                dataColors.add(getResources().getColor(R.color.white));
+                            } else {
+                                dataEntry.add(new PieEntry(maleNum, "男"));
+                                dataEntry.add(new PieEntry(female, "女"));
+                                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
+                                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
+                            }
+
+                            pieChart_h.clear();
+                            PieDataSet pieDataSet = new PieDataSet(dataEntry, null);
+                            pieDataSet.setColors(dataColors);
+                            PieData pieData = new PieData(pieDataSet);
+                            pieData.setDrawValues(false);//环中value显示
+                            pieChart_h.setData(pieData);
+                            pieChart_h.notifyDataSetChanged();
+                            pieChart_h.invalidate();
+                        }
+                    }
+                });
             }
-        }
-        int total = mList.size();
-        int female = total - male;
-
-        mVisitorAdapter.notifyDataSetChanged();
-
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            String signTips = "已签到   <font color='#fff600'>" + total + "</font>   人 （男 <font color='#fff600'>" + male + "</font>   女  <font color='#fff600'>" + female + "</font> ） ";
-            tv_checkInNum.setText(Html.fromHtml(signTips));
-
-        } else {
-            tv_checkInNum.setText("" + total);
-            ((TextView) findViewById(R.id.tv_sign_number_male)).setText("男: " + male + "人");
-            ((TextView) findViewById(R.id.tv_sign_number_female)).setText("女: " + female + "人");
-
-            //设置饼图数据
-            List<PieEntry> dataEntry = new ArrayList<>();
-            List<Integer> dataColors = new ArrayList<>();
-
-            if (male == 0 && female == 0) {
-                dataEntry.add(new PieEntry(100, ""));
-                dataColors.add(getResources().getColor(R.color.white));
-            } else {
-                dataEntry.add(new PieEntry(male, "男"));
-                dataEntry.add(new PieEntry(female, "女"));
-                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
-                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
-            }
-
-            pieChart_h.clear();
-            PieDataSet pieDataSet = new PieDataSet(dataEntry, null);
-            pieDataSet.setColors(dataColors);
-            PieData pieData = new PieData(pieDataSet);
-            pieData.setDrawValues(false);//环中value显示
-            pieChart_h.setData(pieData);
-            pieChart_h.notifyDataSetChanged();
-            pieChart_h.invalidate();
-        }
+        });
     }
 
     /*=======摄像头检测=============================================================================*/
@@ -708,10 +681,7 @@ public class WelComeActivity extends BaseGateActivity {
     protected void onDestroy() {
         super.onDestroy();
         faceView.destory();
-        if (serviceManager != null) {
-            serviceManager.stopService();
-            serviceManager = null;
-        }
+        destoryXmpp();
 
         SyncManager.instance().destory();
         AdsManager.instance().destory();

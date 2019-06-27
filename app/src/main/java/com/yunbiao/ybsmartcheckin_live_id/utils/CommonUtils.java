@@ -48,12 +48,9 @@ import java.util.regex.Pattern;
  */
 public class CommonUtils {
     private static final String TAG = "CommonUtils";
-    public static String getDeviceNo(){
-        return SpUtils.getStr(SpUtils.DEVICE_UNIQUE_NO,getMacAddress());
-    }
 
     @SuppressLint("HardwareIds")
-    private static String getMacAddress() {
+    public static String getMacAddress() {
         String macAddress = "";
         WifiManager wifiManager = (WifiManager) APP.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = (null == wifiManager ? null : wifiManager.getConnectionInfo());

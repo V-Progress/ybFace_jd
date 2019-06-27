@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
@@ -66,7 +67,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             setContentView(R.layout.activity_table_h);
         }
 
-        signDao=new SignDao(this);
+        signDao= APP.getSignDao();
         initViews();
         initData();
 
@@ -89,10 +90,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private void initData() {
         Calendar calendar=Calendar.getInstance();
         String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
-        String monthStr = calendar.get(Calendar.MONTH)+1+"";//获取月份
         String dayStr = calendar.get(Calendar.DAY_OF_MONTH)+"";//获取天
-        String today =yearStr+"年"+monthStr+"月"+dayStr+"日";
-        Log.e(TAG, "today--------->"+today );
+        int realMonth = calendar.get(Calendar.MONTH)+1;//获取月份
+        String monthStr = realMonth + "月";
+        if(realMonth < 10){
+            monthStr = "0" + realMonth + "月";
+        }
+        String today =yearStr + "年" + monthStr + dayStr + "日";
         tv_date.setText(today);
         queryDate = today;
     }
@@ -190,7 +194,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 Log.d("Orignal", "Got clicked");
-                                String date =year+"年"+(month+1)+"月"+dayOfMonth+"日";
+                                int realMonth = month + 1;
+                                String monthStr = realMonth + "月";
+                                if(realMonth < 10){
+                                    monthStr = "0" + realMonth + "月";
+                                }
+
+                                String date =year+"年"+ monthStr +dayOfMonth+"日";
                                 tv_date.setText(date);
 
                                 queryDate = date;

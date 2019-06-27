@@ -1,13 +1,11 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -18,13 +16,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -41,14 +33,12 @@ import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
-import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
+import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-import com.yunbiao.ybsmartcheckin_live_id.views.MIPSCamera;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -56,7 +46,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
@@ -132,7 +121,8 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
             setContentView(R.layout.activity_addemploy_h);
         }
 
-        userDao = new UserDao(this);
+        userDao = APP.getUserDao();
+        departDao = APP.getDepartDao();
         initViews();
         initSpinnerData();
         strFileAdd = "";
@@ -169,7 +159,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
     private void initSpinnerData() {
         mDepartList = new ArrayList<>();
-        departDao = new DepartDao(AddEmployActivity.this);
         mDepartlist = departDao.selectAll();
         if (mDepartlist != null) {
             for (int i = 0; i < mDepartlist.size(); i++) {

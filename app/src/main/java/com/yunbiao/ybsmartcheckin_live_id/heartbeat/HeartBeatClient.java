@@ -11,23 +11,17 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class HeartBeatClient {
-    private static String sbDeviceId = null;
-
-    static {
-        if(TextUtils.isEmpty(sbDeviceId)){
-            sbDeviceId = CommonUtils.getDeviceNo();
-            SpUtils.saveStr(SpUtils.DEVICE_UNIQUE_NO,sbDeviceId);
-        }
-    }
-
     /**
      * 获取设备唯一编号
      *
      * @return
      */
     public static String getDeviceNo() {
-        sbDeviceId = CommonUtils.getDeviceNo();
-        Log.e("99999", "getDeviceNo: " + sbDeviceId);
+        String sbDeviceId = SpUtils.getStr(SpUtils.DEVICE_UNIQUE_NO);
+        if(TextUtils.isEmpty(sbDeviceId)){
+            sbDeviceId = CommonUtils.getMacAddress();
+            SpUtils.saveStr(SpUtils.DEVICE_UNIQUE_NO,sbDeviceId);
+        }
         return sbDeviceId;
     }
 }

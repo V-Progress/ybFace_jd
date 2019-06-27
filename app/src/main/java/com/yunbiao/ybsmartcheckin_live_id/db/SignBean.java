@@ -43,17 +43,8 @@ public class SignBean {
     @DatabaseField(columnName = "faceId")
     private int faceId;//图片id
 
-
     @DatabaseField(columnName = "name")
     private String name;//名字
-
-
-    @DatabaseField(columnName = "sex")
-    private String sex;//性别
-
-    @DatabaseField(columnName = "age")
-    private String age;//年龄
-
 
     @DatabaseField(columnName = "job")
     private String job;//职位
@@ -64,9 +55,27 @@ public class SignBean {
     @DatabaseField(columnName = "time")
     private long time;//时间
 
+    @DatabaseField(columnName = "isUpload")
+    private boolean isUpload;//是否上传
+
+    @DatabaseField(columnName = "empId")
+    private int empId;//员工id
 
     @DatabaseField(columnName = "date")
     private String date;//时间
+
+    @DatabaseField(columnName = "depart")
+    private String depart;//员工部门
+
+    private String sex;//性别
+
+    private String age;//年龄
+
+    private String employNum;//员工编号
+
+    private String birthday;//员工生日
+
+    private String Signature;//个性签名
 
     public String getDate() {
         return date;
@@ -74,34 +83,6 @@ public class SignBean {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    @DatabaseField(columnName = "depart")
-    private String depart;//员工部门
-
-    @DatabaseField(columnName = "employNum")
-    private String employNum;//员工编号
-
-    @DatabaseField(columnName = "birthday")
-    private String birthday;//员工生日
-
-    @DatabaseField(columnName = "Signature")
-    private String Signature;//个性签名
-
-     @DatabaseField(columnName = "isUpload")
-    private boolean isUpload;//是否上传
-
-    @DatabaseField(columnName = "empId")
-    private int empId;//员工id
-
-    private Bitmap currentImg;
-
-    public Bitmap getCurrentImg() {
-        return currentImg;
-    }
-
-    public void setCurrentImg(Bitmap currentImg) {
-        this.currentImg = currentImg;
     }
 
     public int getEmpId() {

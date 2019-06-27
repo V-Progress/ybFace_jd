@@ -102,17 +102,17 @@ public class CameraManager {
         if (mListener != null) {
             mListener.onBeforeCamera();
         }
-
+        //释放
         releaseCamera();
-
+        //开启
         doOpenCamera();
-
+        //回调
         setCallback();
-
+        //参数
         setParameters();
-
+        //设置预览
         setPreviewBuffer();
-
+        //开启预览
         startPreview();
     }
 
@@ -178,10 +178,10 @@ public class CameraManager {
     }
 
     private void setParameters() {
-        if (mCamera == null || checkCamera() <= 0) {
-            return;
-        }
         synchronized (mLock) {
+            if (mCamera == null) {
+                return;
+            }
             d("设置参数... ");
             //设置参数
             Camera.Parameters params = mCamera.getParameters();
@@ -204,10 +204,10 @@ public class CameraManager {
     }
 
     private void setPreviewBuffer() {
-        if (mCamera == null || checkCamera() <= 0) {
-            return;
-        }
         synchronized (mLock) {
+            if (mCamera == null) {
+                return;
+            }
             d("设置预览回调... ");
             mBuffer = new byte[CAMERA_WIDTH * CAMERA_HEIGHT * 3 / 2];
             mCamera.addCallbackBuffer(mBuffer);
