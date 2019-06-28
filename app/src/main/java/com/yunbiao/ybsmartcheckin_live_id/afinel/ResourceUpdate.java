@@ -19,7 +19,7 @@ public class ResourceUpdate {
     public static String WEB_BASE_URL = Constants.RESOURCE_URL;
 
     public static String COMPANYINFO_ID = WEB_BASE_URL + "api/company/getcompanyById.html";//获取公司信息以及下的部门信息接口
-
+    public static String UPDATE_PWD = WEB_BASE_URL + "api/device/updatePassWord.html";
     public static String HOLIREM = WEB_BASE_URL + "api/holidayrem/getHolirem.html";//节日提醒背景
     public static String JOINREM = WEB_BASE_URL + "api/holidayrem/getJoinrem.html";//生日提醒背景
     public static String QRCODE_ADD = WEB_BASE_URL + "nhb/entryCode.html";

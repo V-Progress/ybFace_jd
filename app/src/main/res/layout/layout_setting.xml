@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:visibility="gone"
             android:id="@+id/tv_setting_pwd"
             android:clickable="true"
             android:textColor="@color/white"
@@ -35,9 +34,8 @@
             android:padding="28dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="密码" />
+            android:text="系统密码" />
         <View
-            android:visibility="gone"
             android:background="@color/gray_low"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>

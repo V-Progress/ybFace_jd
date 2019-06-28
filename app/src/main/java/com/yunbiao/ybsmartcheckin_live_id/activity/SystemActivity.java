@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tencent.bugly.beta.Beta;
@@ -35,17 +36,26 @@ import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
 
 public class SystemActivity extends BaseActivity implements View.OnClickListener {
 
@@ -396,8 +406,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
         final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_set_pwd);
         final EditText edtPwd2 = (EditText) dialog.findViewById(R.id.edt_set_pwd_again);
-        Button btnCancel = (Button) dialog.findViewById(R.id.btn_pwd_cancel);
-        Button btnConfirm = (Button) dialog.findViewById(R.id.btn_pwd_confirm);
+        final Button btnCancel = (Button) dialog.findViewById(R.id.btn_pwd_cancel);
+        final Button btnConfirm = (Button) dialog.findViewById(R.id.btn_pwd_confirm);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -422,14 +432,52 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                     return;
                 }
                 String pwd = edtPwd.getText().toString();
-                String pwd2 = edtPwd2.getText().toString();
+                final String pwd2 = edtPwd2.getText().toString();
                 if(!TextUtils.equals(pwd,pwd2)){
                     edtPwd2.setError("两次输入的密码不一致");
                     return;
                 }
 
-                SpUtils.saveStr(SpUtils.MENU_PWD,pwd2);
-                dialog.dismiss();
+                btnCancel.setEnabled(false);
+                btnConfirm.setEnabled(false);
+                Map<String,String> params = new HashMap<>();
+                params.put("deviceNo", HeartBeatClient.getDeviceNo());
+                params.put("password",pwd2);
+                OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, final Exception e, int id) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                UIUtils.showTitleTip("修改失败：" + e!=null?e.getMessage():"NULL");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        JSONObject jsonObject =JSONObject.parseObject(response);
+                        final Integer status = jsonObject.getInteger("status");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(status == 1){
+                                    UIUtils.showTitleTip("修改成功");
+                                    SpUtils.saveStr(SpUtils.MENU_PWD,pwd2);
+                                    dialog.dismiss();
+                                } else {
+                                    UIUtils.showTitleTip("修改失败");
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        btnConfirm.setEnabled(true);
+                        btnCancel.setEnabled(true);
+                    }
+                });
             }
         });
 
