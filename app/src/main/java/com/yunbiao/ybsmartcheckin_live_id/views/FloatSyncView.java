@@ -33,14 +33,9 @@ public class FloatSyncView{
     private WindowManager.LayoutParams layoutParams;
     private View rootView;
     private Context mCtx;
-    private View llLoadingRoot;
-    private View rlCountRoot;
-    private View pbLoad;
-    private TextView tvInfoLoad;
-    private TextView tvStepLoad;
-    private TextView tvStaffCount;
-    private TextView tvErrLoad;
-//    private ProgressBar pbDownload;
+    private TextView tvInfo;
+    private TextView tvProgress;
+    private ProgressBar pbDownload;
 
     public FloatSyncView(Context context) {
         mCtx = context;
@@ -67,35 +62,9 @@ public class FloatSyncView{
         rootView = View.inflate(mCtx, R.layout.layout_load_pop, null);
         rootView.setFocusable(false);
         rootView.setElevation(10f);
-        llLoadingRoot = rootView.findViewById(R.id.ll_loading_root);
-        rlCountRoot = rootView.findViewById(R.id.rl_count_root);
-        tvStaffCount = (TextView) rootView.findViewById(R.id.tv_staff_count);
-        tvErrLoad = (TextView) rootView.findViewById(R.id.tv_err_load);
-        pbLoad = rootView.findViewById(R.id.pb_load);
-        tvInfoLoad = (TextView) rootView.findViewById(R.id.tv_info_load);
-        tvStepLoad = (TextView) rootView.findViewById(R.id.tv_step_load);
-//        pbDownload = (ProgressBar) rootView.findViewById(R.id.pb_download);
-        initUIState();
-    }
-
-    public void initUIState(){
-        showLoadingView();//显示加载
-        hideCount();//隐藏统计
-        setStep("");//步骤
-        setInfo("");//详情
-        setErr("",false);//隐藏错误
-    }
-
-    public void hideCount(){
-        rlCountRoot.setVisibility(View.GONE);
-    }
-
-    public void showCount(int localCount,int remoteCount){
-        if(rlCountRoot != null && llLoadingRoot != null &&
-                tvStaffCount != null){
-                    rlCountRoot.setVisibility(View.VISIBLE);
-                    tvStaffCount.setText(localCount + "/" + remoteCount);
-        }
+        tvInfo = rootView.findViewById(R.id.tv_info);
+        tvProgress = rootView.findViewById(R.id.tv_progress);
+        pbDownload = rootView.findViewById(R.id.pb_download);
     }
 
     public void show(){
@@ -113,48 +82,39 @@ public class FloatSyncView{
         }
     }
 
-    public void hideLoadingView(){
-        if(pbLoad != null){
-            pbLoad.setVisibility(View.INVISIBLE);
+    public void setNormalInfo(String info){
+        if(tvInfo != null){
+            tvInfo.setTextColor(Color.parseColor("#2d2a2a"));
+            tvInfo.setText(info);
         }
     }
 
-    public void showLoadingView(){
-        if(pbLoad != null){
-            pbLoad.setVisibility(View.VISIBLE);
+    public void setErrInfo(String err){
+        if(tvInfo != null){
+            tvInfo.setTextColor(Color.parseColor("#ff0000"));
+            tvInfo.setText(err);
         }
     }
 
-    public void setStep(String step){
-        if(tvStepLoad != null){
-            tvStepLoad.setText(step);
+    public void setTvProgress(String progress){
+        if(tvProgress != null){
+            tvProgress.setText(progress);
         }
     }
 
-    public void setInfo(String info){
-        if(tvInfoLoad != null){
-            tvInfoLoad.setText(info);
+    public void setDownloadProgress(int curr,int total){
+        if(pbDownload != null){
+            pbDownload.setMax(total);
+            pbDownload.setProgress(curr);
         }
     }
 
-    public void setErr(String err,boolean show){
-        if(tvErrLoad != null){
-            tvErrLoad.setVisibility(show?View.VISIBLE:View.GONE);
-            tvErrLoad.setText(err);
+    public void showProgress(boolean isVisible){
+        if(pbDownload != null){
+            pbDownload.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
-    }
-
-    public void showDownloadView(boolean show){
-//        if(pbDownload != null){
-//            pbDownload.setVisibility(show?View.VISIBLE:View.GONE);
-//        }
-    }
-
-
-    public void setP(int max,int p) {
-//        if(pbDownload != null){
-//            pbDownload.setMax(max);
-//            pbDownload.setProgress(p);
-//        }
+        if(tvProgress != null){
+            tvProgress.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 }

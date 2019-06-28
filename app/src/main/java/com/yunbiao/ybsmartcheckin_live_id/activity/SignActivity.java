@@ -22,10 +22,21 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -43,7 +54,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private SignDao signDao;
     private View pb_load_list;
     private TextView tv_load_tips;
-    private TextView tv_export_sign_data;
 
     private final int MODE_ALL = 0;
     private final int MODE_SENDED = 1;
@@ -55,6 +65,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private List<SignBean> mSignList;
     private List<SignBean> mShowList = new ArrayList<>();
     private Spinner spnDataMode;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +78,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             setContentView(R.layout.activity_table_h);
         }
 
-        signDao= APP.getSignDao();
+        signDao = APP.getSignDao();
         initViews();
         initData();
 
@@ -75,35 +86,33 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initViews() {
-        lv_sign_List= (ListView) findViewById(R.id.lv_sign_List);
-        tv_date= (TextView) findViewById(R.id.tv_date);
-        iv_back= (ImageView) findViewById(R.id.iv_back);
+        lv_sign_List = (ListView) findViewById(R.id.lv_sign_List);
+        tv_date = (TextView) findViewById(R.id.tv_date);
+        iv_back = (ImageView) findViewById(R.id.iv_back);
         pb_load_list = findViewById(R.id.pb_load_list);
-        tv_load_tips = (TextView)findViewById(R.id.tv_load_tips);
-        tv_export_sign_data = (TextView)findViewById(R.id.tv_export_sign_data);
+        tv_load_tips = (TextView) findViewById(R.id.tv_load_tips);
         spnDataMode = (Spinner) findViewById(R.id.spn_data_mode);
-        tv_export_sign_data.setOnClickListener(this);
         tv_date.setOnClickListener(this);
         iv_back.setOnClickListener(this);
     }
 
     private void initData() {
-        Calendar calendar=Calendar.getInstance();
-        String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
-        String dayStr = calendar.get(Calendar.DAY_OF_MONTH)+"";//获取天
-        int realMonth = calendar.get(Calendar.MONTH)+1;//获取月份
+        Calendar calendar = Calendar.getInstance();
+        String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
+        String dayStr = calendar.get(Calendar.DAY_OF_MONTH) + "";//获取天
+        int realMonth = calendar.get(Calendar.MONTH) + 1;//获取月份
         String monthStr = realMonth + "月";
-        if(realMonth < 10){
+        if (realMonth < 10) {
             monthStr = "0" + realMonth + "月";
         }
-        String today =yearStr + "年" + monthStr + dayStr + "日";
+        String today = yearStr + "年" + monthStr + dayStr + "日";
         tv_date.setText(today);
         queryDate = today;
     }
 
-    private void initSpinner(){
-        final String[] modeArray = {"全部","已发送","未发送"};
-        ArrayAdapter<String> spnAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,modeArray);
+    private void initSpinner() {
+        final String[] modeArray = {"全部", "已发送", "未发送"};
+        ArrayAdapter<String> spnAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, modeArray);
 
         spnDataMode.setAdapter(spnAdapter);
         spnDataMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -118,10 +127,10 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
             }
         });
-        spnDataMode.setSelection(modeArray.length-1);
+        spnDataMode.setSelection(modeArray.length - 1);
     }
 
-    private void loadSignList(){
+    private void loadSignList() {
         pb_load_list.setVisibility(View.VISIBLE);
         lv_sign_List.setVisibility(View.GONE);
         tv_load_tips.setVisibility(View.GONE);
@@ -129,11 +138,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "loadSignList: " + queryDate + " ----- " + DATA_MODE );
+                Log.e(TAG, "loadSignList: " + queryDate + " ----- " + DATA_MODE);
 
                 mShowList.clear();
                 mSignList = signDao.queryByDate(queryDate);
-                if(mSignList == null || mSignList.size()<=0){
+                if (mSignList == null || mSignList.size() <= 0) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -145,11 +154,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 }
 
                 for (SignBean signBean : mSignList) {
-                    if(DATA_MODE == MODE_UNSENDED && !signBean.isUpload()){
+                    if (DATA_MODE == MODE_UNSENDED && !signBean.isUpload()) {
                         mShowList.add(signBean);
-                    } else if(DATA_MODE == MODE_SENDED && signBean.isUpload()){
+                    } else if (DATA_MODE == MODE_SENDED && signBean.isUpload()) {
                         mShowList.add(signBean);
-                    } else if(DATA_MODE == MODE_ALL){
+                    } else if (DATA_MODE == MODE_ALL) {
                         mShowList.add(signBean);
                     }
                 }
@@ -157,15 +166,15 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(mShowList != null && mShowList.size()>0){
-                            SignAdapter adapter=new SignAdapter(SignActivity.this,mShowList);
+                        if (mShowList != null && mShowList.size() > 0) {
+                            SignAdapter adapter = new SignAdapter(SignActivity.this, mShowList);
                             lv_sign_List.setAdapter(adapter);
 
                             lv_sign_List.setVisibility(View.VISIBLE);
                             pb_load_list.setVisibility(View.GONE);
                             tv_load_tips.setVisibility(View.GONE);
                         } else {
-                            if(DATA_MODE == MODE_UNSENDED){
+                            if (DATA_MODE == MODE_UNSENDED) {
                                 tv_load_tips.setText("数据已全部上传");
                             } else {
                                 tv_load_tips.setText("暂无数据");
@@ -196,11 +205,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                                 Log.d("Orignal", "Got clicked");
                                 int realMonth = month + 1;
                                 String monthStr = realMonth + "月";
-                                if(realMonth < 10){
+                                if (realMonth < 10) {
                                     monthStr = "0" + realMonth + "月";
                                 }
 
-                                String date =year+"年"+ monthStr +dayOfMonth+"日";
+                                String date = year + "年" + monthStr + dayOfMonth + "日";
                                 tv_date.setText(date);
 
                                 queryDate = date;
@@ -213,16 +222,102 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 ).show();
                 break;
             case R.id.tv_export_sign_data:
-                if(mSignList.size()<=0){
+                if (mSignList.size() <= 0) {
                     Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 String exportListJson = new Gson().toJson(mSignList);
-                Log.e(TAG, "当前可导出："+exportListJson);
+                Log.e(TAG, "当前可导出：" + exportListJson);
 
                 break;
         }
     }
 
+    private boolean isExporting = false;
+
+    public void exportToUD(View view) {
+        if(isExporting){
+            UIUtils.showTitleTip("正在导出，请稍等");
+            return;
+        }
+        isExporting = true;
+        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
+        File file = new File(usbDiskPath);
+        if(!file.exists()){
+            isExporting = false;
+            UIUtils.showTitleTip("请插入U盘");
+            return;
+        }
+
+        String[] list = file.list();
+        for (String s : list) {
+            File usbFile = new File(file,s);
+            if (usbFile.isDirectory()) {
+                file = usbFile;
+            }
+        }
+
+        final String fileName = "faceRecord_" +dateFormat.format(new Date())+ ".txt";
+        final File jsonFile = new File(file, fileName);
+
+        ThreadUitls.runInThread(new Runnable() {
+            @Override
+            public void run() {
+                List<SignBean> signBeans = signDao.selectAll();
+                Iterator<SignBean> iterator = signBeans.iterator();
+                while (iterator.hasNext()) {
+                    SignBean next = iterator.next();
+                    if(next.isUpload()){
+                        iterator.remove();
+                    }
+                }
+
+                if(signBeans.size() <= 0){
+                    isExporting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.showTitleTip("数据已全部上传\n没有可导出的数据");
+                        }
+                    });
+                    return;
+                }
+
+                String jsonStr = new Gson().toJson(signBeans);
+
+                OutputStream outputStream = null;
+                try {
+                    outputStream = new FileOutputStream(jsonFile);
+                    outputStream.write(jsonStr.getBytes());
+                    outputStream.flush();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(jsonFile.exists()){
+                            UIUtils.showTitleTip("导出成功，文件路径：\n" + jsonFile.getPath());
+                        } else {
+                            UIUtils.showTitleTip("导出失败");
+                        }
+                    }
+                });
+
+                isExporting = false;
+            }
+        });
+    }
 }

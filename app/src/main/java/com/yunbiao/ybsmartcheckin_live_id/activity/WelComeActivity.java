@@ -483,8 +483,9 @@ public class WelComeActivity extends BaseGateActivity {
             @Override
             public void run() {
                 int male = 0;
-                for (int i = 0; i < mSignList.size(); i++) {
-                    if (mSignList.get(i) != null && mSignList.get(i).getSex() != null && mSignList.get(i).getSex().equals("男")) {
+                for (SignBean signBean : mSignList) {
+                    boolean empty = TextUtils.isEmpty(signBean.getSex());
+                    if (empty || signBean.getSex().equals("男")) {
                         male = male + 1;
                     }
                 }

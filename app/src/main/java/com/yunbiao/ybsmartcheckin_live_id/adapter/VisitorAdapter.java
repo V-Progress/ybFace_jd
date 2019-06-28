@@ -82,7 +82,7 @@ public class VisitorAdapter extends BaseAdapter {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         viewHolder.tv_time.setText(df.format(bean.getTime()));
         if (!TextUtils.isEmpty(bean.getImgUrl())) {
-            Glide.with(context).load(bean.getImgUrl()).into( viewHolder.iv_userPhoto);
+            Glide.with(context).load(bean.getImgUrl()).asBitmap().override(100,100).into(viewHolder.iv_userPhoto);
         }
 
         return convertView;

@@ -67,6 +67,7 @@ public class SignBean {
     @DatabaseField(columnName = "depart")
     private String depart;//员工部门
 
+    @DatabaseField(columnName = "sex")
     private String sex;//性别
 
     private String age;//年龄

@@ -24,29 +24,32 @@ public class BaseDao<T> {
         }
     }
 
-    public void insert(T t){
+    public int insert(T t){
         try{
-            dao.create(t);
+            return dao.create(t);
         }catch (SQLException e){
             e.printStackTrace();
         }
+        return 0;
     }
 
-    public void delete(T t){
+    public int delete(T t){
         try {
-            dao.delete(t);
+            return dao.delete(t);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     // 修改user表中的一条数据
-    public void update(T t) {
+    public int update(T t) {
         try {
-            dao.update(t);
+            return dao.update(t);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     public List<T> selectAll(){

@@ -8,6 +8,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
@@ -138,7 +139,7 @@ public class SignManager2 {
             return;
         }
         if (canSign(faceId,signTime)) {
-            List<VIPDetail> vipDetails = SyncManager.instance().getUserDao().queryByFaceId(faceId);
+            List<VIPDetail> vipDetails = APP.getUserDao().queryByFaceId(faceId);
             if(vipDetails == null){
                 return;
             }

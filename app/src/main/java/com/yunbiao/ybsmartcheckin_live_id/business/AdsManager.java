@@ -310,6 +310,11 @@ public class AdsManager {
                 public void onError(Throwable ex) {
                     d("下载失败：" + adUrl);
                 }
+
+                @Override
+                public void onFinished() {
+
+                }
             });
         }
 

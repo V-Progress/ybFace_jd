@@ -237,6 +237,7 @@ public class SignManager {
             signBean.setSignature(vipDetail.getSignature());
             signBean.setJob(vipDetail.getJob());
             signBean.setBirthday(vipDetail.getBirthday());
+            signBean.setSex(vipDetail.getSex());
 
             if(!canPass(signBean)){
                 return;

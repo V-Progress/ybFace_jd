@@ -2,16 +2,8 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Base64;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.List;
 
 /**
  * Created by LiuShao on 2016/2/21.
@@ -51,6 +43,8 @@ public class SpUtils {
 
     public static final String CAMERA_ANGLE = "cameraAngle";//摄像头角度
 
+    public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
+
     static {
         sp = APP.getContext().getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
     }
@@ -73,6 +67,19 @@ public class SpUtils {
         if(sp != null){
             sp.edit().putInt(key,value).commit();
         }
+    }
+
+    public static void saveLong(String key,long value){
+        if(sp != null){
+            sp.edit().putLong(key,value).commit();
+        }
+    }
+
+    public static long getLong(String key){
+        if(sp != null){
+            return sp.getLong(key,0);
+        }
+        return 0;
     }
 
     public static String getStr(String key){

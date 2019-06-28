@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.jdjr.risk.face.local.detect.BaseProperty;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
-import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
 
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class FaceCanvasView extends ImageView {
             if(!TextUtils.isEmpty(userId)){
                 Integer integer = Integer.valueOf(userId);
                 if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
-                    List<VIPDetail> vipDetails = SyncManager.instance().getUserDao().queryByFaceId(integer);
+                    List<VIPDetail> vipDetails = APP.getUserDao().queryByFaceId(integer);
                     if(vipDetails != null && vipDetails.size() > 0){
                         String name = vipDetails.get(0).getName();
                         cacheMap.put(integer,name);

@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
+import android.os.storage.StorageManager;
 import android.text.format.Formatter;
 
 
@@ -16,7 +17,23 @@ import java.math.BigDecimal;
  * Created by LiuShao on 2016/4/6.
  */
 public class SdCardUtils {
-
+    private static final String TAG = "SdCardUtils";
+    public static String getUsbDiskPath(Context context){
+        String pathStr = "";
+        StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        try {
+            String[] paths = (String[]) StorageManager.class.getMethod("getVolumePaths", null).invoke(storageManager, null);
+            for (String path : paths) {
+                String state = (String) StorageManager.class.getMethod("getVolumeState", String.class).invoke(storageManager, path);
+                if (state.equals(Environment.MEDIA_MOUNTED) && !path.contains("emulated")) {
+                    pathStr = path;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pathStr;
+    }
     /**
      * 判断sdcard是否可用
      * @return true为可用，否则为不可用

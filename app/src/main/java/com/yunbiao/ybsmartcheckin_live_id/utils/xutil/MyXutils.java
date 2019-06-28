@@ -233,6 +233,13 @@ public class MyXutils {
                     callBack.onError(ex);
                 }
             }
+
+            @Override
+            public void onFinished() {
+                if (callBack != null) {
+                    callBack.onFinished();
+                }
+            }
         });
     }
 
@@ -250,5 +257,7 @@ public class MyXutils {
         void onSuccess(File result);
 
         void onError(Throwable ex);
+
+        void onFinished();
     }
 }

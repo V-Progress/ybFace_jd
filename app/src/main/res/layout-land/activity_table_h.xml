@@ -73,6 +73,7 @@
             android:textSize="20dp"/>
 
         <TextView
+            android:onClick="exportToUD"
             android:visibility="gone"
             android:id="@+id/tv_export_sign_data"
             android:gravity="center"
