@@ -226,7 +226,7 @@ public class SyncManager extends BroadcastReceiver {
                 SpUtils.saveStr(SpUtils.DOWNTIME, companyBean.getCompany().getDowntime());
                 SpUtils.saveStr(SpUtils.DOWNTIPS, companyBean.getCompany().getDowntips());
                 SpUtils.saveStr(SpUtils.COMPANY_NAME, abbname);
-
+                SpUtils.saveStr(SpUtils.MENU_PWD,companyBean.getCompany().getDevicePwd());
                 if(mListener != null){
                     mAct.runOnUiThread(new Runnable() {
                         @Override
@@ -347,7 +347,7 @@ public class SyncManager extends BroadcastReceiver {
             String filepath = SCREEN_BASE_PATH + urlPath.substring(urlPath.lastIndexOf("/") + 1);
 
             //生成新的员工信息
-            VIPDetail newVIPDetail = new VIPDetail(value.depId,entryEntity.getId(),entryEntity.getFaceId(),entryEntity.getSex()== 1 ? "男" : "女",entryEntity.getAge()+""
+            VIPDetail newVIPDetail = new VIPDetail(value.depId,entryEntity.getId(),entryEntity.getFaceId(),entryEntity.getSex()+"",entryEntity.getAge()+""
                     , entryEntity.getName(),value.depName,entryEntity.getPosition(),entryEntity.getNumber(),entryEntity.getBirthday(),entryEntity.getAutograph(),filepath);
 
             List<VIPDetail> vipDetails = userDao.queryByFaceId(entryEntity.getFaceId());
@@ -722,6 +722,9 @@ public class SyncManager extends BroadcastReceiver {
             return true;
         }
         if (!TextUtils.equals(newVIPDetail.getSignature(),oldVIPDetail.getSignature())) {
+            return true;
+        }
+        if(!TextUtils.equals(newVIPDetail.getSex(),oldVIPDetail.getSex())){
             return true;
         }
         return false;

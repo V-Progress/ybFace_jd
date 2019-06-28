@@ -49,7 +49,7 @@ public class CompanyBean {
         private String downtips;
         private List<LateEntity> late;
         private String gotips;
-        private int devicePwd;
+        private String devicePwd;
         private String comlogo;
         private String comname;
         private String abbname;
@@ -120,10 +120,6 @@ public class CompanyBean {
             this.gotips = gotips;
         }
 
-        public void setDevicePwd(int devicePwd) {
-            this.devicePwd = devicePwd;
-        }
-
         public void setComlogo(String comlogo) {
             this.comlogo = comlogo;
         }
@@ -160,8 +156,12 @@ public class CompanyBean {
             return gotips;
         }
 
-        public int getDevicePwd() {
+        public String getDevicePwd() {
             return devicePwd;
+        }
+
+        public void setDevicePwd(String devicePwd) {
+            this.devicePwd = devicePwd;
         }
 
         public String getComlogo() {

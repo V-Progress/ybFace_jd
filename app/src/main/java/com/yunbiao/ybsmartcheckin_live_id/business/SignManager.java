@@ -82,7 +82,7 @@ public class SignManager {
         threadPool.execute(initRunnable);
 
         autoUploadThread = Executors.newSingleThreadScheduledExecutor();
-        autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.SECONDS);
+        autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.MINUTES);
     }
 
     private Map<Integer, SignBean> passageMap = new HashMap<>();
@@ -95,6 +95,7 @@ public class SignManager {
                 return;
             }
             for (SignBean signBean : signBeans) {
+                Log.e(TAG, "库中性别" + signBean.getSex() );
                 long time = signBean.getTime();
                 int faceId = signBean.getFaceId();
                 if (passageMap.containsKey(faceId)) {
@@ -174,6 +175,7 @@ public class SignManager {
                                 @Override
                                 public void run() {
                                     for (SignBean signBean : signList) {
+                                        Log.e(TAG, "run: ---" + signBean.getSex());
                                         signBean.setUpload(true);
                                         signDao.update(signBean);
                                     }
@@ -260,17 +262,17 @@ public class SignManager {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
-        Log.e(TAG, "发送签到：" + ResourceUpdate.SIGNLOG + " --- " + map.toString());
+//        Log.e(TAG, "发送签到：" + ResourceUpdate.SIGNLOG + " --- " + map.toString());
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: " + e != null ? e.getMessage() : "NULL");
+//                Log.e(TAG, "onError: " + e != null ? e.getMessage() : "NULL");
                 signBean.setUpload(false);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: " + response);
+//                Log.e(TAG, "onResponse: " + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 signBean.setUpload(jsonObject.getInteger("status") == 1);
 

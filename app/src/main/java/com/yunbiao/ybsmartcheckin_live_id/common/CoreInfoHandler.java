@@ -63,10 +63,6 @@ public class CoreInfoHandler {
                         SpUtils.saveStr(SpUtils.EXP_DATE,expireDate);
                         isOnline = true;
 
-                        //是否有密码
-                        String password = CommonUtils.getJsonObj(contentJson, "password", "").toString();
-                        SpUtils.saveStr(SpUtils.MENU_PWD, password);
-
                         EventBus.getDefault().postSticky(new SystemActivity.UpdateEvent());
                     }
 

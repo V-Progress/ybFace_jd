@@ -485,7 +485,7 @@ public class WelComeActivity extends BaseGateActivity {
                 int male = 0;
                 for (SignBean signBean : mSignList) {
                     boolean empty = TextUtils.isEmpty(signBean.getSex());
-                    if (empty || signBean.getSex().equals("男")) {
+                    if (empty || signBean.getSex().equals("1") || signBean.getSex().equals("男")) {
                         male = male + 1;
                     }
                 }
