@@ -85,7 +85,7 @@ public class FaceSDK {
         FaceSettings.setRecordVerify(false);
 //        FaceSettings.setCheckType(FaceSettings.CHECK_NONE);//关闭防伪
         FaceSettings.setCheckType(FaceSettings.CHECK_RGB);//RGB防伪（只彩色防伪，防伪效果差）
-        //FaceSettings.setCheckType(FaceSettings.CHECK_NIR);//NIR防伪（防伪效果好）
+//        FaceSettings.setCheckType(FaceSettings.CHECK_NIR);//NIR防伪（防伪效果好）
 
         startFaceService();
     }

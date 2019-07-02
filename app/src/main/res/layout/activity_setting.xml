@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.SettingActivity">
+
+    <!--信息（录入、记录、广告（网络获取、本地检测）、logo和名称）-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/setting_text_title"
+            android:text="信息" />
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="公司LOGO：" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <Button
+                android:onClick="selectImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="选择图片" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="公司名称：" />
+
+            <TextView
+                style="@style/setting_text"
+                android:text="默认" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="设备编号" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="信息录入" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="数据记录" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="广告配置" />
+    </LinearLayout>
+
+    <!--摄像头-->
+    <!--像素、方向、镜像、前后置切换-->
+
+
+    <!--系统(升级、中英文切换)-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/setting_text_title"
+            android:text="系统" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="管理密码修改" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="网络检测" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="重启设备" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="开关机策略" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="检测升级" />
+    </LinearLayout>
+
+
+    <!--人脸（全部需重启）-->
+    <!--活体开关、多人识别、相似度阈值、提示语、未识别语音提示、重扫时间、SDK激活、数据存储天数或相关规则-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/setting_text_title"
+            android:text="人脸" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="激活" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="活体检测" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="多人识别" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="匹配度阈值" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="提示语" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="错误提示" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="扫描间隔" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="人脸数据保存天数" />
+    </LinearLayout>
+
+
+    <!--硬件-->
+    <!--继电器相关设置、led灯相关设置、硬件相关的设置-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/setting_text_title"
+            android:text="硬件" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="LED补光灯" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="LED补光灯规则设置" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:text="继电器设置" />
+    </LinearLayout>
+</LinearLayout>

@@ -66,6 +66,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private List<SignBean> mShowList = new ArrayList<>();
     private Spinner spnDataMode;
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    private DateFormat dateFormatter = new SimpleDateFormat("yyyy年MM月dd日");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,15 +98,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initData() {
-        Calendar calendar = Calendar.getInstance();
-        String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
-        String dayStr = calendar.get(Calendar.DAY_OF_MONTH) + "";//获取天
-        int realMonth = calendar.get(Calendar.MONTH) + 1;//获取月份
-        String monthStr = realMonth + "月";
-        if (realMonth < 10) {
-            monthStr = "0" + realMonth + "月";
-        }
-        String today = yearStr + "年" + monthStr + dayStr + "日";
+        String today = dateFormatter.format(new Date());
         tv_date.setText(today);
         queryDate = today;
     }
@@ -138,8 +131,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "loadSignList: " + queryDate + " ----- " + DATA_MODE);
-
                 mShowList.clear();
                 mSignList = signDao.queryByDate(queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
@@ -202,14 +193,19 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                Log.d("Orignal", "Got clicked");
+                                String yearStr = year + "年";
+
                                 int realMonth = month + 1;
                                 String monthStr = realMonth + "月";
                                 if (realMonth < 10) {
                                     monthStr = "0" + realMonth + "月";
                                 }
 
-                                String date = year + "年" + monthStr + dayOfMonth + "日";
+                                String dayStr = dayOfMonth + "日";
+                                if(dayOfMonth<10){
+                                    dayStr = "0" + dayOfMonth + "日";
+                                }
+                                String date = yearStr + monthStr + dayStr;
                                 tv_date.setText(date);
 
                                 queryDate = date;
@@ -220,16 +216,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 ).show();
-                break;
-            case R.id.tv_export_sign_data:
-                if (mSignList.size() <= 0) {
-                    Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String exportListJson = new Gson().toJson(mSignList);
-                Log.e(TAG, "当前可导出：" + exportListJson);
-
                 break;
         }
     }

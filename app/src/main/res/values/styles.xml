@@ -95,4 +95,23 @@
         <item name="android:windowEnterAnimation">@anim/anim_load_pop_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_load_pop_exit</item>
     </style>
+
+    <style name="setting_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="setting_text_title" parent="setting_text">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:textSize">30dp</item>
+    </style>
+
+    <style name="setting_text_child" parent="setting_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">50dp</item>
+    </style>
 </resources>

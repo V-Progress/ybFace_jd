@@ -50,7 +50,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.TestActivity"></activity>
+        <activity android:name=".activity.SettingActivity"></activity>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

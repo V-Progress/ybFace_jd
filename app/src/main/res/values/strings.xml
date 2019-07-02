@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">云标智能签到</string>
+    <string name="app_name">云标AI人脸签到系统</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
@@ -61,5 +61,9 @@
     <string name="sign_list_filed_job">职位</string>
     <string name="sign_list_filed_head">头像</string>
 
-
+    <!--设置-->
+    <string name="setting_title_logo">设置</string>
+    <string name="setting_title_system">系统</string>
+    <string name="setting_title_face">人脸</string>
+    <string name="setting_title_hardware">硬件</string>
 </resources>
