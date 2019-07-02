@@ -16,14 +16,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,11 +99,6 @@ public class WelComeActivity extends BaseGateActivity {
     private TextView tv_load_error;//加载提示
     private View aiv_bulu;//补录加载条
 
-    private View layout_head;
-    private View layout_wel;
-    private View iv_yuan;
-    private View iv_line;
-
     private ImageView ivQrCodeAdd;
 
     private BaseAdapter mVisitorAdapter;//签到人员adapter
@@ -147,142 +136,20 @@ public class WelComeActivity extends BaseGateActivity {
         //开启Xmpp
         startXmpp();
 
-        //开始初始化动画
-//        startInitAnim();
-
         //初始化语音系统//todo 7.0以上无法加载讯飞语音库
-        KDXFSpeechManager.instance().init(this).welcome(null);
+        KDXFSpeechManager.instance().init(this).welcome();
 
         //初始化定位工具
         LocateManager.instance().init(this);
 
         //开始获取天气
-        WeatherManager.instance().start(WelComeActivity.this, new WeatherManager.ResultListener() {
-            @Override
-            public void updateWeather(int id, String weatherInfo) {
-                iv_wea.setImageResource(R.mipmap.icon_snow);
-                tv_tem.setText(weatherInfo);
-            }
-        });
-
-        // TODO: 2019/6/10 多人
-//        MultipleSignDialog.instance().init(this);
-//        SignManager2.instance().init(WelComeActivity.this, new SignManager2.SignEventListener() {
-//            @Override
-//            public void onPrepared(List<SignBean> mList) {
-//                if (mList == null) {
-//                    return;
-//                }
-//
-////                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
-////                gridview.setAdapter(mVisitorAdapter);
-////
-////                updateNumber(mList);
-//
-//                tv_load_error.setVisibility(View.GONE);
-//                ll_load_container.setVisibility(View.GONE);
-//                gridview.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onSigned(List<SignBean> mList, SignBean signBean, int signType) {
-////                updateNumber(mList);
-//                speak(signType,signBean.getName());
-//                MultipleSignDialog.instance().sign(signBean);
-//
-//                if (mGateIsAlive) {
-//                    mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-//                }
-//            }
-//        });
-
+        WeatherManager.instance().start(WelComeActivity.this,resultListener);
 
         //开始定时更新签到列表
-        SignManager.instance().init(WelComeActivity.this, new SignManager.SignEventListener() {
-            @Override
-            public void onPrepared(List<SignBean> mList) {
-                if (mList == null) {
-                    return;
-                }
+        SignManager.instance().init(this,signEventListener);
 
-                mSignList.addAll(mList);
-                mVisitorAdapter.notifyDataSetChanged();
-                updateNumber();
-
-                tv_load_error.setVisibility(View.GONE);
-                ll_load_container.setVisibility(View.GONE);
-                gridview.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onSigned(SignBean signBean, int signType) {
-                mSignList.add(0,signBean);
-                mVisitorAdapter.notifyDataSetChanged();
-                updateNumber();
-
-                if (mGateIsAlive) {
-                    mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-                }
-
-                speak(signType, signBean.getName());
-
-                if (!AdsManager.instance().isAdsShowing()) {
-                    VipDialogManager.showVipDialog(WelComeActivity.this, today, signBean);
-                }
-            }
-
-            @Override
-            public void onMakeUped(String imgPath, boolean makeUpSuccess) {
-                isBulu = false;
-
-                VipDialogManager.showBuluDialog(WelComeActivity.this, imgPath,makeUpSuccess);
-                KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
-                aiv_bulu.setVisibility(View.GONE);
-                iv_record.setVisibility(View.VISIBLE);
-            }
-        });
-
-        faceView.setCallback(new FaceView.FaceCallback() {
-            @Override
-            public void onReady() {
-                syncData();
-            }
-            @Override
-            public void onFaceDetection() {
-                if (!AdsManager.instance().isAniming()) {
-                    //如果广告可见，收起广告
-                    if (AdsManager.instance().isAdsShowing()) {
-                        AdsManager.instance().openAds();
-                    } else {
-                        //重置倒计时
-                        AdsManager.instance().startTimer();
-                    }
-                }
-            }
-
-            @Override
-            public void onFaceVerify(VerifyResult verifyResult) {
-                if(verifyResult == null){
-                    return;
-                }
-
-                int result = verifyResult.getResult();
-
-                if(isBulu ){
-                    if(!SignManager.canMakeUp()){
-                        return;
-                    }
-                    SignManager.instance().makeUpSign(verifyResult.getFaceImageBytes());
-                    return;
-                }
-
-                if(result != VerifyResult.UNKNOWN_FACE){
-                    return;
-                }
-
-                SignManager.instance().checkSign(verifyResult);
-            }
-        });
+        //初始化广告
+        AdsManager.instance().init(WelComeActivity.this, null);
     }
 
     private void initViews() {
@@ -305,15 +172,112 @@ public class WelComeActivity extends BaseGateActivity {
         tv_bottomTitle = (TextView) findViewById(R.id.tv_bottomTitle);
         ivQrCodeAdd = (ImageView) findViewById(R.id.iv_qrCode_add);
 
-        layout_head = findViewById(R.id.layout_head);
-        layout_wel = findViewById(R.id.layout_wel);
-        iv_yuan = findViewById(R.id.iv_yuan);
-        iv_line = findViewById(R.id.iv_line);
-
+        faceView.setCallback(faceCallback);
         mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
         gridview.setAdapter(mVisitorAdapter);
     }
 
+    //初始化变量
+    private void initData() {
+        //设置设备编号
+        String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
+        if (!TextUtils.isEmpty(deviceSernum)) {
+            tv_deviceNo.setText(deviceSernum);
+        }
+    }
+
+    /*人脸识别回调，由上到下执行*/
+    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
+        @Override
+        public void onReady() {
+            syncData();
+        }
+        @Override
+        public void onFaceDetection() {
+            //如果广告可见，收起广告
+            if (AdsManager.instance().isAdsShowing()) {
+                AdsManager.instance().openAds();
+            } else {
+                //重置倒计时
+                AdsManager.instance().startTimer();
+            }
+        }
+
+        @Override
+        public void onFaceVerify(VerifyResult verifyResult) {
+            if(verifyResult == null){
+                return;
+            }
+            int result = verifyResult.getResult();
+            if(isBulu ){
+                if(!SignManager.canMakeUp()){
+                    return;
+                }
+                SignManager.instance().makeUpSign(verifyResult.getFaceImageBytes());
+                return;
+            }
+            if(result != VerifyResult.UNKNOWN_FACE){
+                return;
+            }
+            SignManager.instance().checkSign(verifyResult);
+        }
+    };
+
+    /*签到事件监听*/
+    private SignManager.SignEventListener signEventListener = new SignManager.SignEventListener() {
+        @Override
+        public void onPrepared(List<SignBean> mList) {
+            if (mList == null) {
+                return;
+            }
+
+            mSignList.addAll(mList);
+            mVisitorAdapter.notifyDataSetChanged();
+            updateNumber();
+
+            tv_load_error.setVisibility(View.GONE);
+            ll_load_container.setVisibility(View.GONE);
+            gridview.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onSigned(SignBean signBean, int signType) {
+            mSignList.add(0,signBean);
+            mVisitorAdapter.notifyDataSetChanged();
+            updateNumber();
+
+            if (mGateIsAlive) {
+                mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
+            }
+
+            speak(signType, signBean.getName());
+
+            if (!AdsManager.instance().isAdsShowing()) {
+                VipDialogManager.showVipDialog(WelComeActivity.this, today, signBean);
+            }
+        }
+
+        @Override
+        public void onMakeUped(String imgPath, boolean makeUpSuccess) {
+            isBulu = false;
+
+            VipDialogManager.showBuluDialog(WelComeActivity.this, imgPath,makeUpSuccess);
+            KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
+            aiv_bulu.setVisibility(View.GONE);
+            iv_record.setVisibility(View.VISIBLE);
+        }
+    };
+
+    /*天气请求结果监听*/
+    private WeatherManager.ResultListener resultListener = new WeatherManager.ResultListener() {
+        @Override
+        public void updateWeather(int id, String weatherInfo) {
+            iv_wea.setImageResource(R.mipmap.icon_snow);
+            tv_tem.setText(weatherInfo);
+        }
+    };
+
+    /*补录*/
     public void goMakeUp(View view){
         isBulu = true;
         aiv_bulu.setVisibility(View.VISIBLE);
@@ -330,15 +294,7 @@ public class WelComeActivity extends BaseGateActivity {
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
-    //初始化变量
-    private void initData() {
-        //设置设备编号
-        String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        if (!TextUtils.isEmpty(deviceSernum)) {
-            tv_deviceNo.setText(deviceSernum);
-        }
-    }
-
+    /*加载二维码*/
     private void loadQrCode(CompanyBean bean) {
         Map<String, String> params = new HashMap();
         params.put("comId", bean.getCompany().getComid() + "");
@@ -367,6 +323,7 @@ public class WelComeActivity extends BaseGateActivity {
         });
     }
 
+    /*同步数据*/
     private void syncData(){
         SyncManager.instance()
                 .init(WelComeActivity.this)
@@ -401,15 +358,6 @@ public class WelComeActivity extends BaseGateActivity {
                 });
     }
 
-    private void showTips(final String msg){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                UIUtils.showTitleTip(msg);
-            }
-        });
-    }
-    
     private void startXmpp() {//开启xmpp
         serviceManager = new ServiceManager(this);
         serviceManager.startService();
@@ -553,73 +501,6 @@ public class WelComeActivity extends BaseGateActivity {
         KDXFSpeechManager.instance().playText(speakStr);
     }
 
-    private void startInitAnim() {
-        RotateAnimation rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        LinearInterpolator lin = new LinearInterpolator();
-        rotate.setInterpolator(lin);
-        rotate.setDuration(4000);//设置动画持续周期
-        rotate.setRepeatCount(-1);//无限重复
-        rotate.setStartOffset(10);//执行前的等待时间
-        iv_yuan.startAnimation(rotate);
-
-        AnimationSet animationSet = new AnimationSet(true);//共用动画补间
-        TranslateAnimation ta = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0f,
-                Animation.RELATIVE_TO_PARENT, 0f,
-                Animation.RELATIVE_TO_PARENT, -0.2f,
-                Animation.RELATIVE_TO_PARENT, 0.35f);
-        ScaleAnimation bigToSmallAnim = new ScaleAnimation(1, 0.6f, 1, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);//x轴0倍，x轴1倍，y轴0倍，y轴1倍
-
-        animationSet.setDuration(4000);
-        animationSet.setRepeatCount(-1);
-        animationSet.setRepeatMode(Animation.REVERSE);
-        animationSet.addAnimation(ta);
-        animationSet.addAnimation(bigToSmallAnim);
-        // 动画是作用到某一个控件上
-        iv_line.startAnimation(animationSet);
-    }
-
-    public void closeInitView(final Runnable runnable) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TranslateAnimation ta1 = new TranslateAnimation(0, 0, 0, -layout_head.getHeight());
-                ta1.setInterpolator(new LinearInterpolator());
-                ta1.setDuration(800);
-                layout_head.startAnimation(ta1);
-
-                AnimationSet as = new AnimationSet(true);
-                as.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        layout_head.setVisibility(View.GONE);
-                        layout_wel.setVisibility(View.GONE);
-                        if(runnable != null){
-                            runnable.run();
-                        }
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-                });
-                TranslateAnimation ta2 = new TranslateAnimation(0, 0, 0, layout_wel.getHeight());
-                AlphaAnimation a = new AlphaAnimation(1f, 0.5f);
-                as.setInterpolator(new LinearInterpolator());
-                as.setFillAfter(true);
-                as.setDuration(800);
-                as.addAnimation(ta2);
-                as.addAnimation(a);
-                layout_wel.startAnimation(as);
-            }
-        });
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -691,3 +572,36 @@ public class WelComeActivity extends BaseGateActivity {
     }
 
 }
+
+
+
+// TODO: 2019/6/10 多人
+//        MultipleSignDialog.instance().init(this);
+//        SignManager2.instance().init(WelComeActivity.this, new SignManager2.SignEventListener() {
+//            @Override
+//            public void onPrepared(List<SignBean> mList) {
+//                if (mList == null) {
+//                    return;
+//                }
+//
+////                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
+////                gridview.setAdapter(mVisitorAdapter);
+////
+////                updateNumber(mList);
+//
+//                tv_load_error.setVisibility(View.GONE);
+//                ll_load_container.setVisibility(View.GONE);
+//                gridview.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onSigned(List<SignBean> mList, SignBean signBean, int signType) {
+////                updateNumber(mList);
+//                speak(signType,signBean.getName());
+//                MultipleSignDialog.instance().sign(signBean);
+//
+//                if (mGateIsAlive) {
+//                    mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
+//                }
+//            }
+//        });

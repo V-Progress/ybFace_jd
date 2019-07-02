@@ -124,14 +124,16 @@ public class AdsManager {
         });
 
         //外部广告
-        outImageBg = (FrameLayout) act.findViewById(R.id.fl_out_ads_bg);
-        outImage = (ImageView) act.findViewById(R.id.iv_out_ads);
-        outVideo = (VideoView) act.findViewById(R.id.vv_out_ads);
+        outImageBg = act.findViewById(R.id.fl_out_ads_bg);
+        outImage = act.findViewById(R.id.iv_out_ads);
+        outVideo = act.findViewById(R.id.vv_out_ads);
+        outVideo.setZOrderOnTop(true);
 
         //内部广告
-        insideImageBg = (FrameLayout) act.findViewById(R.id.fl_inside_ads);
-        insideImage = (ImageView) act.findViewById(R.id.iv_inside_ads);
-        insideVideo = (VideoView) act.findViewById(R.id.vv_inside_ads);
+        insideImageBg = act.findViewById(R.id.fl_inside_ads);
+        insideImage = act.findViewById(R.id.iv_inside_ads);
+        insideVideo = act.findViewById(R.id.vv_inside_ads);
+        insideVideo.setZOrderOnTop(true);
 
         mCurrOrientaion = mAct.getResources().getConfiguration().orientation;
 
@@ -619,6 +621,7 @@ public class AdsManager {
     private MyCountDownTimer mTimer = new MyCountDownTimer(DELAY_OPEN_ADS, 1000) {//90
         @Override
         public void onTick(long millisUntilFinished) {
+            Log.e(TAG, "onTick: -----" + millisUntilFinished);
         }
 
         @Override

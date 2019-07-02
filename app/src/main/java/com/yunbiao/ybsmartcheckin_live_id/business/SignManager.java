@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -95,7 +96,6 @@ public class SignManager {
                 return;
             }
             for (SignBean signBean : signBeans) {
-                Log.e(TAG, "库中性别" + signBean.getSex() );
                 long time = signBean.getTime();
                 int faceId = signBean.getFaceId();
                 if (passageMap.containsKey(faceId)) {
@@ -116,6 +116,8 @@ public class SignManager {
                     }
                 });
             }
+
+            clearJDVerifyRecord();
         }
     };
 
@@ -183,6 +185,8 @@ public class SignManager {
                             });
                         }
                     });
+
+            clearJDVerifyRecord();
         }
     };
 
@@ -417,6 +421,25 @@ public class SignManager {
         return filePic;
     }
 
+    /*定时清除京东SDK验证记录*/
+    private void clearJDVerifyRecord(){
+        int count = 0;
+        int failed = 0;
+        File dirFile = new File(APP.getContext().getDir("VerifyRecord", Context.MODE_PRIVATE).getAbsolutePath());
+        File[] files = dirFile.listFiles();
+        for (File file : files) {
+            if(file != null){
+                if (file.delete()) {
+                    count++;
+                } else {
+                    failed++;
+                }
+            }else {
+                failed++;
+            }
+        }
+        Log.e(TAG, "总共清除记录：" + count + "条" + "，失败：" + failed + "条");
+    }
 
     public interface SignEventListener {
         void onPrepared(List<SignBean> mList);

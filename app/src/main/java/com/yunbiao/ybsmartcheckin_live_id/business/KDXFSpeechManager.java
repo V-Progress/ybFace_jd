@@ -141,10 +141,9 @@ public class KDXFSpeechManager {
 
     /***
      * 播放欢迎语
-     * @param listener 回调，can be null
      */
-    public void welcome(final VoicePlayListener listener){
-        playText(UTTERANCE_WELCOME,listener);
+    public void welcome(){
+        playText(UTTERANCE_WELCOME,null);
     }
 
     /***
