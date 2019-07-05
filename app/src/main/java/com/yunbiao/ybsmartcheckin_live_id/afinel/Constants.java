@@ -31,6 +31,7 @@ public class Constants {
     public static String HEAD_PATH = LOCAL_ROOT_PATH + "photo/";//照片路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
     public static final String CURRENT_FACE_CACHE_PATH = CACHE_PATH + "face/";//实时人脸记录缓存
+    public static final String MEETING_PATH = LOCAL_ROOT_PATH + "meeting/";
 }
 
 

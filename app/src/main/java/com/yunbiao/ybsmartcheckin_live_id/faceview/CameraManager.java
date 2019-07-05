@@ -47,6 +47,10 @@ public class CameraManager {
 //        private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
 
+    public int getCameraType(){
+        return CAMERA_TYPE;
+    }
+
     public static CameraManager instance() {
         if (instance == null) {
             synchronized (CameraManager.class) {
@@ -104,8 +108,18 @@ public class CameraManager {
         }
         //释放
         releaseCamera();
-        //开启
-        doOpenCamera();
+
+        try{
+            //开启
+            doOpenCamera();
+        }catch (Exception e){
+            e.printStackTrace();
+            if (mListener != null) {
+                mListener.onNoneCamera();
+            }
+            return;
+        }
+
         //回调
         setCallback();
         //参数
@@ -134,19 +148,24 @@ public class CameraManager {
                 return;
             }
 
-            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
-                Camera.getCameraInfo(i, info);
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    d("准备开启... " + i);
-                    mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
-                    if(mCamera != null){
-                        d("已开启... ");
-                        if (mListener != null) {
-                            mListener.onCameraOpened();
+            try{
+                for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                    Camera.getCameraInfo(i, info);
+                    if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                        d("准备开启... " + i);
+                        mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
+                        if(mCamera != null){
+                            CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
+                            d("已开启... 后置");
+                            if (mListener != null) {
+                                mListener.onCameraOpened();
+                            }
                         }
+                        break;
                     }
-                    break;
                 }
+            }catch (Exception e){
+                throw e;
             }
 
             if(mCamera != null){
@@ -159,7 +178,8 @@ public class CameraManager {
                     d("准备开启... " + i);
                     mCamera = Camera.open(i); // 打开对应的摄像头，获取到camera实例
                     if(mCamera != null){
-                        d("已开启... ");
+                        CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                        d("已开启... 前置");
                         if (mListener != null) {
                             mListener.onCameraOpened();
                         }

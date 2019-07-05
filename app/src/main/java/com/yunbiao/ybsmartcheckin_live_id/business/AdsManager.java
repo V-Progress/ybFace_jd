@@ -133,7 +133,9 @@ public class AdsManager {
         insideImageBg = act.findViewById(R.id.fl_inside_ads);
         insideImage = act.findViewById(R.id.iv_inside_ads);
         insideVideo = act.findViewById(R.id.vv_inside_ads);
-        insideVideo.setZOrderOnTop(true);
+        if(insideVideo != null){
+            insideVideo.setZOrderOnTop(true);
+        }
 
         mCurrOrientaion = mAct.getResources().getConfiguration().orientation;
 
@@ -621,7 +623,6 @@ public class AdsManager {
     private MyCountDownTimer mTimer = new MyCountDownTimer(DELAY_OPEN_ADS, 1000) {//90
         @Override
         public void onTick(long millisUntilFinished) {
-            Log.e(TAG, "onTick: -----" + millisUntilFinished);
         }
 
         @Override
@@ -693,7 +694,6 @@ public class AdsManager {
                 if(mBackgroundBitmap != null){
                     mBackgroundBitmap.recycle();
                     mBackgroundBitmap = null;
-                    Log.e(TAG, "run: **********************");
                 }
 
                 int iw = resource.getWidth();
@@ -705,11 +705,8 @@ public class AdsManager {
                     return;
                 }
 
-                Log.e(TAG, "run: 11111111111111111111");
                 Palette palette = Palette.generate(resource);
                 if(palette != null){
-                    Log.e(TAG, "run: 22222222222222222222222222222");
-
                     if (palette.getDarkVibrantColor(Color.TRANSPARENT) != Color.TRANSPARENT) {
                         mBackgroundBitmap = createGradBitmap(view, resource, palette.getDarkVibrantColor(Color.TRANSPARENT), palette.getVibrantColor(Color.TRANSPARENT));
                     } else if (palette.getDarkMutedColor(Color.TRANSPARENT) != Color.TRANSPARENT) {

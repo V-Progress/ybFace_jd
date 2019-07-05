@@ -9,12 +9,11 @@
 
     <TextView
         android:padding="10dp"
-        android:text="访问密码"
+        android:text="管理密码"
         android:textSize="24dp"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 
     <EditText
         android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
@@ -27,7 +26,7 @@
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:padding="20dp"
-        android:hint="请输入密码"
+        android:hint="请输入管理密码"
         android:textSize="24dp"
         android:background="@drawable/line_net_edt"
         android:layout_width="match_parent"

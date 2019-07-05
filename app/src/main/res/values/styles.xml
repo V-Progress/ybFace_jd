@@ -6,14 +6,25 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="DialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground"> @android:color/transparent </item>
+
     </style>
 
     <!--弹窗动画-->
     <style name="mystyle" parent="android:Animation">
         <!--//进入时的动画-->
-        <item name="@android:windowEnterAnimation">@anim/modal_in</item>
+        <item name="android:windowEnterAnimation">@anim/modal_in</item>
         <!--//退出时的动画-->
-        <item name="@android:windowExitAnimation">@anim/modal_out</item>
+        <item name="android:windowExitAnimation">@anim/modal_out</item>
+    </style>
+
+    <style name="miniDialogStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/left_in</item>
+        <item name="android:windowExitAnimation">@anim/left_out</item>
     </style>
 
     <style name="system_item_ll">
@@ -50,6 +61,13 @@
         <item name="android:textSize">36dp</item>
         <item name="android:padding">18dp</item>
     </style>
+    <style name="system_item_lable_tv_h_small">
+        <item name="android:textColor">@color/WHITE</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:padding">10dp</item>
+    </style>
 
     <style name="system_item_info">
         <item name="android:gravity">center_vertical</item>
@@ -65,6 +83,14 @@
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingLeft">30dp</item>
         <item name="android:paddingRight">30dp</item>
+    </style>
+    <style name="sustem_item_info_shape_small" parent="system_item_info">
+        <item name="android:background">@drawable/shape_employ_button</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textSize">18dp</item>
     </style>
 
     <style name="net_ip_edt">
@@ -109,6 +135,7 @@
     </style>
 
     <style name="setting_text_child" parent="setting_text">
+        <item name="android:background">@drawable/selector_btn_take_photo</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>

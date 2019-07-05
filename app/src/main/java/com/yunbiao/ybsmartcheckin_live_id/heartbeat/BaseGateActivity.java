@@ -25,7 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.LogUtil;
  * Created by chen on 2019/4/3.
  */
 
-public class BaseGateActivity extends BaseActivity {
+public abstract class BaseGateActivity extends BaseActivity {
 
     private static final String LOGTAG = LogUtil.makeLogTag(BaseGateActivity.class);
 
@@ -40,7 +40,7 @@ public class BaseGateActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initPort();
+//        initPort();
         registerLocalReceiver();
     }
 

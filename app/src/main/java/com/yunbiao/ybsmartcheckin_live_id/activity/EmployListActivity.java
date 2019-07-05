@@ -72,21 +72,39 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     private View avlLoading;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_employlist);
-        } else {
-            setContentView(R.layout.activity_employlist_h);
-        }
+    protected int getPortraitLayout() {
+        return R.layout.activity_employlist;
+    }
 
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_employlist_h;
+    }
+
+    @Override
+    protected void initView() {
         EventBus.getDefault().register(this);
 
+        rootView = findViewById(R.id.rl_root);
+        lv_employ_List= (ListView) findViewById(R.id.lv_employ_List);
+        sp_depart= (Spinner) findViewById(R.id.sp_depart);
+        btn_addEmploy= (Button) findViewById(R.id.btn_addEmploy);
+        btn_addDepart= (Button) findViewById(R.id.btn_addDepart);
+        btn_sync= (Button) findViewById(R.id.btn_sync);
+        iv_back= (ImageView) findViewById(R.id.iv_back);
+        tv_deviceNo= (TextView) findViewById(R.id.tv_deviceNo);
+        avlLoading = findViewById(R.id.avl_loading);
+
+        btn_addEmploy.setOnClickListener(this);
+        btn_addDepart.setOnClickListener(this);
+        btn_sync.setOnClickListener(this);
+        iv_back.setOnClickListener(this);
+    }
+
+    @Override
+    protected void initData() {
         departDao= APP.getDepartDao();
         userDao=APP.getUserDao();
-
-        initViews();
 
         employList=new ArrayList<>();
         employAdapter=new EmployAdapter(this,employList);
@@ -94,13 +112,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         employAdapter.setOnEmpEditListener(this);
         lv_employ_List.setAdapter(employAdapter);
 
-        initData();
         initDevice();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         ininSpinner();
     }
 
@@ -169,24 +181,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     }
 
-    private void initData() {
-    }
-
     private void initViews() {
-        rootView = findViewById(R.id.rl_root);
-        lv_employ_List= (ListView) findViewById(R.id.lv_employ_List);
-        sp_depart= (Spinner) findViewById(R.id.sp_depart);
-        btn_addEmploy= (Button) findViewById(R.id.btn_addEmploy);
-        btn_addDepart= (Button) findViewById(R.id.btn_addDepart);
-        btn_sync= (Button) findViewById(R.id.btn_sync);
-        iv_back= (ImageView) findViewById(R.id.iv_back);
-        tv_deviceNo= (TextView) findViewById(R.id.tv_deviceNo);
-        avlLoading = findViewById(R.id.avl_loading);
-
-        btn_addEmploy.setOnClickListener(this);
-        btn_addDepart.setOnClickListener(this);
-        btn_sync.setOnClickListener(this);
-        iv_back.setOnClickListener(this);
 
     }
 

@@ -103,32 +103,20 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
     private MediaPlayer shootMP;
     private View pbTakePhoto;
 
-    private Bitmap currFaceBitmap = null;
-    private String mFlag;
-//    private mipsFaceInfoTrackLiveness[] mFaceInfo;
-    private int mCurrentOrientation;
-    private View faceFrame;
     private FaceView faceView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mCurrentOrientation = getResources().getConfiguration().orientation;
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
-            setContentView(R.layout.activity_addemploy);
-        } else {//横屏
-            setContentView(R.layout.activity_addemploy_h);
-        }
-
-        userDao = APP.getUserDao();
-        departDao = APP.getDepartDao();
-        initViews();
-        initSpinnerData();
-        strFileAdd = "";
+    protected int getPortraitLayout() {
+        return R.layout.activity_addemploy;
     }
 
-    private void initViews() {
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_addemploy_h;
+    }
+
+    @Override
+    protected void initView() {
         faceView = findViewById(R.id.face_view);
 
         et_name = (EditText) findViewById(R.id.et_name);
@@ -147,14 +135,21 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
         tv_takephoto_tips = (TextView) findViewById(R.id.tv_takephoto_tips);
         pbTakePhoto = findViewById(R.id.alv_take_photo);
 
-        faceFrame = findViewById(R.id.fl_face_frame);
-
         btn_TakePhoto.setOnClickListener(this);
         btn_ReTakePhoto.setOnClickListener(this);
         tv_birth.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
         btn_cancle.setOnClickListener(this);
         iv_back.setOnClickListener(this);
+    }
+
+    @Override
+    protected void initData() {
+        userDao = APP.getUserDao();
+        departDao = APP.getDepartDao();
+
+        initSpinnerData();
+        strFileAdd = "";
     }
 
     private void initSpinnerData() {
@@ -268,7 +263,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
                 break;
             case R.id.btn_ReTakePhoto://重置所有状态
-                currFaceBitmap = null;
                 tv_takephoto_tips.setText("");
                 tv_takephoto_time.setText("");
                 pbTakePhoto.setVisibility(View.GONE);

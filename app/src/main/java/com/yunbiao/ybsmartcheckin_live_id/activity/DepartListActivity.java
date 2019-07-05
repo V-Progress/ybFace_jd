@@ -41,7 +41,6 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
     private static final String TAG = "DepartListActivity";
 
     private ListView lv_depart_List;
-    private ImageView iv_back;
     private Button btn_addDepart;
     private DepartListAdapter mDepartAdapter;
     private List<String> mDepartList;
@@ -49,49 +48,29 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
     private  List<DepartBean> mDepartlist;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_departlist);
-        } else {
-            setContentView(R.layout.activity_departlist_h);
-        }
-
-        departDao= APP.getDepartDao();
-        initViews();
-        initData();
-
+    protected int getPortraitLayout() {
+        return R.layout.activity_departlist;
     }
 
-    private void initViews() {
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_departlist_h;
+    }
 
-        lv_depart_List= (ListView) findViewById(R.id.lv_depart_List);
-        iv_back= (ImageView) findViewById(R.id.iv_back);
-        btn_addDepart= (Button) findViewById(R.id.btn_addDepart);
-
+    @Override
+    protected void initView() {
+        lv_depart_List= findViewById(R.id.lv_depart_List);
+        btn_addDepart= findViewById(R.id.btn_addDepart);
         mDepartList=new ArrayList<>();
-
-
-        mDepartlist   =	 departDao.selectAll();
+        mDepartlist = departDao.selectAll();
         if (mDepartlist!=null){
             for (int i = 0; i <mDepartlist.size() ; i++) {
                 mDepartList.add(mDepartlist.get(i).getName());
             }
         }
-
         mDepartAdapter=new DepartListAdapter(this,mDepartList);
         lv_depart_List.setAdapter(mDepartAdapter);
         mDepartAdapter.setOnInnerItemOnClickListener(this);
-
-
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         btn_addDepart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +84,6 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
                 builder.setView(view);
 
                 final EditText et_departName = (EditText)view.findViewById(R.id.et_departName);
-
 
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
                 {
@@ -180,10 +158,10 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
         });
     }
 
-    private void initData() {
-
+    @Override
+    protected void initData() {
+        departDao= APP.getDepartDao();
     }
-
 
     @Override
     public void itemClick(View v, final int postion) {

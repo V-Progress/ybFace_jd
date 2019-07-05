@@ -98,7 +98,7 @@ public class KDXFSpeechManager {
                                         AlertDialog alertDialog = builder.create();
                                         Window window = alertDialog.getWindow();
                                         window.setWindowAnimations(R.style.mystyle);  //添加动画
-                                        alertDialog.show();
+//                                        alertDialog.show();
                                     }
                                 }
                             }

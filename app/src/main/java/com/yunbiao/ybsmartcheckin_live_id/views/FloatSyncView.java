@@ -1,25 +1,15 @@
 package com.yunbiao.ybsmartcheckin_live_id.views;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.os.SystemClock;
-import android.support.annotation.StyleableRes;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 
@@ -47,7 +37,7 @@ public class FloatSyncView{
         windowManager = (WindowManager) APP.getContext().getSystemService(Context.WINDOW_SERVICE);
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST ;
         layoutParams.format = PixelFormat.RGBA_8888;
         layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -73,6 +63,7 @@ public class FloatSyncView{
         }catch (Exception e){
             windowManager.removeView(rootView);
             show();
+            e.printStackTrace();
         }
     }
 

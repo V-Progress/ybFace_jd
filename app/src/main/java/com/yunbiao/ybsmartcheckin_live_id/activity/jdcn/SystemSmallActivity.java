@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity;
+package com.yunbiao.ybsmartcheckin_live_id.activity.jdcn;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,7 +12,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,8 +33,11 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.AddEmployActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.SignActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
@@ -58,7 +60,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 
-public class SystemActivity extends BaseActivity implements View.OnClickListener {
+public class SystemSmallActivity extends BaseActivity implements View.OnClickListener {
 
     private Button btn_depart_system;
     private Button btn_add_system;
@@ -85,16 +87,12 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected int getPortraitLayout() {
-        return R.layout.activity_system;
+        return 0;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
-            return R.layout.activity_system_h_small;
-        } else {
-            return R.layout.activity_system_h;
-        }
+        return R.layout.activity_system_h_small;
     }
 
     @Override
@@ -153,7 +151,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
         setIcon();
 
-        com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.getDataSize(new com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.OnSizeCallback() {
+        FileUtils.getDataSize(new FileUtils.OnSizeCallback() {
             @Override
             public void getSize(long size) {
                 Log.e("123", "getSize: -----------" + size);
@@ -387,7 +385,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         }
 
 
-                        RestartAPPTool.restartAPP(SystemActivity.this);
+                        RestartAPPTool.restartAPP(SystemSmallActivity.this);
                         break;
                 }
             }
@@ -525,9 +523,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO: 2019/4/1 清除缓存
-                                SpUtils.clear(SystemActivity.this);
+                                SpUtils.clear(SystemSmallActivity.this);
                                 finishAll();
-                                RestartAPPTool.restartAPP(SystemActivity.this);
+                                RestartAPPTool.restartAPP(SystemSmallActivity.this);
                             }
                         });
                         break;

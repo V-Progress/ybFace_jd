@@ -109,39 +109,33 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private FaceView faceView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_editemploy);
-        } else {
-            setContentView(R.layout.activity_editemploy_h);
-        }
-
-        userDao = APP.getUserDao();
-        departDao = APP.getDepartDao();
-        initViews();
-        initSpinnerData();
+    protected int getPortraitLayout() {
+        return R.layout.activity_editemploy;
     }
 
-    private void initViews() {
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_editemploy_h;
+    }
+
+    @Override
+    protected void initView() {
         faceView = findViewById(R.id.face_view);
         faceFrame = findViewById(R.id.fl_face_frame);
-        et_name = (EditText) findViewById(R.id.et_name);
-        sp_depart = (Spinner) findViewById(R.id.sp_depart);
-        et_sign = (EditText) findViewById(R.id.et_sign);
-        et_job = (EditText) findViewById(R.id.et_job);
-        et_num = (EditText) findViewById(R.id.et_num);
-        tv_birth = (TextView) findViewById(R.id.tv_birth);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        iv_capture = (ImageView) findViewById(R.id.iv_capture);
-        btn_TakePhoto = (Button) findViewById(R.id.btn_TakePhoto);
-        btn_cancle = (Button) findViewById(R.id.btn_cancle);
-        btn_ReTakePhoto = (Button) findViewById(R.id.btn_ReTakePhoto);
-        iv_back = (ImageView) findViewById(R.id.iv_back);
-        tv_takephoto_time = (TextView) findViewById(R.id.tv_takephoto_time);
-        tv_takephoto_tips = (TextView) findViewById(R.id.tv_takephoto_tips);
+        et_name = findViewById(R.id.et_name);
+        sp_depart = findViewById(R.id.sp_depart);
+        et_sign = findViewById(R.id.et_sign);
+        et_job = findViewById(R.id.et_job);
+        et_num = findViewById(R.id.et_num);
+        tv_birth = findViewById(R.id.tv_birth);
+        btn_submit = findViewById(R.id.btn_submit);
+        iv_capture = findViewById(R.id.iv_capture);
+        btn_TakePhoto = findViewById(R.id.btn_TakePhoto);
+        btn_cancle = findViewById(R.id.btn_cancle);
+        btn_ReTakePhoto = findViewById(R.id.btn_ReTakePhoto);
+        iv_back = findViewById(R.id.iv_back);
+        tv_takephoto_time = findViewById(R.id.tv_takephoto_time);
+        tv_takephoto_tips = findViewById(R.id.tv_takephoto_tips);
         pbTakePhoto = findViewById(R.id.alv_take_photo);
 
         btn_TakePhoto.setOnClickListener(this);
@@ -152,6 +146,12 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         iv_back.setOnClickListener(this);
     }
 
+    @Override
+    protected void initData() {
+        userDao = APP.getUserDao();
+        departDao = APP.getDepartDao();
+        initSpinnerData();
+    }
 
     private void initSpinnerData() {
         mDepartList = new ArrayList<>();

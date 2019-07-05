@@ -8,6 +8,11 @@
     <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <permission android:name="android.permission.UPDATE_DEVICE_STATS" />
     <permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
+    <permission android:name="android.permission.READ_LOGS" />
+    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <permission android:name="android.permission.SET_TIME" />
+    <permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,20 +24,19 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /><!-- 弹窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-    <uses-permission android:name="android.permission.SET_TIME" />
+
     <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 关闭应用程序的权限 -->
     <uses-permission android:name="android.permission.RESTART_PACKAGES" /> <!-- 人脸识别 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
@@ -50,21 +54,46 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.SettingActivity"></activity>
+        <activity android:name=".activity.SettingActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />
 
         <activity
-            android:name=".activity.WelComeActivity"
+            android:name=".SplashActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.WelComeActivity"
+            android:launchMode="singleInstance" />
+
+        <activity android:name=".activity.AddEmployActivity" />
+        <activity android:name=".activity.jdcn.WelComeSmallActivity" />
+        <activity android:name=".activity.EmployListActivity" />
+        <activity android:name=".activity.DepartListActivity" />
+        <activity android:name=".activity.EditEmployActivity" />
+        <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
+
+        <activity android:name=".activity.SystemActivity" />
+
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <activity
+            android:name=".xmpp.NotificationDetailsActivity"
+            android:label="Notification Details" />
+        <activity
+            android:name=".xmpp.NotificationSettingsActivity"
+            android:label="Notification Settings" />
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
 
@@ -74,11 +103,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.AddEmployActivity" />
-        <activity android:name=".activity.EmployListActivity" />
-        <activity android:name=".activity.DepartListActivity" />
-        <activity android:name=".activity.EditEmployActivity" />
-        <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
         <receiver android:name=".heartbeat.BootRestartSeceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -87,12 +111,7 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".xmpp.NotificationDetailsActivity"
-            android:label="Notification Details" />
-        <activity
-            android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" />
+        <service android:name=".utils.killSelfService" />
 
         <service android:name=".xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
         <!-- 百度定位 -->
@@ -101,15 +120,6 @@
             android:enabled="true"
             android:permission="android.permission.BAIDU_LOCATION_SERVICE"
             android:process=":remote" />
-
-        <activity android:name=".activity.SystemActivity" />
-
-        <service android:name=".utils.killSelfService" />
-
-        <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:theme="@android:style/Theme.Translucent" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

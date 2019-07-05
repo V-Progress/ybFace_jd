@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,8 +65,6 @@ public class APP extends Application {
         super.onCreate();
         instance = this;
 
-        initXLog();
-
         initDB();
 
         cauchException();
@@ -75,7 +74,6 @@ public class APP extends Application {
         initUM();
 
         initUtils();
-
     }
 
     private void initXLog(){
@@ -111,11 +109,15 @@ public class APP extends Application {
                 filePrinter);
     }
 
-    private void initDB(){
-        DatabaseHelper.createDatabase(this);
-        userDao = new UserDao(this);
-        signDao = new SignDao(this);
-        departDao = new DepartDao(this);
+    public void initDB(){
+        try{
+            DatabaseHelper.createDatabase(this);
+            userDao = new UserDao(this);
+            signDao = new SignDao(this);
+            departDao = new DepartDao(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static UserDao getUserDao() {
@@ -131,7 +133,7 @@ public class APP extends Application {
     }
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//
-    private void cauchException() {
+    public void cauchException() {
         CrashHandler2.CrashUploader uploader = new CrashHandler2.CrashUploader() {
             @Override
             public void uploadCrashMessage(ConcurrentHashMap<String, Object> info, Throwable ex) {

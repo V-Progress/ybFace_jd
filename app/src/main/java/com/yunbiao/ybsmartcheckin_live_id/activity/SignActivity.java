@@ -69,24 +69,17 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private DateFormat dateFormatter = new SimpleDateFormat("yyyy年MM月dd日");
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_table);
-        } else {
-            setContentView(R.layout.activity_table_h);
-        }
-
-        signDao = APP.getSignDao();
-        initViews();
-        initData();
-
-        initSpinner();
+    protected int getPortraitLayout() {
+        return R.layout.activity_table;
     }
 
-    private void initViews() {
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_table_h;
+    }
+
+    @Override
+    protected void initView() {
         lv_sign_List = (ListView) findViewById(R.id.lv_sign_List);
         tv_date = (TextView) findViewById(R.id.tv_date);
         iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -97,10 +90,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         iv_back.setOnClickListener(this);
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
+        signDao = APP.getSignDao();
         String today = dateFormatter.format(new Date());
         tv_date.setText(today);
         queryDate = today;
+        initSpinner();
     }
 
     private void initSpinner() {

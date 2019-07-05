@@ -53,19 +53,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public static void createDatabase(Context context){
         File f = new File(DATABASE_PATH);
-        Log.e(TAG, "createDatabase: -----" + f.getPath());
         if(!f.exists() || (!f.isDirectory())){
             f.mkdirs();
         }
         f = new File(f,DATABASE_NAME);
-        Log.e(TAG, "createDatabase: -----" + f.getPath());
-        if (!f.exists()) {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(
-                    f.getPath(),null);
-            DatabaseHelper orm = new DatabaseHelper(context);
-            orm.onCreate(db);
-            db.close();
+        if (f.exists()) {
+            if(f.isDirectory()){
+                f.delete();
+            } else {
+                return;
+            }
         }
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(
+                f.getPath(),null);
+        DatabaseHelper orm = new DatabaseHelper(context);
+        orm.onCreate(db);
+        db.close();
     }
 
     //修改读写数据库的方法

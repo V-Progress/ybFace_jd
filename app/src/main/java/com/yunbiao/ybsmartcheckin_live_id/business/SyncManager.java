@@ -312,6 +312,7 @@ public class SyncManager extends BroadcastReceiver {
         }
         Map<Integer, StaffInfoBean> staffMap = new HashMap<>();
         List<StaffBean.DepEntity> dep = staffBean.getDep();
+
         for (StaffBean.DepEntity depEntity : dep) {
             List<StaffBean.DepEntity.EntryEntity> entryList = depEntity.getEntry();
             if (entryList != null && entryList.size() > 0) {
@@ -326,7 +327,11 @@ public class SyncManager extends BroadcastReceiver {
         }
 
         List<VIPDetail> localDataList = new ArrayList<>();
-        localDataList.addAll(userDao.selectAll());
+
+        List<VIPDetail> vipDetails1 = userDao.selectAll();
+        if(vipDetails1 != null && vipDetails1.size()>0){
+            localDataList.addAll(vipDetails1);
+        }
 
         for (VIPDetail vipDetail : localDataList) {
             int faceId = vipDetail.getFaceId();
@@ -399,6 +404,12 @@ public class SyncManager extends BroadcastReceiver {
         }
         String headUrl = updateBean.head;
         final VIPDetail vipDetail = updateBean.vipDetail;
+        File file = new File(vipDetail.getImgUrl());
+        if(file.exists()){
+            downloadHead(queue);
+            return;
+        }
+
         Log.e(TAG, "开始下载... " + vipDetail.getName() + " --- " + headUrl);
         MyXutils.getInstance().downLoadFile(headUrl, vipDetail.getImgUrl(), false, new MyXutils.XDownLoadCallBack() {
             boolean isSucc = false;

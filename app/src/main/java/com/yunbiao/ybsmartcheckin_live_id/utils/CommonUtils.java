@@ -2,10 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -20,6 +17,7 @@ import android.widget.EditText;
 
 import com.yunbiao.ybsmartcheckin_live_id.AppActivityManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.common.CameraTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.LogUtils;
 
@@ -351,7 +349,7 @@ public class CommonUtils {
     /**
      * 获取主板的信息存到sp里 供以后判断主板厂家使用
      */
-    public static void saveBroadInfo() {
+    public static String saveBroadInfo() {
         Process process = null;
         BufferedReader br = null;
         try {
@@ -366,7 +364,7 @@ public class CommonUtils {
             }
             String broadInfo = result.toString();
             LogUtils.e(TAG, "主板信息: " + broadInfo);
-            SpUtils.saveStr(SpUtils.BOARD_INFO,broadInfo);
+            return broadInfo;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -378,6 +376,7 @@ public class CommonUtils {
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -387,18 +386,14 @@ public class CommonUtils {
      */
     public static Integer getBroadType() {
         String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
-        if (broad_info.contains("zhsd")) {
-            return 1;
-        } else if (broad_info.contains("yunbiao") || broad_info.contains("lichao")|| broad_info.contains("shizhenxi")) {//yunbiao   shizhenxi
-            return 4;
-        } else if (broad_info.contains("ubunt")) {
-            return 2;
-        } else if (broad_info.contains("edge")) {//edge   xqt
-            return 3;
-        } else if (broad_info.contains("zhoutao")) {
-            return 5;
+        if(TextUtils.isEmpty(broad_info)){
+            broad_info = saveBroadInfo();
+        }
+        SpUtils.saveStr(SpUtils.BOARD_INFO,broad_info);
+        if (broad_info.contains("even@bnxd")){
+            return Config.DEVICE_SMALL_FACE;
         } else {
-            return 0;
+            return Config.DEVICE_ONLY_FACE;
         }
     }
 

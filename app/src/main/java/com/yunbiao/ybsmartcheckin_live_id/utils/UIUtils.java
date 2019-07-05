@@ -90,7 +90,7 @@ public class UIUtils {
         ProgressDialog pd = new ProgressDialog(activity);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setIndeterminate(false);
-        pd.setCancelable(true); // 设置ProgressDialog 是否可以按退回键取消
+        pd.setCancelable(false); // 设置ProgressDialog 是否可以按退回键取消
         return pd;
     }
 

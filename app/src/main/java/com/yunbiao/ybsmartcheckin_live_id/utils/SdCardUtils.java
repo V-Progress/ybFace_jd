@@ -22,7 +22,7 @@ public class SdCardUtils {
         String pathStr = "";
         StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
         try {
-            String[] paths = (String[]) StorageManager.class.getMethod("getVolumePaths", null).invoke(storageManager, null);
+            String[] paths = (String[]) StorageManager.class.getMethod("getVolumePaths", new Class[0]).invoke(storageManager, new Object[0]);
             for (String path : paths) {
                 String state = (String) StorageManager.class.getMethod("getVolumeState", String.class).invoke(storageManager, path);
                 if (state.equals(Environment.MEDIA_MOUNTED) && !path.contains("emulated")) {

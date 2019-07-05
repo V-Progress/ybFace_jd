@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -132,6 +133,71 @@ public class VipDialogManager {
         window.setGravity(Gravity.CENTER);
         window.setWindowAnimations(R.style.mystyle);  //添加动画
         window.setAttributes(lp);
+    }
+
+    private static Dialog miniDialog;
+    private static void initMiniDialog(Activity activity){
+        if(miniDialog == null){
+            miniDialog = new Dialog(activity,R.style.DialogStyle);
+            //去掉标题线
+            miniDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+            //背景透明
+            miniDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        } else {
+            miniDialog.dismiss();
+        }
+        Window window = miniDialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.gravity = Gravity.LEFT; // 居中位置
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.dimAmount = 0f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){//6.0
+            lp.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        }else {
+            lp.type =  WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
+        window.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+        window.setWindowAnimations(R.style.miniDialogStyle);  //添加动画
+        window.setAttributes(lp);
+    }
+
+    public static void showMiniDialog(final Activity activity, final SignBean signBean){
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initMiniDialog(activity);
+
+                miniDialog.setContentView(R.layout.dialog_mini);
+                CircleImageView ivHead = miniDialog.findViewById(R.id.iv_head);
+                TextView tvName = miniDialog.findViewById(R.id.tv_name);
+                TextView tvSignature = miniDialog.findViewById(R.id.tv_signature);
+
+                if(!TextUtils.isEmpty(signBean.getImgUrl())){
+                    Bitmap bitmap = BitmapFactory.decodeFile(signBean.getImgUrl());
+                    ivHead.setImageBitmap(bitmap);
+                }
+                tvName.setText(signBean.getName());
+                tvSignature.setText(signBean.getSignature());
+                if(!activity.isFinishing()){
+                    miniDialog.show();
+                }
+
+                miniHandler.removeMessages(0);
+                miniHandler.sendEmptyMessageDelayed(0,2000);
+            }
+        });
+    }
+    private static Handler miniHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            dissmissMini();
+        }
+    };
+    public static void dissmissMini(){
+        if(miniDialog != null && miniDialog.isShowing()){
+            miniDialog.dismiss();
+        }
     }
 
     public static void showVipDialog(final Activity context, final String today, final SignBean signBean) {

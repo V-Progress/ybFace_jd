@@ -92,7 +92,7 @@ public class SpUtils {
         if(sp != null){
             return sp.getString(key,defaultValue);
         }
-        return "";
+        return defaultValue;
     }
 
     // TODO: 2019/6/27 ComById
@@ -116,6 +116,13 @@ public class SpUtils {
         return 0;
     }
 
+    public static int getIntOrDef(String key,int def){
+        if(sp != null){
+            return sp.getInt(key,def);
+        }
+        return def;
+    }
+
     public static void clear(Context context){
         if(sp != null){
             sp.edit().clear().apply();
@@ -132,7 +139,7 @@ public class SpUtils {
         if(sp != null){
             return sp.getBoolean(key,defValue);
         }
-        return false;
+        return defValue;
     }
 
 //    public static void saveString(Context context, String key, String value) {

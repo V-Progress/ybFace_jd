@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
@@ -92,18 +93,17 @@ public class SignManager {
         @Override
         public void run() {
             final List<SignBean> signBeans = signDao.queryByDate(today);
-            if (signBeans == null) {
-                return;
-            }
-            for (SignBean signBean : signBeans) {
-                long time = signBean.getTime();
-                int faceId = signBean.getFaceId();
-                if (passageMap.containsKey(faceId)) {
-                    long time1 = passageMap.get(faceId).getTime();
-                    if (time > time1) {
-                        passageMap.put(faceId, signBean);
-                    } else {
-                        continue;
+            if (signBeans != null) {
+                for (SignBean signBean : signBeans) {
+                    long time = signBean.getTime();
+                    int faceId = signBean.getFaceId();
+                    if (passageMap.containsKey(faceId)) {
+                        long time1 = passageMap.get(faceId).getTime();
+                        if (time > time1) {
+                            passageMap.put(faceId, signBean);
+                        } else {
+                            continue;
+                        }
                     }
                 }
             }
@@ -227,15 +227,18 @@ public class SignManager {
             }
 
             final long currTime = System.currentTimeMillis();
-            File imgFile = saveBitmap(currTime, faceImageBytes);
-
             VIPDetail vipDetail = vipDetails.get(0);
             final SignBean signBean = new SignBean();
+            signBean.setTime(currTime);
+            if(!canPass(signBean)){
+                return;
+            }
+
+            File imgFile = saveBitmap(currTime, faceImageBytes);
             signBean.setEmployNum(vipDetail.getEmployNum());
             signBean.setEmpId(vipDetail.getEmpId());
             signBean.setFaceId(vipDetail.getFaceId());
             signBean.setImgUrl(imgFile.getPath());
-            signBean.setTime(currTime);
             signBean.setDepart(vipDetail.getDepart());
             signBean.setName(vipDetail.getName());
             signBean.setUpload(false);
@@ -244,10 +247,6 @@ public class SignManager {
             signBean.setJob(vipDetail.getJob());
             signBean.setBirthday(vipDetail.getBirthday());
             signBean.setSex(vipDetail.getSex());
-
-            if(!canPass(signBean)){
-                return;
-            }
 
             if(listener != null){
                 mAct.runOnUiThread(new Runnable() {
@@ -394,6 +393,7 @@ public class SignManager {
      * @return
      */
     public File saveBitmap(long time, byte[] mBitmapByteArry) {
+        long start = System.currentTimeMillis();
         File filePic;
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -404,20 +404,21 @@ public class SignManager {
             String today = sdf.format(time);
             sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String sdfTime = sdf.format(time);
-            filePic = new File(Constants.CURRENT_FACE_CACHE_PATH + "/" + today + "/" + sdfTime + ".png");
+            filePic = new File(Constants.CURRENT_FACE_CACHE_PATH + "/" + today + "/" + sdfTime + ".jpg");
             if (!filePic.exists()) {
                 filePic.getParentFile().mkdirs();
                 filePic.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(filePic);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            image.compress(Bitmap.CompressFormat.JPEG, Config.getCompressRatio(), fos);
             fos.flush();
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-
+        long end = System.currentTimeMillis();
+        Log.e("Compress", "saveBitmap: 压缩耗时----- " + (end - start));
         return filePic;
     }
 
