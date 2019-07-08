@@ -32,7 +32,6 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
-import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -225,7 +224,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
                     @Override
                     public void onFinish() {
-                        AdsManager.instance().init(WelComeSmallActivity.this, null);
                     }
                 });
     }
@@ -413,7 +411,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
     protected void onResume() {
         super.onResume();
         faceView.resume();
-        AdsManager.instance().resume();
     }
 
     //延时修改标签，避免返回后立刻弹出签到框的情况
@@ -421,7 +418,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
     protected void onPause() {
         super.onPause();
         faceView.pause();
-        AdsManager.instance().pause();
     }
 
     @Override
@@ -431,7 +427,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
         destoryXmpp();
 
         SyncManager.instance().destory();
-        AdsManager.instance().destory();
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
     }

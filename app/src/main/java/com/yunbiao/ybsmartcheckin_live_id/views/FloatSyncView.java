@@ -1,8 +1,10 @@
 package com.yunbiao.ybsmartcheckin_live_id.views;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +38,21 @@ public class FloatSyncView{
         // 获取WindowManager服务
         windowManager = (WindowManager) APP.getContext().getSystemService(Context.WINDOW_SERVICE);
         layoutParams = new WindowManager.LayoutParams();
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST ;
+//        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        if (Build.VERSION.SDK_INT >= 24) { /*android7.0不能用TYPE_TOAST*/
+            layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        } else { /*以下代码块使得android6.0之后的用户不必再去手动开启悬浮窗权限*/
+            String packname =  APP.getContext().getPackageName();
+            PackageManager pm =  APP.getContext().getPackageManager();
+            boolean permission = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android.permission.SYSTEM_ALERT_WINDOW", packname));
+            if (permission) {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+            } else {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+            }
+        }
+
         layoutParams.format = PixelFormat.RGBA_8888;
         layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -61,8 +76,8 @@ public class FloatSyncView{
         try {
             windowManager.addView(rootView, layoutParams);
         }catch (Exception e){
-            windowManager.removeView(rootView);
-            show();
+//            windowManager.removeView(rootView);
+//            show();
             e.printStackTrace();
         }
     }

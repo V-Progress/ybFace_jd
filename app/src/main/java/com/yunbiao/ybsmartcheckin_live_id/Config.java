@@ -8,7 +8,7 @@ public class Config {
     public static final int DEVICE_PASSAGE_ONLY_FACE = 2;//人脸闸机
     public static final int DEVICE_PASSAGE_FACE_CARD = 3;//人卡闸机
     public static final int DEVICE_SMALL_FACE = 4;//京东超脑签到机
-    public static int deviceType = DEVICE_SMALL_FACE;
+    public static int deviceType;
 
     private static final String TAG = "Config";
     public static final int NONE_SERVICE = -1;//无服务（单机版）
