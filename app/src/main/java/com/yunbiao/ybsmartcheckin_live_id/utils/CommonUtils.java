@@ -388,8 +388,8 @@ public class CommonUtils {
         String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
         if(TextUtils.isEmpty(broad_info)){
             broad_info = saveBroadInfo();
+            SpUtils.saveStr(SpUtils.BOARD_INFO,broad_info);
         }
-        SpUtils.saveStr(SpUtils.BOARD_INFO,broad_info);
         if (broad_info.contains("even@bnxd")){
             return Config.DEVICE_SMALL_FACE;
         } else {

@@ -4,11 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.SplashActivity;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -42,14 +41,9 @@ public class BootRestartSeceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
 
-            try {
-                Thread.sleep(10000);
-                Intent i = new Intent(context, WelComeActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Intent i = new Intent(context, SplashActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
         }
     }
 

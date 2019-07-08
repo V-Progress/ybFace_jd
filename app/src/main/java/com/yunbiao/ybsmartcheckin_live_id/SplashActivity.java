@@ -39,7 +39,6 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
         Config.deviceType = CommonUtils.getBroadType();
-
         ybPermission = new YBPermission(new YBPermission.PermissionListener(){
             @Override
             public void onPermissionFailed(String[] objects) {
