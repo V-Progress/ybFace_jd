@@ -344,47 +344,64 @@ public class SignManager {
         return canMakeUp;
     }
 
-    public void makeUpSign(byte[] faceImage) {
-        canMakeUp = false;
-        final File imgFile = saveBitmap(System.currentTimeMillis(),faceImage);
+    public void makeUpSign(final byte[] faceImage) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                canMakeUp = false;
+                long currTime = System.currentTimeMillis();
+                final File imgFile = saveBitmap(currTime,faceImage);
 
-        int companyid = SpUtils.getInt(SpUtils.COMPANYID);
-        final Map<String, String> map = new HashMap<>();
-        map.put("comId", companyid + "");
-
-        Log.e("HAHA", "makeUpSign: -----" + imgFile.exists() + "-----" + imgFile.length());
-
-        Log.e("HAHA", "makeUpSign: " + ResourceUpdate.BULUSIGN + "-----" + map.toString());
-        OkHttpUtils.post()
-                .url(ResourceUpdate.BULUSIGN)
-                .params(map)
-                .addFile("head", imgFile.getName(), imgFile)
-                .build()
-                .execute(new StringCallback() {
-                    boolean makeUpSuccess = false;
-
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.e("HAHA", "补录失败--->" + e != null ? e.getMessage() : "NULL");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Log.e("HAHA", "onResponse: " + response);
-                        JSONObject jsonObject = JSONObject.parseObject(response);
-                        int status = jsonObject.getInteger("status");
-                        makeUpSuccess = status == 1;
-                    }
-
-                    @Override
-                    public void onAfter(int id) {
-                        canMakeUp = true;
-                        if (listener != null) {
-                            listener.onMakeUped(imgFile.getPath(), makeUpSuccess);
+                Log.e(TAG, "run: -------------- 补录成功");
+                if (listener != null) {
+                    mAct.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onMakeUped(imgFile.getPath(), true);
                         }
-                    }
-                });
+                    });
+                }
+
+                final SignBean signBean = new SignBean();
+                signBean.setTime(currTime);
+                signBean.setUpload(false);
+                signBean.setDate(dateFormat.format(currTime));
+                signBean.setName("员工补录");
+                signBean.setImgUrl(imgFile.getPath());
+                Log.e(TAG, "run: -------------- " + signBean.toString());
+                int companyid = SpUtils.getInt(SpUtils.COMPANYID);
+                final Map<String, String> map = new HashMap<>();
+                map.put("comId", companyid + "");
+                OkHttpUtils.post()
+                        .url(ResourceUpdate.BULUSIGN)
+                        .params(map)
+                        .addFile("head", imgFile.getName(), imgFile)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                Log.e(TAG, "补录失败--->" + e != null ? e.getMessage() : "NULL");
+                                e.printStackTrace();
+                                signBean.setUpload(false);
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                Log.e(TAG, "onResponse: " + response);
+                                JSONObject jsonObject = JSONObject.parseObject(response);
+                                int status = jsonObject.getInteger("status");
+                                signBean.setUpload(status == 1);
+                            }
+
+                            @Override
+                            public void onAfter(int id) {
+                                canMakeUp = true;
+                                int insert = signDao.insert(signBean);
+                                Log.e(TAG, "入库结果: " + insert);
+                            }
+                        });
+            }
+        });
     }
 
     /**

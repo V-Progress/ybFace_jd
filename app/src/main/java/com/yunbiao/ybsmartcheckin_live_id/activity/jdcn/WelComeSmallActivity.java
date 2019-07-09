@@ -71,7 +71,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
     private ServiceManager serviceManager;
 
     private String today = "";//获取今天时间
-    private boolean isBulu = false;//获取补录头像
     private String yuyin = " 您好 %s";
 
     //摄像头分辨率
@@ -100,13 +99,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
         tvWeather = findViewById(R.id.tv_weather);
 
         faceView.setCallback(faceCallback);
-
-        faceView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(WelComeSmallActivity.this, SettingActivity.class));
-            }
-        });
     }
 
     @Override
@@ -150,13 +142,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
                 return;
             }
             int result = verifyResult.getResult();
-            if(isBulu ){
-                if(!SignManager.canMakeUp()){
-                    return;
-                }
-                SignManager.instance().makeUpSign(verifyResult.getFaceImageBytes());
-                return;
-            }
             if(result != VerifyResult.UNKNOWN_FACE){
                 return;
             }
