@@ -27,16 +27,28 @@ public class ScreenSaver {
     }
 
     private ScreenSaver(){
-
-    }
-
-    public void start(){
         handler.sendEmptyMessage(0);
     }
 
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            mTime--;
+            if(mTime <= 0){
+                mTime = MAX_TIME;
+                open();
+                return;
+            }
+            handler.sendEmptyMessageDelayed(0,1000);
+        }
+    };
+
     public void restart(){
-        close();
-        mTime = MAX_TIME;
+        if(isShown()){//如果显示就关闭并开启计时
+            close();
+            handler.sendEmptyMessage(0);
+        }
+        mTime = MAX_TIME;//如果不显示就重置
     }
 
     public boolean isShown(){
@@ -44,8 +56,6 @@ public class ScreenSaver {
     }
 
     public void close(){
-//        int screenBrightness = getScreenBrightness(mAct);
-
         setLight(mAct,200);
         mAct.runOnUiThread(new Runnable() {
             @Override
@@ -64,19 +74,6 @@ public class ScreenSaver {
             }
         });
     }
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            mTime--;
-            if(mTime <= 0){
-                if(!screenSaveLayout.isShown()){
-                    open();
-                }
-            }
-            handler.sendEmptyMessageDelayed(0,1000);
-        }
-    };
 
     private void setLight(Activity context, int brightness) {
         WindowManager.LayoutParams lp = context.getWindow().getAttributes();

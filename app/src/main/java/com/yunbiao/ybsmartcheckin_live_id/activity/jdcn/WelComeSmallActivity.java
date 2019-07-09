@@ -127,7 +127,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         SignManager.instance().init(this,signEventListener);
 
         //开始屏保计时
-        ScreenSaver.get().init(this).start();
+        ScreenSaver.get().init(this);
 
         //自动清理服务
         ResourceCleanManager.instance().startAutoCleanService();
@@ -141,10 +141,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         }
         @Override
         public void onFaceDetection() {
-            //如果广告可见，收起广告
-            if(ScreenSaver.get().isShown()){
-                ScreenSaver.get().restart();
-            }
+            ScreenSaver.get().restart();
         }
 
         @Override
