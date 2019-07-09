@@ -133,24 +133,24 @@ public class WelComeActivity extends BaseGateActivity {
         if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
             initPieChart();
         }
-        faceView = (FaceView) findViewById(R.id.face_view);
-        iv_logo = (ImageView) findViewById(R.id.iv_logo);
-        tv_title = (TextView) findViewById(R.id.tv_title);
+        faceView = findViewById(R.id.face_view);
+        iv_logo = findViewById(R.id.iv_logo);
+        tv_title = findViewById(R.id.tv_title);
         ll_load_container = findViewById(R.id.ll_load_container);
-        tv_load_error = (TextView) findViewById(R.id.tv_load_error);
-        gridview = (GridView) findViewById(R.id.gridview);
+        tv_load_error = findViewById(R.id.tv_load_error);
+        gridview = findViewById(R.id.gridview);
         aiv_bulu = findViewById(R.id.aiv_bulu);
-        tv_tem = (TextView) findViewById(R.id.tv_tem);
-        iv_wea = (ImageView) findViewById(R.id.iv_wea);
-        tv_deviceNo = (TextView) findViewById(R.id.tv_deviceNo);
-        tv_checkInNum = (TextView) findViewById(R.id.tv_checkInNum);
-        imageView = (ImageView) findViewById(R.id.imageView_logo);
-        iv_record = (ImageView) findViewById(R.id.iv_record);
-        tv_comName = (TextView) findViewById(R.id.tv_comName);
-        tv_notice = (TextView) findViewById(R.id.tv_notice);
-        tv_topTitle = (TextView) findViewById(R.id.tv_topTitle);
-        tv_bottomTitle = (TextView) findViewById(R.id.tv_bottomTitle);
-        ivQrCodeAdd = (ImageView) findViewById(R.id.iv_qrCode_add);
+        tv_tem = findViewById(R.id.tv_tem);
+        iv_wea = findViewById(R.id.iv_wea);
+        tv_deviceNo = findViewById(R.id.tv_deviceNo);
+        tv_checkInNum = findViewById(R.id.tv_checkInNum);
+        imageView = findViewById(R.id.imageView_logo);
+        iv_record = findViewById(R.id.iv_record);
+        tv_comName = findViewById(R.id.tv_comName);
+        tv_notice = findViewById(R.id.tv_notice);
+        tv_topTitle = findViewById(R.id.tv_topTitle);
+        tv_bottomTitle = findViewById(R.id.tv_bottomTitle);
+        ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
 
         faceView.setCallback(faceCallback);
         mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
@@ -161,7 +161,7 @@ public class WelComeActivity extends BaseGateActivity {
     protected void initData() {
         //设置设备编号
         String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        if (!TextUtils.isEmpty(deviceSernum)) {
+        if (!TextUtils.isEmpty(deviceSernum) && tv_deviceNo != null) {
             tv_deviceNo.setText(deviceSernum);
         }
 
@@ -323,9 +323,15 @@ public class WelComeActivity extends BaseGateActivity {
                     public void onLoaded(CompanyBean bean) {
                         tv_comName.setText(bean.getCompany().getAbbname());
                         tv_title.setText(bean.getCompany().getAbbname());
-                        tv_notice.setText(bean.getCompany().getNotice());
-                        tv_topTitle.setText(bean.getCompany().getToptitle());
-                        tv_bottomTitle.setText(bean.getCompany().getBottomtitle());
+                        if(tv_notice != null){
+                            tv_notice.setText(bean.getCompany().getNotice());
+                        }
+                        if(tv_topTitle != null){
+                            tv_topTitle.setText(bean.getCompany().getToptitle());
+                        }
+                        if(tv_bottomTitle != null){
+                            tv_bottomTitle.setText(bean.getCompany().getBottomtitle());
+                        }
                         Glide.with(WelComeActivity.this)
                                 .load(bean.getCompany().getComlogo())
                                 .skipMemoryCache(true)

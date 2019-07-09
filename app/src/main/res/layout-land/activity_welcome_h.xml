@@ -21,31 +21,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_bottomTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_topTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_notice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
             <ImageView
                 android:visibility="gone"
                 android:id="@+id/iv_inside_ads"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_deviceNo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
 
             <ImageView
                 android:onClick="goMakeUp"
@@ -55,63 +35,61 @@
                 android:visibility="gone" />
 
             <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_centerInParent="true"
-                android:layout_margin="20dp"
                 android:id="@+id/face_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <RelativeLayout
+            <ImageView
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginRight="10dp"
+                android:onClick="goSetting"
+                android:scaleType="centerInside"
+                android:id="@+id/imageView_logo"
+                android:layout_width="wrap_content"
+                android:maxWidth="200dp"
+                android:maxHeight="100dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/logo" />
+
+            <TextView
+                android:layout_marginTop="35dp"
+                android:layout_toRightOf="@+id/imageView_logo"
+                android:id="@+id/tv_comName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textColor="@color/horizontal_item_visitor_name"
+                android:textSize="30dp" />
+
+            <TextClock
                 android:layout_marginLeft="35dp"
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="35dp"
-                android:id="@+id/rl_logo"
-                android:layout_width="match_parent"
+                android:id="@+id/textClock"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:onClick="goSetting"
-                    android:scaleType="centerInside"
-                    android:id="@+id/imageView_logo"
-                    android:layout_width="wrap_content"
-                    android:maxWidth="200dp"
-                    android:maxHeight="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:src="@mipmap/logo" />
-
-                <TextView
-                    android:id="@+id/tv_comName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@+id/imageView_logo"
-                    android:text=""
-                    android:textColor="@color/horizontal_item_visitor_name"
-                    android:textSize="30dp" />
-
-                <TextClock
-                    android:id="@+id/textClock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:format24Hour="yyyy/MM/dd  HH:mm:ss"
-                    android:format12Hour="yyyy/MM/dd  HH:mm:ss"
-                    android:textColor="@color/horizontal_item_visitor_name"
-                    android:textSize="28dp" />
-            </RelativeLayout>
-
+                android:layout_alignParentRight="true"
+                android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+                android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+                android:textColor="@color/horizontal_item_visitor_name"
+                android:textSize="28dp" />
 
             <LinearLayout
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
                 android:gravity="right"
-                android:layout_width="320dp"
+                android:layout_width="240dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/rl_logo"
+                android:layout_below="@+id/textClock"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -138,7 +116,7 @@
 
                     <LinearLayout
                         android:id="@+id/ll_load_container"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -154,7 +132,7 @@
                             android:text="正在加载数据..."
                             android:gravity="center"
                             android:textSize="24dp"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -168,12 +146,10 @@
 
                     <LinearLayout
                         android:gravity="bottom|center_horizontal"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="26dp"
-                        android:orientation="horizontal"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="35dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:paddingRight="15dp"
@@ -183,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:text="今日签到:"
                             android:textColor="@color/text_color_h"
-                            android:textSize="28dp" />
+                            android:textSize="26dp" />
 
                         <TextView
                             android:maxLength="5"
@@ -192,7 +168,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/text_color_sign_number"
-                            android:textSize="44dp" />
+                            android:textSize="36dp" />
 
                         <TextView
                             android:maxLines="1"
@@ -200,14 +176,12 @@
                             android:layout_height="wrap_content"
                             android:text="人"
                             android:textColor="@color/text_color_h"
-                            android:textSize="28dp" />
-
+                            android:textSize="26dp" />
                     </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="200dp"
                         android:layout_height="200dp"
-                        android:layout_gravity="center"
                         android:background="@mipmap/proportion_bg">
 
                         <LinearLayout

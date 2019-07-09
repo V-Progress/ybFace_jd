@@ -6,8 +6,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 27
-        versionName "1.1.6"
+        versionCode 28
+        versionName "1.1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         ndk {
