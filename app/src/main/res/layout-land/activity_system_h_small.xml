@@ -1,83 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:match="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/system_bg_h"
-    android:orientation="vertical"
-    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-        <ImageView
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerInside"
-            android:maxWidth="160dp"
-            android:id="@+id/iv_system_logo"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/logo" />
-
-        <TextView
-            android:maxLength="20"
-            android:maxLines="2"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:id="@+id/tv_system_compName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/System_title"
-            android:textColor="@color/white"
-            android:textSize="14dp" />
-
-        <TextView
-            android:layout_marginRight="20dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/iv_back"
-            android:id="@+id/tv_online_system"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_employ_button"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="@string/System_Service_offline"
-            android:textColor="@color/white"
-            android:textSize="10dp" />
-
-        <ImageView
-            android:padding="5dp"
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@mipmap/icon_back" />
-    </RelativeLayout>
+    android:orientation="vertical">
 
     <LinearLayout
-        android:paddingTop="20dp"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:paddingTop="50dp"
-            android:paddingBottom="50dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
             android:layout_weight="1"
             android:background="@drawable/shape_bg_btnrepicture"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/tv_system_compName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/tv_online_system"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_employ_button"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/System_Service_offline"
+                    android:textColor="@color/white"
+                    android:textSize="10dp" />
+
+            </RelativeLayout>
             <LinearLayout style="@style/system_item_ll_h">
 
                 <TextView
@@ -85,6 +63,7 @@
                     android:text="@string/System_deviceNo" />
 
                 <TextView
+                    android:textSize="16dp"
                     android:id="@+id/tv_deviceno_system"
                     style="@style/sustem_item_info_shape_small" />
             </LinearLayout>
@@ -95,6 +74,7 @@
                     android:text="@string/System_bindCode" />
 
                 <TextView
+                    android:textSize="16dp"
                     android:id="@+id/tv_bindcode_syetem"
                     style="@style/sustem_item_info_shape_small" />
             </LinearLayout>
@@ -106,6 +86,7 @@
                     android:text="@string/System_Company" />
 
                 <TextView
+                    android:textSize="16dp"
                     android:id="@+id/tv_company_system"
                     style="@style/system_item_info" />
             </LinearLayout>
@@ -118,14 +99,14 @@
                     android:text="@string/System_Service" />
 
                 <TextView
+                    android:textSize="16dp"
                     android:id="@+id/tv_server_system"
                     style="@style/system_item_info" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="right|center_vertical"
-                    android:paddingRight="100dp">
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical">
 
                     <Button
                         android:visibility="gone"
@@ -137,7 +118,7 @@
                         android:paddingRight="20dp"
                         android:text="设置"
                         android:textColor="@color/white"
-                        android:textSize="28dp" />
+                        android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -150,22 +131,16 @@
                     android:text="@string/System_ValiDate" />
 
                 <TextView
+                    android:textSize="16dp"
                     android:id="@+id/tv_exp_system"
                     style="@style/system_item_info"
                     android:layout_weight="1" />
 
-                <TextView
-                    android:visibility="gone"
-                    android:layout_marginRight="80dp"
-                    android:textSize="28dp"
-                    android:id="@+id/tv_qr_lable"
-                    style="@style/system_item_info"
-                    android:text="扫码续费o(∩_∩)o" />
-
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
+                android:layout_height="match_parent"
                 android:gravity="right"
                 android:orientation="horizontal">
 
@@ -182,23 +157,36 @@
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="bottom"
-            android:paddingBottom="10dp"
-            android:paddingTop="30dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TableLayout
+            <RelativeLayout
+                android:paddingBottom="10dp"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:padding="5dp"
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_back" />
+            </RelativeLayout>
+
+            <TableLayout
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TableRow
-                    android:layout_margin="15dp"
                     android:gravity="center"
                     android:weightSum="2">
 
@@ -228,7 +216,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_margin="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="2"
                     android:gravity="center">
 
@@ -260,62 +248,61 @@
             </TableLayout>
 
             <FrameLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button">
 
-                <FrameLayout
+                <com.roger.match.library.MatchTextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="70dp"
-                    android:background="@drawable/shape_employ_button">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    match:text="YBFACE"
+                    match:textColor="@color/white"
+                    match:textSize="30dp" />
 
-                    <com.roger.match.library.MatchTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="30dp"
-                        match:text="YUNBIAO WULIAN"
-                        match:textColor="@color/white"
-                        match:textSize="60dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:gravity="right|center">
-
-                        <TextView
-                            android:id="@+id/tv_version_system"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="20dp" />
-
-                        <Button
-                            android:id="@+id/btn_update_system"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:background="@drawable/selector_btn_take_photo"
-                            android:text="@string/System_update"
-                            android:textColor="@color/white"
-                            android:textSize="25dp" />
-                    </LinearLayout>
-
-                </FrameLayout>
-
-                <TextView
+                <LinearLayout
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="30dp"
-                    android:gravity="center"
-                    android:text="@string/System_copyright"
-                    android:textColor="@color/white"
-                    android:textSize="16dp" />
+                    android:gravity="right|bottom">
+
+                    <TextView
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/tv_version_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingRight="15dp"
+                        android:paddingLeft="15dp"
+                        android:id="@+id/btn_update_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:text="@string/System_update"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
             </FrameLayout>
-
-
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/System_copyright"
+        android:textColor="@color/white"
+        android:textSize="12dp" />
 </LinearLayout>

@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
@@ -78,7 +79,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_employlist_h;
+        if(Config.deviceType == Config.DEVICE_SMALL_FACE){
+            return R.layout.activity_employlist_h_small;
+        } else {
+            return R.layout.activity_employlist_h;
+        }
     }
 
     @Override
@@ -181,16 +186,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     }
 
-    private void initViews() {
-
-    }
-
     private void initDevice() {
         String  deviceSernum= SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        if (!TextUtils.isEmpty(deviceSernum)){
+        if (tv_deviceNo != null && !TextUtils.isEmpty(deviceSernum)){
             tv_deviceNo.setText(deviceSernum);
         }
-
     }
 
     @Override

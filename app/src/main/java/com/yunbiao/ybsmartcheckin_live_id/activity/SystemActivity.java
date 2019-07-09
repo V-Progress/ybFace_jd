@@ -64,7 +64,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private Button btn_add_system;
     private Button btn_data_system;
     private Button btn_setting_system;
-    private Button btn_update_system;
+    private TextView btn_update_system;
     private Button btn_setnet_system;
     private TextView tv_company_system;
     private TextView tv_deviceno_system;
@@ -115,7 +115,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         btn_add_system = (Button) findViewById(R.id.btn_add_system);
         btn_data_system = (Button) findViewById(R.id.btn_data_system);
         btn_setting_system = (Button) findViewById(R.id.btn_setting_system);
-        btn_update_system = (Button) findViewById(R.id.btn_update_system);
+        btn_update_system = (TextView) findViewById(R.id.btn_update_system);
         btn_setnet_system = (Button) findViewById(R.id.btn_setnet_system);
 
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
@@ -172,17 +172,17 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         if(TextUtils.isEmpty(string)){
             return;
         }
-
-        if(ivLogo == null){
-            return;
-        }
         CompanyBean bean = new Gson().fromJson(string,CompanyBean.class);
-        Glide.with(this)
-                .load(bean.getCompany().getComlogo())
-                .skipMemoryCache(true)
-                .crossFade(500)
-                .into(ivLogo);
-        tvCompName.setText(bean.getCompany().getToptitle());
+        if(ivLogo != null){
+            Glide.with(this)
+                    .load(bean.getCompany().getComlogo())
+                    .skipMemoryCache(true)
+                    .crossFade(500)
+                    .into(ivLogo);
+        }
+        if(tvCompName != null){
+            tvCompName.setText(bean.getCompany().getToptitle());
+        }
     }
 
     public void setInfo() {
@@ -220,7 +220,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this, SignActivity.class));
                 break;
             case R.id.btn_setting_system:
-                showSetting();
+//                showSetting();
+                startActivity(new Intent(this,SettingActivity.class));
                 break;
             case R.id.btn_update_system:
 

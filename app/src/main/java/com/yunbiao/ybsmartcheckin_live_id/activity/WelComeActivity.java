@@ -155,13 +155,6 @@ public class WelComeActivity extends BaseGateActivity {
         faceView.setCallback(faceCallback);
         mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
         gridview.setAdapter(mVisitorAdapter);
-
-//        faceView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(WelComeActivity.this,SettingActivity.class));
-//            }
-//        });
     }
 
     @Override

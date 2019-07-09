@@ -61,6 +61,8 @@
             android:textSize="20dp" />
 
         <Spinner
+            android:paddingLeft="5dp"
+            android:drawableRight="@mipmap/icon_arrow_down"
             android:id="@+id/spn_data_mode"
             android:layout_width="108dp"
             android:layout_height="44dp"

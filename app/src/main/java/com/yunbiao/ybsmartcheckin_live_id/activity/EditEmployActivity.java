@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -115,7 +117,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_editemploy_h;
+        if(Config.deviceType == Config.DEVICE_SMALL_FACE){
+            return R.layout.activity_editemploy_h_small;
+        } else {
+            return R.layout.activity_editemploy_h;
+        }
     }
 
     @Override
@@ -166,7 +172,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         DepartAdapter departAdapter = new DepartAdapter(this, mDepartList);
         sp_depart.setAdapter(departAdapter);
-
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
+        sp_depart.setPopupBackgroundDrawable(drawable);
         sp_depart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -332,6 +332,7 @@ public class SyncManager extends BroadcastReceiver {
         if(vipDetails1 != null && vipDetails1.size()>0){
             localDataList.addAll(vipDetails1);
         }
+        Log.e(TAG, "云端数据：" + staffMap.size() + "---本地数据：" + localDataList.size());
 
         for (VIPDetail vipDetail : localDataList) {
             int faceId = vipDetail.getFaceId();

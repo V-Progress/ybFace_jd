@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.DatePickerDialog;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
@@ -75,7 +77,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_table_h;
+        if(Config.deviceType == Config.DEVICE_SMALL_FACE){
+            return R.layout.activity_table_h_small;
+        } else {
+            return R.layout.activity_table_h;
+        }
     }
 
     @Override
@@ -101,9 +107,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     private void initSpinner() {
         final String[] modeArray = {"全部", "已发送", "未发送"};
-        ArrayAdapter<String> spnAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, modeArray);
+        ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(this, R.layout.item_spinner_simple_text, modeArray);
 
         spnDataMode.setAdapter(spnAdapter);
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
+        spnDataMode.setPopupBackgroundDrawable(drawable);
         spnDataMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -38,9 +38,9 @@
     </style>
     <style name="system_item_ll_h">
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingTop">15dp</item>
-        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingLeft">15dp</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -66,7 +66,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">16dp</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">5dp</item>
     </style>
 
     <style name="system_item_info">
@@ -88,7 +88,7 @@
         <item name="android:background">@drawable/shape_employ_button</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
-        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">10dp</item>
         <item name="android:textSize">18dp</item>
     </style>
