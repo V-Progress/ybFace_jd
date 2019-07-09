@@ -125,11 +125,9 @@ public class FaceCanvasView extends ImageView {
                 }
             }
         } else {
-            Log.e(TAG, "11111111111111111111111111111");
             if(faceProperty != null){
-                Log.e(TAG, "3333333333333333333333333");
-                contentText.append(faceProperty.getGender() == 0 ? "女士" : faceProperty.getGender() == 1 ? "男士" : "未知").append(", ")
-                    .append("年龄:").append(faceProperty.getAge());
+                contentText.append(faceProperty.getGender() == 0 ? "女士" : faceProperty.getGender() == 1 ? "男士" : "未知");
+//                        .append(", ").append(faceProperty.getAge());
             }
         }
     }
