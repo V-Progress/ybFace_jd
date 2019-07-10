@@ -32,7 +32,6 @@ public class FaceBoxUtil {
     }
 
     public static void setPreviewWidth(int l,int r,int t,int b,float previewWidth,float previewHeight) {
-        SpUtils.setMirror(true);
         IS_MIRROR = SpUtils.isMirror();
 
         mOverRect = new Rect(l,t,r,b);
@@ -77,7 +76,6 @@ public class FaceBoxUtil {
     }
 
     private static RectF getPortraitRect(Rect cameraBox) {
-
         final int cameraImageWidth = CameraManager.getWidth();
         final int cameraImageHeight = CameraManager.getHeight();
 

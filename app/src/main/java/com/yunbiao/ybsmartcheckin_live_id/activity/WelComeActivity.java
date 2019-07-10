@@ -44,6 +44,7 @@ import com.yunbiao.ybsmartcheckin_live_id.bean.AddQRCodeBean;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.AirQualityUtil;
+import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -207,6 +208,7 @@ public class WelComeActivity extends BaseGateActivity {
         }
         @Override
         public void onFaceDetection() {
+            ApiManager.instance().onLignt();
             //如果广告可见，收起广告
             if (AdsManager.instance().isAdsShowing()) {
                 AdsManager.instance().openAds();
@@ -257,6 +259,7 @@ public class WelComeActivity extends BaseGateActivity {
             mVisitorAdapter.notifyDataSetChanged();
             updateNumber();
 
+            ApiManager.instance().onGate();
             if (mGateIsAlive) {
                 mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
             }
