@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceBoxUtil;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -62,6 +65,7 @@ public class SettingActivity extends BaseActivity {
     private TextView tvCamera;
     private TextView tvLivenessState;
     private TextView tvMultipleState;
+    private CheckBox cbMirror;
 
     @Override
     protected int getPortraitLayout() {
@@ -84,6 +88,7 @@ public class SettingActivity extends BaseActivity {
         tvCamera = findViewById(R.id.tv_camera);
         tvLivenessState = findViewById(R.id.tv_liveness_state);
         tvMultipleState = findViewById(R.id.tv_multiple_state);
+        cbMirror = findViewById(R.id.cb_mirror);
     }
 
     @Override
@@ -119,7 +124,6 @@ public class SettingActivity extends BaseActivity {
                         tvCpuTemper.setText(s);
                     }
                 });
-
             }
         },0, 3 , TimeUnit.SECONDS);
 
@@ -127,6 +131,16 @@ public class SettingActivity extends BaseActivity {
 
         tvLivenessState.setText(Config.isLiveness()? "开" :"关");
         tvMultipleState.setText(Config.isMultiple()? "开" :"关");
+
+        final boolean mirror = SpUtils.isMirror();
+        cbMirror.setChecked(mirror);
+        cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.setMirror(isChecked);
+                FaceBoxUtil.setIsMirror();
+            }
+        });
     }
 
     public void selectImage(View view) {

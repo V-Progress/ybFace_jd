@@ -27,8 +27,8 @@ public class FaceBoxUtil {
     static {
         mOrientation = APP.getContext().getResources().getConfiguration().orientation;
     }
-    public static void setIsMirror(boolean isMirror){
-        IS_MIRROR = isMirror;
+    public static void setIsMirror(){
+        IS_MIRROR = SpUtils.isMirror();
     }
 
     public static void setPreviewWidth(int l,int r,int t,int b,float previewWidth,float previewHeight) {

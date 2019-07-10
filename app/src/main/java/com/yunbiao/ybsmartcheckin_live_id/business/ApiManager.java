@@ -8,7 +8,7 @@ import com.android.xhapimanager.XHApiManager;
 public class ApiManager {
 
     private XHApiManager xhApiManager;
-    int ligntTime = 5;
+    int lightTime = 5;
     int gateTime = 5;
     private static ApiManager apiManager = new ApiManager();
     private boolean lignHandlerRunning = false;
@@ -18,9 +18,9 @@ public class ApiManager {
         @Override
         public void handleMessage(Message msg) {
             lignHandlerRunning = true;
-            ligntTime--;
-            if(ligntTime <= 0){
-                ligntTime = 5;
+            lightTime--;
+            if(lightTime <= 0){
+                lightTime = 5;
                 offLight();
                 lignHandlerRunning = false;
                 return;
@@ -48,7 +48,11 @@ public class ApiManager {
         return apiManager;
     }
     private ApiManager(){
-        xhApiManager = new XHApiManager();
+        try{
+            xhApiManager = new XHApiManager();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /***
@@ -65,7 +69,7 @@ public class ApiManager {
         if(!isLighting()){
             xhApiManager.XHSetGpioValue(4,1);
         } else {
-            ligntTime = 5;
+            lightTime = 5;
         }
 
         if(!lignHandlerRunning){

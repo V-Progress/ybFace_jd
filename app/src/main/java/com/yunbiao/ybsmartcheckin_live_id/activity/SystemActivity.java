@@ -589,7 +589,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 });
             }
         });
-        cbMirror.setEnabled(false);
 
 
         Button btn_close_setting = (Button) dialog.findViewById(R.id.btn_close_setting);
