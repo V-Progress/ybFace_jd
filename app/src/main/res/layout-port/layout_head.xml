@@ -89,6 +89,7 @@
         android:layout_toLeftOf="@+id/tv_tem" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_deviceNo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

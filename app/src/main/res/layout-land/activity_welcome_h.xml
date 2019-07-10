@@ -59,6 +59,7 @@
                 android:src="@mipmap/logo" />
 
             <TextView
+                android:textStyle="bold"
                 android:layout_marginTop="35dp"
                 android:layout_toRightOf="@+id/imageView_logo"
                 android:id="@+id/tv_comName"
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text=""
-                android:textColor="@color/horizontal_item_visitor_name"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
 
             <TextClock
@@ -81,6 +82,15 @@
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textColor="@color/horizontal_item_visitor_name"
                 android:textSize="28dp" />
+
+            <TextView
+                android:id="@+id/tv_air"
+                android:layout_toLeftOf="@+id/textClock"
+                android:layout_marginTop="35dp"
+                android:textColor="@color/horizontal_item_visitor_name"
+                android:textSize="28dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:paddingTop="10dp"

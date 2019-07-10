@@ -3,8 +3,11 @@ package com.yunbiao.ybsmartcheckin_live_id.activity.jdcn;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 
@@ -15,6 +18,8 @@ public class ScreenSaver {
     private int mTime = MAX_TIME;
     private static WelComeSmallActivity mAct;
     private View screenSaveLayout;
+    private ImageView ivWeather;
+    private TextView tvWeather;
 
     public static ScreenSaver get(){
         return instance;
@@ -23,7 +28,19 @@ public class ScreenSaver {
     public ScreenSaver init(WelComeSmallActivity activity){
         mAct = activity;
         screenSaveLayout = mAct.findViewById(R.id.screen_saver);
+        ivWeather = mAct.findViewById(R.id.iv_weather);
+        tvWeather = mAct.findViewById(R.id.tv_weather);
         return instance;
+    }
+
+    public void setWeather(int iconId,String weather){
+        if(ivWeather != null && iconId != -1){
+            ivWeather.setImageResource(iconId);
+        }
+
+        if(tvWeather != null && !TextUtils.isEmpty(weather)){
+            tvWeather.setText(weather);
+        }
     }
 
     private ScreenSaver(){

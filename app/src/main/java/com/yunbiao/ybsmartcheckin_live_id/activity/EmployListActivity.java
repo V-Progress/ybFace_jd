@@ -3,9 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -151,6 +149,8 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         }
 
         DepartAdapter departAdapter=new DepartAdapter(this,mDepartList);
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
+        sp_depart.setPopupBackgroundDrawable(drawable);
         sp_depart.setAdapter(departAdapter);
         sp_depart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

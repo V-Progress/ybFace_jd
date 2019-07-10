@@ -87,7 +87,7 @@ public class SignManager {
         autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.MINUTES);
     }
 
-    private Map<Integer, SignBean> passageMap = new HashMap<>();
+    private Map<Integer, Long> passageMap = new HashMap<>();
     //初始化线程
     private Runnable initRunnable = new Runnable() {
         @Override
@@ -98,9 +98,9 @@ public class SignManager {
                     long time = signBean.getTime();
                     int faceId = signBean.getFaceId();
                     if (passageMap.containsKey(faceId)) {
-                        long time1 = passageMap.get(faceId).getTime();
+                        long time1 = passageMap.get(faceId);
                         if (time > time1) {
-                            passageMap.put(faceId, signBean);
+                            passageMap.put(faceId, time);
                         } else {
                             continue;
                         }
@@ -197,90 +197,71 @@ public class SignManager {
         return instance();
     }
 
-    /***
-     * 签到
-     */
-    public void sign(final VerifyResult verifyResult) {
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                checkSign(verifyResult);
-            }
-        });
-    }
-
-    public void checkSign(VerifyResult verifyResult){
-        synchronized (signLock){
-            byte[] faceImageBytes = verifyResult.getFaceImageBytes();
-            FaceUser user = verifyResult.getUser();
-            if(user == null){
-                return;
-            }
-            String userId = user.getUserId();
-            if (TextUtils.isEmpty(userId)) {
-                return;
-            }
-
-            List<VIPDetail> vipDetails = userDao.queryByFaceId(Integer.valueOf(userId));
-            if (vipDetails == null || vipDetails.size() <= 0) {
-                return;
-            }
-
-            final long currTime = System.currentTimeMillis();
-            VIPDetail vipDetail = vipDetails.get(0);
-            final SignBean signBean = new SignBean();
-            signBean.setTime(currTime);
-            if(!canPass(signBean)){
-                return;
-            }
-
-            File imgFile = saveBitmap(currTime, faceImageBytes);
-            signBean.setEmployNum(vipDetail.getEmployNum());
-            signBean.setEmpId(vipDetail.getEmpId());
-            signBean.setFaceId(vipDetail.getFaceId());
-            signBean.setImgUrl(imgFile.getPath());
-            signBean.setDepart(vipDetail.getDepart());
-            signBean.setName(vipDetail.getName());
-            signBean.setUpload(false);
-            signBean.setDate(dateFormat.format(currTime));
-            signBean.setSignature(vipDetail.getSignature());
-            signBean.setJob(vipDetail.getJob());
-            signBean.setBirthday(vipDetail.getBirthday());
-            signBean.setSex(vipDetail.getSex());
-
-            if(listener != null){
-                mAct.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onSigned(signBean,getCurrentTime(currTime));
-                    }
-                });
-            }
-
-            sendSignRecord(signBean);
+    public void checkSign(VerifyResult verifyResult) {
+        byte[] faceImageBytes = verifyResult.getFaceImageBytes();
+        FaceUser user = verifyResult.getUser();
+        if (user == null) {
+            return;
         }
+        String userId = user.getUserId();
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        List<VIPDetail> vipDetails = userDao.queryByFaceId(Integer.valueOf(userId));
+        if (vipDetails == null || vipDetails.size() <= 0) {
+            return;
+        }
+
+        final long currTime = System.currentTimeMillis();
+        VIPDetail vipDetail = vipDetails.get(0);
+        final SignBean signBean = new SignBean();
+        signBean.setFaceId(vipDetail.getFaceId());
+        signBean.setTime(currTime);
+        if (!canPass(signBean)) {
+            return;
+        }
+
+        File imgFile = saveBitmap(currTime, faceImageBytes);
+        signBean.setEmployNum(vipDetail.getEmployNum());
+        signBean.setEmpId(vipDetail.getEmpId());
+        signBean.setImgUrl(imgFile.getPath());
+        signBean.setDepart(vipDetail.getDepart());
+        signBean.setName(vipDetail.getName());
+        signBean.setUpload(false);
+        signBean.setDate(dateFormat.format(currTime));
+        signBean.setSignature(vipDetail.getSignature());
+        signBean.setJob(vipDetail.getJob());
+        signBean.setBirthday(vipDetail.getBirthday());
+        signBean.setSex(vipDetail.getSex());
+
+        if (listener != null) {
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onSigned(signBean, getCurrentTime(currTime));
+                }
+            });
+        }
+
+        sendSignRecord(signBean);
     }
 
-    private void sendSignRecord(final SignBean signBean){
+    private void sendSignRecord(final SignBean signBean) {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
-//        Log.e(TAG, "发送签到：" + ResourceUpdate.SIGNLOG + " --- " + map.toString());
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-//                Log.e(TAG, "onError: " + e != null ? e.getMessage() : "NULL");
                 signBean.setUpload(false);
             }
-
             @Override
             public void onResponse(String response, int id) {
-//                Log.e(TAG, "onResponse: " + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 signBean.setUpload(jsonObject.getInteger("status") == 1);
 
             }
-
             @Override
             public void onAfter(int id) {
                 signDao.insert(signBean);
@@ -291,16 +272,15 @@ public class SignManager {
     private boolean canPass(SignBean signBean) {
         int faceId = signBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
-            passageMap.put(faceId, signBean);
+            passageMap.put(faceId, signBean.getTime());
             return true;
         }
 
-        SignBean cacheBean = passageMap.get(faceId);
-        long lastTime = cacheBean.getTime();
+        long lastTime = passageMap.get(faceId);
         long currTime = signBean.getTime();
         boolean isCanPass = (currTime - lastTime) > verifyOffsetTime;
         if (isCanPass) {
-            passageMap.put(faceId, signBean);
+            passageMap.put(faceId, currTime);
         }
         return isCanPass;
     }
@@ -311,6 +291,7 @@ public class SignManager {
     }
 
     SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
+
     private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
         try {
             Date hourDate = typeSdf.parse(typeSdf.format(currTime));//现在的时间
@@ -350,7 +331,7 @@ public class SignManager {
             public void run() {
                 canMakeUp = false;
                 long currTime = System.currentTimeMillis();
-                final File imgFile = saveBitmap(currTime,faceImage);
+                final File imgFile = saveBitmap(currTime, faceImage);
 
                 Log.e(TAG, "run: -------------- 补录成功");
                 if (listener != null) {
@@ -440,19 +421,19 @@ public class SignManager {
     }
 
     /*定时清除京东SDK验证记录*/
-    private void clearJDVerifyRecord(){
+    private void clearJDVerifyRecord() {
         int count = 0;
         int failed = 0;
         File dirFile = new File(APP.getContext().getDir("VerifyRecord", Context.MODE_PRIVATE).getAbsolutePath());
         File[] files = dirFile.listFiles();
         for (File file : files) {
-            if(file != null){
+            if (file != null) {
                 if (file.delete()) {
                     count++;
                 } else {
                     failed++;
                 }
-            }else {
+            } else {
                 failed++;
             }
         }

@@ -110,12 +110,12 @@ public class APP extends Application {
     }
 
     public void initDB(){
-        try{
+        try {
             DatabaseHelper.createDatabase(this);
             userDao = new UserDao(this);
             signDao = new SignDao(this);
             departDao = new DepartDao(this);
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

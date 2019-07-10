@@ -32,6 +32,7 @@ public class FaceBoxUtil {
     }
 
     public static void setPreviewWidth(int l,int r,int t,int b,float previewWidth,float previewHeight) {
+        SpUtils.setMirror(true);
         IS_MIRROR = SpUtils.isMirror();
 
         mOverRect = new Rect(l,t,r,b);
@@ -48,7 +49,6 @@ public class FaceBoxUtil {
         Log.e(TAG, "计算缩放比例：mOverRect.width()：" + mOverRect.width() + "---- mOverRect.height()：" + mOverRect.height());
         Log.e(TAG, "计算缩放比例：mCameraWidth：" + mCameraWidth + "---- mCameraHeight：" + mCameraHeight);
     }
-
 
     private static RectF mDrawFaceRect = new RectF();
     private static Rect mOverRect = new Rect();
@@ -89,15 +89,21 @@ public class FaceBoxUtil {
         int scaleRight = (int) (cameraBox.right * scaleX);
         int scaleBottom = (int) (cameraBox.bottom * scaleY);
 
+        int finalDisplayLeft = scaleLeft;
+        int finalDisplayRight = scaleRight;
+        int finalDisplayTop = scaleTop;
+        int finalDisplayBottom = scaleBottom;
+
         if (!IS_MIRROR) {
-            scaleLeft = cameraImageWidth - scaleRight;
-            scaleRight = cameraImageWidth - scaleLeft;
+            finalDisplayLeft = (int) (previewWidth - scaleRight);
+            finalDisplayRight = (int) (previewWidth - scaleLeft);
         }
 
-        mDrawFaceRect.left = scaleLeft;
-        mDrawFaceRect.right = scaleRight;
-        mDrawFaceRect.top = scaleTop;
-        mDrawFaceRect.bottom = scaleBottom;
+        mDrawFaceRect.left = finalDisplayLeft;
+        mDrawFaceRect.right = finalDisplayRight;
+        mDrawFaceRect.top = finalDisplayTop;
+        mDrawFaceRect.bottom = finalDisplayBottom;
         return mDrawFaceRect;
     }
+
 }

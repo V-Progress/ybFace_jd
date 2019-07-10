@@ -37,13 +37,13 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.VisitorAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AddQRCodeBean;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
+import com.yunbiao.ybsmartcheckin_live_id.business.AirQualityUtil;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -185,7 +185,18 @@ public class WelComeActivity extends BaseGateActivity {
 
         //自动清理服务
         ResourceCleanManager.instance().startAutoCleanService();
-//        MultipleSignDialog.instance().init(this);
+
+        if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+            AirQualityUtil.get(new AirQualityUtil.AirQualityCallback() {
+                @Override
+                public void onCallback(AirQualityUtil.AirBean.Citynow citynow) {
+                    TextView tvAir = findViewById(R.id.tv_air);
+                    if(tvAir != null){
+                        tvAir.setText(citynow.getCity() + "，空气质量："+citynow.getQuality());
+                    }
+                }
+            });
+        }
     }
 
     /*人脸识别回调，由上到下执行*/
@@ -383,7 +394,7 @@ public class WelComeActivity extends BaseGateActivity {
     }
 
     //密码弹窗
-    private void inputPwd() {
+    private void inputPwd(final Runnable runnable) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_input_pwd);
@@ -407,7 +418,9 @@ public class WelComeActivity extends BaseGateActivity {
                     rootView.startAnimation(animation);
                     return;
                 }
-                startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+                if(runnable != null){
+                    runnable.run();
+                }
                 dialog.dismiss();
             }
         });
@@ -501,7 +514,12 @@ public class WelComeActivity extends BaseGateActivity {
     private void goSetting(){
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
         if (!TextUtils.isEmpty(pwd)) {
-            inputPwd();
+            inputPwd(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+                }
+            });
             return ;
         }
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
@@ -527,13 +545,23 @@ public class WelComeActivity extends BaseGateActivity {
         RestartAPPTool.showExitDialog(this,new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                moveTaskToBack(true);
+                inputPwd(new Runnable() {
+                    @Override
+                    public void run() {
+                        moveTaskToBack(true);
+                    }
+                });
             }
         }, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finishAll();
-                APP.exit();
+                inputPwd(new Runnable() {
+                    @Override
+                    public void run() {
+                        finishAll();
+                        APP.exit();
+                    }
+                });
             }
         });
     }

@@ -181,6 +181,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         public void updateWeather(int id, String weatherInfo) {
             ivWeather.setImageResource(id);
             tvWeather.setText(weatherInfo);
+            ScreenSaver.get().setWeather(id,weatherInfo);
         }
     };
 
