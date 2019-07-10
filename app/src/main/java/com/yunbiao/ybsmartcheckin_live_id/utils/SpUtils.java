@@ -40,6 +40,7 @@ public class SpUtils {
     public static final String RUN_KEY = "runKey";
     public static final String DEVICE_TYPE = "deviceType";
     public static final String CURR_VOLUME = "currentVolume";
+    public static final String SLOGAN = "slogan";
 
     public static final String CAMERA_ANGLE = "cameraAngle";//摄像头角度
 

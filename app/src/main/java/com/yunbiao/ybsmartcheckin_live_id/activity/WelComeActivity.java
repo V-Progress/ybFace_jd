@@ -118,6 +118,7 @@ public class WelComeActivity extends BaseGateActivity {
     //摄像头分辨率
     private FaceView faceView;
     private List<SignBean> mSignList = new ArrayList<>();
+    private TextView tvSlogan;
 
     @Override
     protected int getPortraitLayout() {
@@ -152,6 +153,7 @@ public class WelComeActivity extends BaseGateActivity {
         tv_topTitle = findViewById(R.id.tv_topTitle);
         tv_bottomTitle = findViewById(R.id.tv_bottomTitle);
         ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
+        tvSlogan = findViewById(R.id.tv_slogan);
 
         faceView.setCallback(faceCallback);
         mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
@@ -345,6 +347,9 @@ public class WelComeActivity extends BaseGateActivity {
                         }
                         if(tv_bottomTitle != null){
                             tv_bottomTitle.setText(bean.getCompany().getBottomtitle());
+                        }
+                        if(tvSlogan != null){
+                            tvSlogan.setText(bean.getCompany().getSlogan());
                         }
                         Glide.with(WelComeActivity.this)
                                 .load(bean.getCompany().getComlogo())

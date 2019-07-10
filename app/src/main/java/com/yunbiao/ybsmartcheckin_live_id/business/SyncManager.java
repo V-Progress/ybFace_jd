@@ -227,6 +227,7 @@ public class SyncManager extends BroadcastReceiver {
                 SpUtils.saveStr(SpUtils.DOWNTIPS, companyBean.getCompany().getDowntips());
                 SpUtils.saveStr(SpUtils.COMPANY_NAME, abbname);
                 SpUtils.saveStr(SpUtils.MENU_PWD,companyBean.getCompany().getDevicePwd());
+                SpUtils.saveStr(SpUtils.SLOGAN,companyBean.getCompany().getSlogan());
                 if(mListener != null){
                     mAct.runOnUiThread(new Runnable() {
                         @Override

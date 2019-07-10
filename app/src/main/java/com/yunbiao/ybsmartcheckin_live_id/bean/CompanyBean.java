@@ -54,11 +54,16 @@ public class CompanyBean {
         private String comname;
         private String abbname;
         private String notice;
+        private String slogan;
         private String toptitle;
         private String bottomtitle;
         private int themeid;
         private int comid;
         private List<DeparrayEntity> deparray;
+
+        public String getSlogan() {
+            return slogan;
+        }
 
         public String getNotice() {
             return notice;

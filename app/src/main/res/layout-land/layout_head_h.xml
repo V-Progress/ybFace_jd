@@ -32,7 +32,7 @@
 
     <TextView
         android:layout_centerVertical="true"
-        android:id="@+id/tv_content"
+        android:id="@+id/tv_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/tv_title"
