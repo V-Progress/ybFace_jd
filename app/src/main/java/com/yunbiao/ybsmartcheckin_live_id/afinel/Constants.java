@@ -26,12 +26,15 @@ public class Constants {
     public static String RESOURCE_URL = RESOURCE_HOST + ":" + RESOURCE_PORT + "/";
 
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
-    public static String ADS_PATH = LOCAL_ROOT_PATH + "ads/";//广告路径
-    public static String DATA_PATH = LOCAL_ROOT_PATH + "data/";//数据库路径
-    public static String HEAD_PATH = LOCAL_ROOT_PATH + "photo/";//照片路径
+    public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
-    public static final String CURRENT_FACE_CACHE_PATH = CACHE_PATH + "face/";//实时人脸记录缓存
-    public static final String MEETING_PATH = LOCAL_ROOT_PATH + "meeting/";
+
+    public static String TEMP_PATH = CACHE_PATH + "temp/";//临时路径（未初始化公司时创建）
+    public static String DATA_PATH = TEMP_PATH + "data/";//公司数据
+    public static String ADS_PATH = TEMP_PATH + "ads/";//广告路径
+    public static String HEAD_PATH = TEMP_PATH + "photo/";//照片路径
+    public static String RECORD_PATH = TEMP_PATH + "record/";//实时人脸记录缓存
+    public static String MEETING_PATH = TEMP_PATH + "meeting/";
 }
 
 

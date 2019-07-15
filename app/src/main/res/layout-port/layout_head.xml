@@ -10,7 +10,7 @@
     <ImageView
         android:scaleType="centerInside"
         android:maxWidth="200dp"
-        android:id="@+id/iv_logo"
+        android:id="@+id/iv_ads_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -20,12 +20,12 @@
         android:src="@mipmap/logo_yb" />
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_ads_addname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="33dp"
-        android:layout_toRightOf="@+id/iv_logo"
+        android:layout_toRightOf="@+id/iv_ads_logo"
         android:text="云标智能签到"
         android:textColor="@color/white"
         android:textSize="36dp" />
@@ -33,11 +33,11 @@
     <TextView
         android:layout_marginLeft="30dp"
         android:layout_alignParentLeft="true"
-        android:id="@+id/tv_slogan"
+        android:id="@+id/tv_ads_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tv_title"
-        android:layout_below="@+id/tv_title"
+        android:layout_alignStart="@+id/tv_ads_addname"
+        android:layout_below="@+id/tv_ads_addname"
         android:layout_marginTop="16dp"
         android:text="智能人脸签到，让企业更放心~"
         android:textColor="@color/white"
@@ -69,7 +69,7 @@
         android:textSize="50dp" />
 
     <TextView
-        android:id="@+id/tv_tem"
+        android:id="@+id/tv_ads_tem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -80,22 +80,22 @@
         android:textSize="32dp" />
 
     <ImageView
-        android:id="@+id/iv_wea"
+        android:id="@+id/iv_ads_wea"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_below="@+id/tc_hour"
         android:layout_marginRight="4dp"
         android:layout_marginTop="14dp"
-        android:layout_toLeftOf="@+id/tv_tem" />
+        android:layout_toLeftOf="@+id/tv_ads_tem" />
 
     <TextView
         android:visibility="gone"
         android:id="@+id/tv_deviceNo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_tem"
+        android:layout_alignBottom="@+id/tv_ads_tem"
         android:layout_marginRight="30dp"
-        android:layout_toLeftOf="@+id/iv_wea"
+        android:layout_toLeftOf="@+id/iv_ads_wea"
         android:textColor="@color/white"
         android:textSize="26dp" />
 

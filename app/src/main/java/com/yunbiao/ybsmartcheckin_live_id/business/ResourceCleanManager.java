@@ -1,7 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 
@@ -34,7 +33,7 @@ public class ResourceCleanManager {
         cleanThread.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                String currentFaceCachePath = Constants.CURRENT_FACE_CACHE_PATH;
+                String currentFaceCachePath = Constants.RECORD_PATH;
                 File currFaceDir = new File(currentFaceCachePath);
                 if (!currFaceDir.exists()) {
                     return;

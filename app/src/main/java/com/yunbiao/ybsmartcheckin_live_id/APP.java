@@ -31,6 +31,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
@@ -59,11 +61,39 @@ public class APP extends Application {
     private static UserDao userDao;
     private static SignDao signDao;
     private static DepartDao departDao;
+    private static CompDao compDao;
+    private static CompBean compBean;
+    private static int companyId;
+
+    public static void initCompBean(){
+        companyId = SpUtils.getInt(SpUtils.COMPANYID);
+        Log.e("APPPPPP", "initCompBean:  ----- " + companyId);
+        compBean = compDao.queryByCompId(companyId);
+        Log.e("APPPPPP", "initCompBean:  ----- " + compBean);
+    }
+
+    public static int getCompanyId() {
+        return companyId;
+    }
+
+    public static void initCompanyId() {
+        companyId = SpUtils.getInt(SpUtils.COMPANYID);
+        Constants.DATA_PATH = Constants.CACHE_PATH + "/" + companyId + "/data/";
+        Constants.ADS_PATH = Constants.CACHE_PATH + "/" + companyId +"/ads/";
+        Constants.HEAD_PATH = Constants.CACHE_PATH + "/" + companyId +"/img/";
+        Constants.RECORD_PATH = Constants.CACHE_PATH + "/" + companyId +"/rcd/";
+        Constants.MEETING_PATH = Constants.CACHE_PATH + "/" + companyId +"/meet/";
+    }
+
+    public static CompBean getCompBean(){
+        return compBean;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+        initCompanyId();
 
         initDB();
 
@@ -115,9 +145,13 @@ public class APP extends Application {
             userDao = new UserDao(this);
             signDao = new SignDao(this);
             departDao = new DepartDao(this);
+            compDao = new CompDao(this);
+            Log.e("APP", "11111111111111111111111111111");
         } catch (Exception e){
             e.printStackTrace();
+            Log.e("APP", "3333333333333333333333333333333");
         }
+        Log.e("APP", "222222222222222222222222222 ");
     }
 
     public static UserDao getUserDao() {
@@ -130,6 +164,10 @@ public class APP extends Application {
 
     public static DepartDao getDepartDao() {
         return departDao;
+    }
+
+    public static CompDao getCompDao() {
+        return compDao;
     }
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//

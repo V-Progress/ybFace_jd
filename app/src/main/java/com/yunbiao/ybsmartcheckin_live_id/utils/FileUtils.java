@@ -1,11 +1,17 @@
 package com.yunbiao.ybsmartcheckin_live_id.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by LiuShao on 2016/4/6.
@@ -203,6 +209,65 @@ public class FileUtils {
             }
         }
         return type;
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @return
+     */
+    public static File saveBitmap(Bitmap mBitmap, String path) {
+        if(mBitmap == null){
+            return null;
+        }
+        File filePic;
+        try {
+            //格式化时间
+            filePic = new File(path);
+            FileOutputStream fos = new FileOutputStream(filePic);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return filePic;
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @return
+     */
+    public static File saveBitmap(long time, byte[] mBitmapByteArry) {
+        long start = System.currentTimeMillis();
+        File filePic;
+        try {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            final Bitmap image = BitmapFactory.decodeByteArray(mBitmapByteArry, 0, mBitmapByteArry.length, options);
+
+            //格式化时间
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String today = sdf.format(time);
+            sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String sdfTime = sdf.format(time);
+            filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + sdfTime + ".jpg");
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            image.compress(Bitmap.CompressFormat.JPEG, Config.getCompressRatio(), fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        long end = System.currentTimeMillis();
+        Log.e("Compress", "saveBitmap: 压缩耗时----- " + (end - start));
+        return filePic;
     }
 
 

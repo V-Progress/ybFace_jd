@@ -42,7 +42,7 @@ android {
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "YBFace"+defaultConfig.versionName +"."+defaultConfig.versionCode+"_" + buildTime() +".apk"
+            outputFileName = "YBFace" + defaultConfig.versionName + "." + defaultConfig.versionCode + "_" + buildTime() + ".apk"
         }
     }
 }

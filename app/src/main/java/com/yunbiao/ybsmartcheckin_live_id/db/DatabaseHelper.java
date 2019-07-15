@@ -2,7 +2,6 @@ package com.yunbiao.ybsmartcheckin_live_id.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = "DatabaseHelper";
-    public static final String DATABASE_PATH = Constants.DATA_PATH;
+    public static final String DATABASE_PATH = Constants.DATABASE_PATH;
     // 数据库名称
     public static final String DATABASE_NAME = "faceDB.db";
     // 本类的单例实例
@@ -60,7 +59,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         if (f.exists()) {
             if(f.isDirectory()){
                 f.delete();
-            } else {
+            }else {
                 return;
             }
         }
@@ -104,6 +103,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, VIPDetail.class);
             TableUtils.createTable(connectionSource, DepartBean.class);
             TableUtils.createTable(connectionSource, SignBean.class);
+            TableUtils.createTable(connectionSource, CompBean.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -115,10 +115,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, VIPDetail.class, true);
             TableUtils.dropTable(connectionSource, DepartBean.class, true);
             TableUtils.dropTable(connectionSource, SignBean.class, true);
+            TableUtils.dropTable(connectionSource, CompBean.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     // 释放资源

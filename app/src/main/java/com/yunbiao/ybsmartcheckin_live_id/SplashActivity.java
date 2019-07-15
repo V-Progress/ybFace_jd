@@ -57,6 +57,7 @@ public class SplashActivity extends BaseActivity {
                     } else {
                         startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
                     }
+                    overridePendingTransition(0,0);
                     finish();
                     return;
                 } else {

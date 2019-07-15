@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"/>
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_ads_addname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="32dp"
@@ -42,7 +42,7 @@
         android:layout_marginBottom="40dp"
         android:background="@drawable/shape_employ_list"
         android:padding="30dp"
-        android:layout_below="@+id/tv_title">
+        android:layout_below="@+id/tv_ads_addname">
 
         <Spinner
             android:id="@+id/sp_depart"

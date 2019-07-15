@@ -12,7 +12,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,12 +33,14 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
@@ -53,6 +54,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +84,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private View ivBack;
     private TextView tv_bindcode_syetem;
     private CheckBox cbMirror;
+    private CompBean compBean;
 
     @Override
     protected int getPortraitLayout() {
@@ -138,6 +141,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initData() {
+        compBean = APP.getCompBean();
         setInfo();
 
         String appName = getResources().getString(R.string.app_name);
@@ -168,43 +172,37 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     public void setIcon(){
-        String string = SpUtils.getStr(SpUtils.COMPANY_INFO);
-        if(TextUtils.isEmpty(string)){
-            return;
-        }
-        CompanyBean bean = new Gson().fromJson(string,CompanyBean.class);
+        if(compBean == null) return;
+
         if(ivLogo != null){
+            File file = new File(compBean.getIconPath());
             Glide.with(this)
-                    .load(bean.getCompany().getComlogo())
+                    .load(file.exists() ? file : compBean.getIconUrl())
                     .skipMemoryCache(true)
                     .crossFade(500)
                     .into(ivLogo);
+
         }
         if(tvCompName != null){
-            tvCompName.setText(bean.getCompany().getToptitle());
+            tvCompName.setText(compBean.getCompName());
         }
     }
 
     public void setInfo() {
-        if(tv_deviceno_system == null){
-            return;
-        }
+        if(compBean == null) return;
+
         String serNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tv_deviceno_system.setText(serNum);
 
         String bindCode = SpUtils.getStr(SpUtils.BINDCODE);
         tv_bindcode_syetem.setText(bindCode);
 
-        String comName = SpUtils.getStr( SpUtils.COMPANY_NAME);
-        tv_company_system.setText(comName);
+        tv_company_system.setText(compBean.getCompName());
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
         tv_exp_system.setText(TextUtils.isEmpty(expDate) ? "无限期" : expDate);
 
         tv_online_system.setText(CoreInfoHandler.isOnline ? "在线" : "离线");
-
-        // TODO: 2019/6/27 ComById
-//        ((EditText)findViewById(R.id.edt_comid)).setHint("" +SpUtils.getCompanyId());
     }
 
     @Override
@@ -220,7 +218,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this, SignActivity.class));
                 break;
             case R.id.btn_setting_system:
-//                showSetting();
                 startActivity(new Intent(this,SettingActivity.class));
                 break;
             case R.id.btn_update_system:

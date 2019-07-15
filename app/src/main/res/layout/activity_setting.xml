@@ -369,9 +369,27 @@
                     android:text="摄像头" />
 
                 <TextView
+                    android:id="@+id/tv_camera_count"
+                    style="@style/setting_text"
+                    android:text="共1个" />
+
+                <TextView
                     android:id="@+id/tv_camera"
                     style="@style/setting_text"
                     android:text="【当前使用：】" />
+
+                <Button
+                    android:id="@+id/btn_setAngle"
+                    android:onClick="setAngle"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/cb_mirror"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Spinner
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/spn_camera_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
@@ -393,6 +411,18 @@
                     android:text="是否镜像"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:onClick="hardwareTest"
+                    android:text="人脸框绘制" />
+
             </LinearLayout>
 
             <LinearLayout

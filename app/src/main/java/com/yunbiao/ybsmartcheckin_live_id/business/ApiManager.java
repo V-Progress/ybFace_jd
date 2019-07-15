@@ -49,7 +49,8 @@ public class ApiManager {
     }
     private ApiManager(){
         try{
-            xhApiManager = new XHApiManager();
+            // TODO: 2019/7/11 非90群板子必须关
+//            xhApiManager = new XHApiManager();
         }catch (Exception e){
             e.printStackTrace();
         }

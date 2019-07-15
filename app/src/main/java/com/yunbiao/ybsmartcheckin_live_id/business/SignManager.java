@@ -15,6 +15,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
@@ -75,6 +76,7 @@ public class SignManager {
     }
 
     private SignManager() {
+
         //初始化当前时间
         today = dateFormat.format(new Date());
         signDao = APP.getSignDao();
@@ -290,13 +292,23 @@ public class SignManager {
         long signTime;
     }
 
-    SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
+    private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
 
     private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
+        CompBean compBean = APP.getCompBean();
+        String gotime = "09:00";
+        String downTime = "18:00";
+        if(compBean != null){
+            if(!TextUtils.isEmpty(compBean.getGotime()))
+                gotime = compBean.getGotime();
+            if(!TextUtils.isEmpty(compBean.getDowntime()))
+                downTime = compBean.getDowntime();
+        }
+
         try {
             Date hourDate = typeSdf.parse(typeSdf.format(currTime));//现在的时间
-            Date dataMorn = typeSdf.parse(SpUtils.getStr(SpUtils.GOTIME, "09:00"));//上班时间
-            Date dataNoon = typeSdf.parse(SpUtils.getStr(SpUtils.DOWNTIME, "18:00"));//下班时间
+            Date dataMorn = typeSdf.parse(gotime);//上班时间
+            Date dataNoon = typeSdf.parse(downTime);//下班时间
 
             if (hourDate.getTime() < dataMorn.getTime() + 1000 * 60 * 30) {//现在的时间小于上班时间+半个小时，就返回type1
                 return 1;
@@ -402,7 +414,7 @@ public class SignManager {
             String today = sdf.format(time);
             sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String sdfTime = sdf.format(time);
-            filePic = new File(Constants.CURRENT_FACE_CACHE_PATH + "/" + today + "/" + sdfTime + ".jpg");
+            filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + sdfTime + ".jpg");
             if (!filePic.exists()) {
                 filePic.getParentFile().mkdirs();
                 filePic.createNewFile();

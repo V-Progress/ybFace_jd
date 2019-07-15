@@ -50,7 +50,7 @@
                 android:layout_marginRight="10dp"
                 android:onClick="goSetting"
                 android:scaleType="centerInside"
-                android:id="@+id/imageView_logo"
+                android:id="@+id/iv_main_logo"
                 android:layout_width="wrap_content"
                 android:maxWidth="200dp"
                 android:maxHeight="100dp"
@@ -61,8 +61,8 @@
             <TextView
                 android:textStyle="bold"
                 android:layout_marginTop="35dp"
-                android:layout_toRightOf="@+id/imageView_logo"
-                android:id="@+id/tv_comName"
+                android:layout_toRightOf="@+id/iv_main_logo"
+                android:id="@+id/tv_main_abbname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -82,15 +82,6 @@
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textColor="@color/horizontal_item_visitor_name"
                 android:textSize="28dp" />
-
-            <TextView
-                android:id="@+id/tv_air"
-                android:layout_toLeftOf="@+id/textClock"
-                android:layout_marginTop="35dp"
-                android:textColor="@color/horizontal_item_visitor_name"
-                android:textSize="28dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:paddingTop="10dp"

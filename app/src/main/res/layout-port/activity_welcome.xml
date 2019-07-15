@@ -23,7 +23,7 @@
 
             <ImageView
                 android:onClick="goSetting"
-                android:id="@+id/imageView_logo"
+                android:id="@+id/iv_main_logo"
                 android:layout_width="wrap_content"
                 android:maxWidth="200dp"
                 android:layout_height="wrap_content"
@@ -32,18 +32,18 @@
                 android:src="@mipmap/logo" />
 
             <TextView
-                android:id="@+id/tv_comName"
+                android:id="@+id/tv_main_abbname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/imageView_logo"
+                android:layout_toRightOf="@+id/iv_main_logo"
                 android:text=""
                 android:textColor="@color/theme_green"
                 android:textSize="30dp" />
 
             <TextView
-                android:id="@+id/tv_topTitle"
+                android:id="@+id/tv_main_topTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -85,7 +85,7 @@
                 android:src="@mipmap/icon_tip" />
 
             <TextView
-                android:id="@+id/tv_notice"
+                android:id="@+id/tv_main_notice"
                 android:layout_width="950dp"
                 android:layout_height="match_parent"
                 android:ellipsize="marquee"
@@ -228,7 +228,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_bottomTitle"
+            android:id="@+id/tv_main_bottomTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

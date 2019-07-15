@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -14,11 +15,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -27,9 +31,11 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceBoxUtil;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -44,6 +50,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -66,6 +73,8 @@ public class SettingActivity extends BaseActivity {
     private TextView tvLivenessState;
     private TextView tvMultipleState;
     private CheckBox cbMirror;
+    private Button btnAngle;
+    private Spinner spnCameraSize;
 
     @Override
     protected int getPortraitLayout() {
@@ -89,21 +98,30 @@ public class SettingActivity extends BaseActivity {
         tvLivenessState = findViewById(R.id.tv_liveness_state);
         tvMultipleState = findViewById(R.id.tv_multiple_state);
         cbMirror = findViewById(R.id.cb_mirror);
+        btnAngle = findViewById(R.id.btn_setAngle);
+        spnCameraSize = findViewById(R.id.spn_camera_size);
     }
 
     @Override
     protected void initData() {
-        String compName = SpUtils.getStr(SpUtils.COMPANY_NAME);
-        tvCompName.setText(compName);
+        CompBean compBean = APP.getCompBean();
+        if(compBean != null){
+            //设置公司名称
+            tvCompName.setText(compBean.getCompName());
+        }
 
+        //设备编号
         String deviceNo = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tvDeviceNo.setText(deviceNo);
 
+        //广告类型
         int adsResource = Config.getAdsResource();
         tvAdsType.setText(adsResource == Config.LOCAL_ADS ? "本地" : "云");
 
+        //设置网络
         checkNet();
 
+        //灯光类型
         radioGroup.check(Config.getLightStrate()+1);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -114,6 +132,7 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
+        //获取CPU温度
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -127,11 +146,14 @@ public class SettingActivity extends BaseActivity {
             }
         },0, 3 , TimeUnit.SECONDS);
 
+        //摄像头模式
         tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK? "后置" : "前置") + "，分辨率：" + CameraManager.getWidth()+"*" + CameraManager.getHeight() + "】" );
 
+        //活体与多人
         tvLivenessState.setText(Config.isLiveness()? "开" :"关");
         tvMultipleState.setText(Config.isMultiple()? "开" :"关");
 
+        //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
         cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -141,6 +163,53 @@ public class SettingActivity extends BaseActivity {
                 FaceBoxUtil.setIsMirror();
             }
         });
+
+        //摄像头角度
+        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        btnAngle.setText("角度：" + angle);
+
+        //摄像头分辨率
+        int width = CameraManager.getWidth();
+        int height = CameraManager.getHeight();
+        int index = 0;
+        List<Camera.Size> supportSizeList = CameraManager.instance().getSupportSizeList();
+        final List<String> strings = new ArrayList<>();
+        for (Camera.Size size : supportSizeList) {
+            if(width == size.width && height == size.height){
+                index = supportSizeList.indexOf(size);
+            }
+            strings.add(size.width + "*" + size.height);
+        }
+        spnCameraSize.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,strings));
+        final int finalIndex = index;
+        spnCameraSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                if(finalIndex == position){
+                    return;
+                }
+                showAlert("调整分辨率需要重启APP，是否继续？", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String sizeStr = strings.get(position);
+                        SpUtils.saveStr(SpUtils.CAMERA_SIZE, sizeStr);
+                        RestartAPPTool.restartAPP(APP.getContext());
+                    }
+                },null, new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        spnCameraSize.setSelection(finalIndex);
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnCameraSize.setSelection(index);
     }
 
     public void selectImage(View view) {
@@ -165,7 +234,7 @@ public class SettingActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Config.setAdsResource(adsResource == Config.LOCAL_ADS ? Config.CLOUD_ADS : Config.LOCAL_ADS);
             }
-        }, new DialogInterface.OnDismissListener() {
+        },null, new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 final int adsResource = Config.getAdsResource();
@@ -214,6 +283,22 @@ public class SettingActivity extends BaseActivity {
     /**
      * ====功能区==================================================================================================
      */
+    public void setAngle(View view) {
+        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        if(anInt == CameraManager.L){
+            anInt = CameraManager.P;
+        } else if(anInt == CameraManager.P) {
+            anInt = CameraManager.L_R;
+        } else if(anInt == CameraManager.L_R){
+            anInt = CameraManager.P_R;
+        } else {
+            anInt = CameraManager.L;
+        }
+        ((Button)view).setText("角度：" + anInt);
+        CameraManager.instance().setOrientation(anInt);
+        SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
+    }
+
     public void rebootDevice(View view) {
         showAlert("设备将重启，是否继续？", new DialogInterface.OnClickListener() {
             @Override
@@ -225,7 +310,7 @@ public class SettingActivity extends BaseActivity {
                 progressDialog.show();
                 UIUtils.restart.start();
             }
-        }, null);
+        },null, null);
     }
 
     private void checkNet() {
@@ -329,11 +414,12 @@ public class SettingActivity extends BaseActivity {
         return false;
     }
 
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener, DialogInterface.OnDismissListener onDissmissListener) {
+    private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel ,DialogInterface.OnDismissListener onDissmissListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示");
         builder.setMessage(msg);
         builder.setPositiveButton("确定", onClickListener);
+        builder.setNegativeButton("取消", onCancel);
         if (onDissmissListener != null) {
             builder.setOnDismissListener(onDissmissListener);
         }
@@ -430,6 +516,7 @@ public class SettingActivity extends BaseActivity {
         Window window = dialog.getWindow();
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
+
 
     public static class CpuUtils {
         private CpuUtils() {

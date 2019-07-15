@@ -9,10 +9,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +65,10 @@ public abstract class BaseActivity extends Activity {
      */
     protected abstract int getPortraitLayout();
     protected abstract int getLandscapeLayout();
+
+    protected void bindImageView(String urlOrPath, final ImageView iv){
+            Glide.with(this).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
+    }
 
     /***
      * 初始化View

@@ -7,7 +7,7 @@
     android:background="@mipmap/bj">
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_ads_addname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="32dp"
@@ -30,7 +30,7 @@
         android:layout_width="960dp"
         android:layout_height="540dp"
         android:orientation="vertical"
-        android:layout_below="@+id/tv_title"
+        android:layout_below="@+id/tv_ads_addname"
         android:layout_marginTop="34dp"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp">

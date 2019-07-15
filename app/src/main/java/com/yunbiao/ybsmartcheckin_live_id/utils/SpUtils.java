@@ -14,35 +14,27 @@ public class SpUtils {
     private static final String SP_NAME = "YB_FACE";
 
     public static final String DEVICE_UNIQUE_NO = "deviceNo";//设备唯一号
-
-    public static final String COMPANYID = "companyid";//公司ID
     public static final String DEVICE_NUMBER = "devicesernum";//设备编号
     public static final String BINDCODE = "bindCode";//绑定码
+    public  static final String CITYNAME= "city";//城市
+
+    public static final String COMPANYID = "companyid";//公司ID
 
     public static final String AD_HENG = "ad_heng";//横屏广告
     public static final String AD_SHU = "ad_shu";//竖屏广告
 
-    public static final String GOTIME = "gotime";//上班时间
-    public static final String DOWNTIME = "downtime";//下班时间
-    public static final String GOTIPS = "gotips";//打卡提示
-    public static final String DOWNTIPS = "downtips";//下班提示
-    public  static final String CITYNAME= "city";//城市
+    public static final String MENU_PWD = "menu_pwd";//用户访问密码
 
     public static final String EXP_DATE = "expDate";//过期时间
-    public static final String COMPANY_NAME = "companyName";//公司名称
-    public static final String COMPANY_INFO = "companyInfo";//公司信息
-
-    public static final String CITY_NAME = "city_name";//定位城市
-    public static final String MENU_PWD = "menu_pwd";//用户访问密码
 
     public static final String IS_MIRROR = "isMirror";//是否镜像
     public static final String BOARD_INFO = "boardInfo";
     public static final String RUN_KEY = "runKey";
     public static final String DEVICE_TYPE = "deviceType";
     public static final String CURR_VOLUME = "currentVolume";
-    public static final String SLOGAN = "slogan";
 
     public static final String CAMERA_ANGLE = "cameraAngle";//摄像头角度
+    public static final String CAMERA_SIZE = "cameraSize";
 
     public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
 

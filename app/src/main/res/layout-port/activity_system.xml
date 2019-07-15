@@ -281,7 +281,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="30dp"
-                match:text="YUNBIAO WULIAN"
+                match:text="YBFACE"
                 match:textSize="60dp" />
 
             <LinearLayout

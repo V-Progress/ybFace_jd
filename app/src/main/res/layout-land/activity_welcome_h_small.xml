@@ -33,7 +33,7 @@
         android:layout_marginLeft="20dp"
         android:onClick="goSetting"
         android:scaleType="centerInside"
-        android:id="@+id/imageView_logo"
+        android:id="@+id/iv_main_logo"
         android:layout_width="wrap_content"
         android:maxWidth="100dp"
         android:maxHeight="50dp"

@@ -62,34 +62,30 @@
 
         <activity
             android:name=".SplashActivity"
+            android:theme="@android:style/Theme.Translucent"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                <!--<category android:name="android.intent.category.HOME" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!-- <category android:name="android.intent.category.HOME" /> -->
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleInstance" />
-
         <activity android:name=".activity.AddEmployActivity" />
         <activity android:name=".activity.jdcn.WelComeSmallActivity" />
         <activity android:name=".activity.EmployListActivity" />
         <activity android:name=".activity.DepartListActivity" />
         <activity android:name=".activity.EditEmployActivity" />
         <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
-
         <activity android:name=".activity.SystemActivity" />
-
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name=".xmpp.NotificationDetailsActivity"
             android:label="Notification Details" />
@@ -104,7 +100,6 @@
                 <action android:name="android.hardware.usb.action.USB_STATE" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".heartbeat.BootRestartSeceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -114,7 +109,6 @@
         </receiver>
 
         <service android:name=".utils.killSelfService" />
-
         <service android:name=".xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
         <!-- 百度定位 -->
         <service

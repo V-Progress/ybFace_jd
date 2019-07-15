@@ -22,7 +22,7 @@
             android:layout_centerVertical="true" />
 
         <TextView
-            android:id="@+id/tv_comName"
+            android:id="@+id/tv_main_abbname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -33,7 +33,7 @@
             android:layout_marginLeft="15dp" />
 
         <TextView
-            android:id="@+id/tv_topTitle"
+            android:id="@+id/tv_main_topTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30dp"
@@ -145,7 +145,7 @@
             android:visibility="gone"/>
 
         <TextView
-            android:id="@+id/tv_notice"
+            android:id="@+id/tv_main_notice"
             android:layout_width="950dp"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -231,7 +231,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_bottomTitle"
+        android:id="@+id/tv_main_bottomTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@mipmap/bg_bottom_red"

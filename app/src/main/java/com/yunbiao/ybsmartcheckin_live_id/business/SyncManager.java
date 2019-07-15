@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -18,11 +20,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.bean.StaffBean;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
@@ -33,11 +37,16 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.views.FloatSyncView;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -67,9 +76,6 @@ public class SyncManager extends BroadcastReceiver {
     public static final int TYPE_ADD = 0;
     public static final int TYPE_UPDATE_HEAD = 2;
 
-    private static int COMPANY_ID = 000000;
-    public static String SCREEN_BASE_PATH = Constants.HEAD_PATH + COMPANY_ID + "/";//人脸头像存储路径
-
     private FloatSyncView floatSyncView;
     private ExecutorService executorService;
 
@@ -90,7 +96,7 @@ public class SyncManager extends BroadcastReceiver {
     }
 
     private SyncManager() {
-        File file = new File(SCREEN_BASE_PATH);
+        File file = new File(Constants.HEAD_PATH);
         if(!file.exists()){
             file.mkdirs();
         }
@@ -100,24 +106,26 @@ public class SyncManager extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() == ConnectivityManager.CONNECTIVITY_ACTION) {
             /*判断当前网络时候可用以及网络类型*/
-            boolean networkConnected = isNetworkConnected(context);
-            if (networkConnected) {
-                long lastInitTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);
-                long currTime = System.currentTimeMillis();
-                Log.e(TAG, "onReceive: -----" + lastInitTime + " --- " + currTime );
-                if(currTime - lastInitTime >= initOffset){//如果大于间隔则同步
-                    initInfo();
-                } else {//如果小于间隔则获取公司数据
-                    loadCompany(false);
-                }
-            } else {
-                setErrInfo("网络不可用，请检查网络");
+//            boolean networkConnected = isNetworkConnected(context);
+//            if (networkConnected) {
+//
+//            } else {
+//                setErrInfo("网络不可用，请检查网络");
+//            }
+
+            long lastInitTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);
+            long currTime = System.currentTimeMillis();
+            Log.e(TAG, "onReceive: -----" + lastInitTime + " --- " + currTime );
+            if(currTime - lastInitTime >= initOffset){//如果大于间隔则同步
+                initInfo();
+            } else {//如果小于间隔则获取公司数据
+                loadCompany(false);
             }
         }
     }
 
     public interface LoadListener{
-        void onLoaded(CompanyBean companyBean);
+        void onLoaded();
 
         void onFinish();
     }
@@ -177,9 +185,9 @@ public class SyncManager extends BroadcastReceiver {
 //                    @Override public void onRetryAfter5s() { }
 //                    @Override public void onFailed() { }
 //                    @Override public void onSucc(String response, final CompanyBean companyBean) {
-//                        COMPANY_ID = companyBean.getCompany().getComid();
+//                        mCompId = companyBean.getCompany().getComid();
 //                        String abbname = companyBean.getCompany().getAbbname();
-//                        SCREEN_BASE_PATH = Constants.HEAD_PATH + COMPANY_ID + "/";//人脸头像存储路径
+//                        SCREEN_BASE_PATH = Constants.HEAD_PATH + mCompId + "/";//人脸头像存储路径
 //
 //                        SpUtils.saveStr(SpUtils.COMPANY_INFO, response);
 //                        //保存公司信息
@@ -214,37 +222,80 @@ public class SyncManager extends BroadcastReceiver {
             @Override public void onRetryAfter5s() {
                 loadCompany(isInit);
             }
-            @Override public void onFailed() {}
             @Override public void onSucc(final String response, final CompanyBean companyBean) {
-                COMPANY_ID = companyBean.getCompany().getComid();
-                String abbname = companyBean.getCompany().getAbbname();
-                SCREEN_BASE_PATH = Constants.HEAD_PATH + COMPANY_ID + "/";//人脸头像存储路径
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        SpUtils.saveStr(SpUtils.MENU_PWD,companyBean.getCompany().getDevicePwd());
 
-                SpUtils.saveStr(SpUtils.COMPANY_INFO, response);
-                SpUtils.saveStr(SpUtils.GOTIME, companyBean.getCompany().getGotime());
-                SpUtils.saveStr(SpUtils.GOTIPS, companyBean.getCompany().getGotips());
-                SpUtils.saveStr(SpUtils.DOWNTIME, companyBean.getCompany().getDowntime());
-                SpUtils.saveStr(SpUtils.DOWNTIPS, companyBean.getCompany().getDowntips());
-                SpUtils.saveStr(SpUtils.COMPANY_NAME, abbname);
-                SpUtils.saveStr(SpUtils.MENU_PWD,companyBean.getCompany().getDevicePwd());
-                SpUtils.saveStr(SpUtils.SLOGAN,companyBean.getCompany().getSlogan());
+                        int comid = companyBean.getCompany().getComid();
+                        int lastComId = APP.getCompanyId();
+                        //如果是未初始化，或者两次的comId不想等（表示换了绑定公司），则请求员工信息
+                        if (isInit || (comid != lastComId)) {
+                            loadStaff(companyBean);
+
+                            SpUtils.saveInt(SpUtils.COMPANYID,comid);
+                        }
+
+                        CompBean compBean = APP.getCompDao().queryByCompId(comid);
+                        boolean notExits = compBean == null;
+                        if(notExits){
+                            compBean = new CompBean();
+                        }
+                        //判断logo是否改变
+                        String comlogo = companyBean.getCompany().getComlogo();
+                        String iconUrl = compBean.getIconUrl();
+                        if(!TextUtils.equals(comlogo,iconUrl)){//如果改变了就重新生成路径
+                            //生成路径
+                            String name = comlogo.substring(comlogo.lastIndexOf("/") + 1);
+                            File logoFile = new File(Constants.DATA_PATH, "logo_" + name);
+                            compBean.setIconPath(logoFile.getPath());
+                            compBean.setIconUrl(comlogo);
+                        }
+                        compBean.setQRCodePath(new File(Constants.DATA_PATH,"QRCode.png").getPath());
+                        compBean.setComid(companyBean.getCompany().getComid());
+                        compBean.setCompName(companyBean.getCompany().getComname());
+                        compBean.setAbbName(companyBean.getCompany().getAbbname());
+                        compBean.setTopTitle(companyBean.getCompany().getToptitle());
+                        compBean.setBottomTitle(companyBean.getCompany().getBottomtitle());
+                        compBean.setDevicePwd(companyBean.getCompany().getDevicePwd());
+                        compBean.setGotime(companyBean.getCompany().getGotime());
+                        compBean.setGotips(companyBean.getCompany().getGotips());
+                        compBean.setDowntime(companyBean.getCompany().getDowntime());
+                        compBean.setDowntips(companyBean.getCompany().getDowntips());
+                        compBean.setNotice(companyBean.getCompany().getNotice());
+                        compBean.setSlogan(companyBean.getCompany().getSlogan());
+                        String jsonStr = new Gson().toJson(companyBean.getCompany().getLate());
+                        compBean.setLate(jsonStr);
+
+                        if(notExits)
+                            APP.getCompDao().insert(compBean);
+                        else
+                            APP.getCompDao().update(compBean);
+
+                        APP.initCompBean();
+                        if(mListener != null){
+                            mAct.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mListener.onLoaded();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            @Override public void onFailed() {
+                APP.initCompBean();
                 if(mListener != null){
                     mAct.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mListener.onLoaded(companyBean);
+                            mListener.onLoaded();
                         }
                     });
                 }
-
-                int lastComId = SpUtils.getInt(SpUtils.COMPANYID);
-                int currComId = companyBean.getCompany().getComid();
-                if (isInit || (currComId != lastComId)) {//如果是init状态则继续请求
-                    loadStaff(companyBean);
-                }
-
-                //保存公司信息
-                SpUtils.saveInt(SpUtils.COMPANYID, companyBean.getCompany().getComid());
             }
         });
     }
@@ -351,7 +402,7 @@ public class SyncManager extends BroadcastReceiver {
 
             //处理头像地址为本地
             String urlPath = entryEntity.getHead();//头像地址
-            String filepath = SCREEN_BASE_PATH + urlPath.substring(urlPath.lastIndexOf("/") + 1);
+            String filepath = Constants.HEAD_PATH + urlPath.substring(urlPath.lastIndexOf("/") + 1);
 
             //生成新的员工信息
             VIPDetail newVIPDetail = new VIPDetail(value.depId,entryEntity.getId(),entryEntity.getFaceId(),entryEntity.getSex()+"",entryEntity.getAge()+""

@@ -29,8 +29,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
@@ -39,6 +39,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
+import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.heartbeat.BaseGateActivity;
@@ -46,10 +47,12 @@ import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +97,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         initPieChart();
         faceView = findViewById(R.id.face_view);
         tv_checkInNum = findViewById(R.id.tv_checkInNum);
-        imageView = findViewById(R.id.imageView_logo);
+        imageView = findViewById(R.id.iv_main_logo);
         ivWeather = findViewById(R.id.iv_weather);
         tvWeather = findViewById(R.id.tv_weather);
 
@@ -115,14 +118,8 @@ public class WelComeSmallActivity extends BaseGateActivity {
         //开始获取天气
         WeatherManager.instance().start(WelComeSmallActivity.this,resultListener);
 
-        //开始定时更新签到列表
-        SignManager.instance().init(this,signEventListener);
-
         //开始屏保计时
         ScreenSaver.get().init(this);
-
-        //自动清理服务
-        ResourceCleanManager.instance().startAutoCleanService();
     }
 
     /*人脸识别回调，由上到下执行*/
@@ -146,6 +143,50 @@ public class WelComeSmallActivity extends BaseGateActivity {
                 return;
             }
             SignManager.instance().checkSign(verifyResult);
+        }
+    };
+
+    /*同步数据*/
+    private void syncData(){
+        SyncManager.instance().init(WelComeSmallActivity.this).setListener(loadListener);
+    }
+
+    private SyncManager.LoadListener loadListener = new SyncManager.LoadListener() {
+        @Override
+        public void onLoaded() {
+            //开始定时更新签到列表
+            SignManager.instance().init(WelComeSmallActivity.this,signEventListener);
+
+            //自动清理服务
+            ResourceCleanManager.instance().startAutoCleanService();
+
+            CompBean compBean = APP.getCompBean();
+            if(compBean == null){
+                return;
+            }
+
+            String iconPath = compBean.getIconPath();
+            if(!TextUtils.isEmpty(iconPath)){
+                File logo = new File(iconPath);
+                if(logo.exists()){
+                    bindImageView(logo.getPath(),imageView);
+                } else {
+                    MyXutils.getInstance().downLoadFile(compBean.getIconUrl(), compBean.getIconPath(), false, new MyXutils.XDownLoadCallBack() {
+                        @Override public void onLoading(long total, long current, boolean isDownloading) { }
+                        @Override public void onSuccess(File result) {
+                            bindImageView(result.getPath(),imageView);
+                        }
+                        @Override public void onError(Throwable ex) { }
+                        @Override public void onFinished() { }
+                    });
+                }
+            }
+
+            EventBus.getDefault().postSticky(new SystemActivity.UpdateEvent());
+        }
+
+        @Override
+        public void onFinish() {
         }
     };
 
@@ -179,36 +220,14 @@ public class WelComeSmallActivity extends BaseGateActivity {
     private WeatherManager.ResultListener resultListener = new WeatherManager.ResultListener() {
         @Override
         public void updateWeather(int id, String weatherInfo) {
-            ivWeather.setImageResource(id);
-            tvWeather.setText(weatherInfo);
+            if(ivWeather != null) ivWeather.setImageResource(id);
+            if(tvWeather != null) tvWeather.setText(weatherInfo);
             ScreenSaver.get().setWeather(id,weatherInfo);
         }
     };
 
     /*补录*/
     public void goMakeUp(View view){
-    }
-
-    /*同步数据*/
-    private void syncData(){
-        SyncManager.instance()
-                .init(WelComeSmallActivity.this)
-                .setListener(new SyncManager.LoadListener() {
-                    @Override
-                    public void onLoaded(CompanyBean bean) {
-                        Glide.with(WelComeSmallActivity.this)
-                                .load(bean.getCompany().getComlogo())
-                                .skipMemoryCache(true)
-                                .crossFade(500)
-                                .into(imageView);
-
-                        EventBus.getDefault().postSticky(new SystemActivity.UpdateEvent());
-                    }
-
-                    @Override
-                    public void onFinish() {
-                    }
-                });
     }
 
     private void startXmpp() {//开启xmpp
@@ -333,16 +352,24 @@ public class WelComeSmallActivity extends BaseGateActivity {
     //语音播报
     private void speak(int signType, String signerName) {
         String speakStr = " 您好 %s ，欢迎光临";
+        String goTips = "上班签到成功";
+        String  downTips = "下班签到成功";
+        CompBean compBean = APP.getCompBean();
+
         switch (signType) {
             case 0:
                 speakStr = String.format(yuyin, signerName);
                 break;
             case 1:
-                String goTips = SpUtils.getStr(SpUtils.GOTIPS, "上班签到成功");
+                if(compBean != null && !TextUtils.isEmpty(compBean.getGotips())){
+                    goTips = compBean.getGotips();
+                }
                 speakStr = String.format(" %s " + goTips, signerName);
                 break;
             case 2:
-                String downTips = SpUtils.getStr(SpUtils.DOWNTIPS, "下班签到成功");
+                if(compBean != null && !TextUtils.isEmpty(compBean.getDowntips())){
+                    downTips = compBean.getDowntips();
+                }
                 speakStr = String.format(" %s " + downTips, signerName);
                 break;
         }

@@ -17,7 +17,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,14 +33,16 @@ public class CameraManager {
     private SurfaceHolder mHolder;
 
     private static int CAMERA_ORIENTATION = P;
-    private static int CAMERA_WIDTH = 1280;//720
-    private static int CAMERA_HEIGHT = 720;//1280
+    private static int CAMERA_WIDTH = 640;//720
+    private static int CAMERA_HEIGHT = 480;//1280
 
     private static final String TAG = "CameraManager";
     private static CameraManager instance;
     private Camera mCamera;
     private CameraStateListener mListener;
     private byte[] mBuffer;
+
+    private List<Camera.Size> supportSizeList = new ArrayList<>();
 
     private final Object mLock = new Object();
 
@@ -64,6 +66,11 @@ public class CameraManager {
 
     private CameraManager() {
         CAMERA_ORIENTATION = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        String str = SpUtils.getStr(SpUtils.CAMERA_SIZE, "1280*720");
+        String[] split = str.split("\\*");
+        CAMERA_WIDTH = Integer.valueOf(split[0]);
+        CAMERA_HEIGHT = Integer.valueOf(split[1]);
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
@@ -190,6 +197,10 @@ public class CameraManager {
         }
     }
 
+    public List<Camera.Size> getSupportSizeList(){
+        return supportSizeList;
+    }
+
     private void setCallback() {
         if (mCamera != null) {
             d("设置Error回调... ");
@@ -206,19 +217,16 @@ public class CameraManager {
             //设置参数
             Camera.Parameters params = mCamera.getParameters();
             final List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("[");
-            for (Camera.Size size : sizes) {
-                stringBuilder.append(size.width).append("*").append(size.height).append("; ");
+            supportSizeList.addAll(sizes);
+            try{
+                Log.e(TAG, "setParameters: ----- " + CAMERA_WIDTH + "*" + CAMERA_HEIGHT);
+                params.setPreviewSize(CAMERA_WIDTH, CAMERA_HEIGHT);
+                mCamera.setParameters(params);
+            }catch (Exception e){
+                CAMERA_WIDTH = 640;
+                CAMERA_HEIGHT = 480;
+                e.printStackTrace();
             }
-            stringBuilder.append("]");
-            d(stringBuilder.toString());
-
-            int width = CAMERA_WIDTH;
-            int height = CAMERA_HEIGHT;
-            params.setPreviewSize(width, height);
-            mCamera.setParameters(params);
             mCamera.setDisplayOrientation(CAMERA_ORIENTATION);
         }
     }
@@ -270,11 +278,11 @@ public class CameraManager {
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            final byte[] frameCopy = Arrays.copyOf(data, data.length);
+//            final byte[] frameCopy = Arrays.copyOf(data, data.length);
             if (camera != null) {
                 camera.addCallbackBuffer(data);
             }
-            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(frameCopy, CAMERA_WIDTH, CAMERA_HEIGHT);
+            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(data, CAMERA_WIDTH, CAMERA_HEIGHT);
             FaceFrameManager.handleCameraFrame(frameRotateRGB, null, CAMERA_WIDTH, CAMERA_HEIGHT);
         }
     };
