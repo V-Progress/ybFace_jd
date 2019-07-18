@@ -12,8 +12,8 @@
         android:layout_height="match_parent"
         android:background="@mipmap/bj"
         android:orientation="vertical"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp">
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
             android:layout_gravity="center_horizontal"
             android:id="@+id/face_view"
             android:layout_width="match_parent"
-            android:layout_height="540dp"/>
+            android:layout_height="550dp"/>
 
         <LinearLayout
             android:id="@+id/layout_subTitle"
@@ -226,6 +226,23 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
         </LinearLayout>
+
+        <!--<FrameLayout-->
+            <!--android:layout_marginTop="30dp"-->
+            <!--android:id="@+id/ll_list_container"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+        <!--</FrameLayout>-->
+
+        <!--<FrameLayout-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="#43000000"-->
+            <!--android:id="@+id/layout_h"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_marginTop="30dp"-->
+            <!--android:orientation="vertical">-->
+        <!--</FrameLayout>-->
 
         <TextView
             android:id="@+id/tv_main_bottomTitle"

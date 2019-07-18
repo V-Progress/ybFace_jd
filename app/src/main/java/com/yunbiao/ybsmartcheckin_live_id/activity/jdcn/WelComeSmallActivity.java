@@ -148,7 +148,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
     /*同步数据*/
     private void syncData(){
-        SyncManager.instance().init(WelComeSmallActivity.this).setListener(loadListener);
+        SyncManager.instance().init(WelComeSmallActivity.this,loadListener);
     }
 
     private SyncManager.LoadListener loadListener = new SyncManager.LoadListener() {
@@ -440,38 +440,4 @@ public class WelComeSmallActivity extends BaseGateActivity {
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
     }
-
 }
-
-
-
-// TODO: 2019/6/10 多人
-//        MultipleSignDialog.instance().init(this);
-//        SignManager2.instance().init(WelComeActivity.this, new SignManager2.SignEventListener() {
-//            @Override
-//            public void onPrepared(List<SignBean> mList) {
-//                if (mList == null) {
-//                    return;
-//                }
-//
-////                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
-////                gridview.setAdapter(mVisitorAdapter);
-////
-////                updateNumber(mList);
-//
-//                tv_load_error.setVisibility(View.GONE);
-//                ll_load_container.setVisibility(View.GONE);
-//                gridview.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onSigned(List<SignBean> mList, SignBean signBean, int signType) {
-////                updateNumber(mList);
-//                speak(signType,signBean.getName());
-//                MultipleSignDialog.instance().sign(signBean);
-//
-//                if (mGateIsAlive) {
-//                    mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-//                }
-//            }
-//        });

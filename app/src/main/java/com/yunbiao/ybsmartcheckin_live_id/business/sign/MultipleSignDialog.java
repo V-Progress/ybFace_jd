@@ -24,7 +24,7 @@ public class MultipleSignDialog {
     private static final String TAG = "MultipleSignDialog";
     private static MultipleSignDialog instance = new MultipleSignDialog();
     private static LinkedList<SignBean> signList = new LinkedList<>();
-    private final int MAX_SIGN_TIME = 5;
+    private final int MAX_SIGN_TIME = 2;
     private int signOffTime = MAX_SIGN_TIME;//多人签到延时
     private Dialog vipDialog;
     private RecyclerView rlvVip;
@@ -37,14 +37,31 @@ public class MultipleSignDialog {
 
     public void init(Context context){
         mContext = context;
-
         vipAdapter2 = new VipAdapter2(context,signList);
 
-        vipDialog = new Dialog(context);
-        //去掉标题线
-        vipDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //背景透明
-        vipDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if(vipDialog == null){
+            vipDialog = new Dialog(context,R.style.DialogStyle);
+            //去掉标题线
+            vipDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+            //背景透明
+            vipDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        } else {
+            vipDialog.dismiss();
+        }
+        Window window = vipDialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.gravity = Gravity.LEFT; // 居中位置
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.dimAmount = 0f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){//6.0
+            lp.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        }else {
+            lp.type =  WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
+        window.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+        window.setWindowAnimations(R.style.miniDialogStyle);  //添加动画
+        window.setAttributes(lp);
 
         vipDialog.setCancelable(false);
         vipDialog.setContentView(R.layout.dialog_vip_test);
@@ -55,14 +72,12 @@ public class MultipleSignDialog {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         rlvVip.setLayoutManager(layoutManager);
-
-//        rlvVip.setAdapter(vipAdapter);
         rlvVip.setAdapter(vipAdapter2);
         rlvVip.setItemAnimator(new DefaultItemAnimator());
         vipDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                timeHandler.sendEmptyMessageDelayed(0,1000);
+                timeHandler.sendEmptyMessage(0);
             }
         });
     }
@@ -94,19 +109,19 @@ public class MultipleSignDialog {
             showDialog();
         }
 
-        signList.addLast(signBean);
-        if(signList.size() > 3){
+        signList.addFirst(signBean);
+        if(signList.size() > 4){
             while (true){
-                signList.removeFirst();
-                vipAdapter2.notifyItemRemoved(0);
-                if(signList.size()<= 3){
+                signList.removeLast();
+                vipAdapter2.notifyItemRemoved(vipAdapter2.getItemCount()-1);
+                if(signList.size()<= 4){
                     break;
                 }
             }
         }
 
-        vipAdapter2.notifyItemInserted(vipAdapter2.getItemCount());
-        rlvVip.scrollToPosition(vipAdapter2.getItemCount()-1);
+        vipAdapter2.notifyItemInserted(0);
+        rlvVip.scrollToPosition(0);
     }
 
     private void showDialog(){

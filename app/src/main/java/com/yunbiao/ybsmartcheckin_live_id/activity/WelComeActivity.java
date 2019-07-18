@@ -1,20 +1,17 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +49,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
+import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
@@ -140,6 +138,12 @@ public class WelComeActivity extends BaseGateActivity {
         }
         faceView = findViewById(R.id.face_view);
 
+//        SignListFragment signListFragment = new SignListFragment();
+//        replaceFragment(R.id.ll_list_container,signListFragment);
+//
+//        InformationFragment informationFragment = new InformationFragment();
+//        replaceFragment(R.id.layout_h,informationFragment);
+
         ivMainLogo = findViewById(R.id.iv_main_logo);
         tvMainAbbName = findViewById(R.id.tv_main_abbname);
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
@@ -184,6 +188,8 @@ public class WelComeActivity extends BaseGateActivity {
         //初始化定位工具
         LocateManager.instance().init(this);
 
+        MultipleSignDialog.instance().init(this);
+
         //开始获取天气
         WeatherManager.instance().start(WelComeActivity.this,resultListener);
     }
@@ -192,7 +198,7 @@ public class WelComeActivity extends BaseGateActivity {
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
-            SyncManager.instance().init(WelComeActivity.this).setListener(loadListener);
+            SyncManager.instance().init(WelComeActivity.this,loadListener);
         }
         @Override
         public void onFaceDetection() {
@@ -235,9 +241,6 @@ public class WelComeActivity extends BaseGateActivity {
             //初始化广告
             AdsManager.instance().init(WelComeActivity.this, null);
 
-            //自动清理服务
-            ResourceCleanManager.instance().startAutoCleanService();
-
             CompBean compBean = APP.getCompBean();
             if(compBean == null){
                 return;
@@ -275,6 +278,7 @@ public class WelComeActivity extends BaseGateActivity {
                 if(!qrCode.exists()){
                     loadQrCode(qrCodePath);
                 } else {
+                    ivQrCodeAdd.setVisibility(View.VISIBLE);
                     bindImageView(qrCode.getPath(),ivQrCodeAdd);
                 }
             }
@@ -284,7 +288,6 @@ public class WelComeActivity extends BaseGateActivity {
 
         @Override
         public void onFinish() {
-            AdsManager.instance().init(WelComeActivity.this, null);
         }
     };
 
@@ -310,19 +313,9 @@ public class WelComeActivity extends BaseGateActivity {
                 OkHttpUtils.get().url(addQRCodeBean.codeurl).build().execute(new BitmapCallback() {
                     @Override public void onError(Call call, Exception e, int id) { }
                     @Override public void onResponse(final Bitmap response, int id) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final File file = FileUtils.saveBitmap(response, localPath);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ivQrCodeAdd.setVisibility(View.VISIBLE);
-                                        bindImageView(file.getPath(),ivQrCodeAdd);
-                                    }
-                                });
-                            }
-                        }).start();
+                        final File file = FileUtils.saveBitmap(response, localPath);
+                        ivQrCodeAdd.setVisibility(View.VISIBLE);
+                        bindImageView(file.getPath(),ivQrCodeAdd);
                     }
                 });
             }
@@ -342,6 +335,9 @@ public class WelComeActivity extends BaseGateActivity {
             tv_load_error.setVisibility(View.GONE);
             ll_load_container.setVisibility(View.GONE);
             gridview.setVisibility(View.VISIBLE);
+
+            //自动清理服务
+            ResourceCleanManager.instance().startAutoCleanService();
         }
 
         @Override
@@ -358,8 +354,7 @@ public class WelComeActivity extends BaseGateActivity {
             speak(signType, signBean.getName());
 
             if (!AdsManager.instance().isAdsShowing()) {
-//                MultipleSignDialog.instance().sign(signBean);
-                VipDialogManager.showVipDialog(WelComeActivity.this, today, signBean);
+                MultipleSignDialog.instance().sign(signBean);
             }
         }
 
@@ -642,38 +637,4 @@ public class WelComeActivity extends BaseGateActivity {
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
     }
-
 }
-
-
-
-// TODO: 2019/6/10 多人
-//        MultipleSignDialog.instance().init(this);
-//        SignManager2.instance().init(WelComeActivity.this, new SignManager2.SignEventListener() {
-//            @Override
-//            public void onPrepared(List<SignBean> mList) {
-//                if (mList == null) {
-//                    return;
-//                }
-//
-////                mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mList, mCurrentOrientation);
-////                gridview.setAdapter(mVisitorAdapter);
-////
-////                updateNumber(mList);
-//
-//                tv_load_error.setVisibility(View.GONE);
-//                ll_load_container.setVisibility(View.GONE);
-//                gridview.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onSigned(List<SignBean> mList, SignBean signBean, int signType) {
-////                updateNumber(mList);
-//                speak(signType,signBean.getName());
-//                MultipleSignDialog.instance().sign(signBean);
-//
-//                if (mGateIsAlive) {
-//                    mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-//                }
-//            }
-//        });

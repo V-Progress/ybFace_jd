@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,11 +23,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends FragmentActivity {
     protected boolean isLog = true;
     private static final String TAG = "BaseActivity";
     private static List<Activity> activities = new ArrayList<Activity>();
     protected int mCurrentOrientation;
+    protected FragmentManager mFragmentManager;
+    private boolean isSupportTouch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,13 @@ public abstract class BaseActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         activities.add(this);
+
         mCurrentOrientation = getResources().getConfiguration().orientation;
+
+        //判断是否支持触屏
+        isSupportTouch = getResources().getConfiguration().touchscreen == Configuration.TOUCHSCREEN_FINGER;
+
+        mFragmentManager = getSupportFragmentManager();
 
         int portraitLayout = getPortraitLayout();
         int landscapeLayout = getLandscapeLayout();
@@ -48,6 +60,20 @@ public abstract class BaseActivity extends Activity {
         initView();
 
         initData();
+    }
+
+    protected void replaceFragment(int id, Fragment fragment){
+        if(mFragmentManager == null){
+            return;
+        }
+        mFragmentManager.beginTransaction().replace(id,fragment).commit();
+    }
+
+    protected void addFragment(int id, Fragment fragment){
+        if(mFragmentManager == null){
+            return;
+        }
+        mFragmentManager.beginTransaction().add(id,fragment).commit();
     }
 
     public void onBack(View view){
@@ -67,7 +93,10 @@ public abstract class BaseActivity extends Activity {
     protected abstract int getLandscapeLayout();
 
     protected void bindImageView(String urlOrPath, final ImageView iv){
-            Glide.with(this).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
+        if(TextUtils.isEmpty(urlOrPath)){
+            return;
+        }
+        Glide.with(this).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
     }
 
     /***

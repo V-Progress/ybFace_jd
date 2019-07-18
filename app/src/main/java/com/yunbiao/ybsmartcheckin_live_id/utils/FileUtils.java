@@ -224,6 +224,10 @@ public class FileUtils {
         try {
             //格式化时间
             filePic = new File(path);
+            File parentFile = filePic.getParentFile();
+            if(!parentFile.exists()){
+                parentFile.mkdirs();
+            }
             FileOutputStream fos = new FileOutputStream(filePic);
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();

@@ -105,14 +105,6 @@ public class SyncManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() == ConnectivityManager.CONNECTIVITY_ACTION) {
-            /*判断当前网络时候可用以及网络类型*/
-//            boolean networkConnected = isNetworkConnected(context);
-//            if (networkConnected) {
-//
-//            } else {
-//                setErrInfo("网络不可用，请检查网络");
-//            }
-
             long lastInitTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);
             long currTime = System.currentTimeMillis();
             Log.e(TAG, "onReceive: -----" + lastInitTime + " --- " + currTime );
@@ -130,20 +122,20 @@ public class SyncManager extends BroadcastReceiver {
         void onFinish();
     }
     private LoadListener mListener;
-    public void setListener(LoadListener listener){
-        mListener = listener;
-    }
 
     /***
      * 初始化数据
      * @param act
      * @return
      */
-    public SyncManager init(@NonNull Activity act) {
+    public SyncManager init(@NonNull Activity act,LoadListener listener) {
         mAct = act;
+        mListener = listener;
         departDao = APP.getDepartDao();
         userDao = APP.getUserDao();
         executorService = Executors.newFixedThreadPool(2);
+        APP.initCompBean();
+
         String webBaseUrl = ResourceUpdate.WEB_BASE_URL;
         String[] split = webBaseUrl.split(":");
         for (String s : split) {
@@ -156,6 +148,15 @@ public class SyncManager extends BroadcastReceiver {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         mAct.registerReceiver(this, filter);
+
+        if(mListener != null){
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mListener.onLoaded();
+                }
+            });
+        }
         return instance;
     }
 
@@ -287,15 +288,7 @@ public class SyncManager extends BroadcastReceiver {
             }
 
             @Override public void onFailed() {
-                APP.initCompBean();
-                if(mListener != null){
-                    mAct.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mListener.onLoaded();
-                        }
-                    });
-                }
+
             }
         });
     }

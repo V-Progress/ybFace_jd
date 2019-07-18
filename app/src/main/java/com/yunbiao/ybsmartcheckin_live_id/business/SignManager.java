@@ -59,7 +59,6 @@ public class SignManager {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
-    private Object signLock = new Object();
 
     private long verifyOffsetTime = 10000;//验证间隔时间
     private final UserDao userDao;
