@@ -5,74 +5,45 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.google.gson.Gson;
+import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.MyStringCallback;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.adapter.VisitorAdapter;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.bean.AddQRCodeBean;
-import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
 import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.BaseGateActivity;
-import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
-import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.BitmapCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/11/26.
@@ -80,46 +51,17 @@ import okhttp3.Call;
 
 public class WelComeActivity extends BaseGateActivity {
 
-    private static final String TAG = "WelComeActivity";
-    private ImageView ivAdsLogo;//首页头部logo
-    private TextView tvAdsAbbName;//首页头部公司名称
-
-    private TextView tvAdstem;//首页温度
-    private ImageView ivAdsWea;//首页天气
-    private TextView tv_deviceNo;//首页设备号
-
-    private TextView tv_checkInNum;//签到页的签到人数统计
-    private GridView gridview;//签到页头像列表
-
     private ImageView ivMainLogo;//公司logo
-    private ImageView iv_record;//补录
     private TextView tvMainAbbName;//公司名
-    private TextView tvMainNotice;//公司提醒
     private TextView tvMainTopTitle;//标题
     private TextView tvMainBottomTitle;//底部标题
-
-    private View ll_load_container;//加载条
-    private TextView tv_load_error;//加载提示
-    private View aiv_bulu;//补录加载条
-
-    private ImageView ivQrCodeAdd;
-
-    private BaseAdapter mVisitorAdapter;//签到人员adapter
-    private PieChart pieChart_h;//横屏饼图
 
     // xmpp推送服务
     private ServiceManager serviceManager;
 
-    private String today = "";//获取今天时间
-    private boolean isBulu = false;//获取补录头像
-    private String yuyin = " 您好 %s";
-
-    private boolean isForeground = false;//是否前台显示
-
     //摄像头分辨率
     private FaceView faceView;
-    private List<SignBean> mSignList = new ArrayList<>();
-    private TextView tvAdsSlogan;
+    private AdsFragment adsFragment;
 
     @Override
     protected int getPortraitLayout() {
@@ -133,157 +75,69 @@ public class WelComeActivity extends BaseGateActivity {
 
     @Override
     protected void initView() {
-        if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
-            initPieChart();
-        }
         faceView = findViewById(R.id.face_view);
-
-//        SignListFragment signListFragment = new SignListFragment();
-//        replaceFragment(R.id.ll_list_container,signListFragment);
-//
-//        InformationFragment informationFragment = new InformationFragment();
-//        replaceFragment(R.id.layout_h,informationFragment);
-
+        faceView.setCallback(faceCallback);
         ivMainLogo = findViewById(R.id.iv_main_logo);
         tvMainAbbName = findViewById(R.id.tv_main_abbname);
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
         tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
-        tvMainNotice = findViewById(R.id.tv_main_notice);
 
-        ivAdsLogo = findViewById(R.id.iv_ads_logo);
-        tvAdsAbbName = findViewById(R.id.tv_ads_addname);
-        tvAdsSlogan = findViewById(R.id.tv_ads_slogan);
-        tvAdstem = findViewById(R.id.tv_ads_tem);
-        ivAdsWea = findViewById(R.id.iv_ads_wea);
+        //加载签到列表Fragment
+        SignFragment signListFragment = new SignFragment();
+        replaceFragment(R.id.ll_list_container, signListFragment);
 
-        ll_load_container = findViewById(R.id.ll_load_container);
-        tv_load_error = findViewById(R.id.tv_load_error);
-        gridview = findViewById(R.id.gridview);
-        aiv_bulu = findViewById(R.id.aiv_bulu);
-        tv_deviceNo = findViewById(R.id.tv_deviceNo);
-        tv_checkInNum = findViewById(R.id.tv_checkInNum);
+        //只有竖屏情况下加载信息展示Fragment
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            InformationFragment informationFragment = new InformationFragment();
+            replaceFragment(R.id.layout_h, informationFragment);
+        }
 
-        iv_record = findViewById(R.id.iv_record);
-        ivQrCodeAdd = findViewById(R.id.iv_qrCode_add);
-
-        faceView.setCallback(faceCallback);
-        mVisitorAdapter = new VisitorAdapter(WelComeActivity.this, mSignList, mCurrentOrientation);
-        gridview.setAdapter(mVisitorAdapter);
+        //加载广告Fragment
+        adsFragment = new AdsFragment();
+        addFragment(R.id.ll_face_main, adsFragment);
     }
 
     @Override
     protected void initData() {
-        //设置设备编号
-        String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        if (!TextUtils.isEmpty(deviceSernum) && tv_deviceNo != null) {
-            tv_deviceNo.setText(deviceSernum);
-        }
-
         //开启Xmpp
         startXmpp();
 
-        //初始化语音系统//todo 7.0以上无法加载讯飞语音库
-        KDXFSpeechManager.instance().init(this).welcome();
-
         //初始化定位工具
         LocateManager.instance().init(this);
-
-        MultipleSignDialog.instance().init(this);
-
-        //开始获取天气
-        WeatherManager.instance().start(WelComeActivity.this,resultListener);
     }
 
     /*人脸识别回调，由上到下执行*/
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
-            SyncManager.instance().init(WelComeActivity.this,loadListener);
+            SyncManager.instance().init(WelComeActivity.this, loadListener);
         }
+
         @Override
         public void onFaceDetection() {
             ApiManager.instance().onLignt();
-            //如果广告可见，收起广告
-            if (AdsManager.instance().isAdsShowing()) {
-                AdsManager.instance().openAds();
-            } else {
-                //重置倒计时
-                AdsManager.instance().startTimer();
+            if(adsFragment != null){
+                adsFragment.detectFace();
             }
         }
 
         @Override
-        public void onFaceVerify(VerifyResult verifyResult) {
-            if(verifyResult == null){
-                return;
-            }
-            int result = verifyResult.getResult();
-            if(isBulu ){
-                if(!SignManager.canMakeUp()){
-                    return;
-                }
-                SignManager.instance().makeUpSign(verifyResult.getFaceImageBytes());
-                return;
-            }
-            if(result != VerifyResult.UNKNOWN_FACE){
-                return;
-            }
-            SignManager.instance().checkSign(verifyResult);
+        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
+            if (verifyResult != null && faceProperty  != null)
+                SignManager.instance().checkSign(verifyResult,faceProperty);
         }
     };
 
     private SyncManager.LoadListener loadListener = new SyncManager.LoadListener() {
         @Override
         public void onLoaded() {
-            //开始定时更新签到列表
-            SignManager.instance().init(WelComeActivity.this,signEventListener);
-
-            //初始化广告
-            AdsManager.instance().init(WelComeActivity.this, null);
-
             CompBean compBean = APP.getCompBean();
-            if(compBean == null){
-                return;
-            }
-
-            if(tvMainAbbName != null) tvMainAbbName.setText(compBean.getAbbName());
-            if(tvMainTopTitle != null) tvMainTopTitle.setText(compBean.getTopTitle());
-            if(tvMainBottomTitle != null) tvMainBottomTitle.setText(compBean.getBottomTitle());
-            if(tvMainNotice != null) tvMainNotice.setText(compBean.getNotice());
-            if(tvAdsAbbName != null) tvAdsAbbName.setText(compBean.getAbbName());
-            if(tvAdsSlogan != null) tvAdsSlogan.setText(compBean.getSlogan());
-
-            String iconPath = compBean.getIconPath();
-            if(!TextUtils.isEmpty(iconPath)){
-                File logo = new File(iconPath);
-                if(logo.exists()){
-                    bindImageView(logo.getPath(),ivMainLogo);
-                    bindImageView(logo.getPath(),ivAdsLogo);
-                } else {
-                    MyXutils.getInstance().downLoadFile(compBean.getIconUrl(), compBean.getIconPath(), false, new MyXutils.XDownLoadCallBack() {
-                        @Override public void onLoading(long total, long current, boolean isDownloading) { }
-                        @Override public void onSuccess(File result) {
-                            bindImageView(result.getPath(),ivMainLogo);
-                            bindImageView(result.getPath(),ivAdsLogo);
-                        }
-                        @Override public void onError(Throwable ex) { }
-                        @Override public void onFinished() { }
-                    });
-                }
-            }
-
-            String qrCodePath = compBean.getQRCodePath();
-            if(!TextUtils.isEmpty(qrCodePath)){
-                File qrCode = new File(qrCodePath);
-                if(!qrCode.exists()){
-                    loadQrCode(qrCodePath);
-                } else {
-                    ivQrCodeAdd.setVisibility(View.VISIBLE);
-                    bindImageView(qrCode.getPath(),ivQrCodeAdd);
-                }
-            }
-
-            EventBus.getDefault().postSticky(new SystemActivity.UpdateEvent());
+            if (compBean == null) return;
+            if (tvMainAbbName != null) tvMainAbbName.setText(compBean.getAbbName());
+            if (tvMainTopTitle != null) tvMainTopTitle.setText(compBean.getTopTitle());
+            if (tvMainBottomTitle != null) tvMainBottomTitle.setText(compBean.getBottomTitle());
+            loadLogo(compBean);
+            EventBus.getDefault().postSticky(new PageUpdateEvent());
         }
 
         @Override
@@ -291,98 +145,24 @@ public class WelComeActivity extends BaseGateActivity {
         }
     };
 
-    /*加载二维码*/
-    private void loadQrCode(final String localPath) {
-        int comId = SpUtils.getInt(SpUtils.COMPANYID);
-        Map<String, String> params = new HashMap();
-        params.put("comId", comId + "");
-        OkHttpUtils.post().url(ResourceUpdate.QRCODE_ADD).params(params).build().execute(new MyStringCallback() {
-            @Override
-            public void onResponse(String response, int id) {
-                if (TextUtils.isEmpty(response)) {
-                    return;
-                }
-                AddQRCodeBean addQRCodeBean = new Gson().fromJson(response, AddQRCodeBean.class);
-                if (!TextUtils.equals(addQRCodeBean.status, "1")) {
-                    return;
-                }
-                if (addQRCodeBean == null || TextUtils.isEmpty(addQRCodeBean.codeurl)) {
-                    return;
-                }
-
-                OkHttpUtils.get().url(addQRCodeBean.codeurl).build().execute(new BitmapCallback() {
-                    @Override public void onError(Call call, Exception e, int id) { }
-                    @Override public void onResponse(final Bitmap response, int id) {
-                        final File file = FileUtils.saveBitmap(response, localPath);
-                        ivQrCodeAdd.setVisibility(View.VISIBLE);
-                        bindImageView(file.getPath(),ivQrCodeAdd);
+    private void loadLogo(CompBean compBean){
+        String iconPath = compBean.getIconPath();
+        if (!TextUtils.isEmpty(iconPath)) {
+            File logo = new File(iconPath);
+            if (logo.exists()) {
+                bindImageView(logo.getPath(), ivMainLogo);
+            } else {
+                MyXutils.getInstance().downLoadFile(compBean.getIconUrl(), compBean.getIconPath(), false, new MyXutils.XDownLoadCallBack() {
+                    @Override public void onLoading(long total, long current, boolean isDownloading) { }
+                    @Override public void onSuccess(File result) {
+                        EventBus.getDefault().postSticky(new LogoUpdateEvent());
+                        bindImageView(result.getPath(), ivMainLogo);
                     }
+                    @Override public void onError(Throwable ex) { }
+                    @Override public void onFinished() { }
                 });
             }
-        });
-    }
-
-    /*签到事件监听*/
-    private SignManager.SignEventListener signEventListener = new SignManager.SignEventListener() {
-        @Override
-        public void onPrepared(List<SignBean> mList) {
-            if (mList != null) {
-                mSignList.addAll(mList);
-                mVisitorAdapter.notifyDataSetChanged();
-            }
-
-            updateNumber();
-            tv_load_error.setVisibility(View.GONE);
-            ll_load_container.setVisibility(View.GONE);
-            gridview.setVisibility(View.VISIBLE);
-
-            //自动清理服务
-            ResourceCleanManager.instance().startAutoCleanService();
         }
-
-        @Override
-        public void onSigned(SignBean signBean, int signType) {
-            mSignList.add(0,signBean);
-            mVisitorAdapter.notifyDataSetChanged();
-            updateNumber();
-
-            ApiManager.instance().onGate();
-            if (mGateIsAlive) {
-                mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-            }
-
-            speak(signType, signBean.getName());
-
-            if (!AdsManager.instance().isAdsShowing()) {
-                MultipleSignDialog.instance().sign(signBean);
-            }
-        }
-
-        @Override
-        public void onMakeUped(String imgPath, boolean makeUpSuccess) {
-            isBulu = false;
-
-            VipDialogManager.showBuluDialog(WelComeActivity.this, imgPath,makeUpSuccess);
-            KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
-            aiv_bulu.setVisibility(View.GONE);
-            iv_record.setVisibility(View.VISIBLE);
-        }
-    };
-
-    /*天气请求结果监听*/
-    private WeatherManager.ResultListener resultListener = new WeatherManager.ResultListener() {
-        @Override
-        public void updateWeather(int id, String weatherInfo) {
-            ivAdsWea.setImageResource(R.mipmap.icon_snow);
-            tvAdstem.setText(weatherInfo);
-        }
-    };
-
-    /*补录*/
-    public void goMakeUp(View view){
-        isBulu = true;
-        aiv_bulu.setVisibility(View.VISIBLE);
-        iv_record.setVisibility(View.GONE);
     }
 
     private void startXmpp() {//开启xmpp
@@ -390,26 +170,11 @@ public class WelComeActivity extends BaseGateActivity {
         serviceManager.startService();
     }
 
-    private void destoryXmpp(){
-        if(serviceManager != null){
+    private void destoryXmpp() {
+        if (serviceManager != null) {
             serviceManager.stopService();
             serviceManager = null;
         }
-    }
-
-    //设置饼图属性
-    private void initPieChart() {
-        pieChart_h = (PieChart) findViewById(R.id.pie_chart);
-        Description description = pieChart_h.getDescription();
-        description.setText("");//关闭饼图描述
-        pieChart_h.setDrawEntryLabels(false);//关闭环中显示的lable
-        Legend legend = pieChart_h.getLegend();
-        legend.setEnabled(false);//关闭色块指示
-        pieChart_h.setHoleColor(Color.TRANSPARENT);//中心圆透明
-        pieChart_h.setHoleRadius(70f);//中心圆半径
-        pieChart_h.setHighlightPerTapEnabled(false);//点击高亮
-        pieChart_h.animateY(1400, Easing.EasingOption.EaseInOutQuad);// 设置pieChart图表展示动画效果
-        pieChart_h.setNoDataText("");//不显示无数据提醒
     }
 
     //密码弹窗
@@ -437,7 +202,7 @@ public class WelComeActivity extends BaseGateActivity {
                     rootView.startAnimation(animation);
                     return;
                 }
-                if(runnable != null){
+                if (runnable != null) {
                     runnable.run();
                 }
                 dialog.dismiss();
@@ -454,91 +219,7 @@ public class WelComeActivity extends BaseGateActivity {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-    //更新签到列表
-    private void updateNumber() {
-        ThreadUitls.runInThread(new Runnable() {
-            @Override
-            public void run() {
-                int male = 0;
-                for (SignBean signBean : mSignList) {
-                    boolean empty = TextUtils.isEmpty(signBean.getSex());
-                    if (empty || signBean.getSex().equals("1") || signBean.getSex().equals("男")) {
-                        male = male + 1;
-                    }
-                }
-
-                final int total = mSignList.size();
-                final int female = total - male;
-                final int maleNum = male;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                            String signTips = "已签到   <font color='#fff600'>" + total + "</font>   人 （男 <font color='#fff600'>" + maleNum + "</font>   女  <font color='#fff600'>" + female + "</font> ） ";
-                            tv_checkInNum.setText(Html.fromHtml(signTips));
-                        } else {
-                            tv_checkInNum.setText("" + total);
-                            ((TextView) findViewById(R.id.tv_sign_number_male)).setText("男: " + maleNum + "人");
-                            ((TextView) findViewById(R.id.tv_sign_number_female)).setText("女: " + female + "人");
-
-                            //设置饼图数据
-                            List<PieEntry> dataEntry = new ArrayList<>();
-                            List<Integer> dataColors = new ArrayList<>();
-
-                            if (maleNum == 0 && female == 0) {
-                                dataEntry.add(new PieEntry(100, ""));
-                                dataColors.add(getResources().getColor(R.color.white));
-                            } else {
-                                dataEntry.add(new PieEntry(maleNum, "男"));
-                                dataEntry.add(new PieEntry(female, "女"));
-                                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
-                                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
-                            }
-
-                            pieChart_h.clear();
-                            PieDataSet pieDataSet = new PieDataSet(dataEntry, null);
-                            pieDataSet.setColors(dataColors);
-                            PieData pieData = new PieData(pieDataSet);
-                            pieData.setDrawValues(false);//环中value显示
-                            pieChart_h.setData(pieData);
-                            pieChart_h.notifyDataSetChanged();
-                            pieChart_h.invalidate();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    /*=======摄像头检测=============================================================================*/
-    //语音播报
-    private void speak(int signType, String signerName) {
-        String speakStr = " 您好 %s ，欢迎光临";
-        String goTips = "上班签到成功";
-        String  downTips = "下班签到成功";
-        CompBean compBean = APP.getCompBean();
-
-        switch (signType) {
-            case 0:
-                speakStr = String.format(yuyin, signerName);
-                break;
-            case 1:
-                if(compBean != null && !TextUtils.isEmpty(compBean.getGotips())){
-                    goTips = compBean.getGotips();
-                }
-                speakStr = String.format(" %s " + goTips, signerName);
-                break;
-            case 2:
-                if(compBean != null && !TextUtils.isEmpty(compBean.getDowntips())){
-                    downTips = compBean.getDowntips();
-                }
-                speakStr = String.format(" %s " + downTips, signerName);
-                break;
-        }
-        KDXFSpeechManager.instance().playText(speakStr);
-    }
-
-    private void goSetting(){
+    private void goSetting() {
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
         if (!TextUtils.isEmpty(pwd)) {
             inputPwd(new Runnable() {
@@ -547,13 +228,13 @@ public class WelComeActivity extends BaseGateActivity {
                     startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
                 }
             });
-            return ;
+            return;
         }
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
     //跳转设置界面
-    public void goSetting(View view){
+    public void goSetting(View view) {
         goSetting();
     }
 
@@ -569,7 +250,7 @@ public class WelComeActivity extends BaseGateActivity {
 
     @Override
     public void onBackPressed() {
-        RestartAPPTool.showExitDialog(this,new DialogInterface.OnClickListener() {
+        RestartAPPTool.showExitDialog(this, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
@@ -590,7 +271,6 @@ public class WelComeActivity extends BaseGateActivity {
                     inputPwd(new Runnable() {
                         @Override
                         public void run() {
-                            finishAll();
                             APP.exit();
                         }
                     });
@@ -604,26 +284,12 @@ public class WelComeActivity extends BaseGateActivity {
     protected void onResume() {
         super.onResume();
         faceView.resume();
-        tagHandler.removeMessages(0);
-        tagHandler.sendEmptyMessageDelayed(0, 500);
-        AdsManager.instance().resume();
     }
-
-    //延时修改标签，避免返回后立刻弹出签到框的情况
-    private Handler tagHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            isForeground = true;
-        }
-    };
 
     @Override
     protected void onPause() {
         super.onPause();
         faceView.pause();
-        isForeground = false;
-        tagHandler.removeMessages(0);
-        AdsManager.instance().pause();
     }
 
     @Override
@@ -633,7 +299,6 @@ public class WelComeActivity extends BaseGateActivity {
         destoryXmpp();
 
         SyncManager.instance().destory();
-        AdsManager.instance().destory();
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
     }

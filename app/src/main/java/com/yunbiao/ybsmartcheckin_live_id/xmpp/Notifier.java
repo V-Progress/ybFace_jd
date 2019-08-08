@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
+import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 
 
 /**

@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -26,12 +25,12 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SysInfoUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
-import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -42,7 +41,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
 import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.BaseGateActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -84,7 +83,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
     @Override
     protected int getPortraitLayout() {
-        return 0;
+        return R.layout.activity_welcome_h_small;
     }
 
     @Override
@@ -134,7 +133,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         }
 
         @Override
-        public void onFaceVerify(VerifyResult verifyResult) {
+        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
             if(verifyResult == null){
                 return;
             }
@@ -142,7 +141,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
             if(result != VerifyResult.UNKNOWN_FACE){
                 return;
             }
-            SignManager.instance().checkSign(verifyResult);
+            SignManager.instance().checkSign(verifyResult,faceProperty);
         }
     };
 
@@ -182,7 +181,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
                 }
             }
 
-            EventBus.getDefault().postSticky(new SystemActivity.UpdateEvent());
+            EventBus.getDefault().postSticky(new SysInfoUpdateEvent());
         }
 
         @Override
@@ -213,7 +212,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
         }
 
         @Override
-        public void onMakeUped(String imgPath, boolean makeUpSuccess) {
+        public void onMakeUped(SignBean imgPath, boolean makeUpSuccess) {
         }
     };
 

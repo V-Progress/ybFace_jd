@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -213,7 +214,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        UIUtils.showTitleTip("删除失败 " + e != null?e.getMessage():"NULL");
+                        UIUtils.showTitleTip(EmployListActivity.this,"删除失败 " + e != null?e.getMessage():"NULL");
                     }
 
                     @Override
@@ -223,7 +224,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                             userDao.delete(employList.get(postion));
                             employList.remove(postion);
                             employAdapter.notifyDataSetChanged();
-                            UIUtils.showTitleTip("删除成功");
+                            UIUtils.showTitleTip(EmployListActivity.this,"删除成功");
                         }
                     }
                 });

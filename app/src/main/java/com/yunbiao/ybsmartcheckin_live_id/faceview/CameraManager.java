@@ -217,6 +217,7 @@ public class CameraManager {
             //设置参数
             try{
                 Camera.Parameters params = mCamera.getParameters();
+                supportSizeList.clear();
                 final List<Camera.Size> sizes = params.getSupportedPreviewSizes();
                 supportSizeList.addAll(sizes);
                 Log.e(TAG, "setParameters: ----- " + CAMERA_WIDTH + "*" + CAMERA_HEIGHT);

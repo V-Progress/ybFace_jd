@@ -1,11 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.DatePickerDialog;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
@@ -228,7 +224,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     public void exportToUD(View view) {
         if(isExporting){
-            UIUtils.showTitleTip("正在导出，请稍等");
+            UIUtils.showTitleTip(SignActivity.this,"正在导出，请稍等");
             return;
         }
         isExporting = true;
@@ -236,7 +232,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         File file = new File(usbDiskPath);
         if(!file.exists()){
             isExporting = false;
-            UIUtils.showTitleTip("请插入U盘");
+            UIUtils.showTitleTip(SignActivity.this,"请插入U盘");
             return;
         }
 
@@ -268,7 +264,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            UIUtils.showTitleTip("数据已全部上传\n没有可导出的数据");
+                            UIUtils.showTitleTip(SignActivity.this,"数据已全部上传\n没有可导出的数据");
                         }
                     });
                     return;
@@ -299,9 +295,9 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         if(jsonFile.exists()){
-                            UIUtils.showTitleTip("导出成功，文件路径：\n" + jsonFile.getPath());
+                            UIUtils.showTitleTip(SignActivity.this,"导出成功，文件路径：\n" + jsonFile.getPath());
                         } else {
-                            UIUtils.showTitleTip("导出失败");
+                            UIUtils.showTitleTip(SignActivity.this,"导出失败");
                         }
                     }
                 });

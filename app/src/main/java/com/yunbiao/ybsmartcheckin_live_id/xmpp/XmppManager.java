@@ -22,9 +22,11 @@ import android.os.Handler;
 import android.util.Log;
 
 
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CheckXmppOnline;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
@@ -115,6 +117,7 @@ public class XmppManager {
 
     public void disconnect() {
         Log.e(LOGTAG, "disconnect()...");
+        EventBus.getDefault().post(new XmppConnectEvent(false));
         terminatePersistentConnection();
     }
 
@@ -409,6 +412,8 @@ public class XmppManager {
                 try {
                     xmppManager.getConnection().login(xmppManager.getUsername(), xmppManager.getPassword(), XMPP_RESOURCE_NAME);
                     Log.e(LOGTAG, "Loggedn in successfully");
+
+                    EventBus.getDefault().post(new XmppConnectEvent(true));
 
                     // connection listener
                     if (xmppManager.getConnectionListener() != null) {

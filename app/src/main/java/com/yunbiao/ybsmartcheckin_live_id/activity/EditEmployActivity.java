@@ -2,18 +2,15 @@ package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +26,7 @@ import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
@@ -285,15 +283,15 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 final String empNum = et_num.getText().toString();
 
                 if (TextUtils.isEmpty(strFileAdd)) {
-                    UIUtils.showTitleTip("请先拍照！");
+                    UIUtils.showTitleTip(this,"请先拍照！");
                     return;
                 }
                 if (TextUtils.isEmpty(name)) {
-                    UIUtils.showTitleTip("名字不能为空！");
+                    UIUtils.showTitleTip(this,"名字不能为空！");
                     return;
                 }
                 if (TextUtils.isEmpty(depart)) {
-                    UIUtils.showTitleTip("请返回增加部门！");
+                    UIUtils.showTitleTip(this,"请返回增加部门！");
                     return;
                 }
 
@@ -340,7 +338,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                UIUtils.showTitleTip("添加失败：\n" + (e != null ? e.getMessage() : "NULL"));
+                                UIUtils.showTitleTip(EditEmployActivity.this,"添加失败：\n" + (e != null ? e.getMessage() : "NULL"));
                             }
 
                             @Override
@@ -371,7 +369,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                                                 errMsg = "参数错误";
                                                 break;
                                         }
-                                        UIUtils.showTitleTip("" + errMsg);
+                                        UIUtils.showTitleTip(EditEmployActivity.this,"" + errMsg);
                                         return;
                                     }
 
@@ -385,10 +383,10 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                                                     VIPDetail countDetail = new VIPDetail(departId, empId, faceId, sex, age, name, depart, job, empNum, birthday, signature, strFileAdd);
                                                     userDao.insert(countDetail);
 
-                                                    UIUtils.showTitleTip("修改成功！");
+                                                    UIUtils.showTitleTip(EditEmployActivity.this,"修改成功！");
                                                     finish();
                                                 } else {
-                                                    UIUtils.showTitleTip("修改失败！");
+                                                    UIUtils.showTitleTip(EditEmployActivity.this,"修改失败！");
                                                 }
                                             }
                                         });

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -59,10 +60,15 @@ public class SignManager {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
-
     private long verifyOffsetTime = 10000;//验证间隔时间
     private final UserDao userDao;
 
+    private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
+    private boolean isDebug = true;
+    private boolean isBulu = false;
+    private boolean isBuluing = false;
+
+    private Map<Integer, Long> passageMap = new HashMap<>();
     public static SignManager instance() {
         if (instance == null) {
             synchronized (SignManager.class) {
@@ -75,7 +81,6 @@ public class SignManager {
     }
 
     private SignManager() {
-
         //初始化当前时间
         today = dateFormat.format(new Date());
         signDao = APP.getSignDao();
@@ -88,7 +93,6 @@ public class SignManager {
         autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.MINUTES);
     }
 
-    private Map<Integer, Long> passageMap = new HashMap<>();
     //初始化线程
     private Runnable initRunnable = new Runnable() {
         @Override
@@ -198,7 +202,16 @@ public class SignManager {
         return instance();
     }
 
-    public void checkSign(VerifyResult verifyResult) {
+    public void checkSign(VerifyResult verifyResult, FaceProperty faceProperty) {
+        if(isBulu){
+            makeUpSign(verifyResult.getFaceImageBytes(),faceProperty);
+            return;
+        }
+
+        if (verifyResult.getResult() != VerifyResult.UNKNOWN_FACE) {
+            return;
+        }
+
         byte[] faceImageBytes = verifyResult.getFaceImageBytes();
         FaceUser user = verifyResult.getUser();
         if (user == null) {
@@ -291,8 +304,6 @@ public class SignManager {
         long signTime;
     }
 
-    private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
-
     private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
         CompBean compBean = APP.getCompBean();
         String gotime = "09:00";
@@ -322,37 +333,35 @@ public class SignManager {
         return 0;
     }
 
-    private boolean isDebug = true;
-
     private void d(@NonNull String msg) {
         if (isDebug) {
             Log.d(TAG, msg);
         }
     }
 
-    private static boolean canMakeUp = true;
-
-    public static boolean canMakeUp() {
-        return canMakeUp;
+    public boolean isBuluState(){
+        return isBulu;
     }
 
-    public void makeUpSign(final byte[] faceImage) {
+    public void startBulu(){
+        isBulu = true;
+    }
+
+    public void makeUpSign(final byte[] faceImage, final FaceProperty faceProperty) {
+        if(isBuluing){
+            return;
+        }
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                canMakeUp = false;
+                isBuluing = true;
                 long currTime = System.currentTimeMillis();
                 final File imgFile = saveBitmap(currTime, faceImage);
 
                 Log.e(TAG, "run: -------------- 补录成功");
-                if (listener != null) {
-                    mAct.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onMakeUped(imgFile.getPath(), true);
-                        }
-                    });
-                }
+
+                isBuluing = false;
+                isBulu = false;
 
                 final SignBean signBean = new SignBean();
                 signBean.setTime(currTime);
@@ -360,7 +369,18 @@ public class SignManager {
                 signBean.setDate(dateFormat.format(currTime));
                 signBean.setName("员工补录");
                 signBean.setImgUrl(imgFile.getPath());
+                signBean.setSex(faceProperty.getGender() + "");
                 Log.e(TAG, "run: -------------- " + signBean.toString());
+
+                if (listener != null) {
+                    mAct.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onMakeUped(signBean, true);
+                        }
+                    });
+                }
+
                 int companyid = SpUtils.getInt(SpUtils.COMPANYID);
                 final Map<String, String> map = new HashMap<>();
                 map.put("comId", companyid + "");
@@ -387,7 +407,6 @@ public class SignManager {
 
                             @Override
                             public void onAfter(int id) {
-                                canMakeUp = true;
                                 int insert = signDao.insert(signBean);
                                 Log.e(TAG, "入库结果: " + insert);
                             }
@@ -456,7 +475,7 @@ public class SignManager {
 
         void onSigned(SignBean signBean, int signType);
 
-        void onMakeUped(String imgPath, boolean makeUpSuccess);
+        void onMakeUped(SignBean signBean, boolean makeUpSuccess);
     }
 
 }

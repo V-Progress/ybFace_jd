@@ -8,7 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 
 import java.io.BufferedReader;

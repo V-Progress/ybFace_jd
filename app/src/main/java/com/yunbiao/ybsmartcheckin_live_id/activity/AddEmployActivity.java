@@ -2,7 +2,6 @@ package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,11 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +28,7 @@ import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
@@ -171,7 +169,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
             depart = mDepartList.get(0);
             departId = mDepartlist.get(0).getDepartId();
         } else {
-            UIUtils.showTitleTip("请先返回创建增加部门！");
+            UIUtils.showTitleTip(this,"请先返回创建增加部门！");
         }
 
         DepartAdapter departAdapter = new DepartAdapter(this, mDepartList);
@@ -285,19 +283,19 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                 final String empNum = et_num.getText().toString();
 
                 if (strFileAdd.equals("")) {
-                    UIUtils.showTitleTip("请先拍照！");
+                    UIUtils.showTitleTip(this,"请先拍照！");
                     return;
                 }
                 if (TextUtils.isEmpty(name)) {
-                    UIUtils.showTitleTip("名字不能为空！");
+                    UIUtils.showTitleTip(this,"名字不能为空！");
                     return;
                 }
                 if (TextUtils.isEmpty(depart)) {
-                    UIUtils.showTitleTip("请返回增加部门！");
+                    UIUtils.showTitleTip(this,"请返回增加部门！");
                     return;
                 }
                 if (TextUtils.isEmpty(job)) {
-                    UIUtils.showTitleTip("职位不能为空！");
+                    UIUtils.showTitleTip(this,"职位不能为空！");
                     return;
                 }
 
@@ -343,7 +341,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                     public void onError(Call call, Exception e, int id) {
                         Log.e(TAG, "onError------------------->" + (e != null ?e.getMessage() : e));
                         btn_submit.setEnabled(true);
-                        UIUtils.showTitleTip("连接服务器失败,请重新再试！（"+ e!=null?e.getMessage():"NULL" +"）");
+                        UIUtils.showTitleTip(AddEmployActivity.this,"连接服务器失败,请重新再试！（"+ e!=null?e.getMessage():"NULL" +"）");
                     }
 
                     @Override
@@ -365,24 +363,24 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                                                 userDao.insert(countDetail);
                                             }
 
-                                            UIUtils.showTitleTip("员工保存成功！");
+                                            UIUtils.showTitleTip(AddEmployActivity.this,"员工保存成功！");
                                             finish();
                                         } else {
-                                            UIUtils.showTitleTip("保存失败！");
+                                            UIUtils.showTitleTip(AddEmployActivity.this,"保存失败！");
                                         }
                                     }
                                 });
 
                             } else if(jsonObject.getInt("status") == 7){
-                                UIUtils.showTitleTip("部门不存在！");
+                                UIUtils.showTitleTip(AddEmployActivity.this,"部门不存在！");
                             } else {
-                                UIUtils.showTitleTip("提交失败，错误代码："+jsonObject.getInt("status"));
+                                UIUtils.showTitleTip(AddEmployActivity.this,"提交失败，错误代码："+jsonObject.getInt("status"));
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             btn_submit.setEnabled(true);
-                            UIUtils.showTitleTip("员工保存失败,请重新再试！("+  (e != null ? e .getMessage() :"NULL") +")");
+                            UIUtils.showTitleTip(AddEmployActivity.this,"员工保存失败,请重新再试！("+  (e != null ? e .getMessage() :"NULL") +")");
                         }
                     }
 

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yunbiao.ybsmartcheckin_live_id">
-
+    <uses-permission android:name="android.permission.GET_TASKS"/>
     <permission android:name="android.permission.REBOOT" />
     <permission android:name="android.permission.SHUTDOWN" />
     <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
@@ -27,7 +27,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -67,16 +66,19 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                <!-- <category android:name="android.intent.category.HOME" /> -->
-                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+                 <!--<category android:name="android.intent.category.HOME" />-->
+                 <!--<category android:name="android.intent.category.DEFAULT" />-->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.WelComeActivity"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.jdcn.WelComeSmallActivity"
+            android:launchMode="singleTask" />
+
         <activity android:name=".activity.AddEmployActivity" />
-        <activity android:name=".activity.jdcn.WelComeSmallActivity" />
         <activity android:name=".activity.EmployListActivity" />
         <activity android:name=".activity.DepartListActivity" />
         <activity android:name=".activity.EditEmployActivity" />
@@ -95,12 +97,13 @@
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
 
-        <receiver android:name=".USBBroadcastReceiver">
+        <receiver android:name=".receiver.USBBroadcastReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".heartbeat.BootRestartSeceiver">
+
+        <receiver android:name=".receiver.BootRestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -108,7 +111,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receiver.DateChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <service android:name=".utils.killSelfService" />
+
         <service android:name=".xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
         <!-- 百度定位 -->
         <service

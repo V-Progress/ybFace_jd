@@ -130,9 +130,9 @@ public class AdsManager {
         outVideo.setZOrderOnTop(true);
 
         //内部广告
-        insideImageBg = act.findViewById(R.id.fl_inside_ads);
-        insideImage = act.findViewById(R.id.iv_inside_ads);
-        insideVideo = act.findViewById(R.id.vv_inside_ads);
+//        insideImageBg = act.findViewById(R.id.fl_inside_ads);
+//        insideImage = act.findViewById(R.id.iv_inside_ads);
+//        insideVideo = act.findViewById(R.id.vv_inside_ads);
         if(insideVideo != null){
             insideVideo.setZOrderOnTop(true);
         }

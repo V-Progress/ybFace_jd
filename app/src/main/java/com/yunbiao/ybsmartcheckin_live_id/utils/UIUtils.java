@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 
 /**
@@ -59,13 +58,13 @@ public class UIUtils {
     }
 
     private static Toast mTipsToast;
-    public static void showTitleTip(String title) {
+    public static void showTitleTip(Context context,String title) {
         if(mTipsToast != null){
             mTipsToast.cancel();
             mTipsToast = null;
         }
         int padding = 20;
-        TextView textView = new TextView(BaseActivity.getActivity());
+        TextView textView = new TextView(context);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setBackgroundColor(Color.WHITE);
         textView.setTextSize(36);
@@ -74,7 +73,7 @@ public class UIUtils {
         textView.setGravity(Gravity.CENTER);
         textView.setElevation(10);
 
-        mTipsToast = new android.widget.Toast(BaseActivity.getActivity());
+        mTipsToast = new android.widget.Toast(context);
         mTipsToast.setDuration(android.widget.Toast.LENGTH_LONG);
         mTipsToast.setGravity(Gravity.CENTER, 0, 0);
         mTipsToast.setView(textView);
@@ -84,10 +83,8 @@ public class UIUtils {
 
     public static ProgressDialog pd;
     // CoreInfoHandler 关机重启三秒等待
-    public static ProgressDialog coreInfoShow3sDialog() {
-        Activity activity;
-        activity = BaseActivity.getActivity();
-        ProgressDialog pd = new ProgressDialog(activity);
+    public static ProgressDialog coreInfoShow3sDialog(Context context) {
+        ProgressDialog pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setIndeterminate(false);
         pd.setCancelable(false); // 设置ProgressDialog 是否可以按退回键取消
@@ -97,8 +94,8 @@ public class UIUtils {
     /**
      * 软件升级
      */
-    public static void updatePd() {
-        pd = new ProgressDialog(BaseActivity.getActivity());
+    public static void updatePd(Context context) {
+        pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.setTitle("通知");
         pd.setMessage("正在安装相关应用，请耐心等待！");

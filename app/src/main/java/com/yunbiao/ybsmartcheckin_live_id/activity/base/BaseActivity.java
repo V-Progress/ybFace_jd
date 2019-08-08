@@ -1,6 +1,8 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity;
+package com.yunbiao.ybsmartcheckin_live_id.activity.base;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,8 +56,18 @@ public abstract class BaseActivity extends FragmentActivity {
         int landscapeLayout = getLandscapeLayout();
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            if(portraitLayout == 0){
+                UIUtils.showShort(this,"暂无竖屏，请切换横屏");
+                APP.exit();
+                return;
+            }
             setContentView(portraitLayout);
         } else {
+            if(landscapeLayout == 0){
+                UIUtils.showShort(this,"暂无横屏，请切换竖屏");
+                APP.exit();
+                return;
+            }
             setContentView(landscapeLayout);
         }
 
@@ -136,7 +150,29 @@ public abstract class BaseActivity extends FragmentActivity {
      * 获得Activity
      */
     public static Activity getActivity() {
+        for (Activity activity : activities) {
+            if (isForeground(activity,activity.getClass().getSimpleName())) {
+                return activity;
+            }
+        }
         return activities.get(activities.size() - 1);
+    }
+
+    public static boolean  isForeground(Context context, String className) {
+        if (context == null || TextUtils.isEmpty(className)) {
+            return false;
+        }
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+        if (list != null && list.size() > 0) {
+            ComponentName cpn = list.get(0).topActivity;
+            if (className.equals(cpn.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**

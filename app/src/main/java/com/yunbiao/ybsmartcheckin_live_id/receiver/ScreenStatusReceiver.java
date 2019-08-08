@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.heartbeat;
+package com.yunbiao.ybsmartcheckin_live_id.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

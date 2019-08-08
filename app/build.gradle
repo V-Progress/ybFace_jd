@@ -6,8 +6,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 29
-        versionName "1.1.7"
+        versionCode 30
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         ndk {
@@ -103,4 +103,10 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28+'
     implementation 'com.elvishew:xlog:1.6.1'
     implementation files('libs/XHApi.jar')
+
+//    implementation 'com.xhb:xbanner:1.2.2'
+
+    //普通版本依赖
+    implementation 'com.github.xiaohaibin:XBanner:1.7.0'//将latestVersion替换成上面 jitpack 后面的版本号
+
 }

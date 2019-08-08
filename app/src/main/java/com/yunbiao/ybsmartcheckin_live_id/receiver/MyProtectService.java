@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.heartbeat;
+package com.yunbiao.ybsmartcheckin_live_id.receiver;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -18,7 +18,7 @@ public class MyProtectService extends Service {
 
     //看门狗service
     private String packageName = "com.yunbiao.ybsmartcheckin_live_id";
-    private String packageClassName = "com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity";
+    private String packageClassName = "com.yunbiao.ybsmartcheckin_live_id.SplashActivity";
 
     private final static int DELAY_TIME = 15 * 1000;//15s轮询一次
     private final static int CHECK_APP = 0x3211;

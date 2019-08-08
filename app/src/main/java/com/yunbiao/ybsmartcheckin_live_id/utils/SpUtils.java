@@ -38,6 +38,8 @@ public class SpUtils {
 
     public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
 
+    public static final String COMPANY_INFO = "companyInfo";//公司简介信息
+
     static {
         sp = APP.getContext().getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
     }

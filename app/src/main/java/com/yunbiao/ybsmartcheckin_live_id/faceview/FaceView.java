@@ -151,7 +151,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
     public interface FaceCallback{
         void onReady();
         void onFaceDetection();
-        void onFaceVerify(VerifyResult verifyResult);
+        void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty);
     }
 
     @Override
@@ -312,7 +312,10 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
         }
 
         if(callback != null){
-            callback.onFaceVerify(verifyResult);
+            FaceResult faceResult = faceCacheMap.get(verifyResult.getFaceId());
+            if(verifyResult != null && faceResult != null && faceResult.getFaceProperty() != null){
+                callback.onFaceVerify(verifyResult,faceResult.getFaceProperty());
+            }
         }
     }
 
@@ -327,6 +330,7 @@ public class FaceView extends FrameLayout implements SurfaceHolder.Callback {
             });
         }
     }
+
     //显示错误提示
     private void showAlertView(final String alertMsg, final boolean showRetry, final OnClickListener onClickListener){
         if(alertView != null && alertView.isShown()){

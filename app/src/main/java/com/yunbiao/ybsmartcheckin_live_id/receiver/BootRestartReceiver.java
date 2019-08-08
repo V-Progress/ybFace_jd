@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.heartbeat;
+package com.yunbiao.ybsmartcheckin_live_id.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,8 +15,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.LogUtils;
 
 
-public class BootRestartSeceiver extends BroadcastReceiver {
-    private static final String TAG = "BootRestartSeceiver";
+public class BootRestartReceiver extends BroadcastReceiver {
+    private static final String TAG = "BootRestartReceiver";
     private String ACTION = "android.intent.action.BOOT_COMPLETED";
 
     @Override

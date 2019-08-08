@@ -31,6 +31,7 @@ public class Constants {
 
     public static String TEMP_PATH = CACHE_PATH + "temp/";//临时路径（未初始化公司时创建）
     public static String DATA_PATH = TEMP_PATH + "data/";//公司数据
+    public static String INFO_PATH = TEMP_PATH + "info/";//公司简介
     public static String ADS_PATH = TEMP_PATH + "ads/";//广告路径
     public static String HEAD_PATH = TEMP_PATH + "photo/";//照片路径
     public static String RECORD_PATH = TEMP_PATH + "record/";//实时人脸记录缓存

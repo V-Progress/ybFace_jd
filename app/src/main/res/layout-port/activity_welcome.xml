@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:match="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@mipmap/bg_init">
+    android:id="@+id/ll_face_main"
+    android:layout_height="match_parent">
 
-    <!--人脸识别布局-->
     <LinearLayout
-        android:id="@+id/ll_face_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/bj"
@@ -22,13 +19,13 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:onClick="goSetting"
                 android:id="@+id/iv_main_logo"
                 android:layout_width="wrap_content"
-                android:maxWidth="200dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
+                android:maxWidth="200dp"
+                android:onClick="goSetting"
                 android:src="@mipmap/logo" />
 
             <TextView
@@ -65,192 +62,33 @@
         </RelativeLayout>
 
         <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
-            android:layout_gravity="center_horizontal"
             android:id="@+id/face_view"
             android:layout_width="match_parent"
-            android:layout_height="550dp"/>
+            android:layout_height="550dp"
+            android:layout_gravity="center_horizontal" />
 
-        <LinearLayout
-            android:id="@+id/layout_subTitle"
+        <FrameLayout
+            android:id="@+id/ll_list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@mipmap/bg_subtitle"
-            android:orientation="horizontal">
+            android:layout_marginTop="30dp"></FrameLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@mipmap/icon_tip" />
-
-            <TextView
-                android:id="@+id/tv_main_notice"
-                android:layout_width="950dp"
-                android:layout_height="match_parent"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
-
-            <ImageView
-                android:padding="10dp"
-                android:background="@mipmap/bg_visitor"
-                android:scaleType="centerInside"
-                android:layout_gravity="bottom|left"
-                android:id="@+id/iv_qrCode_add"
-                android:layout_width="90dp"
-                android:layout_height="90dp" />
-
-            <TextView
-                android:id="@+id/tv_checkInNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@mipmap/bg_yqdry"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="32dp" />
-
-            <FrameLayout
-                android:visibility="visible"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:onClick="goMakeUp"
-                    android:layout_gravity="center"
-                    android:id="@+id/iv_record"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/icon_record"/>
-
-                <com.wang.avi.AVLoadingIndicatorView
-                    android:visibility="gone"
-                    android:id="@+id/aiv_bulu"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </FrameLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <GridView
-                android:visibility="gone"
-                android:id="@+id/gridview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:columnWidth="20dp"
-                android:horizontalSpacing="20dp"
-                android:numColumns="3"
-                android:verticalSpacing="20dp"/>
-
-            <TextView
-                android:textColor="@color/white"
-                android:visibility="gone"
-                android:id="@+id/tv_load_error"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:id="@+id/ll_load_container"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.wang.avi.AVLoadingIndicatorView
-                    android:id="@+id/avloding"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
-                    match:indicator="LineScalePulseOutRapid" />
-                <TextView
-                    android:layout_marginTop="20dp"
-                    android:textColor="@color/white"
-                    android:text="正在加载数据..."
-                    android:gravity="center"
-                    android:textSize="24dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </RelativeLayout>
-
-
-        <LinearLayout
-            android:background="#43000000"
+        <FrameLayout
             android:id="@+id/layout_h"
             android:layout_width="match_parent"
-            android:layout_height="562dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/fl_inside_ads"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/iv_inside_ads"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    android:src="@mipmap/img_sign_wel"
-                    android:visibility="visible" />
-            </FrameLayout>
-
-            <VideoView
-                android:id="@+id/vv_inside_ads"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-        </LinearLayout>
-
-        <!--<FrameLayout-->
-            <!--android:layout_marginTop="30dp"-->
-            <!--android:id="@+id/ll_list_container"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-        <!--</FrameLayout>-->
-
-        <!--<FrameLayout-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="#43000000"-->
-            <!--android:id="@+id/layout_h"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_marginTop="30dp"-->
-            <!--android:orientation="vertical">-->
-        <!--</FrameLayout>-->
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_bg_btnrepicture"
+            android:orientation="vertical"></FrameLayout>
 
         <TextView
             android:id="@+id/tv_main_bottomTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@mipmap/img_bottom"
             android:gravity="center"
             android:maxLength="18"
@@ -258,14 +96,4 @@
             android:textColor="@color/theme_green"
             android:textSize="20dp" />
     </LinearLayout>
-
-    <!--广告头部布局-->
-    <include android:visibility="gone" layout="@layout/layout_head"/>
-
-    <!--广告布局-->
-    <include android:visibility="gone" layout="@layout/layout_out_ads" />
-
-    <!--初始化布局-->
-    <include android:visibility="gone" layout="@layout/layout_init" />
-
-</RelativeLayout>
+</FrameLayout>

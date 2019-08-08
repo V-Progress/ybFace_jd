@@ -7,7 +7,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:padding="2dp"
         android:background="@mipmap/head_bg"
-        android:id="@+id/iv_userPhoto"
+        android:id="@+id/iv_head_item"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerVertical="true" />
@@ -19,20 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_name_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/horizontal_item_visitor_name"
             android:textSize="22dp" />
 
         <TextView
-            android:visibility="gone"
-            android:id="@+id/tv_job"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tv_time"
+            android:id="@+id/tv_time_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/iv_userPhoto"

@@ -78,11 +78,12 @@ public class APP extends Application {
 
     public static void initCompanyId() {
         companyId = SpUtils.getInt(SpUtils.COMPANYID);
-        Constants.DATA_PATH = Constants.CACHE_PATH + "/" + companyId + "/data/";
-        Constants.ADS_PATH = Constants.CACHE_PATH + "/" + companyId +"/ads/";
-        Constants.HEAD_PATH = Constants.CACHE_PATH + "/" + companyId +"/img/";
-        Constants.RECORD_PATH = Constants.CACHE_PATH + "/" + companyId +"/rcd/";
-        Constants.MEETING_PATH = Constants.CACHE_PATH + "/" + companyId +"/meet/";
+        Constants.DATA_PATH = Constants.CACHE_PATH + companyId + "/data/";
+        Constants.ADS_PATH = Constants.CACHE_PATH + companyId +"/ads/";
+        Constants.HEAD_PATH = Constants.CACHE_PATH + companyId +"/img/";
+        Constants.RECORD_PATH = Constants.CACHE_PATH + companyId +"/rcd/";
+        Constants.MEETING_PATH = Constants.CACHE_PATH + companyId +"/meet/";
+        Constants.INFO_PATH = Constants.CACHE_PATH + companyId +"/info/";
     }
 
     public static CompBean getCompBean(){
@@ -339,6 +340,10 @@ public class APP extends Application {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         Glide.get(this).trimMemory(level);
+    }
+
+    public static void restart(){
+        RestartAPPTool.restartAPP(getContext());
     }
 
     public static void exit() {

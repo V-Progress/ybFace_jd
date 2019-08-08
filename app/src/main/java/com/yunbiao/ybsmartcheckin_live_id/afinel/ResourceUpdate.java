@@ -2,16 +2,14 @@ package com.yunbiao.ybsmartcheckin_live_id.afinel;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class ResourceUpdate {
@@ -34,6 +32,7 @@ public class ResourceUpdate {
     public static String ADDDEPART = WEB_BASE_URL + "api/department/departmentadd.html";//创建部门
     public static String DELETEDEPART = WEB_BASE_URL + "api/department/departmentdelete.html";//删除部门
     public static String GETAD = WEB_BASE_URL + "api/company/getadvert.html";//获取广告
+    public static String getCompInfo = WEB_BASE_URL + "api/propa/getAll.html";//公司介绍信息
     public static String getWeatherInfo = "http://www.yunbiaowulian.com/weather/city.html";
 
     /**
@@ -72,7 +71,7 @@ public class ResourceUpdate {
     public static String SCREEN_CACHE_PATH = CACHE_BASE_PATH + "screen/";//参数缓存存储目录
 
     public static void uploadAppVersion() {
-        UIUtils.showTitleTip("版本:" + getVersionName());
+        UIUtils.showTitleTip(APP.getContext(),"版本:" + getVersionName());
         HashMap<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("deviceNo", HeartBeatClient.getDeviceNo());
         paramMap.put("version", getVersionName());
@@ -119,8 +118,8 @@ public class ResourceUpdate {
     public static void uploadDiskInfo() {
         String diskInfo = SdCardUtils.getSDDiskCon();
         String ss = "磁盘:" + diskInfo;
-        UIUtils.showTitleTip(ss);
-        HashMap<String, String> paramMap = new HashMap<String, String>();
+        UIUtils.showTitleTip(APP.getContext(),ss);
+        HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("deviceNo", HeartBeatClient.getDeviceNo());
         paramMap.put("diskInfo", diskInfo);
         MyXutils.getInstance().post(UPLOAD_DISK_URL, paramMap, new MyXutils.XCallBack() {

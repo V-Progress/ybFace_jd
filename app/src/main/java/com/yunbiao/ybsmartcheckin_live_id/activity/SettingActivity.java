@@ -30,11 +30,12 @@ import com.tencent.bugly.beta.Beta;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceBoxUtil;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -213,7 +214,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void selectImage(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void addPerson(View view) {
@@ -248,7 +249,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void powerControlStrategy(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void checkUpgrade(View view) {
@@ -256,27 +257,27 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void activeSDK(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void livenessSwitch(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void multipleSwitch(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void turnLight(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void setRelay(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
     public void hardwareTest(View view) {
-        UIUtils.showTitleTip("正在开发中！");
+        UIUtils.showTitleTip(this,"正在开发中！");
     }
 
 
@@ -303,7 +304,7 @@ public class SettingActivity extends BaseActivity {
         showAlert("设备将重启，是否继续？", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog();
+                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
                 progressDialog.setTitle("重启");
                 progressDialog.setMessage("3秒后将重启设备");
                 progressDialog.setCancelable(false);
@@ -480,7 +481,7 @@ public class SettingActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip("修改失败：" + e != null ? e.getMessage() : "NULL");
+                                UIUtils.showTitleTip(SettingActivity.this,"修改失败：" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
@@ -493,11 +494,11 @@ public class SettingActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (status == 1) {
-                                    UIUtils.showTitleTip("修改成功");
+                                    UIUtils.showTitleTip(SettingActivity.this,"修改成功");
                                     SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip("修改失败");
+                                    UIUtils.showTitleTip(SettingActivity.this,"修改失败");
                                 }
                             }
                         });

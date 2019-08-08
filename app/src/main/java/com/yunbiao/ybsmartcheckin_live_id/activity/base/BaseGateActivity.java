@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.heartbeat;
+package com.yunbiao.ybsmartcheckin_live_id.activity.base;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.activity.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.ComResponse;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.SerialPortHelper;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;

@@ -26,7 +26,7 @@ import android.view.WindowManager;
 
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.NetTool;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

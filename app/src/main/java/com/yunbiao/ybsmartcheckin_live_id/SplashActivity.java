@@ -1,11 +1,13 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 
-import com.yunbiao.ybsmartcheckin_live_id.activity.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.jdcn.WelComeSmallActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
@@ -61,7 +63,7 @@ public class SplashActivity extends BaseActivity {
                     finish();
                     return;
                 } else {
-                    UIUtils.showTitleTip("权限申请失败");
+                    UIUtils.showTitleTip(SplashActivity.this,"权限申请失败");
                 }
             }
         });

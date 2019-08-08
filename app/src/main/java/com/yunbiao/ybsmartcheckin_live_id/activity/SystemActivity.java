@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
@@ -36,13 +35,17 @@ import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SysInfoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyBean;
-import com.yunbiao.ybsmartcheckin_live_id.common.CoreInfoHandler;
+import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
-import com.yunbiao.ybsmartcheckin_live_id.heartbeat.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -142,7 +145,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void initData() {
         compBean = APP.getCompBean();
-        setInfo();
 
         String appName = getResources().getString(R.string.app_name);
         try {
@@ -156,6 +158,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         updateServerState();
 
         setIcon();
+        setInfo();
 
         com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.getDataSize(new com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.OnSizeCallback() {
             @Override
@@ -166,13 +169,27 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateEvent updateEvent) {
+    public void update(LogoUpdateEvent updateEvent) {
+        d("update: ----- 收到LOGO更新事件");
         setIcon();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(SysInfoUpdateEvent updateEvent) {
         setInfo();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(XmppConnectEvent connectEvent) {
+        tv_online_system.setText(connectEvent.isConnected() ? "在线" : "离线");
     }
 
     public void setIcon(){
         if(compBean == null) return;
+
+        if(tv_company_system != null){
+            tv_company_system.setText(compBean.getCompName());
+        }
 
         if(ivLogo != null){
             File file = new File(compBean.getIconPath());
@@ -181,23 +198,19 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                     .skipMemoryCache(true)
                     .crossFade(500)
                     .into(ivLogo);
-
         }
+
         if(tvCompName != null){
             tvCompName.setText(compBean.getCompName());
         }
     }
 
     public void setInfo() {
-        if(compBean == null) return;
-
         String serNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tv_deviceno_system.setText(serNum);
 
         String bindCode = SpUtils.getStr(SpUtils.BINDCODE);
         tv_bindcode_syetem.setText(bindCode);
-
-        tv_company_system.setText(compBean.getCompName());
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
         tv_exp_system.setText(TextUtils.isEmpty(expDate) ? "无限期" : expDate);
@@ -299,9 +312,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 //            }
 //        });
 //    }
-
-    public static class UpdateEvent {
-    }
 
     private void setTextWatchers(final EditText[] editTexts){
         for (int i = 0; i < editTexts.length; i++) {
@@ -456,7 +466,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip("修改失败：" + e!=null?e.getMessage():"NULL");
+                                UIUtils.showTitleTip(SystemActivity.this,"修改失败：" + e!=null?e.getMessage():"NULL");
                             }
                         });
                     }
@@ -469,11 +479,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                             @Override
                             public void run() {
                                 if(status == 1){
-                                    UIUtils.showTitleTip("修改成功");
+                                    UIUtils.showTitleTip(SystemActivity.this,"修改成功");
                                     SpUtils.saveStr(SpUtils.MENU_PWD,pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip("修改失败");
+                                    UIUtils.showTitleTip(SystemActivity.this,"修改失败");
                                 }
                             }
                         });
@@ -524,7 +534,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO: 2019/4/1 清除缓存
                                 SpUtils.clear(SystemActivity.this);
-                                finishAll();
                                 RestartAPPTool.restartAPP(SystemActivity.this);
                             }
                         });
