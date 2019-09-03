@@ -22,10 +22,14 @@ import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.*;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.LogUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import okhttp3.Call;
 
 /**
  * xmpp消息处理
@@ -69,6 +73,8 @@ public class CoreInfoHandler {
                         SpUtils.saveStr(SpUtils.RUN_KEY,content.getRunKey());
                         SpUtils.saveInt(SpUtils.DEVICE_TYPE,content.getDtype());
                     }
+
+                    updateDeviceType();
 
                     isOnline = true;
                     EventBus.getDefault().post(new SysInfoUpdateEvent());
@@ -171,5 +177,25 @@ public class CoreInfoHandler {
 
     public static void setOnReceivedProgressRun(OnReceivedProgressRun onReceivedProgressRun) {
         CoreInfoHandler.onReceivedProgressRun = onReceivedProgressRun;
+    }
+
+
+    public static void updateDeviceType() {
+        OkHttpUtils.post()
+                .url(ResourceUpdate.UPDATE_DEVICE_TYPE)
+                .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                .addParams("type", "1 ")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: " + response);
+                    }
+                });
     }
 }

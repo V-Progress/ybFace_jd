@@ -76,6 +76,7 @@ public class SettingActivity extends BaseActivity {
     private CheckBox cbMirror;
     private Button btnAngle;
     private Spinner spnCameraSize;
+    private EditText edtGpioDelay;
 
     @Override
     protected int getPortraitLayout() {
@@ -101,6 +102,9 @@ public class SettingActivity extends BaseActivity {
         cbMirror = findViewById(R.id.cb_mirror);
         btnAngle = findViewById(R.id.btn_setAngle);
         spnCameraSize = findViewById(R.id.spn_camera_size);
+        edtGpioDelay = findViewById(R.id.edt_gpio_delay);
+
+        edtGpioDelay.setHint(""+SpUtils.getIntOrDef(SpUtils.GPIO_DELAY,5));
     }
 
     @Override
@@ -516,6 +520,21 @@ public class SettingActivity extends BaseActivity {
         dialog.show();
         Window window = dialog.getWindow();
         window.setWindowAnimations(R.style.mystyle);  //添加动画
+    }
+
+    public void back(View view) {
+        finish();
+    }
+
+    public void setGpioDelay(View view) {
+        String s = edtGpioDelay.getText().toString();
+        if(TextUtils.isEmpty(s)){
+            UIUtils.showShort(this,"不可为空");
+            return;
+        }
+        int i = Integer.parseInt(s);
+        SpUtils.saveInt(SpUtils.GPIO_DELAY,i);
+        UIUtils.showShort(this,"设置成功");
     }
 
 

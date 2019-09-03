@@ -37,6 +37,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
 import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -56,6 +57,7 @@ import okhttp3.OkHttpClient;
 
 
 public class APP extends Application {
+    private static final String TAG = "APP";
     private static APP instance;
     private static SmdtManager smdt;
     private static UserDao userDao;
@@ -96,6 +98,10 @@ public class APP extends Application {
         instance = this;
         initCompanyId();
 
+        initGpio();
+
+        DaoManager.get().initDb();
+
         initDB();
 
         cauchException();
@@ -105,6 +111,30 @@ public class APP extends Application {
         initUM();
 
         initUtils();
+    }
+
+    //IO引脚
+    private int dir_set_io[] = {1, 2, 3, 4};
+    //IO口方向，0：输入，1：输出
+    private int dir_set_import = 0;
+    private int dir_set_export = 1;
+    //高低电平，0：低电平，1：高电平
+    private int dir_set_value = 0;
+
+    private void initGpio(){
+        smdt = SmdtManager.create(this);
+        //设置gpio为输出
+        if(smdt != null){
+            for (int i = 0; i < dir_set_io.length; i++) {
+                int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
+                int result = smdt.smdtSetExtrnalGpioValue(dir_set_io[i], true);
+                if (dirToTemp == 0) {
+                    Log.e(TAG, "initUtils: ----- 设置为输出成功");
+                } else {
+                    Log.e(TAG, "initUtils: ----- 设置为输出失败");
+                }
+            }
+        }
     }
 
     private void initXLog(){

@@ -34,6 +34,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.MyStringCallback;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AddQRCodeBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
@@ -273,11 +274,13 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         rlv.scrollToPosition(0);
         updateNumber();
 
-        ApiManager.instance().onGate();
+//        ApiManager.instance().onGate();
 //        if (mGateIsAlive) {
 //            mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
 //        }
 //
+        ((WelComeActivity)getActivity()).openDoor();
+
         speak(signType, signBean.getName());
 
         MultipleSignDialog.instance().sign(signBean);

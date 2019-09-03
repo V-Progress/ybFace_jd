@@ -34,7 +34,7 @@ public class ResourceUpdate {
     public static String GETAD = WEB_BASE_URL + "api/company/getadvert.html";//获取广告
     public static String getCompInfo = WEB_BASE_URL + "api/propa/getAll.html";//公司介绍信息
     public static String getWeatherInfo = "http://www.yunbiaowulian.com/weather/city.html";
-
+    public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
     /**
      * 判断服务器中的设备是否在线
      **/

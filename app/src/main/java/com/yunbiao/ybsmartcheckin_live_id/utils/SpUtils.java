@@ -10,6 +10,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
  */
 public class SpUtils {
 
+    public static final String GPIO_DELAY = "doorDelay";
     private static SharedPreferences sp;
     private static final String SP_NAME = "YB_FACE";
 

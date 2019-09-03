@@ -25,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
@@ -49,7 +50,7 @@ import java.io.File;
  * Created by Administrator on 2018/11/26.
  */
 
-public class WelComeActivity extends BaseGateActivity {
+public class WelComeActivity extends BaseGpioActivity {
 
     private ImageView ivMainLogo;//公司logo
     private TextView tvMainAbbName;//公司名
@@ -101,7 +102,6 @@ public class WelComeActivity extends BaseGateActivity {
     protected void initData() {
         //开启Xmpp
         startXmpp();
-
         //初始化定位工具
         LocateManager.instance().init(this);
     }
@@ -233,6 +233,17 @@ public class WelComeActivity extends BaseGateActivity {
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
+    private void onBackKeyPressed(Runnable runnable){
+        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+        if(!TextUtils.isEmpty(pwd)){
+            inputPwd(runnable);
+            return;
+        }
+        if(runnable != null){
+            runnable.run();
+        }
+    }
+
     //跳转设置界面
     public void goSetting(View view) {
         goSetting();
@@ -253,28 +264,22 @@ public class WelComeActivity extends BaseGateActivity {
         RestartAPPTool.showExitDialog(this, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-                if (!TextUtils.isEmpty(pwd)) {
-                    inputPwd(new Runnable() {
-                        @Override
-                        public void run() {
-                            moveTaskToBack(true);
-                        }
-                    });
-                }
+                onBackKeyPressed(new Runnable() {
+                    @Override
+                    public void run() {
+                        moveTaskToBack(true);
+                    }
+                });
             }
         }, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-                if (!TextUtils.isEmpty(pwd)) {
-                    inputPwd(new Runnable() {
-                        @Override
-                        public void run() {
-                            APP.exit();
-                        }
-                    });
-                }
+                onBackKeyPressed(new Runnable() {
+                    @Override
+                    public void run() {
+                        APP.exit();
+                    }
+                });
             }
         });
     }

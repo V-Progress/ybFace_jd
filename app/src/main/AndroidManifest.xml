@@ -61,7 +61,6 @@
 
         <activity
             android:name=".SplashActivity"
-            android:theme="@android:style/Theme.Translucent"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

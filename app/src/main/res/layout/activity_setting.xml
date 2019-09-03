@@ -11,8 +11,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ImageView
+            android:onClick="back"
+            android:layout_gravity="right"
+            android:src="@mipmap/icon_back"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content" />
+
         <!--信息（录入、记录、广告（网络获取、本地检测）、logo和名称）-->
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -135,6 +143,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -157,6 +166,7 @@
                 android:text="重启设备" />
 
             <TextView
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:onClick="powerControlStrategy"
                 android:text="开关机策略" />
@@ -171,6 +181,7 @@
         <!--人脸（全部需重启）-->
         <!--活体开关、多人识别、相似度阈值、提示语、未识别语音提示、重扫时间、SDK激活、数据存储天数或相关规则-->
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -309,11 +320,13 @@
                 android:text="硬件" />
 
             <TextView
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:onClick="turnLight"
                 android:text="LED补光灯" />
 
             <LinearLayout
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -349,11 +362,13 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:onClick="setRelay"
                 android:text="继电器设置" />
 
             <TextView
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:onClick="hardwareTest"
                 android:text="硬件测试" />
@@ -414,6 +429,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -439,6 +455,28 @@
                     android:id="@+id/tv_cpu_temper"
                     style="@style/setting_text"
                     android:text="0℃" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:onClick="hardwareTest"
+                    android:text="继电器输出延时：" />
+
+                <EditText
+                    android:id="@+id/edt_gpio_delay"
+                    android:inputType="number"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:onClick="setGpioDelay"
+                    android:text="确定"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // GreenDao配置
 
 android {
     compileSdkVersion 28
@@ -19,11 +20,27 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 服务地址
+            buildConfigField "String", "HOST", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_URL"
+            // XMPP端口
+            buildConfigField "String", "XMPP_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_XMPP_PORT"
+            // 资源端口
+            buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_RES_PORT"
+            // 资源后缀
+            buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_SUFFIX"
         }
         debug {
             minifyEnabled false
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 服务地址
+            buildConfigField "String", "HOST", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_URL"
+            // XMPP端口
+            buildConfigField "String", "XMPP_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_XMPP_PORT"
+            // 资源端口
+            buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_RES_PORT"
+            // 资源后缀
+            buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_SUFFIX"
         }
     }
 
@@ -45,6 +62,14 @@ android {
             outputFileName = "YBFace" + defaultConfig.versionName + "." + defaultConfig.versionCode + "_" + buildTime() + ".apk"
         }
     }
+    //greenDao配置信息
+    greendao {
+        schemaVersion 1//<--数据库的版本，用于升级时候进行更改
+        daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
+//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
+        targetGenDir 'src/main/java'
+//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
+    }
 }
 
 //用于生成时间
@@ -61,7 +86,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compileOnly files('lib/classes4.2.jar')
-    implementation files('libs/smdt.jar')
     implementation files('libs/BaiduLBS_Android.jar')
     //炫酷文字
     //    compile 'androidx.annotation:annotation:1.0.0'
@@ -103,10 +127,20 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28+'
     implementation 'com.elvishew:xlog:1.6.1'
     implementation files('libs/XHApi.jar')
-
-//    implementation 'com.xhb:xbanner:1.2.2'
-
+    //    implementation 'com.xhb:xbanner:1.2.2'
     //普通版本依赖
-    implementation 'com.github.xiaohaibin:XBanner:1.7.0'//将latestVersion替换成上面 jitpack 后面的版本号
+    implementation 'com.github.xiaohaibin:XBanner:1.7.0'
+    //将latestVersion替换成上面 jitpack 后面的版本号
+    implementation files('libs/smdt_v5.1.jar')
+
+
+    // GreenDao(√)
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
+    implementation files('libs/XHApi.jar')
+
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
 }
