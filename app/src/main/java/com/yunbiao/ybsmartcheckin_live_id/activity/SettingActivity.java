@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,16 +15,20 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -32,9 +38,12 @@ import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceBoxUtil;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -53,6 +62,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -64,19 +75,13 @@ import okhttp3.Call;
 
 public class SettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
-    private TextView tvAdsType;
-    private TextView tvDeviceNo;
-    private TextView tvCompName;
     private TextView tvNetState;
-    private RadioGroup radioGroup;
     private TextView tvCpuTemper;
     private TextView tvCamera;
-    private TextView tvLivenessState;
-    private TextView tvMultipleState;
     private CheckBox cbMirror;
     private Button btnAngle;
     private Spinner spnCameraSize;
-    private EditText edtGpioDelay;
+    private Switch swAlready;
 
     @Override
     protected int getPortraitLayout() {
@@ -90,52 +95,29 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvAdsType = findViewById(R.id.tv_ads_type);
-        tvDeviceNo = findViewById(R.id.tv_device_no);
-        tvCompName = findViewById(R.id.tv_company_name);
         tvNetState = findViewById(R.id.tv_wifi_state);
-        radioGroup = findViewById(R.id.radio_group);
         tvCpuTemper = findViewById(R.id.tv_cpu_temper);
         tvCamera = findViewById(R.id.tv_camera);
-        tvLivenessState = findViewById(R.id.tv_liveness_state);
-        tvMultipleState = findViewById(R.id.tv_multiple_state);
         cbMirror = findViewById(R.id.cb_mirror);
         btnAngle = findViewById(R.id.btn_setAngle);
         spnCameraSize = findViewById(R.id.spn_camera_size);
-        edtGpioDelay = findViewById(R.id.edt_gpio_delay);
-
-        edtGpioDelay.setHint(""+SpUtils.getIntOrDef(SpUtils.GPIO_DELAY,5));
+        swAlready = findViewById(R.id.sw_setting_already);
+        findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    finish();
+                }
+                return false;
+            }
+        });
     }
+
 
     @Override
     protected void initData() {
-        CompBean compBean = APP.getCompBean();
-        if(compBean != null){
-            //设置公司名称
-            tvCompName.setText(compBean.getCompName());
-        }
-
-        //设备编号
-        String deviceNo = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        tvDeviceNo.setText(deviceNo);
-
-        //广告类型
-        int adsResource = Config.getAdsResource();
-        tvAdsType.setText(adsResource == Config.LOCAL_ADS ? "本地" : "云");
-
-        //设置网络
         checkNet();
 
-        //灯光类型
-        radioGroup.check(Config.getLightStrate()+1);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                int realId = checkedId - 1;
-                Config.setLightStrate(realId);
-                Log.e(TAG, "onCheckedChanged: " + realId);
-            }
-        });
 
         //获取CPU温度
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
@@ -152,11 +134,7 @@ public class SettingActivity extends BaseActivity {
         },0, 3 , TimeUnit.SECONDS);
 
         //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK? "后置" : "前置") + "，分辨率：" + CameraManager.getWidth()+"*" + CameraManager.getHeight() + "】" );
-
-        //活体与多人
-        tvLivenessState.setText(Config.isLiveness()? "开" :"关");
-        tvMultipleState.setText(Config.isMultiple()? "开" :"关");
+        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK? "后置" : "前置") + "，分辨率：" + CameraSettings.getCameraPreviewWidth()+"*" + CameraSettings.getCameraPreviewHeight() + "】" );
 
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
@@ -173,149 +151,8 @@ public class SettingActivity extends BaseActivity {
         int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
         btnAngle.setText("角度：" + angle);
 
-        //摄像头分辨率
-        int width = CameraManager.getWidth();
-        int height = CameraManager.getHeight();
-        int index = 0;
-        List<Camera.Size> supportSizeList = CameraManager.instance().getSupportSizeList();
-        final List<String> strings = new ArrayList<>();
-        for (Camera.Size size : supportSizeList) {
-            if(width == size.width && height == size.height){
-                index = supportSizeList.indexOf(size);
-            }
-            strings.add(size.width + "*" + size.height);
-        }
-        spnCameraSize.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,strings));
-        final int finalIndex = index;
-        spnCameraSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                if(finalIndex == position){
-                    return;
-                }
-                showAlert("调整分辨率需要重启APP，是否继续？", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String sizeStr = strings.get(position);
-                        SpUtils.saveStr(SpUtils.CAMERA_SIZE, sizeStr);
-                        RestartAPPTool.restartAPP(APP.getContext());
-                    }
-                },null, new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        spnCameraSize.setSelection(finalIndex);
-                    }
-                });
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        spnCameraSize.setSelection(index);
-    }
-
-    public void selectImage(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void addPerson(View view) {
-        startActivity(new Intent(this, AddEmployActivity.class));
-    }
-
-    public void goRecord(View view) {
-        startActivity(new Intent(this, SignActivity.class));
-    }
-
-    public void checkAdsResource(View view) {
-        final int adsResource = Config.getAdsResource();
-        String msg = adsResource == Config.LOCAL_ADS ? "本地" : "云";
-        String next = adsResource == Config.LOCAL_ADS ? "云" : "本地";
-        String tip = "当前广告为：" + msg + "，是否切换为：" + next;
-        showAlert(tip, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Config.setAdsResource(adsResource == Config.LOCAL_ADS ? Config.CLOUD_ADS : Config.LOCAL_ADS);
-            }
-        },null, new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                final int adsResource = Config.getAdsResource();
-                tvAdsType.setText(adsResource == Config.LOCAL_ADS ? "本地" : "云");
-            }
-        });
-    }
-
-    public void modifyPWD(View view) {
-        setPwd();
-    }
-
-    public void powerControlStrategy(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void checkUpgrade(View view) {
-        Beta.checkUpgrade();
-    }
-
-    public void activeSDK(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void livenessSwitch(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void multipleSwitch(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void turnLight(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void setRelay(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-    public void hardwareTest(View view) {
-        UIUtils.showTitleTip(this,"正在开发中！");
-    }
-
-
-    /**
-     * ====功能区==================================================================================================
-     */
-    public void setAngle(View view) {
-        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        if(anInt == CameraManager.L){
-            anInt = CameraManager.P;
-        } else if(anInt == CameraManager.P) {
-            anInt = CameraManager.L_R;
-        } else if(anInt == CameraManager.L_R){
-            anInt = CameraManager.P_R;
-        } else {
-            anInt = CameraManager.L;
-        }
-        ((Button)view).setText("角度：" + anInt);
-        CameraManager.instance().setOrientation(anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
-    }
-
-    public void rebootDevice(View view) {
-        showAlert("设备将重启，是否继续？", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
-                progressDialog.setTitle("重启");
-                progressDialog.setMessage("3秒后将重启设备");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                UIUtils.restart.start();
-            }
-        },null, null);
+        setListSize();
     }
 
     private void checkNet() {
@@ -327,6 +164,16 @@ public class SettingActivity extends BaseActivity {
             net = "【WIFI，" + getWifiInfo(0) + "，IP地址：" + getWifiInfo(1) + "】";
         }
         tvNetState.setText(net);
+    }
+
+    private static boolean isIntenetConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mInternetNetWorkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+            boolean hasInternet = !isNullObject(mInternetNetWorkInfo) && mInternetNetWorkInfo.isConnected() && mInternetNetWorkInfo.isAvailable();
+            return hasInternet;
+        }
+        return false;
     }
 
     private String getHostIp() {
@@ -394,16 +241,6 @@ public class SettingActivity extends BaseActivity {
                 (i >> 24 & 0xFF);
     }
 
-    private static boolean isIntenetConnected(Context context) {
-        if (context != null) {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mInternetNetWorkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
-            boolean hasInternet = !isNullObject(mInternetNetWorkInfo) && mInternetNetWorkInfo.isConnected() && mInternetNetWorkInfo.isAvailable();
-            return hasInternet;
-        }
-        return false;
-    }
-
     /**
      * 判断对象是否为空
      *
@@ -417,6 +254,240 @@ public class SettingActivity extends BaseActivity {
         }
 
         return false;
+    }
+
+    public static class CpuUtils {
+        private CpuUtils() {
+            //no instance
+        }
+        private static final List<String> CPU_TEMP_FILE_PATHS = Arrays.asList(
+                "/sys/devices/system/cpu/cpu0/cpufreq/cpu_temp",
+                "/sys/devices/system/cpu/cpu0/cpufreq/FakeShmoo_cpu_temp",
+                "/sys/class/thermal/thermal_zone0/temp",
+                "/sys/class/i2c-adapter/i2c-4/4-004c/temperature",
+                "/sys/devices/platform/tegra-i2c.3/i2c-4/4-004c/temperature",
+                "/sys/devices/platform/omap/omap_temp_sensor.0/temperature",
+                "/sys/devices/platform/tegra_tmon/temp1_input",
+                "/sys/kernel/debug/tegra_thermal/temp_tj",
+                "/sys/devices/platform/s5p-tmu/temperature",
+                "/sys/class/thermal/thermal_zone1/temp",
+                "/sys/class/hwmon/hwmon0/device/temp1_input",
+                "/sys/devices/virtual/thermal/thermal_zone1/temp",
+                "/sys/devices/virtual/thermal/thermal_zone0/temp",
+                "/sys/class/thermal/thermal_zone3/temp",
+                "/sys/class/thermal/thermal_zone4/temp",
+                "/sys/class/hwmon/hwmonX/temp1_input",
+                "/sys/devices/platform/s5p-tmu/curr_temp");
+
+        public static final String getCpuTemperatureFinder() {
+            String currTemp = "-1";
+            for (String cpuTempFilePath : CPU_TEMP_FILE_PATHS) {
+                Double temp = readOneLine(new File(cpuTempFilePath));
+                String validPath = "";
+                double currentTemp = 0.0D;
+                if (isTemperatureValid(temp)) {
+                    validPath = cpuTempFilePath;
+                    currentTemp = temp;
+                } else if (isTemperatureValid(temp / (double) 1000)) {
+                    validPath = cpuTempFilePath;
+                    currentTemp = temp / (double) 1000;
+                }
+
+                if(!TextUtils.isEmpty(validPath)
+                        && (currentTemp != 0)){
+                    currTemp = currentTemp+"";
+                }
+            }
+            return currTemp;
+        }
+
+        private static double readOneLine(File file) {
+            FileInputStream fileInputStream = null;
+            String s = "";
+            try {
+                fileInputStream = new FileInputStream(file);
+                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                s = bufferedReader.readLine();
+                fileInputStream.close();
+                inputStreamReader.close();
+                bufferedReader.close();
+            } catch (IOException e) {
+            }
+
+            double result = 0;
+            try {
+                result = Double.parseDouble(s);
+            } catch (NumberFormatException ignored) {
+            }
+            return result;
+        }
+
+        private static boolean isTemperatureValid(double temp) {
+            return temp >= -30.0D && temp <= 250.0D;
+        }
+    }
+
+    private void setListSize(){
+        List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
+        if (supportSizeList == null) {
+            return;
+        }
+        Collections.sort(supportSizeList, new Comparator<Camera.Size>() {
+            @Override
+            public int compare(Camera.Size o1, Camera.Size o2) {
+                if(o1.width > o2.width){
+                    return -1;
+                }
+
+                if(o1.width == o2.width){
+                    if(o1.height > o2.height){
+                        return -1;
+                    }
+                    return 0;
+                }
+                return 1;
+            }
+        });
+
+
+        final List<SizeBean> sizeBeanList = new ArrayList<>();
+        for (Camera.Size size : supportSizeList) {
+            SizeBean sizeBean = new SizeBean();
+            sizeBean.width = size.width;
+            sizeBean.height = size.height;
+            float i = (float) size.width / (float) size.height;
+
+            if(i < 1.6){
+                if(i > 1.3){
+                    sizeBean.desc = "（4 : 3）";
+                } else {
+                    sizeBean.desc = "（5 : 4）";
+                }
+            } else {
+                sizeBean.desc = "（16 : 9）";
+            }
+
+            if(sizeBean.width == 1280 && sizeBean.height == 720){
+                sizeBean.desc += "最佳";
+            } else if(sizeBean.width == 1920 && sizeBean.height == 1080){
+                sizeBean.desc += "最大";
+            }
+            sizeBeanList.add(sizeBean);
+        }
+
+        int cameraWidth = CameraSettings.getCameraWidth();
+        int cameraHeight = CameraSettings.getCameraHeight();
+
+        int index = 0;
+        for (int i = 0; i < sizeBeanList.size(); i++) {
+            SizeBean sizeBean = sizeBeanList.get(i);
+            if(cameraWidth == sizeBean.width && cameraHeight == sizeBean.height){
+                index = i;
+            }
+        }
+
+        spnCameraSize.setAdapter(new SizeAdapter(sizeBeanList));
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_spinner_drop);
+        spnCameraSize.setPopupBackgroundDrawable(drawable);
+        spnCameraSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                SizeBean sizeBean = sizeBeanList.get(position);
+                CameraSettings.setCameraPreviewWidth(sizeBean.width);
+                CameraSettings.setCameraPreviewHeight(sizeBean.height);
+                SpUtils.saveInt(SpUtils.CAMERA_WIDTH,sizeBean.width);
+                SpUtils.saveInt(SpUtils.CAMERA_HEIGHT,sizeBean.height);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spnCameraSize.setSelection(index);
+    }
+
+    class SizeAdapter extends BaseAdapter {
+        List<SizeBean> sizeBeanList;
+        public SizeAdapter(List<SizeBean> sizeBeanList) {
+            this.sizeBeanList = sizeBeanList;
+        }
+
+        @Override
+        public int getCount() {
+            return sizeBeanList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView inflate = (TextView) View.inflate(SettingActivity.this, android.R.layout.simple_dropdown_item_1line, null);
+            inflate.setTextColor(Color.parseColor("#59B4CA"));
+            inflate.setTextSize(16);
+            inflate.setPadding(15,15,15,15);
+            SizeBean sizeBean = sizeBeanList.get(position);
+            inflate.setText(sizeBean.width + " * " + sizeBean.height + " " + sizeBean.desc);
+            return inflate;
+        }
+    }
+
+    class SizeBean{
+        int width;
+        int height;
+        String desc;
+    }
+
+    /**
+     * ====功能区==================================================================================================
+     */
+
+    public void modifyPWD(View view) {
+        setPwd();
+    }
+
+    public void checkUpgrade(View view) {
+        UpdateVersionControl.getInstance().checkUpdate(this);
+    }
+
+    public void setAngle(final View view) {
+        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        if(anInt == CameraSettings.ROTATION_0){
+            anInt = CameraSettings.ROTATION_90;
+        } else if(anInt == CameraSettings.ROTATION_90) {
+            anInt = CameraSettings.ROTATION_180;
+        } else if(anInt == CameraSettings.ROTATION_180){
+            anInt = CameraSettings.ROTATION_270;
+        } else {
+            anInt = CameraSettings.ROTATION_0;
+        }
+        ((Button)view).setText("角度：" + anInt);
+        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
+        CameraSettings.setCameraDisplayRotation(anInt);
+    }
+
+    public void rebootDevice(View view) {
+        showAlert("设备将重启，是否继续？", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
+                progressDialog.setTitle("重启");
+                progressDialog.setMessage("3秒后将重启设备");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                UIUtils.restart.start();
+            }
+        },null, null);
     }
 
     private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel ,DialogInterface.OnDismissListener onDissmissListener) {
@@ -520,93 +591,7 @@ public class SettingActivity extends BaseActivity {
         dialog.show();
         Window window = dialog.getWindow();
         window.setWindowAnimations(R.style.mystyle);  //添加动画
+        window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-    public void back(View view) {
-        finish();
-    }
-
-    public void setGpioDelay(View view) {
-        String s = edtGpioDelay.getText().toString();
-        if(TextUtils.isEmpty(s)){
-            UIUtils.showShort(this,"不可为空");
-            return;
-        }
-        int i = Integer.parseInt(s);
-        SpUtils.saveInt(SpUtils.GPIO_DELAY,i);
-        UIUtils.showShort(this,"设置成功");
-    }
-
-
-    public static class CpuUtils {
-        private CpuUtils() {
-            //no instance
-        }
-        private static final List<String> CPU_TEMP_FILE_PATHS = Arrays.asList(
-                "/sys/devices/system/cpu/cpu0/cpufreq/cpu_temp",
-                "/sys/devices/system/cpu/cpu0/cpufreq/FakeShmoo_cpu_temp",
-                "/sys/class/thermal/thermal_zone0/temp",
-                "/sys/class/i2c-adapter/i2c-4/4-004c/temperature",
-                "/sys/devices/platform/tegra-i2c.3/i2c-4/4-004c/temperature",
-                "/sys/devices/platform/omap/omap_temp_sensor.0/temperature",
-                "/sys/devices/platform/tegra_tmon/temp1_input",
-                "/sys/kernel/debug/tegra_thermal/temp_tj",
-                "/sys/devices/platform/s5p-tmu/temperature",
-                "/sys/class/thermal/thermal_zone1/temp",
-                "/sys/class/hwmon/hwmon0/device/temp1_input",
-                "/sys/devices/virtual/thermal/thermal_zone1/temp",
-                "/sys/devices/virtual/thermal/thermal_zone0/temp",
-                "/sys/class/thermal/thermal_zone3/temp",
-                "/sys/class/thermal/thermal_zone4/temp",
-                "/sys/class/hwmon/hwmonX/temp1_input",
-                "/sys/devices/platform/s5p-tmu/curr_temp");
-
-        public static final String getCpuTemperatureFinder() {
-            String currTemp = "-1";
-            for (String cpuTempFilePath : CPU_TEMP_FILE_PATHS) {
-                Double temp = readOneLine(new File(cpuTempFilePath));
-                String validPath = "";
-                double currentTemp = 0.0D;
-                if (isTemperatureValid(temp)) {
-                    validPath = cpuTempFilePath;
-                    currentTemp = temp;
-                } else if (isTemperatureValid(temp / (double) 1000)) {
-                    validPath = cpuTempFilePath;
-                    currentTemp = temp / (double) 1000;
-                }
-
-                if(!TextUtils.isEmpty(validPath)
-                        && (currentTemp != 0)){
-                    currTemp = currentTemp+"";
-                }
-            }
-            return currTemp;
-        }
-
-        private static double readOneLine(File file) {
-            FileInputStream fileInputStream = null;
-            String s = "";
-            try {
-                fileInputStream = new FileInputStream(file);
-                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                s = bufferedReader.readLine();
-                fileInputStream.close();
-                inputStreamReader.close();
-                bufferedReader.close();
-            } catch (IOException e) {
-            }
-
-            double result = 0;
-            try {
-                result = Double.parseDouble(s);
-            } catch (NumberFormatException ignored) {
-            }
-            return result;
-        }
-
-        private static boolean isTemperatureValid(double temp) {
-            return temp >= -30.0D && temp <= 250.0D;
-        }
-    }
 }

@@ -2,19 +2,19 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/ll_face_main"
+    android:background="@mipmap/bj"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/bj"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:orientation="vertical">
 
         <RelativeLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -57,38 +57,50 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+                android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textColor="@color/white"
-                android:textSize="24dp" />
+                android:textSize="26dp" />
         </RelativeLayout>
 
-        <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
-            android:id="@+id/face_view"
+        <FrameLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_height="600dp">
+
+            <com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView
+                android:id="@+id/face_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!--<com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView-->
+                <!--android:id="@+id/face_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+
+            <FrameLayout
+                android:layout_gravity="bottom"
+                android:id="@+id/ll_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/ll_list_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"></FrameLayout>
-
-        <FrameLayout
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:id="@+id/layout_h"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/shape_bg_btnrepicture"
-            android:orientation="vertical"></FrameLayout>
+            android:orientation="vertical"/>
 
         <TextView
             android:id="@+id/tv_main_bottomTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:background="@mipmap/img_bottom"
             android:gravity="center"
             android:maxLength="18"

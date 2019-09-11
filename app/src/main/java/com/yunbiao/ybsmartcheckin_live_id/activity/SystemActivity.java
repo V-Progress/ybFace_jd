@@ -32,19 +32,17 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SysInfoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
@@ -57,7 +55,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +84,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private View ivBack;
     private TextView tv_bindcode_syetem;
     private CheckBox cbMirror;
-    private CompBean compBean;
+    private Company company;
 
     @Override
     protected int getPortraitLayout() {
@@ -144,7 +141,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initData() {
-        compBean = APP.getCompBean();
+        company = SpUtils.getCompany();
 
         String appName = getResources().getString(R.string.app_name);
         try {
@@ -169,14 +166,13 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(LogoUpdateEvent updateEvent) {
-        d("update: ----- 收到LOGO更新事件");
-        setIcon();
+    public void update(UpdateInfoEvent updateEvent) {
+        setInfo();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(SysInfoUpdateEvent updateEvent) {
-        setInfo();
+    public void update(UpdateLogoEvent updateEvent) {
+        setIcon();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -185,27 +181,16 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     public void setIcon(){
-        if(compBean == null) return;
-
-        if(tv_company_system != null){
-            tv_company_system.setText(compBean.getCompName());
-        }
-
-        if(ivLogo != null){
-            File file = new File(compBean.getIconPath());
-            Glide.with(this)
-                    .load(file.exists() ? file : compBean.getIconUrl())
-                    .skipMemoryCache(true)
-                    .crossFade(500)
-                    .into(ivLogo);
-        }
-
-        if(tvCompName != null){
-            tvCompName.setText(compBean.getCompName());
+        String logoPath = SpUtils.getStr(SpUtils.COMPANY_LOGO);
+        if(!TextUtils.isEmpty(logoPath)){
+            Glide.with(this).load(logoPath).asBitmap().into(ivLogo);
         }
     }
 
     public void setInfo() {
+        Company company = SpUtils.getCompany();
+        tv_company_system.setText(company.getComname());
+
         String serNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tv_deviceno_system.setText(serNum);
 
@@ -225,13 +210,15 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this, EmployListActivity.class));
                 break;
             case R.id.btn_add_system:
-                startActivity(new Intent(this, AddEmployActivity.class));
+                Intent intent = new Intent(this, EditEmployActivity.class);
+                intent.putExtra(EditEmployActivity.KEY_TYPE,EditEmployActivity.TYPE_ADD);
+                startActivity(intent);
                 break;
             case R.id.btn_data_system:
                 startActivity(new Intent(this, SignActivity.class));
                 break;
             case R.id.btn_setting_system:
-                startActivity(new Intent(this,SettingActivity.class));
+                startActivity(new Intent(this, SettingActivity.class));
                 break;
             case R.id.btn_update_system:
 
@@ -241,6 +228,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
                     }
                 };
+
                 Beta.upgradeStateListener = new UpgradeStateListener() {
                     @Override
                     public void onUpgradeFailed(boolean b) {

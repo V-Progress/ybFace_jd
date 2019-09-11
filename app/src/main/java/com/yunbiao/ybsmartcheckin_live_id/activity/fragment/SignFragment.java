@@ -30,24 +30,24 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.Gson;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.MyStringCallback;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AddQRCodeBean;
-import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.BitmapCallback;
 
@@ -70,7 +70,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     private TextView tvTotal;
     private RecyclerView rlv;
-    private List<SignBean> mSignList = new ArrayList<>();
+    private List<Sign> mSignList = new ArrayList<>();
     private SignAdapter signAdapter;
     private static final String TAG = "SignFragment";
     private int mCurrentOrientation;
@@ -83,6 +83,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     private TextView tvNotice;
     private View aivBulu;
     private Button btnBulu;
+    private TextView tvTotalSex;
 
     @Nullable
     @Override
@@ -106,6 +107,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         rlv = rootView.findViewById(R.id.rlv_sign_list);
         ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);
         tvTotal = rootView.findViewById(R.id.tv_total_sign_list);
+        tvTotalSex = rootView.findViewById(R.id.tv_total_sex);
         tvNotice = rootView.findViewById(R.id.tv_notice_sign_list);
 
         //横屏专用
@@ -116,7 +118,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                    outRect.right = 25;
+                    outRect.right = 5;
                 }
             });
         }
@@ -153,28 +155,17 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(PageUpdateEvent updateEvent) {
+    public void update(UpdateInfoEvent event) {
         SignManager.instance().init(getActivity(),this);
         initSignData();
     }
 
     private void initSignData(){
-        CompBean compBean = APP.getCompBean();
-        if(compBean != null){
-            String qrCodePath = compBean.getQRCodePath();
-            if(!TextUtils.isEmpty(qrCodePath)){
-                File qrCode = new File(qrCodePath);
-                if(!qrCode.exists()){
-                    loadQrCode(qrCodePath);
-                } else {
-                    ivQRCode.setVisibility(View.VISIBLE);
-                    bindImageView(qrCode.getPath(),ivQRCode);
-                }
-            }
-            String notice = compBean.getNotice();
-            if(tvNotice != null){
-                tvNotice.setText(notice);
-            }
+        Company company = SpUtils.getCompany();
+        loadQrCode(Constants.DATA_PATH+"/qr_code.png");
+        String notice = company.getSlogan();
+        if(tvNotice != null){
+            tvNotice.setText(notice);
         }
     }
 
@@ -184,21 +175,21 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         String speakStr = " 您好 %s ，欢迎光临";
         String goTips = "上班签到成功";
         String downTips = "下班签到成功";
-        CompBean compBean = APP.getCompBean();
+        Company company = SpUtils.getCompany();
 
         switch (signType) {
             case 0:
                 speakStr = String.format(yuyin, signerName);
                 break;
             case 1:
-                if (compBean != null && !TextUtils.isEmpty(compBean.getGotips())) {
-                    goTips = compBean.getGotips();
+                if (company != null && !TextUtils.isEmpty(company.getGotips())) {
+                    goTips = company.getGotips();
                 }
                 speakStr = String.format(" %s " + goTips, signerName);
                 break;
             case 2:
-                if (compBean != null && !TextUtils.isEmpty(compBean.getDowntips())) {
-                    downTips = compBean.getDowntips();
+                if (company != null && !TextUtils.isEmpty(company.getDowntips())) {
+                    downTips = company.getDowntips();
                 }
                 speakStr = String.format(" %s " + downTips, signerName);
                 break;
@@ -241,12 +232,27 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
                     return;
                 }
 
-                OkHttpUtils.get().url(addQRCodeBean.codeurl).build().execute(new BitmapCallback() {
-                    @Override public void onError(Call call, Exception e, int id) { }
-                    @Override public void onResponse(final Bitmap response, int id) {
-                        final File file = FileUtils.saveBitmap(response, localPath);
+                MyXutils.getInstance().downLoadFile(addQRCodeBean.codeurl, Constants.CACHE_PATH + "QRCODE.png", false, new MyXutils.XDownLoadCallBack() {
+                    @Override
+                    public void onLoading(long total, long current, boolean isDownloading) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(File result) {
+
                         ivQRCode.setVisibility(View.VISIBLE);
-                        bindImageView(file.getPath(),ivQRCode);
+                        bindImageView(result.getPath(),ivQRCode);
+                    }
+
+                    @Override
+                    public void onError(Throwable ex) {
+
+                    }
+
+                    @Override
+                    public void onFinished() {
+
                     }
                 });
             }
@@ -255,7 +261,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
 
     @Override
-    public void onPrepared(List<SignBean> mList) {
+    public void onPrepared(List<Sign> mList) {
         if(mList == null){
             return;
         }
@@ -268,32 +274,27 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     }
 
     @Override
-    public void onSigned(SignBean signBean, int signType) {
-        mSignList.add(0,signBean);
+    public void onSigned(Sign sign, int signType) {
+        mSignList.add(0,sign);
         signAdapter.notifyItemInserted(0);
         rlv.scrollToPosition(0);
         updateNumber();
 
-//        ApiManager.instance().onGate();
-//        if (mGateIsAlive) {
-//            mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
-//        }
-//
         ((WelComeActivity)getActivity()).openDoor();
 
-        speak(signType, signBean.getName());
+        speak(signType, sign.getName());
 
-        MultipleSignDialog.instance().sign(signBean);
+        MultipleSignDialog.instance().sign(sign);
     }
 
     @Override
-    public void onMakeUped(SignBean signBean, boolean makeUpSuccess) {
-        mSignList.add(0,signBean);
+    public void onMakeUped(Sign sign, boolean makeUpSuccess) {
+        mSignList.add(0,sign);
         signAdapter.notifyItemInserted(0);
         rlv.scrollToPosition(0);
         updateNumber();
 
-        VipDialogManager.showBuluDialog(getActivity(), signBean.getImgUrl(),makeUpSuccess);
+        VipDialogManager.showBuluDialog(getActivity(), sign.getHeadPath(),makeUpSuccess);
         KDXFSpeechManager.instance().playText(makeUpSuccess ?"补录成功！":"补录失败！");
         btnBulu.setEnabled(true);
         btnBulu.setVisibility(View.VISIBLE);
@@ -306,9 +307,8 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             @Override
             public void run() {
                 int male = 0;
-                for (SignBean signBean : mSignList) {
-                    boolean empty = TextUtils.isEmpty(signBean.getSex());
-                    if (empty || signBean.getSex().equals("1") || signBean.getSex().equals("男")) {
+                for (Sign signBean : mSignList) {
+                    if(signBean.getSex() == 1){
                         male = male + 1;
                     }
                 }
@@ -320,8 +320,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
                     @Override
                     public void run() {
                         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                            String signTips = "已签到   <font color='#fff600'>" + total + "</font>   人 （男 <font color='#fff600'>" + maleNum + "</font>   女  <font color='#fff600'>" + female + "</font> ） ";
+                            String signTips = "已签到   <font color='#fff600'>" + total + "</font>   人";
+                            String totalSex = "（男 <font color='#fff600'>" + maleNum + "</font>   女  <font color='#fff600'>" + female + "</font> ）";
                             tvTotal.setText(Html.fromHtml(signTips));
+                            tvTotalSex.setText(Html.fromHtml(totalSex));
                         } else {
                             tvTotal.setText("" + total);
                             tvSignMale.setText("男: " + maleNum + "人");
@@ -364,12 +366,12 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     }
 
     class SignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-        private List<SignBean> signBeanList ;
+        private List<Sign> signBeanList ;
         private Context mContext;
         private int orientation;
         private int id;
 
-        public SignAdapter(Context context,List<SignBean> signBeanList,int currOrientation) {
+        public SignAdapter(Context context, List<Sign> signBeanList, int currOrientation) {
             this.mContext = context;
             this.signBeanList = signBeanList;
             this.orientation = currOrientation;
@@ -388,9 +390,9 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             ViewHolder vh = (ViewHolder) viewHolder;
-            SignBean signBean = signBeanList.get(i);
+            Sign signBean = signBeanList.get(i);
 
-            String imgUrl = signBean.getImgUrl();
+            String imgUrl = signBean.getHeadPath();
             if(!TextUtils.isEmpty(imgUrl)){
                 Glide.with(mContext).load(imgUrl).asBitmap().override(100,100).into(vh.ivHead);
             }

@@ -8,17 +8,15 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.jdjr.risk.face.local.detect.BaseProperty;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,7 +30,7 @@ public class FaceCanvasView extends ImageView {
     private Lock lockFace = new ReentrantLock();
     private StringBuilder contentText = new StringBuilder();
 
-    private Map<Integer,String> cacheMap = new HashMap<>();//名称缓存
+    private Map<Long,String> cacheMap = new HashMap<>();//名称缓存
 
     public FaceCanvasView(Context context) {
         super(context);
@@ -104,7 +102,7 @@ public class FaceCanvasView extends ImageView {
         }
     }
 
-    private void getText(FaceProperty faceProperty,VerifyResult verifyResult){
+    private void getText(FaceProperty faceProperty, VerifyResult verifyResult){
         contentText.setLength(0);
         if (!isShowProperty) {
             if(verifyResult == null || verifyResult.getUser() == null){
@@ -112,16 +110,16 @@ public class FaceCanvasView extends ImageView {
             }
             String userId = verifyResult.getUser().getUserId();
             if(!TextUtils.isEmpty(userId)){
-                Integer integer = Integer.valueOf(userId);
-                if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
-                    List<VIPDetail> vipDetails = APP.getUserDao().queryByFaceId(integer);
-                    if(vipDetails != null && vipDetails.size() > 0){
-                        String name = vipDetails.get(0).getName();
-                        cacheMap.put(integer,name);
+                long faceId = Long.parseLong(userId);
+                if (!cacheMap.containsKey(faceId)) {//如果缓存里不存在就去查
+                    User user = DaoManager.get().queryUserByFaceId(faceId);
+                    if(user != null){
+                        String name = user.getName();
+                        cacheMap.put(faceId,name);
                         contentText.append(name);
                     }
                 } else {//存在就取缓存
-                    contentText.append(cacheMap.get(integer));
+                    contentText.append(cacheMap.get(faceId));
                 }
             }
         } else {

@@ -34,7 +34,6 @@
     <string name="employ_list_field_control">操作</string>
 
     <!--新增员工-->
-
     <string name="employ_add_title">增加员工</string>
     <string name="employ_add_info">基本信息</string>
     <string name="employ_add_takephoto">拍照</string>
@@ -66,4 +65,7 @@
     <string name="setting_title_system">系统</string>
     <string name="setting_title_face">人脸</string>
     <string name="setting_title_hardware">硬件</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

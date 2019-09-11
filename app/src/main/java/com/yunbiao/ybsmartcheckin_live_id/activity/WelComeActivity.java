@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,39 +20,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
 import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceResult;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.io.File;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by Administrator on 2018/11/26.
  */
 
 public class WelComeActivity extends BaseGpioActivity {
-
+    private static final String TAG = "WelComeActivity";
     private ImageView ivMainLogo;//公司logo
     private TextView tvMainAbbName;//公司名
     private TextView tvMainTopTitle;//标题
@@ -76,6 +78,8 @@ public class WelComeActivity extends BaseGpioActivity {
 
     @Override
     protected void initView() {
+        APP.setActivity(this);
+        EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
         ivMainLogo = findViewById(R.id.iv_main_logo);
@@ -104,17 +108,25 @@ public class WelComeActivity extends BaseGpioActivity {
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: ------- ");
+                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
+            }
+        }, 5 * 1000);
     }
 
     /*人脸识别回调，由上到下执行*/
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
-            SyncManager.instance().init(WelComeActivity.this, loadListener);
+            SyncManager.instance().requestCompany();
         }
 
         @Override
-        public void onFaceDetection() {
+        public void onFaceDetection(FaceResult basePropertyMap) {
             ApiManager.instance().onLignt();
             if(adsFragment != null){
                 adsFragment.detectFace();
@@ -122,46 +134,40 @@ public class WelComeActivity extends BaseGpioActivity {
         }
 
         @Override
-        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
-            if (verifyResult != null && faceProperty  != null)
-                SignManager.instance().checkSign(verifyResult,faceProperty);
+        public void onFaceVerify(VerifyResult verifyResult) {
+            if (verifyResult != null)
+                SignManager.instance().checkSign(verifyResult);
         }
+
+//        @Override
+//        public void onFaceDetection() {
+//            ApiManager.instance().onLignt();
+//            if(adsFragment != null){
+//                adsFragment.detectFace();
+//            }
+//        }
+
+//        @Override
+//        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
+//            if (verifyResult != null && faceProperty  != null)
+//                SignManager.instance().checkSign(verifyResult,faceProperty);
+//        }
     };
 
-    private SyncManager.LoadListener loadListener = new SyncManager.LoadListener() {
-        @Override
-        public void onLoaded() {
-            CompBean compBean = APP.getCompBean();
-            if (compBean == null) return;
-            if (tvMainAbbName != null) tvMainAbbName.setText(compBean.getAbbName());
-            if (tvMainTopTitle != null) tvMainTopTitle.setText(compBean.getTopTitle());
-            if (tvMainBottomTitle != null) tvMainBottomTitle.setText(compBean.getBottomTitle());
-            loadLogo(compBean);
-            EventBus.getDefault().postSticky(new PageUpdateEvent());
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateInfoEvent event){
+        Company company = SpUtils.getCompany();
+        if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
+        if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());
+        if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
+    }
 
-        @Override
-        public void onFinish() {
-        }
-    };
-
-    private void loadLogo(CompBean compBean){
-        String iconPath = compBean.getIconPath();
-        if (!TextUtils.isEmpty(iconPath)) {
-            File logo = new File(iconPath);
-            if (logo.exists()) {
-                bindImageView(logo.getPath(), ivMainLogo);
-            } else {
-                MyXutils.getInstance().downLoadFile(compBean.getIconUrl(), compBean.getIconPath(), false, new MyXutils.XDownLoadCallBack() {
-                    @Override public void onLoading(long total, long current, boolean isDownloading) { }
-                    @Override public void onSuccess(File result) {
-                        EventBus.getDefault().postSticky(new LogoUpdateEvent());
-                        bindImageView(result.getPath(), ivMainLogo);
-                    }
-                    @Override public void onError(Throwable ex) { }
-                    @Override public void onFinished() { }
-                });
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateLogoEvent event){
+        Log.e("112233", "11111: 收到更新图标的事件" );
+        String logoPath = event.getLogoPath();
+        if(!TextUtils.isEmpty(logoPath)){
+            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivMainLogo);
         }
     }
 
@@ -303,6 +309,7 @@ public class WelComeActivity extends BaseGpioActivity {
         faceView.destory();
         destoryXmpp();
 
+        EventBus.getDefault().unregister(this);
         SyncManager.instance().destory();
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();

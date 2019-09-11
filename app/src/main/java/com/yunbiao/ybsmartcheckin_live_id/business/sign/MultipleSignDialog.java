@@ -16,14 +16,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 
 import java.util.LinkedList;
 
 public class MultipleSignDialog {
     private static final String TAG = "MultipleSignDialog";
     private static MultipleSignDialog instance = new MultipleSignDialog();
-    private static LinkedList<SignBean> signList = new LinkedList<>();
+    private static LinkedList<Sign> signList = new LinkedList<>();
     private final int MAX_SIGN_TIME = 2;
     private int signOffTime = MAX_SIGN_TIME;//多人签到延时
     private Dialog vipDialog;
@@ -40,9 +40,9 @@ public class MultipleSignDialog {
         vipAdapter2 = new VipAdapter2(context,signList);
 
         if(vipDialog == null){
-            vipDialog = new Dialog(context,R.style.DialogStyle);
+            vipDialog = new Dialog(context, R.style.DialogStyle);
             //去掉标题线
-            vipDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+            vipDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //背景透明
             vipDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         } else {
@@ -102,7 +102,7 @@ public class MultipleSignDialog {
 
     }
 
-    public void sign(SignBean signBean) {
+    public void sign(Sign signBean) {
         if(vipDialog != null && vipDialog.isShowing()){
             signOffTime = MAX_SIGN_TIME;
         } else {

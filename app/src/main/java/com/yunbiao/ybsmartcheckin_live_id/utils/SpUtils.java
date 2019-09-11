@@ -2,8 +2,17 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by LiuShao on 2016/2/21.
@@ -14,12 +23,18 @@ public class SpUtils {
     private static SharedPreferences sp;
     private static final String SP_NAME = "YB_FACE";
 
+    public static final String CAMERA_WIDTH = "cameraWidth";//摄像头宽
+    public static final String CAMERA_HEIGHT = "cameraHeight";//摄像头高
+
     public static final String DEVICE_UNIQUE_NO = "deviceNo";//设备唯一号
     public static final String DEVICE_NUMBER = "devicesernum";//设备编号
     public static final String BINDCODE = "bindCode";//绑定码
     public  static final String CITYNAME= "city";//城市
 
+    public static Company mCacheCompany;//全局缓存
     public static final String COMPANYID = "companyid";//公司ID
+    public static final String COMPANY_INFO = "companyInfo";//公司视频广告
+    public static final String COMPANY_LOGO = "companyLogo";
 
     public static final String AD_HENG = "ad_heng";//横屏广告
     public static final String AD_SHU = "ad_shu";//竖屏广告
@@ -39,7 +54,37 @@ public class SpUtils {
 
     public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
 
-    public static final String COMPANY_INFO = "companyInfo";//公司简介信息
+    public static void init(){
+        Log.e("112233", "init: " + mCacheCompany);
+        getCompany();
+        Log.e("112233", "init: " + mCacheCompany);
+    }
+
+    public static void setCompany(final Company company){
+        mCacheCompany = company;
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> e) throws Exception {
+                String json = new Gson().toJson(company);
+                saveStr(COMPANY_INFO,json);
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public static Company getCompany(){
+        if(mCacheCompany == null){
+            String str = SpUtils.getStr(COMPANY_INFO);
+            if(!TextUtils.isEmpty(str)){
+                Company company = new Gson().fromJson(str, Company.class);
+                mCacheCompany = company;
+            }
+            if(mCacheCompany == null){
+                mCacheCompany = new Company();
+                mCacheCompany.setComid(0);
+            }
+        }
+        return mCacheCompany;
+    }
 
     static {
         sp = APP.getContext().getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);

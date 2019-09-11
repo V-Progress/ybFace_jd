@@ -9,9 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 
 import org.xutils.x;
 
@@ -28,9 +27,9 @@ public class SignAdapter extends BaseAdapter {
 
     private static final String TAG = "SignAdapter";
     private Context context;
-    private List<SignBean> mlist;
+    private List<Sign> mlist;
 
-    public SignAdapter(Context context, List<SignBean> mlist) {
+    public SignAdapter(Context context, List<Sign> mlist) {
         this.context = context;
         this.mlist = mlist;
     }
@@ -41,7 +40,7 @@ public class SignAdapter extends BaseAdapter {
     }
 
     @Override
-    public SignBean getItem(int position) {
+    public Sign getItem(int position) {
         return mlist.get(position);
     }
 
@@ -61,7 +60,7 @@ public class SignAdapter extends BaseAdapter {
         else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
-        SignBean vip=mlist.get(position);
+        Sign vip=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
         if (!TextUtils.isEmpty(vip.getEmployNum())){
             viewHolder.tv_date.setText(vip.getTime()+"");
@@ -73,16 +72,16 @@ public class SignAdapter extends BaseAdapter {
             viewHolder.tv_employDepart.setText(vip.getDepart());
         }
 
-        if (!TextUtils.isEmpty(vip.getJob())){
-            viewHolder.tv_employJob.setText(vip.getJob());
+        if (!TextUtils.isEmpty(vip.getPosition())){
+            viewHolder.tv_employJob.setText(vip.getPosition());
         }
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         viewHolder.tv_date.setText(df.format(vip.getTime()));
         if (position%2==1){
             convertView.setBackgroundColor(Color.parseColor("#07216d"));
         }
-        if (!TextUtils.isEmpty(vip.getImgUrl())){
-            x.image().bind(viewHolder.iv_photo,vip.getImgUrl());
+        if (!TextUtils.isEmpty(vip.getHeadPath())){
+            x.image().bind(viewHolder.iv_photo,vip.getHeadPath());
         }
 
         return convertView;

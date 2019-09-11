@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +31,8 @@ import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsStateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.VideoFragment;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.WebFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -42,209 +46,65 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import okhttp3.Call;
 
-public class InformationFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class InformationFragment extends Fragment {
     private static final String TAG = "InformationFragment";
-    private ImageView ivRight;
-    private ListView rlvBtnList;
-
     private static final int TYPE_IMAGE_VIDEO = 1;
     private static final int TYPE_URL = 2;
 
-    private WebView webView;
-
-    private List<PlayBean> mList = new ArrayList<>();
-    private BtnAdapter mAdapter;
-
-    private int mCurrPosistion = -1;//当前指针
     private int mainIndex = 0;//下载流程主循环索引
     private int childIndex = 0;//下载子循环索引
-    private View progressView;
-    private InfoViewPager infoViewPager;
-    private View btnListView;
-    private View flInfo;
-    private boolean isOverLoad = false;//是否重新加载
+    private ViewPager vpInfomation;
+    private List<Fragment> fragments = new ArrayList<>();
+    private MyAdapter vpPagerAdapter;
+    private View ivBg;
+    private View pbLoad;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View rootView = inflater.inflate(R.layout.fragment_information, container, false);
-        rlvBtnList = rootView.findViewById(R.id.rlv_information_button_list);
-        ivRight = rootView.findViewById(R.id.iv_information_right);
-        webView = rootView.findViewById(R.id.wv_web);
-        progressView = rootView.findViewById(R.id.ll_progress_info);
-        infoViewPager = rootView.findViewById(R.id.vp_info);
-        btnListView = rootView.findViewById(R.id.ll_btn_list);
-        flInfo = rootView.findViewById(R.id.fl_info);
+        vpInfomation = rootView.findViewById(R.id.vp_information);
+        ivBg = rootView.findViewById(R.id.iv_bg);
+        pbLoad = rootView.findViewById(R.id.pb_load);
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        ivRight.setOnClickListener(this);
-        rlvBtnList.setOnItemClickListener(this);
-        webView.setOnTouchListener(onTouchListener);
-        infoViewPager.setOnTouchListener(onTouchListener);
-
-        mAdapter = new BtnAdapter(mList);
-        rlvBtnList.setAdapter(mAdapter);
-
-        initWebView();
+        vpPagerAdapter = new MyAdapter(getChildFragmentManager(),fragments);
+        vpInfomation.setOffscreenPageLimit(3);
+        vpInfomation.setAdapter(vpPagerAdapter);
         initData();
     }
 
-    private View.OnTouchListener onTouchListener = new View.OnTouchListener(){
+    private class MyAdapter extends FragmentPagerAdapter {
+        private List<Fragment> fragments;
+
+        public MyAdapter(FragmentManager fm,List<Fragment> fragmentList) {
+            super(fm);
+            fragments = fragmentList;
+        }
+
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (v.getId() == R.id.vp_info && event.getAction() == MotionEvent.ACTION_DOWN) {
-                closeBtnList();
-                infoViewPager.startAutoPlay();
-                EventBus.getDefault().postSticky(new InfoTouchEvent());
-            } else if(v.getId() == R.id.wv_web && event.getAction() == MotionEvent.ACTION_DOWN) {
-                closeBtnList();
-                EventBus.getDefault().postSticky(new InfoTouchEvent());
-            }
-            return false;
+        public Fragment getItem(int i) {
+            return fragments.get(i);
         }
-    };
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        webView.getSettings().setJavaScriptEnabled(true);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        webView.getSettings().setJavaScriptEnabled(false);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
-    private void initWebView() {
-        WebSettings settings = webView.getSettings();
-        //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
-        settings.setJavaScriptEnabled(true);
-        // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
-        // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
-
-        //支持插件
-        settings.setPluginState(WebSettings.PluginState.ON);
-        //设置自适应屏幕，两者合用
-        settings.setUseWideViewPort(true); //将图片调整到适合webview的大小
-        settings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
-
-        //缩放操作
-        settings.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
-        settings.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
-        settings.setDisplayZoomControls(false); //隐藏原生的缩放控件
-
-        //其他细节操作
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT); //默认缓存
-        settings.setAllowFileAccess(true); //设置可以访问文件
-        settings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
-        settings.setLoadsImagesAutomatically(true); //支持自动加载图片
-        settings.setDefaultTextEncodingName("utf-8");//设置编码格式
-
-        webView.setWebViewClient(new WebViewClient() {
-            //覆盖shouldOverrideUrlLoading 方法
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View v) {
-        EventBus.getDefault().postSticky(new InfoTouchEvent());
-        if (rlvBtnList.isShown()) {
-            closeBtnList();
-        } else {
-            openBtnList();
+        @Override
+        public int getCount() {
+            return fragments.size();
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        closeBtnList();
-        EventBus.getDefault().postSticky(new InfoTouchEvent());
-        if (mCurrPosistion == position) {
-            return;
-        }
-        mCurrPosistion = position;
-        loadPlayData(mCurrPosistion);
-    }
-
-    private void openBtnList(){
-        if(!rlvBtnList.isShown()){
-            rlvBtnList.setVisibility(View.VISIBLE);
-            ivRight.setVisibility(View.GONE);
-            startAnim(200,rlvBtnList,rlvBtnList.getWidth(),0,null);
-        }
-    }
-
-    private void closeBtnList(){
-        if(rlvBtnList.isShown()){
-            startAnim(100,rlvBtnList, 0, rlvBtnList.getWidth(), new Runnable() {
-                @Override
-                public void run() {
-                    ivRight.setVisibility(View.VISIBLE);
-                    rlvBtnList.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
-
-    private ObjectAnimator objectAnimator;
-    private PropertyValuesHolder animX;
-    private void startAnim(int duration,final View view, float fromX, float toX, final Runnable runnable){
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);//开始动画前开启硬件加速
-        animX = PropertyValuesHolder.ofFloat("translationX", fromX, toX);//生成值动画
-        //加载动画Holder
-        objectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, animX);
-        objectAnimator.setDuration(duration);
-        objectAnimator.setInterpolator(new LinearInterpolator());
-        objectAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                view.setLayerType(View.LAYER_TYPE_NONE, null);//动画结束时关闭硬件加速
-                if(runnable != null){
-                    runnable.run();
-                }
-            }
-        });
-        objectAnimator.start();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(AdsStateEvent adsStateEvent) {
-        if (adsStateEvent.state == AdsStateEvent.STATE_OPENED) {
-            infoViewPager.onAdsOpened();
-        } else {
-            infoViewPager.onAdsClosed();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(InfoUpdateEvent infoUpdateEvent) {
-        isOverLoad = true;
-        Log.e(TAG, "update: 收到宣传信息更新事件");
-        loadCompanyInfo(null);
     }
 
     private void initData(){
-        progressView.setVisibility(View.VISIBLE);
+        pbLoad.setVisibility(View.VISIBLE);
         d("加载缓存数据... ");
         String cacheData = SpUtils.getStr(SpUtils.COMPANY_INFO);
         if(!TextUtils.isEmpty(cacheData)){
@@ -266,9 +126,21 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         loadCompanyInfo(cacheData);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(InformationUpdateEvent event){
+        Log.e(TAG, "update: 收到更新信息事件");
+        loadCompanyInfo(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     //从网络加载开始
     public void loadCompanyInfo(final String cacheData) {
-        progressView.setVisibility(View.VISIBLE);
+        pbLoad.setVisibility(View.VISIBLE);
         d("加载网络数据... ");
         d( "loadCompanyInfo:  ----------------- " + ResourceUpdate.getCompInfo);
         int compId = SpUtils.getInt(SpUtils.COMPANYID);
@@ -276,30 +148,30 @@ public class InformationFragment extends Fragment implements View.OnClickListene
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("请求失败... " + e != null ? e.getMessage() : "NULL");
-                progressView.setVisibility(View.GONE);
+                pbLoad.setVisibility(View.GONE);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 d( "onResponse: --------------- " + response);
                 if (TextUtils.isEmpty(response)) {
-                    progressView.setVisibility(View.GONE);
+                    pbLoad.setVisibility(View.GONE);
                     return;
                 }
                 //如果缓存数据不为空并且与之相同，则不再处理数据
                 if(!TextUtils.isEmpty(cacheData) && TextUtils.equals(cacheData,response)){
-                    progressView.setVisibility(View.GONE);
+                    pbLoad.setVisibility(View.GONE);
                     d("数据无变化，不继续处理... ");
                     return;
                 }
                 InfoBean infoBean = new Gson().fromJson(response, InfoBean.class);
                 if (infoBean == null || infoBean.status != 1) {
-                    progressView.setVisibility(View.GONE);
+                    pbLoad.setVisibility(View.GONE);
                     return;
                 }
                 final List<InfoBean.Propa> propaArray = infoBean.getPropaArray();
                 if (propaArray == null || propaArray.size() <= 0) {
-                    progressView.setVisibility(View.GONE);
+                    pbLoad.setVisibility(View.GONE);
                     return;
                 }
 
@@ -313,51 +185,30 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private void handleData(List<InfoBean.Propa> propaArray){
         final List<PlayBean> playList = getPlayList(propaArray);
 
-        mList.clear();
+        fragments.clear();
+        vpPagerAdapter.notifyDataSetChanged();
         loadResource(playList, new LoadListener() {
             @Override
             public void getSingle(PlayBean bean) {
-                ivRight.setVisibility(View.VISIBLE);
-                mList.add(bean);
-                mAdapter.notifyDataSetChanged();
-
-                if(mCurrPosistion == -1 || isOverLoad){
-                    mCurrPosistion = 0;
-                    loadPlayData(mCurrPosistion);
+                Log.e(TAG, "getSingle: " + bean.toString());
+                if(bean.type == TYPE_URL){
+                    fragments.add(WebFragment.newInstance(bean.url));
+                } else if(bean.type == TYPE_IMAGE_VIDEO){
+                    fragments.add(VideoFragment.newInstance(bean.time,bean.pathList));
                 }
+                Log.e(TAG, "fragments: " + fragments.size());
+                Log.e(TAG, "fragment: " + fragments.toString());
+                vpPagerAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFinished() {
-                isOverLoad = false;
                 d("全部处理结束... ");
-                progressView.setVisibility(View.GONE);
+                pbLoad.setVisibility(View.GONE);
+                ivBg.setVisibility(fragments.size() <= 0 ? View.VISIBLE : View.GONE);
             }
         });
     }
-
-    private void loadPlayData(int position){
-        if(mList.size() > 0){
-            PlayBean playBean = mList.get(position);
-            if (playBean.type == TYPE_IMAGE_VIDEO) {
-                webView.setVisibility(View.GONE);
-                infoViewPager.setVisibility(View.VISIBLE);
-                infoViewPager.setData(playBean.pathList,playBean.time);
-            } else {
-                showWeb(playBean.url);
-            }
-        }
-    }
-
-    private void showWeb(String url) {
-        if (!url.startsWith("http")) {
-            url = "http://" + url;
-        }
-        infoViewPager.setVisibility(View.GONE);
-        webView.setVisibility(View.VISIBLE);
-        webView.loadUrl(url);
-    }
-
 
     private List<PlayBean> getPlayList(List<InfoBean.Propa> propaArray) {
         List<PlayBean> playList = new ArrayList<>();
@@ -369,7 +220,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
                 playBean.url = propa.url;
             } else {
                 playBean.time = propa.time;
-                List<PlayBean.PathBean> pathList = new ArrayList<>();
+                ArrayList <PlayBean.PathBean> pathList = new ArrayList<>();
                 List<String> imgArray = propa.getImgArray();
                 if (imgArray != null) {
                     for (String url : imgArray) {
@@ -622,9 +473,9 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         int time;
         int type;
         String url;
-        List<PathBean> pathList;
+        ArrayList<PathBean> pathList;
 
-        public static class PathBean {
+        public static class PathBean implements Serializable {
             public static final int TYPE_IMG = 0;
             public static final int TYPE_VIDEO = 1;
             int type;
@@ -674,4 +525,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         Log.d(TAG, msg);
     }
 
+    public static class InformationUpdateEvent{
+
+    }
 }

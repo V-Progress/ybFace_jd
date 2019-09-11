@@ -24,18 +24,17 @@ import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsStateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.LogoUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.PageUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AdvertBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
@@ -74,12 +73,13 @@ public class AdsFragment extends Fragment implements AdsListener {
     private Timer onOffTimer;
     private PropertyValuesHolder animY;
 
-    private long MAX_TIME = 20;
+    private long MAX_TIME = 800;
     private long onTime = MAX_TIME;
     private int advertTime = 10;
     private List<File> mAdsList = new ArrayList<>();
     private boolean go = true;
     private ObjectAnimator objectAnimator;
+    private TextView tvNumber;
 
     @Nullable
     @Override
@@ -96,6 +96,7 @@ public class AdsFragment extends Fragment implements AdsListener {
         ivLogo = rootView.findViewById(R.id.iv_ads_logo);
         tvAbbName = rootView.findViewById(R.id.tv_ads_addname);
         tvSlogan = rootView.findViewById(R.id.tv_ads_slogan);
+        tvNumber = rootView.findViewById(R.id.tv_number_ads);
 
         //天气
         ivWeather = rootView.findViewById(R.id.iv_ads_wea);
@@ -122,6 +123,7 @@ public class AdsFragment extends Fragment implements AdsListener {
             }
         });
 
+        tvNumber.setText(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         //先关闭广告
         closeAds();
 
@@ -139,16 +141,19 @@ public class AdsFragment extends Fragment implements AdsListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(PageUpdateEvent updateEvent) {
-        d("update: ----- 收到页面更新事件");
-        CompBean compBean = APP.getCompBean();
-        if (compBean != null) {
-            tvAbbName.setText(compBean.getAbbName());
-            tvSlogan.setText(compBean.getSlogan());
-            String iconPath = compBean.getIconPath();
-            if(!TextUtils.isEmpty(iconPath) && new File(iconPath).exists()){
-                Glide.with(getActivity()).load(iconPath).asBitmap().into(ivLogo);
-            }
+    public void update(UpdateInfoEvent event){
+        Company company = SpUtils.getCompany();
+        tvNumber.setText(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+        tvAbbName.setText(company.getAbbname());
+        tvSlogan.setText(company.getSlogan());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateLogoEvent event) {
+        Log.e("112233", "22222: 收到更新图标的事件" );
+        String logoPath = event.getLogoPath();
+        if (!TextUtils.isEmpty(logoPath)) {
+            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivLogo);
         }
     }
 
@@ -162,16 +167,6 @@ public class AdsFragment extends Fragment implements AdsListener {
     public void update(InfoTouchEvent updateEvent) {
         d("update: ----- 收到计时重置事件");
         onTime = MAX_TIME;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(LogoUpdateEvent updateEvent) {
-        d("update: ----- 收到LOGO更新事件");
-        CompBean compBean = APP.getCompBean();
-        if (compBean != null) {
-            String iconPath = compBean.getIconPath();
-            Glide.with(getActivity()).load(iconPath).asBitmap().into(ivLogo);
-        }
     }
 
     /*天气请求结果监听*/

@@ -8,24 +8,26 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import com.alibaba.fastjson.JSONObject;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.functions.Consumer;
 import okhttp3.Call;
 
 /**
@@ -53,7 +56,7 @@ public class SignManager {
     private final String TAG = getClass().getSimpleName();
     private static SignManager instance;
     private SignDao signDao;
-    private final int UPDATE_TIME = 60;
+    private final int UPDATE_TIME = 20;
     private SignEventListener listener;
     private String today;
     private Activity mAct;
@@ -61,14 +64,13 @@ public class SignManager {
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
     private long verifyOffsetTime = 10000;//验证间隔时间
-    private final UserDao userDao;
 
     private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
     private boolean isDebug = true;
     private boolean isBulu = false;
     private boolean isBuluing = false;
 
-    private Map<Integer, Long> passageMap = new HashMap<>();
+    private Map<Long, Long> passageMap = new HashMap<>();
     public static SignManager instance() {
         if (instance == null) {
             synchronized (SignManager.class) {
@@ -84,7 +86,6 @@ public class SignManager {
         //初始化当前时间
         today = dateFormat.format(new Date());
         signDao = APP.getSignDao();
-        userDao = APP.getUserDao();
 
         threadPool = Executors.newFixedThreadPool(2);
         threadPool.execute(initRunnable);
@@ -97,11 +98,12 @@ public class SignManager {
     private Runnable initRunnable = new Runnable() {
         @Override
         public void run() {
-            final List<SignBean> signBeans = signDao.queryByDate(today);
-            if (signBeans != null) {
-                for (SignBean signBean : signBeans) {
+            int compId = SpUtils.getInt(SpUtils.COMPANYID);
+            final List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId,today);
+            if (signs != null) {
+                for (Sign signBean : signs) {
                     long time = signBean.getTime();
-                    int faceId = signBean.getFaceId();
+                    long faceId = signBean.getFaceId();
                     if (passageMap.containsKey(faceId)) {
                         long time1 = passageMap.get(faceId);
                         if (time > time1) {
@@ -117,7 +119,7 @@ public class SignManager {
                 mAct.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onPrepared(signBeans);
+                        listener.onPrepared(signs);
                     }
                 });
             }
@@ -126,6 +128,70 @@ public class SignManager {
         }
     };
 
+    public void uploadSignRecord(final Consumer<Boolean> callback){
+        final List<Sign> signs = DaoManager.get().querySignByUpload(false);
+        if (signs == null) {
+            return;
+        }
+        Log.e(TAG, "run: ------ 未上传：" + signs.size());
+
+        if (signs.size() <= 0) {
+            try {
+                callback.accept(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        List<SignDataBean> signDataBeans = new ArrayList<>();
+        for (Sign signBean : signs) {
+            SignDataBean signDataBean = new SignDataBean();
+            signDataBean.entryid = signBean.getEmpId() + "";
+            signDataBean.signTime = signBean.getTime();
+            signDataBeans.add(signDataBean);
+        }
+
+        String jsonStr = new Gson().toJson(signDataBeans);
+        d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
+        OkHttpUtils.post()
+                .addParams("signstr", jsonStr)
+                .url(ResourceUpdate.SIGNARRAY)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        d("上送失败--->" + e != null ? e.getMessage() : "NULL");
+                        e.printStackTrace();
+                        try {
+                            callback.accept(false);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: 上传结果：" + response);
+                        JSONObject jsonObject = JSONObject.parseObject(response);
+                        String status = jsonObject.getString("status");
+                        boolean isSucc = TextUtils.equals("1", status);
+                        try {
+                            callback.accept(isSucc);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (!isSucc) {
+                            return;
+                        }
+                        for (Sign signBean : signs) {
+                            Log.e(TAG, "run: ---" + signBean.getSex());
+                            signBean.setUpload(true);
+                            DaoManager.get().addOrUpdate(signBean);
+                        }
+                    }
+                });
+    }
 
     //定时发送签到数据
     private Runnable autoUploadRunnable = new Runnable() {
@@ -138,58 +204,15 @@ public class SignManager {
                 initRunnable.run();
             }
 
-            final List<SignBean> signList = signDao.queryByIsUpload(false);
-            if (signList == null) {
-                return;
-            }
-            Log.e(TAG, "run: ------ 未上传：" + signList.size());
-
-            if (signList.size() <= 0) {
-                return;
-            }
-
-            List<SignDataBean> signDataBeans = new ArrayList<>();
-            for (SignBean signBean : signList) {
-                SignDataBean signDataBean = new SignDataBean();
-                signDataBean.entryid = signBean.getEmpId() + "";
-                signDataBean.signTime = signBean.getTime();
-                signDataBeans.add(signDataBean);
-            }
-
-            String jsonStr = new Gson().toJson(signDataBeans);
-            d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
-            OkHttpUtils.post()
-                    .addParams("signstr", jsonStr)
-                    .url(ResourceUpdate.SIGNARRAY)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            d("上送失败--->" + e != null ? e.getMessage() : "NULL");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            Log.e(TAG, "onResponse: 上传结果：" + response);
-                            JSONObject jsonObject = JSONObject.parseObject(response);
-                            String status = jsonObject.getString("status");
-                            if (!TextUtils.equals("1", status)) {
-                                return;
-                            }
-
-                            threadPool.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    for (SignBean signBean : signList) {
-                                        Log.e(TAG, "run: ---" + signBean.getSex());
-                                        signBean.setUpload(true);
-                                        signDao.update(signBean);
-                                    }
-                                }
-                            });
-                        }
-                    });
+            uploadSignRecord(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    if(aBoolean){
+                        EventBus.getDefault().post(new UpdateSignDataEvent());
+                    }
+                    d("处理情况：" + aBoolean);
+                }
+            });
 
             clearJDVerifyRecord();
         }
@@ -200,6 +223,63 @@ public class SignManager {
         listener = signEventListener;
 
         return instance();
+    }
+
+    public void checkSign(VerifyResult verifyResult){
+        if(isBulu){
+            makeUpSign(verifyResult.getFaceImageBytes());
+            return;
+        }
+        if (verifyResult.getResult() != VerifyResult.UNKNOWN_FACE) {
+            return;
+        }
+
+        byte[] faceImageBytes = verifyResult.getFaceImageBytes();
+        FaceUser user = verifyResult.getUser();
+        if (user == null) {
+            return;
+        }
+        String userId = user.getUserId();
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        final long currTime = System.currentTimeMillis();
+        final Sign sign = new Sign();
+        sign.setTime(currTime);
+        sign.setFaceId(Long.parseLong(userId));
+        if (!canPass(sign)) {
+            return;
+        }
+
+        User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
+        if(userBean == null){
+            return;
+        }
+
+        File imgFile = saveBitmap(currTime, faceImageBytes);
+        sign.setEmployNum(userBean.getNumber());
+        sign.setEmpId(userBean.getId());
+        sign.setHeadPath(imgFile.getPath());
+        sign.setDepart(userBean.getDepartName());
+        sign.setName(userBean.getName());
+        sign.setUpload(false);
+        sign.setDate(dateFormat.format(currTime));
+        sign.setAutograph(userBean.getAutograph());
+        sign.setPosition(userBean.getPosition());
+        sign.setSex(userBean.getSex());
+        sign.setComid(userBean.getCompanyId());
+
+        if (listener != null) {
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onSigned(sign, getCurrentTime(currTime));
+                }
+            });
+        }
+
+        sendSignRecord(sign);
     }
 
     public void checkSign(VerifyResult verifyResult, FaceProperty faceProperty) {
@@ -222,46 +302,45 @@ public class SignManager {
             return;
         }
 
-        List<VIPDetail> vipDetails = userDao.queryByFaceId(Integer.valueOf(userId));
-        if (vipDetails == null || vipDetails.size() <= 0) {
+        final long currTime = System.currentTimeMillis();
+        final Sign sign = new Sign();
+        sign.setTime(currTime);
+        sign.setFaceId(Long.parseLong(userId));
+        if (!canPass(sign)) {
             return;
         }
 
-        final long currTime = System.currentTimeMillis();
-        VIPDetail vipDetail = vipDetails.get(0);
-        final SignBean signBean = new SignBean();
-        signBean.setFaceId(vipDetail.getFaceId());
-        signBean.setTime(currTime);
-        if (!canPass(signBean)) {
+        User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
+        if(userBean == null){
             return;
         }
 
         File imgFile = saveBitmap(currTime, faceImageBytes);
-        signBean.setEmployNum(vipDetail.getEmployNum());
-        signBean.setEmpId(vipDetail.getEmpId());
-        signBean.setImgUrl(imgFile.getPath());
-        signBean.setDepart(vipDetail.getDepart());
-        signBean.setName(vipDetail.getName());
-        signBean.setUpload(false);
-        signBean.setDate(dateFormat.format(currTime));
-        signBean.setSignature(vipDetail.getSignature());
-        signBean.setJob(vipDetail.getJob());
-        signBean.setBirthday(vipDetail.getBirthday());
-        signBean.setSex(vipDetail.getSex());
+        sign.setEmployNum(userBean.getNumber());
+        sign.setEmpId(userBean.getId());
+        sign.setHeadPath(imgFile.getPath());
+        sign.setDepart(userBean.getDepartName());
+        sign.setName(userBean.getName());
+        sign.setUpload(false);
+        sign.setDate(dateFormat.format(currTime));
+        sign.setAutograph(userBean.getAutograph());
+        sign.setPosition(userBean.getPosition());
+        sign.setSex(userBean.getSex());
+        sign.setComid(userBean.getCompanyId());
 
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onSigned(signBean, getCurrentTime(currTime));
+                    listener.onSigned(sign, getCurrentTime(currTime));
                 }
             });
         }
 
-        sendSignRecord(signBean);
+        sendSignRecord(sign);
     }
 
-    private void sendSignRecord(final SignBean signBean) {
+    private void sendSignRecord(final Sign signBean) {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
@@ -278,13 +357,13 @@ public class SignManager {
             }
             @Override
             public void onAfter(int id) {
-                signDao.insert(signBean);
+                DaoManager.get().addOrUpdate(signBean);
             }
         });
     }
 
-    private boolean canPass(SignBean signBean) {
-        int faceId = signBean.getFaceId();
+    private boolean canPass(Sign signBean) {
+        long faceId = signBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
             passageMap.put(faceId, signBean.getTime());
             return true;
@@ -305,14 +384,14 @@ public class SignManager {
     }
 
     private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
-        CompBean compBean = APP.getCompBean();
+        Company company = SpUtils.getCompany();
         String gotime = "09:00";
         String downTime = "18:00";
-        if(compBean != null){
-            if(!TextUtils.isEmpty(compBean.getGotime()))
-                gotime = compBean.getGotime();
-            if(!TextUtils.isEmpty(compBean.getDowntime()))
-                downTime = compBean.getDowntime();
+        if(company != null){
+            if(!TextUtils.isEmpty(company.getGotime()))
+                gotime = company.getGotime();
+            if(!TextUtils.isEmpty(company.getDowntime()))
+                downTime = company.getDowntime();
         }
 
         try {
@@ -347,6 +426,11 @@ public class SignManager {
         isBulu = true;
     }
 
+    public void makeUpSign(final byte[] faceImage){
+        FaceProperty faceProperty = new FaceProperty(0,0,0,null);
+        makeUpSign(faceImage,faceProperty);
+    }
+
     public void makeUpSign(final byte[] faceImage, final FaceProperty faceProperty) {
         if(isBuluing){
             return;
@@ -363,13 +447,13 @@ public class SignManager {
                 isBuluing = false;
                 isBulu = false;
 
-                final SignBean signBean = new SignBean();
+                final Sign signBean = new Sign();
                 signBean.setTime(currTime);
                 signBean.setUpload(false);
                 signBean.setDate(dateFormat.format(currTime));
                 signBean.setName("员工补录");
-                signBean.setImgUrl(imgFile.getPath());
-                signBean.setSex(faceProperty.getGender() + "");
+                signBean.setHeadPath(imgFile.getPath());
+                signBean.setSex(faceProperty.getGender());
                 Log.e(TAG, "run: -------------- " + signBean.toString());
 
                 if (listener != null) {
@@ -407,8 +491,8 @@ public class SignManager {
 
                             @Override
                             public void onAfter(int id) {
-                                int insert = signDao.insert(signBean);
-                                Log.e(TAG, "入库结果: " + insert);
+                                long l = DaoManager.get().addOrUpdate(signBean);
+                                Log.e(TAG, "入库结果: " + l);
                             }
                         });
             }
@@ -471,11 +555,11 @@ public class SignManager {
     }
 
     public interface SignEventListener {
-        void onPrepared(List<SignBean> mList);
+        void onPrepared(List<Sign> mList);
 
-        void onSigned(SignBean signBean, int signType);
+        void onSigned(Sign sign, int signType);
 
-        void onMakeUped(SignBean signBean, boolean makeUpSuccess);
+        void onMakeUped(Sign sign, boolean makeUpSuccess);
     }
 
 }

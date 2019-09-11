@@ -36,8 +36,6 @@ public class FaceSDK {
 
     private static int STATE_SDK = STATE_NOT_INIT;
 
-    private Map<String,FaceUser> allUserMap = new HashMap<>();
-
     public static int getState(){
         return STATE_SDK;
     }
@@ -126,7 +124,6 @@ public class FaceSDK {
                     STATE_SDK = STATE_COMPLETE;
                     listen(STATE_SDK);
                     startDetect();
-                    getAllUser();
                 } else {
                     STATE_SDK = STATE_SERVER_FAILED;
                     listen(STATE_SDK);
@@ -141,12 +138,13 @@ public class FaceSDK {
         FaceFrameManager.startDetectFace();
     }
 
-    private void getAllUser(){
-        List<FaceUser> faceUserList = FaceUserManager.getAllUsersSync(mContext);
-        for (FaceUser faceUser : faceUserList) {
-            allUserMap.put(faceUser.getUserId(),faceUser);
+    public Map<String, FaceUser> getAllFaceData(){
+        Map<String, FaceUser> faceMap = new HashMap<>();
+        List<FaceUser> allUsersSync = FaceUserManager.getAllUsersSync(mContext);
+        for (FaceUser faceUser : allUsersSync) {
+            faceMap.put(faceUser.getUserId(),faceUser);
         }
-        Log.e(TAG, "getAllUser: " + allUserMap.toString());
+        return faceMap;
     }
 
     public void setCallback(FaceFrameManager.BasePropertyCallback basePropertyCallback
@@ -177,35 +175,21 @@ public class FaceSDK {
         FaceUserManager.getInstance().registerImageAsync(mContext, userId, imgPath, null, callback);
     }
 
-    public void updateUser(String userId,String imgPath,FaceUserManager.FaceUserCallback callback){
-        if(TextUtils.isEmpty(userId) || TextUtils.isEmpty(imgPath)){
-            if(callback != null){
-                callback.onUserResult(false, FaceUserManager.RESULT_FAILURE);
-            }
-            return;
-        }
-        if(allUserMap.containsKey(userId)){
-            FaceUser faceUser = allUserMap.get(userId);
-            faceUser.setImagePath(imgPath);
-            FaceUserManager.getInstance().updateUserAsync(mContext,faceUser,callback);
-        } else {
-            if(callback != null){
-                callback.onUserResult(false, FaceUserManager.RESULT_FAILURE);
-            }
-        }
+    public void removeAllUser(FaceUserManager.FaceUserCallback callback){
+        FaceUserManager.getInstance().removeAllUsersAsync(mContext,callback);
     }
 
     public boolean removeUser(String userId){
-        if(!TextUtils.isEmpty(userId)){
-            if(allUserMap.containsKey(userId)){
-                FaceUser faceUser = allUserMap.get(userId);
-                return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
-            }
+        Map<String, FaceUser> allFaceData = getAllFaceData();
+        if(allFaceData.containsKey(userId)){
+            FaceUser faceUser = allFaceData.get(userId);
+            return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
         }
         return false;
     }
 
-    public void removeAllUser(FaceUserManager.FaceUserCallback callback){
-        FaceUserManager.getInstance().removeAllUsersAsync(mContext,callback);
+    public void update(FaceUser faceUser, FaceUserManager.FaceUserCallback faceUserCallback){
+        FaceUserManager.getInstance().updateUserAsync(mContext, faceUser, faceUserCallback);
     }
+
 }

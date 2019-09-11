@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.common;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -25,25 +28,16 @@ import java.net.URL;
 import java.util.HashMap;
 
 public class UpdateManager {
-
-    private Context mContext;
-
-    //提示语
-    private String updateMsg = "有最新的软件包，请快下载吧~";
+    private static final String TAG = "UpdateManager";
+    private Activity mContext;
 
     //返回的安装包url
     private static String apkUrl = "http://211.157.160.102/imgserver/hsd.apk";
 
-    private Dialog noticeDialog;
-
-    private Dialog downloadDialog;
     /* 下载包安装路径 */
     private static final String savePath = "/sdcard/mnt/sdcard/hsd/apk/";
 
     private static final String saveFileName = savePath + "hsd.apk";
-
-    /* 进度条与通知ui刷新的handler和msg常量 */
-    private ProgressBar mProgress;
 
     private static final int DOWN_UPDATE = 1;
 
@@ -55,8 +49,8 @@ public class UpdateManager {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case DOWN_UPDATE:
-                    if (CoreInfoHandler.onReceivedProgressRun != null) {
-                        CoreInfoHandler.onReceivedProgressRun.OnProgressRunReceived(progress);
+                    if (onReceivedProgressRun != null) {
+                        onReceivedProgressRun.OnProgressRunReceived(progress);
                     }
                     break;
                 case DOWN_OVER:
@@ -68,7 +62,17 @@ public class UpdateManager {
         }
     };
 
-    public UpdateManager(Context context) {
+    public static void setOnReceivedProgressRun(OnReceivedProgressRun run) {
+        onReceivedProgressRun = run;
+    }
+
+    public static OnReceivedProgressRun onReceivedProgressRun;
+
+    public interface OnReceivedProgressRun {
+        void OnProgressRunReceived(int progress);
+    }
+
+    public UpdateManager(Activity context) {
         this.mContext = context;
     }
 
@@ -99,23 +103,38 @@ public class UpdateManager {
             }
         });
     }
-
     private void judgeIsUpdate(String isUpdate) {
         //返回
         switch (isUpdate) {
             case "1": //不需要更新
-                Toast.makeText(mContext, "当前版本为最新版本", Toast.LENGTH_SHORT).show();
-                if (UIUtils.pd.isShowing()) {
+                if(mContext != null){
+                    UIUtils.showShort(mContext,"当前版本为最新版本");
+                }
+                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
                 }
                 break;
             case "faile":  //网络不通，或者解析出错
-                Toast.makeText(mContext, "网络连接失败，请检查网络", Toast.LENGTH_SHORT).show();
-                if (UIUtils.pd.isShowing()) {
+                if(mContext != null){
+                    UIUtils.showShort(mContext,"网络连接失败，请检查网络");
+                }
+                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
                 }
                 break;
             default:
+                if(mContext != null){
+                    UIUtils.updatePd(mContext);
+                }
+                setOnReceivedProgressRun(new OnReceivedProgressRun() {
+                    @Override
+                    public void OnProgressRunReceived(int progress) {
+                        UIUtils.pd.setProgress(progress);//给进度条设置数值
+                        if (progress == 100) {
+                            UIUtils.pd.dismiss();
+                        }
+                    }
+                });
                 apkUrl = isUpdate;
                 //下载apk
                 downloadApk();
@@ -166,6 +185,13 @@ public class UpdateManager {
                 is.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                WelComeActivity activity = APP.getActivity();
+                if(activity != null){
+                    UIUtils.showShort(activity,"下载失败");
+                }
+                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
+                    UIUtils.pd.dismiss();
+                }
             }
         }
     };
@@ -186,6 +212,10 @@ public class UpdateManager {
      * @param
      */
     private void installApk() {
+        if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
+            UIUtils.pd.dismiss();
+        }
+
         File apkfile = new File(saveFileName);
         if (!apkfile.exists()) {
             return;

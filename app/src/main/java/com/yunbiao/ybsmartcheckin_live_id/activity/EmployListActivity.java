@@ -14,24 +14,22 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,28 +46,27 @@ import okhttp3.Call;
  * Created by Administrator on 2018/8/7.
  */
 
-public class EmployListActivity extends BaseActivity implements EmployAdapter.EmpOnDeleteListener,EmployAdapter.EmpOnEditListener,View.OnClickListener{
+public class EmployListActivity extends BaseActivity implements EmployAdapter.EmpOnDeleteListener, EmployAdapter.EmpOnEditListener, View.OnClickListener {
 
     private static final String TAG = "EmployListActivity";
 
     private ListView lv_employ_List;
     private EmployAdapter employAdapter;
-    private List<VIPDetail> employList;
-    private  Spinner sp_depart;
+    private List<User> employList;
+    private Spinner sp_depart;
     private Button btn_addEmploy;
     private Button btn_addDepart;
     private Button btn_sync;
     private ImageView iv_back;
 
-    private List<String> mDepartList;
-    private DepartDao departDao;
-    private List<DepartBean> mDepartlist;
-    private UserDao userDao;
-    private String depart="全部部门";
-
     private TextView tv_deviceNo;
     private View rootView;
     private View avlLoading;
+    private List<Depart> departs;
+
+    private List<String> mDepartList = new ArrayList<>();
+    private List<Long> mDepartIdList = new ArrayList<>();
+    private long mCurrDepId = 0;
 
     @Override
     protected int getPortraitLayout() {
@@ -78,7 +75,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected int getLandscapeLayout() {
-        if(Config.deviceType == Config.DEVICE_SMALL_FACE){
+        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
             return R.layout.activity_employlist_h_small;
         } else {
             return R.layout.activity_employlist_h;
@@ -90,13 +87,13 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         EventBus.getDefault().register(this);
 
         rootView = findViewById(R.id.rl_root);
-        lv_employ_List= (ListView) findViewById(R.id.lv_employ_List);
-        sp_depart= (Spinner) findViewById(R.id.sp_depart);
-        btn_addEmploy= (Button) findViewById(R.id.btn_addEmploy);
-        btn_addDepart= (Button) findViewById(R.id.btn_addDepart);
-        btn_sync= (Button) findViewById(R.id.btn_sync);
-        iv_back= (ImageView) findViewById(R.id.iv_back);
-        tv_deviceNo= (TextView) findViewById(R.id.tv_deviceNo);
+        lv_employ_List = findViewById(R.id.lv_employ_List);
+        sp_depart = findViewById(R.id.sp_depart);
+        btn_addEmploy = findViewById(R.id.btn_addEmploy);
+        btn_addDepart = findViewById(R.id.btn_addDepart);
+        btn_sync = findViewById(R.id.btn_sync);
+        iv_back = findViewById(R.id.iv_back);
+        tv_deviceNo = findViewById(R.id.tv_deviceNo);
         avlLoading = findViewById(R.id.avl_loading);
 
         btn_addEmploy.setOnClickListener(this);
@@ -107,11 +104,8 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected void initData() {
-        departDao= APP.getDepartDao();
-        userDao=APP.getUserDao();
-
-        employList=new ArrayList<>();
-        employAdapter=new EmployAdapter(this,employList);
+        employList = new ArrayList<>();
+        employAdapter = new EmployAdapter(this, employList);
         employAdapter.setOnEmpDeleteListener(this);
         employAdapter.setOnEmpEditListener(this);
         lv_employ_List.setAdapter(employAdapter);
@@ -120,13 +114,163 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         ininSpinner();
     }
 
-    //摄像头错误监听
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(EmployUpdate employUpdate) {
+    public void update(UpdateUserDBEvent event){
         ininSpinner();
     }
 
-    public static class EmployUpdate{
+    private void initDevice() {
+        String deviceSernum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
+        if (tv_deviceNo != null && !TextUtils.isEmpty(deviceSernum)) {
+            tv_deviceNo.setText(deviceSernum);
+        }
+    }
+
+    private void ininSpinner() {
+        showLoading(true);
+        departs = DaoManager.get().queryAll(Depart.class);
+        mDepartList.clear();
+        mDepartIdList.clear();
+        mDepartList.add("全部部门");
+        mDepartIdList.add(0l);
+        if (departs != null) {
+            for (int i = 0; i < departs.size(); i++) {
+                Depart depart = departs.get(i);
+                mDepartList.add(depart.getDepName());
+                mDepartIdList.add(depart.getDepId());
+            }
+        }
+
+        DepartAdapter departAdapter = new DepartAdapter(this, mDepartList);
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
+        sp_depart.setPopupBackgroundDrawable(drawable);
+        sp_depart.setAdapter(departAdapter);
+        sp_depart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(TAG, "onItemSelected: ------------->" + mDepartList.get(position));
+                Log.e(TAG, "onItemSelected: ------------->" + mDepartIdList.get(position));
+                mCurrDepId = mDepartIdList.get(position);
+                loadEmployData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void loadEmployData() {
+        lv_employ_List.post(new Runnable() {
+            @Override
+            public void run() {
+                employList.clear();
+
+                List<User> users = null;
+                if (mCurrDepId == 0l) {
+                    users = DaoManager.get().queryAll(User.class);
+                } else {
+                    users = DaoManager.get().queryUserByCompIdAndDepId(SpUtils.getInt(SpUtils.COMPANYID), mCurrDepId);
+                }
+
+                if (users != null) {
+                    employList.addAll(users);
+                }
+
+                employAdapter.notifyDataSetChanged();
+                showLoading(false);
+            }
+        });
+    }
+
+    private void showLoading(final boolean isShow) {
+        avlLoading.post(new Runnable() {
+            @Override
+            public void run() {
+                avlLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void itemDeleteClick(View v, final int postion) {
+        final User user = employList.get(postion);
+
+        showDialog("确定删除吗？", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final Map<String, String> map = new HashMap<>();
+                map.put("entryId", user.getId() + "");
+                OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        UIUtils.showTitleTip(EmployListActivity.this, "删除失败 " + e != null ? e.getMessage() : "NULL");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        boolean b = FaceSDK.instance().removeUser(String.valueOf(user.getFaceId()));
+                        if (b) {
+                            DaoManager.get().delete(user);
+                            employList.remove(postion);
+                            employAdapter.notifyDataSetChanged();
+                            UIUtils.showTitleTip(EmployListActivity.this, "删除成功");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void itemEditClick(View v, final int postion) {
+        showDialog("确定去修改吗？", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(EmployListActivity.this, EditEmployActivity.class);
+                intent.putExtra(EditEmployActivity.KEY_ID, employList.get(postion).getId());
+                intent.putExtra(EditEmployActivity.KEY_TYPE, EditEmployActivity.TYPE_EDIT);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void showDialog(String msg,DialogInterface.OnClickListener confirm){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示！");
+        builder.setMessage(msg);
+        builder.setPositiveButton("确定",confirm);
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_addEmploy:
+                Intent intent = new Intent(this, EditEmployActivity.class);
+                intent.putExtra(EditEmployActivity.KEY_TYPE,EditEmployActivity.TYPE_ADD);
+                startActivity(intent);
+                break;
+            case R.id.btn_addDepart:
+                startActivity(new Intent(this, DepartListActivity.class));
+                break;
+            case R.id.btn_sync:
+                SyncManager.instance().syncDB();
+                break;
+            case R.id.iv_back:
+                finish();
+                break;
+        }
+    }
+
+    public static class EmployUpdate {
 
     }
 
@@ -136,166 +280,4 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         EventBus.getDefault().unregister(this);
     }
 
-    private void ininSpinner() {
-        avlLoading.setVisibility(View.VISIBLE);
-        lv_employ_List.setVisibility(View.GONE);
-
-        mDepartList=new ArrayList<>();
-        mDepartList.add("全部部门");
-        mDepartlist   =	 departDao.selectAll();
-        if (mDepartlist!=null){
-            for (int i = 0; i <mDepartlist.size() ; i++) {
-                mDepartList.add(mDepartlist.get(i).getName());
-            }
-        }
-
-        DepartAdapter departAdapter=new DepartAdapter(this,mDepartList);
-        Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
-        sp_depart.setPopupBackgroundDrawable(drawable);
-        sp_depart.setAdapter(departAdapter);
-        sp_depart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "onItemSelected: ------------->"+mDepartList.get(position) );
-                lv_employ_List.setVisibility(View.VISIBLE);
-                avlLoading.setVisibility(View.GONE);
-
-                employList.clear();
-                String departName=mDepartList.get(position);
-                if (departName.equals("全部部门")){
-                    if (userDao.selectAll()!=null){
-                        employList.addAll( userDao.selectAll());
-                        employAdapter.notifyDataSetChanged();
-                    }
-
-                }else {
-                    if (mDepartList.get(position)!=null){
-                        employList.addAll( userDao.queryByDepart(mDepartList.get(position)));
-                        employAdapter.notifyDataSetChanged();
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
-    }
-
-    private void initDevice() {
-        String  deviceSernum= SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        if (tv_deviceNo != null && !TextUtils.isEmpty(deviceSernum)){
-            tv_deviceNo.setText(deviceSernum);
-        }
-    }
-
-    @Override
-    public void itemDeleteClick(View v,final int postion) {
-        final VIPDetail vipDetail = employList.get(postion);
-        //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-        AlertDialog.Builder builder = new AlertDialog.Builder(EmployListActivity.this);
-
-        //    设置Title的内容
-        builder.setTitle("提示！");
-        //    设置Content来显示一个信息
-        builder.setMessage("确定删除吗？");
-        //    设置一个PositiveButton
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                final Map<String, String> map = new HashMap<String, String>();
-                map.put("entryId", vipDetail.getEmpId()+"");
-                OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        UIUtils.showTitleTip(EmployListActivity.this,"删除失败 " + e != null?e.getMessage():"NULL");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        boolean b = FaceSDK.instance().removeUser(String.valueOf(vipDetail.getFaceId()));
-                        if(b){
-                            userDao.delete(employList.get(postion));
-                            employList.remove(postion);
-                            employAdapter.notifyDataSetChanged();
-                            UIUtils.showTitleTip(EmployListActivity.this,"删除成功");
-                        }
-                    }
-                });
-            }
-        });
-        //    设置一个NegativeButton
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        });
-
-        //    显示出该对话框
-        builder.show();
-    }
-
-    @Override
-    public void itemEditClick(View v, final int postion) {
-        //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-        AlertDialog.Builder builder = new AlertDialog.Builder(EmployListActivity.this);
-
-        //    设置Title的内容
-        builder.setTitle("提示！");
-        //    设置Content来显示一个信息
-        builder.setMessage("确定去修改吗？");
-        //    设置一个PositiveButton
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-
-                Intent intent=new Intent(EmployListActivity.this, EditEmployActivity.class);
-                intent.putExtra("name",employList.get(postion).getName());
-                intent.putExtra("depart",employList.get(postion).getDepart());
-                startActivity(intent);
-
-            }
-        });
-        //    设置一个NegativeButton
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        });
-
-        //    显示出该对话框
-        builder.show();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_addEmploy:
-                startActivity(new Intent(EmployListActivity.this, AddEmployActivity.class));
-            break;
-            case R.id.btn_addDepart:
-                startActivity(new Intent(EmployListActivity.this, DepartListActivity.class));
-                break;
-            case R.id.btn_sync:
-                SyncManager.instance().initInfo();
-                break;
-            case R.id.iv_back:
-                finish();
-                break;
-        }
-    }
 }

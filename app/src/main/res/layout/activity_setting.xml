@@ -1,196 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bj"
     android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="10dp"
     tools:context=".activity.SettingActivity">
 
-    <LinearLayout
+    <include layout="@layout/head_layout"/>
+
+    <ScrollView
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:onClick="back"
-            android:layout_gravity="right"
-            android:src="@mipmap/icon_back"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content" />
-
-        <!--信息（录入、记录、广告（网络获取、本地检测）、logo和名称）-->
         <LinearLayout
-            android:visibility="gone"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/setting_text_title"
-                android:text="信息" />
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="公司LOGO：" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:src="@mipmap/ic_launcher" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:onClick="selectImage"
-                    android:text="选择图片" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="公司名称：" />
-
-                <TextView
-                    android:id="@+id/tv_company_name"
-                    style="@style/setting_text"
-                    android:text="默认" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="设备编号：" />
-
-                <TextView
-                    android:id="@+id/tv_device_no"
-                    style="@style/setting_text"
-                    android:text="默认" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:onClick="checkAdsResource"
-                    style="@style/setting_text"
-                    android:text="广告源：" />
-
-                <TextView
-                    android:id="@+id/tv_ads_type"
-                    style="@style/setting_text"
-                    android:text="云" />
-            </LinearLayout>
-            <TextView
-                style="@style/setting_text_child"
-                android:onClick="addPerson"
-                android:text="信息录入" />
-
-            <TextView
-                style="@style/setting_text_child"
-                android:onClick="goRecord"
-                android:text="数据记录" />
-
-        </LinearLayout>
-
-        <!--摄像头-->
-        <!--像素、方向、镜像、前后置切换-->
-
-
-        <!--系统(升级、中英文切换)-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/setting_text_title"
-                android:text="系统" />
-
-            <TextView
-                style="@style/setting_text_child"
-                android:onClick="modifyPWD"
-                android:text="管理密码修改" />
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="当前网络：" />
-
-                <TextView
-                    android:id="@+id/tv_wifi_state"
-                    style="@style/setting_text"
-                    android:text="【WIFI，网络名称：XXXXX】" />
-            </LinearLayout>
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:visibility="gone"
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:onClick="checkUpgrade"
-                    android:text="占用空间：" />
-
-
-                <TextView
-                    android:id="@+id/tv_space"
-                    style="@style/setting_text"
-                    android:text="0MB" />
-            </LinearLayout>
-
-            <TextView
-                style="@style/setting_text_child"
-                android:onClick="rebootDevice"
-                android:text="重启设备" />
-
-            <TextView
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:onClick="powerControlStrategy"
-                android:text="开关机策略" />
-
-            <TextView
-                style="@style/setting_text_child"
-                android:onClick="checkUpgrade"
-                android:text="检测升级" />
-        </LinearLayout>
-
-
-        <!--人脸（全部需重启）-->
-        <!--活体开关、多人识别、相似度阈值、提示语、未识别语音提示、重扫时间、SDK激活、数据存储天数或相关规则-->
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/setting_text_title"
-                android:text="人脸" />
-
-            <LinearLayout
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -198,216 +31,20 @@
                 <TextView
                     style="@style/setting_text"
                     android:onClick="hardwareTest"
-                    android:text="活体检测：" />
+                    android:text="门禁常开" />
 
-                <TextView
-                    android:id="@+id/tv_liveness_state"
-                    style="@style/setting_text"
-                    android:text="" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:onClick="hardwareTest"
-                    android:text="多人识别：" />
-
-                <TextView
-                    android:id="@+id/tv_multiple_state"
-                    style="@style/setting_text"
-                    android:text="" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="匹配度阈值：" />
-
-                <EditText
-                    style="@style/setting_text"
-                    android:layout_width="100dp"
-                    android:enabled="false" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="提示语：" />
-
-                <TextView
-                    android:id="@+id/tv_tips_speech"
-                    style="@style/setting_text"
-                    android:text="您好，XXX" />
-            </LinearLayout>
-
-            <TextView
-                style="@style/setting_text_child"
-                android:text="错误提示"
-                android:visibility="gone" />
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="扫描间隔：" />
-
-                <EditText
-                    style="@style/setting_text"
-                    android:layout_width="100dp"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    android:maxLines="1" />
-                <TextView
-                    style="@style/setting_text"
-                    android:text="毫秒（1000毫秒 = 1秒）" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="数据清理策略：大于" />
-
-                <EditText
-                    style="@style/setting_text"
-                    android:layout_width="100dp"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    android:maxLines="1" />
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="时清理（签到记录人脸截图）" />
-            </LinearLayout>
-
-            <Button
-                android:text="点击保存"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/selector_btn_take_photo"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <!--硬件-->
-        <!--继电器相关设置、led灯相关设置、硬件相关的设置-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/setting_text_title"
-                android:text="硬件" />
-
-            <TextView
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:onClick="turnLight"
-                android:text="LED补光灯" />
-
-            <LinearLayout
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="LED补光灯规则：" />
-
-                <RadioGroup
-                    android:id="@+id/radio_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="智能点亮" />
-
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="常亮" />
-
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="仅夜间" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <TextView
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:onClick="setRelay"
-                android:text="继电器设置" />
-
-            <TextView
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:onClick="hardwareTest"
-                android:text="硬件测试" />
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:onClick="hardwareTest"
-                    android:text="摄像头" />
-
-                <TextView
-                    android:id="@+id/tv_camera_count"
-                    style="@style/setting_text"
-                    android:text="共1个" />
-
-                <TextView
-                    android:id="@+id/tv_camera"
-                    style="@style/setting_text"
-                    android:text="【当前使用：】" />
-
-                <Button
-                    android:id="@+id/btn_setAngle"
-                    android:onClick="setAngle"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@id/cb_mirror"
+                <Switch
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:id="@+id/sw_setting_already"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="30dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-                <Spinner
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/spn_camera_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -415,33 +52,22 @@
                 <TextView
                     style="@style/setting_text"
                     android:onClick="hardwareTest"
-                    android:text="人脸框绘制" />
+                    android:text="开启人脸框镜像" />
 
                 <CheckBox
+                    android:textColor="@color/white"
                     android:id="@+id/cb_mirror"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="20dp"
-                    android:checked="true"
-                    android:layout_centerVertical="true"
-                    android:text="是否镜像"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:checked="true"
+                    android:text="开启"
+                    android:textSize="20dp" />
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:onClick="hardwareTest"
-                    android:text="人脸框绘制" />
-
-            </LinearLayout>
-
-            <LinearLayout
+                android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -457,7 +83,9 @@
                     android:text="0℃" />
             </LinearLayout>
 
+
             <LinearLayout
+                android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -465,20 +93,70 @@
                 <TextView
                     style="@style/setting_text"
                     android:onClick="hardwareTest"
-                    android:text="继电器输出延时：" />
+                    android:text="摄像头" />
 
-                <EditText
-                    android:id="@+id/edt_gpio_delay"
-                    android:inputType="number"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/setting_text"
+                    android:text="共1个" />
+
+                <TextView
+                    android:id="@+id/tv_camera"
+                    style="@style/setting_text"
+                    android:text="【当前使用：】" />
+
                 <Button
-                    android:onClick="setGpioDelay"
-                    android:text="确定"
+                    android:textColor="#59B4CA"
+                    android:background="@drawable/shape_system_name"
+                    android:id="@+id/btn_setAngle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/cb_mirror"
+                    android:onClick="setAngle" />
+
+                <Spinner
+                    android:background="@drawable/shape_system_name"
+                    android:id="@+id/spn_camera_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp" />
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="当前网络：" />
+
+                <TextView
+                    android:id="@+id/tv_wifi_state"
+                    style="@style/setting_text"
+                    android:text="【WIFI，网络名称：XXXXX】" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                style="@style/setting_text_child"
+                android:onClick="rebootDevice"
+                android:text="重启设备" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                style="@style/setting_text_child"
+                android:onClick="checkUpgrade"
+                android:text="检测升级" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                style="@style/setting_text_child"
+                android:onClick="modifyPWD"
+                android:text="管理密码修改" />
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+</LinearLayout>

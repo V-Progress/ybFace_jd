@@ -1,10 +1,12 @@
 package com.yunbiao.ybsmartcheckin_live_id.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 
 
 /**
@@ -28,8 +30,8 @@ public class UpdateVersionControl {
     }
 
     //推送更新
-    public void checkUpdate() {
-        UpdateManager updateManager = new UpdateManager(context);
+    public void checkUpdate(Activity activity) {
+        UpdateManager updateManager = new UpdateManager(activity);
         updateManager.checkUpdateInfo(getVersionName());
     }
 

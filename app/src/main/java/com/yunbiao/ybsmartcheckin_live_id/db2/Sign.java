@@ -1,8 +1,8 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 @Entity
 public class Sign {
@@ -22,7 +22,7 @@ public class Sign {
 
     private boolean isUpload;
 
-    private int empId;
+    private long empId;
 
     private String date;
 
@@ -38,10 +38,13 @@ public class Sign {
 
     private String autograph;
 
-    @Generated(hash = 1811910173)
+    private int comid;
+
+    @Generated(hash = 1438235948)
     public Sign(Long id, long faceId, String name, String position, String headPath,
-            long time, boolean isUpload, int empId, String date, String depart,
-            int sex, int age, String employNum, String birthday, String autograph) {
+            long time, boolean isUpload, long empId, String date, String depart,
+            int sex, int age, String employNum, String birthday, String autograph,
+            int comid) {
         this.id = id;
         this.faceId = faceId;
         this.name = name;
@@ -57,10 +60,19 @@ public class Sign {
         this.employNum = employNum;
         this.birthday = birthday;
         this.autograph = autograph;
+        this.comid = comid;
     }
 
     @Generated(hash = 2025164192)
     public Sign() {
+    }
+
+    public int getComid() {
+        return comid;
+    }
+
+    public void setComid(int comid) {
+        this.comid = comid;
     }
 
     @Override
@@ -81,6 +93,7 @@ public class Sign {
                 ", employNum='" + employNum + '\'' +
                 ", birthday='" + birthday + '\'' +
                 ", autograph='" + autograph + '\'' +
+                ", comid=" + comid +
                 '}';
     }
 
@@ -140,11 +153,11 @@ public class Sign {
         isUpload = upload;
     }
 
-    public int getEmpId() {
+    public long getEmpId() {
         return empId;
     }
 
-    public void setEmpId(int empId) {
+    public void setEmpId(long empId) {
         this.empId = empId;
     }
 

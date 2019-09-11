@@ -1,8 +1,8 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
@@ -12,9 +12,9 @@ public class User {
     private long id;
 
     @Unique
-    private int faceId;
+    private long faceId;
 
-    private int departId;
+    private long departId;
 
     private String departName;
 
@@ -29,17 +29,18 @@ public class User {
     private String number;
     private int lateNum;
     private String cardId;
+    private String birthday;
 
     private String head;
     private String headPath;
 
     private int addTag;
 
-    @Generated(hash = 1121530789)
-    public User(long id, int faceId, int departId, String departName, int companyId,
-            String name, int age, int sex, String autograph, String position,
-            String number, int lateNum, String cardId, String head, String headPath,
-            int addTag) {
+    @Generated(hash = 1381060079)
+    public User(long id, long faceId, long departId, String departName,
+            int companyId, String name, int age, int sex, String autograph,
+            String position, String number, int lateNum, String cardId,
+            String birthday, String head, String headPath, int addTag) {
         this.id = id;
         this.faceId = faceId;
         this.departId = departId;
@@ -53,6 +54,7 @@ public class User {
         this.number = number;
         this.lateNum = lateNum;
         this.cardId = cardId;
+        this.birthday = birthday;
         this.head = head;
         this.headPath = headPath;
         this.addTag = addTag;
@@ -62,11 +64,22 @@ public class User {
     public User() {
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", faceId=" + faceId +
+                ", departId=" + departId +
+                ", departName='" + departName + '\'' +
+                ", companyId=" + companyId +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", sex=" + sex +
@@ -75,10 +88,19 @@ public class User {
                 ", number='" + number + '\'' +
                 ", lateNum=" + lateNum +
                 ", cardId='" + cardId + '\'' +
+                ", birthday='" + birthday + '\'' +
                 ", head='" + head + '\'' +
                 ", headPath='" + headPath + '\'' +
                 ", addTag=" + addTag +
                 '}';
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
     public long getId() {
@@ -89,12 +111,28 @@ public class User {
         this.id = id;
     }
 
-    public int getFaceId() {
+    public long getFaceId() {
         return faceId;
     }
 
-    public void setFaceId(int faceId) {
+    public void setFaceId(long faceId) {
         this.faceId = faceId;
+    }
+
+    public long getDepartId() {
+        return departId;
+    }
+
+    public void setDepartId(long departId) {
+        this.departId = departId;
+    }
+
+    public String getDepartName() {
+        return departName;
+    }
+
+    public void setDepartName(String departName) {
+        this.departName = departName;
     }
 
     public String getName() {
@@ -183,29 +221,5 @@ public class User {
 
     public void setAddTag(int addTag) {
         this.addTag = addTag;
-    }
-
-    public int getDepartId() {
-        return this.departId;
-    }
-
-    public void setDepartId(int departId) {
-        this.departId = departId;
-    }
-
-    public String getDepartName() {
-        return this.departName;
-    }
-
-    public void setDepartName(String departName) {
-        this.departName = departName;
-    }
-
-    public int getCompanyId() {
-        return this.companyId;
-    }
-
-    public void setCompanyId(int companyId) {
-        this.companyId = companyId;
     }
 }

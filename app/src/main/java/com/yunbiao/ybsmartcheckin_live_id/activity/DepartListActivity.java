@@ -9,14 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartListAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
@@ -41,8 +37,6 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
     private Button btn_addDepart;
     private DepartListAdapter mDepartAdapter;
     private List<String> mDepartList;
-    private DepartDao departDao;
-    private  List<DepartBean> mDepartlist;
 
     @Override
     protected int getPortraitLayout() {
@@ -59,12 +53,12 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
         lv_depart_List= findViewById(R.id.lv_depart_List);
         btn_addDepart= findViewById(R.id.btn_addDepart);
         mDepartList=new ArrayList<>();
-        mDepartlist = departDao.selectAll();
-        if (mDepartlist!=null){
-            for (int i = 0; i <mDepartlist.size() ; i++) {
-                mDepartList.add(mDepartlist.get(i).getName());
-            }
-        }
+//        mDepartlist = departDao.selectAll();
+//        if (mDepartlist!=null){
+//            for (int i = 0; i <mDepartlist.size() ; i++) {
+//                mDepartList.add(mDepartlist.get(i).getName());
+//            }
+//        }
         mDepartAdapter=new DepartListAdapter(this,mDepartList);
         lv_depart_List.setAdapter(mDepartAdapter);
         mDepartAdapter.setOnInnerItemOnClickListener(this);
@@ -90,7 +84,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
                         final  String name = et_departName.getText().toString().trim();
                         mDepartList.add(name);
                         mDepartAdapter.notifyDataSetChanged();
-                        mDepartlist   =	 departDao.selectAll();
+//                        mDepartlist   =	 departDao.selectAll();
 
 //                        int companyid= SpUtils.getInt(DepartListActivity.this,SpUtils.COMPANYID,0);
                         int companyid= SpUtils.getInt(SpUtils.COMPANYID);
@@ -106,11 +100,11 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
                                     int status=jsonObject.getInt("status");
                                     if (status==1){
                                         int    departId=jsonObject.getInt("depId");
-                                        List<DepartBean> mlist=	 departDao.queryByName(name);
-                                        if (mlist!=null&&mlist.size()>0){
-                                        }else {
-                                            departDao.insert(new DepartBean(name,departId));
-                                        }
+//                                        List<DepartBean> mlist=	 departDao.queryByName(name);
+//                                        if (mlist!=null&&mlist.size()>0){
+//                                        }else {
+////                                            departDao.insert(new DepartBean(name,departId));
+//                                        }
                                     }else {
 //                                        List<DepartBean> mlist=	 departDao.queryByName(name);
 //                                        if (mlist!=null&&mlist.size()>0){
@@ -157,7 +151,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
 
     @Override
     protected void initData() {
-        departDao= APP.getDepartDao();
+//        departDao= APP.getDepartDao();
     }
 
     @Override
@@ -176,39 +170,39 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                final Map<String, String> map = new HashMap<String, String>();
-                Log.e(TAG, "depId---------------> "+mDepartlist.get(postion).getDepartId()+"" );
-                map.put("depId", mDepartlist.get(postion).getDepartId()+"");
-                MyXutils.getInstance().post(ResourceUpdate.DELETEDEPART, map, new MyXutils.XCallBack() {
-                    @Override
-                    public void onSuccess(String result) {
-                        Log.e(TAG, "删除部门---------> "+result );
-                        try {
-                            JSONObject jsonObject=new JSONObject(result);
-                            int status=jsonObject.getInt("status");
-                            if (status==1){
-                                departDao.delete(mDepartlist.get(postion));
-                                mDepartList.remove(postion);
-                                mDepartAdapter.notifyDataSetChanged();
-                                mDepartlist   =	 departDao.selectAll();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable ex) {
-                        Log.e(TAG, "onError-------> "+ex.getMessage() );
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-                });
+//                final Map<String, String> map = new HashMap<String, String>();
+//                Log.e(TAG, "depId---------------> "+mDepartlist.get(postion).getDepartId()+"" );
+//                map.put("depId", mDepartlist.get(postion).getDepartId()+"");
+//                MyXutils.getInstance().post(ResourceUpdate.DELETEDEPART, map, new MyXutils.XCallBack() {
+//                    @Override
+//                    public void onSuccess(String result) {
+//                        Log.e(TAG, "删除部门---------> "+result );
+//                        try {
+//                            JSONObject jsonObject=new JSONObject(result);
+//                            int status=jsonObject.getInt("status");
+//                            if (status==1){
+//                                departDao.delete(mDepartlist.get(postion));
+//                                mDepartList.remove(postion);
+//                                mDepartAdapter.notifyDataSetChanged();
+//                                mDepartlist   =	 departDao.selectAll();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable ex) {
+//                        Log.e(TAG, "onError-------> "+ex.getMessage() );
+//                    }
+//
+//                    @Override
+//                    public void onFinish() {
+//
+//                    }
+//                });
 
 
 

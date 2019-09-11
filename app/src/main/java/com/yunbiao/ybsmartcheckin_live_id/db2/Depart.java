@@ -1,11 +1,11 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class Depart {
@@ -13,22 +13,44 @@ public class Depart {
     @Id
     private long id;
 
-    private int depId;
+    private long depId;
 
     private String depName;
+
+    private int compId;
+
+    public int getCompId() {
+        return compId;
+    }
+
+    public void setCompId(int compId) {
+        this.compId = compId;
+    }
 
     @Transient
     private List<User> entry;
 
-    @Generated(hash = 666930247)
-    public Depart(long id, int depId, String depName) {
+    @Generated(hash = 85264584)
+    public Depart(long id, long depId, String depName, int compId) {
         this.id = id;
         this.depId = depId;
         this.depName = depName;
+        this.compId = compId;
     }
 
     @Generated(hash = 1469698209)
     public Depart() {
+    }
+
+    @Override
+    public String toString() {
+        return "Depart{" +
+                "id=" + id +
+                ", depId=" + depId +
+                ", depName='" + depName + '\'' +
+                ", compId=" + compId +
+                ", entry=" + entry +
+                '}';
     }
 
     public long getId() {
@@ -39,11 +61,11 @@ public class Depart {
         this.id = id;
     }
 
-    public int getDepId() {
+    public long getDepId() {
         return depId;
     }
 
-    public void setDepId(int depId) {
+    public void setDepId(long depId) {
         this.depId = depId;
     }
 

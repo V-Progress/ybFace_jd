@@ -79,4 +79,85 @@ public class DaoManager {
         return daoSession.loadAll(clazz);
     }
 
+    public <T>long delete(T t){
+        if(daoSession == null){
+            return FAILURE;
+        }
+        daoSession.delete(t);
+        return SUCCESS;
+    }
+
+    /***
+     * 查询某公司下某天的所有打卡记录
+     * @param comId
+     * @param date
+     * @return
+     */
+    public List<Sign> querySignByComIdAndDate(int comId,String date){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().whereOr(SignDao.Properties.Comid.eq(comId),SignDao.Properties.Date.eq(date)).list();
+    }
+
+    /***
+     * 查询所有未上传的数据
+     * @param isUp
+     * @return
+     */
+    public List<Sign> querySignByUpload(boolean isUp){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.IsUpload.eq(isUp)).list();
+    }
+
+    /***
+     * 通过faceId查询员工
+     * @param id
+     * @return
+     */
+    public User queryUserByFaceId(long id){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.FaceId.eq(id)).unique();
+    }
+
+    /***
+     * 通过ID查询员工
+     * @param id
+     * @return
+     */
+    public User queryUserById(long id){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(id)).unique();
+    }
+
+    /***
+     * 查询某公司下某部门的所有员工
+     * @param compId
+     * @param depId
+     * @return
+     */
+    public List<User> queryUserByCompIdAndDepId(int compId,long depId){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().whereOr(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
+    }
+
+    /***
+     * 通过部门Id查询员工
+     * @param id
+     * @return
+     */
+    public List<User> queryUserByDepId(long id){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.DepartId.eq(id)).list();
+    }
 }

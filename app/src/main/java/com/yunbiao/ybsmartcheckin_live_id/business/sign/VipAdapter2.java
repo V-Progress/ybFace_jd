@@ -14,15 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
-    private List<SignBean> mList ;
+    private List<Sign> mList ;
     private Context mContext;
-    public VipAdapter2(Context context, LinkedList<SignBean> list) {
+    public VipAdapter2(Context context, LinkedList<Sign> list) {
         mContext = context;
         mList = list;
     }
@@ -35,14 +35,14 @@ public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
 
     @Override
     public void onBindViewHolder(@NonNull VH vh, int i) {
-        SignBean item = mList.get(i);
-        String imgUrl = item.getImgUrl();
+        Sign item = mList.get(i);
+        String imgUrl = item.getHeadPath();
         if(!TextUtils.isEmpty(imgUrl)){
             Bitmap bitmap = BitmapFactory.decodeFile(imgUrl);
             vh.ivHead.setImageBitmap(bitmap);
         }
         vh.tvName.setText(item.getName());
-        vh.tvSign.setText(item.getSignature());
+        vh.tvSign.setText(item.getAutograph());
     }
 
     @Override

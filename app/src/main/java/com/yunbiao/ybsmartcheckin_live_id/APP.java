@@ -3,12 +3,10 @@ package com.yunbiao.ybsmartcheckin_live_id;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-
 
 import com.bumptech.glide.Glide;
 import com.elvishew.xlog.LogConfiguration;
@@ -31,12 +29,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
@@ -54,49 +48,33 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import timber.log.Timber;
 
 
 public class APP extends Application {
     private static final String TAG = "APP";
     private static APP instance;
     private static SmdtManager smdt;
-    private static UserDao userDao;
     private static SignDao signDao;
-    private static DepartDao departDao;
-    private static CompDao compDao;
-    private static CompBean compBean;
-    private static int companyId;
-
-    public static void initCompBean(){
-        companyId = SpUtils.getInt(SpUtils.COMPANYID);
-        Log.e("APPPPPP", "initCompBean:  ----- " + companyId);
-        compBean = compDao.queryByCompId(companyId);
-        Log.e("APPPPPP", "initCompBean:  ----- " + compBean);
+    private static WelComeActivity activity;
+    public static WelComeActivity getActivity() {
+        return activity;
     }
 
-    public static int getCompanyId() {
-        return companyId;
-    }
-
-    public static void initCompanyId() {
-        companyId = SpUtils.getInt(SpUtils.COMPANYID);
-        Constants.DATA_PATH = Constants.CACHE_PATH + companyId + "/data/";
-        Constants.ADS_PATH = Constants.CACHE_PATH + companyId +"/ads/";
-        Constants.HEAD_PATH = Constants.CACHE_PATH + companyId +"/img/";
-        Constants.RECORD_PATH = Constants.CACHE_PATH + companyId +"/rcd/";
-        Constants.MEETING_PATH = Constants.CACHE_PATH + companyId +"/meet/";
-        Constants.INFO_PATH = Constants.CACHE_PATH + companyId +"/info/";
-    }
-
-    public static CompBean getCompBean(){
-        return compBean;
+    public static void setActivity(WelComeActivity activity) {
+        APP.activity = activity;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        initCompanyId();
+//        if (BuildConfig.DEBUG) {
+//
+//        } else {
+//            Timber.plant(new CrashReportingTree());
+//        }
+        Timber.plant(new Timber.DebugTree());
 
         initGpio();
 
@@ -173,32 +151,14 @@ public class APP extends Application {
     public void initDB(){
         try {
             DatabaseHelper.createDatabase(this);
-            userDao = new UserDao(this);
             signDao = new SignDao(this);
-            departDao = new DepartDao(this);
-            compDao = new CompDao(this);
-            Log.e("APP", "11111111111111111111111111111");
         } catch (Exception e){
             e.printStackTrace();
-            Log.e("APP", "3333333333333333333333333333333");
         }
-        Log.e("APP", "222222222222222222222222222 ");
-    }
-
-    public static UserDao getUserDao() {
-        return userDao;
     }
 
     public static SignDao getSignDao() {
         return signDao;
-    }
-
-    public static DepartDao getDepartDao() {
-        return departDao;
-    }
-
-    public static CompDao getCompDao() {
-        return compDao;
     }
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//

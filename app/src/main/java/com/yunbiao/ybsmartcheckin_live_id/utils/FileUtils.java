@@ -274,8 +274,6 @@ public class FileUtils {
         return filePic;
     }
 
-
-
     public final static String[][] MIME_MapTable = { { ".amr", "audio/amr" },
             { ".3gp", "video/3gpp" },
             { ".apk", "application/vnd.android.package-archive" },

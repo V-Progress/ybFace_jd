@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.afinel;
 import android.os.Environment;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 public class Constants {
     public static final String API_KEY = "1234567890";
@@ -33,6 +34,16 @@ public class Constants {
     public static String HEAD_PATH = TEMP_PATH + "photo/";//照片路径
     public static String RECORD_PATH = TEMP_PATH + "record/";//实时人脸记录缓存
     public static String MEETING_PATH = TEMP_PATH + "meeting/";
+
+    public static void initStorage() {
+        int comid = SpUtils.getInt(SpUtils.COMPANYID);
+        Constants.DATA_PATH = Constants.CACHE_PATH + comid + "/data/";
+        Constants.ADS_PATH = Constants.CACHE_PATH + comid +"/ads/";
+        Constants.HEAD_PATH = Constants.CACHE_PATH + comid +"/img/";
+        Constants.RECORD_PATH = Constants.CACHE_PATH + comid +"/rcd/";
+        Constants.MEETING_PATH = Constants.CACHE_PATH + comid +"/meet/";
+        Constants.INFO_PATH = Constants.CACHE_PATH + comid +"/info/";
+    }
 
     public interface NetConfig{
         String PRE = "http://";

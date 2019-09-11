@@ -3,31 +3,29 @@ package com.yunbiao.ybsmartcheckin_live_id.system;
 import android.app.ProgressDialog;
 import android.util.Log;
 
-
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoUpdateEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SysInfoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.DeviceInfoBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.MachineDetial;
 import com.yunbiao.ybsmartcheckin_live_id.common.SoundControl;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.business.AdsManager;
-import com.yunbiao.ybsmartcheckin_live_id.utils.*;
-import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ScreenShotUtil;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import okhttp3.Call;
 
@@ -77,7 +75,7 @@ public class CoreInfoHandler {
                     updateDeviceType();
 
                     isOnline = true;
-                    EventBus.getDefault().post(new SysInfoUpdateEvent());
+                    EventBus.getDefault().post(new UpdateInfoEvent());
                     break;
                 case VOICE_TYPE:// 声音控制
                     if(content != null){
@@ -104,7 +102,7 @@ public class CoreInfoHandler {
                     break;
                 case SHOW_SERNUM:
                     if (content != null) {
-                        UIUtils.showTitleTip(APP.getContext(),SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+                        UIUtils.showTitleTip(APP.getContext(), SpUtils.getStr(SpUtils.DEVICE_NUMBER));
                     }
                     break;
                 case SHOW_VERSION:// 版本信息
@@ -140,26 +138,17 @@ public class CoreInfoHandler {
                     }
                     break;
                 case PUSH_TO_UPDATE:
-                    UIUtils.updatePd(APP.getContext());
-                    UpdateVersionControl.getInstance().checkUpdate();
-                    setOnReceivedProgressRun(new OnReceivedProgressRun() {
-                        @Override
-                        public void OnProgressRunReceived(int progress) {
-                            UIUtils.pd.setProgress(progress);//给进度条设置数值
-                            if (progress == 100) {
-                                UIUtils.pd.dismiss();
-                            }
-                        }
-                    });
+                    WelComeActivity activity = APP.getActivity();
+                    UpdateVersionControl.getInstance().checkUpdate(activity);
                     break;
                 case ADS_PUSH:
                     EventBus.getDefault().postSticky(new AdsUpdateEvent());
                     break;
                 case UPDATE_STAFF:
-                    SyncManager.instance().initInfo();
+                    SyncManager.instance().syncDB();
                     break;
                 case UPDATE_INFO:
-                    EventBus.getDefault().postSticky(new InfoUpdateEvent());
+                    EventBus.getDefault().postSticky(new InformationFragment.InformationUpdateEvent());
                     break;
                 default:
                     break;
@@ -167,16 +156,6 @@ public class CoreInfoHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public interface OnReceivedProgressRun {
-        void OnProgressRunReceived(int progress);
-    }
-
-    public static OnReceivedProgressRun onReceivedProgressRun;
-
-    public static void setOnReceivedProgressRun(OnReceivedProgressRun onReceivedProgressRun) {
-        CoreInfoHandler.onReceivedProgressRun = onReceivedProgressRun;
     }
 
 

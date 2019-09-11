@@ -29,8 +29,10 @@ import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SysInfoUpdateEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -38,20 +40,18 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
-import com.yunbiao.ybsmartcheckin_live_id.db.CompBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
-import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
-import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
     //摄像头分辨率
     private FaceView faceView;
-    private List<SignBean> mSignList = new ArrayList<>();
+    private List<Sign> mSignList = new ArrayList<>();
     private ImageView ivWeather;
     private TextView tvWeather;
 
@@ -147,72 +147,51 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
     /*同步数据*/
     private void syncData(){
-        SyncManager.instance().init(WelComeSmallActivity.this,loadListener);
+        SyncManager.instance().requestCompany();
     }
 
-    private SyncManager.LoadListener loadListener = new SyncManager.LoadListener() {
-        @Override
-        public void onLoaded() {
-            //开始定时更新签到列表
-            SignManager.instance().init(WelComeSmallActivity.this,signEventListener);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateInfoEvent event){
+        //开始定时更新签到列表
+        SignManager.instance().init(WelComeSmallActivity.this,signEventListener);
 
-            //自动清理服务
-            ResourceCleanManager.instance().startAutoCleanService();
+        //自动清理服务
+        ResourceCleanManager.instance().startAutoCleanService();
+    }
 
-            CompBean compBean = APP.getCompBean();
-            if(compBean == null){
-                return;
-            }
-
-            String iconPath = compBean.getIconPath();
-            if(!TextUtils.isEmpty(iconPath)){
-                File logo = new File(iconPath);
-                if(logo.exists()){
-                    bindImageView(logo.getPath(),imageView);
-                } else {
-                    MyXutils.getInstance().downLoadFile(compBean.getIconUrl(), compBean.getIconPath(), false, new MyXutils.XDownLoadCallBack() {
-                        @Override public void onLoading(long total, long current, boolean isDownloading) { }
-                        @Override public void onSuccess(File result) {
-                            bindImageView(result.getPath(),imageView);
-                        }
-                        @Override public void onError(Throwable ex) { }
-                        @Override public void onFinished() { }
-                    });
-                }
-            }
-
-            EventBus.getDefault().postSticky(new SysInfoUpdateEvent());
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateLogoEvent event){
+        String logoPath = event.getLogoPath();
+        if(!TextUtils.isEmpty(logoPath)){
+            bindImageView(logoPath,imageView);
         }
-
-        @Override
-        public void onFinish() {
-        }
-    };
+    }
 
     /*签到事件监听*/
     private SignManager.SignEventListener signEventListener = new SignManager.SignEventListener() {
         @Override
-        public void onPrepared(List<SignBean> mList) {
+        public void onPrepared(List<Sign> mList) {
             mSignList.addAll(mList);
             updateNumber();
         }
 
         @Override
-        public void onSigned(SignBean signBean, int signType) {
-            mSignList.add(0,signBean);
+        public void onSigned(Sign sign, int signType) {
+            mSignList.add(0,sign);
             updateNumber();
 
             if (mGateIsAlive) {
                 mGateConnection.writeCom(GateCommands.GATE_OPEN_DOOR);
             }
 
-            speak(signType, signBean.getName());
+            speak(signType, sign.getName());
 
-            VipDialogManager.showMiniDialog(WelComeSmallActivity.this,signBean);
+            VipDialogManager.showMiniDialog(WelComeSmallActivity.this,sign);
         }
 
         @Override
-        public void onMakeUped(SignBean imgPath, boolean makeUpSuccess) {
+        public void onMakeUped(Sign sign, boolean makeUpSuccess) {
+
         }
     };
 
@@ -302,9 +281,8 @@ public class WelComeSmallActivity extends BaseGateActivity {
             @Override
             public void run() {
                 int male = 0;
-                for (SignBean signBean : mSignList) {
-                    boolean empty = TextUtils.isEmpty(signBean.getSex());
-                    if (empty || signBean.getSex().equals("1") || signBean.getSex().equals("男")) {
+                for (Sign signBean : mSignList) {
+                    if (signBean.getSex() == 1) {
                         male = male + 1;
                     }
                 }
@@ -353,21 +331,20 @@ public class WelComeSmallActivity extends BaseGateActivity {
         String speakStr = " 您好 %s ，欢迎光临";
         String goTips = "上班签到成功";
         String  downTips = "下班签到成功";
-        CompBean compBean = APP.getCompBean();
-
+        Company company = SpUtils.getCompany();
         switch (signType) {
             case 0:
                 speakStr = String.format(yuyin, signerName);
                 break;
             case 1:
-                if(compBean != null && !TextUtils.isEmpty(compBean.getGotips())){
-                    goTips = compBean.getGotips();
+                if(company != null && !TextUtils.isEmpty(company.getGotips())){
+                    goTips = company.getGotips();
                 }
                 speakStr = String.format(" %s " + goTips, signerName);
                 break;
             case 2:
-                if(compBean != null && !TextUtils.isEmpty(compBean.getDowntips())){
-                    downTips = compBean.getDowntips();
+                if(company != null && !TextUtils.isEmpty(company.getDowntips())){
+                    downTips = company.getDowntips();
                 }
                 speakStr = String.format(" %s " + downTips, signerName);
                 break;

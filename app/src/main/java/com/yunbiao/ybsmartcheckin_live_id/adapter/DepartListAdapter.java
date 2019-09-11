@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.yunbiao.ybsmartcheckin_live_id.R;
 
 import java.util.List;

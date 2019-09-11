@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 
 import java.util.List;
 
@@ -24,10 +23,10 @@ public class EmployAdapter extends BaseAdapter {
 
     private static final String TAG = "EmployAdapter";
     private Context context;
-    private List<VIPDetail> mlist;
+    private List<User> mlist;
     public EmpOnDeleteListener empOnDeleteListener;
     public EmpOnEditListener empOnEditListener;
-    public EmployAdapter(Context context, List<VIPDetail> mlist) {
+    public EmployAdapter(Context context, List<User> mlist) {
         this.context = context;
         this.mlist = mlist;
     }
@@ -38,7 +37,7 @@ public class EmployAdapter extends BaseAdapter {
     }
 
     @Override
-    public VIPDetail getItem(int position) {
+    public User getItem(int position) {
         return mlist.get(position);
     }
 
@@ -58,23 +57,23 @@ public class EmployAdapter extends BaseAdapter {
         else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
-        VIPDetail vip=mlist.get(position);
+        User user=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
-        if (!TextUtils.isEmpty(vip.getEmployNum())){
-            viewHolder.tv_employNo.setText(vip.getEmployNum());
+        if (!TextUtils.isEmpty(user.getNumber())){
+            viewHolder.tv_employNo.setText(user.getNumber());
         }
-        if (!TextUtils.isEmpty(vip.getName())){
-            viewHolder.tv_employName.setText(vip.getName());
+        if (!TextUtils.isEmpty(user.getName())){
+            viewHolder.tv_employName.setText(user.getName());
         }
-        if (!TextUtils.isEmpty(vip.getDepart())){
-            viewHolder.tv_employDepart.setText(vip.getDepart());
-        }
-
-        if (!TextUtils.isEmpty(vip.getJob())){
-            viewHolder.tv_employJob.setText(vip.getJob());
+        if (!TextUtils.isEmpty(user.getDepartName())){
+            viewHolder.tv_employDepart.setText(user.getDepartName());
         }
 
-        if(vip.getDownloadTag()){
+        if (!TextUtils.isEmpty(user.getPosition())){
+            viewHolder.tv_employJob.setText(user.getPosition());
+        }
+
+        if(user.getAddTag() == 0){
             if (position%2==1){
                 convertView.setBackgroundColor(Color.parseColor("#07216d"));
             } else {

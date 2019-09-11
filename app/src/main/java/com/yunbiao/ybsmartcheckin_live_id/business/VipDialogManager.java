@@ -13,12 +13,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
@@ -112,7 +112,7 @@ public class VipDialogManager {
         if (vipDialog == null) {
             vipDialog = new Dialog(context);
             //去掉标题线
-            vipDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+            vipDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //背景透明
             vipDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
@@ -138,9 +138,9 @@ public class VipDialogManager {
     private static Dialog miniDialog;
     private static void initMiniDialog(Activity activity){
         if(miniDialog == null){
-            miniDialog = new Dialog(activity,R.style.DialogStyle);
+            miniDialog = new Dialog(activity, R.style.DialogStyle);
             //去掉标题线
-            miniDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+            miniDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //背景透明
             miniDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         } else {
@@ -162,7 +162,7 @@ public class VipDialogManager {
         window.setAttributes(lp);
     }
 
-    public static void showMiniDialog(final Activity activity, final SignBean signBean){
+    public static void showMiniDialog(final Activity activity, final Sign signBean){
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -173,12 +173,12 @@ public class VipDialogManager {
                 TextView tvName = miniDialog.findViewById(R.id.tv_name);
                 TextView tvSignature = miniDialog.findViewById(R.id.tv_signature);
 
-                if(!TextUtils.isEmpty(signBean.getImgUrl())){
-                    Bitmap bitmap = BitmapFactory.decodeFile(signBean.getImgUrl());
+                if(!TextUtils.isEmpty(signBean.getHeadPath())){
+                    Bitmap bitmap = BitmapFactory.decodeFile(signBean.getHeadPath());
                     ivHead.setImageBitmap(bitmap);
                 }
                 tvName.setText(signBean.getName());
-                tvSignature.setText(signBean.getSignature());
+                tvSignature.setText(signBean.getAutograph());
                 if(!activity.isFinishing()){
                     miniDialog.show();
                 }

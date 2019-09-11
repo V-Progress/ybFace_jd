@@ -9,6 +9,7 @@ import android.os.CountDownTimer;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,6 +101,10 @@ public class UIUtils {
         pd.setTitle("通知");
         pd.setMessage("正在安装相关应用，请耐心等待！");
         pd.show();
+
+        Window window = pd.getWindow();
+        window.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
+        window.setWindowAnimations(R.style.mystyle);
     }
 
     public static CountDownTimer restart = new CountDownTimer(3 * 1000, 1000) {//3秒

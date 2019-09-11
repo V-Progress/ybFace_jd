@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class VisitorAdapter extends BaseAdapter {
     private List<SignBean> mVisitors;
     private int layoutId;
 
-    public VisitorAdapter(Context context, List<SignBean> mVisitors,int screenOri) {
+    public VisitorAdapter(Context context, List<SignBean> mVisitors, int screenOri) {
         this.context = context;
         this.mVisitors = mVisitors;
         if (screenOri == Configuration.ORIENTATION_PORTRAIT) {

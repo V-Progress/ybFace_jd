@@ -24,25 +24,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jdjr.risk.face.local.user.FaceUserManager;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartBean;
-import com.yunbiao.ybsmartcheckin_live_id.db.DepartDao;
-import com.yunbiao.ybsmartcheckin_live_id.db.VIPDetail;
-import com.yunbiao.ybsmartcheckin_live_id.db.UserDao;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,11 +89,9 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
     private String strFileAdd;
     private String depart;//部门
-    private int departId;//部门id
+    private long departId;//部门id
     private List<String> mDepartList;
-    private DepartDao departDao;
-    private List<DepartBean> mDepartlist;
-    private UserDao userDao;
+    private List<Depart> mDepartlist;
     private TextView tv_takephoto_time;
     private MediaPlayer shootMP;
     private View pbTakePhoto;
@@ -149,25 +142,22 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void initData() {
-        userDao = APP.getUserDao();
-        departDao = APP.getDepartDao();
-
         initSpinnerData();
         strFileAdd = "";
     }
 
     private void initSpinnerData() {
         mDepartList = new ArrayList<>();
-        mDepartlist = departDao.selectAll();
+        mDepartlist = DaoManager.get().queryAll(Depart.class);
         if (mDepartlist != null) {
             for (int i = 0; i < mDepartlist.size(); i++) {
-                mDepartList.add(mDepartlist.get(i).getName());
+                mDepartList.add(mDepartlist.get(i).getDepName());
             }
         }
 
         if (mDepartList.size() > 0) {
             depart = mDepartList.get(0);
-            departId = mDepartlist.get(0).getDepartId();
+            departId = mDepartlist.get(0).getDepId();
         } else {
             UIUtils.showTitleTip(this,"请先返回创建增加部门！");
         }
@@ -181,7 +171,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(TAG, "onItemSelected------> " + mDepartList.get(position));
                 depart = mDepartList.get(position);
-                departId = mDepartlist.get(position).getDepartId();
+                departId = mDepartlist.get(position).getDepId();
             }
 
             @Override
@@ -189,19 +179,20 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
             }
         });
+
         String name = getIntent().getStringExtra("name");
         String depart = getIntent().getStringExtra("depart");
         if (name != null && depart != null) {
-            List<VIPDetail> mlist = userDao.queryByDepartAndName(depart, name);
-            if (mlist != null && mlist.size() > 0) {
-                VIPDetail vipDetail = mlist.get(0);
+            List<User> users = DaoManager.get().queryUserByDepId(departId);
+            if (users != null && users.size() > 0) {
+                User user = users.get(0);
 
                 et_name.setText(name);
-                et_sign.setText(vipDetail.getSignature());
-                et_job.setText(vipDetail.getJob());
-                tv_birth.setText(vipDetail.getBirthday());
+                et_sign.setText(user.getAutograph());
+                et_job.setText(user.getPosition());
+//                tv_birth.setText(user.getBirthday());
 
-                x.image().bind(iv_capture, vipDetail.getImgUrl());
+                x.image().bind(iv_capture, user.getHeadPath());
 
                 for (int i = 0; i < mDepartList.size(); i++) {
                     if (depart.equals(mDepartList.get(i))) {
@@ -353,23 +344,23 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                                 final int empId = jsonObject.getInt("entryId");
                                 final int faceId = jsonObject.getInt("faceId");
 
-                                FaceSDK.instance().addUser(String.valueOf(faceId), strFileAdd, new FaceUserManager.FaceUserCallback() {
-                                    @Override
-                                    public void onUserResult(boolean b, int i) {
-                                        if(b){
-                                            VIPDetail countDetail = new VIPDetail(departId, empId, faceId, "1", "20", name, depart, job, empNum, birthday, signature, strFileAdd);
-                                            List<VIPDetail> mlistQ = userDao.queryByDepartAndName(depart, name);
-                                            if (mlistQ == null | (mlistQ != null && mlistQ.size() == 0)) {
-                                                userDao.insert(countDetail);
-                                            }
-
-                                            UIUtils.showTitleTip(AddEmployActivity.this,"员工保存成功！");
-                                            finish();
-                                        } else {
-                                            UIUtils.showTitleTip(AddEmployActivity.this,"保存失败！");
-                                        }
-                                    }
-                                });
+//                                FaceSDK.instance().addUser(String.valueOf(faceId), strFileAdd, new FaceUserManager.FaceUserCallback() {
+//                                    @Override
+//                                    public void onUserResult(boolean b, int i) {
+//                                        if(b){
+//                                            VIPDetail countDetail = new VIPDetail(departId, empId, faceId, "1", "20", name, depart, job, empNum, birthday, signature, strFileAdd);
+//                                            List<VIPDetail> mlistQ = userDao.queryByDepartAndName(depart, name);
+//                                            if (mlistQ == null | (mlistQ != null && mlistQ.size() == 0)) {
+//                                                userDao.insert(countDetail);
+//                                            }
+//
+//                                            UIUtils.showTitleTip(AddEmployActivity.this,"员工保存成功！");
+//                                            finish();
+//                                        } else {
+//                                            UIUtils.showTitleTip(AddEmployActivity.this,"保存失败！");
+//                                        }
+//                                    }
+//                                });
 
                             } else if(jsonObject.getInt("status") == 7){
                                 UIUtils.showTitleTip(AddEmployActivity.this,"部门不存在！");
