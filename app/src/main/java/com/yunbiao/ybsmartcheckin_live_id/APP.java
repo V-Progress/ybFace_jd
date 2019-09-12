@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.xhapimanager.XHApiManager;
 import com.bumptech.glide.Glide;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
@@ -61,10 +62,14 @@ public class APP extends Application {
         return activity;
     }
 
+    private static XHApiManager xhApiManager;
     public static void setActivity(WelComeActivity activity) {
         APP.activity = activity;
     }
 
+    public static XHApiManager getXHApi(){
+        return xhApiManager;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -100,7 +105,18 @@ public class APP extends Application {
     private int dir_set_value = 0;
 
     private void initGpio(){
-        smdt = SmdtManager.create(this);
+        try{
+            smdt = SmdtManager.create(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            xhApiManager = new XHApiManager();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         //设置gpio为输出
         if(smdt != null){
             for (int i = 0; i < dir_set_io.length; i++) {
@@ -113,6 +129,7 @@ public class APP extends Application {
                 }
             }
         }
+
     }
 
     private void initXLog(){

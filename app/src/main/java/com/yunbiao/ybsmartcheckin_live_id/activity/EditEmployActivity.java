@@ -1,14 +1,9 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -26,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -36,15 +30,11 @@ import com.yunbiao.ybsmartcheckin_live_id.bean.BaseResponse;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;

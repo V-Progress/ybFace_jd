@@ -31,6 +31,7 @@ public class FaceView extends FrameLayout {
     private CacheMap faceCacheMap = new CacheMap();
     private SurfaceView rgbView;
     private SurfaceView nirView;
+    private boolean isInit = true;
 
     public FaceView(Context context) {
         super(context);
@@ -90,8 +91,11 @@ public class FaceView extends FrameLayout {
                     @Override
                     public void onStateChanged(int state) {
                         if (state == FaceSDK.STATE_COMPLETE) {
-                            if (callback != null) {
-                                callback.onReady();
+                            if(isInit){
+                                if (callback != null) {
+                                    callback.onReady();
+                                }
+                                isInit = false;
                             }
                         }
                     }

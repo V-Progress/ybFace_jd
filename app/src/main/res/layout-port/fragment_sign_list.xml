@@ -43,7 +43,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="5dp">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_marginRight="15dp"
             android:id="@+id/rlv_sign_list"
             android:layout_width="0dp"

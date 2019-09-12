@@ -97,7 +97,7 @@
             android:id="@+id/iv_out_ads"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:visibility="visible"
             android:src="@mipmap/img_wel_h"/>
 
@@ -107,5 +107,15 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_gravity="bottom"
+            android:id="@+id/tv_number_ads"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </FrameLayout>
 </LinearLayout>

@@ -4,56 +4,68 @@ import android.app.smdt.SmdtManager;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.android.xhapimanager.XHApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 public abstract class BaseGpioActivity extends BaseActivity {
     private boolean isOpened = false;//是否已开锁
-    private boolean isAlwayOpen = false;//常开
+//    private boolean isAlwayOpen = false;//常开
     private Handler timeHanlder = new Handler();
     private SmdtManager smdt;
     private int CLOSE_DELAY = 5;
     private Handler checkHandler = new Handler();
+    private XHApiManager xhApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         smdt = APP.getSmdt();
+        xhApi = APP.getXHApi();
 //        EventBus.getDefault().register(this);
+        if(smdt == null && xhApi == null){
+            UIUtils.showShort(this,"无法控制门禁，请检查板卡型号");
+        }
     }
 
-    protected boolean isAlwayOpen() {
-        return isAlwayOpen;
-    }
+//    protected boolean isAlwayOpen() {
+//        return isAlwayOpen;
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
         CLOSE_DELAY = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
 //        isAlwayOpen = SpUtils.getBoolean(SpUtils.DOOR_STATE,false);
-        d("update: ----- " + isAlwayOpen);
-        if(isAlwayOpen){
-            startCheckHandler(0);
-        } else {
-            close();
-        }
+//        d("update: ----- " + isAlwayOpen);
+//        if(isAlwayOpen){
+//            startCheckHandler(0);
+//        } else {
+//            close();
+//        }
+        close();
+        offLight();
     }
 
-    private void startCheckHandler(long time){
-        checkHandler.removeCallbacks(checkRunnable);
-        checkHandler.postDelayed(checkRunnable,time);
-    }
+//    private void startCheckHandler(long time){
+//        checkHandler.removeCallbacks(checkRunnable);
+//        checkHandler.postDelayed(checkRunnable,time);
+//    }
 
-    private Runnable checkRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if(isAlwayOpen){
-                openDoor();
-            }
-            startCheckHandler(1000);
-        }
-    };
+//    private Runnable checkRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+////            if(isAlwayOpen){
+////                openDoor();
+////            }
+//            startCheckHandler(1000);
+//        }
+//    };
 
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -86,33 +98,65 @@ public abstract class BaseGpioActivity extends BaseActivity {
 
     public void openDoor(){
         open();
-        if(isAlwayOpen){
-            return;
-        }
+//        if(isAlwayOpen){
+//            return;
+//        }
         startOpenDelay();
     }
 
     private void open(){
-        if(smdt == null){
-            UIUtils.showTitleTip(this,"无法控制门禁，请检查板卡型号");
-            return;
+        if(smdt != null){
+            for (int i = 0; i < 3; i++) {
+                int result = smdt.smdtSetExtrnalGpioValue(1, false);
+            }
         }
-        for (int i = 0; i < 3; i++) {
-            int result = smdt.smdtSetExtrnalGpioValue(1, false);
-            isOpened = result == 0;
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(5,0);
         }
     }
 
     private void close(){
-        if(smdt == null){
-            UIUtils.showTitleTip(this,"无法控制门禁，请检查板卡型号");
-            return;
+        if(smdt != null){
+            for (int i = 0; i < 3; i++) {
+                int result = smdt.smdtSetExtrnalGpioValue(1, true);
+                isOpened = result == 0;
+            }
         }
-        for (int i = 0; i < 3; i++) {
-            int result = smdt.smdtSetExtrnalGpioValue(1, true);
-            isOpened = result == 0;
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(5,1);
         }
     }
+
+    //开灯
+    protected void onLight(){
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(4,1);
+        }
+        startAutoLight();
+    }
+
+    //关灯
+    private void offLight(){
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(4,0);
+        }
+    }
+
+    /***
+     * 开始执行自动灯光
+     */
+    protected void startAutoLight(){
+        timeHanlder.removeCallbacks(lightControlRunnable);
+        timeHanlder.postDelayed(lightControlRunnable,CLOSE_DELAY * 1000);
+    }
+
+    //灯光控制
+    private Runnable lightControlRunnable = new Runnable() {
+        @Override
+        public void run() {
+            offLight();
+        }
+    };
 
     protected void startOpenDelay(){
         timeHanlder.removeCallbacks(runnable);
@@ -122,9 +166,9 @@ public abstract class BaseGpioActivity extends BaseActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if(isAlwayOpen){
-                return;
-            }
+//            if(isAlwayOpen){
+//                return;
+//            }
             close();
         }
     };

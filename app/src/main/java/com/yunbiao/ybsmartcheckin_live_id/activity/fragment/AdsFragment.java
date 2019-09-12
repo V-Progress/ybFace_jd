@@ -9,9 +9,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +53,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Timer;
 
 import okhttp3.Call;
 
@@ -70,10 +69,9 @@ public class AdsFragment extends Fragment implements AdsListener {
     private ImageView ivLogo;
     private TextView tvAbbName;
     private TextView tvSlogan;
-    private Timer onOffTimer;
     private PropertyValuesHolder animY;
 
-    private long MAX_TIME = 800;
+    private long MAX_TIME = 30;
     private long onTime = MAX_TIME;
     private int advertTime = 10;
     private List<File> mAdsList = new ArrayList<>();
@@ -185,9 +183,9 @@ public class AdsFragment extends Fragment implements AdsListener {
                 d("开始加载本地缓存广告...");
                 String ads;
                 if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                    ads = SpUtils.getStr(SpUtils.AD_SHU);
+                    ads = SpUtils.getStr(SpUtils.COMPANY_AD_SHU);
                 } else {
-                    ads = SpUtils.getStr(SpUtils.AD_HENG);
+                    ads = SpUtils.getStr(SpUtils.COMPANY_AD_HENG);
                 }
 
                 if (TextUtils.isEmpty(ads)) {
@@ -224,9 +222,9 @@ public class AdsFragment extends Fragment implements AdsListener {
                     return;
                 }
                 if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                    SpUtils.saveStr(SpUtils.AD_SHU, response);
+                    SpUtils.saveStr(SpUtils.COMPANY_AD_SHU, response);
                 } else {
-                    SpUtils.saveStr(SpUtils.AD_HENG, response);
+                    SpUtils.saveStr(SpUtils.COMPANY_AD_HENG, response);
                 }
 
                 advertTime = advertBean.getAdvertObject().getAdvertTime();

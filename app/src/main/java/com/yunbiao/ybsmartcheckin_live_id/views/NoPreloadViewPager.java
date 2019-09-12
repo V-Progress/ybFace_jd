@@ -8,14 +8,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewConfigurationCompat;
-import android.support.v4.widget.EdgeEffectCompat;
+import androidx.core.os.ParcelableCompat;
+import androidx.core.os.ParcelableCompatCreatorCallbacks;
+import androidx.core.view.MotionEventCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.core.view.VelocityTrackerCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewConfigurationCompat;
+import androidx.core.widget.EdgeEffectCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -38,7 +39,7 @@ import java.util.Comparator;
 /**
  * Layout manager that allows the user to flip left and right
  * through pages of data.  You supply an implementation of a
- * {@link android.support.v4.view.PagerAdapter} to generate the pages that the view shows.
+ * {@link PagerAdapter} to generate the pages that the view shows.
  *
  * <p>Note this class is currently under early design and
  * development.  The API will likely change in later updates of
@@ -185,9 +186,9 @@ public class NoPreloadViewPager extends ViewGroup {
          * or when it is fully stopped/idle.
          *
          * @param state The new scroll state.
-         * @see android.support.v4.view.ViewPager#SCROLL_STATE_IDLE
-         * @see android.support.v4.view.ViewPager#SCROLL_STATE_DRAGGING
-         * @see android.support.v4.view.ViewPager#SCROLL_STATE_SETTLING
+         * @see ViewPager#SCROLL_STATE_IDLE
+         * @see ViewPager#SCROLL_STATE_DRAGGING
+         * @see ViewPager#SCROLL_STATE_SETTLING
          */
         public void onPageScrollStateChanged(int state);
     }

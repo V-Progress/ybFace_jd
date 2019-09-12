@@ -185,9 +185,9 @@ public class UpdateManager {
                 is.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                WelComeActivity activity = APP.getActivity();
-                if(activity != null){
-                    UIUtils.showShort(activity,"下载失败");
+
+                if(mContext != null){
+                    UIUtils.showShort(mContext,"下载失败");
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();

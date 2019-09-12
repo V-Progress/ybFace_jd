@@ -2,23 +2,27 @@ package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,9 +34,11 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.yunbiao.ybsmartcheckin_live_id.MyStringCallback;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateQRCodeEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -44,12 +50,10 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.BitmapCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,8 +65,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.Call;
 
 import static com.jdjr.risk.face.local.thread.ThreadHelper.runOnUiThread;
 
@@ -84,6 +86,8 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     private View aivBulu;
     private Button btnBulu;
     private TextView tvTotalSex;
+    private List<String> notices;
+    private View noticeLayout;
 
     @Nullable
     @Override
@@ -91,13 +95,16 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         EventBus.getDefault().register(this);
         mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
 
+        int orientation;
         if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
             rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
-            linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            orientation = LinearLayoutManager.HORIZONTAL;
         } else {
             rootView = inflater.inflate(R.layout.fragment_sign_list_h, container, false);
-            linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            orientation = LinearLayoutManager.VERTICAL;
         }
+
+        linearLayoutManager = new LinearLayoutManager(getActivity(),orientation,false);
 
         //公用
         btnBulu = rootView.findViewById(R.id.btn_bulu_sign_list);
@@ -109,6 +116,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         tvTotal = rootView.findViewById(R.id.tv_total_sign_list);
         tvTotalSex = rootView.findViewById(R.id.tv_total_sex);
         tvNotice = rootView.findViewById(R.id.tv_notice_sign_list);
+        noticeLayout = rootView.findViewById(R.id.layout_subTitle);
 
         //横屏专用
         pieChart = rootView.findViewById(R.id.pie_chart);
@@ -160,14 +168,56 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         initSignData();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateQRCodeEvent event){
+        String localPath = event.getLocalPath();
+        if(TextUtils.isEmpty(localPath)){
+            ivQRCode.setVisibility(View.INVISIBLE);
+            return;
+        }
+        Log.e(TAG, "update: ----- " + event.getLocalPath());
+        ivQRCode.setVisibility(View.VISIBLE);
+        bindImageView(localPath,ivQRCode);
+    }
+
     private void initSignData(){
         Company company = SpUtils.getCompany();
-        loadQrCode(Constants.DATA_PATH+"/qr_code.png");
-        String notice = company.getSlogan();
-        if(tvNotice != null){
-            tvNotice.setText(notice);
+        String notice = company.getNotice();
+        if(TextUtils.isEmpty(notice)){
+            Log.e(TAG, "initSignData: notice为空");
+            noticeLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        notices = new Gson().fromJson(notice, new TypeToken<List<String>>(){}.getType());
+        if(notices == null || notices.size() <= 0){
+            Log.e(TAG, "initSignData: notices为空");
+            noticeLayout.setVisibility(View.GONE);
+        } else {
+            noticeIndex = 0;
+            noticeLayout.setVisibility(View.VISIBLE);
+            if(notices.size() < 2){
+                tvNotice.setText(notices.get(0));
+            } else {
+                noticeHandler.sendEmptyMessage(0);
+            }
         }
     }
+
+    private int noticeIndex = 0;
+    private Handler noticeHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            String s = notices.get(noticeIndex);
+            tvNotice.setText(s);
+            noticeIndex++;
+            if(noticeIndex >= notices.size()){
+                noticeIndex = 0;
+            }
+            noticeHandler.removeMessages(0);
+            noticeHandler.sendEmptyMessageDelayed(0,10 * 1000);
+        }
+    };
 
     private String yuyin = " 您好 %s";
     //语音播报
@@ -212,53 +262,6 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);// 设置pieChart图表展示动画效果
         pieChart.setNoDataText("");//不显示无数据提醒
     }
-
-    /*加载二维码*/
-    private void loadQrCode(final String localPath) {
-        int comId = SpUtils.getInt(SpUtils.COMPANYID);
-        Map<String, String> params = new HashMap();
-        params.put("comId", comId + "");
-        OkHttpUtils.post().url(ResourceUpdate.QRCODE_ADD).params(params).build().execute(new MyStringCallback() {
-            @Override
-            public void onResponse(String response, int id) {
-                if (TextUtils.isEmpty(response)) {
-                    return;
-                }
-                AddQRCodeBean addQRCodeBean = new Gson().fromJson(response, AddQRCodeBean.class);
-                if (!TextUtils.equals(addQRCodeBean.status, "1")) {
-                    return;
-                }
-                if (addQRCodeBean == null || TextUtils.isEmpty(addQRCodeBean.codeurl)) {
-                    return;
-                }
-
-                MyXutils.getInstance().downLoadFile(addQRCodeBean.codeurl, Constants.CACHE_PATH + "QRCODE.png", false, new MyXutils.XDownLoadCallBack() {
-                    @Override
-                    public void onLoading(long total, long current, boolean isDownloading) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(File result) {
-
-                        ivQRCode.setVisibility(View.VISIBLE);
-                        bindImageView(result.getPath(),ivQRCode);
-                    }
-
-                    @Override
-                    public void onError(Throwable ex) {
-
-                    }
-
-                    @Override
-                    public void onFinished() {
-
-                    }
-                });
-            }
-        });
-    }
-
 
     @Override
     public void onPrepared(List<Sign> mList) {
@@ -362,7 +365,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         if(TextUtils.isEmpty(urlOrPath)){
             return;
         }
-        Glide.with(this).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
+        Glide.with(getActivity()).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
     }
 
     class SignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

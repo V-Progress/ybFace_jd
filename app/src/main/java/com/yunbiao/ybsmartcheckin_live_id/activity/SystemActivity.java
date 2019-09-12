@@ -40,8 +40,9 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
@@ -221,6 +222,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this, SettingActivity.class));
                 break;
             case R.id.btn_update_system:
+                UpdateVersionControl.getInstance().checkUpdate(this);
 
                 Beta.upgradeListener = new UpgradeListener() {
                     @Override
@@ -493,16 +495,17 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     public void setAngle(View view){
         int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        if(anInt == CameraManager.L){
-            anInt = CameraManager.P;
-        } else if(anInt == CameraManager.P) {
-            anInt = CameraManager.L_R;
-        } else if(anInt == CameraManager.L_R){
-            anInt = CameraManager.P_R;
+
+        if(anInt == CameraSettings.ROTATION_0){
+            anInt = CameraSettings.ROTATION_90;
+        } else if(anInt == CameraSettings.ROTATION_90) {
+            anInt = CameraSettings.ROTATION_180;
+        } else if(anInt == CameraSettings.ROTATION_180){
+            anInt = CameraSettings.ROTATION_270;
         } else {
-            anInt = CameraManager.L;
+            anInt = CameraSettings.ROTATION_0;
         }
-        CameraManager.instance().setOrientation(anInt);
+        CameraSettings.setCameraDisplayRotation(anInt);
         ((Button)view).setText("角度：" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
     }
@@ -571,9 +574,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 showAlert("更改摄像头配置需要重启应用才能生效，是否继续？", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        SpUtils.setMirror(!mirror);
-//                        cbMirror.setChecked(!mirror);
-//                        FaceBoxUtil.setIsMirror(!mirror);
                     }
                 }, new DialogInterface.OnDismissListener() {
                     @Override

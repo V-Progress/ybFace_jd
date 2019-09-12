@@ -235,8 +235,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         if(aBoolean){
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
-                        UIUtils.showShort(SignActivity.this, aBoolean ? "上传成功" : "上传失败，请检查网络");
                         UIUtils.dismissNetLoading();
+                        UIUtils.showShort(SignActivity.this, (aBoolean ? "上传成功" : "上传失败，请检查网络"));
                     }
                 });
                 break;

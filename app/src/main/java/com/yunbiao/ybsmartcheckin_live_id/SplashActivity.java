@@ -14,6 +14,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -54,6 +55,9 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //开启看门狗,只会在开机是启动一次
+        startService(new Intent(APP.getContext(), MyProtectService.class));
+
         Config.deviceType = CommonUtils.getBroadType();
         ybPermission = new YBPermission(new YBPermission.PermissionListener(){
             @Override
@@ -73,6 +77,7 @@ public class SplashActivity extends BaseActivity {
                             SpUtils.init();
                             APP.getContext().cauchException();
                             APP.getContext().initDB();
+
                             if(Config.deviceType == Config.DEVICE_SMALL_FACE){
                                 startActivity(new Intent(SplashActivity.this, WelComeSmallActivity.class));
                             } else {

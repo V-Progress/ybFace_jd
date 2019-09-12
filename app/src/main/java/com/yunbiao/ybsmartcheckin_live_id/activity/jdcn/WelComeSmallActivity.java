@@ -42,7 +42,8 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceResult;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -127,13 +128,14 @@ public class WelComeSmallActivity extends BaseGateActivity {
         public void onReady() {
             syncData();
         }
+
         @Override
-        public void onFaceDetection() {
+        public void onFaceDetection(FaceResult basePropertyMap) {
             ScreenSaver.get().restart();
         }
 
         @Override
-        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
+        public void onFaceVerify(VerifyResult verifyResult) {
             if(verifyResult == null){
                 return;
             }
@@ -141,7 +143,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
             if(result != VerifyResult.UNKNOWN_FACE){
                 return;
             }
-            SignManager.instance().checkSign(verifyResult,faceProperty);
+            SignManager.instance().checkSign(verifyResult);
         }
     };
 

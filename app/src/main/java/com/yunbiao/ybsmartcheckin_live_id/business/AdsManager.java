@@ -13,11 +13,10 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v7.graphics.Palette;
+import androidx.annotation.NonNull;
+import androidx.palette.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -161,8 +160,8 @@ public class AdsManager {
             @Override
             public void run() {
                 d("开始加载本地缓存广告...");
-                String ad_shu = SpUtils.getStr(SpUtils.AD_SHU);
-                String ad_heng = SpUtils.getStr(SpUtils.AD_HENG);
+                String ad_shu = SpUtils.getStr(SpUtils.COMPANY_AD_SHU);
+                String ad_heng = SpUtils.getStr(SpUtils.COMPANY_AD_HENG);
                 if (!TextUtils.isEmpty(ad_shu)) {
                     AdvertBean advertBean = new Gson().fromJson(ad_shu, AdvertBean.class);
                     loadImageList(advertBean.getAdvertObject().getImgArray(), playList, new Runnable() {
@@ -214,7 +213,7 @@ public class AdsManager {
                             return;
                         }
 
-                        SpUtils.saveStr(SpUtils.AD_SHU, result);
+                        SpUtils.saveStr(SpUtils.COMPANY_AD_SHU, result);
                         adsPlayTime = advertBean.getAdvertObject().getAdvertTime();
                         final List<String> tempList = new ArrayList<>();
                         loadImageList(advertBean.getAdvertObject().getImgArray(), tempList, new Runnable() {
@@ -251,7 +250,7 @@ public class AdsManager {
                             return;
                         }
 
-                        SpUtils.saveStr(SpUtils.AD_HENG, result);
+                        SpUtils.saveStr(SpUtils.COMPANY_AD_HENG, result);
                         adsPlayTime_h = advertBean.getAdvertObject().getAdvertTime();
                         final List<String> tempList = new ArrayList<>();
                         loadImageList(imgArray, tempList, new Runnable() {

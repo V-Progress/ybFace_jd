@@ -36,24 +36,10 @@
         android:background="@drawable/shape_employ_list"
         android:padding="30dp">
 
-
-        <Button
-            android:id="@+id/btn_date"
-            android:layout_width="108dp"
-            android:layout_height="44dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/shape_employ_button"
-            android:paddingLeft="5dp"
-            android:text="@string/sign_list_date"
-            android:textColor="#64DCFE"
-            android:textSize="20dp" />
-
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="150dp"
             android:layout_height="44dp"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/btn_date"
             android:background="@drawable/shape_employ_button"
             android:gravity="center"
             android:text=""
@@ -86,11 +72,36 @@
             android:layout_width="108dp"
             android:layout_height="44dp" />
 
+        <TextView
+            android:onClick="exportToUD"
+            android:id="@+id/tv_export_sign_data"
+            android:gravity="center"
+            android:textColor="#64DCFE"
+            android:text="导出数据"
+            android:background="@drawable/selector_btn_take_photo"
+            android:layout_alignParentRight="true"
+            android:layout_width="108dp"
+            android:layout_height="44dp" />
+
+        <Button
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/tv_export_sign_data"
+            android:id="@+id/btn_upload"
+            android:layout_width="130dp"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_bg_btnsync"
+            android:drawableLeft="@mipmap/icon_sync"
+            android:paddingLeft="10dp"
+            android:text="上传数据"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:visibility="visible"/>
+
         <LinearLayout
             android:id="@+id/layout_title"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_below="@+id/btn_date"
+            android:layout_below="@+id/tv_date"
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_employ_list"
             android:gravity="center_vertical"

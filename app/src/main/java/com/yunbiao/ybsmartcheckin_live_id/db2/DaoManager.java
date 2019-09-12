@@ -97,7 +97,7 @@ public class DaoManager {
         if(daoSession == null){
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().whereOr(SignDao.Properties.Comid.eq(comId),SignDao.Properties.Date.eq(date)).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.Date.eq(date)).list();
     }
 
     /***
@@ -146,7 +146,7 @@ public class DaoManager {
         if(daoSession == null){
             return null;
         }
-        return daoSession.getUserDao().queryBuilder().whereOr(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
     }
 
     /***

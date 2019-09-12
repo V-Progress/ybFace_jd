@@ -24,8 +24,6 @@ public class BootRestartReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         Log.d(TAG, "onReceive: " + action);
         if (action.equals(ACTION)) {
-            //开启看门狗,只会在开机是启动一次
-            context.startService(new Intent(context, MyProtectService.class));
             //自动开关机
             ThreadUitls.runInThread(machineRestartRun);
             //开机重置开关机设置标志，A20定时关机会重走程序，定时开关机失效，然后加上这个标志

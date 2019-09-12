@@ -53,7 +53,7 @@
                 android:background="@color/colorAccent"
                 android:orientation="vertical">
 
-                <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+                <com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView
                     android:layout_gravity="center"
                     android:id="@+id/face_view"
                     android:layout_width="match_parent"
@@ -147,7 +147,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="30dp"
                     android:text="基本信息"
                     android:textColor="@color/font_green"
                     android:textSize="28dp" />
@@ -158,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_jbxx"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:background="@mipmap/bg_edit"
                     android:paddingLeft="@dimen/paddingleft_addemploy"
                     android:textColor="@color/font_green"
@@ -179,19 +179,59 @@
                     android:layout_height="44dp"
                     android:layout_below="@+id/tv_jbxx"
                     android:layout_marginRight="20dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:layout_toLeftOf="@+id/et_name"
                     android:gravity="center"
                     android:text="姓名:"
                     android:textColor="@color/font_green"
                     android:textSize="20dp" />
 
+                <RadioGroup
+                    android:gravity="center"
+                    android:layout_toRightOf="@+id/tv_sex"
+                    android:layout_marginTop="30dp"
+                    android:id="@+id/rg_sex"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/et_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp">
+                    <RadioButton
+                        android:button="@android:drawable/btn_radio"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_male"
+                        android:text="男"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+                        android:button="@android:drawable/btn_radio"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_female"
+                        android:text="女"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/tv_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_name"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/sp_depart"
+                    android:gravity="center"
+                    android:text="性别:"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
 
                 <Spinner
                     android:id="@+id/sp_depart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/et_name"
+                    android:layout_below="@+id/rg_sex"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
                     android:background="@mipmap/bg_edit"
@@ -204,7 +244,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
-                    android:layout_below="@+id/et_name"
+                    android:layout_below="@+id/rg_sex"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/sp_depart"

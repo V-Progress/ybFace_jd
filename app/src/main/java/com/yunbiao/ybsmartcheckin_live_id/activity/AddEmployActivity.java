@@ -32,7 +32,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;

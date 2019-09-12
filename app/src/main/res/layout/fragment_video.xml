@@ -3,11 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.fragment.child.VideoFragment">
+    tools:context=".activity.fragment.VideoFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rlv"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:id="@+id/tv_position"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:background="#6D000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </FrameLayout>

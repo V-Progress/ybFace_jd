@@ -118,7 +118,8 @@
 
         <service android:name=".utils.killSelfService" />
 
-        <service android:name=".xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
+        <service android:name=".xmpp.NotificationService" />
+        <service android:name=".receiver.MyProtectService"></service>
         <!-- 百度定位 -->
         <service
             android:name="com.baidu.location.f"
@@ -127,7 +128,7 @@
             android:process=":remote" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

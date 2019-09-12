@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class SpUtils {
 
+    public static final String DOOR_STATE = "doorState";//门禁常开模式
     public static final String GPIO_DELAY = "doorDelay";
     private static SharedPreferences sp;
     private static final String SP_NAME = "YB_FACE";
@@ -30,18 +31,16 @@ public class SpUtils {
     public static final String DEVICE_NUMBER = "devicesernum";//设备编号
     public static final String BINDCODE = "bindCode";//绑定码
     public  static final String CITYNAME= "city";//城市
+    public static final String MENU_PWD = "menu_pwd";//用户访问密码
+    public static final String EXP_DATE = "expDate";//过期时间
 
     public static Company mCacheCompany;//全局缓存
     public static final String COMPANYID = "companyid";//公司ID
-    public static final String COMPANY_INFO = "companyInfo";//公司视频广告
-    public static final String COMPANY_LOGO = "companyLogo";
-
-    public static final String AD_HENG = "ad_heng";//横屏广告
-    public static final String AD_SHU = "ad_shu";//竖屏广告
-
-    public static final String MENU_PWD = "menu_pwd";//用户访问密码
-
-    public static final String EXP_DATE = "expDate";//过期时间
+    public static final String COMPANY_INFO = "companyInfo";//公司视频宣传
+    public static final String COMPANY_LOGO = "companyLogo";//公司logo
+    public static final String COMPANY_QRCODE = "companyQRCode";//公司二维码
+    public static final String COMPANY_AD_HENG = "ad_heng";//横屏广告
+    public static final String COMPANY_AD_SHU = "ad_shu";//竖屏广告
 
     public static final String IS_MIRROR = "isMirror";//是否镜像
     public static final String BOARD_INFO = "boardInfo";
@@ -55,9 +54,7 @@ public class SpUtils {
     public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
 
     public static void init(){
-        Log.e("112233", "init: " + mCacheCompany);
         getCompany();
-        Log.e("112233", "init: " + mCacheCompany);
     }
 
     public static void setCompany(final Company company){

@@ -13,7 +13,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,20 +34,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tencent.bugly.beta.Beta;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.CameraManager;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceBoxUtil;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FaceBoxUtil;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
-import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -82,6 +80,7 @@ public class SettingActivity extends BaseActivity {
     private Button btnAngle;
     private Spinner spnCameraSize;
     private Switch swAlready;
+    private EditText edtDelay;
 
     @Override
     protected int getPortraitLayout() {
@@ -102,10 +101,11 @@ public class SettingActivity extends BaseActivity {
         btnAngle = findViewById(R.id.btn_setAngle);
         spnCameraSize = findViewById(R.id.spn_camera_size);
         swAlready = findViewById(R.id.sw_setting_already);
+        edtDelay = findViewById(R.id.edt_delay);
         findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     finish();
                 }
                 return false;
@@ -116,8 +116,26 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        checkNet();
+        int cacheDelay = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
+        edtDelay.setText(cacheDelay + "");
+        edtDelay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String s1 = edtDelay.getText().toString();
+                if(TextUtils.isEmpty(s1)){
+                    return;
+                }
+                int delay = Integer.parseInt(s1);
+                SpUtils.saveInt(SpUtils.GPIO_DELAY,delay);
+                UIUtils.showShort(SettingActivity.this,"修改成功");
+            }
+        });
 
+        checkNet();
 
         //获取CPU温度
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
@@ -131,10 +149,10 @@ public class SettingActivity extends BaseActivity {
                     }
                 });
             }
-        },0, 3 , TimeUnit.SECONDS);
+        }, 0, 3, TimeUnit.SECONDS);
 
         //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK? "后置" : "前置") + "，分辨率：" + CameraSettings.getCameraPreviewWidth()+"*" + CameraSettings.getCameraPreviewHeight() + "】" );
+        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK ? "后置" : "前置") + "，分辨率：" + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
 
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
@@ -150,7 +168,6 @@ public class SettingActivity extends BaseActivity {
         //摄像头角度
         int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
         btnAngle.setText("角度：" + angle);
-
 
         setListSize();
     }
@@ -214,8 +231,8 @@ public class SettingActivity extends BaseActivity {
         if (wi == null) {
             return null;
         }
-        if(type == 0){
-            return "名称：" +wi.getSSID() + "，信号强度："+wi.getRssi();
+        if (type == 0) {
+            return "名称：" + wi.getSSID() + "，信号强度：" + wi.getRssi();
         }
 
         //获取32位整型IP地址
@@ -260,6 +277,7 @@ public class SettingActivity extends BaseActivity {
         private CpuUtils() {
             //no instance
         }
+
         private static final List<String> CPU_TEMP_FILE_PATHS = Arrays.asList(
                 "/sys/devices/system/cpu/cpu0/cpufreq/cpu_temp",
                 "/sys/devices/system/cpu/cpu0/cpufreq/FakeShmoo_cpu_temp",
@@ -293,9 +311,9 @@ public class SettingActivity extends BaseActivity {
                     currentTemp = temp / (double) 1000;
                 }
 
-                if(!TextUtils.isEmpty(validPath)
-                        && (currentTemp != 0)){
-                    currTemp = currentTemp+"";
+                if (!TextUtils.isEmpty(validPath)
+                        && (currentTemp != 0)) {
+                    currTemp = currentTemp + "";
                 }
             }
             return currTemp;
@@ -328,7 +346,7 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
-    private void setListSize(){
+    private void setListSize() {
         List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
         if (supportSizeList == null) {
             return;
@@ -336,12 +354,12 @@ public class SettingActivity extends BaseActivity {
         Collections.sort(supportSizeList, new Comparator<Camera.Size>() {
             @Override
             public int compare(Camera.Size o1, Camera.Size o2) {
-                if(o1.width > o2.width){
+                if (o1.width > o2.width) {
                     return -1;
                 }
 
-                if(o1.width == o2.width){
-                    if(o1.height > o2.height){
+                if (o1.width == o2.width) {
+                    if (o1.height > o2.height) {
                         return -1;
                     }
                     return 0;
@@ -358,8 +376,8 @@ public class SettingActivity extends BaseActivity {
             sizeBean.height = size.height;
             float i = (float) size.width / (float) size.height;
 
-            if(i < 1.6){
-                if(i > 1.3){
+            if (i < 1.6) {
+                if (i > 1.3) {
                     sizeBean.desc = "（4 : 3）";
                 } else {
                     sizeBean.desc = "（5 : 4）";
@@ -368,9 +386,9 @@ public class SettingActivity extends BaseActivity {
                 sizeBean.desc = "（16 : 9）";
             }
 
-            if(sizeBean.width == 1280 && sizeBean.height == 720){
+            if (sizeBean.width == 1280 && sizeBean.height == 720) {
                 sizeBean.desc += "最佳";
-            } else if(sizeBean.width == 1920 && sizeBean.height == 1080){
+            } else if (sizeBean.width == 1920 && sizeBean.height == 1080) {
                 sizeBean.desc += "最大";
             }
             sizeBeanList.add(sizeBean);
@@ -382,7 +400,7 @@ public class SettingActivity extends BaseActivity {
         int index = 0;
         for (int i = 0; i < sizeBeanList.size(); i++) {
             SizeBean sizeBean = sizeBeanList.get(i);
-            if(cameraWidth == sizeBean.width && cameraHeight == sizeBean.height){
+            if (cameraWidth == sizeBean.width && cameraHeight == sizeBean.height) {
                 index = i;
             }
         }
@@ -396,8 +414,8 @@ public class SettingActivity extends BaseActivity {
                 SizeBean sizeBean = sizeBeanList.get(position);
                 CameraSettings.setCameraPreviewWidth(sizeBean.width);
                 CameraSettings.setCameraPreviewHeight(sizeBean.height);
-                SpUtils.saveInt(SpUtils.CAMERA_WIDTH,sizeBean.width);
-                SpUtils.saveInt(SpUtils.CAMERA_HEIGHT,sizeBean.height);
+                SpUtils.saveInt(SpUtils.CAMERA_WIDTH, sizeBean.width);
+                SpUtils.saveInt(SpUtils.CAMERA_HEIGHT, sizeBean.height);
             }
 
             @Override
@@ -410,6 +428,7 @@ public class SettingActivity extends BaseActivity {
 
     class SizeAdapter extends BaseAdapter {
         List<SizeBean> sizeBeanList;
+
         public SizeAdapter(List<SizeBean> sizeBeanList) {
             this.sizeBeanList = sizeBeanList;
         }
@@ -435,14 +454,14 @@ public class SettingActivity extends BaseActivity {
             TextView inflate = (TextView) View.inflate(SettingActivity.this, android.R.layout.simple_dropdown_item_1line, null);
             inflate.setTextColor(Color.parseColor("#59B4CA"));
             inflate.setTextSize(16);
-            inflate.setPadding(15,15,15,15);
+            inflate.setPadding(15, 15, 15, 15);
             SizeBean sizeBean = sizeBeanList.get(position);
             inflate.setText(sizeBean.width + " * " + sizeBean.height + " " + sizeBean.desc);
             return inflate;
         }
     }
 
-    class SizeBean{
+    class SizeBean {
         int width;
         int height;
         String desc;
@@ -462,16 +481,16 @@ public class SettingActivity extends BaseActivity {
 
     public void setAngle(final View view) {
         int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        if(anInt == CameraSettings.ROTATION_0){
+        if (anInt == CameraSettings.ROTATION_0) {
             anInt = CameraSettings.ROTATION_90;
-        } else if(anInt == CameraSettings.ROTATION_90) {
+        } else if (anInt == CameraSettings.ROTATION_90) {
             anInt = CameraSettings.ROTATION_180;
-        } else if(anInt == CameraSettings.ROTATION_180){
+        } else if (anInt == CameraSettings.ROTATION_180) {
             anInt = CameraSettings.ROTATION_270;
         } else {
             anInt = CameraSettings.ROTATION_0;
         }
-        ((Button)view).setText("角度：" + anInt);
+        ((Button) view).setText("角度：" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
         CameraSettings.setCameraDisplayRotation(anInt);
     }
@@ -487,10 +506,10 @@ public class SettingActivity extends BaseActivity {
                 progressDialog.show();
                 UIUtils.restart.start();
             }
-        },null, null);
+        }, null, null);
     }
 
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel ,DialogInterface.OnDismissListener onDissmissListener) {
+    private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel, DialogInterface.OnDismissListener onDissmissListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示");
         builder.setMessage(msg);
@@ -556,7 +575,7 @@ public class SettingActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SettingActivity.this,"修改失败：" + e != null ? e.getMessage() : "NULL");
+                                UIUtils.showTitleTip(SettingActivity.this, "修改失败：" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
@@ -569,11 +588,11 @@ public class SettingActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (status == 1) {
-                                    UIUtils.showTitleTip(SettingActivity.this,"修改成功");
+                                    UIUtils.showTitleTip(SettingActivity.this, "修改成功");
                                     SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip(SettingActivity.this,"修改失败");
+                                    UIUtils.showTitleTip(SettingActivity.this, "修改失败");
                                 }
                             }
                         });

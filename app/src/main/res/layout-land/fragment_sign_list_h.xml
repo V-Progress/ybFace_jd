@@ -81,7 +81,7 @@
         android:paddingLeft="10dp"
         android:paddingTop="10dp">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_weight="7"
             android:id="@+id/rlv_sign_list"
             android:layout_width="match_parent"

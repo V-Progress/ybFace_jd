@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -31,7 +30,6 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
-import com.yunbiao.ybsmartcheckin_live_id.business.ApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
@@ -116,6 +114,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
             }
         }, 5 * 1000);
+
     }
 
     /*人脸识别回调，由上到下执行*/
@@ -127,7 +126,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         @Override
         public void onFaceDetection(FaceResult basePropertyMap) {
-            ApiManager.instance().onLignt();
+            onLight();
             if(adsFragment != null){
                 adsFragment.detectFace();
             }
@@ -138,20 +137,6 @@ public class WelComeActivity extends BaseGpioActivity {
             if (verifyResult != null)
                 SignManager.instance().checkSign(verifyResult);
         }
-
-//        @Override
-//        public void onFaceDetection() {
-//            ApiManager.instance().onLignt();
-//            if(adsFragment != null){
-//                adsFragment.detectFace();
-//            }
-//        }
-
-//        @Override
-//        public void onFaceVerify(VerifyResult verifyResult, FaceProperty faceProperty) {
-//            if (verifyResult != null && faceProperty  != null)
-//                SignManager.instance().checkSign(verifyResult,faceProperty);
-//        }
     };
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -29,16 +29,18 @@ public class Company {
     private String gotips;
     private String comlogo;
 
+    private String codeUrl;
     private int themeid;
     private String toptitle;
     private String downtips;
     private String bottomtitle;
+    private String notice;
 
-    @Generated(hash = 381826835)
+    @Generated(hash = 2010520513)
     public Company(long id, int comid, String slogan, String comname,
             String abbname, String downtime, String devicePwd, String gotime,
-            String gotips, String comlogo, int themeid, String toptitle,
-            String downtips, String bottomtitle) {
+            String gotips, String comlogo, String codeUrl, int themeid,
+            String toptitle, String downtips, String bottomtitle, String notice) {
         this.id = id;
         this.comid = comid;
         this.slogan = slogan;
@@ -49,14 +51,32 @@ public class Company {
         this.gotime = gotime;
         this.gotips = gotips;
         this.comlogo = comlogo;
+        this.codeUrl = codeUrl;
         this.themeid = themeid;
         this.toptitle = toptitle;
         this.downtips = downtips;
         this.bottomtitle = bottomtitle;
+        this.notice = notice;
     }
 
     @Generated(hash = 1096856789)
     public Company() {
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public String getCodeUrl() {
+        return codeUrl;
+    }
+
+    public void setCodeUrl(String codeUrl) {
+        this.codeUrl = codeUrl;
     }
 
     @Override
@@ -77,6 +97,7 @@ public class Company {
                 ", toptitle='" + toptitle + '\'' +
                 ", downtips='" + downtips + '\'' +
                 ", bottomtitle='" + bottomtitle + '\'' +
+                ", notice='" + notice + '\'' +
                 '}';
     }
 

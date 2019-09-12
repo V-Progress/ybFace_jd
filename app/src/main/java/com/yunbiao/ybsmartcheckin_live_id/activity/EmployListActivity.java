@@ -25,7 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -166,6 +166,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
             @Override
             public void run() {
                 employList.clear();
+                employAdapter.notifyDataSetChanged();
 
                 List<User> users = null;
                 if (mCurrDepId == 0l) {

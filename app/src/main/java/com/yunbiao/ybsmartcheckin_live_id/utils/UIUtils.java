@@ -24,30 +24,10 @@ import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 
 public class UIUtils {
 
-    private static android.widget.Toast mToast;
+    private static Toast mToast;
 
     public static void show(final Activity context, final String message, final int time){
-        if(context == null){
-            return;
-        }
-
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mToast != null){
-                    mToast.cancel();
-                }
-
-                mToast = new android.widget.Toast(context);
-                View toastView = View.inflate(context, R.layout.layout_toast, null);
-                TextView tvToast = (TextView) toastView.findViewById(R.id.tv_toast);
-                tvToast.setText(message);
-                mToast.setView(toastView);
-                mToast.setGravity(Gravity.CENTER,0,0);
-                mToast.setDuration(time);
-                mToast.show();
-            }
-        });
+        showTitleTip(context,message);
     }
 
     public static void showShort(Activity context,String message){

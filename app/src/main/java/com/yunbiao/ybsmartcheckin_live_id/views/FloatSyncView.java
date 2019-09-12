@@ -69,7 +69,7 @@ public class FloatSyncView{
         rootView.setElevation(10f);
         tvInfo = rootView.findViewById(R.id.tv_info);
         tvProgress = rootView.findViewById(R.id.tv_progress);
-        pbDownload = rootView.findViewById(R.id.pb_download);
+//        pbDownload = rootView.findViewById(R.id.pb_download);
     }
 
     public void show(){

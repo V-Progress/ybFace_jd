@@ -12,10 +12,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.user.FaceUserManager;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SyncCompleteEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateQRCodeEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -25,11 +27,11 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.FaceSDK;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
-import com.yunbiao.ybsmartcheckin_live_id.views.FloatSyncView;
+import com.yunbiao.ybsmartcheckin_live_id.views.SyncDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -54,13 +56,8 @@ import timber.log.Timber;
 public class SyncManager {
 
     private static SyncManager instance;
-    private Activity mAct;
     private boolean isLocalServ = false;
-
-    private FloatSyncView floatSyncView;
-
     private int mUpdateTotal = 0;//更新总数
-
     private boolean isFirst = true;
 
     private long initOffset = 2 * 24 * 60 * 60 * 1000;//更新间隔时间7天
@@ -88,6 +85,8 @@ public class SyncManager {
                 isLocalServ = true;
             }
         }
+
+        SyncDialog.instance().init(APP.getActivity());
     }
 
     // TODO: 2019/6/27 ComById
@@ -131,6 +130,8 @@ public class SyncManager {
 //    }
 
     public void requestCompany() {
+        SyncDialog.instance().show();
+        SyncDialog.instance().setStep("获取公司信息");
         d("获取公司信息");
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
@@ -139,10 +140,11 @@ public class SyncManager {
             @Override
             public void onError(Call call, Exception e, int id) {
                 d(e);
-                if(isFirst){//如果是第一次则加载缓存
+                if (isFirst) {//如果是第一次则加载缓存
                     EventBus.getDefault().post(new UpdateInfoEvent());
                     isFirst = false;
                 }
+                SyncDialog.instance().setStep("将在5秒后重试");
                 retryGetCompany();
             }
 
@@ -159,13 +161,13 @@ public class SyncManager {
                     return;
                 }
 
-                if(companyResponse.getStatus() != 1){
+                if (companyResponse.getStatus() != 1) {
                     retryGetCompany();
                     return;
                 }
 
                 //存公司ID
-                SpUtils.saveInt(SpUtils.COMPANYID,companyResponse.getCompany().getComid());
+                SpUtils.saveInt(SpUtils.COMPANYID, companyResponse.getCompany().getComid());
                 SpUtils.setCompany(companyResponse.getCompany());
                 d("缓存公司信息");
 
@@ -185,12 +187,55 @@ public class SyncManager {
                 //加载logo
                 loadLogo(company);
 
+                //加载二维码
+                loadQRCode(company);
+
                 syncDB();
             }
         });
     }
 
-    private void loadLogo(Company company){
+    private void loadQRCode(Company company) {
+        String codeUrl = company.getCodeUrl();
+        File code = new File(codeUrl);
+        File codeFile = new File(Constants.DATA_PATH , "qrcode_" + code.getName());
+        Log.e(TAG, "loadQRCode: " + codeFile.getPath() + " --- " + codeFile.getTotalSpace());
+        if (codeFile.exists()) {
+            Log.e(TAG, "loadQRCode: 存在");
+            SpUtils.saveStr(SpUtils.COMPANY_QRCODE, codeFile.getPath());
+            EventBus.getDefault().post(new UpdateQRCodeEvent(codeFile.getPath()));
+        } else {
+            Log.e(TAG, "loadQRCode: 不存在");
+            MyXutils.getInstance().downLoadFile(codeUrl, codeFile.getPath(), false, new MyXutils.XDownLoadCallBack() {
+                String path;
+
+                @Override
+                public void onLoading(long total, long current, boolean isDownloading) {
+
+                }
+
+                @Override
+                public void onSuccess(File result) {
+                    d("下载完毕");
+                    path = result.getPath();
+                }
+
+                @Override
+                public void onError(Throwable ex) {
+                    d("下载失败");
+                }
+
+                @Override
+                public void onFinished() {
+                    d("发送logo更新事件");
+                    SpUtils.saveStr(SpUtils.COMPANY_QRCODE, path);
+                    EventBus.getDefault().post(new UpdateQRCodeEvent(path));
+                }
+            });
+        }
+    }
+
+    private void loadLogo(Company company) {
         d("加载部门logo");
         String comlogo = company.getComlogo();
         File logo = new File(comlogo);
@@ -198,11 +243,12 @@ public class SyncManager {
         File logoFile = new File(Constants.DATA_PATH, "logo_" + logo.getName());
         if (logoFile.exists()) {
             d("logo存在，发送更新事件");
-            SpUtils.saveStr(SpUtils.COMPANY_LOGO,logoFile.getPath());
+            SpUtils.saveStr(SpUtils.COMPANY_LOGO, logoFile.getPath());
             EventBus.getDefault().post(new UpdateLogoEvent(logoFile.getPath()));
         } else {
             MyXutils.getInstance().downLoadFile(comlogo, logoFile.getPath(), false, new MyXutils.XDownLoadCallBack() {
                 String path;
+
                 @Override
                 public void onLoading(long total, long current, boolean isDownloading) {
                 }
@@ -221,7 +267,7 @@ public class SyncManager {
                 @Override
                 public void onFinished() {
                     d("发送logo更新事件");
-                    SpUtils.saveStr(SpUtils.COMPANY_LOGO,path);
+                    SpUtils.saveStr(SpUtils.COMPANY_LOGO, path);
                     EventBus.getDefault().post(new UpdateLogoEvent(path));
                 }
             });
@@ -253,7 +299,7 @@ public class SyncManager {
         final int comid = SpUtils.getInt(SpUtils.COMPANYID);
         OkHttpUtils.post()
                 .url(ResourceUpdate.GETSTAFF)
-                .addParams("companyId",  comid+ "")
+                .addParams("companyId", comid + "")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -275,19 +321,20 @@ public class SyncManager {
                     return;
                 }
 
-                if(staffResponse.getStatus() != 1){
+                if (staffResponse.getStatus() != 1) {
                     retryGetUser();
                     return;
                 }
 
                 List<Depart> dep = staffResponse.getDep();
-                syncUser(comid,dep);
+                syncUser(comid, dep);
             }
         });
     }
 
     //同步部门数据库
     private void syncDepart(final Company company) {
+        SyncDialog.instance().setStep("同步部门");
         if (company == null) {
             return;
         }
@@ -302,9 +349,11 @@ public class SyncManager {
         }
     }
 
-    private void syncUser(int comid, List<Depart> dep){
-        d("同步员信息");
-        if(dep == null){
+    private void syncUser(int comid, List<Depart> dep) {
+        SyncDialog.instance().setStep("同步员工信息");
+        d("同步员工信息");
+        if (dep == null) {
+            SyncDialog.instance().dismiss();
             d("结束，列表为null");
             return;
         }
@@ -318,9 +367,9 @@ public class SyncManager {
         d("本地数据：" + localDatas.size());
 
         //对比删除
-        compareUser(localDatas,remoteAllUser);
+        compareUser(localDatas, remoteAllUser);
         //更新用户库
-        updateUser(comid,remoteAllUser);
+        updateUser(comid, remoteAllUser);
         //获取头像更新队列
         Queue<User> headUpdateQueue = getHeadUpdateQueue();
         //开始下载
@@ -330,6 +379,7 @@ public class SyncManager {
                 checkFaceDB(new Runnable() {
                     @Override
                     public void run() {
+                        SyncDialog.instance().dismiss();
                         EventBus.getDefault().post(new SyncCompleteEvent());
                     }
                 });
@@ -337,15 +387,15 @@ public class SyncManager {
         });
     }
 
-    private void checkFaceDB(Runnable runnable){
+    private void checkFaceDB(Runnable runnable) {
         d("检查人脸库----------------------------");
-        setInfo("检查人脸库");
+        SyncDialog.instance().setStep("同步人脸库");
         //取出数据库中的数据和人脸库中的数据并做对比
         final List<User> userBeans = DaoManager.get().queryAll(User.class);
         Map<String, FaceUser> allUserMap = FaceSDK.instance().getAllFaceData();
         d("人脸库：" + allUserMap.size() + "，数据库：" + userBeans.size());
 
-        if(userBeans == null || userBeans.size()<=0){
+        if (userBeans == null || userBeans.size() <= 0) {
             FaceSDK.instance().removeAllUser(new FaceUserManager.FaceUserCallback() {
                 @Override
                 public void onUserResult(boolean b, int i) {
@@ -355,24 +405,24 @@ public class SyncManager {
         } else {
             for (int i = 0; i < userBeans.size(); i++) {
                 final User userBean = userBeans.get(i);
-                setTextProgress((i+1) + "/" + userBeans.size());
+                SyncDialog.instance().setProgress(i + 1, userBeans.size());
                 final long faceId = userBean.getFaceId();
                 String headPath = userBean.getHeadPath();
-                if(TextUtils.isEmpty(headPath) || !new File(headPath).exists()){
+                if (TextUtils.isEmpty(headPath) || !new File(headPath).exists()) {
                     d("头像不存在，跳过：" + userBean.getName());
                     continue;
                 }
 
                 String userId = String.valueOf(faceId);
-                if(allUserMap.containsKey(userId)){
+                if (allUserMap.containsKey(userId)) {
                     FaceUser faceUser = allUserMap.get(userId);
                     String imagePath = faceUser.getImagePath();
-                    if(!TextUtils.equals(imagePath,headPath)){
+                    if (!TextUtils.equals(imagePath, headPath)) {
                         faceUser.setImagePath(headPath);
                         FaceSDK.instance().update(faceUser, new FaceUserManager.FaceUserCallback() {
                             @Override
                             public void onUserResult(boolean b, int i) {
-                                d("更新：" + userBean.getName() + ", FaceId：" + faceId + "，结果：" + b + ","+i);
+                                d("更新：" + userBean.getName() + ", FaceId：" + faceId + "，结果：" + b + "," + i);
                             }
                         });
                     }
@@ -380,7 +430,7 @@ public class SyncManager {
                     FaceSDK.instance().addUser(String.valueOf(faceId), headPath, new FaceUserManager.FaceUserCallback() {
                         @Override
                         public void onUserResult(boolean b, int i) {
-                            d("添加：" + userBean.getName() + ", FaceId：" +faceId + "，结果：" + b + ","+i);
+                            d("添加：" + userBean.getName() + ", FaceId：" + faceId + "，结果：" + b + "," + i);
                         }
                     });
                 }
@@ -391,10 +441,11 @@ public class SyncManager {
     }
 
     private int mCurrDownloadIndex = 0;//当前索引
-    private void startDownload(Queue<User> updateQueue, final Runnable runnable){
+
+    private void startDownload(Queue<User> updateQueue, final Runnable runnable) {
         d("下载头像----------------------------");
         mUpdateTotal = updateQueue.size();
-        showProgress();
+        SyncDialog.instance().setProgress(mCurrDownloadIndex, mUpdateTotal);
         downloadHead(updateQueue, new Runnable() {
             @Override
             public void run() {
@@ -404,19 +455,19 @@ public class SyncManager {
         });
     }
 
-    private void downloadHead(final Queue<User> queue, final Runnable runnable){
-        if(queue == null || queue.size() <= 0){
+    private void downloadHead(final Queue<User> queue, final Runnable runnable) {
+        if (queue == null || queue.size() <= 0) {
             runnable.run();
             return;
         }
         mCurrDownloadIndex++;
-        setTextProgress(mCurrDownloadIndex + "/" + mUpdateTotal);
+        SyncDialog.instance().setProgress(mCurrDownloadIndex, mUpdateTotal);
 
         final User userBean = queue.poll();
-        d("下载：" + userBean.getName() + " —— "+ userBean.getHead());
+        d("下载：" + userBean.getName() + " —— " + userBean.getHead());
         if (!TextUtils.isEmpty(userBean.getHeadPath()) && new File(userBean.getHeadPath()).exists()) {
             d("头像存在");
-            downloadHead(queue,runnable);
+            downloadHead(queue, runnable);
             return;
         }
 
@@ -427,7 +478,6 @@ public class SyncManager {
             @Override
             public void onLoading(long total, long current, boolean isDownloading) {
                 Log.e(TAG, "下载进度... " + current + " —— " + total);
-                setProgress((int) current, (int) total);
             }
 
             @Override
@@ -448,13 +498,13 @@ public class SyncManager {
                 userBean.setAddTag(downloadTag);
                 long l = DaoManager.get().addOrUpdate(userBean);
                 d("更新数据结果... " + l);
-                downloadHead(queue,runnable);
+                downloadHead(queue, runnable);
             }
         });
     }
 
 
-    private Map<Long, User> getRemoteAllUser(List<Depart> dep){
+    private Map<Long, User> getRemoteAllUser(List<Depart> dep) {
         d("检查所有员工----------------------------");
         //生成云端数据的所有员工
         Map<Long, User> remoteDatas = new HashMap<>();
@@ -476,9 +526,9 @@ public class SyncManager {
         return remoteDatas;
     }
 
-    private void  compareUser(List<User> localDatas, Map<Long, User> remoteDatas){
+    private void compareUser(List<User> localDatas, Map<Long, User> remoteDatas) {
         d("开始数据对比----------------------------");
-        d("本地数据：" +localDatas.size() + ", 远程数据：" + remoteDatas.size() );
+        d("本地数据：" + localDatas.size() + ", 远程数据：" + remoteDatas.size());
         //检查已删除
         if (localDatas != null) {
             for (User localData : localDatas) {
@@ -487,7 +537,7 @@ public class SyncManager {
                 if (!remoteDatas.containsKey(id)) {
                     d("准备删除：" + localData.toString());
                     String headPath = localData.getHeadPath();
-                    if(!TextUtils.isEmpty(headPath)){
+                    if (!TextUtils.isEmpty(headPath)) {
                         boolean delete = new File(headPath).delete();
                         d("删除头像：" + delete);
                     }
@@ -501,7 +551,7 @@ public class SyncManager {
         }
     }
 
-    private void updateUser(int comid, Map<Long, User> remoteDatas){
+    private void updateUser(int comid, Map<Long, User> remoteDatas) {
         d("更新员工信息----------------------------");
         //先更新信息
         for (Map.Entry<Long, User> entry : remoteDatas.entrySet()) {
@@ -513,7 +563,7 @@ public class SyncManager {
         EventBus.getDefault().post(new UpdateUserDBEvent());
     }
 
-    private Queue<User> getHeadUpdateQueue(){
+    private Queue<User> getHeadUpdateQueue() {
         d("检查头像数据----------------------------");
         Queue<User> updateList = new LinkedList<>();
         //检查头像
@@ -521,7 +571,7 @@ public class SyncManager {
         for (User localData : localDatas) {
             String headPath = localData.getHeadPath();
             File file = new File(headPath);
-            if(!file.exists()){
+            if (!file.exists()) {
                 updateList.add(localData);
             }
         }
@@ -533,10 +583,11 @@ public class SyncManager {
 
     public void destory() {
         OkHttpUtils.getInstance().cancelTag(this);
-        if (floatSyncView != null) {
-            floatSyncView.dismiss();
-            floatSyncView = null;
-        }
+//        if (floatSyncView != null) {
+//            floatSyncView.dismiss();
+//            floatSyncView = null;
+//        }
+        SyncDialog.instance().dismiss();
     }
 
     /*======UI显示============================================================================================*/
@@ -582,101 +633,102 @@ public class SyncManager {
     }
 
 
-    private void showUI() {
-        mAct.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (floatSyncView == null) {
-                    floatSyncView = new FloatSyncView(mAct);
-                }
-                floatSyncView.show();
-                floatSyncView.showProgress(false);
-            }
-        });
-    }
+//    private void showUI() {
+//        mAct.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (floatSyncView == null) {
+//                    floatSyncView = new FloatSyncView(mAct);
+//                }
+//                floatSyncView.show();
+//                floatSyncView.showProgress(false);
+//            }
+//        });
+//    }
+//
+//    private void setErrInfo(final String info) {
+//        if (floatSyncView != null) {
+//            mAct.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    floatSyncView.setErrInfo(info);
+//                }
+//            });
+//        }
+//    }
+//
+//    private void showProgress() {
+//        if (floatSyncView != null) {
+//            mAct.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    floatSyncView.showProgress(true);
+//                }
+//            });
+//        }
+//    }
+//
+//    private void setProgress(final int curr, final int total) {
+//        if (floatSyncView != null) {
+//            mAct.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    floatSyncView.setDownloadProgress(curr, total);
+//                }
+//            });
+//        }
+//    }
+//
+//    private void setInfo(final String info) {
+//        if (floatSyncView != null) {
+//            mAct.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    floatSyncView.setNormalInfo(info);
+//                }
+//            });
+//        }
+//    }
+//
+//    private void setTextProgress(final String progress) {
+//        if (floatSyncView != null) {
+//            mAct.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    floatSyncView.setTvProgress(progress);
+//                }
+//            });
+//        }
+//    }
+//
+//    private void close() {
+//        SpUtils.saveLong(SpUtils.LAST_INIT_TIME, System.currentTimeMillis());
+//        EventBus.getDefault().postSticky(new EmployListActivity.EmployUpdate());
+//        mAct.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (floatSyncView != null) {
+//                    setInfo("同步结束");
+//                    startTimer(new TimerTask() {
+//                        @Override
+//                        public void run() {
+//                            if (floatSyncView != null) {
+//                                floatSyncView.dismiss();
+//                            }
+//                        }
+//                    }, 3 * 1000);
+//                }
+//            }
+//
+//        });
+//    }
 
-    private void setErrInfo(final String info) {
-        if (floatSyncView != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    floatSyncView.setErrInfo(info);
-                }
-            });
-        }
-    }
-
-    private void showProgress() {
-        if (floatSyncView != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    floatSyncView.showProgress(true);
-                }
-            });
-        }
-    }
-
-    private void setProgress(final int curr, final int total) {
-        if (floatSyncView != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    floatSyncView.setDownloadProgress(curr, total);
-                }
-            });
-        }
-    }
-
-    private void setInfo(final String info) {
-        if (floatSyncView != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    floatSyncView.setNormalInfo(info);
-                }
-            });
-        }
-    }
-
-    private void setTextProgress(final String progress) {
-        if (floatSyncView != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    floatSyncView.setTvProgress(progress);
-                }
-            });
-        }
-    }
-
-    private void close() {
-        SpUtils.saveLong(SpUtils.LAST_INIT_TIME, System.currentTimeMillis());
-        EventBus.getDefault().postSticky(new EmployListActivity.EmployUpdate());
-        mAct.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (floatSyncView != null) {
-                    setInfo("同步结束");
-                    startTimer(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if (floatSyncView != null) {
-                                floatSyncView.dismiss();
-                            }
-                        }
-                    }, 3 * 1000);
-                }
-            }
-
-        });
-    }
-
-    private void d(String log){
+    private void d(String log) {
         Timber.tag(this.getClass().getSimpleName());
         Timber.d(log);
     }
-    private void d(Throwable t){
+
+    private void d(Throwable t) {
         Timber.tag(this.getClass().getSimpleName());
         Timber.d(t);
     }
