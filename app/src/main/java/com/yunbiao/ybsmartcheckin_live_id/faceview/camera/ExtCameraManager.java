@@ -10,8 +10,9 @@ import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FrameHelper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ExtCameraManager {
     private static final String TAG = "ExtCameraManager";
@@ -20,74 +21,15 @@ public class ExtCameraManager {
 
     private static ExtCameraManager surfaceCameraManager = new ExtCameraManager();
     private List<Camera.Size> supportedPreviewSizes;
-    private final ExecutorService executorService;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     public static ExtCameraManager instance(){
         return surfaceCameraManager;
     }
 
     private ExtCameraManager(){
-        executorService = Executors.newFixedThreadPool(2);
+        scheduledExecutorService = Executors.newScheduledThreadPool(2);
     }
-
-//    public void init(TextureView rgbTexture, TextureView nirTexture){
-//        rgbTexture.setSurfaceTextureListener(rgbListener);
-//        nirTexture.setSurfaceTextureListener(nirListener);
-//    }
-//
-//    public void init(TextureView rgbTexture){
-//        rgbTexture.setSurfaceTextureListener(rgbListener);
-//    }
-
-//    private TextureView.SurfaceTextureListener rgbListener = new TextureView.SurfaceTextureListener() {
-//        @Override
-//        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-//            Log.e(TAG, "onSurfaceTextureAvailable: " + CameraType.getNIR());
-//            mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mRGBCallback);
-//        }
-//        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-//        }
-//        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-//            releaseRGBCamera();
-//            return false;
-//        }
-//        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-//        }
-//    };
-//    private TextureView.SurfaceTextureListener nirListener = new TextureView.SurfaceTextureListener() {
-//        @Override public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-//            Log.e(TAG, "onSurfaceTextureAvailable: " + CameraType.getRGB());
-//            mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mNIRCallback);
-//        }
-//        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) { }
-//        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-//            releaseNIRCamera();
-//            return false;
-//        }
-//        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
-//    };
-
-//    private Camera doOpenCamera(int cameraType, int cameraPreviewWidth, int cameraPreviewHeight, SurfaceTexture surfaceTexture , Camera.PreviewCallback previewCallback){
-//        try{
-//            Camera camera = Camera.open(cameraType);
-//            camera.setDisplayOrientation(CameraSettings.getCameraDisplayRotation());
-//            Camera.Parameters parameters = camera.getParameters();
-//            parameters.setPreviewSize(cameraPreviewWidth, cameraPreviewHeight);
-//            camera.setParameters(parameters);
-//            for (int i = 0; i < 3; i++) {
-//                int length = cameraPreviewWidth * cameraPreviewHeight * 3 / 2;
-//                camera.addCallbackBuffer(new byte[length]);
-//            }
-//            camera.setPreviewCallbackWithBuffer(previewCallback);
-//            camera.setPreviewTexture(surfaceTexture);
-//            camera.startPreview();
-//            return camera;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            Log.d("FaceLocalSystemRGBNIR", "########## doCameraPreview RGB exception");
-//        }
-//        return null;
-//    }
 
     /***
      * ========================================================================================================================================================
@@ -114,6 +56,10 @@ public class ExtCameraManager {
 //        rgbSurface.getHolder().addCallback(rgbCallback);
 //    }
 
+    private void delayRun(Runnable runnable){
+        scheduledExecutorService.schedule(runnable,1,TimeUnit.SECONDS);
+    }
+
     private SurfaceHolder.Callback rgbCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(final SurfaceHolder holder) {
@@ -121,7 +67,7 @@ public class ExtCameraManager {
                 mListener.onSurfaceReady();
             }
             releaseRGBCamera();
-            executorService.execute(new Runnable() {
+            delayRun(new Runnable() {
                 @Override
                 public void run() {
                     mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
@@ -143,7 +89,7 @@ public class ExtCameraManager {
         @Override
         public void surfaceCreated(final SurfaceHolder holder) {
             releaseNIRCamera();
-            executorService.execute(new Runnable() {
+            delayRun(new Runnable() {
                 @Override
                 public void run() {
                     mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
@@ -218,7 +164,7 @@ public class ExtCameraManager {
         }
     };
 
-    private byte[] mLastFrameNIR;
+    private byte[] mLastFrameNIR = null;
 
     private Camera.PreviewCallback mNIRCallback = new Camera.PreviewCallback() {
 
@@ -307,15 +253,4 @@ public class ExtCameraManager {
         return optimalSize;
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//// We purposely disregard child measurements because act as a
-//// wrapper to a SurfaceView that centers the camera preview instead
-//// of stretching it.
-//        final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-//        final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-//        setMeasuredDimension(width, height);
-//        if (mSupportedPreviewSizes != null) {
-//            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, Math.max(width, height), Math.min(width, height));
-//        }
 }

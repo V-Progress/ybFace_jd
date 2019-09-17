@@ -74,11 +74,7 @@ public class APP extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-//        if (BuildConfig.DEBUG) {
-//
-//        } else {
-//            Timber.plant(new CrashReportingTree());
-//        }
+
         Timber.plant(new Timber.DebugTree());
 
         initGpio();
@@ -186,7 +182,6 @@ public class APP extends Application {
                 Log.e("APP", "uploadCrashMessage: -------------------");
                 CrashReport.postCatchedException(ex);
                 MobclickAgent.reportError(APP.getContext(), ex);
-
                 RestartAPPTool.restartAPP(APP.getContext());
             }
         };
