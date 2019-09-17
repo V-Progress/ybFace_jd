@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.system;
 
 import android.app.ProgressDialog;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -145,7 +146,12 @@ public class CoreInfoHandler {
                     EventBus.getDefault().postSticky(new AdsUpdateEvent());
                     break;
                 case UPDATE_STAFF:
-                    SyncManager.instance().syncDB();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            SyncManager.instance().syncDB();
+                        }
+                    },2000);
                     break;
                 case UPDATE_INFO:
                     EventBus.getDefault().postSticky(new InformationFragment.InformationUpdateEvent());

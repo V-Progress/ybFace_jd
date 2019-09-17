@@ -24,7 +24,6 @@ import java.util.Map;
 public class WeatherManager {
     private String TAG = getClass().getSimpleName();
     private static WeatherManager instance;
-    private Activity mContext;
     private ResultListener mListener;
 
     private final int GET_WEATHER = 1;
@@ -43,8 +42,7 @@ public class WeatherManager {
 
     private WeatherManager(){}
 
-    public void start(Activity context, final ResultListener resultListener){
-        mContext = context;
+    public void start(final ResultListener resultListener){
         mListener = resultListener;
 
         weatherHandler.sendEmptyMessageDelayed(GET_WEATHER,1000);
@@ -53,17 +51,17 @@ public class WeatherManager {
     private Handler weatherHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            initWeather(mContext);
+            initWeather();
             sendEmptyMessageDelayed(GET_WEATHER,UPDATE_WEAHTHER_INTERVAL);
         }
     };
 
-    private void initWeather(final Context context) {//获取天气
+    private void initWeather() {//获取天气
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {
 
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 String city = SpUtils.getStr(SpUtils.CITYNAME);
                 map.put("city", city);
                 map.put("stores", HeartBeatClient.getDeviceNo());

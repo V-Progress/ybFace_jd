@@ -115,9 +115,6 @@ public class WelComeSmallActivity extends BaseGateActivity {
         //初始化定位工具
         LocateManager.instance().init(this);
 
-        //开始获取天气
-        WeatherManager.instance().start(WelComeSmallActivity.this,resultListener);
-
         //开始屏保计时
         ScreenSaver.get().init(this);
     }

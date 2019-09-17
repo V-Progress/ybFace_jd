@@ -129,7 +129,7 @@ public class AdsFragment extends Fragment implements AdsListener {
         initAdsData();
 
         //开始获取天气
-        WeatherManager.instance().start(getActivity(), resultListener);
+        WeatherManager.instance().start(resultListener);
     }
 
     @Override
@@ -360,6 +360,9 @@ public class AdsFragment extends Fragment implements AdsListener {
                     videoView.setVisibility(View.GONE);
                     Glide.with(getActivity()).load(file).crossFade(300).into(imageView);
                     mAdsindex++;
+                    if(mAdsList.size() < 2){
+
+                    }
 
                     adsHandler.removeMessages(0);
                     adsHandler.sendEmptyMessageDelayed(0, advertTime * 1000);

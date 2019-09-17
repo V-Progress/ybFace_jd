@@ -457,6 +457,7 @@ public class SignManager {
                 signBean.setName("员工补录");
                 signBean.setHeadPath(imgFile.getPath());
                 signBean.setSex(faceProperty.getGender());
+                signBean.setComid(SpUtils.getInt(SpUtils.COMPANYID));
                 Log.e(TAG, "run: -------------- " + signBean.toString());
 
                 if (listener != null) {
@@ -496,6 +497,11 @@ public class SignManager {
                             public void onAfter(int id) {
                                 long l = DaoManager.get().addOrUpdate(signBean);
                                 Log.e(TAG, "入库结果: " + l);
+
+                                List<Sign> signs = DaoManager.get().queryAll(Sign.class);
+                                for (Sign sign : signs) {
+                                    Log.e(TAG, "onAfter: " + sign.toString());
+                                }
                             }
                         });
             }

@@ -17,7 +17,7 @@ public class SyncDialog {
     private static final String TAG = "SyncDialog";
     private static SyncDialog syncDialog;
     private static Activity act;
-    private Dialog dialog;
+    private SDialog dialog;
     private TextView tvInfo;
     private TextView tvProgress;
     private View rootView;
@@ -39,19 +39,7 @@ public class SyncDialog {
     }
 
     private void initDialog(){
-        dialog = new Dialog(act);
-
-        dialog.setContentView(R.layout.layout_load_pop);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-
-        Window window = dialog.getWindow();
-        WindowManager.LayoutParams attributes = window.getAttributes();
-        attributes.width = 200;
-        attributes.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        attributes.gravity = Gravity.LEFT|Gravity.BOTTOM;
-        attributes.windowAnimations = R.style.load_pop_anim;
-        window.setAttributes(attributes);
+        dialog = new SDialog(act);
     }
 
     private void initView(){
@@ -75,6 +63,10 @@ public class SyncDialog {
             dialog.dismiss();
         }
         dialog.show();
+    }
+
+    public boolean isShown(){
+        return dialog != null && dialog.isShowing();
     }
 
     public void dismiss(){

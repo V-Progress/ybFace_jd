@@ -79,7 +79,7 @@ public class UpdateManager {
     //	//外部接口让主Activity调用
     public void checkUpdateInfo(String version) {
         //判断是否需要更新
-        HashMap<String, String> paramMap = new HashMap<String, String>();
+        HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("clientVersion", version);
         paramMap.put("type", 1+ "");
         MyXutils.getInstance().post(ResourceUpdate.VERSION_URL, paramMap, new MyXutils.XCallBack() {

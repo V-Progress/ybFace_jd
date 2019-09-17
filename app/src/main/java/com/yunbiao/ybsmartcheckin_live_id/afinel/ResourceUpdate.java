@@ -33,13 +33,13 @@ public class ResourceUpdate {
     public static String DELETEDEPART = WEB_BASE_URL + "api/department/departmentdelete.html";//删除部门
     public static String GETAD = WEB_BASE_URL + "api/company/getadvert.html";//获取广告
     public static String getCompInfo = WEB_BASE_URL + "api/propa/getAll.html";//公司介绍信息
-    public static String getWeatherInfo = "http://www.yunbiaowulian.com/weather/city.html";
+    public static String getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
     public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
+
     /**
      * 判断服务器中的设备是否在线
      **/
     public static String DEVICE_ONLINE_STATUS = WEB_BASE_URL + "device/status/getrunstatus.html";
-
 
     /**
      * 版本检测
@@ -64,7 +64,6 @@ public class ResourceUpdate {
     private static String VOLUME_URL = WEB_BASE_URL + "device/service/getVolume.html";
     private static String UPLOAD_APP_VERSION_URL = WEB_BASE_URL + "device/service/uploadAppVersionNew.html";
     private static String UPLOAD_DISK_URL = WEB_BASE_URL + "device/service/uploadDisk.html";
-
 
     private static String CACHE_BASE_PATH = Constants.LOCAL_ROOT_PATH;
     public static String PROPERTY_CACHE_PATH = CACHE_BASE_PATH + "property/";// 参数缓存存储目录

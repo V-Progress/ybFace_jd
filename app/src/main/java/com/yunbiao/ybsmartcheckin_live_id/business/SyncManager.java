@@ -130,8 +130,11 @@ public class SyncManager {
 //    }
 
     public void requestCompany() {
-        SyncDialog.instance().show();
-        SyncDialog.instance().setStep("获取公司信息");
+        if (!SyncDialog.instance().isShown()) {
+            SyncDialog.instance().show();
+            SyncDialog.instance().setStep("获取公司信息");
+        }
+
         d("获取公司信息");
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
@@ -144,7 +147,7 @@ public class SyncManager {
                     EventBus.getDefault().post(new UpdateInfoEvent());
                     isFirst = false;
                 }
-                SyncDialog.instance().setStep("将在5秒后重试");
+                SyncDialog.instance().setStep("请求失败，即将重试");
                 retryGetCompany();
             }
 
@@ -152,16 +155,19 @@ public class SyncManager {
             public void onResponse(String response, int id) {
                 d(response);
                 if (TextUtils.isEmpty(response)) {
+                    SyncDialog.instance().setStep("请求失败，即将重试");
                     retryGetCompany();
                     return;
                 }
                 CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
                 if (companyResponse == null) {
+                    SyncDialog.instance().setStep("请求失败，即将重试");
                     retryGetCompany();
                     return;
                 }
 
                 if (companyResponse.getStatus() != 1) {
+                    SyncDialog.instance().setStep("设备未绑定");
                     retryGetCompany();
                     return;
                 }
@@ -279,6 +285,7 @@ public class SyncManager {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                SyncDialog.instance().setStep("获取公司信息");
                 requestCompany();
             }
         }, 10 * 1000);
@@ -286,6 +293,7 @@ public class SyncManager {
 
     private void retryGetUser() {
         d("重新获取员工信息");
+        SyncDialog.instance().setStep("获取失败，即将重试");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -296,6 +304,7 @@ public class SyncManager {
 
     public void syncDB() {
         d("请求员工信息");
+        SyncDialog.instance().setStep("获取员工信息");
         final int comid = SpUtils.getInt(SpUtils.COMPANYID);
         OkHttpUtils.post()
                 .url(ResourceUpdate.GETSTAFF)

@@ -111,11 +111,11 @@ public class APP extends Application {
             e.printStackTrace();
         }
 
-        try{
-            xhApiManager = new XHApiManager();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            xhApiManager = new XHApiManager();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
         //设置gpio为输出
         if(smdt != null){
