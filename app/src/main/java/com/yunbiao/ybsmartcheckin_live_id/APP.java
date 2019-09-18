@@ -34,6 +34,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
+import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -348,7 +349,17 @@ public class APP extends Application {
         RestartAPPTool.restartAPP(getContext());
     }
 
+    public static void bindProtectService(){
+        //开启看门狗,只会在开机是启动一次
+        getContext().startService(new Intent(APP.getContext(), MyProtectService.class));
+    }
+
+    public static void unbindProtectService(){
+        getContext().stopService(new Intent(APP.getContext(), MyProtectService.class));
+    }
+
     public static void exit() {
+        unbindProtectService();
         //关闭整个应用
         System.exit(0);
     }

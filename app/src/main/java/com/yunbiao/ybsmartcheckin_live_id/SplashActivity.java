@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.text.TextUtils;
 
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -14,12 +13,9 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-
-import org.xbill.DNS.SIG0;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +51,7 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        //开启看门狗,只会在开机是启动一次
-        startService(new Intent(APP.getContext(), MyProtectService.class));
+        APP.bindProtectService();
 
         Config.deviceType = CommonUtils.getBroadType();
         ybPermission = new YBPermission(new YBPermission.PermissionListener(){

@@ -83,4 +83,10 @@ public class MyProtectService extends Service {
             err.printStackTrace();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: ");
+    }
 }

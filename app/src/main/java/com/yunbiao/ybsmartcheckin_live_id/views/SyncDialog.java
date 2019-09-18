@@ -79,7 +79,7 @@ public class SyncDialog {
             return;
         }
 
-        setStep("同步完成");
+        setStep("同步结束");
         setProgress(0,0);
 
         if(dialog.isShowing()){

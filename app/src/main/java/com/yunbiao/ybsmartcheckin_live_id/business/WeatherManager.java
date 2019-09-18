@@ -60,7 +60,6 @@ public class WeatherManager {
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {
-
                 final Map<String, String> map = new HashMap<>();
                 String city = SpUtils.getStr(SpUtils.CITYNAME);
                 map.put("city", city);
@@ -68,6 +67,7 @@ public class WeatherManager {
                 MyXutils.getInstance().post(ResourceUpdate.getWeatherInfo, map, new MyXutils.XCallBack() {
                     @Override
                     public void onSuccess(String result) {
+                        Log.e(TAG, "onSuccess: " + result);
                         try {
                             if(TextUtils.isEmpty(result) || TextUtils.equals("\"\"",result)){
                                 return;
