@@ -16,15 +16,10 @@
     <string name="System_update">升级</string>
     <string name="System_copyright">版权所有:北京云标科技有限公司</string>
 
-    <string name="System_Service_cloud">云服务</string>
-    <string name="System_Service_local">本地服务</string>
-    <string name="System_Service_online">在线</string>
     <string name="System_Service_offline">离线</string>
 
     <!--人员管理-->
     <string name="employ_list_title">员工列表</string>
-    <string name="employ_list_depart_all">全部部门</string>
-    <string name="employ_list_depart_add">新增部门</string>
     <string name="employ_list_depart_sync">同步</string>
     <string name="employ_list_field_index">序号</string>
     <string name="employ_list_field_number">员工编号</string>
@@ -49,10 +44,6 @@
 
     <!--离线数据-->
     <string name="sign_list_title">人员签到统计</string>
-    <string name="sign_list_date">日期</string>
-    <string name="sign_list_0">全部</string>
-    <string name="sign_list_1">已发送</string>
-    <string name="sign_list_2">未发送</string>
     <string name="sign_list_filed_index">序号</string>
     <string name="sign_list_filed_time">时间</string>
     <string name="sign_list_filed_name">员工名</string>
@@ -61,11 +52,6 @@
     <string name="sign_list_filed_head">头像</string>
 
     <!--设置-->
-    <string name="setting_title_logo">设置</string>
-    <string name="setting_title_system">系统</string>
-    <string name="setting_title_face">人脸</string>
-    <string name="setting_title_hardware">硬件</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

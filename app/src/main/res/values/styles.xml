@@ -137,13 +137,6 @@
     </style>
 
 
-    <style name="setting_text_title" parent="setting_text">
-        <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:textSize">30dp</item>
-    </style>
-
     <style name="sync_dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

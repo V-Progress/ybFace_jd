@@ -111,7 +111,6 @@
                 android:visibility="gone"
                 android:dropDownSelector="@color/white"
                 android:background="@drawable/shape_employ_button"
-                android:id="@+id/spn_cam_orientation"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_centerVertical="true"

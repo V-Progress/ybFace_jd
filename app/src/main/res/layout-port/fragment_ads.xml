@@ -69,7 +69,6 @@
         <LinearLayout
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
-            android:id="@+id/ll_weather"
             android:gravity="center"
             android:layout_alignParentRight="true"
             android:orientation="horizontal"

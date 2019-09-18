@@ -16,15 +16,10 @@
     <string name="System_update">upgrade</string>
     <string name="System_copyright">copyright:北京云标科技有限公司</string>
 
-    <string name="System_Service_cloud">cloud service</string>
-    <string name="System_Service_local">local service</string>
-    <string name="System_Service_online">on-line</string>
     <string name="System_Service_offline">off-line</string>
 
     <!--人员管理-->
     <string name="employ_list_title">staff list</string>
-    <string name="employ_list_depart_all">all</string>
-    <string name="employ_list_depart_add">add department</string>
     <string name="employ_list_depart_sync">Sync</string>
     <string name="employ_list_field_index">Index</string>
     <string name="employ_list_field_number">No</string>
@@ -50,10 +45,6 @@
 
     <!--离线数据-->
     <string name="sign_list_title">Check-in Record</string>
-    <string name="sign_list_date">Date</string>
-    <string name="sign_list_0">all</string>
-    <string name="sign_list_1">sent</string>
-    <string name="sign_list_2">unsent</string>
     <string name="sign_list_filed_index">Index</string>
     <string name="sign_list_filed_time">Time</string>
     <string name="sign_list_filed_name">Name</string>

@@ -44,7 +44,6 @@
 
         <FrameLayout
             android:visibility="gone"
-            android:id="@+id/fl_face_frame"
             android:layout_width="400dp"
             android:layout_height="400dp"
             android:layout_gravity="center"
