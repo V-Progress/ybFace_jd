@@ -25,8 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="85dp"
                 android:adjustViewBounds="true"
-                android:maxWidth="170dp"
-                android:maxHeight="85dp"
+                android:maxWidth="160dp"
+                android:maxHeight="80dp"
                 android:scaleType="centerInside"
                 android:src="@mipmap/logo_yb" />
 
