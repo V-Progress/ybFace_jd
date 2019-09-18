@@ -133,18 +133,15 @@ dependencies {
     implementation 'com.github.xiaohaibin:XBanner:1.7.0'
     //将latestVersion替换成上面 jitpack 后面的版本号
     implementation files('libs/smdt_v5.1.jar')
-
     // GreenDao(√)
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
     implementation files('libs/XHApi.jar')
-
     //RXJAVA
     implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-
     //TIMBER
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
     implementation 'androidx.viewpager2:viewpager2:1.0.0-beta04'
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1148_43697_sharewithdownloadwithfile_withoutGame_obfs_20190805_175505.jar')
 }

@@ -1,34 +1,36 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child;
 
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsStateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-public class WebFragment extends Fragment implements View.OnTouchListener {
+public class WebFragment extends BaseF implements View.OnTouchListener {
     private static final String TAG = "WebFragment";
     private static final String KEY_URL = "url";
     private WebView webView;
     private ProgressBar progressBar;
     private View tvGoback;
     private View tvRefresh;
+    private WebSettings settings;
 
     public WebFragment() {
     }
@@ -39,6 +41,18 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
         args.putString(KEY_URL, url);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -78,12 +92,16 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
     }
 
     private void initWebView() {
-        WebSettings settings = webView.getSettings();
+        settings = webView.getSettings();
         //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
         settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setDefaultTextEncodingName("UTF-8");
+        settings.setRenderPriority(WebSettings.RenderPriority.LOW);
+
+
         // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
         // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
-
         //支持插件
         settings.setPluginState(WebSettings.PluginState.ON);
         //设置自适应屏幕，两者合用
@@ -91,7 +109,7 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
         settings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
 
         //缩放操作
-        settings.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
+        settings.setSupportZoom(false); //支持缩放，默认为true。是下面那个的前提。
         settings.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
         settings.setDisplayZoomControls(false); //隐藏原生的缩放控件
 
@@ -116,14 +134,27 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
                 }
             }
         });
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new com.tencent.smtt.sdk.WebViewClient(){
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
+                webView.loadUrl(s);
                 return true;
             }
         });
         webView.setOnTouchListener(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(AdsStateEvent adsStateEvent){
+        if(adsStateEvent.state == AdsStateEvent.STATE_CLOSED){
+            if(settings != null){
+                settings.setJavaScriptEnabled(false);
+            }
+        } else {
+            if(settings != null){
+                settings.setJavaScriptEnabled(true);
+            }
+        }
     }
 
     @Override
@@ -148,6 +179,9 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
             webView.onResume();
             webView.resumeTimers();
             webView.reload();
+            if(settings != null){
+                settings.setJavaScriptEnabled(true);
+            }
         }
     }
 
@@ -157,6 +191,9 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
         if(webView != null){
             webView.onPause();
             webView.pauseTimers();
+            if(settings != null){
+                settings.setJavaScriptEnabled(false);
+            }
         }
     }
 
@@ -169,4 +206,13 @@ public class WebFragment extends Fragment implements View.OnTouchListener {
         }
     }
 
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
 }

@@ -30,6 +30,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.AdsListener;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AdvertBean;

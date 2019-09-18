@@ -16,6 +16,10 @@ import android.view.ViewGroup;
 
 import com.stx.xhb.xbanner.transformers.CubePageTransformer;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.VideoFragment;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.WebFragment;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.IntroLoader;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.LoadListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -83,7 +87,7 @@ public class InformationFragment extends Fragment {
         IntroLoader.loadData(loadListener);
     }
 
-    private IntroLoader.LoadListener loadListener = new IntroLoader.LoadListener(){
+    private LoadListener loadListener = new LoadListener(){
         @Override
         public void before() {
             Log.e(TAG, "before: ");
@@ -111,10 +115,10 @@ public class InformationFragment extends Fragment {
         @Override
         public void loadSingle(IntroLoader.PlayBean bean) {
             Log.e(TAG, "getSingle: " + bean.toString());
-            if (bean.type == IntroLoader.TYPE_URL) {
-                fragments.add(WebFragment.newInstance(bean.url));
-            } else if (bean.type == IntroLoader.TYPE_IMAGE_VIDEO) {
-                fragments.add(VideoFragment.newInstance(bean.name, bean.time, bean.pathList));
+            if (bean.getType() == IntroLoader.TYPE_URL) {
+                fragments.add(WebFragment.newInstance(bean.getUrl()));
+            } else if (bean.getType() == IntroLoader.TYPE_IMAGE_VIDEO) {
+                fragments.add(VideoFragment.newInstance(bean.getName(), bean.getTime(), bean.getPathList()));
             }
             Log.e(TAG, "fragments: " + fragments.size());
             Log.e(TAG, "fragment: " + fragments.toString());

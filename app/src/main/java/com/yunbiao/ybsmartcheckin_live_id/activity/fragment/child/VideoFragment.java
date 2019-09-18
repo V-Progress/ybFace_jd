@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child;
 
 import android.os.Bundle;
 
@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsStateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.bean.PathBean;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,7 +33,7 @@ public class VideoFragment extends Fragment {
     private static final String KEY_TIME = "time";
 
     private int mTime = 10;
-    private ArrayList<IntroLoader.PlayBean.PathBean> pathBeans;
+    private ArrayList<PathBean> pathBeans;
     private ViewPager2 vp2;
     private VideoAdapter videoAdapter;
     private TextView tvPosition;
@@ -40,7 +41,7 @@ public class VideoFragment extends Fragment {
     public VideoFragment() {
     }
 
-    public static VideoFragment newInstance(String name,int time, ArrayList<IntroLoader.PlayBean.PathBean> pathList) {
+    public static VideoFragment newInstance(String name, int time, ArrayList<PathBean> pathList) {
         VideoFragment fragment = new VideoFragment();
         Bundle args = new Bundle();
         args.putSerializable(KEY_PATHLIST, pathList);
@@ -86,11 +87,15 @@ public class VideoFragment extends Fragment {
 
     private void initData() {
         mTime = getArguments().getInt(KEY_TIME);
-        pathBeans = (ArrayList<IntroLoader.PlayBean.PathBean>) getArguments().getSerializable(KEY_PATHLIST);
+        pathBeans = (ArrayList<PathBean>) getArguments().getSerializable(KEY_PATHLIST);
         loadData(pathBeans);
+
+        if (videoAdapter != null) {
+            tvPosition.setText(1 + " / " + videoAdapter.getItemCount());
+        }
     }
 
-    private void loadData(ArrayList<IntroLoader.PlayBean.PathBean> pathBeans) {
+    private void loadData(ArrayList<PathBean> pathBeans) {
         videoAdapter = new VideoAdapter(this, pathBeans);
         vp2.setAdapter(videoAdapter);
     }
@@ -98,52 +103,63 @@ public class VideoFragment extends Fragment {
     private ViewPager2.OnPageChangeCallback onPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(final int position) {
-            if(videoAdapter!= null){
-                tvPosition.setText((position+1) + " / " + videoAdapter.getItemCount());
+            if (videoAdapter != null) {
+                tvPosition.setText((position + 1) + " / " + videoAdapter.getItemCount());
             }
-            BaseF fragment = videoAdapter.getFragment(position);
-            fragment.setSwitcher(new BaseF.Switcher() {
-                @Override
-                public void onSwitch() {
-                    switchPage(position);
-                }
-            });
+            Log.e(TAG, "onPageSelected: 切换到 " + position);
+            if (isUserVisibleHint) {
+                Log.e(TAG, "onPageSelected: 页面可见，开启定时切换");
+                BaseF fragment = videoAdapter.getFragment(position);
+                fragment.start();
+            } else {
+                Log.e(TAG, "onPageSelected: 页面不可见，不做任何操作");
+            }
         }
     };
+
+    private boolean isUserVisibleHint = false;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
+        isUserVisibleHint = isVisibleToUser;
+        Log.e(TAG, "setUserVisibleHint: 切换到 " + isVisibleToUser);
+        if (isVisibleToUser) {
+            Log.e(TAG, "setUserVisibleHint: 页面可见，开启定时切换");
             startPlay();
         } else {
+            Log.e(TAG, "setUserVisibleHint: 页面不可见，关闭定时切换");
             stopPlay();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(AdsStateEvent adsStateEvent){
-        if(adsStateEvent.state == AdsStateEvent.STATE_CLOSED){
-            Log.e(TAG, "update: ----- 广告打开");
-            stopPlay();
+    public void update(AdsStateEvent adsStateEvent) {
+        Log.e(TAG, "update: 广告状态改变 " + (adsStateEvent.state == AdsStateEvent.STATE_OPENED ? "开启" : "关闭"));
+        if(isUserVisibleHint){
+            Log.e(TAG, "update: 页面可见，准备处理");
+            if (adsStateEvent.state == AdsStateEvent.STATE_CLOSED) {
+                Log.e(TAG, "update: 开启定时任务");
+                startPlay();
+            } else {
+                Log.e(TAG, "update: 关闭定时任务");
+                stopPlay();
+            }
         } else {
-            Log.e(TAG, "update: ----- 广告关闭");
-            startPlay();
+            Log.e(TAG, "update: 页面不可见，不做任何处理");
         }
     }
 
-    private void stopPlay(){
-        Log.e(TAG, "stopPlay: ----- 停止播放" );
-        if(vp2 != null && videoAdapter != null){
+    private void stopPlay() {
+        if (vp2 != null && videoAdapter != null) {
             int currentItem = vp2.getCurrentItem();
             BaseF fragment = videoAdapter.getFragment(currentItem);
             fragment.stop();
         }
     }
 
-    private void startPlay(){
-        Log.e(TAG, "stopPlay: ----- 开始播放" );
-        if(vp2 != null && videoAdapter != null){
+    private void startPlay() {
+        if (vp2 != null && videoAdapter != null) {
             int currentItem = vp2.getCurrentItem();
             BaseF fragment = videoAdapter.getFragment(currentItem);
             fragment.start();
@@ -157,31 +173,35 @@ public class VideoFragment extends Fragment {
             if (nextPosition >= itemCount) {
                 nextPosition = 0;
             }
-            if (nextPosition == 0) {
-                vp2.setCurrentItem(nextPosition);
-            } else {
-                vp2.setCurrentItem(nextPosition, true);
-            }
+            vp2.setCurrentItem(nextPosition,nextPosition != 0);
         }
     }
+
+    private BaseF.Switcher switcher = new BaseF.Switcher() {
+        @Override
+        public void onSwitch() {
+            switchPage(vp2.getCurrentItem());
+        }
+    };
 
     class VideoAdapter extends FragmentStateAdapter {
         private List<BaseF> fragmentList = new ArrayList<>();
 
-        public VideoAdapter(@NonNull Fragment fragment, ArrayList<IntroLoader.PlayBean.PathBean> pathBeans) {
+        public VideoAdapter(@NonNull Fragment fragment, ArrayList<PathBean> pathBeans) {
             super(fragment);
             if (pathBeans == null) {
                 return;
             }
-            for (IntroLoader.PlayBean.PathBean pathBean : pathBeans) {
+            for (PathBean pathBean : pathBeans) {
                 BaseF baseF;
-                if (pathBean.getType() == IntroLoader.PlayBean.PathBean.TYPE_VIDEO) {
+                if (pathBean.getType() == PathBean.TYPE_VIDEO) {
                     baseF = VideoF.newInstance(pathBean.getLocalPath());
                 } else {
                     baseF = ImageF.newInstance(pathBean.getLocalPath());
                 }
                 baseF.setTime(mTime);
                 baseF.setType(pathBean.getType());
+                baseF.setSwitcher(switcher);
                 fragmentList.add(baseF);
             }
         }
@@ -201,7 +221,6 @@ public class VideoFragment extends Fragment {
             return fragmentList.size();
         }
     }
-
 
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override

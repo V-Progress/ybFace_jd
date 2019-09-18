@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#C90E234E"
-    tools:context=".activity.fragment.ImageF">
+    tools:context=".activity.fragment.child.ImageF">
 
     <ImageView
         android:layout_gravity="center"

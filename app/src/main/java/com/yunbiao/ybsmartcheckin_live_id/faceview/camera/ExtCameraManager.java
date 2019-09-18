@@ -154,12 +154,12 @@ public class ExtCameraManager {
     private Camera.PreviewCallback mRGBCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(final byte[] data, final Camera camera) {
-            final byte[] frameCopy = Arrays.copyOf(data, data.length);
+//            final byte[] frameCopy = Arrays.copyOf(data, data.length);
 
             if (camera != null) {
                 camera.addCallbackBuffer(data);
             }
-            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(frameCopy, CameraSettings.getCameraPreviewWidth(), CameraSettings.getCameraPreviewHeight());
+            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(data, CameraSettings.getCameraPreviewWidth(), CameraSettings.getCameraPreviewHeight());
             FaceFrameManager.handleCameraFrame(frameRotateRGB, mLastFrameNIR, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
         }
     };
@@ -170,11 +170,11 @@ public class ExtCameraManager {
 
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            final byte[] copy = Arrays.copyOf(data, data.length);
+//            final byte[] copy = Arrays.copyOf(data, data.length);
             if (camera != null) {
                 camera.addCallbackBuffer(data);
             }
-            final byte[] frameRotate = FrameHelper.getFrameRotate(copy, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
+            final byte[] frameRotate = FrameHelper.getFrameRotate(data, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
             mLastFrameNIR = frameRotate;
         }
     };

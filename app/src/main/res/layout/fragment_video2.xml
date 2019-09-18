@@ -4,7 +4,7 @@
     android:background="#D80E234E"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.fragment.VideoF">
+    tools:context=".activity.fragment.child.VideoF">
     <com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView
         android:layout_gravity="center"
         android:id="@+id/video_view"

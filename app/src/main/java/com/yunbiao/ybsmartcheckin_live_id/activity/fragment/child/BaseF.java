@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child;
 
 import android.util.Log;
 

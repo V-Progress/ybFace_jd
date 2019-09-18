@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -46,22 +46,11 @@ public class VideoF extends BaseF {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         videoView = getView().findViewById(R.id.video_view);
+
         if (getArguments() != null) {
             mUrl = getArguments().getString(KEY);
             videoView.setVideoPath(mUrl);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        start();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stop();
     }
 
     @Override

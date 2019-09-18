@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child;
 
 import android.os.Bundle;
 
@@ -50,27 +50,19 @@ public class ImageF extends BaseF {
     private static final String TAG = "ImageF";
 
     @Override
-    public void onResume() {
-        super.onResume();
-        start();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stop();
-    }
-
-    @Override
     public void start() {
         Log.e(TAG, "onResume: ----- 已设置定时任务");
-        imageView.removeCallbacks(switchRunnable);
-        imageView.postDelayed(switchRunnable,getTime() * 1000);
+        if(imageView != null){
+            imageView.removeCallbacks(switchRunnable);
+            imageView.postDelayed(switchRunnable,getTime() * 1000);
+        }
     }
 
     @Override
     public void stop() {
         Log.e(TAG, "onPause: ----- 已清除定时任务");
-        imageView.removeCallbacks(switchRunnable);
+        if(imageView != null){
+            imageView.removeCallbacks(switchRunnable);
+        }
     }
 }

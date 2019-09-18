@@ -89,7 +89,7 @@ public class WelComeActivity extends BaseGpioActivity {
         SignFragment signListFragment = new SignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
-        //只有竖屏情况下加载信息展示Fragment
+//        只有竖屏情况下加载信息展示Fragment
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             InformationFragment informationFragment = new InformationFragment();
             replaceFragment(R.id.layout_h, informationFragment);
@@ -114,7 +114,6 @@ public class WelComeActivity extends BaseGpioActivity {
                 UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
             }
         }, 5 * 1000);
-
     }
 
     /*人脸识别回调，由上到下执行*/

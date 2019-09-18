@@ -1,10 +1,11 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
+package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data;
 
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.bean.PathBean;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -13,7 +14,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,12 +87,12 @@ public class IntroLoader {
                 playBean.url = propa.url;
             } else {
                 playBean.time = propa.time;
-                ArrayList<PlayBean.PathBean> pathList = new ArrayList<>();
+                ArrayList<PathBean> pathList = new ArrayList<>();
                 List<String> imgArray = propa.getImgArray();
                 if (imgArray != null) {
                     for (String url : imgArray) {
                         String localPath = Constants.INFO_PATH + url.substring(url.lastIndexOf("/") + 1);
-                        pathList.add(new PlayBean.PathBean(url, localPath, PlayBean.PathBean.TYPE_IMG));
+                        pathList.add(new PathBean(url, localPath, PathBean.TYPE_IMG));
                     }
                 }
 
@@ -100,7 +100,7 @@ public class IntroLoader {
                 if (videoArray != null) {
                     for (String url : videoArray) {
                         String localPath = Constants.INFO_PATH + url.substring(url.lastIndexOf("/") + 1);
-                        pathList.add(new PlayBean.PathBean(url, localPath, PlayBean.PathBean.TYPE_VIDEO));
+                        pathList.add(new PathBean(url, localPath, PathBean.TYPE_VIDEO));
                     }
                 }
                 playBean.pathList = pathList;
@@ -168,26 +168,6 @@ public class IntroLoader {
         });
     }
 
-    public static abstract class  LoadListener {
-        public void before(){}
-
-        public void loadCacheComplete(){}
-
-        public void noCache(){}
-
-        public void startRequest(){}
-
-        public void requestFailed(){}
-
-        public void requestComplete(){}
-
-        public void loadBefore(){}
-
-        public void loadSingle(PlayBean bean){}
-
-        public void loadFinish(){}
-    }
-
     public interface DownloadListener {
         void getSingle(PlayBean bean);
 
@@ -211,7 +191,7 @@ public class IntroLoader {
         }
         //是图片视频就下载
         d("准备... " + bean.toString());
-        List<PlayBean.PathBean> pathList = bean.pathList;
+        List<PathBean> pathList = bean.pathList;
         download(pathList, new Runnable() {
             @Override
             public void run() {
@@ -222,15 +202,15 @@ public class IntroLoader {
         });
     }
 
-    private static void download(final List<PlayBean.PathBean> list, final Runnable finishRunnable) {
+    private static void download(final List<PathBean> list, final Runnable finishRunnable) {
         if (childIndex > list.size() - 1) {
             childIndex = 0;
             finishRunnable.run();
             return;
         }
-        final PlayBean.PathBean pathBean = list.get(childIndex);
-        String url = pathBean.url;
-        String localPath = pathBean.localPath;
+        final PathBean pathBean = list.get(childIndex);
+        String url = pathBean.getUrl();
+        String localPath = pathBean.getLocalPath();
         childIndex++;
         if (!TextUtils.isEmpty(localPath) && new File(localPath).exists()) {
             d("文件存在... " + localPath);
@@ -247,7 +227,7 @@ public class IntroLoader {
             @Override
             public void onSuccess(File result) {
                 d("下载成功... " + result.getPath());
-                pathBean.localPath = result.getPath();
+                pathBean.setLocalPath(result.getPath());
             }
 
             @Override
@@ -374,45 +354,50 @@ public class IntroLoader {
     }
 
     public static class PlayBean {
-        String name;
-        int time;
-        int type;
-        String url;
-        ArrayList<PathBean> pathList;
+        private String name;
+        private int time;
+        private int type;
+        private String url;
+        private ArrayList<PathBean> pathList;
 
-        public static class PathBean implements Serializable {
-            public static final int TYPE_IMG = 0;
-            public static final int TYPE_VIDEO = 1;
-            int type;
-            String url;
-            String localPath;
+        public String getName() {
+            return name;
+        }
 
-            public int getType() {
-                return type;
-            }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-            public String getUrl() {
-                return url;
-            }
+        public int getTime() {
+            return time;
+        }
 
-            public String getLocalPath() {
-                return localPath;
-            }
+        public void setTime(int time) {
+            this.time = time;
+        }
 
-            public PathBean(String url, String localPath, int type) {
-                this.url = url;
-                this.localPath = localPath;
-                this.type = type;
-            }
+        public int getType() {
+            return type;
+        }
 
-            @Override
-            public String toString() {
-                return "PathBean{" +
-                        "type=" + type +
-                        ", url='" + url + '\'' +
-                        ", localPath='" + localPath + '\'' +
-                        '}';
-            }
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public ArrayList<PathBean> getPathList() {
+            return pathList;
+        }
+
+        public void setPathList(ArrayList<PathBean> pathList) {
+            this.pathList = pathList;
         }
 
         @Override
@@ -424,6 +409,7 @@ public class IntroLoader {
                     ", pathList=" + pathList +
                     '}';
         }
+
     }
 
 }
