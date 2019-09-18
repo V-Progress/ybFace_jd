@@ -16,17 +16,17 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:orientation="horizontal"
-            android:gravity="center"
+            android:gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/iv_ads_logo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="85dp"
                 android:adjustViewBounds="true"
-                android:maxWidth="200dp"
-                android:maxHeight="120dp"
+                android:maxWidth="170dp"
+                android:maxHeight="85dp"
                 android:scaleType="centerInside"
                 android:src="@mipmap/logo_yb" />
 

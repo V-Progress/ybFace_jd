@@ -172,7 +172,7 @@ public class AdsFragment extends Fragment implements AdsListener {
     private WeatherManager.ResultListener resultListener = new WeatherManager.ResultListener() {
         @Override
         public void updateWeather(int id, String weatherInfo) {
-            ivWeather.setImageResource(R.mipmap.icon_snow);
+            ivWeather.setImageResource(id);
             tvWeather.setText(weatherInfo);
         }
     };
