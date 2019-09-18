@@ -249,9 +249,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_choose:
-                chooseBitmap(REQUEST_CODE_1);
-                break;
             case R.id.btn_TakePhoto://点击拍照
                 pbTakePhoto.setVisibility(View.VISIBLE);
                 btn_TakePhoto.setVisibility(View.GONE);
