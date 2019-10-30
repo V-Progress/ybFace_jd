@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yunbiao.ybsmartcheckin_live_id">
-    <uses-permission android:name="android.permission.GET_TASKS"/>
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
     <permission android:name="android.permission.REBOOT" />
     <permission android:name="android.permission.SHUTDOWN" />
     <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
@@ -65,8 +67,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                 <!--<category android:name="android.intent.category.HOME" />-->
-                 <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.HOME" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -74,13 +76,16 @@
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.jdcn.WelComeSmallActivity"
+        <activity
+            android:name=".activity.jdcn.WelComeSmallActivity"
             android:launchMode="singleTask" />
 
         <activity android:name=".activity.AddEmployActivity" />
         <activity android:name=".activity.EmployListActivity" />
         <activity android:name=".activity.DepartListActivity" />
-        <activity android:name=".activity.EditEmployActivity" />
+        <activity
+            android:name=".activity.EditEmployActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
         <activity android:name=".activity.SystemActivity" />
         <activity

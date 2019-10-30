@@ -13,13 +13,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.stx.xhb.xbanner.transformers.CubePageTransformer;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.VideoFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.child.WebFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.IntroLoader;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.LoadListener;
+import com.yunbiao.ybsmartcheckin_live_id.business.NoticeManager;
+import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,6 +50,9 @@ public class InformationFragment extends Fragment {
         vpInfomation = rootView.findViewById(R.id.vp_information);
         ivBg = rootView.findViewById(R.id.iv_bg);
         pbLoad = rootView.findViewById(R.id.pb_load);
+
+        NoticeManager.getInstance().init(rootView);
+
         return rootView;
     }
 
@@ -55,7 +63,7 @@ public class InformationFragment extends Fragment {
         vpInfomation.setPageTransformer(false, new CubePageTransformer(18F));//也可自定义动画范围大小new CubePageTransformer(90f)
         vpInfomation.setAdapter(vpPagerAdapter);
 
-        initData();
+        NoticeManager.getInstance().initSignData();
     }
 
     private class MyAdapter extends FragmentPagerAdapter {
@@ -82,16 +90,35 @@ public class InformationFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateMediaEvent event) {
+        initData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(InformationUpdateEvent event) {
         Log.e(TAG, "update: 收到更新信息事件");
         IntroLoader.loadData(loadListener);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateInfoEvent event) {
+        NoticeManager.getInstance().initSignData();
+    }
+
+    private void runOnUiThread(Runnable runnable){
+        getActivity().runOnUiThread(runnable);
     }
 
     private LoadListener loadListener = new LoadListener(){
         @Override
         public void before() {
             Log.e(TAG, "before: ");
-            pbLoad.setVisibility(View.VISIBLE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoad.setVisibility(View.VISIBLE);
+                }
+            });
         }
 
         @Override
@@ -102,35 +129,55 @@ public class InformationFragment extends Fragment {
         @Override
         public void requestFailed() {
             Log.e(TAG, "requestFailed: " );
-            pbLoad.setVisibility(View.GONE);
-            ivBg.setVisibility(fragments.size() <= 0 ? View.VISIBLE : View.GONE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoad.setVisibility(View.GONE);
+                    ivBg.setVisibility(fragments.size() <= 0 ? View.VISIBLE : View.GONE);
+                }
+            });
         }
 
         @Override
         public void loadBefore() {
-            fragments.clear();
-            vpPagerAdapter.notifyDataSetChanged();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    fragments.clear();
+                    vpPagerAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
-        public void loadSingle(IntroLoader.PlayBean bean) {
+        public void loadSingle(final IntroLoader.PlayBean bean) {
             Log.e(TAG, "getSingle: " + bean.toString());
-            if (bean.getType() == IntroLoader.TYPE_URL) {
-                fragments.add(WebFragment.newInstance(bean.getUrl()));
-            } else if (bean.getType() == IntroLoader.TYPE_IMAGE_VIDEO) {
-                fragments.add(VideoFragment.newInstance(bean.getName(), bean.getTime(), bean.getPathList()));
-            }
-            Log.e(TAG, "fragments: " + fragments.size());
-            Log.e(TAG, "fragment: " + fragments.toString());
-            vpPagerAdapter.notifyDataSetChanged();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (bean.getType() == IntroLoader.TYPE_URL) {
+                        fragments.add(WebFragment.newInstance(bean.getUrl()));
+                    } else if (bean.getType() == IntroLoader.TYPE_IMAGE_VIDEO) {
+                        fragments.add(VideoFragment.newInstance(bean.getName(), bean.getTime(), bean.getPathList()));
+                    }
+                    Log.e(TAG, "fragments: " + fragments.size());
+                    Log.e(TAG, "fragment: " + fragments.toString());
+                    vpPagerAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
         public void loadFinish() {
             Log.e(TAG, "loadFinish: " );
             d("全部处理结束... ");
-            pbLoad.setVisibility(View.GONE);
-            ivBg.setVisibility(fragments.size() <= 0 ? View.VISIBLE : View.GONE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoad.setVisibility(View.GONE);
+                    ivBg.setVisibility(fragments.size() <= 0 ? View.VISIBLE : View.GONE);
+                }
+            });
         }
     };
 

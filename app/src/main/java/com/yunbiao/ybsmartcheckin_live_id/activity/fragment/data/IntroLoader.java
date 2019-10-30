@@ -110,7 +110,6 @@ public class IntroLoader {
         return playList;
     }
 
-
     //从网络加载开始
     private static void loadCompanyInfo(final String cacheData, final LoadListener loadListener) {
         loadListener.startRequest();

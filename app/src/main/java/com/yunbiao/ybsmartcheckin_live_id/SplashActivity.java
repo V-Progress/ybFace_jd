@@ -84,7 +84,7 @@ public class SplashActivity extends BaseActivity {
                     });
                     return;
                 } else {
-                    UIUtils.showTitleTip(SplashActivity.this,"权限申请失败");
+                    UIUtils.showTitleTip(SplashActivity.this,getString(R.string.act_spl_tip_qxsqsb));
                 }
             }
         });
@@ -94,7 +94,7 @@ public class SplashActivity extends BaseActivity {
     private void transferDBData(final Runnable runnable){
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-        progressDialog.setTitle("提示");
+        progressDialog.setTitle(getString(R.string.base_tip));
         progressDialog.show();
 
         final List<SignBean> signBeans = APP.getSignDao().selectAll();
@@ -139,9 +139,9 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void accept(Integer o) throws Exception {
                 if(0 == 3){
-                    progressDialog.setMessage("正在进行数据迁移，请不要退出软件或重启设备\n正在处理签到数据...");
+                    progressDialog.setMessage(getString(R.string.act_spl_tip_zzjxsjqy));
                 } else if(0 == 4){
-                    progressDialog.setMessage("迁移完成");
+                    progressDialog.setMessage(getString(R.string.act_spl_tip_qywc));
                 } else{
                     progressDialog.dismiss();
                     runnable.run();

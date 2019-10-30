@@ -51,32 +51,32 @@ public class CommonUtils {
     public static String getMacAddress() {
         String macAddress = "";
         WifiManager wifiManager = (WifiManager) APP.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = (null == wifiManager ? null : wifiManager.getConnectionInfo());
-
-        assert wifiManager != null;
-        if (!wifiManager.isWifiEnabled()) {//必须先打开，才能获取到MAC地址
+        if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
-            wifiManager.setWifiEnabled(false);
         }
-        if (null != info) {
+
+        WifiInfo info = wifiManager.getConnectionInfo();
+        if (info != null) {
             macAddress = info.getMacAddress();
-            if (macAddress != null && macAddress.equals("02:00:00:00:00:00")) {//6.0及以上系统获取的mac错误
-                macAddress = CommonUtils.getSixOSMac();
-            }
+        }
+
+        if (!TextUtils.isEmpty(macAddress) && macAddress.equals("02:00:00:00:00:00")) {//6.0及以上系统获取的mac错误
+            macAddress = CommonUtils.getMacAddr();
         }
 
         if (TextUtils.isEmpty(macAddress)) {
-            macAddress = NetworkUtils.getLocalMacAddress();
+            macAddress = CommonUtils.getSixOSMac();
         }
 
-        String mac = macAddress.toUpperCase();
+        macAddress = macAddress.toUpperCase();
         String macS = "";
-        for (int i = mac.length() - 1; i >= 0; i--) {
-            macS += mac.charAt(i);
+        for (int i = macAddress.length() - 1; i >= 0; i--) {
+            macS += macAddress.charAt(i);
         }
-        UUID uuid2 = new UUID(macS.hashCode(), mac.hashCode());
+        UUID uuid2 = new UUID(macS.hashCode(), macAddress.hashCode());
         return uuid2.toString();
     }
+
     /**
      * 获取现在时间
      *
@@ -88,9 +88,37 @@ public class CommonUtils {
         return formatter.format(currentTime);
     }
 
+    // Android 6.0以上获取WiFi的Mac地址
+    //由于android6.0对wifi mac地址获取进行了限制，用原来的方法获取会获取到02:00:00:00:00:00这个固定地址。
+    //但是可以通过读取节点进行获取"/sys/class/net/wlan0/address"
+    public static String getMacAddr() {
+        try {
+            return loadFileAsString("/sys/class/net/wlan0/address")
+                    .toUpperCase().substring(0, 17);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String loadFileAsString(String filePath)
+            throws java.io.IOException {
+        StringBuffer fileData = new StringBuffer(1000);
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        char[] buf = new char[1024];
+        int numRead = 0;
+        while ((numRead = reader.read(buf)) != -1) {
+            String readData = String.valueOf(buf, 0, numRead);
+            fileData.append(readData);
+        }
+        reader.close();
+        return fileData.toString();
+    }
+
 
     /**
      * 获得屏幕高度
+     *
      * @return
      */
     public static int getScreenWidth() {
@@ -102,6 +130,7 @@ public class CommonUtils {
 
     /**
      * 设置添加屏幕的背景透明度
+     *
      * @param bgAlpha
      */
     public static void backgroundAlpha(float bgAlpha) {
@@ -123,6 +152,7 @@ public class CommonUtils {
 
     /**
      * 获得屏幕宽度
+     *
      * @return
      */
     public static int getScreenHeight() {
@@ -133,10 +163,9 @@ public class CommonUtils {
     }
 
 
-
-
     /**
      * 渠道信息
+     *
      * @param context
      * @param metaName
      * @return
@@ -145,8 +174,7 @@ public class CommonUtils {
         try {
             ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             return appInfo.metaData.getInt(metaName);
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         return -1;
@@ -155,6 +183,7 @@ public class CommonUtils {
 
     /**
      * 隐藏输入键盘
+     *
      * @param view
      * @param context
      */
@@ -171,7 +200,7 @@ public class CommonUtils {
         inputMeMana.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public static double doubleFormat (double valued) {
+    public static double doubleFormat(double valued) {
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         String p = decimalFormat.format(valued);
         valued = Double.valueOf(p);
@@ -209,7 +238,7 @@ public class CommonUtils {
             File dir = new File("/sys/devices/system/cpu/");
             File[] files = dir.listFiles(new CpuFilter());
             return files.length;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return 1;
         }
@@ -218,13 +247,14 @@ public class CommonUtils {
 
     /**
      * 获取CPU最大频率，单位KHZ
+     *
      * @return
      */
     public static String getMaxCpuFreq() {
         String result = "";
         ProcessBuilder cmd;
         try {
-            String[] args = { "/system/bin/cat","/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq" };
+            String[] args = {"/system/bin/cat", "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"};
             cmd = new ProcessBuilder(args);
             Process process = cmd.start();
             InputStream in = process.getInputStream();
@@ -237,7 +267,7 @@ public class CommonUtils {
             ex.printStackTrace();
             result = "N/A";
         }
-        Double cpuGhz = Double.valueOf(result.trim())/1000000;
+        Double cpuGhz = Double.valueOf(result.trim()) / 1000000;
         return String.valueOf(cpuGhz);
     }
 
@@ -386,11 +416,11 @@ public class CommonUtils {
      */
     public static Integer getBroadType() {
         String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
-        if(TextUtils.isEmpty(broad_info)){
+        if (TextUtils.isEmpty(broad_info)) {
             broad_info = saveBroadInfo();
-            SpUtils.saveStr(SpUtils.BOARD_INFO,broad_info);
+            SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if (broad_info.contains("even@bnxd")){
+        if (broad_info.contains("even@bnxd")) {
             return Config.DEVICE_SMALL_FACE;
         } else {
             return Config.DEVICE_ONLY_FACE;

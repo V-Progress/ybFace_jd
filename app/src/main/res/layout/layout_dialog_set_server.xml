@@ -10,7 +10,7 @@
         android:padding="26dp"
         android:textSize="26dp"
         android:textColor="@color/white"
-        android:text="设置服务IP"
+        android:text="@string/act_set_szfwIP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="云服务地址&#32;:"
+            android:text="@string/act_set_yfwdz"
             android:textSize="26dp" />
 
         <EditText
@@ -69,7 +69,7 @@
         <EditText
             android:id="@+id/edt_server_port"
             style="@style/net_ip_edt"
-            android:hint="端口号"
+            android:hint="@string/act_set_dkh"
             android:maxLength="5" />
     </LinearLayout>
 
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="资源地址&#32;:"
+            android:text="@string/act_set_zydz"
             android:textSize="26dp" />
 
         <TextView
@@ -130,14 +130,14 @@
         <EditText
             android:id="@+id/edt_res_port"
             style="@style/net_ip_edt"
-            android:hint="端口号"
+            android:hint="@string/act_set_dkh"
             android:maxLength="5" />
     </LinearLayout>
 
     <TextView
         android:maxLines="1"
         android:paddingBottom="20dp"
-        android:text="注意：修改地址成功后将会重启应用"
+        android:text="@string/act_set_notice"
         android:id="@+id/tv_net_tips"
         android:textColor="@android:color/holo_red_dark"
         android:gravity="center"
@@ -160,7 +160,7 @@
             android:layout_width="0dp"
             android:layout_height="65dp"
             android:layout_weight="1"
-            android:text="取消"
+            android:text="@string/base_cancel"
             android:textSize="26dp" />
 
         <Button
@@ -170,7 +170,7 @@
             android:layout_width="0dp"
             android:layout_height="65dp"
             android:layout_weight="1"
-            android:text="确认修改"
+            android:text="@string/act_set_qrxg"
             android:textSize="26dp" />
 
     </LinearLayout>

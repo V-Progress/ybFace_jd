@@ -124,7 +124,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initSpinner() {
-        final String[] modeArray = {"全部", "已发送", "未发送"};
+        final String[] modeArray = {getString(R.string.act_sign_tip_qb), getString(R.string.act_sign_tip_yfs), getString(R.string.act_sign_tip_wfs)};
         ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(this, R.layout.item_spinner_simple_text, modeArray);
 
         spnDataMode.setAdapter(spnAdapter);
@@ -200,7 +200,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 mShowList.clear();
                 mSignList = DaoManager.get().querySignByComIdAndDate(SpUtils.getInt(SpUtils.COMPANYID),queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
-                    tips("暂无数据");
+                    tips(getString(R.string.act_sign_tip_zwsj));
                     return;
                 }
 
@@ -218,7 +218,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     showData();
                     hide();
                 } else {
-                    tips("暂无数据");
+                    tips(getString(R.string.act_sign_tip_zwsj));
                 }
             }
         });
@@ -236,7 +236,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SignActivity.this, (aBoolean ? "上传成功" : "上传失败，请检查网络"));
+                        UIUtils.showShort(SignActivity.this, (aBoolean ? getString(R.string.act_sign_tip_sccg): getString(R.string.act_sign_tip_scsbqjcwl)));
                     }
                 });
                 break;
@@ -250,17 +250,17 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                String yearStr = year + "年";
+                                String yearStr = year + getString(R.string.base_year);
 
                                 int realMonth = month + 1;
-                                String monthStr = realMonth + "月";
+                                String monthStr = realMonth + getString(R.string.base_month);
                                 if (realMonth < 10) {
-                                    monthStr = "0" + realMonth + "月";
+                                    monthStr = "0" + realMonth + getString(R.string.base_month);
                                 }
 
-                                String dayStr = dayOfMonth + "日";
+                                String dayStr = dayOfMonth + getString(R.string.base_day);
                                 if (dayOfMonth < 10) {
-                                    dayStr = "0" + dayOfMonth + "日";
+                                    dayStr = "0" + dayOfMonth + getString(R.string.base_day);
                                 }
                                 String date = yearStr + monthStr + dayStr;
                                 tv_date.setText(date);
@@ -281,7 +281,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     public void exportToUD(View view) {
         if (isExporting) {
-            UIUtils.showTitleTip(SignActivity.this, "正在导出，请稍等");
+            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_zzdcqsd));
             return;
         }
         isExporting = true;
@@ -289,7 +289,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         File file = new File(usbDiskPath);
         if (!file.exists()) {
             isExporting = false;
-            UIUtils.showTitleTip(SignActivity.this, "请插入U盘");
+            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_qcrup));
             return;
         }
 
@@ -324,7 +324,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            UIUtils.showTitleTip(SignActivity.this, "数据已全部上传\n没有可导出的数据");
+                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_sjyqbsc)+"\n"+getString(R.string.act_sign_tip_mykdcdsj));
                         }
                     });
                     return;
@@ -355,9 +355,9 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         if (jsonFile.exists()) {
-                            UIUtils.showTitleTip(SignActivity.this, "导出成功，文件路径：\n" + jsonFile.getPath());
+                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dccgwjlj)+":\n" + jsonFile.getPath());
                         } else {
-                            UIUtils.showTitleTip(SignActivity.this, "导出失败");
+                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dcsb));
                         }
                     }
                 });

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
@@ -108,7 +109,7 @@ public class UpdateManager {
         switch (isUpdate) {
             case "1": //不需要更新
                 if(mContext != null){
-                    UIUtils.showShort(mContext,"当前版本为最新版本");
+                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_dqbbwzxbb));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
@@ -116,7 +117,7 @@ public class UpdateManager {
                 break;
             case "faile":  //网络不通，或者解析出错
                 if(mContext != null){
-                    UIUtils.showShort(mContext,"网络连接失败，请检查网络");
+                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_wlljsbqjcwl));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
@@ -187,7 +188,7 @@ public class UpdateManager {
                 e.printStackTrace();
 
                 if(mContext != null){
-                    UIUtils.showShort(mContext,"下载失败");
+                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_xzsb));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();

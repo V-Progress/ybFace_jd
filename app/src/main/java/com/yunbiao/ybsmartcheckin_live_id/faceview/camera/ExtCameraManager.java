@@ -8,7 +8,6 @@ import android.view.SurfaceView;
 import com.jdjr.risk.face.local.frame.FaceFrameManager;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FrameHelper;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,9 +56,10 @@ public class ExtCameraManager {
 //    }
 
     private void delayRun(Runnable runnable){
-        scheduledExecutorService.schedule(runnable,1,TimeUnit.SECONDS);
+        scheduledExecutorService.schedule(runnable,300,TimeUnit.MILLISECONDS);
     }
 
+    private Camera.ErrorCallback rgbErrorCallback;
     private SurfaceHolder.Callback rgbCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(final SurfaceHolder holder) {
@@ -70,7 +70,19 @@ public class ExtCameraManager {
             delayRun(new Runnable() {
                 @Override
                 public void run() {
+                    rgbErrorCallback = new Camera.ErrorCallback() {
+                        @Override
+                        public void onError(int error, Camera camera) {
+                            mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+                            if(mRGBCamera != null){
+                                mRGBCamera.setErrorCallback(rgbErrorCallback);
+                            }
+                        }
+                    };
                     mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+                    if(mRGBCamera != null){
+                        mRGBCamera.setErrorCallback(rgbErrorCallback);
+                    }
                 }
             });
         }
@@ -85,6 +97,7 @@ public class ExtCameraManager {
         }
     };
 
+    private Camera.ErrorCallback nirErrorCallback;
     private SurfaceHolder.Callback nirCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(final SurfaceHolder holder) {
@@ -92,7 +105,19 @@ public class ExtCameraManager {
             delayRun(new Runnable() {
                 @Override
                 public void run() {
+                    nirErrorCallback = new Camera.ErrorCallback() {
+                        @Override
+                        public void onError(int error, Camera camera) {
+                            mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+                            if(mNIRCamera != null){
+                                mNIRCamera.setErrorCallback(nirErrorCallback);
+                            }
+                        }
+                    };
                     mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+                    if(mNIRCamera != null){
+                        mNIRCamera.setErrorCallback(nirErrorCallback);
+                    }
                 }
             });
         }

@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/system_bg_h"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        android:paddingBottom="36dp">
+
+        <TextView
+            android:id="@+id/tv_ads_addname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/act_editEmploy_zjyg"
+            android:textColor="@color/white"
+            android:textSize="32dp" />
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:src="@mipmap/icon_back" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="800dp"
+            android:background="@drawable/shape_bg_btnrepicture"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <FrameLayout
+                android:id="@+id/layout_camera"
+                android:layout_width="960dp"
+                android:layout_height="540dp"
+                android:layout_below="@+id/tv_ads_addname"
+                android:background="@color/colorAccent"
+                android:orientation="vertical">
+
+                <com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView
+                    android:layout_gravity="center"
+                    android:id="@+id/face_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/tv_takephoto_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="80dp" />
+
+                <TextView
+                    android:id="@+id/tv_takephoto_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="220dp"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/layout_camera"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/view_middle">
+
+                    <Button
+                        android:id="@+id/btn_TakePhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:drawableLeft="@mipmap/icon_camera"
+                        android:paddingLeft="18dp"
+                        android:text="@string/act_editEmploy_pz"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/alv_take_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"
+                        match:indicator="LineScalePulseOutRapid" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_ReTakePhoto"
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/layout_camera"
+                    android:layout_marginLeft="50dp"
+                    android:layout_toRightOf="@+id/view_middle"
+                    android:background="@drawable/shape_bg_btnrepicture"
+                    android:drawableLeft="@mipmap/icon_repicture"
+                    android:paddingLeft="18dp"
+                    android:text="@string/act_editEmploy_reset"
+                    android:textColor="@color/theme_green"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="800dp"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="6"
+            android:background="@drawable/shape_employ_list">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/btn_ReTakePhoto">
+
+                <TextView
+                    android:id="@+id/tv_jbxx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/act_editEmploy_jbxx"
+                    android:textColor="@color/font_green"
+                    android:textSize="28dp" />
+
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_jbxx"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/bg_edit"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:scaleType="centerInside"
+                    android:id="@+id/iv_capture"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_alignTop="@+id/et_name"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@+id/et_name"
+                    android:src="@mipmap/avatar" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/tv_jbxx"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toLeftOf="@+id/et_name"
+                    android:gravity="center"
+                    android:text="姓名:"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <RadioGroup
+                    android:gravity="center"
+                    android:layout_toRightOf="@+id/tv_sex"
+                    android:layout_marginTop="30dp"
+                    android:id="@+id/rg_sex"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/et_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp">
+                    <RadioButton
+                        android:button="@android:drawable/btn_radio"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_male"
+                        android:text="@string/base_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+                        android:button="@android:drawable/btn_radio"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_female"
+                        android:text="@string/base_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/tv_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_name"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/sp_depart"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_sex"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <Spinner
+                    android:id="@+id/sp_depart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rg_sex"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@mipmap/bg_edit"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/rg_sex"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toLeftOf="@+id/sp_depart"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_bm"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:id="@+id/et_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/sp_depart"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@mipmap/bg_edit"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/sp_depart"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toLeftOf="@+id/et_job"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_ygbh"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:id="@+id/et_job"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/et_num"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@mipmap/bg_edit"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_num"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toLeftOf="@+id/et_job"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_zw"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/tv_birth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/et_job"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@mipmap/bg_edit"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_job"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toLeftOf="@+id/tv_birth"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_csrq"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:id="@+id/et_sign"
+                    android:layout_width="400dp"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/tv_birth"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/shape_bg_btnrepicture"
+                    android:gravity="left|top"
+                    android:paddingLeft="@dimen/paddingleft_addemploy"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/tv_birth"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toLeftOf="@+id/et_sign"
+                    android:gravity="center"
+                    android:text="@string/act_editEmploy_gxqm"
+                    android:textColor="@color/font_green"
+                    android:textSize="20dp" />
+
+
+                <View
+                    android:id="@+id/view_middle2"
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:layout_below="@+id/et_sign"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"></View>
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_sign"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_toLeftOf="@+id/view_middle2"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:text="@string/base_ensure"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+                <Button
+                    android:id="@+id/btn_cancle"
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/et_sign"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_toRightOf="@+id/view_middle2"
+                    android:background="@drawable/shape_bg_btnrepicture"
+                    android:text="@string/base_cancel"
+                    android:textColor="@color/theme_green"
+                    android:textSize="20dp" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

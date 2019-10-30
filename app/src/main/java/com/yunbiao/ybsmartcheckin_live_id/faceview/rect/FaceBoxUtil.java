@@ -60,4 +60,12 @@ public class FaceBoxUtil {
 
         return mDrawFaceRect;
     }
+
+    public static float getXRatio(){
+        return mXRatio;
+    }
+
+    public static float getYRatio(){
+        return mYRatio;
+    }
 }

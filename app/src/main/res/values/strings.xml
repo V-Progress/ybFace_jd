@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">云标AI人脸签到系统</string>
+    <string name="app_name">云标智能考勤</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
@@ -54,4 +54,329 @@
     <!--设置-->
 
     <!-- TODO: Remove or change this placeholder text -->
+
+
+    <!--2019.10.21 增加字段-->
+
+    <!--通用的  -->
+    <string name="base_tip">提示</string>
+    <string name="base_ensure">确定</string>
+    <string name="base_cancel">取消</string>
+    <string name="base_male">男</string>
+    <string name="base_female">女</string>
+    <string name="base_people">人</string>
+    <string name="base_year">年</string>
+    <string name="base_month">月</string>
+    <string name="base_day">日</string>
+    <string name="base_department">部门</string>
+    <string name="base_delete">删除</string>
+    <string name="base_edit">编辑</string>
+    <string name="base_saveSuccessfully">保存成功</string>
+
+    <!--activity_splash  -->
+    <string name="act_spl_tip_qxsqsb">权限申请失败</string>
+    <string name="act_spl_tip_zzjxsjqy">正在进行数据迁移，请不要退出软件或重启设备正在处理签到数据...</string>
+    <string name="act_spl_tip_qywc">迁移完成</string>
+
+    <!--activity_wel  -->
+    <string name="act_wel_topTitle">云标智能签到</string>
+    <string name="act_wel_bottomTitle">云标AI智能签到</string>
+
+    <string name="act_wel_error_bywjsrmmo">不要忘记输入密码哦</string>
+    <string name="act_wel_error_mmclqcxsrb">密码错了，重新输入吧</string>
+
+    <!--activity_wel   layout_input_pwd.xml-->
+    <string name="act_wel_glmm">管理密码</string>
+    <string name="act_wel_qsrglmm">请输入管理密码</string>
+
+    <!--activity_wel_small  -->
+    <string name="act_welSmall_hello">您好</string>
+    <string name="act_welSmall_error_bywjsrmmo">不要忘记输入密码哦</string>
+    <string name="act_welSmall_error_mmclcxsrb">密码错了，重新输入吧</string>
+    <string name="act_welSmall_tip_nhhygl"> 您好 %s ，欢迎光临</string>
+    <string name="act_welSmall_tip_sbqdcg">上班签到成功</string>
+    <string name="act_welSmall_tip_xbqdcg">下班签到成功</string>
+    <string name="act_welSmall_jrqd">今日签到:</string>
+
+    <!--activity_system  -->
+    <string name="act_sys_kqrlkjx">开启人脸框镜像</string>
+    <string name="act_sys_open">开启</string>
+    <string name="act_sys_jdqys">继电器延时</string>
+    <string name="act_sys_second">秒</string>
+    <string name="act_sys_CPU_tem">CPU温度:</string>
+    <string name="act_sys_camera">摄像头</string>
+    <string name="act_sys_totalOne">共1个</string>
+    <string name="act_sys_dqsy">【当前使用：】</string>
+    <string name="act_sys_dqwl">当前网络:</string>
+    <string name="act_sys_WIFI_wlmc">【WIFI，网络名称：XXXXX】</string>
+    <string name="act_sys_WIFI_cqsb">重启设备</string>
+    <string name="act_sys_jcsj">检测升级</string>
+    <string name="act_sys_glmmxg">管理密码修改</string>
+
+
+    <string name="act_sys_tip_online">在线</string>
+    <string name="act_sys_tip_outline">离线</string>
+    <string name="act_sys_tip_validityPeriod">无限期</string>//有效期（永久有效）
+
+    <string name="act_sys_tip_cloundService">云服务</string>//有效期（永久有效）
+    <string name="act_sys_tip_localService">本地服务</string>
+    <string name="act_sys_tip_yfwipdzhdkhbnwk">云服务IP地址或端口号不可为空</string>
+    <string name="act_sys_tip_zyipdzhdkbnwk">资源IP地址或端口号不可为空</string>
+
+    <string name="act_sys_error_mmbkwk">密码不可为空</string>
+    <string name="act_sys_error_mmzssr6w">密码最少输入6位</string>
+    <string name="act_sys_error_qzcsrmm">请再次输入密码</string>
+    <string name="act_sys_error_lcsrdmmbyz">两次输入的密码不一致</string>
+
+    <string name="act_sys_error_modify_fail">修改失败</string>
+    <string name="act_sys_error_modify_success">修改成功</string>
+
+    <string name="act_sys_tip_angle">角度</string>
+    <string name="act_sys_tip_cczjqcyyhcfsfjx">此操作将清除应用缓存，是否继续？</string>
+    <string name="act_sys_tip_ggsxtpzxycqyycnsx">更改摄像头配置需要重启应用才能生效，是否继续？</string>
+
+    <string name="act_sys_tip_wxlj">网线连接</string>
+    <string name="act_sys_tip_wxlj_wwl">网线连接：无网络</string>
+    <string name="act_sys_tip_wxlj_wwllj">无网络连接</string>
+
+    <string name="act_sys_tip_wxlj_wllx_wifi">网络类型:WIFI</string>
+    <string name="act_sys_tip_wxlj_wlmc">，网络名称:</string>
+    <string name="act_sys_tip_xh">，信号:</string>
+
+    <string name="act_sys_tip_noCamera">无摄像头</string>
+    <string name="act_sys_tip_total">共</string>
+    <string name="act_sys_tip_ge">个</string>
+    <string name="act_sys_tip_bh">编号</string>
+    <string name="act_sys_tip_fbl">，分辨率:</string>
+    <string name="act_sys_tip_back">后置</string>
+    <string name="act_sys_tip_front">前置</string>
+
+    <string name="act_sys_tip_auto">自动</string>
+    <string name="act_sys_tip_ytwlipdz">【以太网络，IP地址:</string>
+    <string name="act_sys_tip_IPAddress">，IP地址:</string>
+
+    <string name="act_sys_tip_mc">名称:</string>
+    <string name="act_sys_tip_xhqd">，信号强度:</string>
+    <string name="act_sys_tip_zj">最佳</string>
+    <string name="act_sys_tip_zd">最大</string>
+
+    <string name="act_sys_tip_sbjcqsfjx">设备将重启，是否继续？</string>
+    <string name="act_sys_tip_reStart">设重启</string>
+    <string name="act_sys_tip_3shjcqsb">3秒后将重启设备</string>
+
+
+
+    <string name="act_sys_tip_strong">强</string>
+    <string name="act_sys_tip_general">一般</string>
+    <string name="act_sys_tip_poor">差</string>
+    <string name="act_sys_tip_wwl">无网络</string>
+
+    <string name="act_sys_smxfo">扫码续费o(∩_∩)o</string>
+    <string name="act_sys_sz">设置</string>
+
+    <!--act_sys   layout_set_pwd.xml -->
+    <string name="act_sys_xtmmsz">系统密码设置</string>
+    <string name="act_sys_qsrldswmmszzm">请输入6-12位密码（数字、字母）</string>
+    <string name="act_sys_qzcsrmm">请再次输入密码</string>
+
+
+    <!--activity_setting -->
+    <string name="act_set_tip_auto">自动</string>
+    <string name="act_set_tip_back">后置</string>
+    <string name="act_set_tip_front">前置</string>
+    <string name="act_set_tip_fbl">，分辨率:</string>
+    <string name="act_set_tip_angle">角度</string>
+    <string name="act_set_tip_ytwlipdz">【以太网络，IP地址:</string>
+    <string name="act_set_tip_IPAddress">，IP地址:</string>
+    <string name="act_set_tip_zj">最佳</string>
+    <string name="act_set_tip_zd">最大</string>
+    <string name="act_set_tip_mc">名称:</string>
+    <string name="act_set_tip_xhqd">，信号强度:</string>
+
+    <string name="act_set_tip_sbjcqsfjx">设备将重启，是否继续？</string>
+    <string name="act_set_tip_reStart">设重启</string>
+    <string name="act_set_tip_3shjcqsb">3秒后将重启设备</string>
+
+    <string name="act_set_error_mmbkwk">密码不可为空</string>
+    <string name="act_set_error_mmzssr6w">密码最少输入6位</string>
+    <string name="act_set_error_qzcsrmm">请再次输入密码</string>
+    <string name="act_set_error_lcsrdmmbyz">两次输入的密码不一致</string>
+
+    <string name="act_set_error_modify_fail">修改失败</string>
+    <string name="act_set_error_modify_success">修改成功</string>
+
+    <!-- act_set head_layout.xml -->
+    <string name="act_set_txjl">通行记录</string>
+    <!-- act_set layout_dialog_set_server.xml -->
+    <string name="act_set_szfwIP">设置服务IP</string>
+    <string name="act_set_yfwdz">云服务地址&#32;:</string>
+    <string name="act_set_dkh">端口号</string>
+    <string name="act_set_zydz">资源地址&#32;:</string>
+    <string name="act_set_notice">注意：修改地址成功后将会重启应用</string>
+    <string name="act_set_qrxg">确认修改</string>
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">系统设置</string>
+    <string name="act_set_xtmm">系统密码</string>
+    <string name="act_set_qchc">清除缓存</string>
+    <string name="act_set_qcsj">清除数据</string>
+    <string name="act_set_jcsxt">检测摄像头</string>
+    <string name="act_set_sfjx">是否镜像</string>
+    <string name="act_set_wlzt">网络状态</string>
+    <string name="act_set_gb">关闭</string>
+
+    <!--activity_AddEmploy -->
+    <string name="act_addEmp_tip_qxfhcjzjbm">请先返回创建增加部门！</string>
+    <string name="act_addEmp_tip_qxpz">请先拍照！</string>
+    <string name="act_addEmp_tip_mzbnwk">名字不能为空！</string>
+    <string name="act_addEmp_tip_qxfhzjbm">请返回增加部门！</string>
+    <string name="act_addEmp_tip_zwbnwk">职位不能为空！</string>
+    <string name="act_addEmp_tip_ljfwqsbqcxzs">连接服务器失败,请重新再试！</string>
+    <string name="act_addEmp_tip_bmbcz">部门不存在！</string>
+    <string name="act_addEmp_tip_tjsbcwdm">提交失败，错误代码:</string>
+    <string name="act_addEmp_tip_ygbcsbqcxzs">员工保存失败,请重新再试！</string>
+
+    <!--activity_EmployList-->
+    <string name="act_employList_tip_qbbm">全部部门</string>
+    <string name="act_employList_tip_qdscm">确定删除吗？</string>
+    <string name="act_employList_tip_scsb">删除失败</string>
+    <string name="act_employList_tip_sccg">删除成功</string>
+
+    <string name="act_employList_add">新增</string>
+    <string name="act_employList_bm">部门</string>
+    <string name="act_employList_addDepart">新增部门</string>
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">请输入部门名称</string>
+    <string name="act_departList_tip_qdscm">确定删除吗？</string>
+
+    <string name="act_departList_bmlb">部门列表</string>
+    <string name="act_departList_add">新增</string>
+    <string name="act_departList_xh">序号</string>
+    <string name="act_departList_bmmc">部门名称</string>
+    <string name="act_departList_cz">操作</string>
+
+    <!--activity_EditEmploy-->
+
+    <string name="act_editEmploy_tip_qxpz">请先拍照</string>
+    <string name="act_editEmploy_tip_qtxxm">请填写姓名</string>
+    <string name="act_editEmploy_tip_qxzxb">请选择性别</string>
+    <string name="act_editEmploy_tip_qtxbh">请填写编号</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">未找到头像文件，请重新拍照后再试</string>
+    <string name="act_editEmploy_tip_wzrhxg">未做任何修改</string>
+    <string name="act_editEmploy_tip_tjsb">添加失败</string>
+    <string name="act_editEmploy_tip_gygbcz">该员工不存在</string>
+    <string name="act_editEmploy_tip_bczgbm">不存在该部门</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">公司没有这个部门</string>
+    <string name="act_editEmploy_tip_gsyzwyg">公司没有这位员工</string>
+    <string name="act_editEmploy_tip_cscw">参数错误</string>
+
+    <string name="act_editEmploy_xgxx">修改信息</string>
+    <string name="act_editEmploy_pz">拍照</string>
+    <string name="act_editEmploy_reset">重置</string>
+    <string name="act_editEmploy_jbxx">基本信息</string>
+    <string name="act_editEmploy_name">姓名:</string>
+    <string name="act_editEmploy_sex">性别:</string>
+    <string name="act_editEmploy_bm">部门:</string>
+    <string name="act_editEmploy_ygbh">员工编号:</string>
+    <string name="act_editEmploy_zw">职位:</string>
+    <string name="act_editEmploy_csrq">出生日期:</string>
+    <string name="act_editEmploy_gxqm">个性签名:</string>
+    <string name="act_editEmploy_zjyg">增加员工</string>
+
+
+    <!--activity_Sign-->
+    <string name="act_sign_tip_qb">全部</string>
+    <string name="act_sign_tip_yfs">已发送</string>
+    <string name="act_sign_tip_wfs">未发送</string>
+    <string name="act_sign_tip_zwsj">暂无数据</string>
+    <string name="act_sign_tip_sccg">上传成功</string>
+    <string name="act_sign_tip_scsbqjcwl">上传失败，请检查网络</string>
+    <string name="act_sign_tip_zzdcqsd">正在导出，请稍等</string>
+    <string name="act_sign_tip_qcrup">请插入U盘</string>
+    <string name="act_sign_tip_sjyqbsc">数据已全部上传</string>
+    <string name="act_sign_tip_mykdcdsj">没有可导出的数据</string>
+    <string name="act_sign_tip_dccgwjlj">导出成功，文件路径</string>
+    <string name="act_sign_tip_dcsb">导出失败</string>
+
+    <string name="act_sign_dcsj">导出数据</string>
+    <string name="act_sign_scsj">上传数据</string>
+    <string name="act_sign_sjyqbsc">数据已全部上传</string>
+
+
+    <!--2019.10.22 增加字段-->
+
+    <!--BaseActivity-->
+    <string name="act_base_zwspqqhhp">暂无竖屏，请切换横屏</string>
+    <string name="act_base_zwhpqqhhp">暂无横屏，请切换竖屏</string>
+
+    <!--BaseGateActivity-->
+    <string name="act_baseGate_mkmkjzsb">门控模块加载失败!</string>
+
+    <!--BaseGpioActivity-->
+    <string name="act_baseGpio_wfkzmjqjcbkxh">无法控制门禁，请检查板卡型号</string>
+
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">智能人脸签到，让企业更放心~</string>
+
+    <!--InformationFragment-->
+
+    <!--SignFragment-->
+    <string name="fment_sign_tip_hello">您好 %s</string>
+    <string name="fment_sign_tip_welcome"> 您好 %s ，欢迎光临</string>
+    <string name="fment_sign_tip_goTips">上班签到成功</string>
+    <string name="fment_sign_tip_downTips">下班签到成功</string>
+    <string name="fment_sign_tip_blcg">补录成功</string>
+    <string name="fment_sign_tip_blsb">补录失败</string>
+    <string name="fment_sign_tip_yqd">已签到</string>
+    <string name="fment_sign_bl">补录</string>
+    <string name="fment_sign_jrqd">今日签到:</string>
+
+    <!--WebFragment-->
+    <string name="fment_Web_back">后退</string>
+    <string name="fment_Web_refresh">刷新</string>
+
+
+
+    <!--adapter 和 dialog-->
+
+    <!--VisitorAdapter-->
+    <string name="adapter_visitor_tourist">游客</string>
+
+    <!--SyncDialog-->
+    <string name="dialog_sync_tbjs">同步结束</string>
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">请输入部门名称</string>
+
+    <!--layout_load_pop.xml-->
+    <string name="lay_loadPop_sync">同步</string>
+    <string name="lay_loadPop_zlxsxx">这里显示信息</string>
+
+
+    <!-- UIUtils -->
+    <string name="uiUtils_tip_notice">通知</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">正在安装相关应用，请耐心等待！</string>
+
+    <!-- SyncManager -->
+    <string name="syncManager_tip_hqgsxx">获取公司信息</string>
+    <string name="syncManager_tip_qqsbjjcs">请求失败，即将重试</string>
+    <string name="syncManager_tip_hqsbjjcs">获取失败，即将重试</string>
+    <string name="syncManager_tip_sbwbd">设备未绑定</string>
+    <string name="syncManager_tip_hqygxx">获取员工信息</string>
+    <string name="syncManager_tip_tbbm">同步部门</string>
+    <string name="syncManager_tip_tbygxx">同步员工信息</string>
+    <string name="syncManager_tip_xztx">下载头像</string>
+    <string name="syncManager_tip_tbrlk">同步人脸库</string>
+    <string name="syncManager_tip_tbjs">同步结束</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">是否退出应用？</string>
+    <string name="restartAPPTool_ycdht">隐藏到后台</string>
+    <string name="restartAPPTool_exit">退出</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">当前版本为最新版本</string>
+    <string name="updateManager_wlljsbqjcwl">网络连接失败，请检查网络</string>
+    <string name="updateManager_xzsb">下载失败</string>
 </resources>

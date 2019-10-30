@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -56,14 +57,14 @@ public abstract class BaseActivity extends FragmentActivity {
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             if(portraitLayout == 0){
-                UIUtils.showShort(this,"暂无竖屏，请切换横屏");
+                UIUtils.showShort(this,getString(R.string.act_base_zwspqqhhp));
                 APP.exit();
                 return;
             }
             setContentView(portraitLayout);
         } else {
             if(landscapeLayout == 0){
-                UIUtils.showShort(this,"暂无横屏，请切换竖屏");
+                UIUtils.showShort(this,getString(R.string.act_base_zwhpqqhhp));
                 APP.exit();
                 return;
             }

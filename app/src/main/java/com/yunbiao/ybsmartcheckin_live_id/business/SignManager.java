@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -72,6 +74,7 @@ public class SignManager {
     private boolean isBuluing = false;
 
     private Map<Long, Long> passageMap = new HashMap<>();
+
     public static SignManager instance() {
         if (instance == null) {
             synchronized (SignManager.class) {
@@ -100,7 +103,7 @@ public class SignManager {
         @Override
         public void run() {
             int compId = SpUtils.getInt(SpUtils.COMPANYID);
-            final List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId,today);
+            final List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId, today);
             if (signs != null) {
                 for (Sign signBean : signs) {
                     long time = signBean.getTime();
@@ -131,7 +134,7 @@ public class SignManager {
         }
     };
 
-    public void uploadSignRecord(final Consumer<Boolean> callback){
+    public void uploadSignRecord(final Consumer<Boolean> callback) {
         final List<Sign> signs = DaoManager.get().querySignByUpload(false);
         if (signs == null) {
             return;
@@ -210,7 +213,7 @@ public class SignManager {
             uploadSignRecord(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean aBoolean) throws Exception {
-                    if(aBoolean){
+                    if (aBoolean) {
                         EventBus.getDefault().post(new UpdateSignDataEvent());
                     }
                     d("处理情况：" + aBoolean);
@@ -228,8 +231,8 @@ public class SignManager {
         return instance();
     }
 
-    public void checkSign(VerifyResult verifyResult){
-        if(isBulu){
+    public void checkSign(VerifyResult verifyResult) {
+        if (isBulu) {
             makeUpSign(verifyResult.getFaceImageBytes());
             return;
         }
@@ -237,7 +240,7 @@ public class SignManager {
             return;
         }
 
-        byte[] faceImageBytes = verifyResult.getFaceImageBytes();
+        final byte[] faceImageBytes = verifyResult.getFaceImageBytes();
         FaceUser user = verifyResult.getUser();
         if (user == null) {
             return;
@@ -256,14 +259,13 @@ public class SignManager {
         }
 
         User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
-        if(userBean == null){
+        if (userBean == null) {
             return;
         }
 
-        File imgFile = saveBitmap(currTime, faceImageBytes);
         sign.setEmployNum(userBean.getNumber());
         sign.setEmpId(userBean.getId());
-        sign.setHeadPath(imgFile.getPath());
+        sign.setImgBytes(faceImageBytes);
         sign.setDepart(userBean.getDepartName());
         sign.setName(userBean.getName());
         sign.setUpload(false);
@@ -286,8 +288,8 @@ public class SignManager {
     }
 
     public void checkSign(VerifyResult verifyResult, FaceProperty faceProperty) {
-        if(isBulu){
-            makeUpSign(verifyResult.getFaceImageBytes(),faceProperty);
+        if (isBulu) {
+            makeUpSign(verifyResult.getFaceImageBytes(), faceProperty);
             return;
         }
 
@@ -314,7 +316,7 @@ public class SignManager {
         }
 
         User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
-        if(userBean == null){
+        if (userBean == null) {
             return;
         }
 
@@ -352,14 +354,17 @@ public class SignManager {
             public void onError(Call call, Exception e, int id) {
                 signBean.setUpload(false);
             }
+
             @Override
             public void onResponse(String response, int id) {
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 signBean.setUpload(jsonObject.getInteger("status") == 1);
-
             }
+
             @Override
             public void onAfter(int id) {
+                File imgFile = saveBitmap(signBean.getTime(), signBean.getImgBytes());
+                signBean.setHeadPath(imgFile.getPath());
                 DaoManager.get().addOrUpdate(signBean);
             }
         });
@@ -390,10 +395,10 @@ public class SignManager {
         Company company = SpUtils.getCompany();
         String gotime = "09:00";
         String downTime = "18:00";
-        if(company != null){
-            if(!TextUtils.isEmpty(company.getGotime()))
+        if (company != null) {
+            if (!TextUtils.isEmpty(company.getGotime()))
                 gotime = company.getGotime();
-            if(!TextUtils.isEmpty(company.getDowntime()))
+            if (!TextUtils.isEmpty(company.getDowntime()))
                 downTime = company.getDowntime();
         }
 
@@ -421,21 +426,21 @@ public class SignManager {
         }
     }
 
-    public boolean isBuluState(){
+    public boolean isBuluState() {
         return isBulu;
     }
 
-    public void startBulu(){
+    public void startBulu() {
         isBulu = true;
     }
 
-    public void makeUpSign(final byte[] faceImage){
-        FaceProperty faceProperty = new FaceProperty(0,0,0,null);
-        makeUpSign(faceImage,faceProperty);
+    public void makeUpSign(final byte[] faceImage) {
+        FaceProperty faceProperty = new FaceProperty(0, 0, 0, null);
+        makeUpSign(faceImage, faceProperty);
     }
 
     public void makeUpSign(final byte[] faceImage, final FaceProperty faceProperty) {
-        if(isBuluing){
+        if (isBuluing) {
             return;
         }
         threadPool.execute(new Runnable() {

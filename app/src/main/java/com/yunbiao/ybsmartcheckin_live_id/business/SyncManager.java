@@ -13,6 +13,7 @@ import com.google.gson.JsonSyntaxException;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SyncCompleteEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -138,7 +139,7 @@ public class SyncManager {
     public void requestCompany() {
         if (!SyncDialog.instance().isShown()) {
             SyncDialog.instance().show();
-            SyncDialog.instance().setStep("获取公司信息");
+            SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_hqgsxx));
         }
 
         d("获取公司信息");
@@ -153,7 +154,7 @@ public class SyncManager {
                     EventBus.getDefault().post(new UpdateInfoEvent());
                     isFirst = false;
                 }
-                SyncDialog.instance().setStep("请求失败，即将重试");
+                SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_qqsbjjcs));
                 retryGetCompany();
             }
 
@@ -161,19 +162,19 @@ public class SyncManager {
             public void onResponse(String response, int id) {
                 d(response);
                 if (TextUtils.isEmpty(response)) {
-                    SyncDialog.instance().setStep("请求失败，即将重试");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_hqgsxx));
                     retryGetCompany();
                     return;
                 }
                 CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
                 if (companyResponse == null) {
-                    SyncDialog.instance().setStep("请求失败，即将重试");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_hqgsxx));
                     retryGetCompany();
                     return;
                 }
 
                 if (companyResponse.getStatus() != 1) {
-                    SyncDialog.instance().setStep("设备未绑定");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_sbwbd));
                     retryGetCompany();
                     return;
                 }
@@ -182,6 +183,11 @@ public class SyncManager {
                 SpUtils.saveInt(SpUtils.COMPANYID, companyResponse.getCompany().getComid());
                 SpUtils.setCompany(companyResponse.getCompany());
                 d("缓存公司信息");
+
+                SpUtils.saveStr(SpUtils.MENU_PWD,companyResponse.getCompany().getDevicePwd());
+
+                //2019.10.21 添加  获取是否显示职称，默认显示displayPosition，1是显示
+                SpUtils.saveInt(SpUtils.DISPLAYPOSITION,companyResponse.getCompany().getDisplayPosition());
 
                 //初始化存储路径
                 Constants.initStorage();
@@ -307,7 +313,7 @@ public class SyncManager {
 
     private void retryGetUser() {
         d("重新获取员工信息");
-        SyncDialog.instance().setStep("获取失败，即将重试");
+        SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_hqsbjjcs));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -318,7 +324,7 @@ public class SyncManager {
 
     public void syncDB() {
         d("请求员工信息");
-        SyncDialog.instance().setStep("获取员工信息");
+        SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_hqygxx));
         final int comid = SpUtils.getInt(SpUtils.COMPANYID);
         OkHttpUtils.post()
                 .url(ResourceUpdate.GETSTAFF)
@@ -357,7 +363,7 @@ public class SyncManager {
 
     //同步部门数据库
     private void syncDepart(final Company company) {
-        SyncDialog.instance().setStep("同步部门");
+        SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_tbbm));
         if (company == null) {
             return;
         }
@@ -418,15 +424,15 @@ public class SyncManager {
             @Override
             public void accept(Integer integer) throws Exception {
                 if (integer == 0) {
-                    SyncDialog.instance().setStep("同步员工信息");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_tbygxx));
                 } else if (integer == 1) {
                     SpUtils.saveLong(SpUtils.LAST_INIT_TIME,System.currentTimeMillis());
                     SyncDialog.instance().dismiss();
                     EventBus.getDefault().post(new SyncCompleteEvent());
                 } else if (integer == 2) {
-                    SyncDialog.instance().setStep("下载头像");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_xztx));
                 } else if (integer == 3) {
-                    SyncDialog.instance().setStep("同步人脸库");
+                    SyncDialog.instance().setStep(APP.getActivity().getString(R.string.syncManager_tip_tbrlk));
                 }
             }
         });

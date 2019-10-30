@@ -12,9 +12,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
+import android.os.ServiceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -25,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
@@ -33,6 +37,7 @@ import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
+import com.yunbiao.ybsmartcheckin_live_id.CustomSDCardLoader;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
@@ -56,10 +61,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Call;
+import skin.support.SkinCompatManager;
 
 public class SystemActivity extends BaseActivity implements View.OnClickListener {
 
@@ -86,6 +96,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private TextView tv_bindcode_syetem;
     private CheckBox cbMirror;
     private Company company;
+
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     protected int getPortraitLayout() {
@@ -178,7 +190,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(XmppConnectEvent connectEvent) {
-        tv_online_system.setText(connectEvent.isConnected() ? "在线" : "离线");
+        tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.act_sys_tip_online) : getString(R.string.act_sys_tip_outline));
     }
 
     public void setIcon(){
@@ -199,9 +211,14 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         tv_bindcode_syetem.setText(bindCode);
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
-        tv_exp_system.setText(TextUtils.isEmpty(expDate) ? "无限期" : expDate);
+        if (TextUtils.isEmpty(expDate)) {
+            expDate = getString(R.string.act_sys_tip_validityPeriod);
+        } else {
+            expDate = dateFormat.format(new Date(Long.parseLong(expDate)));
+        }
+        tv_exp_system.setText(expDate);
 
-        tv_online_system.setText(CoreInfoHandler.isOnline ? "在线" : "离线");
+        tv_online_system.setText(CoreInfoHandler.isOnline ? getString(R.string.act_sys_tip_online) : getString(R.string.act_sys_tip_outline));
     }
 
     @Override
@@ -269,9 +286,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     private void updateServerState(){
         String host = Constants.RESOURCE_URL;
-        tv_server_system.setText("云服务");
+        tv_server_system.setText(getString(R.string.act_sys_tip_cloundService));
         if (host.contains("192.168.")) {
-            tv_server_system.setText("本地服务");
+            tv_server_system.setText(getString(R.string.act_sys_tip_localService));
             ivQrCode.setVisibility(View.GONE);
             tvQrLable.setVisibility(View.GONE);
         } else {
@@ -366,7 +383,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                                 || TextUtils.isEmpty(ip2)
                                 || TextUtils.isEmpty(ip3)
                                 || TextUtils.isEmpty(sPort)){
-                            tvTips.setText("云服务IP地址或端口号不可为空");
+                            tvTips.setText(getString(R.string.act_sys_tip_yfwipdzhdkhbnwk));
                             return;
                         }
 
@@ -380,7 +397,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                                 || TextUtils.isEmpty(ip2)
                                 || TextUtils.isEmpty(ip3)
                                 || TextUtils.isEmpty(rport)){
-                            tvTips.setText("资源IP地址或端口号不可为空");
+                            tvTips.setText(getString(R.string.act_sys_tip_zyipdzhdkbnwk));
                             return;
                         }
 
@@ -427,21 +444,21 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onClick(View v) {
                 if(TextUtils.isEmpty(edtPwd.getText())){
-                    edtPwd.setError("密码不可为空");
+                    edtPwd.setError(getString(R.string.act_sys_error_mmbkwk));
                     return;
                 }
                 if(edtPwd.getText().length()<6){
-                    edtPwd.setError("密码最少输入6位");
+                    edtPwd.setError(getString(R.string.act_sys_error_mmzssr6w));
                     return;
                 }
                 if(TextUtils.isEmpty(edtPwd2.getText())){
-                    edtPwd2.setError("请再次输入密码");
+                    edtPwd2.setError(getString(R.string.act_sys_error_qzcsrmm));
                     return;
                 }
                 String pwd = edtPwd.getText().toString();
                 final String pwd2 = edtPwd2.getText().toString();
                 if(!TextUtils.equals(pwd,pwd2)){
-                    edtPwd2.setError("两次输入的密码不一致");
+                    edtPwd2.setError(getString(R.string.act_sys_error_lcsrdmmbyz));
                     return;
                 }
 
@@ -456,7 +473,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SystemActivity.this,"修改失败：" + e!=null?e.getMessage():"NULL");
+                                UIUtils.showTitleTip(SystemActivity.this,getString(R.string.act_sys_error_modify_fail)+"：" + e!=null?e.getMessage():"NULL");
                             }
                         });
                     }
@@ -469,11 +486,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                             @Override
                             public void run() {
                                 if(status == 1){
-                                    UIUtils.showTitleTip(SystemActivity.this,"修改成功");
+                                    UIUtils.showTitleTip(SystemActivity.this,getString(R.string. act_sys_error_modify_success));
                                     SpUtils.saveStr(SpUtils.MENU_PWD,pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip(SystemActivity.this,"修改失败");
+                                    UIUtils.showTitleTip(SystemActivity.this,getString(R.string.act_sys_error_modify_fail));
                                 }
                             }
                         });
@@ -506,7 +523,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             anInt = CameraSettings.ROTATION_0;
         }
         CameraSettings.setCameraDisplayRotation(anInt);
-        ((Button)view).setText("角度：" + anInt);
+        ((Button)view).setText(getString(R.string.act_sys_tip_angle)+"：" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
     }
 
@@ -520,7 +537,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.tv_setting_clear_cache:
-                        showAlert("此操作将清除应用缓存，是否继续？", new DialogInterface.OnClickListener() {
+                        showAlert(getString(R.string.act_sys_tip_cczjqcyyhcfsfjx), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO: 2019/4/1 清除缓存
@@ -571,7 +588,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         cbMirror.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAlert("更改摄像头配置需要重启应用才能生效，是否继续？", new DialogInterface.OnClickListener() {
+                showAlert(getString(R.string.act_sys_tip_ggsxtpzxycqyycnsx), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -637,9 +654,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         boolean intenetConnected = checkNet.isIntenetConnected();
         if(intenetConnected){//网线连接
             if(checkNet.isEtherneteConncted()){//已连接
-                tvNetState.setText("网线连接");
+                tvNetState.setText(getString(R.string.act_sys_tip_wxlj));
             } else {
-                tvNetState.setText("网线连接：无网络");
+                tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwl));
             }
             return;
         }
@@ -647,21 +664,21 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         boolean wifiEnabled = checkNet.isWifiEnabled();
         if(!wifiEnabled){
             //代表无网络
-            tvNetState.setText("无网络连接");
+            tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
             return;
         }
 
         boolean wifiConnected = checkNet.isWifiConnected();
         if(!wifiConnected){
             //代表无网络
-            tvNetState.setText("无网络连接");
+            tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
             return;
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("网络类型：WIFI");
-        stringBuilder.append("，网络名称："+checkNet.getWifiName());
-        stringBuilder.append("，信号："+checkNet.getStrength());
+        stringBuilder.append(getString(R.string.act_sys_tip_wxlj_wllx_wifi));
+        stringBuilder.append(getString(R.string.act_sys_tip_wxlj_wlmc));
+        stringBuilder.append(getString(R.string.act_sys_tip_xh));
         tvNetState.setText(stringBuilder.toString());
     }
 
@@ -678,9 +695,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     private void showAlert(String msg, Dialog.OnClickListener onClickListener, DialogInterface.OnDismissListener onDissmissListener){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示");
+        builder.setTitle(getString(R.string.base_tip));
         builder.setMessage(msg);
-        builder.setPositiveButton("确定",onClickListener);
+        builder.setPositiveButton(getString(R.string.base_ensure),onClickListener);
         if(onDissmissListener != null){
             builder.setOnDismissListener(onDissmissListener);
         }
@@ -691,13 +708,56 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
+    public void selectSkin(View view) {
+        File file = new File(Constants.SKIN_PATH);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+        File[] files = file.listFiles();
+        if(files != null && files.length > 0){
+            File skinFile = files[0];
+            load(skinFile.getName());
+        }
+    }
+
+    public void restoreDefaultSkin(View view){
+        SkinCompatManager.getInstance().restoreDefaultTheme();
+    }
+
+    private static final String TAG = "SystemActivity";
+    private void load(final String apkName){
+        Log.e(TAG, "load: 加载：" + " : " + apkName);
+        SkinCompatManager.getInstance().loadSkin(apkName, new SkinCompatManager.SkinLoaderListener() {
+            @Override
+            public void onStart() {
+                Log.e(TAG, "onStart: 开始加载皮肤" );
+            }
+
+            @Override
+            public void onSuccess() {
+                Toast.makeText(SystemActivity.this, "切换皮肤成功：" + apkName, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onSuccess: 加载皮肤成功");
+            }
+
+            @Override
+            public void onFailed(String errMsg) {
+                Toast.makeText(SystemActivity.this, "切换皮肤失败：" + apkName, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onSuccess: 加载皮肤失败：" + errMsg);
+            }
+        }, CustomSDCardLoader.SKIN_LOADER_STRATEGY_SDCARD);
+
+        File file = new File(Constants.SKIN_PATH, apkName);
+        Log.e(TAG, "getSkinPath: " + file.getAbsolutePath() + " : " + file.exists());
+    }
+
 
     class CheckCamera{
         public String getCameraInfo(){
             StringBuilder cameraInfo = new StringBuilder();
             int numberOfCameras = android.hardware.Camera.getNumberOfCameras();
             if(numberOfCameras <= 0){
-                return "无摄像头";
+                return getString(R.string.act_sys_tip_noCamera);
             }
             for (int i = 0; i < numberOfCameras; i++) {
                 android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
@@ -705,10 +765,10 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 boolean isFront = info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
                 int orientation = info.orientation;
                 cameraInfo
-                        .append("共"+numberOfCameras+"个：")
-                        .append("【编号："+i+"，")
-                        .append(isFront ? "前置":"后置")
-                        .append("，角度："+orientation)
+                        .append(getString(R.string.act_sys_tip_total)+numberOfCameras+getString(R.string.act_sys_tip_ge)+":")
+                        .append("【"+getString(R.string.act_sys_tip_bh)+":"+i+"，")
+                        .append(isFront ? getString(R.string.act_sys_tip_front):getString(R.string.act_sys_tip_back))
+                        .append("，"+getString(R.string.act_sys_tip_angle)+":"+orientation)
                         .append("】");
             }
 
@@ -783,13 +843,13 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             WifiInfo info = wifiManager.getConnectionInfo();
             int rssi = info.getRssi();
             if(rssi<=0 && rssi >= -50){//信号最好
-                strength = "强";
+                strength =  getString(R.string.act_sys_tip_strong);
             }else if(rssi< -50 && rssi >= -70){//信号一般
-                strength = "一般";
+                strength = getString(R.string.act_sys_tip_general);
             }else if(rssi > -70){
-                strength = "差";
+                strength = getString(R.string.act_sys_tip_poor);
             }else if(rssi <= -200){
-                strength = "无网络";
+                strength = getString(R.string.act_sys_tip_wwl);
             }
             return strength;
         }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.ComResponse;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.SerialPortHelper;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
@@ -66,7 +67,7 @@ public abstract class BaseGateActivity extends BaseActivity {
                     mGateIsAlive = true;
                     checkHeartbeat();
                 } else {
-                    showToast("门控模块加载失败!");
+                    showToast(getString(R.string.act_baseGate_mkmkjzsb));
                 }
                 return null;
             }

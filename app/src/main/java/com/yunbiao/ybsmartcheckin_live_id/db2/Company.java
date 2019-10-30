@@ -35,12 +35,14 @@ public class Company {
     private String downtips;
     private String bottomtitle;
     private String notice;
+    private int displayPosition;
 
-    @Generated(hash = 2010520513)
+    @Generated(hash = 409685306)
     public Company(long id, int comid, String slogan, String comname,
             String abbname, String downtime, String devicePwd, String gotime,
             String gotips, String comlogo, String codeUrl, int themeid,
-            String toptitle, String downtips, String bottomtitle, String notice) {
+            String toptitle, String downtips, String bottomtitle, String notice,
+            int displayPosition) {
         this.id = id;
         this.comid = comid;
         this.slogan = slogan;
@@ -57,6 +59,7 @@ public class Company {
         this.downtips = downtips;
         this.bottomtitle = bottomtitle;
         this.notice = notice;
+        this.displayPosition = displayPosition;
     }
 
     @Generated(hash = 1096856789)
@@ -99,6 +102,14 @@ public class Company {
                 ", bottomtitle='" + bottomtitle + '\'' +
                 ", notice='" + notice + '\'' +
                 '}';
+    }
+
+    public int getDisplayPosition() {
+        return displayPosition;
+    }
+
+    public void setDisplayPosition(int displayPosition) {
+        this.displayPosition = displayPosition;
     }
 
     public long getId() {

@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="同步"
+            android:text="@string/lay_loadPop_sync"
             android:textColor="#2d2a2a"
             android:textSize="12dp" />
 
@@ -38,7 +38,7 @@
         android:gravity="center_vertical"
         android:id="@+id/tv_info"
         android:layout_gravity="center_vertical"
-        android:text="这里显示信息"
+        android:text="@string/lay_loadPop_zlxsxx"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 

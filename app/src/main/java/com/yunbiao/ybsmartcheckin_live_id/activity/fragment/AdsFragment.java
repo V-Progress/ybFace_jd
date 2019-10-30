@@ -30,6 +30,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data.AdsListener;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -40,6 +41,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
+import com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -63,7 +65,7 @@ public class AdsFragment extends Fragment implements AdsListener {
     private View rootView;
     private View adsView;
     private View headView;
-    private VideoView videoView;
+    private TextureVideoView videoView;
     private ImageView imageView;
     private TextView tvWeather;
     private ImageView ivWeather;
@@ -104,7 +106,7 @@ public class AdsFragment extends Fragment implements AdsListener {
         //广告内容
         imageView = rootView.findViewById(R.id.iv_out_ads);
         videoView = rootView.findViewById(R.id.vv_out_ads);
-        videoView.setZOrderOnTop(true);
+//        videoView.setZOrderOnTop(true);
 
         //大布局
         headView = rootView.findViewById(R.id.layout_head);
@@ -126,9 +128,6 @@ public class AdsFragment extends Fragment implements AdsListener {
         //先关闭广告
         closeAds();
 
-        //初始化广告数据
-        initAdsData();
-
         //开始获取天气
         WeatherManager.instance().start(resultListener);
     }
@@ -137,6 +136,12 @@ public class AdsFragment extends Fragment implements AdsListener {
     public void onStart() {
         super.onStart();
         d("onViewCreated: " + getView().getHeight() + " --- " + getView().getWidth());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(UpdateMediaEvent event){
+        //初始化广告数据
+        initAdsData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

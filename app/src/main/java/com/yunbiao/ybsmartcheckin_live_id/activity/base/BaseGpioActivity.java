@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import com.android.xhapimanager.XHApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -29,7 +30,7 @@ public abstract class BaseGpioActivity extends BaseActivity {
         xhApi = APP.getXHApi();
 //        EventBus.getDefault().register(this);
         if(smdt == null && xhApi == null){
-            UIUtils.showShort(this,"无法控制门禁，请检查板卡型号");
+            UIUtils.showShort(this,getString(R.string.act_baseGpio_wfkzmjqjcbkxh));
         }
     }
 

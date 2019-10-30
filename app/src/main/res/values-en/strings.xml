@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YBFaceAttendance</string>
+    <string name="app_name">YBSmartAttendance</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
@@ -53,4 +53,329 @@
     <string name="sign_list_filed_head">Head</string>
 
 
+
+
+    <!--2019.10.21 增加字段-->
+
+    <!--通用的  -->
+    <string name="base_tip">tip</string>
+    <string name="base_ensure">YES</string>
+    <string name="base_cancel">NO</string>
+    <string name="base_male">Mr</string>
+    <string name="base_female">Ms</string>
+    <string name="base_people">ppls</string>
+    <string name="base_year">year</string>
+    <string name="base_month">month</string>
+    <string name="base_day">day</string>
+    <string name="base_department">department</string>
+    <string name="base_delete">delete</string>
+    <string name="base_edit">edit</string>
+    <string name="base_saveSuccessfully">save successfully</string>
+
+    <!--activity_splash  -->
+    <string name="act_spl_tip_qxsqsb">Permission application failed</string>
+    <string name="act_spl_tip_zzjxsjqy">Data migration is in progress, please do not exit the software or restart the device is processing check-in data...</string>
+    <string name="act_spl_tip_qywc">Migration completed</string>
+
+    <!--activity_wel  -->
+    <string name="act_wel_topTitle">YBFaceAttendance</string>
+    <string name="act_wel_bottomTitle">YBFaceAttendance</string>
+
+    <string name="act_wel_error_bywjsrmmo">Do not forget to enter your password</string>
+    <string name="act_wel_error_mmclqcxsrb">The password is wrong, re-enter it.</string>
+
+    <!--activity_wel   layout_input_pwd.xml-->
+    <string name="act_wel_glmm">Password management</string>
+    <string name="act_wel_qsrglmm">Please enter an administrative password</string>
+
+    <!--activity_wel_small  -->
+    <string name="act_welSmall_hello">Hello </string>
+    <string name="act_welSmall_error_bywjsrmmo">Do not forget to enter your password</string>
+    <string name="act_welSmall_error_mmclcxsrb">The password is wrong, re-enter it.</string>
+    <string name="act_welSmall_tip_nhhygl"> Hello %s, welcome</string>
+    <string name="act_welSmall_tip_sbqdcg">Successful sign-in at work</string>
+    <string name="act_welSmall_tip_xbqdcg">Successful sign-off after work</string>
+    <string name="act_welSmall_jrqd">Sign in today:</string>
+
+    <!--activity_system  -->
+    <string name="act_sys_kqrlkjx">Open face frame image</string>
+    <string name="act_sys_open">Open</string>
+    <string name="act_sys_jdqys">Relay delay</string>
+    <string name="act_sys_second">second</string>
+    <string name="act_sys_CPU_tem">CPU temperature:</string>
+    <string name="act_sys_camera">camera</string>
+    <string name="act_sys_totalOne">1 in total</string>
+    <string name="act_sys_dqsy">【Current use:】</string>
+    <string name="act_sys_dqwl">Current network:</string>
+    <string name="act_sys_WIFI_wlmc">【WIFI，Network name:XXXXX】</string>
+    <string name="act_sys_WIFI_cqsb">Reboot the device</string>
+    <string name="act_sys_jcsj">Detect upgrade</string>
+    <string name="act_sys_glmmxg">Management password modification</string>
+
+
+    <string name="act_sys_tip_online">Online</string>
+    <string name="act_sys_tip_outline">Offline</string>
+    <string name="act_sys_tip_validityPeriod">Indefinite</string>//有效期（永久有效）
+
+    <string name="act_sys_tip_cloundService">cloud service</string>//有效期（永久有效）
+    <string name="act_sys_tip_localService">Local service</string>
+    <string name="act_sys_tip_yfwipdzhdkhbnwk">Cloud service IP address or port number cannot be empty</string>
+    <string name="act_sys_tip_zyipdzhdkbnwk">Resource IP address or port number cannot be empty</string>
+
+    <string name="act_sys_error_mmbkwk">Password cannot be empty</string>
+    <string name="act_sys_error_mmzssr6w">Enter at least 6 digits for the password</string>
+    <string name="act_sys_error_qzcsrmm">Please enter your password again</string>
+    <string name="act_sys_error_lcsrdmmbyz">Inconsistent password entered twice</string>
+
+    <string name="act_sys_error_modify_fail">fail to edit</string>
+    <string name="act_sys_error_modify_success">Successfully modified</string>
+
+    <string name="act_sys_tip_angle">angle</string>
+    <string name="act_sys_tip_cczjqcyyhcfsfjx">This will clear the app cache and continue?</string>
+    <string name="act_sys_tip_ggsxtpzxycqyycnsx">Changing the camera configuration requires restarting the app to take effect. Continue?</string>
+
+    <string name="act_sys_tip_wxlj">Network cable connection</string>
+    <string name="act_sys_tip_wxlj_wwl">Network cable connection: no network</string>
+    <string name="act_sys_tip_wxlj_wwllj">No network connection</string>
+
+    <string name="act_sys_tip_wxlj_wllx_wifi">Network Type:WIFI</string>
+    <string name="act_sys_tip_wxlj_wlmc">，Network name:</string>
+    <string name="act_sys_tip_xh">，signal:</string>
+
+    <string name="act_sys_tip_noCamera">No camera</string>
+    <string name="act_sys_tip_total">Total</string>
+    <string name="act_sys_tip_ge">piece</string>
+    <string name="act_sys_tip_bh">Numbering</string>
+    <string name="act_sys_tip_fbl">，Resolution:</string>
+    <string name="act_sys_tip_back">Rear</string>
+    <string name="act_sys_tip_front">Front</string>
+    <string name="act_sys_tip_auto">automatic</string>
+    <string name="act_sys_tip_ytwlipdz">【Ethernet network，IP Address:</string>
+    <string name="act_sys_tip_IPAddress">，IP Address:</string>
+
+    <string name="act_sys_tip_mc">name:</string>
+    <string name="act_sys_tip_xhqd">，Signal strength:</string>
+    <string name="act_sys_tip_zj">optimal</string>
+    <string name="act_sys_tip_zd">maximum</string>
+
+    <string name="act_sys_tip_sbjcqsfjx">The device will reboot, will it continue?</string>
+    <string name="act_sys_tip_reStart">Set restart</string>
+    <string name="act_sys_tip_3shjcqsb">The device will be restarted after 3 seconds</string>
+
+
+
+    <string name="act_sys_tip_strong">Strong</string>
+    <string name="act_sys_tip_general">general</string>
+    <string name="act_sys_tip_poor">difference</string>
+    <string name="act_sys_tip_wwl">No network</string>
+
+
+    <string name="act_sys_smxfo">Scan code renewal fee(∩_∩)o</string>
+    <string name="act_sys_sz">Setting</string>
+
+    <!--act_sys   layout_set_pwd.xml -->
+    <string name="act_sys_xtmmsz">System password setting</string>
+    <string name="act_sys_qsrldswmmszzm">Please enter a 6-12 digit password (number, letter)</string>
+    <string name="act_sys_qzcsrmm">Please enter your password again</string>
+
+
+    <!--activity_setting -->
+    <string name="act_set_tip_auto">auto</string>
+    <string name="act_set_tip_back">Rear</string>
+    <string name="act_set_tip_front">Front</string>
+    <string name="act_set_tip_fbl">，Resolution:</string>
+    <string name="act_set_tip_angle">angle</string>
+    <string name="act_set_tip_ytwlipdz">【Ethernet network，IPAddress:</string>
+    <string name="act_set_tip_IPAddress">，IPAddress:</string>
+    <string name="act_set_tip_zj">optimal</string>
+    <string name="act_set_tip_zd">maximum</string>
+    <string name="act_set_tip_mc">name:</string>
+    <string name="act_set_tip_xhqd">，Signal strength:</string>
+
+    <string name="act_set_tip_sbjcqsfjx">The device will reboot, will it continue?</string>
+    <string name="act_set_tip_reStart">Set restart</string>
+    <string name="act_set_tip_3shjcqsb">The device will be restarted after 3 seconds</string>
+
+    <string name="act_set_error_mmbkwk">Password cannot be empty</string>
+    <string name="act_set_error_mmzssr6w">Enter at least 6 digits for the password</string>
+    <string name="act_set_error_qzcsrmm">Please enter your password again</string>
+    <string name="act_set_error_lcsrdmmbyz">Inconsistent password entered twice</string>
+
+    <string name="act_set_error_modify_fail">fail to edit</string>
+    <string name="act_set_error_modify_success">Successfully modified</string>
+
+    <!-- act_set head_layout.xml -->
+    <string name="act_set_txjl">Pass record</string>
+    <!-- act_set layout_dialog_set_server.xml -->
+    <string name="act_set_szfwIP">Set service IP</string>
+    <string name="act_set_yfwdz">Cloud service address&#32;:</string>
+    <string name="act_set_dkh">The port number</string>
+    <string name="act_set_zydz">Resource address&#32;:</string>
+    <string name="act_set_notice">Note: The application will be restarted after the address is successfully modified.</string>
+    <string name="act_set_qrxg">Confirm the changes</string>
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">System settings</string>
+    <string name="act_set_xtmm">System password</string>
+    <string name="act_set_qchc">clear cache</string>
+    <string name="act_set_qcsj">clear data</string>
+    <string name="act_set_jcsxt">Detection camera</string>
+    <string name="act_set_sfjx">Whether to mirror</string>
+    <string name="act_set_wlzt">network status</string>
+    <string name="act_set_gb">shut down</string>
+
+    <!--activity_AddEmploy -->
+    <string name="act_addEmp_tip_qxfhcjzjbm">Please return to create an increase department first！</string>
+    <string name="act_addEmp_tip_qxpz">Please take a photo first！</string>
+    <string name="act_addEmp_tip_mzbnwk">The name cannot be empty！</string>
+    <string name="act_addEmp_tip_qxfhzjbm">Please return to the department！</string>
+    <string name="act_addEmp_tip_zwbnwk">Position cannot be empty！</string>
+    <string name="act_addEmp_tip_ljfwqsbqcxzs">Failed to connect to the server, please try again！</string>
+    <string name="act_addEmp_tip_bmbcz">Department does not exist！</string>
+    <string name="act_addEmp_tip_tjsbcwdm">Submit failed, error code:</string>
+    <string name="act_addEmp_tip_ygbcsbqcxzs">Employee failed to save, please try again！</string>
+
+    <!--activity_EmployList-->
+    <string name="act_employList_tip_qbbm">All departments</string>
+    <string name="act_employList_tip_qdscm">confirm to delete？</string>
+    <string name="act_employList_tip_scsb">failed to delete</string>
+    <string name="act_employList_tip_sccg">successfully deleted</string>
+
+    <string name="act_employList_add">New</string>
+    <string name="act_employList_bm">department</string>
+    <string name="act_employList_addDepart">New department</string>
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">Please enter the department name</string>
+    <string name="act_departList_tip_qdscm">confirm to delete？</string>
+
+    <string name="act_departList_bmlb">Department list</string>
+    <string name="act_departList_add">New</string>
+    <string name="act_departList_xh">No.</string>
+    <string name="act_departList_bmmc">Department name</string>
+    <string name="act_departList_cz">operating</string>
+
+    <!--activity_EditEmploy-->
+
+    <string name="act_editEmploy_tip_qxpz">Please take a photo first</string>
+    <string name="act_editEmploy_tip_qtxxm">Please fill in the name</string>
+    <string name="act_editEmploy_tip_qxzxb">Please select gender</string>
+    <string name="act_editEmploy_tip_qtxbh">Please fill in the number</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">No avatar file found, please try again and try again</string>
+    <string name="act_editEmploy_tip_wzrhxg">No changes have been made</string>
+    <string name="act_editEmploy_tip_tjsb">add failed</string>
+    <string name="act_editEmploy_tip_gygbcz">The employee does not exist</string>
+    <string name="act_editEmploy_tip_bczgbm">There is no such department</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">The company does not have this department</string>
+    <string name="act_editEmploy_tip_gsyzwyg">The company does not have this employee</string>
+    <string name="act_editEmploy_tip_cscw">Parameter error</string>
+
+    <string name="act_editEmploy_xgxx">Modify information</string>
+    <string name="act_editEmploy_pz">Take</string>
+    <string name="act_editEmploy_reset">Reset</string>
+    <string name="act_editEmploy_jbxx">Basic Information</string>
+    <string name="act_editEmploy_name">Name:</string>
+    <string name="act_editEmploy_sex">Gender:</string>
+    <string name="act_editEmploy_bm">Department:</string>
+    <string name="act_editEmploy_ygbh">Employee No.:</string>
+    <string name="act_editEmploy_zw">Position:</string>
+    <string name="act_editEmploy_csrq">Date of Birth:</string>
+    <string name="act_editEmploy_gxqm">Signature:</string>
+    <string name="act_editEmploy_zjyg">Increase employees</string>
+
+
+    <!--activity_Sign-->
+    <string name="act_sign_tip_qb">All</string>
+    <string name="act_sign_tip_yfs">Has been sent</string>
+    <string name="act_sign_tip_wfs">not sent yet</string>
+    <string name="act_sign_tip_zwsj">No data</string>
+    <string name="act_sign_tip_sccg">Upload success</string>
+    <string name="act_sign_tip_scsbqjcwl">Upload failed, please check the network</string>
+    <string name="act_sign_tip_zzdcqsd">Exporting, please wait</string>
+    <string name="act_sign_tip_qcrup">Please insert a USB flash drive</string>
+    <string name="act_sign_tip_sjyqbsc">Data has been uploaded all</string>
+    <string name="act_sign_tip_mykdcdsj">No data to export</string>
+    <string name="act_sign_tip_dccgwjlj">Export successful, file path</string>
+    <string name="act_sign_tip_dcsb">Export failed</string>
+
+    <string name="act_sign_dcsj">Export Data</string>
+    <string name="act_sign_scsj">Upload</string>
+    <string name="act_sign_sjyqbsc">Data has been uploaded all</string>
+
+
+    <!--2019.10.22 增加字段-->
+
+    <!--BaseActivity-->
+    <string name="act_base_zwspqqhhp">No vertical screen, please switch horizontal screen</string>
+    <string name="act_base_zwhpqqhhp">No horizontal screen, please switch the vertical screen</string>
+
+    <!--BaseGateActivity-->
+    <string name="act_baseGate_mkmkjzsb">Gating module failed to load!</string>
+
+    <!--BaseGpioActivity-->
+    <string name="act_baseGpio_wfkzmjqjcbkxh">Unable to control access control, please check board model</string>
+
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">Smart face sign-in, let the company feel more assured~</string>
+
+    <!--InformationFragment-->
+
+    <!--SignFragment-->
+    <string name="fment_sign_tip_hello">Hello %s</string>
+    <string name="fment_sign_tip_welcome"> Hello %s, welcome</string>
+    <string name="fment_sign_tip_goTips">Successful sign-in at work</string>
+    <string name="fment_sign_tip_downTips">Successful sign-off after work</string>
+    <string name="fment_sign_tip_blcg">Successful replenishment</string>
+    <string name="fment_sign_tip_blsb">Replenishment failed</string>
+    <string name="fment_sign_tip_yqd">Signed</string>
+    <string name="fment_sign_bl">Supple</string>
+    <string name="fment_sign_jrqd">Sign in today:</string>
+
+    <!--WebFragment-->
+    <string name="fment_Web_back">Back</string>
+    <string name="fment_Web_refresh">Refresh</string>
+
+
+
+    <!--adapter 和 dialog-->
+
+    <!--VisitorAdapter-->
+    <string name="adapter_visitor_tourist">Tourist</string>
+
+    <!--SyncDialog-->
+    <string name="dialog_sync_tbjs">End of synchronization</string>
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">Please enter the department name</string>
+
+    <!--layout_load_pop.xml-->
+    <string name="lay_loadPop_sync">Sync</string>
+    <string name="lay_loadPop_zlxsxx">Show information here</string>
+
+    <!-- UIUtils -->
+    <string name="uiUtils_tip_notice">Notice</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">Installing the app, please be patient!</string>
+
+    <!-- SyncManager -->
+    <string name="syncManager_tip_hqgsxx">Get company information</string>
+    <string name="syncManager_tip_qqsbjjcs">Request failed, will be retried</string>
+    <string name="syncManager_tip_hqsbjjcs">Failed to get, will try again</string>
+    <string name="syncManager_tip_sbwbd">Device not bound</string>
+    <string name="syncManager_tip_hqygxx">Get employee information</string>
+    <string name="syncManager_tip_tbbm">Synchronization department</string>
+    <string name="syncManager_tip_tbygxx">Synchronize employee information</string>
+    <string name="syncManager_tip_xztx">Download avatar</string>
+    <string name="syncManager_tip_tbrlk">Synchronous face database</string>
+    <string name="syncManager_tip_tbjs">End of synchronization</string>
+
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">Whether to quit the app？</string>
+    <string name="restartAPPTool_ycdht">Hidden to the background</string>
+    <string name="restartAPPTool_exit">quit</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">The current version is the latest version</string>
+    <string name="updateManager_wlljsbqjcwl">Network connection failed, please check the network</string>
+    <string name="updateManager_xzsb">download failed</string>
 </resources>

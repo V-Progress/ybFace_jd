@@ -131,7 +131,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         departs = DaoManager.get().queryAll(Depart.class);
         mDepartList.clear();
         mDepartIdList.clear();
-        mDepartList.add("全部部门");
+        mDepartList.add(getString(R.string.act_employList_tip_qbbm));
         mDepartIdList.add(0l);
         if (departs != null) {
             for (int i = 0; i < departs.size(); i++) {
@@ -198,7 +198,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     public void itemDeleteClick(View v, final int postion) {
         final User user = employList.get(postion);
 
-        showDialog("确定删除吗？", new DialogInterface.OnClickListener() {
+        showDialog(getString(R.string.act_employList_tip_qdscm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final Map<String, String> map = new HashMap<>();
@@ -206,7 +206,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        UIUtils.showTitleTip(EmployListActivity.this, "删除失败 " + e != null ? e.getMessage() : "NULL");
+                        UIUtils.showTitleTip(EmployListActivity.this, getString(R.string.act_employList_tip_scsb) + e != null ? e.getMessage() : "NULL");
                     }
 
                     @Override
@@ -216,7 +216,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                             DaoManager.get().delete(user);
                             employList.remove(postion);
                             employAdapter.notifyDataSetChanged();
-                            UIUtils.showTitleTip(EmployListActivity.this, "删除成功");
+                            UIUtils.showTitleTip(EmployListActivity.this, getString(R.string.act_employList_tip_sccg));
                         }
                     }
                 });
@@ -226,7 +226,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     public void itemEditClick(View v, final int postion) {
-        showDialog("确定去修改吗？", new DialogInterface.OnClickListener() {
+        showDialog(getString(R.string.act_employList_tip_qdscm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(EmployListActivity.this, EditEmployActivity.class);
@@ -239,10 +239,10 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     private void showDialog(String msg,DialogInterface.OnClickListener confirm){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示！");
+        builder.setTitle(getString(R.string.base_tip)+"!");
         builder.setMessage(msg);
-        builder.setPositiveButton("确定",confirm);
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.base_ensure),confirm);
+        builder.setNegativeButton(getString(R.string.base_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

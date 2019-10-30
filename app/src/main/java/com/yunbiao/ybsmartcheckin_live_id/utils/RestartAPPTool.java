@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 
 /**
  * 此工具类用来重启APP，只是单纯的重启，不做任何处理。
@@ -18,9 +19,9 @@ public class RestartAPPTool {
     public static void showExitDialog(Activity act,DialogInterface.OnClickListener cancel, DialogInterface.OnClickListener confirm){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(act);
         alertDialog.setCancelable(true);
-        alertDialog.setMessage("是否退出应用？");
-        alertDialog.setNegativeButton("隐藏到后台", cancel);
-        alertDialog.setPositiveButton("退出",confirm);
+        alertDialog.setMessage(act.getString(R.string.restartAPPTool_sftcyy));
+        alertDialog.setNegativeButton(act.getString(R.string.restartAPPTool_ycdht), cancel);
+        alertDialog.setPositiveButton(act.getString(R.string.restartAPPTool_exit),confirm);
         AlertDialog alertDialog1 = alertDialog.create();
         alertDialog1.show();
     }

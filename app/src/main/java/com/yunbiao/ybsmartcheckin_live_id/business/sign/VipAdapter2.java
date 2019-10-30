@@ -4,8 +4,10 @@ package com.yunbiao.ybsmartcheckin_live_id.business.sign;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +15,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
-    private List<Sign> mList ;
+public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH> {
+    private List<Sign> mList;
     private Context mContext;
+
     public VipAdapter2(Context context, LinkedList<Sign> list) {
         mContext = context;
         mList = list;
@@ -36,13 +41,22 @@ public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
     @Override
     public void onBindViewHolder(@NonNull VH vh, int i) {
         Sign item = mList.get(i);
-        String imgUrl = item.getHeadPath();
-        if(!TextUtils.isEmpty(imgUrl)){
-            Bitmap bitmap = BitmapFactory.decodeFile(imgUrl);
+        byte[] imgBytes = item.getImgBytes();
+        if (imgBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
             vh.ivHead.setImageBitmap(bitmap);
         }
+
         vh.tvName.setText(item.getName());
-        vh.tvSign.setText(item.getAutograph());
+        int isShowJob = SpUtils.getInt(SpUtils.DISPLAYPOSITION);
+        if (isShowJob == 0) {
+
+            vh.tvSign.setText( item.getPosition()+" \n  \n " + item.getAutograph());
+        } else {
+            vh.tvSign.setText("" + item.getAutograph());
+        }
+
+
     }
 
     @Override
@@ -50,10 +64,11 @@ public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH>{
         return mList == null ? 0 : mList.size();
     }
 
-    public class VH extends RecyclerView.ViewHolder{
+    public class VH extends RecyclerView.ViewHolder {
         public ImageView ivHead;
         public TextView tvName;
         public TextView tvSign;
+
         public VH(@NonNull View itemView) {
             super(itemView);
             ivHead = itemView.findViewById(R.id.civ_userPhoto);

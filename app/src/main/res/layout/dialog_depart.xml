@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
-        android:hint="请输入部门名称"/>
+        android:hint="@string/dialog_depart_qsrbmmc"/>
 
 </RelativeLayout>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -26,16 +25,8 @@ public class UIUtils {
 
     private static Toast mToast;
 
-    public static void show(final Activity context, final String message, final int time){
-        showTitleTip(context,message);
-    }
-
     public static void showShort(Activity context,String message){
-        show(context,message, 5 * 1000);
-    }
-
-    public static void showLong(Activity context,String message){
-        show(context,message, 10 * 1000);
+        showTitleTip(context,message);
     }
 
     private static Toast mTipsToast;
@@ -47,15 +38,16 @@ public class UIUtils {
         int padding = 20;
         TextView textView = new TextView(context);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView.setBackgroundColor(Color.WHITE);
+        textView.setBackground(context.getResources().getDrawable(R.drawable.shape_spinner_drop));
         textView.setTextSize(36);
         textView.setText(title);
+        textView.setTextColor(Color.WHITE);
         textView.setPadding(padding,padding,padding,padding);
         textView.setGravity(Gravity.CENTER);
         textView.setElevation(10);
 
         mTipsToast = new android.widget.Toast(context);
-        mTipsToast.setDuration(android.widget.Toast.LENGTH_LONG);
+        mTipsToast.setDuration(Toast.LENGTH_SHORT);
         mTipsToast.setGravity(Gravity.CENTER, 0, 0);
         mTipsToast.setView(textView);
         mTipsToast.show();
@@ -78,8 +70,8 @@ public class UIUtils {
     public static void updatePd(Context context) {
         pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pd.setTitle("通知");
-        pd.setMessage("正在安装相关应用，请耐心等待！");
+        pd.setTitle(context.getString(R.string.uiUtils_tip_notice));
+        pd.setMessage(context.getString(R.string.uiUtils_tip_zzazxgyyqnxdd));
         pd.show();
 
         Window window = pd.getWindow();

@@ -13,7 +13,7 @@
     <TextView
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_gravity="bottom"
         android:id="@+id/tv_position"
         android:textSize="20dp"
         android:textColor="@color/white"

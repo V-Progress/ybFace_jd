@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bj"
+    android:background="@drawable/skin_main_screen_background"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
@@ -50,7 +50,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="开启人脸框镜像" />
+                    android:text="@string/act_sys_kqrlkjx" />
 
                 <CheckBox
                     android:textColor="@color/white"
@@ -60,7 +60,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:checked="true"
-                    android:text="开启"
+                    android:text="@string/act_sys_open"
                     android:textSize="20dp" />
             </LinearLayout>
 
@@ -72,7 +72,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="继电器延时" />
+                    android:text="@string/act_sys_jdqys" />
 
                 <EditText
                     android:textColorHint="@color/gray_low"
@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_marginLeft="10dp"
                     style="@style/setting_text"
-                    android:text="秒" />
+                    android:text="@string/act_sys_second" />
             </LinearLayout>
 
             <LinearLayout
@@ -100,7 +100,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="CPU温度：" />
+                    android:text="@string/act_sys_CPU_tem" />
 
                 <TextView
                     android:id="@+id/tv_cpu_temper"
@@ -117,16 +117,16 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="摄像头" />
+                    android:text="@string/act_sys_camera" />
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="共1个" />
+                    android:text="@string/act_sys_totalOne" />
 
                 <TextView
                     android:id="@+id/tv_camera"
                     style="@style/setting_text"
-                    android:text="【当前使用：】" />
+                    android:text="@string/act_sys_dqsy" />
 
                 <Button
                     android:textColor="#59B4CA"
@@ -155,31 +155,31 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="当前网络：" />
+                    android:text="@string/act_sys_dqwl" />
 
                 <TextView
                     android:id="@+id/tv_wifi_state"
                     style="@style/setting_text"
-                    android:text="【WIFI，网络名称：XXXXX】" />
+                    android:text="@string/act_sys_WIFI_wlmc" />
             </LinearLayout>
 
             <TextView
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:onClick="rebootDevice"
-                android:text="重启设备" />
+                android:text="@string/act_sys_WIFI_cqsb" />
 
             <TextView
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:onClick="checkUpgrade"
-                android:text="检测升级" />
+                android:text="@string/act_sys_jcsj" />
 
             <TextView
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:onClick="modifyPWD"
-                android:text="管理密码修改" />
+                android:text="@string/act_sys_glmmxg" />
         </LinearLayout>
     </ScrollView>
 

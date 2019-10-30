@@ -7,8 +7,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 33
-        versionName "1.3.0"
+        versionCode 34
+        versionName "1.3.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         ndk {
@@ -64,7 +64,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 5//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 6//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
 //这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
         targetGenDir 'src/main/java'
@@ -86,15 +86,23 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compileOnly files('lib/classes4.2.jar')
-    implementation files('libs/BaiduLBS_Android.jar')
     //炫酷文字
     //    compile 'androidx.annotation:annotation:1.0.0'
     //    compile 'com.tencent.bugly:crashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
+    compileOnly files('lib/classes4.2.jar')
+    implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/gson-2.8.5.jar')
+    implementation files('libs/core-3.0.0.jar')
+    implementation fileTree(includes: ['android_sdk-release.aar'], dir: 'libs')
+    implementation fileTree(includes: ['FaceLocalSDK-release_201906101703.aar'], dir: 'libs')
+    implementation files('libs/XHApi.jar')
+    //将latestVersion替换成上面 jitpack 后面的版本号
+    implementation files('libs/smdt_v5.1.jar')
+    implementation files('libs/XHApi.jar')
+
     //友盟
     implementation 'com.roger.match.library:library:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -122,21 +130,15 @@ dependencies {
     implementation 'com.daimajia.numberprogressbar:library:1.2@aar'
     implementation 'com.github.rjsvieira:circularView:1.3.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation files('libs/core-3.0.0.jar')
-    implementation fileTree(includes: ['android_sdk-release.aar'], dir: 'libs')
-    implementation fileTree(includes: ['FaceLocalSDK-release_201906101703.aar'], dir: 'libs')
+
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.elvishew:xlog:1.6.1'
-    implementation files('libs/XHApi.jar')
     //    implementation 'com.xhb:xbanner:1.2.2'
     //普通版本依赖
     implementation 'com.github.xiaohaibin:XBanner:1.7.0'
-    //将latestVersion替换成上面 jitpack 后面的版本号
-    implementation files('libs/smdt_v5.1.jar')
     // GreenDao(√)
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
-    implementation files('libs/XHApi.jar')
     //RXJAVA
     implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -144,4 +146,11 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'androidx.viewpager2:viewpager2:1.0.0-beta04'
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1148_43697_sharewithdownloadwithfile_withoutGame_obfs_20190805_175505.jar')
+
+    implementation 'skin.support:skin-support:4.0.4'                   // skin-support
+    implementation 'skin.support:skin-support-appcompat:4.0.4'         // skin-support 基础控件支持
+    implementation 'skin.support:skin-support-design:4.0.4'            // skin-support-design material design 控件支持[可选]
+    implementation 'skin.support:skin-support-cardview:4.0.4'          // skin-support-cardview CardView 控件支持[可选]
+    implementation 'skin.support:skin-support-constraint-layout:4.0.4' // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
+
 }

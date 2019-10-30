@@ -75,7 +75,7 @@ public class FaceSDK {
 
     public void configSDK(){
         FaceSettings.setVerifyFace(true);//人脸识别
-        FaceSettings.setMultipleFace(false);//多人识别
+        FaceSettings.setMultipleFace(true);//多人识别
         FaceSettings.setMinFaceArea(0);//最小识别区域
         FaceSettings.setExtractProperty(false);//抽取属性
         FaceSettings.setOnlyEmotion(false);//只抽取表情(开启以后将无法检测到性别和年龄)

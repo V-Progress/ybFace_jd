@@ -159,7 +159,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
             depart = mDepartList.get(0);
             departId = mDepartlist.get(0).getDepId();
         } else {
-            UIUtils.showTitleTip(this,"请先返回创建增加部门！");
+            UIUtils.showTitleTip(this,getString(R.string.act_addEmp_tip_qxfhcjzjbm));
         }
 
         DepartAdapter departAdapter = new DepartAdapter(this, mDepartList);
@@ -271,19 +271,19 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                 final String empNum = et_num.getText().toString();
 
                 if (strFileAdd.equals("")) {
-                    UIUtils.showTitleTip(this,"请先拍照！");
+                    UIUtils.showTitleTip(this,getString(R.string.act_addEmp_tip_qxpz));
                     return;
                 }
                 if (TextUtils.isEmpty(name)) {
-                    UIUtils.showTitleTip(this,"名字不能为空！");
+                    UIUtils.showTitleTip(this,getString(R.string.act_addEmp_tip_mzbnwk));
                     return;
                 }
                 if (TextUtils.isEmpty(depart)) {
-                    UIUtils.showTitleTip(this,"请返回增加部门！");
+                    UIUtils.showTitleTip(this,getString(R.string.act_addEmp_tip_qxfhzjbm));
                     return;
                 }
                 if (TextUtils.isEmpty(job)) {
-                    UIUtils.showTitleTip(this,"职位不能为空！");
+                    UIUtils.showTitleTip(this,getString(R.string.act_addEmp_tip_zwbnwk));
                     return;
                 }
 
@@ -329,7 +329,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                     public void onError(Call call, Exception e, int id) {
                         Log.e(TAG, "onError------------------->" + (e != null ?e.getMessage() : e));
                         btn_submit.setEnabled(true);
-                        UIUtils.showTitleTip(AddEmployActivity.this,"连接服务器失败,请重新再试！（"+ e!=null?e.getMessage():"NULL" +"）");
+                        UIUtils.showTitleTip(AddEmployActivity.this,getString(R.string.act_addEmp_tip_ljfwqsbqcxzs)+"（"+ e!=null?e.getMessage():"NULL" +"）");
                     }
 
                     @Override
@@ -360,15 +360,15 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 //                                });
 
                             } else if(jsonObject.getInt("status") == 7){
-                                UIUtils.showTitleTip(AddEmployActivity.this,"部门不存在！");
+                                UIUtils.showTitleTip(AddEmployActivity.this,getString(R.string.act_addEmp_tip_bmbcz));
                             } else {
-                                UIUtils.showTitleTip(AddEmployActivity.this,"提交失败，错误代码："+jsonObject.getInt("status"));
+                                UIUtils.showTitleTip(AddEmployActivity.this,getString(R.string.act_addEmp_tip_tjsbcwdm)+jsonObject.getInt("status"));
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             btn_submit.setEnabled(true);
-                            UIUtils.showTitleTip(AddEmployActivity.this,"员工保存失败,请重新再试！("+  (e != null ? e .getMessage() :"NULL") +")");
+                            UIUtils.showTitleTip(AddEmployActivity.this,getString(R.string.act_addEmp_tip_ygbcsbqcxzs)+"("+  (e != null ? e .getMessage() :"NULL") +")");
                         }
                     }
 
@@ -389,7 +389,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 Log.d("Orignal", "Got clicked");
 
-                                tv_birth.setText(year + "年" + (month + 1) + "月" + dayOfMonth + "日");
+                                tv_birth.setText(year + getString(R.string.base_year) + (month + 1) + getString(R.string.base_month)  + dayOfMonth +getString(R.string.base_day) );
                             }
                         },
                         now.get(Calendar.YEAR),
@@ -466,7 +466,7 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
                 String filePath = SCREEN_BASE_PATH + sdfTime + ".png";
                 FileOutputStream fos = new FileOutputStream(filePath);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                Toast.makeText(AddEmployActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddEmployActivity.this, getString(R.string.base_saveSuccessfully), Toast.LENGTH_SHORT).show();
                 System.out.println("保存成功");
                 return filePath;
             } catch (FileNotFoundException e) {

@@ -3,6 +3,10 @@ package com.yunbiao.ybsmartcheckin_live_id.db2;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 @Entity
 public class Sign {
@@ -40,6 +44,10 @@ public class Sign {
 
     private int comid;
 
+    @Transient
+    private byte[] imgBytes;
+
+
     @Generated(hash = 1438235948)
     public Sign(Long id, long faceId, String name, String position, String headPath,
             long time, boolean isUpload, long empId, String date, String depart,
@@ -67,12 +75,21 @@ public class Sign {
     public Sign() {
     }
 
+
     public int getComid() {
         return comid;
     }
 
     public void setComid(int comid) {
         this.comid = comid;
+    }
+
+    public byte[] getImgBytes() {
+        return imgBytes;
+    }
+
+    public void setImgBytes(byte[] imgBytes) {
+        this.imgBytes = imgBytes;
     }
 
     @Override
@@ -94,6 +111,7 @@ public class Sign {
                 ", birthday='" + birthday + '\'' +
                 ", autograph='" + autograph + '\'' +
                 ", comid=" + comid +
+                ", imgBytes=" + Arrays.toString(imgBytes) +
                 '}';
     }
 

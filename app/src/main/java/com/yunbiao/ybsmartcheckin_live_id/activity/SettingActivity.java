@@ -131,7 +131,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 int delay = Integer.parseInt(s1);
                 SpUtils.saveInt(SpUtils.GPIO_DELAY,delay);
-                UIUtils.showShort(SettingActivity.this,"修改成功");
+                UIUtils.showShort(SettingActivity.this,getString(R.string.act_set_error_modify_success));
             }
         });
 
@@ -152,7 +152,7 @@ public class SettingActivity extends BaseActivity {
         }, 0, 3, TimeUnit.SECONDS);
 
         //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? "自动" : Config.getCameraType() == Config.CAMERA_BACK ? "后置" : "前置") + "，分辨率：" + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
+        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back)  : getString(R.string.act_set_tip_front) ) + getString(R.string.act_set_tip_fbl)  + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
 
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
@@ -167,7 +167,7 @@ public class SettingActivity extends BaseActivity {
 
         //摄像头角度
         int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        btnAngle.setText("角度：" + angle);
+        btnAngle.setText(getString(R.string.act_set_tip_angle)+":" + angle);
 
         setListSize();
     }
@@ -176,9 +176,9 @@ public class SettingActivity extends BaseActivity {
         String net = "";
         boolean intenetConnected = isIntenetConnected(this);
         if (intenetConnected) {
-            net = "【以太网络，IP地址：" + getHostIp() + "】";
+            net = getString(R.string.act_set_tip_ytwlipdz) + getHostIp() + "】";
         } else {
-            net = "【WIFI，" + getWifiInfo(0) + "，IP地址：" + getWifiInfo(1) + "】";
+            net = "【WIFI，" + getWifiInfo(0) + getString(R.string.act_set_tip_IPAddress)+ getWifiInfo(1) + "】";
         }
         tvNetState.setText(net);
     }
@@ -232,7 +232,8 @@ public class SettingActivity extends BaseActivity {
             return null;
         }
         if (type == 0) {
-            return "名称：" + wi.getSSID() + "，信号强度：" + wi.getRssi();
+
+            return getActivity().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + getActivity().getResources().getString(R.string.act_set_tip_xhqd)+ wi.getRssi();
         }
 
         //获取32位整型IP地址
@@ -387,9 +388,9 @@ public class SettingActivity extends BaseActivity {
             }
 
             if (sizeBean.width == 1280 && sizeBean.height == 720) {
-                sizeBean.desc += "最佳";
+                sizeBean.desc += getString(R.string.act_set_tip_zj);
             } else if (sizeBean.width == 1920 && sizeBean.height == 1080) {
-                sizeBean.desc += "最大";
+                sizeBean.desc += getString(R.string.act_set_tip_zd);
             }
             sizeBeanList.add(sizeBean);
         }
@@ -490,18 +491,18 @@ public class SettingActivity extends BaseActivity {
         } else {
             anInt = CameraSettings.ROTATION_0;
         }
-        ((Button) view).setText("角度：" + anInt);
+        ((Button) view).setText(getString(R.string.act_set_tip_angle)+":" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
         CameraSettings.setCameraDisplayRotation(anInt);
     }
 
     public void rebootDevice(View view) {
-        showAlert("设备将重启，是否继续？", new DialogInterface.OnClickListener() {
+        showAlert(getString(R.string.act_set_tip_sbjcqsfjx), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
-                progressDialog.setTitle("重启");
-                progressDialog.setMessage("3秒后将重启设备");
+                progressDialog.setTitle(getString(R.string.act_set_tip_reStart));
+                progressDialog.setMessage(getString(R.string.act_set_tip_3shjcqsb));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 UIUtils.restart.start();
@@ -511,10 +512,10 @@ public class SettingActivity extends BaseActivity {
 
     private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel, DialogInterface.OnDismissListener onDissmissListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示");
+        builder.setTitle(getString(R.string.base_tip));
         builder.setMessage(msg);
-        builder.setPositiveButton("确定", onClickListener);
-        builder.setNegativeButton("取消", onCancel);
+        builder.setPositiveButton(getString(R.string.base_ensure), onClickListener);
+        builder.setNegativeButton(getString(R.string.base_cancel), onCancel);
         if (onDissmissListener != null) {
             builder.setOnDismissListener(onDissmissListener);
         }
@@ -546,21 +547,21 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(edtPwd.getText())) {
-                    edtPwd.setError("密码不可为空");
+                    edtPwd.setError(getString(R.string.act_set_error_mmbkwk));
                     return;
                 }
                 if (edtPwd.getText().length() < 6) {
-                    edtPwd.setError("密码最少输入6位");
+                    edtPwd.setError(getString(R.string.act_set_error_mmzssr6w));
                     return;
                 }
                 if (TextUtils.isEmpty(edtPwd2.getText())) {
-                    edtPwd2.setError("请再次输入密码");
+                    edtPwd2.setError(getString(R.string.act_set_error_qzcsrmm));
                     return;
                 }
                 String pwd = edtPwd.getText().toString();
                 final String pwd2 = edtPwd2.getText().toString();
                 if (!TextUtils.equals(pwd, pwd2)) {
-                    edtPwd2.setError("两次输入的密码不一致");
+                    edtPwd2.setError(getString(R.string.act_set_error_lcsrdmmbyz));
                     return;
                 }
 
@@ -575,7 +576,7 @@ public class SettingActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SettingActivity.this, "修改失败：" + e != null ? e.getMessage() : "NULL");
+                                UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail)+":" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
@@ -588,11 +589,11 @@ public class SettingActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (status == 1) {
-                                    UIUtils.showTitleTip(SettingActivity.this, "修改成功");
+                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_success));
                                     SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip(SettingActivity.this, "修改失败");
+                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail));
                                 }
                             }
                         });

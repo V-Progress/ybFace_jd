@@ -52,17 +52,22 @@ public class SyncDialog {
     }
 
     public void show(){
-        if(act == null){
-            Log.e(TAG, "未进行初始化" );
-            return;
-        }
-        if(dialog == null){
-            return;
-        }
-        if(dialog.isShowing()){
-            dialog.dismiss();
-        }
-        dialog.show();
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(act == null){
+                    Log.e(TAG, "未进行初始化" );
+                    return;
+                }
+                if(dialog == null){
+                    return;
+                }
+                if(dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                dialog.show();
+            }
+        });
     }
 
     public boolean isShown(){
@@ -70,30 +75,35 @@ public class SyncDialog {
     }
 
     public void dismiss(){
-        if(act == null){
-            Log.e(TAG, "未进行初始化" );
-            return;
-        }
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(act == null){
+                    Log.e(TAG, "未进行初始化" );
+                    return;
+                }
 
-        if(dialog == null){
-            return;
-        }
+                if(dialog == null){
+                    return;
+                }
 
-        setStep("同步结束");
-        setProgress(0,0);
+                setStep(act.getString(R.string.dialog_sync_tbjs));
+                setProgress(0,0);
 
-        if(dialog.isShowing()){
-            if(rootView != null){
-                rootView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                if(dialog.isShowing()){
+                    if(rootView != null){
+                        rootView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        },2 * 1000);
+                    } else {
                         dialog.dismiss();
                     }
-                },2 * 1000);
-            } else {
-                dialog.dismiss();
+                }
             }
-        }
+        });
     }
 
     public void setStep(final String step){

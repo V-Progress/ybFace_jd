@@ -50,6 +50,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import skin.support.SkinCompatManager;
+import skin.support.app.SkinAppCompatViewInflater;
+import skin.support.app.SkinCardViewInflater;
+import skin.support.constraint.app.SkinConstraintViewInflater;
+import skin.support.design.app.SkinMaterialViewInflater;
+import skin.support.utils.Slog;
 import timber.log.Timber;
 
 
@@ -84,15 +90,33 @@ public class APP extends Application {
 
         initDB();
 
-        cauchException();
+//        cauchException();
 
         initBugly();
 
         initUM();
 
         initUtils();
-    }
 
+        initSkinManager();
+    }
+    private void initSkinManager(){
+        // 框架换肤日志打印
+        Slog.DEBUG = true;
+        SkinCompatManager.withoutActivity(this)
+                .addStrategy(new CustomSDCardLoader())          // 自定义加载策略，指定SDCard路径
+//                .addStrategy(new ZipSDCardLoader())             // 自定义加载策略，获取zip包中的资源
+                .addInflater(new SkinAppCompatViewInflater())   // 基础控件换肤
+                .addInflater(new SkinMaterialViewInflater())    // material design
+                .addInflater(new SkinConstraintViewInflater())  // ConstraintLayout
+                .addInflater(new SkinCardViewInflater())        // CardView v7
+//                .addInflater(new SkinCircleImageViewInflater()) // hdodenhof/CircleImageView
+//                .addInflater(new SkinFlycoTabLayoutInflater())  // H07000223/FlycoTabLayout
+                .setSkinStatusBarColorEnable(true)              // 关闭状态栏换肤
+//                .setSkinWindowBackgroundEnable(false)           // 关闭windowBackground换肤
+//                .setSkinAllActivityEnable(false)                // true: 默认所有的Activity都换肤; false: 只有实现SkinCompatSupportable接口的Activity换肤
+                .loadSkin();
+    }
     //IO引脚
     private int dir_set_io[] = {1, 2, 3, 4};
     //IO口方向，0：输入，1：输出

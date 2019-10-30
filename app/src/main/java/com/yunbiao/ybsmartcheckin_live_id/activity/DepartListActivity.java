@@ -68,7 +68,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DepartListActivity.this);
 
-                builder.setTitle("请输入部门名称");
+                builder.setTitle(getString(R.string.act_departList_tip_qsrbmmc));
                 //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
                 View view = LayoutInflater.from(DepartListActivity.this).inflate(R.layout.dialog_depart, null);
                 //    设置我们自己定义的布局文件作为弹出框的Content
@@ -76,7 +76,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
 
                 final EditText et_departName = (EditText)view.findViewById(R.id.et_departName);
 
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
+                builder.setPositiveButton(getString(R.string.base_ensure), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -136,7 +136,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
 
                     }
                 });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                builder.setNegativeButton(getString(R.string.base_cancel), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -161,11 +161,11 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
         AlertDialog.Builder builder = new AlertDialog.Builder(DepartListActivity.this);
 
         //    设置Title的内容
-        builder.setTitle("提示！");
+        builder.setTitle(getString(R.string.base_tip));
         //    设置Content来显示一个信息
-        builder.setMessage("确定删除吗？");
+        builder.setMessage(getString(R.string.act_departList_tip_qdscm));
         //    设置一个PositiveButton
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.base_ensure), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -211,7 +211,7 @@ public class DepartListActivity extends BaseActivity implements  DepartListAdapt
 
         });
         //    设置一个NegativeButton
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(getString(R.string.base_cancel), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)

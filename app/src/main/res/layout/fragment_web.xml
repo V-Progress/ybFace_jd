@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="后退"
+            android:text="@string/fment_Web_back"
             android:textSize="20dp" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_marginLeft="20dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="刷新"
+            android:text="@string/fment_Web_refresh"
             android:textSize="20dp" />
 
         <ProgressBar

@@ -281,7 +281,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     private void checkAddInfo() {
         if (TextUtils.isEmpty(mCurrHeadPath)) {
-            UIUtils.showShort(this, "请先拍照");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
 
@@ -293,15 +293,15 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         int checkSex = rgSex.getCheckedRadioButtonId();
 
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请填写姓名");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
         if (checkSex == -1) {
-            UIUtils.showShort(this, "请选择性别");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxzxb));
             return;
         }
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请填写编号");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -322,7 +322,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         }
         File headFile = new File(mCurrHeadPath);
         if (!headFile.exists()) {
-            UIUtils.showShort(this, "未找到头像文件，请重新拍照后再试");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_wzdtxwjqcxpzhzs));
             return;
         }
 
@@ -367,7 +367,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         }
 
         if (params.size() <= 0) {
-            UIUtils.showShort(this, "未做任何修改");
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_wzrhxg));
             return;
         }
         params.put("id", mCurrUser.getId() + "");
@@ -409,7 +409,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d(e);
-                        UIUtils.showTitleTip(EditEmployActivity.this, "添加失败：\n" + (e != null ? e.getMessage() : "NULL"));
+                        UIUtils.showTitleTip(EditEmployActivity.this, getString(R.string.act_editEmploy_tip_tjsb)+"：\n" + (e != null ? e.getMessage() : "NULL"));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -421,22 +421,22 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                             String errMsg;
                             switch (baseResponse.getStatus()) {
                                 case 2://添加失败
-                                    errMsg = "添加失败";
+                                    errMsg = getString(R.string.act_editEmploy_tip_tjsb);
                                     break;
                                 case 3://员工不存在
-                                    errMsg = "该员工不存在";
+                                    errMsg = getString(R.string.act_editEmploy_tip_gygbcz);
                                     break;
                                 case 6://部门不存在
-                                    errMsg = "不存在该部门";
+                                    errMsg = getString(R.string.act_editEmploy_tip_bczgbm);
                                     break;
                                 case 7://不存在公司部门关系
-                                    errMsg = "公司没有这个部门";
+                                    errMsg =getString(R.string.act_editEmploy_tip_gsmyzgbm);
                                     break;
                                 case 8://不存在员工的公司部门信息
-                                    errMsg = "公司没有这位员工";
+                                    errMsg = getString(R.string.act_editEmploy_tip_gsmyzgbm);
                                     break;
                                 default://参数错误
-                                    errMsg = "参数错误";
+                                    errMsg = getString(R.string.act_editEmploy_tip_cscw);
                                     break;
                             }
                             UIUtils.showTitleTip(EditEmployActivity.this, "" + errMsg);

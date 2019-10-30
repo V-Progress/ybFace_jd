@@ -26,6 +26,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
@@ -124,10 +125,12 @@ public class WelComeActivity extends BaseGpioActivity {
         }
 
         @Override
-        public void onFaceDetection(FaceResult basePropertyMap) {
-            onLight();
-            if(adsFragment != null){
-                adsFragment.detectFace();
+        public void onFaceDetection(Boolean hasFace) {
+            if(hasFace){
+                onLight();
+                if(adsFragment != null){
+                    adsFragment.detectFace();
+                }
             }
         }
 
@@ -144,6 +147,8 @@ public class WelComeActivity extends BaseGpioActivity {
         if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
         if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());
         if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
+
+        EventBus.getDefault().post(new UpdateMediaEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -182,13 +187,13 @@ public class WelComeActivity extends BaseGpioActivity {
             public void onClick(View v) {
                 String pwd = edtPwd.getText().toString();
                 if (TextUtils.isEmpty(pwd)) {
-                    edtPwd.setError("不要忘记输入密码哦");
+                    edtPwd.setError(getString(R.string.act_wel_error_bywjsrmmo));
                     rootView.startAnimation(animation);
                     return;
                 }
                 String spPwd = SpUtils.getStr(SpUtils.MENU_PWD);
                 if (!TextUtils.equals(pwd, spPwd)) {
-                    edtPwd.setError("密码错了，重新输入吧");
+                    edtPwd.setError(getString(R.string.act_wel_error_mmclqcxsrb));
                     rootView.startAnimation(animation);
                     return;
                 }

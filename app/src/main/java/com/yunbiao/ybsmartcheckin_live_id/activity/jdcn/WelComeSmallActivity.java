@@ -25,7 +25,6 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -42,7 +41,6 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceResult;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
@@ -74,7 +72,7 @@ public class WelComeSmallActivity extends BaseGateActivity {
     private ServiceManager serviceManager;
 
     private String today = "";//获取今天时间
-    private String yuyin = " 您好 %s";
+    private String yuyin = getString(R.string.act_welSmall_hello)+" %s";
 
     //摄像头分辨率
     private FaceView faceView;
@@ -127,8 +125,10 @@ public class WelComeSmallActivity extends BaseGateActivity {
         }
 
         @Override
-        public void onFaceDetection(FaceResult basePropertyMap) {
-            ScreenSaver.get().restart();
+        public void onFaceDetection(Boolean hasFace) {
+            if(hasFace){
+                ScreenSaver.get().restart();
+            }
         }
 
         @Override
@@ -249,13 +249,13 @@ public class WelComeSmallActivity extends BaseGateActivity {
             public void onClick(View v) {
                 String pwd = edtPwd.getText().toString();
                 if (TextUtils.isEmpty(pwd)) {
-                    edtPwd.setError("不要忘记输入密码哦");
+                    edtPwd.setError(getString(R.string.act_wel_error_bywjsrmmo));
                     rootView.startAnimation(animation);
                     return;
                 }
                 String spPwd = SpUtils.getStr(SpUtils.MENU_PWD);
                 if (!TextUtils.equals(pwd, spPwd)) {
-                    edtPwd.setError("密码错了，重新输入吧");
+                    edtPwd.setError(getString(R.string.act_welSmall_error_mmclcxsrb));
                     rootView.startAnimation(animation);
                     return;
                 }
@@ -293,8 +293,8 @@ public class WelComeSmallActivity extends BaseGateActivity {
                     @Override
                     public void run() {
                             tv_checkInNum.setText("" + total);
-                            ((TextView) findViewById(R.id.tv_sign_number_male)).setText("男: " + maleNum + "人");
-                            ((TextView) findViewById(R.id.tv_sign_number_female)).setText("女: " + female + "人");
+                            ((TextView) findViewById(R.id.tv_sign_number_male)).setText(getString(R.string.base_male)+": " + maleNum + getString(R.string.base_people));
+                            ((TextView) findViewById(R.id.tv_sign_number_female)).setText(getString(R.string.base_female)+": " + female + getString(R.string.base_people));
 
                             //设置饼图数据
                             List<PieEntry> dataEntry = new ArrayList<>();
@@ -304,8 +304,8 @@ public class WelComeSmallActivity extends BaseGateActivity {
                                 dataEntry.add(new PieEntry(100, ""));
                                 dataColors.add(getResources().getColor(R.color.white));
                             } else {
-                                dataEntry.add(new PieEntry(maleNum, "男"));
-                                dataEntry.add(new PieEntry(female, "女"));
+                                dataEntry.add(new PieEntry(maleNum, getString(R.string.base_male)));
+                                dataEntry.add(new PieEntry(female, getString(R.string.base_female)));
                                 dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
                                 dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
                             }
@@ -327,9 +327,9 @@ public class WelComeSmallActivity extends BaseGateActivity {
     /*=======摄像头检测=============================================================================*/
     //语音播报
     private void speak(int signType, String signerName) {
-        String speakStr = " 您好 %s ，欢迎光临";
-        String goTips = "上班签到成功";
-        String  downTips = "下班签到成功";
+        String speakStr = getString(R.string.act_welSmall_tip_nhhygl);
+        String goTips = getString(R.string.act_welSmall_tip_sbqdcg);
+        String  downTips =getString(R.string.act_welSmall_tip_xbqdcg);
         Company company = SpUtils.getCompany();
         switch (signType) {
             case 0:

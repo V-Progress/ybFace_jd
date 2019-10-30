@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_head"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:translationY="-152dp"
+        android:background="@drawable/skin_main_ads_head_background"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_ads_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="160dp"
+                android:maxHeight="80dp"
+                android:scaleType="centerInside"
+                android:src="@mipmap/logo_yb" />
+
+            <TextView
+                android:layout_marginLeft="20dp"
+                android:id="@+id/tv_ads_addname"
+                android:layout_width="wrap_content"
+                android:layout_height="85dp"
+                android:text="@string/System_title"
+                android:gravity="center_vertical"
+                android:textColor="@drawable/skin_main_title_text_color"
+                android:textSize="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextClock
+                android:textColor="@color/skin_color_main_clock"
+                android:gravity="center"
+                android:id="@+id/tc_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format12Hour="yyyy.MM.dd EE a"
+                android:format24Hour="yyyy.MM.dd EE a"
+                android:textSize="26dp" />
+            <TextClock
+                android:textColor="@color/skin_color_main_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format12Hour="HH:mm"
+                android:format24Hour="HH:mm"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_ads_wea"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+            <TextView
+                android:textColor="@drawable/skin_main_title_text_color"
+                android:id="@+id/tv_ads_tem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="32dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/tv_ads_slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fment_ads_slogan"
+            android:textColor="@drawable/skin_main_title_text_color"
+            android:textSize="26dp" />
+
+        <TextView
+            android:textColor="@drawable/skin_main_title_text_color"
+            android:layout_alignParentRight="true"
+            android:id="@+id/tv_number_ads"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <!--@mipmap/ads_bg-->
+    <FrameLayout
+        android:translationY="1800dp"
+        android:id="@+id/layout_ads"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/ads_bg"
+        android:elevation="10dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_out_ads"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/img_wel"
+            android:visibility="visible" />
+
+        <com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView
+            android:id="@+id/vv_out_ads"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_height="match_parent" />
+        <!--<VideoView-->
+            <!--android:id="@+id/vv_out_ads"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:visibility="gone" />-->
+    </FrameLayout>
+
+</LinearLayout>

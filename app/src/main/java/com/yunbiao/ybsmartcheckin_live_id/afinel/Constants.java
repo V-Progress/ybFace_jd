@@ -34,47 +34,46 @@ public class Constants {
     public static String HEAD_PATH = TEMP_PATH + "photo/";//照片路径
     public static String RECORD_PATH = TEMP_PATH + "record/";//实时人脸记录缓存
     public static String MEETING_PATH = TEMP_PATH + "meeting/";
+    public static String SKIN_PATH = LOCAL_ROOT_PATH + "skins/";//皮肤路径
 
     public static void initStorage() {
         int comid = SpUtils.getInt(SpUtils.COMPANYID);
         Constants.DATA_PATH = Constants.CACHE_PATH + comid + "/data/";
-        Constants.ADS_PATH = Constants.CACHE_PATH + comid +"/ads/";
-        Constants.HEAD_PATH = Constants.CACHE_PATH + comid +"/img/";
-        Constants.RECORD_PATH = Constants.CACHE_PATH + comid +"/rcd/";
-        Constants.MEETING_PATH = Constants.CACHE_PATH + comid +"/meet/";
-        Constants.INFO_PATH = Constants.CACHE_PATH + comid +"/info/";
+        Constants.ADS_PATH = Constants.CACHE_PATH + comid + "/ads/";
+        Constants.HEAD_PATH = Constants.CACHE_PATH + comid + "/img/";
+        Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
+        Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
+        Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
     }
 
-    public interface NetConfig{
+    public interface NetConfig {
         String PRE = "http://";
         String COLON = ":";
 
         /***
          * 正式环境
          */
-        //主机地址
-        String PRO_URL = "47.105.80.245";
-        //XMPP端口
-        String PRO_XMPP_PORT = "5222";
-        //数据端口
-        String PRO_RES_PORT = "8080";
-        //项目名（端口为80，项目名不用写）
-        String PRO_SUFFIX = "/";
+        String PRO_URL = "47.105.80.245";//主机地址
+        String PRO_XMPP_PORT = "5222";//XMPP端口
+        String PRO_RES_PORT = "8080";//数据端口
+        String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
 
         /***
          * 本地开发环境
          */
-        //主机地址
-//        String DEV_URL = "192.168.1.54";
-        String DEV_URL = "47.105.80.245";
-        //XMPP端口
+//        String DEV_URL = "192.168.1.45";//曾辉
+//        String DEV_RES_PORT = "8082";//曾辉
+        String DEV_URL = "47.105.80.245";//正式
+        String DEV_RES_PORT = "8080";//正式
         String DEV_XMPP_PORT = "5222";
-        //数据端口
-//        String DEV_RES_PORT = "8088";
-        String DEV_RES_PORT = "8080";
-        //项目名
-//        String DEV_SUFFIX = "/ybface/";
         String DEV_SUFFIX = "/";
+
+
+
+//        String DEV_URL = "121.69.8.238";//测试地址
+//        String DEV_XMPP_PORT = "5222";
+//        String DEV_RES_PORT = "8088";//测试地址
+//        String DEV_SUFFIX = "/ybface/";//测试地址
     }
 }
 

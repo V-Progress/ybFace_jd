@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/welcome_bg_h">
+
+    <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+        android:layout_centerInParent="true"
+        android:id="@+id/face_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="8dp"
+        android:layout_height="200dp"
+        android:background="@mipmap/lignt_line"
+        android:rotation="180" />
+
+    <ImageView
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="8dp"
+        android:layout_height="200dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/lignt_line" />
+
+
+    <ImageView
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:onClick="goSetting"
+        android:scaleType="centerInside"
+        android:id="@+id/iv_main_logo"
+        android:layout_width="wrap_content"
+        android:maxWidth="100dp"
+        android:maxHeight="50dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/logo" />
+
+    <TextClock
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/textClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:format24Hour="HH:mm:ss"
+        android:format12Hour="HH:mm:ss"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:paddingBottom="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="bottom|center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:paddingRight="10dp"
+                android:maxLines="1"
+                android:gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/act_welSmall_jrqd"
+                android:textColor="@color/text_color_h"
+                android:textSize="10dp" />
+
+            <TextView
+                android:maxLength="5"
+                android:maxLines="1"
+                android:id="@+id/tv_checkInNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_sign_number"
+                android:textSize="10dp" />
+
+            <TextView
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/base_people"
+                android:textColor="@color/text_color_h"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/proportion_bg">
+
+            <LinearLayout
+                android:gravity="left"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="8dp"
+                    android:textColor="@color/horizontal_chart_male"
+                    android:id="@+id/tv_sign_number_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_sign_number_female"
+                    android:textSize="8dp"
+                    android:textColor="@color/horizontal_chart_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:layout_centerInParent="true"
+                android:id="@+id/pie_chart"
+                android:layout_width="240dp"
+                android:layout_height="240dp"></com.github.mikephil.charting.charts.PieChart>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <include android:visibility="gone" android:id="@+id/screen_saver" layout="@layout/layout_screen_saver"/>
+</RelativeLayout>

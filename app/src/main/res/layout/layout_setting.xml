@@ -10,7 +10,7 @@
         android:padding="35dp"
         android:textColor="@color/white"
         android:textSize="28dp"
-        android:text="系统设置"
+        android:text="@string/act_set_xtsz"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <View
@@ -34,7 +34,7 @@
             android:padding="28dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="系统密码" />
+            android:text="@string/act_set_xtmm" />
         <View
             android:background="@color/gray_low"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             android:textSize="26dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="清除缓存" />
+            android:text="@string/act_set_qchc" />
 
         <View
             android:background="@color/gray_low"
@@ -71,7 +71,7 @@
                 android:textSize="26dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="清除数据" />
+                android:text="@string/act_set_qcsj" />
 
             <TextView
                 android:textColor="@color/white"
@@ -105,7 +105,7 @@
                 android:padding="28dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="检测摄像头" />
+                android:text="@string/act_set_jcsxt"/>
 
             <Spinner
                 android:visibility="gone"
@@ -140,7 +140,7 @@
                 android:checked="true"
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
-                android:text="是否镜像"
+                android:text="@string/act_set_sfjx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             
@@ -168,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="网络状态"
+                android:text="@string/act_set_wlzt"
                 android:textSize="26dp" />
 
             <TextView
@@ -193,7 +193,7 @@
             android:id="@+id/btn_close_setting"
             android:layout_gravity="bottom"
             android:textSize="30dp"
-            android:text="关闭"
+            android:text="@string/act_set_gb"
             android:padding="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
