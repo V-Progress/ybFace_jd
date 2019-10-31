@@ -128,7 +128,8 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     private void ininSpinner() {
         showLoading(true);
-        departs = DaoManager.get().queryAll(Depart.class);
+//        departs = DaoManager.get().queryAll(Depart.class);
+        departs = DaoManager.get().queryDepartByCompId(SpUtils.getInt(SpUtils.COMPANYID));
         mDepartList.clear();
         mDepartIdList.clear();
         mDepartList.add(getString(R.string.act_employList_tip_qbbm));

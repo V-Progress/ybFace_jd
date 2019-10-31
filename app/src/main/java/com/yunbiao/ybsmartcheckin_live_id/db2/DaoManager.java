@@ -149,6 +149,13 @@ public class DaoManager {
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
     }
 
+    public List<Depart> queryDepartByCompId(int compId){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getDepartDao().queryBuilder().where(DepartDao.Properties.CompId.eq(compId)).list();
+    }
+
     /***
      * 通过部门Id查询员工
      * @param id

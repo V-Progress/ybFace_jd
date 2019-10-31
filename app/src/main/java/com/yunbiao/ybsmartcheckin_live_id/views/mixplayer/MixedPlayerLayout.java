@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.views.mixplayer;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
@@ -30,7 +31,7 @@ public class MixedPlayerLayout extends FrameLayout {
     private ImageView imageView;//图片
     private TextureVideoView videoView;//视频
 
-    private int defaultImgId = R.mipmap.img_wel;//默认图片
+    private int defaultImgId;//默认图片 img_wel_h
 
     public MixedPlayerLayout(Context context) {
         this(context, null);
@@ -42,6 +43,13 @@ public class MixedPlayerLayout extends FrameLayout {
 
     public MixedPlayerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        int mCurrentOrientation = getContext().getResources().getConfiguration().orientation;
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            defaultImgId = R.mipmap.img_wel;
+        } else {
+            defaultImgId = R.mipmap.img_wel_h;
+        }
+
         initChilds();
     }
 
@@ -154,7 +162,7 @@ public class MixedPlayerLayout extends FrameLayout {
         public void run() {
             Log.e(TAG, "播放-----------------" + mCurrIndex);
 
-            if (datas == null || datas.size() <= 0) {
+            if (datas == null || datas.size() <= 1) {
                 Log.e(TAG, "没数据，停止");
                 stop();
                 return;

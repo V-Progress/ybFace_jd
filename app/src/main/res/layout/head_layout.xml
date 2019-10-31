@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:textColor="@color/white"
-        android:text="@string/act_set_txjl"/>
+        android:text="@string/act_set_xtsz"/>
 
     <ImageView
         android:padding="15dp"

@@ -98,14 +98,14 @@
             android:layout_height="44dp"
             android:background="@drawable/shape_employ_list"
             android:layout_below="@+id/btn_sync"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:text="@string/employ_list_field_index"
@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:text="@string/employ_list_field_number"
@@ -132,7 +132,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:text="@string/employ_list_field_depart"
@@ -150,7 +150,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="2.5"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:text="@string/employ_list_field_control"
