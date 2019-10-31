@@ -174,8 +174,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
         android:orientation="horizontal"
-        android:gravity="right"
+        android:gravity="center_vertical|right"
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
@@ -189,8 +191,6 @@
 
         <Button
             android:onClick="selectSkin"
-            android:layout_marginLeft="60dp"
-            android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_btn_take_photo"
@@ -198,18 +198,6 @@
             android:text="更换皮肤"
             android:textColor="@color/white"
             android:textSize="36dp" />
-        <Button
-            android:onClick="restoreDefaultSkin"
-            android:layout_marginLeft="60dp"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_btn_take_photo"
-            android:padding="30dp"
-            android:text="恢复默认"
-            android:textColor="@color/white"
-            android:textSize="36dp" />
-
     </LinearLayout>
 
     <TableLayout

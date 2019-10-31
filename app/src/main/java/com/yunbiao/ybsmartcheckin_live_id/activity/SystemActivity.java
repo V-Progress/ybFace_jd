@@ -23,6 +23,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -64,8 +65,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -708,21 +711,86 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
+    class SkinModel{
+        String skinName;
+        File skinFile;
+    }
+
     public void selectSkin(View view) {
-        File file = new File(Constants.SKIN_PATH);
+        final File file = new File(Constants.SKIN_PATH);
         if(!file.exists()){
             file.mkdirs();
         }
+        final File[] files = file.listFiles();
 
-        File[] files = file.listFiles();
-        if(files != null && files.length > 0){
-            File skinFile = files[0];
-            load(skinFile.getName());
+        if(files == null || files.length <= 0){
+            UIUtils.showTitleTip(this,"暂无皮肤");
+            return;
         }
-    }
 
-    public void restoreDefaultSkin(View view){
-        SkinCompatManager.getInstance().restoreDefaultTheme();
+        final List<SkinModel> skinList = new ArrayList<>();
+        SkinModel skinModel = new SkinModel();
+        skinModel.skinName = "默认";
+        skinList.add(skinModel);
+
+        for (File file1 : files) {
+            if(file1.getName().endsWith(".skin")){
+                SkinModel skin = new SkinModel();
+                skin.skinName = file1.getName();
+                skin.skinFile = file1;
+                skinList.add(skin);
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return skinList.size();
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return skinList.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                VH vh ;
+                if(convertView == null){
+                    vh = new VH();
+                    convertView = View.inflate(parent.getContext(),android.R.layout.simple_list_item_1,null);
+                    vh.tv = convertView.findViewById(android.R.id.text1);
+                    convertView.setTag(vh);
+                } else {
+                    vh = (VH) convertView.getTag();
+                }
+                SkinModel skinModel = skinList.get(position);
+                vh.tv.setText(skinModel.skinName);
+                return convertView;
+            }
+            class VH{
+                TextView tv;
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e(TAG, "onClick: " + which);
+                SkinModel skinModel = skinList.get(which);
+                File skinFile = skinModel.skinFile;
+                if(which == 0 || skinFile == null){
+                    SkinCompatManager.getInstance().restoreDefaultTheme();
+                } else {
+                    load(skinFile.getName());
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private static final String TAG = "SystemActivity";
@@ -732,17 +800,18 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onStart() {
                 Log.e(TAG, "onStart: 开始加载皮肤" );
+                UIUtils.showTitleTip(SystemActivity.this,"正在切换：" + apkName);
             }
 
             @Override
             public void onSuccess() {
-                Toast.makeText(SystemActivity.this, "切换皮肤成功：" + apkName, Toast.LENGTH_SHORT).show();
+                UIUtils.showTitleTip(SystemActivity.this,"切换皮肤成功：" + apkName);
                 Log.e(TAG, "onSuccess: 加载皮肤成功");
             }
 
             @Override
             public void onFailed(String errMsg) {
-                Toast.makeText(SystemActivity.this, "切换皮肤失败：" + apkName, Toast.LENGTH_SHORT).show();
+                UIUtils.showTitleTip(SystemActivity.this,"切换皮肤失败：" + apkName);
                 Log.e(TAG, "onSuccess: 加载皮肤失败：" + errMsg);
             }
         }, CustomSDCardLoader.SKIN_LOADER_STRATEGY_SDCARD);
@@ -750,7 +819,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         File file = new File(Constants.SKIN_PATH, apkName);
         Log.e(TAG, "getSkinPath: " + file.getAbsolutePath() + " : " + file.exists());
     }
-
 
     class CheckCamera{
         public String getCameraInfo(){
