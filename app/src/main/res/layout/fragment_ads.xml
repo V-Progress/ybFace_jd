@@ -122,29 +122,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/ads_bg"
-        android:elevation="10dp"
-        android:orientation="vertical">
+        android:elevation="10dp">
 
-        <ImageView
-            android:id="@+id/iv_out_ads"
+        <com.yunbiao.ybsmartcheckin_live_id.views.mixplayer.MixedPlayerLayout
+            android:id="@+id/mpl_ads"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@mipmap/img_wel"
-            android:visibility="visible" />
-
-        <com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView
-            android:id="@+id/vv_out_ads"
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_height="match_parent" />
-        <!--<VideoView-->
-            <!--android:id="@+id/vv_out_ads"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:visibility="gone" />-->
+            android:layout_height="match_parent"/>
     </FrameLayout>
 
 </LinearLayout>

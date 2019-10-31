@@ -42,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView;
+import com.yunbiao.ybsmartcheckin_live_id.views.mixplayer.MixedPlayerLayout;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -65,8 +66,6 @@ public class AdsFragment extends Fragment implements AdsListener {
     private View rootView;
     private View adsView;
     private View headView;
-    private TextureVideoView videoView;
-    private ImageView imageView;
     private TextView tvWeather;
     private ImageView ivWeather;
     private ImageView ivLogo;
@@ -76,11 +75,10 @@ public class AdsFragment extends Fragment implements AdsListener {
 
     private long MAX_TIME = 30;
     private long onTime = MAX_TIME;
-    private int advertTime = 10;
-    private List<File> mAdsList = new ArrayList<>();
-    private boolean go = true;
+    private List<String> mAdsList = new ArrayList<>();
     private ObjectAnimator objectAnimator;
     private TextView tvNumber;
+    private MixedPlayerLayout mixedPlayer;
 
     @Nullable
     @Override
@@ -104,9 +102,7 @@ public class AdsFragment extends Fragment implements AdsListener {
         tvWeather = rootView.findViewById(R.id.tv_ads_tem);
 
         //广告内容
-        imageView = rootView.findViewById(R.id.iv_out_ads);
-        videoView = rootView.findViewById(R.id.vv_out_ads);
-//        videoView.setZOrderOnTop(true);
+        mixedPlayer = rootView.findViewById(R.id.mpl_ads);
 
         //大布局
         headView = rootView.findViewById(R.id.layout_head);
@@ -233,7 +229,8 @@ public class AdsFragment extends Fragment implements AdsListener {
                     SpUtils.saveStr(SpUtils.COMPANY_AD_HENG, response);
                 }
 
-                advertTime = advertBean.getAdvertObject().getAdvertTime();
+                int advertTime = advertBean.getAdvertObject().getAdvertTime();
+                mixedPlayer.setPlayTime(advertTime);
 
                 checkAds(imgArray);
             }
@@ -256,7 +253,6 @@ public class AdsFragment extends Fragment implements AdsListener {
     }
 
     private void checkAds(List<AdvertBean.AdvertObjectEntity.ImgArrayEntity> imgArray) {
-        go = false;
         mAdsList.clear();
         Queue<String> urlQueue = new LinkedList<>();
         for (AdvertBean.AdvertObjectEntity.ImgArrayEntity imgArrayEntity : imgArray) {
@@ -267,13 +263,13 @@ public class AdsFragment extends Fragment implements AdsListener {
             @Override
             public void getAds(File file) {
                 d("getAds: ---------- 下载成功：" + file.getPath());
-                mAdsList.add(file);
-                go = true;
+                mAdsList.add(file.getPath());
             }
 
             @Override
             public void finish() {
                 d("finish: ---------- 结束");
+                mixedPlayer.setDatas(mAdsList);
             }
         });
     }
@@ -326,60 +322,6 @@ public class AdsFragment extends Fragment implements AdsListener {
         });
     }
 
-    private int mAdsindex = 0;
-    private Handler adsHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (go && isVisible() && mAdsList.size() > 0) {
-                if (mAdsindex > mAdsList.size() - 1) {
-                    mAdsindex = 0;
-                }
-
-                File file = mAdsList.get(mAdsindex);
-                d("handleMessage: ------ " + file.getPath());
-                if (FileUtils.isVideo(file.getPath())) {
-                    imageView.setVisibility(View.GONE);
-                    videoView.setVisibility(View.VISIBLE);
-                    videoView.setVideoPath(file.getPath());
-                    videoView.start();
-                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mAdsindex++;
-
-                            adsHandler.removeMessages(0);
-                            adsHandler.sendEmptyMessage(0);
-                        }
-                    });
-                    videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                        @Override
-                        public boolean onError(MediaPlayer mp, int what, int extra) {
-                            mAdsindex++;
-
-                            adsHandler.removeMessages(0);
-                            adsHandler.sendEmptyMessage(0);
-                            return true;
-                        }
-                    });
-                } else {
-                    imageView.setVisibility(View.VISIBLE);
-                    videoView.setVisibility(View.GONE);
-                    Glide.with(getActivity()).load(file).crossFade(300).into(imageView);
-                    mAdsindex++;
-                    if(mAdsList.size() < 2){
-
-                    }
-
-                    adsHandler.removeMessages(0);
-                    adsHandler.sendEmptyMessageDelayed(0, advertTime * 1000);
-                }
-            } else {
-                adsHandler.sendEmptyMessageDelayed(0, 1000);
-            }
-        }
-    };
-
-
     private void d(@NonNull String msg) {
         Log.d(TAG, msg);
     }
@@ -394,11 +336,10 @@ public class AdsFragment extends Fragment implements AdsListener {
             public void run() {
                 timerHandler.removeMessages(0);
                 timerHandler.sendEmptyMessage(0);
-                adsHandler.removeMessages(0);
-
                 headView.setVisibility(View.GONE);
                 adsView.setVisibility(View.GONE);
-                videoView.stopPlayback();
+
+                mixedPlayer.pause();
 
                 EventBus.getDefault().postSticky(new AdsStateEvent(AdsStateEvent.STATE_CLOSED));
             }
@@ -416,8 +357,7 @@ public class AdsFragment extends Fragment implements AdsListener {
             @Override
             public void run() {
                 timerHandler.removeMessages(0);
-                adsHandler.removeMessages(0);
-                adsHandler.sendEmptyMessage(0);
+                mixedPlayer.resume();
 
                 EventBus.getDefault().postSticky(new AdsStateEvent(AdsStateEvent.STATE_OPENED));
             }
