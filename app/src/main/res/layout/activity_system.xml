@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/selector_btn_take_photo"
             android:padding="30dp"
-            android:text="更换皮肤"
+            android:text="@string/System_skin_select"
             android:textColor="@color/white"
             android:textSize="36dp" />
     </LinearLayout>

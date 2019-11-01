@@ -15,6 +15,7 @@
     <string name="System_Setting">setting</string>
     <string name="System_update">upgrade</string>
     <string name="System_copyright">copyright:北京云标科技有限公司</string>
+    <string name="System_skin_select">skin</string>
 
     <string name="System_Service_offline">off-line</string>
 
@@ -54,7 +55,6 @@
 
 
 
-
     <!--2019.10.21 增加字段-->
 
     <!--通用的  -->
@@ -63,7 +63,7 @@
     <string name="base_cancel">NO</string>
     <string name="base_male">Mr</string>
     <string name="base_female">Ms</string>
-    <string name="base_people">ppls</string>
+    <string name="base_people"> </string>
     <string name="base_year">year</string>
     <string name="base_month">month</string>
     <string name="base_day">day</string>
