@@ -44,7 +44,7 @@
                 android:maxHeight="100dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@mipmap/logo" />
+                android:src="@mipmap/yb_logo" />
 
             <TextView
                 android:textStyle="bold"

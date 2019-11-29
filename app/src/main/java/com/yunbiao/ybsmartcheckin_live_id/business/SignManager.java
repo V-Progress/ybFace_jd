@@ -25,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -162,6 +163,7 @@ public class SignManager {
         d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
         OkHttpUtils.post()
                 .addParams("signstr", jsonStr)
+                .addParams("deviceId", HeartBeatClient.getDeviceNo())
                 .url(ResourceUpdate.SIGNARRAY)
                 .build()
                 .execute(new StringCallback() {
@@ -349,6 +351,7 @@ public class SignManager {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
+        map.put("deviceId", HeartBeatClient.getDeviceNo());
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -477,6 +480,7 @@ public class SignManager {
                 int companyid = SpUtils.getInt(SpUtils.COMPANYID);
                 final Map<String, String> map = new HashMap<>();
                 map.put("comId", companyid + "");
+                map.put("deviceId", HeartBeatClient.getDeviceNo());
                 OkHttpUtils.post()
                         .url(ResourceUpdate.BULUSIGN)
                         .params(map)

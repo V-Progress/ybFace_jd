@@ -55,6 +55,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -98,7 +99,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private View ivBack;
     private TextView tv_bindcode_syetem;
     private CheckBox cbMirror;
-    private Company company;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -157,8 +157,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initData() {
-        company = SpUtils.getCompany();
-
         String appName = getResources().getString(R.string.app_name);
         try {
             PackageInfo packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
@@ -170,7 +168,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
         updateServerState();
 
-        setIcon();
         setInfo();
 
         com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.getDataSize(new com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.OnSizeCallback() {
@@ -187,24 +184,14 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateLogoEvent updateEvent) {
-        setIcon();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(XmppConnectEvent connectEvent) {
         tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.act_sys_tip_online) : getString(R.string.act_sys_tip_outline));
     }
 
-    public void setIcon(){
-        String logoPath = SpUtils.getStr(SpUtils.COMPANY_LOGO);
-        if(!TextUtils.isEmpty(logoPath)){
-            Glide.with(this).load(logoPath).asBitmap().into(ivLogo);
-        }
-    }
-
     public void setInfo() {
         Company company = SpUtils.getCompany();
+        ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivLogo);
+
         tv_company_system.setText(company.getComname());
 
         String serNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);

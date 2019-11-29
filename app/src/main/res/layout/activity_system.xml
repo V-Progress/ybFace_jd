@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bj"
+    android:background="@drawable/skin_main_screen_background"
     android:orientation="vertical"
     tools:context="com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity">
 
@@ -23,8 +23,7 @@
             android:maxHeight="80dp"
             android:id="@+id/iv_system_logo"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/logo" />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:layout_centerInParent="true"

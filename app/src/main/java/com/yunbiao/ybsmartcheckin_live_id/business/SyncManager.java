@@ -143,6 +143,7 @@ public class SyncManager {
         }
 
         d("获取公司信息");
+        d("参数：" + HeartBeatClient.getDeviceNo());
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
@@ -203,10 +204,10 @@ public class SyncManager {
                 syncDepart(company);
 
                 //加载logo
-                loadLogo(company);
+//                loadLogo(company);
 
                 //加载二维码
-                loadQRCode(company);
+//                loadQRCode(company);
 
                 long currTime = System.currentTimeMillis();
                 long lastTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);

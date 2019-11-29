@@ -39,7 +39,7 @@
         android:maxHeight="50dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:src="@mipmap/logo" />
+        android:src="@mipmap/yb_logo" />
 
     <TextClock
         android:paddingTop="5dp"

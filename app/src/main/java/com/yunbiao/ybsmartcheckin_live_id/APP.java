@@ -100,6 +100,7 @@ public class APP extends Application {
 
         initSkinManager();
     }
+
     private void initSkinManager(){
         // 框架换肤日志打印
         Slog.DEBUG = true;

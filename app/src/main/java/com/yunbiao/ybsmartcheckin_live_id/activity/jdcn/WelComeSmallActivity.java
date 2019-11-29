@@ -32,6 +32,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGateActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -46,6 +47,7 @@ import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -156,15 +158,18 @@ public class WelComeSmallActivity extends BaseGateActivity {
 
         //自动清理服务
         ResourceCleanManager.instance().startAutoCleanService();
+
+        Company company = SpUtils.getCompany();
+        ImageFileLoader.i().loadAndSave(getActivity(),company.getComlogo(), Constants.DATA_PATH,imageView);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateLogoEvent event){
-        String logoPath = event.getLogoPath();
-        if(!TextUtils.isEmpty(logoPath)){
-            bindImageView(logoPath,imageView);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void update(UpdateLogoEvent event){
+//        String logoPath = event.getLogoPath();
+//        if(!TextUtils.isEmpty(logoPath)){
+//            bindImageView(logoPath,imageView);
+//        }
+//    }
 
     /*签到事件监听*/
     private SignManager.SignEventListener signEventListener = new SignManager.SignEventListener() {

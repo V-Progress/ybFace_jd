@@ -41,6 +41,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.views.TextureVideoView;
 import com.yunbiao.ybsmartcheckin_live_id.views.mixplayer.MixedPlayerLayout;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -136,8 +137,9 @@ public class AdsFragment extends Fragment implements AdsListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateMediaEvent event){
+        d("收到媒体更新事件");
         //初始化广告数据
-        initAdsData();
+        getAdsData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -146,15 +148,8 @@ public class AdsFragment extends Fragment implements AdsListener {
         tvNumber.setText(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         tvAbbName.setText(company.getAbbname());
         tvSlogan.setText(company.getSlogan());
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateLogoEvent event) {
-        Log.e("112233", "22222: 收到更新图标的事件" );
-        String logoPath = event.getLogoPath();
-        if (!TextUtils.isEmpty(logoPath)) {
-            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivLogo);
-        }
+        ImageFileLoader.i().loadAndSave(getActivity(),company.getComlogo(),Constants.DATA_PATH,ivLogo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -178,7 +173,7 @@ public class AdsFragment extends Fragment implements AdsListener {
         }
     };
 
-    private void initAdsData() {
+    private void loadCacheAds(){
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {
@@ -190,9 +185,7 @@ public class AdsFragment extends Fragment implements AdsListener {
                     ads = SpUtils.getStr(SpUtils.COMPANY_AD_HENG);
                 }
 
-                if (TextUtils.isEmpty(ads)) {
-                    getAdsData();
-                } else {
+                if (!TextUtils.isEmpty(ads)) {
                     AdvertBean advertBean = new Gson().fromJson(ads, AdvertBean.class);
                     checkAds(advertBean.getAdvertObject().getImgArray());
                 }
@@ -210,6 +203,7 @@ public class AdsFragment extends Fragment implements AdsListener {
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("请求失败..." + e == null ? "NULL" : e.getMessage());
+                loadCacheAds();
             }
 
             @Override
@@ -235,6 +229,18 @@ public class AdsFragment extends Fragment implements AdsListener {
                 checkAds(imgArray);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mixedPlayer.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mixedPlayer.pause();
     }
 
     @Override

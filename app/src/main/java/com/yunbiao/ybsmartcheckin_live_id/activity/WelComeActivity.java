@@ -31,6 +31,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
@@ -41,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceResult;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -149,16 +151,18 @@ public class WelComeActivity extends BaseGpioActivity {
         if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
 
         EventBus.getDefault().post(new UpdateMediaEvent());
+
+        ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivMainLogo);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateLogoEvent event){
-        Log.e("112233", "11111: 收到更新图标的事件" );
-        String logoPath = event.getLogoPath();
-        if(!TextUtils.isEmpty(logoPath)){
-            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivMainLogo);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void update(UpdateLogoEvent event){
+//        Log.e("112233", "11111: 收到更新图标的事件" );
+//        String logoPath = event.getLogoPath();
+//        if(!TextUtils.isEmpty(logoPath)){
+//            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivMainLogo);
+//        }
+//    }
 
     private void startXmpp() {//开启xmpp
         serviceManager = new ServiceManager(this);

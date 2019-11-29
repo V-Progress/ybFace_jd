@@ -38,6 +38,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateQRCodeEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.NoticeManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
@@ -48,6 +49,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -116,7 +118,6 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         tvTotal = rootView.findViewById(R.id.tv_total_sign_list);
         tvTotalSex = rootView.findViewById(R.id.tv_total_sex);
 
-
         //横屏专用
         pieChart = rootView.findViewById(R.id.pie_chart);
         tvSignMale = rootView.findViewById(R.id.tv_sign_number_male);
@@ -173,59 +174,11 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             //公告
             NoticeManager.getInstance().initSignData();
         }
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateQRCodeEvent event){
-        String localPath = event.getLocalPath();
-        if(TextUtils.isEmpty(localPath)){
-            ivQRCode.setVisibility(View.INVISIBLE);
-            return;
-        }
-        Log.e(TAG, "update: ----- " + event.getLocalPath());
         ivQRCode.setVisibility(View.VISIBLE);
-        bindImageView(localPath,ivQRCode);
-    }
-/*
-    private void initSignData(){
         Company company = SpUtils.getCompany();
-        String notice = company.getNotice();
-        if(TextUtils.isEmpty(notice)){
-            Log.e(TAG, "initSignData: notice为空");
-            noticeLayout.setVisibility(View.GONE);
-            return;
-        }
-
-        notices = new Gson().fromJson(notice, new TypeToken<List<String>>(){}.getType());
-        if(notices == null || notices.size() <= 0){
-            Log.e(TAG, "initSignData: notices为空");
-            noticeLayout.setVisibility(View.GONE);
-        } else {
-            noticeIndex = 0;
-            noticeLayout.setVisibility(View.VISIBLE);
-            if(notices.size() < 2){
-
-                tvNotice.setText(notices.get(0));
-            } else {
-                noticeHandler.sendEmptyMessage(0);
-            }
-        }
-    }*/
-/*
-    private int noticeIndex = 0;
-    private Handler noticeHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            String s = notices.get(noticeIndex);
-            tvNotice.setText(s);
-            noticeIndex++;
-            if(noticeIndex >= notices.size()){
-                noticeIndex = 0;
-            }
-            noticeHandler.removeMessages(0);
-            noticeHandler.sendEmptyMessageDelayed(0,10 * 1000);
-        }
-    };*/
+        ImageFileLoader.i().loadAndSave(getActivity(),company.getCodeUrl(), Constants.DATA_PATH,ivQRCode);
+    }
 
     private String yuyin ="";
     //语音播报

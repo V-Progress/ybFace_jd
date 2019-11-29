@@ -162,7 +162,7 @@ public class MixedPlayerLayout extends FrameLayout {
         public void run() {
             Log.e(TAG, "播放-----------------" + mCurrIndex);
 
-            if (datas == null || datas.size() <= 1) {
+            if (datas == null || datas.size() <= 0) {
                 Log.e(TAG, "没数据，停止");
                 stop();
                 return;
@@ -183,6 +183,10 @@ public class MixedPlayerLayout extends FrameLayout {
                 imageView.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.GONE);
                 Glide.with(getContext()).load(playModel.getPath()).asBitmap().skipMemoryCache(true).into(imageView);
+                if(datas.size() <= 1){
+                    Log.e(TAG, "run: 只有一张照片，不继续播放");
+                    return;
+                }
                 play(playTime);
             } else {
                 Log.e(TAG, "是视频");
@@ -199,6 +203,7 @@ public class MixedPlayerLayout extends FrameLayout {
                 videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                     @Override
                     public boolean onError(MediaPlayer mp, int what, int extra) {
+
                         play(0);
                         return true;
                     }
