@@ -28,6 +28,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsStateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.InfoTouchEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
@@ -149,6 +150,12 @@ public class AdsFragment extends Fragment implements AdsListener {
         tvAbbName.setText(company.getAbbname());
         tvSlogan.setText(company.getSlogan());
 
+        ImageFileLoader.i().loadAndSave(getActivity(),company.getComlogo(),Constants.DATA_PATH,ivLogo);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(ResetLogoEvent event){
+        Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(getActivity(),company.getComlogo(),Constants.DATA_PATH,ivLogo);
     }
 

@@ -19,6 +19,7 @@ import com.yunbiao.ybsmartcheckin_live_id.common.SoundControl;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ScreenShotUtil;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -52,6 +53,7 @@ public class CoreInfoHandler {
     private final static int ADS_PUSH = 23;
     private final static int UPDATE_STAFF = 26;//员工信息更新
     private final static int UPDATE_INFO = 33; //修改了设备宣传目录.
+    private final static int UPDATE_SKIN = 104;
 
     public static boolean isOnline = false;
 
@@ -155,6 +157,12 @@ public class CoreInfoHandler {
                     break;
                 case UPDATE_INFO:
                     EventBus.getDefault().postSticky(new InformationFragment.InformationUpdateEvent());
+                    break;
+                case UPDATE_SKIN:
+                    String url = content.getUrl();
+                    int themeId = content.getThemeId();
+                    Log.e(TAG, "messageReceived: 收到皮肤更新消息：id：" + themeId + "，url：" + url);
+                    SkinLoader.loadSkin(url,themeId);
                     break;
                 default:
                     break;

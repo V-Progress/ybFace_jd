@@ -26,6 +26,24 @@ public class DeviceInfoBean {
         private int dtype;
         private int isMirror;
         private int runStatus;
+        private String url;
+        private int themeId;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public int getThemeId() {
+            return themeId;
+        }
+
+        public void setThemeId(int themeId) {
+            this.themeId = themeId;
+        }
 
         private double voice;
 

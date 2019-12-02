@@ -53,6 +53,7 @@ import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -783,28 +784,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private static final String TAG = "SystemActivity";
     private void load(final String apkName){
         Log.e(TAG, "load: 加载：" + " : " + apkName);
-        SkinCompatManager.getInstance().loadSkin(apkName, new SkinCompatManager.SkinLoaderListener() {
-            @Override
-            public void onStart() {
-                Log.e(TAG, "onStart: 开始加载皮肤" );
-                UIUtils.showTitleTip(SystemActivity.this,"正在切换：" + apkName);
-            }
-
-            @Override
-            public void onSuccess() {
-                UIUtils.showTitleTip(SystemActivity.this,"切换皮肤成功：" + apkName);
-                Log.e(TAG, "onSuccess: 加载皮肤成功");
-            }
-
-            @Override
-            public void onFailed(String errMsg) {
-                UIUtils.showTitleTip(SystemActivity.this,"切换皮肤失败：" + apkName);
-                Log.e(TAG, "onSuccess: 加载皮肤失败：" + errMsg);
-            }
-        }, CustomSDCardLoader.SKIN_LOADER_STRATEGY_SDCARD);
-
-        File file = new File(Constants.SKIN_PATH, apkName);
-        Log.e(TAG, "getSkinPath: " + file.getAbsolutePath() + " : " + file.exists());
+        SkinLoader.setSkin(apkName);
     }
 
     class CheckCamera{

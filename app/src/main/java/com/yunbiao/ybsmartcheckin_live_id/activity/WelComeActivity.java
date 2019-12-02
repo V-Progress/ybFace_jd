@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
@@ -152,6 +153,12 @@ public class WelComeActivity extends BaseGpioActivity {
 
         EventBus.getDefault().post(new UpdateMediaEvent());
 
+        ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivMainLogo);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(ResetLogoEvent event){
+        Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivMainLogo);
     }
 
