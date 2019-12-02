@@ -1,5 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.common;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -25,7 +27,7 @@ public class NetTool {
      * @param imageuri  图片或文件手机上的地址 如:sdcard/photo/123.jpg
      * @param img       图片名称
      */
-    public static void communication02(String urlString, Map<String, Object> params, String imageuri, String img) {
+    public static void communication02(String urlString, Map<String, String> params, String imageuri, String img) {
         String result = "";
 
         String end = "\r\n";
@@ -53,7 +55,7 @@ public class NetTool {
                 StringBuilder sb = new StringBuilder();
 
                 // 上传的表单参数部分，格式请参考文章
-                for (Map.Entry<String, Object> entry : params.entrySet()) {// 构建表单字段内容
+                for (Map.Entry<String, String> entry : params.entrySet()) {// 构建表单字段内容
                     sb.append("--");
                     sb.append(BOUNDARY);
                     sb.append("\r\n");

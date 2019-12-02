@@ -37,6 +37,7 @@ public class VideoFragment extends Fragment {
     private ViewPager2 vp2;
     private VideoAdapter videoAdapter;
     private TextView tvPosition;
+//    private VerticalPlayer verticalPlayer;
 
     public VideoFragment() {
     }
@@ -79,6 +80,8 @@ public class VideoFragment extends Fragment {
     }
 
     private void initView() {
+//        verticalPlayer = getView().findViewById(R.id.vertical_player);
+
         vp2 = getView().findViewById(R.id.vp2);
         tvPosition = getView().findViewById(R.id.tv_position);
         vp2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
@@ -97,12 +100,70 @@ public class VideoFragment extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(Object o){}
+
     private void loadData(ArrayList<PathBean> pathBeans) {
         videoAdapter = new VideoAdapter(this, pathBeans);
         vp2.setAdapter(videoAdapter);
+
+        /*List<PlayElement> playElements = new ArrayList<>();
+        for (PathBean pathBean : pathBeans) {
+            PlayElement playElement = new PlayElement(pathBean.getLocalPath(),pathBean.getType());
+            playElements.add(playElement);
+        }
+        verticalPlayer.setData(playElements);
+        verticalPlayer.setImageSet(new VerticalPlayer.ImageSet() {
+            @Override
+            public void set(String path, ImageView imageView) {
+                Glide.with(getActivity()).load(path).asBitmap().into(imageView);
+            }
+        });
+        verticalPlayer.setInteractionListener(new InteractionListener() {
+            @Override
+            public void clickView(PlayElement element, View playView) {
+                Toast.makeText(getActivity(), "点击了主屏幕", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void clickThumbsUp(PlayElement element, View thumbsUpView, TextView thumbsUpNumber) {
+                element.setGoodNum(element.getGoodNum() + 1);
+                thumbsUpNumber.setText("" + element.getGoodNum());
+            }
+
+            @Override
+            public void clickWatch(PlayElement element, View ivWatch) {
+                Toast.makeText(getActivity(), "点击了播放量", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void clickShare(PlayElement element, View thumbsUpView) {
+                Toast.makeText(getActivity(), "分享一下", Toast.LENGTH_SHORT).show();
+            }
+        });
+        verticalPlayer.setUpdateWatchListener(new UpdateWatchListener() {
+            @Override
+            public void update(PlayElement element, TextView tvWatchNumber) {
+                element.setWatchNum(element.getWatchNum() + 1);
+                tvWatchNumber.setText("" + element.getWatchNum());
+            }
+        });*/
     }
 
-    private ViewPager2.OnPageChangeCallback onPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+    @Override
+    public void onResume() {
+        super.onResume();
+//        verticalPlayer.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+//        verticalPlayer.pause();
+    }
+
+
+        private ViewPager2.OnPageChangeCallback onPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(final int position) {
             if (videoAdapter != null) {

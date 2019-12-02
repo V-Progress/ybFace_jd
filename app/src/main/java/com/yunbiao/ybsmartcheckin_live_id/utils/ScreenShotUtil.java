@@ -27,6 +27,8 @@ import android.view.WindowManager;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.NetTool;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,6 +45,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import okhttp3.Call;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -210,17 +214,29 @@ public class ScreenShotUtil {
 
                 if (callback != null) {
                     Log.e(TAG, "onClick: 55555555555555" + soft);
-                    callback.onShotted(isSucc,filePath);
+                    callback.onShotted(isSucc, filePath);
                 }
             }
         });
-
     }
 
     public void sendCutFinish(String sid, String filePath) {
-        HashMap<String, Object> params = new HashMap<>();
+        File file = new File(filePath);
+        Log.e(TAG, "sendCutFinish: " + (file != null && file.exists()));
+
+        HashMap<String, String> params = new HashMap<>();
         params.put("sid", sid);
-        NetTool.communication02(ResourceUpdate.SCREEN_UPLOAD_URL, params, filePath, "screenimage");
+        OkHttpUtils.post().url(ResourceUpdate.SCREEN_UPLOAD_URL).params(params).addFile("screenimage",file.getName(),file).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: " + (e == null ?" NULL" : e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: " + response);
+            }
+        });
     }
 
     private MediaProjectionManager projectionManager;
@@ -270,10 +286,11 @@ public class ScreenShotUtil {
 
     /**
      * 进行截屏
+     *
      * @param context
      */
     private Bitmap screenShot(Context context) {
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             return null;
         }
         Image image = mImageReader.acquireLatestImage();  //获取缓冲区中的图像，关键代码
@@ -306,7 +323,7 @@ public class ScreenShotUtil {
      * @return bitmap
      */
     private Bitmap cutoutFrame(Context context) {
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             return null;
         }
         if (mImageReader == null) {
@@ -335,8 +352,8 @@ public class ScreenShotUtil {
         int rowPadding = rowStride - pixelStride * width;
 
         width = width + rowPadding / pixelStride;
-        Log.e(TAG, "cutoutFrame: ---" + width +"-----" + height);
-        Bitmap bitmap = Bitmap.createBitmap(metrics,width, height, Bitmap.Config.ARGB_8888);
+        Log.e(TAG, "cutoutFrame: ---" + width + "-----" + height);
+        Bitmap bitmap = Bitmap.createBitmap(metrics, width, height, Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
 
 //        Bitmap newBitmap = Bitmap.createBitmap(height,width,Bitmap.Config.ARGB_8888);
@@ -358,7 +375,7 @@ public class ScreenShotUtil {
      * @return bitmap
      */
     private Bitmap cutoutFrame2(Context context) {
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             return null;
         }
         if (mImageReader == null) {
@@ -390,15 +407,14 @@ public class ScreenShotUtil {
 //        byte[] newBuffer = new byte[width * 4 * height];
 
 
-
         final Image.Plane[] planes = image.getPlanes();
         final ByteBuffer buffer = planes[0].getBuffer();
         byte[] bytes = new byte[buffer.remaining()];
         Log.e(TAG, "cutoutFrame2: array:" + bytes.length);
         buffer.get(bytes);
 
-        Bitmap temp = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-        Bitmap newBitmap = Bitmap.createBitmap(this.width,height, Bitmap.Config.ARGB_8888);
+        Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Bitmap newBitmap = Bitmap.createBitmap(this.width, height, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(newBitmap);
         Paint paint = new Paint();
@@ -406,9 +422,9 @@ public class ScreenShotUtil {
         //图片镜像并旋转90度
         matrix.setScale(-1, 1);
         matrix.postTranslate(iw, 0);
-        matrix.postRotate(90 ,iw/2,ih/2);
-        matrix.postTranslate(0,(iw-ih)/2);
-        canvas.drawBitmap(temp, matrix , paint );
+        matrix.postRotate(90, iw / 2, ih / 2);
+        matrix.postTranslate(0, (iw - ih) / 2);
+        canvas.drawBitmap(temp, matrix, paint);
         return newBitmap;
     }
 

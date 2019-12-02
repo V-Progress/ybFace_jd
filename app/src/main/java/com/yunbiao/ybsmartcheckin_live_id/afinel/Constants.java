@@ -59,21 +59,36 @@ public class Constants {
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
 
         /***
-         * 本地开发环境
+         * 曾辉环境
          */
-//        String DEV_URL = "192.168.1.45";//曾辉
-//        String DEV_RES_PORT = "8082";//曾辉
-        String DEV_URL = "47.105.80.245";//正式
-        String DEV_RES_PORT = "8080";//正式
+//        String DEV_URL = "192.168.1.45";
+//        String DEV_RES_PORT = "8082";
+//        String DEV_XMPP_PORT = "5222";
+//        String DEV_SUFFIX = "/";
+
+        /***
+         * 正式环境
+         */
+        String DEV_URL = "47.105.80.245";
+        String DEV_RES_PORT = "8080";
         String DEV_XMPP_PORT = "5222";
         String DEV_SUFFIX = "/";
 
-
-
-//        String DEV_URL = "121.69.8.238";//测试地址
+        /***
+         * 张继桃环境
+          */
+//        String DEV_URL = "192.168.1.54";
+//        String DEV_RES_PORT = "8088";
 //        String DEV_XMPP_PORT = "5222";
-//        String DEV_RES_PORT = "8088";//测试地址
-//        String DEV_SUFFIX = "/ybface/";//测试地址
+//        String DEV_SUFFIX = "/ybface/";
+
+        /***
+         * 测试环境
+         */
+//        String DEV_URL = "121.69.8.238";
+//        String DEV_XMPP_PORT = "5222";
+//        String DEV_RES_PORT = "8088";
+//        String DEV_SUFFIX = "/ybface/";
     }
 }
 
