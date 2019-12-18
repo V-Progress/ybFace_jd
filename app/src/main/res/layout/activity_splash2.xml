@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/img_wel"
+    tools:context="com.yunbiao.yb_smart_attendance.SplashActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="#8B000000"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_centerInParent="true"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_bindcode"
+            android:layout_marginTop="3dp"
+            android:layout_centerInParent="true"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_check"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="1.检查权限"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <ProgressBar
+                android:id="@+id/pb_check"
+                android:visibility="invisible"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_login"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="2.登录服务器"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/pb_login"
+                android:visibility="invisible"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_request"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="3.获取公司信息"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/pb_request"
+                android:visibility="invisible"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_init"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="4.初始化存储"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/pb_init"
+                android:visibility="invisible"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_skin"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="5.加载皮肤"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/pb_skin"
+                android:visibility="invisible"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_tips"
+            android:layout_marginTop="10dp"
+            android:layout_centerInParent="true"
+            android:textSize="20dp"
+            android:textColor="#ff0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>
