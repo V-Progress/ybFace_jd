@@ -73,7 +73,7 @@ public class EmployAdapter extends BaseAdapter {
             viewHolder.tv_employJob.setText(user.getPosition());
         }
 
-        if(user.getAddTag() == 0){
+        /*if(user.getAddTag() == 0){
             if (position%2==1){
                 convertView.setBackgroundColor(Color.parseColor("#07216d"));
             } else {
@@ -81,7 +81,8 @@ public class EmployAdapter extends BaseAdapter {
             }
         } else {
             convertView.setBackgroundColor(Color.parseColor("#ff0000"));
-        }
+        }*/
+
         viewHolder.tv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +100,25 @@ public class EmployAdapter extends BaseAdapter {
                 }
             }
         });
+
+        switch (user.getAddTag()) {
+            case -1://下载失败
+                convertView.setBackgroundColor(Color.parseColor("#ED8E17"));
+                break;
+            case -2://添加失败
+                convertView.setBackgroundColor(Color.parseColor("#FA0808"));
+                break;
+            case -3://更新失败
+                convertView.setBackgroundColor(Color.parseColor("#A2A2A2"));
+                break;
+            default:
+                if (position % 2 == 1) {
+                    convertView.setBackgroundColor(Color.parseColor("#07216d"));
+                } else {
+                    convertView.setBackgroundColor(Color.parseColor("#00ff216d"));
+                }
+                break;
+        }
 
         return convertView;
     }

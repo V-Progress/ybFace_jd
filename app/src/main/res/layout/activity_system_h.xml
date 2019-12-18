@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/system_bg_h"
+    android:background="@drawable/skin_main_screen_background"
     android:orientation="vertical"
     tools:context="com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity">
+    <!--android:background="@mipmap/system_bg_h"-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -257,6 +258,40 @@
                         android:textSize="36dp" />
 
                 </TableRow>
+
+                <TableRow
+                    android:layout_margin="30dp"
+                    android:gravity="center"
+                    android:weightSum="2">
+
+                    <Button
+                        android:onClick="seeVisitor"
+                        android:nextFocusDown="@+id/btn_data_system"
+                        android:nextFocusRight="@+id/btn_add_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="30dp"
+                        android:text="@string/System_Visitor"
+                        android:textColor="@color/white"
+                        android:textSize="36dp" />
+
+                    <Button
+                        android:onClick="selectSkin"
+                        android:nextFocusDown="@+id/btn_setting_system"
+                        android:nextFocusLeft="@+id/btn_depart_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="30dp"
+                        android:text="@string/System_skin_select"
+                        android:textColor="@color/white"
+                        android:textSize="36dp" />
+                </TableRow>
             </TableLayout>
 
             <FrameLayout
@@ -266,7 +301,7 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="70dp"
+                    android:layout_margin="60dp"
                     android:background="@drawable/shape_employ_button">
 
                     <com.roger.match.library.MatchTextView

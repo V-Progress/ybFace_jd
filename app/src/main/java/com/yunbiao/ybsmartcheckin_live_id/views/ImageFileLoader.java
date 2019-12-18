@@ -103,8 +103,10 @@ public class ImageFileLoader {
                             imgView.setImageBitmap(bitmap);
                         }
                     });
-                    if (saveTag && !file.exists())
-                        saveBitmap(imgView, bitmap, file.getPath());
+                    if (saveTag && !file.exists()){
+                        //                        saveBitmap(imgView, bitmap, file.getPath());
+                    }
+
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();

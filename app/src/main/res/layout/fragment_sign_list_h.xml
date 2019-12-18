@@ -15,6 +15,7 @@
         android:layout_centerVertical="true">
 
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_bulu_sign_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +24,14 @@
             android:textColor="@color/blue_all_title_bg"
             android:textSize="20dp" />
 
+        <Switch
+            android:id="@+id/switch_liveness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="活体检测" />
+
         <com.wang.avi.AVLoadingIndicatorView
+            android:visibility="gone"
             android:id="@+id/aiv_bulu_sign_list"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -48,15 +56,15 @@
         android:id="@+id/layout_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/bg_subtitle"
+        android:background="@drawable/skin_main_notice_horn_background"
         android:orientation="horizontal">
 
         <ImageView
+            android:src="@drawable/skin_main_notice_horn_src"
             android:scaleType="fitXY"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@mipmap/icon_tip" />
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/tv_notice_sign_list"

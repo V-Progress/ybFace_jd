@@ -16,52 +16,52 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_marginLeft="20dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:scaleType="centerInside"
-            android:maxHeight="80dp"
             android:id="@+id/iv_system_logo"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:maxHeight="80dp"
+            android:scaleType="centerInside" />
 
         <TextView
-            android:layout_centerInParent="true"
             android:id="@+id/tv_system_compName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/System_title"
             android:textColor="@color/white"
             android:textSize="38dp" />
 
         <TextView
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/iv_back"
             android:id="@+id/tv_online_system"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/iv_back"
             android:background="@drawable/shape_employ_button"
             android:gravity="center"
-            android:paddingBottom="10dp"
             android:paddingLeft="30dp"
-            android:paddingRight="30dp"
             android:paddingTop="10dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
             android:text="@string/System_Service_offline"
             android:textColor="@color/white"
             android:textSize="30dp" />
 
         <ImageView
-            android:padding="30dp"
-            android:nextFocusDown="@+id/btn_setnet_system"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="30dp"
+            android:nextFocusDown="@+id/btn_setnet_system"
+            android:padding="30dp"
             android:src="@mipmap/icon_back" />
 
     </RelativeLayout>
@@ -90,22 +90,22 @@
 
     <!--TODO: 2019/6/27 ComById-->
     <!--<LinearLayout style="@style/system_item_ll">-->
-        <!--<TextView-->
-            <!--style="@style/system_item_lable_tv"-->
-            <!--android:text="公&#8194;司&#8194;ID :" />-->
+    <!--<TextView-->
+    <!--style="@style/system_item_lable_tv"-->
+    <!--android:text="公&#8194;司&#8194;ID :" />-->
 
-        <!--<EditText-->
-            <!--android:textColor="@drawable/red"-->
-            <!--android:textColorHint="@color/white"-->
-            <!--android:id="@+id/edt_comid"-->
-            <!--android:maxLength="10"-->
-            <!--android:inputType="number"-->
-            <!--style="@style/sustem_item_info_shape" />-->
+    <!--<EditText-->
+    <!--android:textColor="@drawable/red"-->
+    <!--android:textColorHint="@color/white"-->
+    <!--android:id="@+id/edt_comid"-->
+    <!--android:maxLength="10"-->
+    <!--android:inputType="number"-->
+    <!--style="@style/sustem_item_info_shape" />-->
 
-        <!--<Button-->
-            <!--android:onClick="setComId"-->
-            <!--android:text="修改"-->
-            <!--style="@style/sustem_item_info_shape"/>-->
+    <!--<Button-->
+    <!--android:onClick="setComId"-->
+    <!--android:text="修改"-->
+    <!--style="@style/sustem_item_info_shape"/>-->
     <!--</LinearLayout>-->
 
     <LinearLayout style="@style/system_item_ll">
@@ -116,7 +116,7 @@
 
         <TextView
             android:id="@+id/tv_company_system"
-            style="@style/system_item_info"/>
+            style="@style/system_item_info" />
     </LinearLayout>
 
 
@@ -128,31 +128,32 @@
 
         <TextView
             android:id="@+id/tv_server_system"
-            style="@style/system_item_info"/>
+            style="@style/system_item_info" />
 
         <LinearLayout
-            android:layout_marginRight="70dp"
-            android:gravity="right|center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginRight="70dp"
+            android:gravity="right|center_vertical">
+
             <Button
-                android:visibility="gone"
-                android:nextFocusDown="@+id/btn_add_system"
                 android:id="@+id/btn_setnet_system"
-                android:textSize="28dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusDown="@+id/btn_add_system"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="设置"
                 android:textColor="@color/white"
-                android:background="@drawable/selector_btn_take_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="28dp"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        style="@style/system_item_ll">
+        style="@style/system_item_ll"
+        android:layout_width="match_parent">
 
         <TextView
             style="@style/system_item_lable_tv"
@@ -160,46 +161,38 @@
 
         <TextView
             android:id="@+id/tv_exp_system"
-            android:layout_weight="1"
-            style="@style/system_item_info"/>
+            style="@style/system_item_info"
+            android:layout_weight="1" />
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/tv_qr_lable"
-            android:gravity="center"
+            style="@style/system_item_info"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/act_sys_smxfo"
-            style="@style/system_item_info" />
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|right"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp">
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/iv_qrcode_system"
-            android:src="@mipmap/img_ewm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-        <Button
-            android:onClick="selectSkin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_btn_take_photo"
-            android:padding="30dp"
-            android:text="@string/System_skin_select"
-            android:textColor="@color/white"
-            android:textSize="36dp" />
+            android:src="@mipmap/img_ewm"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TableLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="40dp"
@@ -211,28 +204,28 @@
             android:weightSum="2">
 
             <Button
-                android:nextFocusDown="@+id/btn_data_system"
-                android:nextFocusRight="@+id/btn_add_system"
                 android:id="@+id/btn_depart_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusRight="@+id/btn_add_system"
+                android:nextFocusDown="@+id/btn_data_system"
                 android:padding="30dp"
                 android:text="@string/System_Manage"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
             <Button
-                android:nextFocusDown="@+id/btn_setting_system"
-                android:nextFocusLeft="@+id/btn_depart_system"
                 android:id="@+id/btn_add_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusLeft="@+id/btn_depart_system"
+                android:nextFocusDown="@+id/btn_setting_system"
                 android:padding="30dp"
                 android:text="@string/System_Add"
                 android:textColor="@color/white"
@@ -245,34 +238,68 @@
             android:gravity="center">
 
             <Button
-                android:nextFocusRight="@+id/btn_setting_system"
-                android:nextFocusUp="@+id/btn_depart_system"
                 android:id="@+id/btn_data_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusRight="@+id/btn_setting_system"
+                android:nextFocusUp="@+id/btn_depart_system"
                 android:padding="30dp"
                 android:text="@string/System_Record"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
             <Button
-                android:nextFocusDown="@+id/btn_update_system"
-                android:nextFocusUp="@+id/btn_add_system"
-                android:nextFocusLeft="@+id/btn_data_system"
                 android:id="@+id/btn_setting_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusLeft="@+id/btn_data_system"
+                android:nextFocusUp="@+id/btn_add_system"
+                android:nextFocusDown="@+id/btn_update_system"
                 android:padding="30dp"
                 android:text="@string/System_Setting"
                 android:textColor="@color/white"
                 android:textSize="36dp" />
 
+        </TableRow>
+
+        <TableRow
+            android:layout_margin="30dp"
+            android:gravity="center"
+            android:weightSum="2">
+
+            <Button
+                android:onClick="seeVisitor"
+                android:nextFocusDown="@+id/btn_data_system"
+                android:nextFocusRight="@+id/btn_add_system"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_take_photo"
+                android:padding="30dp"
+                android:text="@string/System_Visitor"
+                android:textColor="@color/white"
+                android:textSize="36dp" />
+
+            <Button
+                android:onClick="selectSkin"
+                android:nextFocusDown="@+id/btn_setting_system"
+                android:nextFocusLeft="@+id/btn_depart_system"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_take_photo"
+                android:padding="30dp"
+                android:text="@string/System_skin_select"
+                android:textColor="@color/white"
+                android:textSize="36dp" />
         </TableRow>
     </TableLayout>
 
@@ -281,39 +308,40 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:layout_margin="70dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="70dp"
             android:background="@drawable/shape_employ_button">
 
             <com.roger.match.library.MatchTextView
-                android:layout_gravity="center"
-                match:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:padding="30dp"
                 match:text="YBFACE"
+                match:textColor="@color/white"
                 match:textSize="60dp" />
 
             <LinearLayout
-                android:gravity="right|center"
-                android:layout_gravity="bottom"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="right|center">
+
                 <TextView
                     android:id="@+id/tv_version_system"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
 
                 <Button
-                    android:nextFocusUp="@+id/btn_setting_system"
                     android:id="@+id/btn_update_system"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:background="@drawable/selector_btn_take_photo"
+                    android:nextFocusUp="@+id/btn_setting_system"
                     android:text="@string/System_update"
                     android:textColor="@color/white"
                     android:textSize="25dp" />
@@ -322,11 +350,11 @@
         </FrameLayout>
 
         <TextView
-            android:layout_marginBottom="30dp"
-            android:gravity="center"
-            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
             android:text="@string/System_copyright"
             android:textColor="@color/white"
             android:textSize="16dp" />

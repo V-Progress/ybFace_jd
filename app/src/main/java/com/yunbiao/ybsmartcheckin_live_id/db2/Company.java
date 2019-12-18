@@ -3,19 +3,22 @@ package com.yunbiao.ybsmartcheckin_live_id.db2;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
-@Entity
+@Entity(indexes = {@Index(value = "comid DESC,depId DESC",unique = true)})
 public class Company {
 
-    @Id
-    private long id;
+    @Id(autoincrement = true)
+    private Long id;
 
-    @Unique
     private int comid;
+    private int depId;
+
+    private int bindType;
 
     @Transient
     private List<Depart> deparray;
@@ -37,14 +40,16 @@ public class Company {
     private String notice;
     private int displayPosition;
 
-    @Generated(hash = 409685306)
-    public Company(long id, int comid, String slogan, String comname,
-            String abbname, String downtime, String devicePwd, String gotime,
-            String gotips, String comlogo, String codeUrl, int themeid,
-            String toptitle, String downtips, String bottomtitle, String notice,
-            int displayPosition) {
+    @Generated(hash = 737815402)
+    public Company(Long id, int comid, int depId, int bindType, String slogan,
+            String comname, String abbname, String downtime, String devicePwd,
+            String gotime, String gotips, String comlogo, String codeUrl,
+            int themeid, String toptitle, String downtips, String bottomtitle,
+            String notice, int displayPosition) {
         this.id = id;
         this.comid = comid;
+        this.depId = depId;
+        this.bindType = bindType;
         this.slogan = slogan;
         this.comname = comname;
         this.abbname = abbname;
@@ -64,6 +69,18 @@ public class Company {
 
     @Generated(hash = 1096856789)
     public Company() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getBindType() {
+        return bindType;
+    }
+
+    public void setBindType(int bindType) {
+        this.bindType = bindType;
     }
 
     public String getNotice() {
@@ -87,6 +104,7 @@ public class Company {
         return "Company{" +
                 "id=" + id +
                 ", comid=" + comid +
+                ", depId=" + depId +
                 ", deparray=" + deparray +
                 ", slogan='" + slogan + '\'' +
                 ", comname='" + comname + '\'' +
@@ -96,11 +114,13 @@ public class Company {
                 ", gotime='" + gotime + '\'' +
                 ", gotips='" + gotips + '\'' +
                 ", comlogo='" + comlogo + '\'' +
+                ", codeUrl='" + codeUrl + '\'' +
                 ", themeid=" + themeid +
                 ", toptitle='" + toptitle + '\'' +
                 ", downtips='" + downtips + '\'' +
                 ", bottomtitle='" + bottomtitle + '\'' +
                 ", notice='" + notice + '\'' +
+                ", displayPosition=" + displayPosition +
                 '}';
     }
 
@@ -110,14 +130,6 @@ public class Company {
 
     public void setDisplayPosition(int displayPosition) {
         this.displayPosition = displayPosition;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public int getComid() {
@@ -253,4 +265,16 @@ public class Company {
             this.entryId = entryId;
         }
     }*/
+
+    public int getDepId() {
+        return this.depId;
+    }
+
+    public void setDepId(int depId) {
+        this.depId = depId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

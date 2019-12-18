@@ -125,6 +125,9 @@ public class FaceFrameView extends SurfaceView {
     }
 
     public void updateResult(long faceId, int result) {
+//        if(faceFrameBeanMap != null && faceFrameBeanMap.containsKey(faceId)){
+//            faceFrameBeanMap.get(faceId).updateStatus(result < 0 ? -1 : 1);
+//        }
         if (result < 0) {
             if (faceVerifyResultMap.containsKey(faceId)) {
                 Integer integer = faceVerifyResultMap.get(faceId);
@@ -173,6 +176,8 @@ public class FaceFrameView extends SurfaceView {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
             if (basePropertyMap != null) {
+
+
                 for (Map.Entry<Long, FaceFrameBean> faceEntry : faceFrameBeanMap.entrySet()) {
                     Long key = faceEntry.getKey();
                     if (!basePropertyMap.containsKey(key)) {
@@ -218,7 +223,7 @@ public class FaceFrameView extends SurfaceView {
     private void startDrawThread() {
         if (drawThread == null) {
             drawThread = new DrawThread();
-            setFps(30);
+            setFps(60);
         }
         drawThread.start();
     }
@@ -265,6 +270,7 @@ public class FaceFrameView extends SurfaceView {
         public void run() {
             while (!isStop) {
                 drawFace();
+                // TODO: 2019/12/11 帧数限制
                 try {
                     Thread.sleep(1000 / fps);
                 } catch (InterruptedException e) {

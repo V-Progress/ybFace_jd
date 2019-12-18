@@ -20,13 +20,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.jdjr.risk.face.local.verify.VerifyResult;
+import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
@@ -39,9 +39,11 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceResult;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ScreenShotUtil;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
@@ -49,6 +51,8 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/11/26.
@@ -65,7 +69,7 @@ public class WelComeActivity extends BaseGpioActivity {
     private ServiceManager serviceManager;
 
     //摄像头分辨率
-    private FaceView faceView;
+    public static com.yunbiao.faceview.FaceView faceView;
     private AdsFragment adsFragment;
 
     @Override
@@ -76,6 +80,17 @@ public class WelComeActivity extends BaseGpioActivity {
     @Override
     protected int getLandscapeLayout() {
         return R.layout.activity_welcome_h;
+    }
+
+    public void testScreen(View view){
+        final ScreenShotUtil instance = ScreenShotUtil.getInstance();
+        instance.takeScreenshot(APP.getContext(), new ScreenShotUtil.ScreenShotCallback() {
+            @Override
+            public void onShotted(boolean isSucc, String filePath) {
+                String sid = HeartBeatClient.getDeviceNo();
+                instance.sendCutFinish(sid,filePath);
+            }
+        });
     }
 
     @Override
@@ -104,8 +119,38 @@ public class WelComeActivity extends BaseGpioActivity {
         addFragment(R.id.ll_face_main, adsFragment);
     }
 
+    //U口读卡器,类似于外接键盘
+    private ReadCardUtils readCardUtils;
+
+    /**
+     * 读卡器初始化
+     */
+    private void initCardReader() {
+        //读卡器声明
+        readCardUtils = new ReadCardUtils();
+        readCardUtils.setReadSuccessListener(new ReadCardUtils.OnReadSuccessListener() {
+            @Override
+            public void onScanSuccess(String barcode) {
+                Log.e(TAG, "barcode: " + barcode);
+                SignManager.instance().checkSign(barcode);
+            }
+        });
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (ReadCardUtils.isInputFromReader(this, event)) {
+            if (readCardUtils != null){
+                readCardUtils.resolveKeyEvent(event);
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     @Override
     protected void initData() {
+        initCardReader();
+
         //开启Xmpp
         startXmpp();
         //初始化定位工具
@@ -120,7 +165,31 @@ public class WelComeActivity extends BaseGpioActivity {
         }, 5 * 1000);
     }
 
-    /*人脸识别回调，由上到下执行*/
+    private com.yunbiao.faceview.FaceView.FaceCallback faceCallback = new com.yunbiao.faceview.FaceView.FaceCallback() {
+        @Override
+        public void onReady() {
+            SyncManager.instance().requestCompany();
+        }
+
+        @Override
+        public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
+            if(hasFace){
+                onLight();
+                if(adsFragment != null){
+                    adsFragment.detectFace();
+                }
+            }
+        }
+
+        @Override
+        public void onFaceVerify(CompareResult faceAuth) {
+            if (faceAuth != null){
+                SignManager.instance().checkSign(faceAuth);
+            }
+        }
+    };
+
+    /*人脸识别回调，由上到下执行*//*
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
@@ -142,7 +211,7 @@ public class WelComeActivity extends BaseGpioActivity {
             if (verifyResult != null)
                 SignManager.instance().checkSign(verifyResult);
         }
-    };
+    };*/
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event){
@@ -226,16 +295,16 @@ public class WelComeActivity extends BaseGpioActivity {
     }
 
     private void goSetting() {
-        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-        if (!TextUtils.isEmpty(pwd)) {
-            inputPwd(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
-                }
-            });
-            return;
-        }
+//        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+//        if (!TextUtils.isEmpty(pwd)) {
+//            inputPwd(new Runnable() {
+//                @Override
+//                public void run() {
+//                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+//                }
+//            });
+//            return;
+//        }
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
@@ -295,17 +364,23 @@ public class WelComeActivity extends BaseGpioActivity {
     protected void onResume() {
         super.onResume();
         faceView.resume();
+//        faceView.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        faceView.pause();
+//        faceView.pause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(readCardUtils != null){
+            readCardUtils.removeScanSuccessListener();
+            readCardUtils = null;
+        }
+
         faceView.destory();
         destoryXmpp();
 

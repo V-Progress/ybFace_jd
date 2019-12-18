@@ -36,7 +36,7 @@
         android:layout_marginTop="34dp"
         android:orientation="vertical">
 
-        <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+        <com.yunbiao.faceview.FaceView
             android:layout_gravity="center"
             android:id="@+id/face_view"
             android:layout_width="match_parent"

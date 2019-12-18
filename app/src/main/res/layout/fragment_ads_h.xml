@@ -7,8 +7,9 @@
         android:id="@+id/layout_head"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:translationY="-100dp"
         android:elevation="10dp"
-        android:background="#013058">
+        android:background="@drawable/skin_main_ads_head_background">
 
         <ImageView
             android:scaleType="centerInside"

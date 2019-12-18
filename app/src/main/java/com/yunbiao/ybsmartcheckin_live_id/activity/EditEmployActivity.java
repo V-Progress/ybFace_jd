@@ -1,8 +1,9 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,27 +22,36 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.faceview.FaceManager;
+import com.yunbiao.faceview.FacePreviewInfo;
+import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.bean.BaseResponse;
+import com.yunbiao.ybsmartcheckin_live_id.bean.AddStaffResponse;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +73,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     public static final int TYPE_ADD = 0;
     public static final int TYPE_EDIT = 1;
 
-    private static String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-    public static String SCREEN_BASE_PATH = sdPath + "/mnt/sdcard/photo/";
-
     private Button btn_submit;
     private Button btn_TakePhoto;
     private Button btn_ReTakePhoto;
@@ -80,18 +87,17 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private EditText et_job;
     private TextView tv_birth;
 
-    private TextView tv_takephoto_time;
-    private TextView tv_takephoto_tips;
     private View pbTakePhoto;
     private FaceView faceView;
+    private RadioGroup rgSex;
 
     private List<String> departNames = new ArrayList<>();
     private List<Long> departIds = new ArrayList<>();
-    private long mCurrDepartId = 0;
+
     private User mCurrUser = null;
-    private String mCurrHeadPath = null;
+    private User mTempUser = null;
+
     private int type;
-    private RadioGroup rgSex;
 
     @Override
     protected int getPortraitLayout() {
@@ -122,8 +128,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         btn_cancle = findViewById(R.id.btn_cancle);
         btn_ReTakePhoto = findViewById(R.id.btn_ReTakePhoto);
         iv_back = findViewById(R.id.iv_back);
-        tv_takephoto_time = findViewById(R.id.tv_takephoto_time);
-        tv_takephoto_tips = findViewById(R.id.tv_takephoto_tips);
         pbTakePhoto = findViewById(R.id.alv_take_photo);
         rgSex = findViewById(R.id.rg_sex);
 
@@ -133,7 +137,38 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         btn_submit.setOnClickListener(this);
         btn_cancle.setOnClickListener(this);
         iv_back.setOnClickListener(this);
+
+        faceView.setCallback(faceCallback);
     }
+
+    private int mHasFace = -1;
+    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
+        @Override
+        public void onReady() {
+        }
+
+        @Override
+        public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
+            if (hasFace) {
+                if (facePreviewInfoList != null) {
+                    if (facePreviewInfoList.size() == 1) {
+                        mHasFace = 1;
+                    } else if (facePreviewInfoList.size() > 1) {
+                        mHasFace = -2;
+                    }
+                } else {
+                    mHasFace = -1;
+                }
+            } else {
+                mHasFace = -1;
+            }
+        }
+
+        @Override
+        public void onFaceVerify(CompareResult faceAuth) {
+
+        }
+    };
 
     @Override
     protected void initData() {
@@ -146,39 +181,25 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             finish();
             return;
         }
+
+        initDepart();
+
         //如果是修改，则只初始化部门
         if (type == TYPE_ADD) {
             d("类型：新增");
-            initDepart(0);
-            return;
+            initAddLogic();
+        } else {
+            d("类型：修改");
+            initEditLogic();
         }
-
-        d("类型：修改");
-        long entryId = getIntent().getLongExtra(KEY_ID, 0);
-        if (entryId == 0) {
-            finish();
-            return;
-        }
-        initUser(entryId);
-        initDepart(departIds.indexOf(mCurrDepartId));
-        setUserInfo();
     }
 
-    private void initUser(long entryId) {
-        User user = DaoManager.get().queryUserById(entryId);
-        if (user == null) {
-            finish();
-            return;
-        }
-        mCurrUser = user;
-        mCurrDepartId = mCurrUser.getDepartId();
-        mCurrHeadPath = user.getHeadPath();
-    }
-
-    private void initDepart(int index) {
+    private void initDepart() {
         departNames.clear();
         departIds.clear();
-        List<Depart> departs = DaoManager.get().queryAll(Depart.class);
+
+        Company company = SpUtils.getCompany();
+        List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         for (Depart depart : departs) {
             departNames.add(depart.getDepName());
             departIds.add(depart.getDepId());
@@ -187,47 +208,60 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         sp_depart.setAdapter(departAdapter);
         Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
         sp_depart.setPopupBackgroundDrawable(drawable);
-        sp_depart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "onItemSelected------> " + departIds.get(position));
-                mCurrDepartId = departIds.get(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        sp_depart.setSelection(index);
+        sp_depart.setOnItemSelectedListener(onItemSelectedListener);
     }
 
-    private void setUserInfo() {
-        Glide.with(this).load(mCurrHeadPath).asBitmap().into(iv_capture);
-        et_name.setText(mCurrUser.getName());
-        et_num.setText(mCurrUser.getNumber());
-        et_job.setText(mCurrUser.getPosition());
-        et_sign.setText(mCurrUser.getAutograph());
-        rgSex.check(mCurrUser.getSex() == 0 ? R.id.rb_female : R.id.rb_male);
-    }
-
-    private Handler handler = new Handler() {
+    private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void handleMessage(Message msg) {
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Log.e(TAG, "onItemSelected------> " + departIds.get(position));
+            mTempUser.setDepartId(departIds.get(position));
+            mTempUser.setDepartName(departNames.get(position));
+        }
 
-            byte[] faceImageBytes = faceView.getFaceImage();
-            if (faceImageBytes == null || faceImageBytes.length <= 0) {
-                handler.sendEmptyMessageDelayed(0, 200);
-                return;
-            }
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            final Bitmap faceImage = BitmapFactory.decodeByteArray(faceImageBytes, 0, faceImageBytes.length, options);
-            mCurrHeadPath = saveBitmap(faceImage);
-            iv_capture.setImageBitmap(faceImage);
-
-            pbTakePhoto.setVisibility(View.GONE);
-            btn_TakePhoto.setVisibility(View.VISIBLE);
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
         }
     };
+
+    //初始化修改逻辑
+    private void initEditLogic() {
+        long entryId = getIntent().getLongExtra(KEY_ID, 0);
+        if (entryId == 0) {
+            finish();
+            return;
+        }
+        mCurrUser = DaoManager.get().queryUserById(entryId);
+        if (mCurrUser == null) {
+            finish();
+            return;
+        }
+        mTempUser = new User();
+        mTempUser.setUser(mCurrUser);
+
+        setUserInfo();
+    }
+
+    //初始化新增逻辑
+    private void initAddLogic() {
+        mTempUser = new User();
+        mTempUser.setDepartName(departNames.get(0));
+        mTempUser.setDepartId(departIds.get(0));
+
+        setUserInfo();
+    }
+
+    //设置页面显示
+    private void setUserInfo() {
+        sp_depart.setSelection(departIds.indexOf(mTempUser.getDepartId()));
+        rgSex.check(mTempUser.getSex() == -1 ? R.id.rb_male : (mTempUser.getSex() == 0 ? R.id.rb_female : R.id.rb_male));
+        et_name.setText(TextUtils.isEmpty(mTempUser.getName()) ? "" : mTempUser.getName());
+        et_num.setText(TextUtils.isEmpty(mTempUser.getNumber()) ? "" : mTempUser.getNumber());
+        et_job.setText(TextUtils.isEmpty(mTempUser.getPosition()) ? "" : mTempUser.getPosition());
+        et_sign.setText(TextUtils.isEmpty(mTempUser.getAutograph()) ? "" : mTempUser.getAutograph());
+        tv_birth.setText(TextUtils.isEmpty(mTempUser.getBirthday()) ? "" : mTempUser.getBirthday());
+        Glide.with(this).load(TextUtils.isEmpty(mTempUser.getHeadPath()) ? R.mipmap.avatar : mTempUser.getHeadPath()).asBitmap().into(iv_capture);
+    }
 
     @Override
     public void onClick(View v) {
@@ -238,14 +272,15 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 handler.sendEmptyMessage(0);
                 break;
             case R.id.btn_ReTakePhoto:
-                reset();
+                showDialog("是否重置所有信息？", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        resetInfo();
+                    }
+                });
                 break;
             case R.id.btn_submit:
-                if (type == TYPE_ADD) {
-                    checkAddInfo();
-                } else {
-                    checkEditInfo();
-                }
+                submit();
                 break;
             case R.id.tv_birth:
                 showCalendar();
@@ -254,18 +289,348 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             case R.id.iv_back:
                 finish();
                 break;
-
         }
     }
 
-    private void reset() {
-        mCurrHeadPath = null;
-        tv_takephoto_tips.setText("");
-        tv_takephoto_time.setText("");
-        pbTakePhoto.setVisibility(View.GONE);
-        btn_TakePhoto.setVisibility(View.VISIBLE);
-        iv_capture.setImageResource(R.mipmap.avatar);
+    private void submit() {
+        if (TextUtils.isEmpty(mTempUser.getHeadPath())) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxpz));
+            return;
+        }
+
+        final String name = et_name.getText().toString();
+        final String number = et_num.getText().toString();
+        int checkSex = rgSex.getCheckedRadioButtonId();
+
+        if (TextUtils.isEmpty(name)) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxxm));
+            return;
+        }
+        if (checkSex == -1) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxzxb));
+            return;
+        }
+        if (TextUtils.isEmpty(number)) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxbh));
+            return;
+        }
+
+        if (type == TYPE_ADD) {
+            addStaff();
+        } else {
+            updateStaff();
+        }
     }
+
+    private void updateStaff() {
+        final String name = et_name.getText().toString();
+        final String number = et_num.getText().toString();
+        int checkSex = rgSex.getCheckedRadioButtonId();
+        final String position = et_job.getText().toString();
+        String birthday = tv_birth.getText().toString();
+        final String autograph = et_sign.getText().toString();
+
+        mTempUser.setName(name);
+        mTempUser.setNumber(number);
+        mTempUser.setSex(checkSex == R.id.rb_male ? 1 : 0);
+        mTempUser.setPosition(position);
+        mTempUser.setBirthday(birthday);
+        mTempUser.setAutograph(autograph);
+
+        if (mTempUser.equals(mCurrUser)) {
+            UIUtils.showTitleTip(this, getString(R.string.edit_not_edit));
+            return;
+        }
+
+        Log.e(TAG, "原User：" + mCurrUser.toString());
+        Log.e(TAG, "后User：" + mTempUser.toString());
+        submitParams(ResourceUpdate.UPDATSTAFF);
+    }
+
+    private void addStaff() {
+        final String name = et_name.getText().toString();
+        final String number = et_num.getText().toString();
+        int checkSex = rgSex.getCheckedRadioButtonId();
+        final String position = et_job.getText().toString();
+        String birthday = tv_birth.getText().toString();
+        final String autograph = et_sign.getText().toString();
+
+        mTempUser.setName(name);
+        mTempUser.setNumber(number);
+        mTempUser.setSex(checkSex == R.id.rb_male ? 1 : 0);
+        mTempUser.setPosition(position);
+        mTempUser.setBirthday(birthday);
+        mTempUser.setAutograph(autograph);
+        mTempUser.setCompanyId(SpUtils.getCompany().getComid());
+
+        UIUtils.showTitleTip(this, "可以提交添加了");
+        Log.e(TAG, "后User：" + mTempUser.toString());
+        submitParams(ResourceUpdate.ADDSTAFF);
+    }
+
+    private void submitParams(String url) {
+        Map<String, String> params = new HashMap<>();
+        params.put("depId", mTempUser.getDepartId() + "");
+        params.put("name", mTempUser.getName());
+        params.put("number", mTempUser.getNumber());
+        params.put("sex", mTempUser.getSex() + "");
+
+        if (!TextUtils.isEmpty(mTempUser.getAutograph())) {
+            params.put("autograph", mTempUser.getAutograph());
+        }
+        if (!TextUtils.isEmpty(mTempUser.getPosition())) {
+            params.put("position", mTempUser.getPosition());
+        }
+        if (!TextUtils.isEmpty(mTempUser.getBirthday())) {
+            params.put("birthday", mTempUser.getBirthday());
+        }
+
+        PostFormBuilder builder = OkHttpUtils.post().url(url);
+        if (type == TYPE_ADD) {
+            params.put("comId",mTempUser.getCompanyId()+"");
+            File file = new File(mTempUser.getHeadPath());
+            builder.addFile("head", file.getName(), file);
+        } else {
+            params.put("id", mTempUser.getId()+"");
+            if (!TextUtils.equals(mCurrUser.getHeadPath(), mTempUser.getHeadPath())) {
+                Log.e(TAG, "submitParams: 头像不相同，需要更新头像");
+                File file = new File(mTempUser.getHeadPath());
+                builder.addFile("head", file.getName(), file);
+            } else {
+                File file = new File(Environment.getExternalStorageDirectory(),"1.txt");
+                if(!file.exists()){
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                builder.addFile("head", file.getName(), file);
+            }
+        }
+
+        d("地址：" + url);
+        d("参数：" + params.toString());
+        builder.params(params).build().execute(new StringCallback() {
+            @Override
+            public void onBefore(Request request, int id) {
+                d("开始提交");
+                UIUtils.showNetLoading(EditEmployActivity.this);
+            }
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
+                UIUtils.showTitleTip(EditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.dismissNetLoading();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                d(response);
+                AddStaffResponse addStaffResponse = new Gson().fromJson(response, AddStaffResponse.class);
+                if (addStaffResponse.getStatus() != 1) {
+                    String errMsg;
+                    switch (addStaffResponse.getStatus()) {
+                        case 2://添加失败
+                            errMsg = getString(R.string.act_editEmploy_tip_tjsb);
+                            break;
+                        case 3://员工不存在
+                            errMsg = getString(R.string.act_editEmploy_tip_gygbcz);
+                            break;
+                        case 6://部门不存在
+                            errMsg = getString(R.string.act_editEmploy_tip_bczgbm);
+                            break;
+                        case 7://不存在公司部门关系
+                            errMsg = getString(R.string.act_editEmploy_tip_gsmyzgbm);
+                            break;
+                        case 8://不存在员工的公司部门信息
+                            errMsg = getString(R.string.act_editEmploy_tip_gsmyzgbm);
+                            break;
+                        default://参数错误
+                            errMsg = getString(R.string.act_editEmploy_tip_cscw);
+                            break;
+                    }
+                    UIUtils.showTitleTip(EditEmployActivity.this, "" + errMsg);
+                    UIUtils.dismissNetLoading();
+                    return;
+                }
+
+                if (type == TYPE_ADD) {
+                    mTempUser.setId(addStaffResponse.getEntryId());
+                    mTempUser.setFaceId(addStaffResponse.getFaceId());
+                    long l = DaoManager.get().addOrUpdate(mTempUser);
+                    Log.e(TAG, "onResponse: 添加用户库" + l);
+                    boolean b = FaceManager.getInstance().addUser(mTempUser.getFaceId(), mTempUser.getHeadPath());
+                    Log.e(TAG, "onResponse: 添加人脸库：" + b);
+                } else {
+                    long l = DaoManager.get().addOrUpdate(mTempUser);
+                    Log.e(TAG, "onResponse: 更新用户库：" + l);
+                    //判断是否需要更新头像
+                    if (!TextUtils.equals(mTempUser.getHeadPath(), mCurrUser.getHeadPath())) {
+                        boolean b = FaceManager.getInstance().addUser(mTempUser.getFaceId(), mTempUser.getHeadPath());
+                        Log.e(TAG, "onResponse: 更新人脸库：" + b);
+                    }
+                }
+
+                faceView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIUtils.dismissNetLoading();
+                        finish();
+                    }
+                }, 1 * 1000);
+            }
+        });
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (mHasFace == -1) {
+                UIUtils.showTitleTip(EditEmployActivity.this, "未检测到人脸");
+                pbTakePhoto.setVisibility(View.GONE);
+                btn_TakePhoto.setVisibility(View.VISIBLE);
+                return;
+            } else if (mHasFace == -2) {
+                UIUtils.showTitleTip(EditEmployActivity.this, "请保持屏幕中只有一张人脸");
+                pbTakePhoto.setVisibility(View.GONE);
+                btn_TakePhoto.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            Bitmap bitmap = faceView.takePicture();
+            if (bitmap != null) {
+                String headPath = saveBitmap(bitmap);
+                mTempUser.setHeadPath(headPath);
+                Glide.with(EditEmployActivity.this).load(mTempUser.getHeadPath()).asBitmap().override(100, 100).into(iv_capture);
+            } else {
+                UIUtils.showTitleTip(EditEmployActivity.this, "失败，请重试");
+            }
+
+            pbTakePhoto.setVisibility(View.GONE);
+            btn_TakePhoto.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private void resetInfo() {
+        if (type == TYPE_ADD) {
+            mTempUser = new User();
+        } else {
+            mTempUser.setUser(mCurrUser);
+        }
+        setUserInfo();
+    }
+
+    private void showDialog(String msg, DialogInterface.OnClickListener confirm) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.base_tip) + "!");
+        builder.setMessage(msg);
+        builder.setPositiveButton(getString(R.string.base_ensure), confirm);
+        builder.setNegativeButton(getString(R.string.base_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    /***
+     * 保存图片到本地
+     * @param mBitmap
+     * @return
+     */
+    public static String saveBitmap(Bitmap mBitmap) {
+        File filePic;
+        try {
+            //格式化时间
+            long time = System.currentTimeMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String sdfTime = sdf.format(time);
+            filePic = new File(Constants.HEAD_PATH + sdfTime + "_m.jpg");
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+        return filePic.getAbsolutePath();
+    }
+
+    private void showCalendar() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                String birthDay = year + "-" + (month + 1) + "-" + dayOfMonth;
+                tv_birth.setText(birthDay);
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, onDateSetListener, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+
+   /* private void checkAddInfo() {
+        if (TextUtils.isEmpty(mCurrHeadPath)) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxpz));
+            return;
+        }
+
+        final String name = et_name.getText().toString();
+        final String position = et_job.getText().toString();
+        final String number = et_num.getText().toString();
+        final String autograph = et_sign.getText().toString();
+        String birthday = tv_birth.getText().toString();
+        int checkSex = rgSex.getCheckedRadioButtonId();
+
+        if (TextUtils.isEmpty(name)) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxxm));
+            return;
+        }
+        if (checkSex == -1) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qxzxb));
+            return;
+        }
+        if (TextUtils.isEmpty(number)) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_qtxbh));
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("depId", mCurrDepartId + "");
+        params.put("comId", SpUtils.getInt(SpUtils.COMPANYID) + "");
+        params.put("sex", checkSex == R.id.rb_male ? "1" : "0");
+        params.put("number",number);
+        if (!TextUtils.isEmpty(autograph)) {
+            params.put("autograph", autograph);
+        }
+        if (!TextUtils.isEmpty(position)) {
+            params.put("position", position);
+        }
+        if(!TextUtils.isEmpty(birthday)){
+            params.put("birthday",birthday);
+        }
+        File headFile = new File(mCurrHeadPath);
+        Log.e(TAG, "mCurrHeadPath------------->"+mCurrHeadPath);
+        if (!headFile.exists()) {
+            UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_wzdtxwjqcxpzhzs));
+            return;
+        }
+        params.put("headName",headFile.getName());
+        Log.e(TAG, "headName------------>"+headFile.getName());
+        submitEdit(ResourceUpdate.ADDSTAFF, params, headFile);
+    }*/
+/*
 
     private void showCalendar() {
         Calendar now = Calendar.getInstance();
@@ -321,11 +686,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             params.put("birthday",birthday);
         }
         File headFile = new File(mCurrHeadPath);
+        Log.e(TAG, "mCurrHeadPath------------->"+mCurrHeadPath);
         if (!headFile.exists()) {
             UIUtils.showShort(this, getString(R.string.act_editEmploy_tip_wzdtxwjqcxpzhzs));
             return;
         }
-
+        params.put("headName",headFile.getName());
+        Log.e(TAG, "headName------------>"+headFile.getName());
         submitEdit(ResourceUpdate.ADDSTAFF, params, headFile);
     }
 
@@ -390,7 +757,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         submitEdit(ResourceUpdate.UPDATSTAFF, params, headFile);
     }
 
-    private void submitEdit(String url, Map<String, String> params, File headFile) {
+    private void submitEdit(String url, final Map<String, String> params, final File headFile) {
         d("地址：" + url);
         d("参数：" + params.toString());
         d("头像：" + headFile.getPath());
@@ -416,10 +783,10 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onResponse(String response, int id) {
                         d(response);
-                        BaseResponse baseResponse = new Gson().fromJson(response, BaseResponse.class);
-                        if (baseResponse.getStatus() != 1) {
+                        AddStaffResponse addStaffResponse = new Gson().fromJson(response, AddStaffResponse.class);
+                        if (addStaffResponse.getStatus() != 1) {
                             String errMsg;
-                            switch (baseResponse.getStatus()) {
+                            switch (addStaffResponse.getStatus()) {
                                 case 2://添加失败
                                     errMsg = getString(R.string.act_editEmploy_tip_tjsb);
                                     break;
@@ -440,7 +807,29 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                                     break;
                             }
                             UIUtils.showTitleTip(EditEmployActivity.this, "" + errMsg);
+                            UIUtils.dismissNetLoading();
                             return;
+                        }
+
+                        if (type == TYPE_ADD) {
+                            User user = new User();
+                            user.setId(addStaffResponse.getEntryId());
+                            user.setFaceId(addStaffResponse.getFaceId());
+                            user.setName(params.get("name"));
+
+                            user.setDepartId(Long.parseLong(params.get("depId")));
+                            user.setCompanyId(Integer.parseInt(params.get("comId")));
+                            user.setSex(Integer.parseInt(params.get("sex")));
+                            user.setNumber(params.get("number"));
+                            user.setAutograph(params.get("autograph"));
+                            user.setPosition(params.get("position"));
+                            user.setBirthday(params.get("birthday"));
+                            user.setHeadPath(headFile.getPath());
+                            long l = DaoManager.get().addOrUpdate(user);
+                            Log.e(TAG, "onResponse: 添加用户库" + l);
+
+                            boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
+                            Log.e(TAG, "onResponse: 添加人脸库：" + b);
                         }
 
                         new Handler().postDelayed(new Runnable() {
@@ -454,43 +843,16 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onAfter(int id) {
                         btn_submit.setEnabled(true);
-                        UIUtils.dismissNetLoading();
+                        if(isFinishing()){
+                            return;
+                        }
                     }
                 });
     }
 
-    /**
-     * 保存bitmap到本地
-     *
-     * @param mBitmap
-     * @return
-     */
-    public static String saveBitmap(Bitmap mBitmap) {
-        String savePath;
-        File filePic;
 
-        try {
-            //格式化时间
-            long time = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            String sdfTime = sdf.format(time);
-            filePic = new File(SCREEN_BASE_PATH + sdfTime + ".jpg");
-            if (!filePic.exists()) {
-                filePic.getParentFile().mkdirs();
-                filePic.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(filePic);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
 
-        return filePic.getAbsolutePath();
-    }
+    */
 
     @Override
     protected void onResume() {
@@ -502,6 +864,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     protected void onPause() {
         super.onPause();
         faceView.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        faceView.destory();
+        UIUtils.dismissNetLoading();
     }
 
     @Override

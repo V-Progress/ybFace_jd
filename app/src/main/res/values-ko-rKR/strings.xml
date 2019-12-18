@@ -29,8 +29,14 @@
     <string name="employ_list_field_position">Position</string>
     <string name="employ_list_field_control">Operation</string>
 
-    <!--新增员工-->
+    <!--访客列表-->
+    <string name="visitor_list_title">Visitor</string>
+    <string name="visitor_list_filed_reason">Reason</string>
+    <string name="visitor_list_filed_name">Name</string>
+    <string name="visitor_list_filed_company">Company</string>
+    <string name="visitor_list_filed_time">Time Slot</string>
 
+    <!--新增员工-->
     <string name="employ_add_title">Add Staff</string>
     <string name="employ_add_info">information</string>
     <string name="employ_add_takephoto">take</string>
@@ -239,6 +245,7 @@
     <!--activity_EmployList-->
     <string name="act_employList_tip_qbbm">All departments</string>
     <string name="act_employList_tip_qdscm">confirm to delete？</string>
+    <string name="act_employList_tip_qdxgm">confirm to edit？</string>
     <string name="act_employList_tip_scsb">failed to delete</string>
     <string name="act_employList_tip_sccg">successfully deleted</string>
 
@@ -246,6 +253,7 @@
     <string name="act_employList_bm">department</string>
     <string name="act_employList_addDepart">New department</string>
 
+    <string name="edit_not_edit">No changes</string>
     <!--activity_DepartList-->
     <string name="act_departList_tip_qsrbmmc">Please enter the department name</string>
     <string name="act_departList_tip_qdscm">confirm to delete？</string>
@@ -270,7 +278,7 @@
     <string name="act_editEmploy_tip_gsmyzgbm">The company does not have this department</string>
     <string name="act_editEmploy_tip_gsyzwyg">The company does not have this employee</string>
     <string name="act_editEmploy_tip_cscw">Parameter error</string>
-
+    <string name="System_Visitor">Visitor</string>
     <string name="act_editEmploy_xgxx">Modify information</string>
     <string name="act_editEmploy_pz">Take a photo</string>
     <string name="act_editEmploy_reset">Reset</string>
@@ -358,7 +366,7 @@
     <string name="uiUtils_tip_zzazxgyyqnxdd">Installing the app, please be patient!</string>
 
     <!-- SyncManager -->
-    <string name="syncManager_tip_hqgsxx">Get company information</string>
+    <!--<string name="syncManager_tip_hqgsxx">Get company information</string>
     <string name="syncManager_tip_qqsbjjcs">Request failed, will be retried</string>
     <string name="syncManager_tip_hqsbjjcs">Failed to get, will try again</string>
     <string name="syncManager_tip_sbwbd">Device not bound</string>
@@ -367,8 +375,15 @@
     <string name="syncManager_tip_tbygxx">Synchronize employee information</string>
     <string name="syncManager_tip_xztx">Download avatar</string>
     <string name="syncManager_tip_tbrlk">Synchronous face database</string>
-    <string name="syncManager_tip_tbjs">End of synchronization</string>
-
+    <string name="syncManager_tip_tbjs">End of synchronization</string>-->
+    <string name="sync_company_1">Get company information</string>
+    <string name="sync_staff_2">Get staff information</string>
+    <string name="sync_database_3">Synchronous database</string>
+    <string name="sync_head_4">Download avatar</string>
+    <string name="sync_face_5">Synchronous face database</string>
+    <string name="sync_get_failed">Failed to get, will try again</string>
+    <string name="sync_not_bind">Device not bound</string>
+    <string name="sync_not_depart">Department not set</string>
 
     <!-- RestartAPPTool -->
     <string name="restartAPPTool_sftcyy">Whether to quit the app？</string>
@@ -379,4 +394,6 @@
     <string name="updateManager_dqbbwzxbb">The current version is the latest version</string>
     <string name="updateManager_wlljsbqjcwl">Network connection failed, please check the network</string>
     <string name="updateManager_xzsb">download failed</string>
+
+    <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
 </resources>

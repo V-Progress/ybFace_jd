@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/welcome_bg_h">
 
-    <com.yunbiao.ybsmartcheckin_live_id.faceview.FaceView
+    <com.yunbiao.faceview.FaceView
         android:layout_centerInParent="true"
         android:id="@+id/face_view"
         android:layout_width="match_parent"

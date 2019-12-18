@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class Depart {
     @Id
     private long id;
 
+    @Unique
     private long depId;
 
     private String depName;

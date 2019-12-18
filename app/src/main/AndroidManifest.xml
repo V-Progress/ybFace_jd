@@ -34,10 +34,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /><!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 弹窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-
     <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 关闭应用程序的权限 -->
     <uses-permission android:name="android.permission.RESTART_PACKAGES" /> <!-- 人脸识别 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
@@ -55,32 +53,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
+        <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity"></activity>
+        <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />
-
+            android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" /> <!-- com.yunbiao.yb_smart_attendance. -->
         <activity
             android:name=".SplashActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                <!--<category android:name="android.intent.category.HOME" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!-- <category android:name="android.intent.category.HOME" /> -->
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
         <activity
             android:name=".activity.jdcn.WelComeSmallActivity"
             android:launchMode="singleTask" />
-
-        <activity android:name=".activity.AddEmployActivity" />
         <activity android:name=".activity.EmployListActivity" />
         <activity android:name=".activity.DepartListActivity" />
         <activity
@@ -100,13 +96,24 @@
             android:label="Notification Settings" />
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
+        <service
+            android:name=".ReadCardService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility"/>
+        </service>
 
         <receiver android:name=".receiver.USBBroadcastReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.BootRestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -114,7 +121,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.DateChangedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DATE_CHANGED" />
@@ -122,10 +128,8 @@
         </receiver>
 
         <service android:name=".utils.killSelfService" />
-
         <service android:name=".xmpp.NotificationService" />
-        <service android:name=".receiver.MyProtectService"></service>
-        <!-- 百度定位 -->
+        <service android:name=".receiver.MyProtectService" /> <!-- 百度定位 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
@@ -35,6 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +70,8 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     private List<String> mDepartList = new ArrayList<>();
     private List<Long> mDepartIdList = new ArrayList<>();
     private long mCurrDepId = 0;
+    private int comid;
+    private EditText edtQuery;
 
     @Override
     protected int getPortraitLayout() {
@@ -95,6 +100,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         iv_back = findViewById(R.id.iv_back);
         tv_deviceNo = findViewById(R.id.tv_deviceNo);
         avlLoading = findViewById(R.id.avl_loading);
+        edtQuery = findViewById(R.id.edt_query);
 
         btn_addEmploy.setOnClickListener(this);
         btn_addDepart.setOnClickListener(this);
@@ -109,9 +115,39 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         employAdapter.setOnEmpDeleteListener(this);
         employAdapter.setOnEmpEditListener(this);
         lv_employ_List.setAdapter(employAdapter);
+        comid = SpUtils.getCompany().getComid();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initDevice();
         ininSpinner();
+    }
+
+    public void queryClick(View view){
+        String queryStr = edtQuery.getText().toString();
+        if(TextUtils.isEmpty(queryStr)){
+            UIUtils.showTitleTip(this,"请输入员工名");
+            return;
+        }
+        int index = -1;
+        for (User user : employList) {
+            if(TextUtils.equals(queryStr,user.getName())){
+                index = employList.indexOf(user);
+            }
+        }
+        if(index == -1){
+            UIUtils.showTitleTip(this,"未搜索到该员工");
+            return;
+        }
+        lv_employ_List.setSelection(index);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -128,8 +164,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     private void ininSpinner() {
         showLoading(true);
-//        departs = DaoManager.get().queryAll(Depart.class);
-        departs = DaoManager.get().queryDepartByCompId(SpUtils.getInt(SpUtils.COMPANYID));
+        departs = DaoManager.get().queryDepartByCompId(comid);
         mDepartList.clear();
         mDepartIdList.clear();
         mDepartList.add(getString(R.string.act_employList_tip_qbbm));
@@ -171,9 +206,9 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
                 List<User> users = null;
                 if (mCurrDepId == 0l) {
-                    users = DaoManager.get().queryAll(User.class);
+                    users = DaoManager.get().queryUserByCompId(comid);
                 } else {
-                    users = DaoManager.get().queryUserByCompIdAndDepId(SpUtils.getInt(SpUtils.COMPANYID), mCurrDepId);
+                    users = DaoManager.get().queryUserByCompIdAndDepId(comid, mCurrDepId);
                 }
 
                 if (users != null) {
@@ -212,12 +247,22 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
                     @Override
                     public void onResponse(String response, int id) {
-                        boolean b = FaceSDK.instance().removeUser(String.valueOf(user.getFaceId()));
-                        if (b) {
+                        boolean delete = false;
+                        Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
+                        if(allFaceMap.containsKey(user.getFaceId())){
+                            File file = allFaceMap.get(user.getFaceId());
+                            if(file != null){
+                                delete = !file.exists() || (file.exists() && file.delete());
+                            } else {
+                                delete = true;
+                            }
+                        }
+                        if (delete) {
                             DaoManager.get().delete(user);
                             employList.remove(postion);
                             employAdapter.notifyDataSetChanged();
                             UIUtils.showTitleTip(EmployListActivity.this, getString(R.string.act_employList_tip_sccg));
+                            FaceManager.getInstance().reloadRegisterList();
                         }
                     }
                 });
@@ -261,10 +306,9 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                 startActivity(intent);
                 break;
             case R.id.btn_addDepart:
-                startActivity(new Intent(this, DepartListActivity.class));
                 break;
             case R.id.btn_sync:
-                SyncManager.instance().syncDB();
+                SyncManager.instance().requestUser();
                 break;
             case R.id.iv_back:
                 finish();

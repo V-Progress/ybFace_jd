@@ -111,7 +111,7 @@ public class UIUtils {
     }
 
     public static void dismissNetLoading(){
-        if(dialog != null){
+        if(dialog != null && dialog.isShowing()){
             dialog.dismiss();
         }
     }

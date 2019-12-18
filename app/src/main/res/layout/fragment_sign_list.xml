@@ -18,7 +18,14 @@
             android:layout_gravity="right"
             android:layout_marginRight="10dp">
 
+            <Switch
+                android:id="@+id/switch_liveness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="活体检测" />
+
             <Button
+                android:visibility="gone"
                 android:id="@+id/btn_bulu_sign_list"
                 android:layout_width="80dp"
                 android:layout_height="48dp"
@@ -28,6 +35,7 @@
                 android:textSize="16dp" />
 
             <com.wang.avi.AVLoadingIndicatorView
+                android:visibility="gone"
                 android:id="@+id/aiv_bulu_sign_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,8 +45,9 @@
     </FrameLayout>
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="130dp"
         android:orientation="horizontal"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">

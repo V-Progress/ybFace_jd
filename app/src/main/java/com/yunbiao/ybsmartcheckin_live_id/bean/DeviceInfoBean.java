@@ -28,6 +28,15 @@ public class DeviceInfoBean {
         private int runStatus;
         private String url;
         private int themeId;
+        private String type;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
 
         public String getUrl() {
             return url;
@@ -189,7 +198,17 @@ public class DeviceInfoBean {
                     '}';
         }
     }
+    public class EntryArray{
 
+
+    }
+
+    public  class  Entrys{
+        private String name;
+
+
+
+    }
     public String getSid() {
         return sid;
     }
@@ -214,4 +233,6 @@ public class DeviceInfoBean {
                 ", content=" + content.toString() +
                 '}';
     }
+
+
 }

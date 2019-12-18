@@ -32,6 +32,7 @@ public class Constants {
     public static String INFO_PATH = TEMP_PATH + "info/";//公司简介
     public static String ADS_PATH = TEMP_PATH + "ads/";//广告路径
     public static String HEAD_PATH = TEMP_PATH + "photo/";//照片路径
+    public static String FEATURE_PATH = TEMP_PATH + "features/";//特征库地址
     public static String RECORD_PATH = TEMP_PATH + "record/";//实时人脸记录缓存
     public static String MEETING_PATH = TEMP_PATH + "meeting/";
     public static String SKIN_PATH = LOCAL_ROOT_PATH + "skins/";//皮肤路径
@@ -41,6 +42,7 @@ public class Constants {
         Constants.DATA_PATH = Constants.CACHE_PATH + comid + "/data/";
         Constants.ADS_PATH = Constants.CACHE_PATH + comid + "/ads/";
         Constants.HEAD_PATH = Constants.CACHE_PATH + comid + "/img/";
+        Constants.FEATURE_PATH = Constants.CACHE_PATH + comid + "/features/";
         Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
         Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
@@ -54,8 +56,8 @@ public class Constants {
          * 正式环境
          */
         String PRO_URL = "47.105.80.245";//主机地址
-        String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_RES_PORT = "8080";//数据端口
+        String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
 
         /***
@@ -76,7 +78,7 @@ public class Constants {
 
         /***
          * 张继桃环境
-          */
+         */
 //        String DEV_URL = "192.168.1.54";
 //        String DEV_RES_PORT = "8088";
 //        String DEV_XMPP_PORT = "5222";

@@ -3,13 +3,14 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
-    <string name="System_title">云标智能签到系统</string>
+    <string name="System_title">云标智能考勤系统</string>
     <string name="System_deviceNo">设备编号:</string>
     <string name="System_bindCode">绑&#8194;定&#8194;码:</string>
     <string name="System_Company">所属公司:</string>
     <string name="System_Service">服务网络:</string>
     <string name="System_ValiDate">有&#8194;效&#8194;期:</string>
     <string name="System_Manage">人员管理</string>
+    <string name="System_Visitor">访客</string>
     <string name="System_Add">新增员工</string>
     <string name="System_Record">考勤记录</string>
     <string name="System_Setting">系统设置</string>
@@ -28,6 +29,13 @@
     <string name="employ_list_field_depart">部门</string>
     <string name="employ_list_field_position">职位</string>
     <string name="employ_list_field_control">操作</string>
+
+    <!--访客列表-->
+    <string name="visitor_list_title">访客列表</string>
+    <string name="visitor_list_filed_reason">事由</string>
+    <string name="visitor_list_filed_name">姓名</string>
+    <string name="visitor_list_filed_company">单位</string>
+    <string name="visitor_list_filed_time">访问时间段</string>
 
     <!--新增员工-->
     <string name="employ_add_title">增加员工</string>
@@ -80,8 +88,8 @@
     <string name="act_spl_tip_qywc">迁移完成</string>
 
     <!--activity_wel  -->
-    <string name="act_wel_topTitle">云标智能签到</string>
-    <string name="act_wel_bottomTitle">云标AI智能签到</string>
+    <string name="act_wel_topTitle">云标智能考勤</string>
+    <string name="act_wel_bottomTitle">云标智能考勤</string>
 
     <string name="act_wel_error_bywjsrmmo">不要忘记输入密码哦</string>
     <string name="act_wel_error_mmclqcxsrb">密码错了，重新输入吧</string>
@@ -166,7 +174,6 @@
     <string name="act_sys_tip_3shjcqsb">3秒后将重启设备</string>
 
 
-
     <string name="act_sys_tip_strong">强</string>
     <string name="act_sys_tip_general">一般</string>
     <string name="act_sys_tip_poor">差</string>
@@ -239,6 +246,7 @@
 
     <!--activity_EmployList-->
     <string name="act_employList_tip_qbbm">全部部门</string>
+    <string name="act_employList_tip_qdxgm">确定修改吗？</string>
     <string name="act_employList_tip_qdscm">确定删除吗？</string>
     <string name="act_employList_tip_scsb">删除失败</string>
     <string name="act_employList_tip_sccg">删除成功</string>
@@ -338,7 +346,6 @@
     <string name="fment_Web_refresh">刷新</string>
 
 
-
     <!--adapter 和 dialog-->
 
     <!--VisitorAdapter-->
@@ -359,17 +366,16 @@
     <string name="uiUtils_tip_notice">通知</string>
     <string name="uiUtils_tip_zzazxgyyqnxdd">正在安装相关应用，请耐心等待！</string>
 
-    <!-- SyncManager -->
-    <string name="syncManager_tip_hqgsxx">获取公司信息</string>
-    <string name="syncManager_tip_qqsbjjcs">请求失败，即将重试</string>
-    <string name="syncManager_tip_hqsbjjcs">获取失败，即将重试</string>
-    <string name="syncManager_tip_sbwbd">设备未绑定</string>
-    <string name="syncManager_tip_hqygxx">获取员工信息</string>
-    <string name="syncManager_tip_tbbm">同步部门</string>
-    <string name="syncManager_tip_tbygxx">同步员工信息</string>
-    <string name="syncManager_tip_xztx">下载头像</string>
-    <string name="syncManager_tip_tbrlk">同步人脸库</string>
-    <string name="syncManager_tip_tbjs">同步结束</string>
+    <string name="sync_company_1">获取公司信息</string>
+    <string name="sync_staff_2">获取人员信息</string>
+    <string name="sync_database_3">同步数据库</string>
+    <string name="sync_head_4">下载头像</string>
+    <string name="sync_face_5">同步人脸库</string>
+    <string name="sync_get_failed">获取失败，即将重试</string>
+    <string name="sync_not_bind">设备未绑定</string>
+    <string name="sync_not_depart">公司未设置部门</string>
+
+    <string name="edit_not_edit">未做任何修改</string>
 
     <!-- RestartAPPTool -->
     <string name="restartAPPTool_sftcyy">是否退出应用？</string>
@@ -380,4 +386,84 @@
     <string name="updateManager_dqbbwzxbb">当前版本为最新版本</string>
     <string name="updateManager_wlljsbqjcwl">网络连接失败，请检查网络</string>
     <string name="updateManager_xzsb">下载失败</string>
+
+
+
+    <!--settings、choose function page-->
+    <string name="page_preview">face attributes detect(video)</string>
+    <string name="page_ir_preview">ir liveness detect(video)</string>
+    <string name="page_face_recognize">face compare 1:n(video vs database,rgb liveness detect)</string>
+    <string name="page_ir_face_recognize">face compare 1:n(video vs database,ir liveness detect)</string>
+    <string name="page_single_image">face attributes detect(image)</string>
+    <string name="page_multi_image">face compare 1:n(image vs image)</string>
+    <string name="page_face_manage">face manage</string>
+    <string name="active_engine">active engine</string>
+    <string name="active_success">active success</string>
+    <string name="already_activated">already activated</string>
+    <string name="active_failed">active failed,code is %d</string>
+    <string name="library_not_found">library not found, please check if you put .so files into the project directory app\\src\\main\\jniLibs</string>
+    <string name="ft_op_0">only detect 0 degree in video mode</string>
+    <string name="ft_op_90">only detect 90 degree in video mode</string>
+    <string name="ft_op_180">only detect 180 degree in video mode</string>
+    <string name="ft_op_270">only detect 270 degree in video mode</string>
+    <string name="ft_op_all">detect all degrees in video mode</string>
+
+    <!--face attributes detect(image) page-->
+    <string name="start_process">process</string>
+    <string name="choose_local_image">choose local image</string>
+    <string name="processing">processing</string>
+
+    <!--face compare 1:n(image vs image) page-->
+    <string name="choose_main_image">choose main image</string>
+    <string name="add_item_image">add item image</string>
+    <string name="notice_choose_main_img">please choose main image first</string>
+    <string name="compare_failed">compare failed!code is %d</string>
+
+    <!--global get picture failed notification-->
+    <string name="get_picture_failed">failed to get picture!</string>
+
+    <!--global permission denied notification-->
+    <string name="permission_denied">permission denied!</string>
+
+    <!--global init failed notification-->
+    <string name="init_failed">init failed,code is %d</string>
+    <string name="engine_not_initialized">engine not initialized! code is %d</string>
+
+    <!--single/dual camera register&recognize page-->
+    <string name="register">register</string>
+    <string name="switch_camera">switch camera</string>
+    <string name="switch_camera_failed">switch camera failed</string>
+    <string name="notice_change_detect_degree">camera switched, if no face detected, please change face detect degree in homepage</string>
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="recognize_success_notice">PASS:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="specific_engine_init_failed">%s init failed, code is:%d</string>
+    <string name="liveness_detect">liveness detect</string>
+    <string name="camera_rgb">RGB CAMERA</string>
+    <string name="camera_ir">IR CAMERA</string>
+    <string name="camera_rgb_preview_size">RGB CAMERA\n%dx%d</string>
+    <string name="camera_ir_preview_size">IR CAMERA\n%dx%d</string>
+    <string name="camera_error_notice">\npossible reason:open two cameras at the same time is not allowed on this device</string>
+    <string name="draw_ir_rect_mirror_horizontal">draw IR face rect mirror horizontal</string>
+    <string name="draw_ir_rect_mirror_vertical">draw IR face rect mirror vertical</string>
+
+    <!--batch process dialog-->
+    <string name="progress_dialog_batch_register">progress: %d / %d</string>
+    <string name="progress_dialog_registering_please_wait">registering,please wait</string>
+
+    <!--batch process-->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="batch_process_notification_register">please put the images that need to register into directory \nsdcard/arcfacedemo/register</string>
+    <string name="batch_process_no_face_need_to_delete">no face need to delete</string>
+    <string name="batch_process_confirm_delete">delete those %d images and face features?</string>
+    <string name="batch_process_batch_register">batch register</string>
+    <string name="batch_process_notification">notification</string>
+    <string name="batch_process_clear_faces">clear faces</string>
+    <string name="batch_process_path_is_not_exists">path \n%s\n is not exists</string>
+    <string name="batch_process_path_is_not_dir">path \n%s\n is not a directory</string>
+    <string name="batch_process_processing_please_wait">process start,please wait</string>
+    <string name="batch_process_finished_info">process finished!\ntotal count =  %d \nsuccess count = %d \nfailed count = %d \nfailed images are in directory \' %s \'</string>
+
+    <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
 </resources>

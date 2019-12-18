@@ -43,6 +43,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
@@ -139,6 +140,7 @@
                     android:onClick="setAngle" />
 
                 <Spinner
+                    android:visibility="gone"
                     android:background="@drawable/shape_system_name"
                     android:id="@+id/spn_camera_size"
                     android:layout_width="wrap_content"

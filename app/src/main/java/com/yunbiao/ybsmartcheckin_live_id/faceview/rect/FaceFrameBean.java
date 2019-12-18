@@ -30,12 +30,13 @@ public class FaceFrameBean {
     public void update(BaseProperty baseProperty) {
         Rect rect = baseProperty.faceRect;
         landmarks = baseProperty.getLandmarks();
-        if (Math.abs(rect.left - faceRect.left) <= DIFF_VALUE_OFFSET ||
-        Math.abs(rect.top - faceRect.top) <= DIFF_VALUE_OFFSET ||
-        Math.abs(rect.right - faceRect.right) <= DIFF_VALUE_OFFSET ||
-        Math.abs(rect.bottom - faceRect.bottom) <= DIFF_VALUE_OFFSET){
-            return;
-        }
+        // TODO: 2019/12/11 人脸框稳定
+//        if (Math.abs(rect.left - faceRect.left) <= DIFF_VALUE_OFFSET ||
+//        Math.abs(rect.top - faceRect.top) <= DIFF_VALUE_OFFSET ||
+//        Math.abs(rect.right - faceRect.right) <= DIFF_VALUE_OFFSET ||
+//        Math.abs(rect.bottom - faceRect.bottom) <= DIFF_VALUE_OFFSET){
+//            return;
+//        }
         this.faceRect = rect;
     }
 

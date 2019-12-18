@@ -14,7 +14,7 @@ public class Sign {
     @Id
     private Long id;
 
-    private long faceId;
+    private String faceId;
 
     private String name;
 
@@ -44,15 +44,18 @@ public class Sign {
 
     private int comid;
 
+    private int type;
+
+    private long visEntryId;
+
     @Transient
     private byte[] imgBytes;
 
-
-    @Generated(hash = 1438235948)
-    public Sign(Long id, long faceId, String name, String position, String headPath,
-            long time, boolean isUpload, long empId, String date, String depart,
-            int sex, int age, String employNum, String birthday, String autograph,
-            int comid) {
+    @Generated(hash = 664543716)
+    public Sign(Long id, String faceId, String name, String position,
+            String headPath, long time, boolean isUpload, long empId, String date,
+            String depart, int sex, int age, String employNum, String birthday,
+            String autograph, int comid, int type, long visEntryId) {
         this.id = id;
         this.faceId = faceId;
         this.name = name;
@@ -69,12 +72,22 @@ public class Sign {
         this.birthday = birthday;
         this.autograph = autograph;
         this.comid = comid;
+        this.type = type;
+        this.visEntryId = visEntryId;
     }
 
     @Generated(hash = 2025164192)
     public Sign() {
     }
 
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getComid() {
         return comid;
@@ -92,27 +105,12 @@ public class Sign {
         this.imgBytes = imgBytes;
     }
 
-    @Override
-    public String toString() {
-        return "Sign{" +
-                "id=" + id +
-                ", faceId=" + faceId +
-                ", name='" + name + '\'' +
-                ", position='" + position + '\'' +
-                ", headPath='" + headPath + '\'' +
-                ", time=" + time +
-                ", isUpload=" + isUpload +
-                ", empId=" + empId +
-                ", date='" + date + '\'' +
-                ", depart='" + depart + '\'' +
-                ", sex=" + sex +
-                ", age=" + age +
-                ", employNum='" + employNum + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", autograph='" + autograph + '\'' +
-                ", comid=" + comid +
-                ", imgBytes=" + Arrays.toString(imgBytes) +
-                '}';
+    public long getVisEntryId() {
+        return visEntryId;
+    }
+
+    public void setVisEntryId(long visEntryId) {
+        this.visEntryId = visEntryId;
     }
 
     public Long getId() {
@@ -123,11 +121,11 @@ public class Sign {
         this.id = id;
     }
 
-    public long getFaceId() {
+    public String getFaceId() {
         return faceId;
     }
 
-    public void setFaceId(long faceId) {
+    public void setFaceId(String faceId) {
         this.faceId = faceId;
     }
 
@@ -241,5 +239,30 @@ public class Sign {
 
     public void setIsUpload(boolean isUpload) {
         this.isUpload = isUpload;
+    }
+
+    @Override
+    public String toString() {
+        return "Sign{" +
+                "id=" + id +
+                ", faceId='" + faceId + '\'' +
+                ", name='" + name + '\'' +
+                ", position='" + position + '\'' +
+                ", headPath='" + headPath + '\'' +
+                ", time=" + time +
+                ", isUpload=" + isUpload +
+                ", empId=" + empId +
+                ", date='" + date + '\'' +
+                ", depart='" + depart + '\'' +
+                ", sex=" + sex +
+                ", age=" + age +
+                ", employNum='" + employNum + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", autograph='" + autograph + '\'' +
+                ", comid=" + comid +
+                ", type=" + type +
+                ", visEntryId=" + visEntryId +
+                ", imgBytes=" + Arrays.toString(imgBytes) +
+                '}';
     }
 }

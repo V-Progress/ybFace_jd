@@ -125,7 +125,6 @@ public class FaceView extends FrameLayout {
         this.callback = callback;
     }
 
-
     public interface FaceCallback {
         void onReady();
 
@@ -137,10 +136,13 @@ public class FaceView extends FrameLayout {
     private FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
         @Override
         public void onBasePropertyResult(Map<Long, BaseProperty> basePropertyMap) {
-            faceFrameView.addFace(basePropertyMap);
             boolean hasFace = basePropertyMap != null && basePropertyMap.size() > 0;
             if(!hasFace){
                 mFaceImage = null;
+            }
+
+            if(faceFrameView != null){
+                faceFrameView.addFace(basePropertyMap);
             }
 
             if (callback != null) {
@@ -159,7 +161,6 @@ public class FaceView extends FrameLayout {
 
         @Override
         public void onVerifyResult(VerifyResult verifyResult) {
-            faceFrameView.updateResult(verifyResult.getFaceId(),verifyResult.getResult());
             if(verifyResult != null){
                 mFaceImage = verifyResult.getFaceImageBytes();
             }
@@ -167,16 +168,14 @@ public class FaceView extends FrameLayout {
                 callback.onFaceVerify(verifyResult);
             }
 
-            if(verifyResult.getResult() == VerifyResult.DEFAULT_FACE){
-                e("未知");
-            } else if(verifyResult.getResult() == VerifyResult.REGISTER_FACE){
-                e("不认识");
-            } else if(verifyResult.getResult() == VerifyResult.NOT_HUMAN_FACE){
-                e("不是真实人脸");
-            } else {
-                e("认识");
+            if(faceFrameView != null){
+                faceFrameView.updateResult(verifyResult.getFaceId(),verifyResult.getResult());
             }
 
+            e(verifyResult.getResult() == VerifyResult.DEFAULT_FACE ? "未知"
+                    : verifyResult.getResult() == VerifyResult.REGISTER_FACE ? "不认识"
+                    : verifyResult.getResult() == VerifyResult.NOT_HUMAN_FACE ? "不是真实人脸"
+                    : "认识");
             e("检测耗时----------> " + verifyResult.getCheckConsumeTime() + " 毫秒");
             e("认证耗时----------> " + verifyResult.getVerifyConsumeTime() + " 毫秒");
             e("提取耗时----------> " + verifyResult.getExtractConsumeTime() + " 毫秒");

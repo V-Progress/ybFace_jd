@@ -36,7 +36,7 @@ public class KDXFSpeechManager {
     private static HashMap<String, String> textToSpeechMap = new HashMap<>();
     private static List<String> ontimeList = new ArrayList<>();
     private static Integer CURRENT_SOUND = 0;
-    private final String UTTERANCE_WELCOME = "欢迎使用云标智能签到系统";
+    private final String UTTERANCE_WELCOME = "欢迎使用云标智能考勤 系统";
     private int mTTSSupport = 0;
 
     public static KDXFSpeechManager instance() {

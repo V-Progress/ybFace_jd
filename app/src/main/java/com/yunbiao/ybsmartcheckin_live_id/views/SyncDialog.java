@@ -3,6 +3,8 @@ package com.yunbiao.ybsmartcheckin_live_id.views;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 
 public class SyncDialog {
@@ -22,6 +25,12 @@ public class SyncDialog {
     private TextView tvProgress;
     private View rootView;
 
+    private static String mStep;
+    private static int mTotal = 0;
+    private static int mProgress = 0;
+
+    private final int RUNNING_MESSAGE = 11;
+
     public synchronized static SyncDialog instance(){
         if(syncDialog == null){
             syncDialog = new SyncDialog();
@@ -32,6 +41,19 @@ public class SyncDialog {
     private SyncDialog(){
     }
 
+    private Handler updateHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            tvInfo.setText(mStep);
+            if(mProgress == 0 && mTotal == 0){
+                tvProgress.setText("");
+            } else {
+                tvProgress.setText(mProgress + " / " + mTotal);
+            }
+            updateHandler.sendEmptyMessageDelayed(0,2000);
+        }
+    };
+
     public void init(Activity activity){
         act = activity;
         initDialog();
@@ -39,7 +61,8 @@ public class SyncDialog {
     }
 
     private void initDialog(){
-        dialog = new SDialog(act);
+        dialog = new SDialog(APP.getContext());
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
     }
 
     private void initView(){
@@ -52,22 +75,25 @@ public class SyncDialog {
     }
 
     public void show(){
+        if(act == null){
+            Log.e(TAG, "未进行初始化" );
+            return;
+        }
+        if(dialog != null && dialog.isShowing()){
+            act.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            });
+        }
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(act == null){
-                    Log.e(TAG, "未进行初始化" );
-                    return;
-                }
-                if(dialog == null){
-                    return;
-                }
-                if(dialog.isShowing()){
-                    dialog.dismiss();
-                }
                 dialog.show();
             }
         });
+        updateHandler.sendEmptyMessage(RUNNING_MESSAGE);
     }
 
     public boolean isShown(){
@@ -75,60 +101,36 @@ public class SyncDialog {
     }
 
     public void dismiss(){
-        act.runOnUiThread(new Runnable() {
+        updateHandler.removeMessages(RUNNING_MESSAGE);
+        if(act == null){
+            Log.e(TAG, "未进行初始化" );
+            return;
+        }
+
+        rootView.post(new Runnable() {
             @Override
             public void run() {
-                if(act == null){
-                    Log.e(TAG, "未进行初始化" );
-                    return;
-                }
-
-                if(dialog == null){
-                    return;
-                }
-
-                setStep(act.getString(R.string.dialog_sync_tbjs));
-                setProgress(0,0);
-
-                if(dialog.isShowing()){
-                    if(rootView != null){
-                        rootView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        },2 * 1000);
-                    } else {
-                        dialog.dismiss();
-                    }
-                }
+                tvInfo.setText(act.getString(R.string.dialog_sync_tbjs));
+                tvProgress.setText("");
             }
         });
-    }
 
-    public void setStep(final String step){
-        if(tvInfo != null){
-            tvInfo.post(new Runnable() {
+        if(dialog != null && dialog.isShowing()){
+            rootView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    tvInfo.setText(step);
+                    dialog.dismiss();
                 }
-            });
+            },2 * 1000);
         }
     }
 
-    public void setProgress(final int progress, final int max){
-        if(tvProgress != null){
-            tvProgress.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(progress == 0 && max == 0){
-                        tvProgress.setText("");
-                        return;
-                    }
-                    tvProgress.setText(progress + " / " + max);
-                }
-            });
-        }
+    public static void setStep(final String step){
+        mStep = step;
+    }
+
+    public static void setProgress(final int progress, final int max){
+        mTotal = max;
+        mProgress = progress;
     }
 }

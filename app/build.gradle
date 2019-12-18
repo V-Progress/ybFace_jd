@@ -6,14 +6,14 @@ android {
     defaultConfig {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
-        targetSdkVersion 28
-        versionCode 34
-        versionName "1.3.1"
+        targetSdkVersion 22
+        versionCode 36
+        versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi', 'armeabi-v7a'//, 'arm64-v8a' , 'x86', 'x86_64'
         }
     }
     buildTypes {
@@ -64,7 +64,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 6//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 17//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
 //这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
         targetGenDir 'src/main/java'
@@ -102,7 +102,6 @@ dependencies {
     //将latestVersion替换成上面 jitpack 后面的版本号
     implementation files('libs/smdt_v5.1.jar')
     implementation files('libs/XHApi.jar')
-
     //友盟
     implementation 'com.roger.match.library:library:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -130,7 +129,6 @@ dependencies {
     implementation 'com.daimajia.numberprogressbar:library:1.2@aar'
     implementation 'com.github.rjsvieira:circularView:1.3.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.elvishew:xlog:1.6.1'
     //    implementation 'com.xhb:xbanner:1.2.2'
@@ -146,13 +144,18 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'androidx.viewpager2:viewpager2:1.0.0-beta04'
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1148_43697_sharewithdownloadwithfile_withoutGame_obfs_20190805_175505.jar')
-
-    implementation 'skin.support:skin-support:4.0.4'                   // skin-support
-    implementation 'skin.support:skin-support-appcompat:4.0.4'         // skin-support 基础控件支持
-    implementation 'skin.support:skin-support-design:4.0.4'            // skin-support-design material design 控件支持[可选]
-    implementation 'skin.support:skin-support-cardview:4.0.4'          // skin-support-cardview CardView 控件支持[可选]
+    implementation 'skin.support:skin-support:4.0.4'
+    // skin-support
+    implementation 'skin.support:skin-support-appcompat:4.0.4'
+    // skin-support 基础控件支持
+    implementation 'skin.support:skin-support-design:4.0.4'
+    // skin-support-design material design 控件支持[可选]
+    implementation 'skin.support:skin-support-cardview:4.0.4'
+    // skin-support-cardview CardView 控件支持[可选]
     implementation 'skin.support:skin-support-constraint-layout:4.0.4'
     implementation project(path: ':vertical_scroll_player')
     // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
-
+    implementation files('libs/arcsoft_face.jar')
+    implementation files('libs/arcsoft_image_util.jar')
+    implementation files('libs/commons-io-2.6.jar')
 }

@@ -1,9 +1,14 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
+import androidx.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
+import org.jetbrains.annotations.NonNls;
+
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -12,7 +17,7 @@ public class User {
     private long id;
 
     @Unique
-    private long faceId;
+    private String faceId;
 
     private long departId;
 
@@ -20,10 +25,9 @@ public class User {
 
     private int companyId;
 
-
     private String name;
     private int age;
-    private int sex;
+    private int sex = -1;
     private String autograph;
     private String position;
     private String number;
@@ -36,8 +40,8 @@ public class User {
 
     private int addTag;
 
-    @Generated(hash = 1381060079)
-    public User(long id, long faceId, long departId, String departName,
+    @Generated(hash = 442221170)
+    public User(long id, String faceId, long departId, String departName,
             int companyId, String name, int age, int sex, String autograph,
             String position, String number, int lateNum, String cardId,
             String birthday, String head, String headPath, int addTag) {
@@ -64,6 +68,7 @@ public class User {
     public User() {
     }
 
+
     public String getBirthday() {
         return birthday;
     }
@@ -76,7 +81,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", faceId=" + faceId +
+                ", faceId='" + faceId + '\'' +
                 ", departId=" + departId +
                 ", departName='" + departName + '\'' +
                 ", companyId=" + companyId +
@@ -111,11 +116,11 @@ public class User {
         this.id = id;
     }
 
-    public long getFaceId() {
+    public String getFaceId() {
         return faceId;
     }
 
-    public void setFaceId(long faceId) {
+    public void setFaceId(String faceId) {
         this.faceId = faceId;
     }
 
@@ -221,5 +226,54 @@ public class User {
 
     public void setAddTag(int addTag) {
         this.addTag = addTag;
+    }
+
+    public void setUser(@NonNull User user){
+        id = user.id;
+        faceId = user.faceId;
+        departId = user.departId;
+        companyId = user.companyId;
+        age = user.age;
+        sex = user.sex;
+        lateNum = user.lateNum;
+        addTag = user.addTag;
+        departName = user.departName;
+        name = user.name;
+        autograph = user.autograph;
+        position = user.position;
+        number = user.number;
+        cardId = user.cardId;
+        birthday = user.birthday;
+        head = user.head;
+        headPath = user.headPath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                departId == user.departId &&
+                companyId == user.companyId &&
+                age == user.age &&
+                sex == user.sex &&
+                lateNum == user.lateNum &&
+                addTag == user.addTag &&
+                Objects.equals(faceId, user.faceId) &&
+                Objects.equals(departName, user.departName) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(autograph, user.autograph) &&
+                Objects.equals(position, user.position) &&
+                Objects.equals(number, user.number) &&
+                Objects.equals(cardId, user.cardId) &&
+                Objects.equals(birthday, user.birthday) &&
+                Objects.equals(head, user.head) &&
+                Objects.equals(headPath, user.headPath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(departId, departName, companyId, name, age, sex, autograph, position, number, lateNum, cardId, birthday, head, headPath, addTag);
     }
 }

@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:match="http://schemas.android.com/apk/res-auto"
-    android:background="@mipmap/system_bg_h"
+    android:background="@drawable/skin_main_screen_background"
     android:orientation="vertical">
+    <!--android:background="@mipmap/system_bg_h"-->
 
     <TextView
         android:id="@+id/tv_ads_addname"

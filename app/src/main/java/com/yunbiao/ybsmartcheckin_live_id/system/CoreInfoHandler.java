@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.yunbiao.yb_smart_attendance.CommonData;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -28,6 +31,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.Call;
 
@@ -54,10 +60,11 @@ public class CoreInfoHandler {
     private final static int UPDATE_STAFF = 26;//员工信息更新
     private final static int UPDATE_INFO = 33; //修改了设备宣传目录.
     private final static int UPDATE_SKIN = 104;
+    private final static int UPDATE_STAFF_PART = 260;
 
     public static boolean isOnline = false;
 
-    public static void messageReceived(String message) {
+    public static void messageReceived(final String message) {
         LogUtils.e(TAG, "接收消息：" + message);
         try {
             DeviceInfoBean deviceInfoBean = new Gson().fromJson(message, DeviceInfoBean.class);
@@ -68,12 +75,14 @@ public class CoreInfoHandler {
                     MachineDetial.getInstance().upLoadHardWareMessage();
                     // 系统登录
                     if(content != null){
-                        SpUtils.saveStr(SpUtils.BINDCODE,content.getPwd());
+                        SpUtils.saveStr(SpUtils.BIND_CODE,content.getPwd());
                         SpUtils.saveStr(SpUtils.DEVICE_NUMBER,content.getSerNum());
                         SpUtils.saveStr(SpUtils.EXP_DATE,content.getExpireDate());
                         SpUtils.saveStr(SpUtils.RUN_KEY,content.getRunKey());
                         SpUtils.saveInt(SpUtils.DEVICE_TYPE,content.getDtype());
                     }
+
+                    CommonData.updateDeviceInfo(content.getSerNum(),content.getPwd(),content.getExpireDate());
 
                     updateDeviceType();
 
@@ -148,12 +157,12 @@ public class CoreInfoHandler {
                     EventBus.getDefault().postSticky(new AdsUpdateEvent());
                     break;
                 case UPDATE_STAFF:
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            SyncManager.instance().syncDB();
-                        }
-                    },2000);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            SyncManager.instance().requestUser();
+//                        }
+//                    },1500);
                     break;
                 case UPDATE_INFO:
                     EventBus.getDefault().postSticky(new InformationFragment.InformationUpdateEvent());
@@ -164,6 +173,27 @@ public class CoreInfoHandler {
                     Log.e(TAG, "messageReceived: 收到皮肤更新消息：id：" + themeId + "，url：" + url);
                     SkinLoader.loadSkin(url,themeId);
                     break;
+                case UPDATE_STAFF_PART:
+                    JSONObject jsonObject=new JSONObject(message);
+                    try {
+                        final JSONObject jContent=jsonObject.getJSONObject("content");
+                        if (jContent.getString("type").equals("1")){
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONArray jsonArray= new JSONObject(jContent.getString("entrys")).getJSONArray("entrys");
+                                        SyncManager.instance().syncUsers(jsonArray);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            },1500);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     break;
             }
@@ -171,7 +201,6 @@ public class CoreInfoHandler {
             e.printStackTrace();
         }
     }
-
 
     public static void updateDeviceType() {
         OkHttpUtils.post()

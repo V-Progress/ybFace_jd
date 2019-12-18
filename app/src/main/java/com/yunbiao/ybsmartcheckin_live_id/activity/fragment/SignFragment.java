@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,8 +13,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,8 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.animation.Easing;
@@ -32,11 +34,9 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateQRCodeEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -92,7 +92,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
 
         int orientation;
-        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
             orientation = LinearLayoutManager.HORIZONTAL;
         } else {
@@ -102,7 +102,19 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             NoticeManager.getInstance().init(rootView);
         }
 
-        linearLayoutManager = new LinearLayoutManager(getActivity(),orientation,false);
+        Switch switchLiveness = rootView.findViewById(R.id.switch_liveness);
+        final FaceView faceView = ((WelComeActivity) getActivity()).faceView;
+        switchLiveness.setChecked(faceView.getLiveness());
+        switchLiveness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                faceView.setLiveness(isChecked);
+
+                Toast.makeText(getActivity(), "活体检测状态：" + faceView.getLiveness(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
 
         tvTotal1 = rootView.findViewById(R.id.tv_total_number);
         tvMale1 = rootView.findViewById(R.id.tv_male_number);
@@ -122,7 +134,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         pieChart = rootView.findViewById(R.id.pie_chart);
         tvSignMale = rootView.findViewById(R.id.tv_sign_number_male);
         tvSignFemale = rootView.findViewById(R.id.tv_sign_number_female);
-        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
@@ -133,10 +145,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         return rootView;
     }
 
-    private View.OnClickListener onClickListener = new View.OnClickListener(){
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(btnBulu != null){
+            if (btnBulu != null) {
                 btnBulu.setEnabled(false);
                 btnBulu.setVisibility(View.GONE);
                 aivBulu.setVisibility(View.VISIBLE);
@@ -164,9 +176,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
                 outRect.top = space;
         }
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        signAdapter = new SignAdapter(getActivity(), mSignList,mCurrentOrientation);
+        signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
         rlv.setLayoutManager(linearLayoutManager);
         rlv.setAdapter(signAdapter);
         rlv.setItemAnimator(new DefaultItemAnimator());
@@ -185,7 +198,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         //初始化语音系统//todo 7.0以上无法加载讯飞语音库
         KDXFSpeechManager.instance().init(getActivity()).welcome();
 
-        if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             //公告
             NoticeManager.getInstance().initSignData();
         }
@@ -195,23 +208,24 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
-        SignManager.instance().init(getActivity(),this);
-        if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+        SignManager.instance().init(getActivity(), this);
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             //公告
             NoticeManager.getInstance().initSignData();
         }
 
         ivQRCode.setVisibility(View.VISIBLE);
         Company company = SpUtils.getCompany();
-        ImageFileLoader.i().loadAndSave(getActivity(),company.getCodeUrl(), Constants.DATA_PATH,ivQRCode);
+        ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
     }
 
-    private String yuyin ="";
+    private String yuyin = "";
+
     //语音播报
     private void speak(int signType, String signerName) {
-        String speakStr =  getString(R.string.fment_sign_tip_welcome);
-        String goTips =  getString(R.string.fment_sign_tip_goTips);
-        String downTips =  getString(R.string.fment_sign_tip_downTips);
+        String speakStr = getString(R.string.fment_sign_tip_welcome);
+        String goTips = getString(R.string.fment_sign_tip_goTips);
+        String downTips = getString(R.string.fment_sign_tip_downTips);
         Company company = SpUtils.getCompany();
 
         switch (signType) {
@@ -233,9 +247,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         }
         KDXFSpeechManager.instance().playText(speakStr);
     }
+
     //设置饼图属性
     private void initPieChart() {
-        if(pieChart == null){
+        if (pieChart == null) {
             return;
         }
         Description description = pieChart.getDescription();
@@ -252,7 +267,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     @Override
     public void onPrepared(List<Sign> mList) {
-        if(mList == null){
+        if (mList == null) {
             return;
         }
         mSignList.addAll(mList);
@@ -265,27 +280,32 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     @Override
     public void onSigned(Sign sign, int signType) {
-        mSignList.add(0,sign);
+        Log.e(TAG, "onSigned: "+sign.getName() );
+        mSignList.add(0, sign);
         signAdapter.notifyItemInserted(0);
         rlv.scrollToPosition(0);
         updateNumber();
 
-        ((WelComeActivity)getActivity()).openDoor();
+//        MultipleSignDialog.instance().sign(sign);
+//
+//        VipDialogManager.showVipDialog(getActivity(), sign);
 
+        if (sign.getType() == -2) {
+            return;
+        }
+        ((WelComeActivity) getActivity()).openDoor();
         speak(signType, sign.getName());
-
-        MultipleSignDialog.instance().sign(sign);
     }
 
     @Override
     public void onMakeUped(Sign sign, boolean makeUpSuccess) {
-        mSignList.add(0,sign);
+        mSignList.add(0, sign);
         signAdapter.notifyItemInserted(0);
         rlv.scrollToPosition(0);
         updateNumber();
 
-        VipDialogManager.showBuluDialog(getActivity(), sign.getHeadPath(),makeUpSuccess);
-        KDXFSpeechManager.instance().playText(makeUpSuccess ?getString(R.string.fment_sign_tip_blcg)+"！":getString(R.string.fment_sign_tip_blsb)+"！");
+        VipDialogManager.showBuluDialog(getActivity(), sign.getHeadPath(), makeUpSuccess);
+        KDXFSpeechManager.instance().playText(makeUpSuccess ? getString(R.string.fment_sign_tip_blcg) + "！" : getString(R.string.fment_sign_tip_blsb) + "！");
         btnBulu.setEnabled(true);
         btnBulu.setVisibility(View.VISIBLE);
         aivBulu.setVisibility(View.GONE);
@@ -297,15 +317,15 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             @Override
             public void run() {
 
-                List<Sign> mNewSignList=  removeDuplicateCase(mSignList);
+                List<Sign> mNewSignList = removeDuplicateCase(mSignList);
 
                 int male = 0;
                 for (Sign signBean : mNewSignList) {
-                    if(signBean.getSex() == 1){
+                    if (signBean.getSex() == 1) {
                         male = male + 1;
                     }
                 }
-                
+
                 final int total = mNewSignList.size();
                 final int female = total - male;
                 final int maleNum = male;
@@ -313,24 +333,24 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
                     @Override
                     public void run() {
                         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                            String signTips = getString(R.string.fment_sign_tip_yqd)+"   <font color='#fff600'>" + total + "</font>   "+getString(R.string.base_people);
-                            String totalSex = "（"+getString(R.string.base_male)+" <font color='#fff600'>" + maleNum + "</font>   "+getString(R.string.base_female)+"  <font color='#fff600'>" + female + "</font> ）";
+                            String signTips = getString(R.string.fment_sign_tip_yqd) + "   <font color='#fff600'>" + total + "</font>   " + getString(R.string.base_people);
+                            String totalSex = "（" + getString(R.string.base_male) + " <font color='#fff600'>" + maleNum + "</font>   " + getString(R.string.base_female) + "  <font color='#fff600'>" + female + "</font> ）";
                             tvTotal.setText(Html.fromHtml(signTips));
                             tvTotalSex.setText(Html.fromHtml(totalSex));
 
-                            if(tvTotal1 != null){
+                            if (tvTotal1 != null) {
                                 tvTotal1.setText(total + "");
                             }
-                            if(tvMale1 != null){
+                            if (tvMale1 != null) {
                                 tvMale1.setText(maleNum + "");
                             }
-                            if(tvFemale1 != null){
+                            if (tvFemale1 != null) {
                                 tvFemale1.setText(female + "");
                             }
                         } else {
                             tvTotal.setText("" + total);
-                            tvSignMale.setText(getString(R.string.base_male)+": " + maleNum + getString(R.string.base_people));
-                            tvSignFemale.setText(getString(R.string.base_female)+": " + female + getString(R.string.base_people));
+                            tvSignMale.setText(getString(R.string.base_male) + ": " + maleNum + getString(R.string.base_people));
+                            tvSignFemale.setText(getString(R.string.base_female) + ": " + female + getString(R.string.base_people));
 
                             //设置饼图数据
                             List<PieEntry> dataEntry = new ArrayList<>();
@@ -374,7 +394,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             @Override
             public int compare(Sign o1, Sign o2) {
                 //字符串,则按照asicc码升序排列
-                return (o1.getEmpId()+"").compareTo(o2.getEmpId()+"");
+                return (o1.getEmpId() + "").compareTo(o2.getEmpId() + "");
             }
         });
         set.addAll(cases);
@@ -382,15 +402,15 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     }
 
 
-    protected void bindImageView(String urlOrPath, final ImageView iv){
-        if(TextUtils.isEmpty(urlOrPath)){
+    protected void bindImageView(String urlOrPath, final ImageView iv) {
+        if (TextUtils.isEmpty(urlOrPath)) {
             return;
         }
         Glide.with(getActivity()).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
     }
 
-    class SignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-        private List<Sign> signBeanList ;
+    class SignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private List<Sign> signBeanList;
         private Context mContext;
         private int orientation;
         private int id;
@@ -404,10 +424,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 return new ViewHolder(View.inflate(viewGroup.getContext(), R.layout.item_sign_main, null));
             } else {
-                return new ViewHolder(View.inflate(viewGroup.getContext(), R.layout.item_visitor_h, null));
+                return new ViewHolder(View.inflate(viewGroup.getContext(), R.layout.item_sign_h, null));
             }
         }
 
@@ -418,10 +438,10 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
             byte[] imgBytes = signBean.getImgBytes();
             String headPath = signBean.getHeadPath();
-            if(imgBytes != null){
-                Glide.with(mContext).load(imgBytes).asBitmap().override(100,100).into(vh.ivHead);
-            } else if(!TextUtils.isEmpty(headPath)){
-                Glide.with(mContext).load(headPath).asBitmap().override(100,100).into(vh.ivHead);
+            if (imgBytes != null) {
+                Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(vh.ivHead);
+            } else if (!TextUtils.isEmpty(headPath)) {
+                Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(vh.ivHead);
             }
 
             vh.tvName.setText(signBean.getName());
@@ -434,10 +454,11 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             return signBeanList.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder{
+        class ViewHolder extends RecyclerView.ViewHolder {
             ImageView ivHead;
             TextView tvName;
             TextView tvTime;
+
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivHead = itemView.findViewById(R.id.iv_head_item);

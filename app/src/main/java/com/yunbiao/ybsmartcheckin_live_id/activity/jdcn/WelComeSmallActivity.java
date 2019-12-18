@@ -26,6 +26,9 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.jdjr.risk.face.local.verify.VerifyResult;
+import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.faceview.FacePreviewInfo;
+import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -42,7 +45,6 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.WeatherManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.plcgate.GateCommands;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -119,30 +121,24 @@ public class WelComeSmallActivity extends BaseGateActivity {
         ScreenSaver.get().init(this);
     }
 
-    /*人脸识别回调，由上到下执行*/
-    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
+    FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
             syncData();
         }
 
         @Override
-        public void onFaceDetection(Boolean hasFace) {
+        public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
             if(hasFace){
                 ScreenSaver.get().restart();
             }
         }
 
         @Override
-        public void onFaceVerify(VerifyResult verifyResult) {
-            if(verifyResult == null){
-                return;
+        public void onFaceVerify(CompareResult faceAuth) {
+            if (faceAuth != null){
+                SignManager.instance().checkSign(faceAuth);
             }
-            int result = verifyResult.getResult();
-            if(result != VerifyResult.UNKNOWN_FACE){
-                return;
-            }
-            SignManager.instance().checkSign(verifyResult);
         }
     };
 

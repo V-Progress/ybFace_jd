@@ -19,6 +19,10 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class SpUtils {
 
+    public static final String DEVICE_UNIQUE_NO = "deviceNo";//设备唯一号
+    public static final String DEVICE_NUMBER = "devicesernum";//设备编号
+    public static final String BIND_CODE = "bindCode";//绑定码
+
     public static final String DOOR_STATE = "doorState";//门禁常开模式
     public static final String GPIO_DELAY = "doorDelay";
     private static SharedPreferences sp;
@@ -27,12 +31,11 @@ public class SpUtils {
     public static final String CAMERA_WIDTH = "cameraWidth";//摄像头宽
     public static final String CAMERA_HEIGHT = "cameraHeight";//摄像头高
 
-    public static final String DEVICE_UNIQUE_NO = "deviceNo";//设备唯一号
-    public static final String DEVICE_NUMBER = "devicesernum";//设备编号
-    public static final String BINDCODE = "bindCode";//绑定码
     public  static final String CITYNAME= "city";//城市
     public static final String MENU_PWD = "menu_pwd";//用户访问密码
     public static final String EXP_DATE = "expDate";//过期时间
+    public static final String SKIN_ID = "skinId";
+    public static final String SKIN_URL = "skinUrl";
 
     public static final String DISPLAYPOSITION = "displayPosition";//过期时间
 

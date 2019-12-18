@@ -22,13 +22,17 @@ public class ResourceUpdate {
     public static String JOINREM = WEB_BASE_URL + "api/holidayrem/getJoinrem.html";//生日提醒背景
     public static String QRCODE_ADD = WEB_BASE_URL + "nhb/entryCode.html";
     public static String COMPANYINFO = WEB_BASE_URL + "api/company/getcompany.html";//获取公司信息以及下的部门信息接口
+    public static String VISITORINFO = WEB_BASE_URL + "api/visitor/getAllByComDep.html";//获取公司信息以及下的部门信息接口
     public static String UPDATSTAFF = WEB_BASE_URL + "api/entry/entryupdate.html";//修改员工信息接口
     public static String ADDSTAFF = WEB_BASE_URL + "api/entry/entryadd.html";//添加员工信息接口
     public static String DELETESTAFF = WEB_BASE_URL + "api/entry/entrydelete.html";//删除员工接口
     public static String GETSTAFF = WEB_BASE_URL + "api/entry/getentry.html";//获取员工信息接口
+    public static String SEND_VIS_ENTRY = WEB_BASE_URL + "api/visitor/sendvisEntry.html";//获取员工信息接口
     public static String SIGNLOG = WEB_BASE_URL + "api/sign/signlog.html";//创建签到信息接口
+    public static String VISITOLOG = WEB_BASE_URL + "api/visitor/signUpload.html";//访客记录
     public static String BULUSIGN = WEB_BASE_URL + "api/entry/entryecord.html";//补录接口
     public static String SIGNARRAY = WEB_BASE_URL + "api/sign/signlogByarray.html";//定时发送签到列表
+    public static String VISITARRAY = WEB_BASE_URL + "api/visitor/signUploadByarray.html";//定时发送签到列表
     public static String ADDDEPART = WEB_BASE_URL + "api/department/departmentadd.html";//创建部门
     public static String DELETEDEPART = WEB_BASE_URL + "api/department/departmentdelete.html";//删除部门
     public static String GETAD = WEB_BASE_URL + "api/company/getadvert.html";//获取广告

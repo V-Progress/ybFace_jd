@@ -147,6 +147,18 @@ public class FaceSDK {
         return faceMap;
     }
 
+    public Map<String,FaceUser> getAllVisitorData(){
+        Map<String, FaceUser> faceMap = new HashMap<>();
+        List<FaceUser> allUsersSync = FaceUserManager.getAllUsersSync(mContext);
+        for (FaceUser faceUser : allUsersSync) {
+            String userId = faceUser.getUserId();
+            if(userId.startsWith("v")){
+                faceMap.put(faceUser.getUserId(),faceUser);
+            }
+        }
+        return faceMap;
+    }
+
     public void setCallback(FaceFrameManager.BasePropertyCallback basePropertyCallback
             , FaceFrameManager.FacePropertyCallback facePropertyCallback
             , FaceFrameManager.VerifyResultCallback verifyResultCallback){
@@ -182,6 +194,10 @@ public class FaceSDK {
             return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
         }
         return false;
+    }
+
+    public boolean removeUser(FaceUser user){
+        return FaceUserManager.getInstance().removeUserSync(mContext,user);
     }
 
     public void update(FaceUser faceUser, FaceUserManager.FaceUserCallback faceUserCallback){

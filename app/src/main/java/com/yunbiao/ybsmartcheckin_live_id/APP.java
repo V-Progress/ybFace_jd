@@ -65,18 +65,21 @@ public class APP extends Application {
     private static SmdtManager smdt;
     private static SignDao signDao;
     private static WelComeActivity activity;
+
     public static WelComeActivity getActivity() {
         return activity;
     }
 
     private static XHApiManager xhApiManager;
+
     public static void setActivity(WelComeActivity activity) {
         APP.activity = activity;
     }
 
-    public static XHApiManager getXHApi(){
+    public static XHApiManager getXHApi() {
         return xhApiManager;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -101,7 +104,7 @@ public class APP extends Application {
         initSkinManager();
     }
 
-    private void initSkinManager(){
+    private void initSkinManager() {
         // 框架换肤日志打印
         Slog.DEBUG = true;
         SkinCompatManager.withoutActivity(this)
@@ -118,6 +121,7 @@ public class APP extends Application {
 //                .setSkinAllActivityEnable(false)                // true: 默认所有的Activity都换肤; false: 只有实现SkinCompatSupportable接口的Activity换肤
                 .loadSkin();
     }
+
     //IO引脚
     private int dir_set_io[] = {1, 2, 3, 4};
     //IO口方向，0：输入，1：输出
@@ -126,35 +130,33 @@ public class APP extends Application {
     //高低电平，0：低电平，1：高电平
     private int dir_set_value = 0;
 
-    private void initGpio(){
-        try{
+    private void initGpio() {
+        /*try {
             smdt = SmdtManager.create(this);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-//        try{
-//            xhApiManager = new XHApiManager();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-        //设置gpio为输出
-        if(smdt != null){
-            for (int i = 0; i < dir_set_io.length; i++) {
-                int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
-                int result = smdt.smdtSetExtrnalGpioValue(dir_set_io[i], true);
-                if (dirToTemp == 0) {
-                    Log.e(TAG, "initUtils: ----- 设置为输出成功");
-                } else {
-                    Log.e(TAG, "initUtils: ----- 设置为输出失败");
+            //设置gpio为输出
+            if (smdt != null) {
+                for (int i = 0; i < dir_set_io.length; i++) {
+                    int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
+                    int result = smdt.smdtSetExtrnalGpioValue(dir_set_io[i], true);
+                    if (dirToTemp == 0) {
+                        Log.e(TAG, "initUtils: ----- 设置为输出成功");
+                    } else {
+                        Log.e(TAG, "initUtils: ----- 设置为输出失败");
+                    }
                 }
             }
-        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
 
+        /*try{
+            xhApiManager = new XHApiManager();
+        }catch (Exception e){
+            e.printStackTrace();
+        }*/
     }
 
-    private void initXLog(){
+    private void initXLog() {
         LogConfiguration config = new LogConfiguration.Builder()
                 .tag("MY_TAG")                                         // 指定 TAG，默认为 "X-LOG"
                 .t()                                                   // 允许打印线程信息，默认禁止
@@ -187,11 +189,11 @@ public class APP extends Application {
                 filePrinter);
     }
 
-    public void initDB(){
+    public void initDB() {
         try {
             DatabaseHelper.createDatabase(this);
             signDao = new SignDao(this);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -228,9 +230,9 @@ public class APP extends Application {
         smdt = SmdtManager.create(this);
 
         OkHttpClient build = new OkHttpClient.Builder()
-                .connectTimeout(60 * 1000, TimeUnit.SECONDS)
-                .writeTimeout(60 * 1000, TimeUnit.SECONDS)
-                .readTimeout(60 * 1000, TimeUnit.SECONDS)
+                .connectTimeout(60 * 3, TimeUnit.SECONDS)
+                .writeTimeout(60 * 3, TimeUnit.SECONDS)
+                .readTimeout(60 * 3, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
         OkHttpUtils.initClient(build);
@@ -370,16 +372,16 @@ public class APP extends Application {
         Glide.get(this).trimMemory(level);
     }
 
-    public static void restart(){
+    public static void restart() {
         RestartAPPTool.restartAPP(getContext());
     }
 
-    public static void bindProtectService(){
+    public static void bindProtectService() {
         //开启看门狗,只会在开机是启动一次
         getContext().startService(new Intent(APP.getContext(), MyProtectService.class));
     }
 
-    public static void unbindProtectService(){
+    public static void unbindProtectService() {
         getContext().stopService(new Intent(APP.getContext(), MyProtectService.class));
     }
 

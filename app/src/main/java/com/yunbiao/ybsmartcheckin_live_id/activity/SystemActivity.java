@@ -12,12 +12,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
-import android.os.ServiceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -29,19 +26,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bumptech.glide.Glide;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
-import com.yunbiao.ybsmartcheckin_live_id.CustomSDCardLoader;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -198,7 +191,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         String serNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tv_deviceno_system.setText(serNum);
 
-        String bindCode = SpUtils.getStr(SpUtils.BINDCODE);
+        String bindCode = SpUtils.getStr(SpUtils.BIND_CODE);
         tv_bindcode_syetem.setText(bindCode);
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
@@ -702,6 +695,10 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     class SkinModel{
         String skinName;
         File skinFile;
+    }
+
+    public void seeVisitor(View view) {
+        startActivity(new Intent(this,VisitorActivity.class));
     }
 
     public void selectSkin(View view) {

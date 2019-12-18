@@ -4,13 +4,22 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:padding="2dp"
-        android:background="@mipmap/head_bg"
-        android:id="@+id/iv_head_item"
+    <FrameLayout
         android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_centerVertical="true" />
+        android:layout_height="80dp">
+        <ImageView
+            android:scaleType="fitCenter"
+            android:src="@drawable/skin_sign_list_head_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:padding="2dp"
+            android:background="@mipmap/head_bg"
+            android:id="@+id/iv_head_item"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_marginLeft="10dp"

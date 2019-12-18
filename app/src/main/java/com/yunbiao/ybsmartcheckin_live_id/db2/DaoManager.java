@@ -25,9 +25,17 @@ public class DaoManager {
     private DaoManager(){
     }
 
+    public void initDb(Object uniqueId){
+        initDb("db_" + uniqueId);
+    }
     public void initDb(){
+        initDb(DB_NAME);
+    }
+
+
+    public void initDb(String name){
         Log.e(TAG, "initDb: ");
-        MySQLiteHelper helper =new MySQLiteHelper(APP.getContext(),DB_NAME,null);
+        MySQLiteHelper helper =new MySQLiteHelper(APP.getContext(),name,null);
         Log.e(TAG, "initDb: " + helper);
         Database db = helper.getWritableDb();
         Log.e(TAG, "initDb: " + db);
@@ -40,6 +48,7 @@ public class DaoManager {
         daoSession.getDepartDao().detachAll();
         daoSession.getSignDao().detachAll();
         daoSession.getCompanyDao().detachAll();
+        daoSession.getVisitorDao().detachAll();
     }
 
     public DaoSession getDaoSession(){
@@ -114,14 +123,14 @@ public class DaoManager {
 
     /***
      * 通过faceId查询员工
-     * @param id
+     * @param faceId
      * @return
      */
-    public User queryUserByFaceId(long id){
+    public User queryUserByFaceId(String faceId){
         if(daoSession == null){
             return null;
         }
-        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.FaceId.eq(id)).unique();
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.FaceId.eq(faceId)).unique();
     }
 
     /***
@@ -149,6 +158,18 @@ public class DaoManager {
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
     }
 
+    /***
+     * 查询某公司下的所有员工
+     * @param compId
+     * @return
+     */
+    public List<User> queryUserByCompId(int compId){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId)).list();
+    }
+
     public List<Depart> queryDepartByCompId(int compId){
         if(daoSession == null){
             return null;
@@ -166,5 +187,26 @@ public class DaoManager {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.DepartId.eq(id)).list();
+    }
+
+    public Visitor queryVisitorByFaceId(String userId) {
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.FaceId.eq(userId)).unique();
+    }
+
+    public List<Visitor> queryVisitorsByCompId(int compId){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.ComId.eq(compId)).list();
+    }
+
+    public User queryUserByCardId(String cardId) {
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CardId.eq(cardId)).unique();
     }
 }

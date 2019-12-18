@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.LinkedList;
@@ -41,22 +44,31 @@ public class VipAdapter2 extends RecyclerView.Adapter<VipAdapter2.VH> {
     @Override
     public void onBindViewHolder(@NonNull VH vh, int i) {
         Sign item = mList.get(i);
-        byte[] imgBytes = item.getImgBytes();
-        if (imgBytes != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
-            vh.ivHead.setImageBitmap(bitmap);
-        }
-
+//        byte[] imgBytes = item.getImgBytes();
+//        if (imgBytes != null) {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+//            vh.ivHead.setImageBitmap(bitmap);
+//        }
+        Glide.with(mContext).load(item.getHeadPath()).asBitmap().into(vh.ivHead);
         vh.tvName.setText(item.getName());
-        int isShowJob = SpUtils.getInt(SpUtils.DISPLAYPOSITION);
-        if (isShowJob == 0) {
-
-            vh.tvSign.setText( item.getPosition()+" \n  \n " + item.getAutograph());
+        int type = item.getType();
+        if (type == -2) {
+            vh.tvSign.setTextColor(Color.RED);
+            vh.tvSign.setText("\n" + item.getAutograph());
+        } else if (type == -1) {
+            vh.tvSign.setTextColor(Color.GREEN);
+            long visEntryId = item.getVisEntryId();
+            String signText = "\n" + item.getAutograph();
+            User user = DaoManager.get().queryUserById(visEntryId);
+            if(user != null){
+                signText += "\n访问：" + user.getName();
+            }
+            vh.tvSign.setText(signText);
         } else {
-            vh.tvSign.setText("" + item.getAutograph());
+            vh.tvSign.setTextColor(Color.WHITE);
+            int isShowJob = SpUtils.getInt(SpUtils.DISPLAYPOSITION);
+            vh.tvSign.setText((isShowJob == 0 ? item.getPosition() : "") + " \n  \n " + item.getAutograph());
         }
-
-
     }
 
     @Override

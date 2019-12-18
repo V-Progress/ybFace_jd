@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
+import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
@@ -25,9 +27,11 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +55,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
+import okhttp3.Request;
 
 /**
  * Created by Administrator on 2019/3/18.
@@ -69,12 +74,13 @@ public class SignManager {
     private final ScheduledExecutorService autoUploadThread;
     private long verifyOffsetTime = 10000;//验证间隔时间
 
+    private SimpleDateFormat visitSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
     private boolean isDebug = true;
     private boolean isBulu = false;
     private boolean isBuluing = false;
 
-    private Map<Long, Long> passageMap = new HashMap<>();
+    private Map<String, Long> passageMap = new HashMap<>();
 
     public static SignManager instance() {
         if (instance == null) {
@@ -108,7 +114,7 @@ public class SignManager {
             if (signs != null) {
                 for (Sign signBean : signs) {
                     long time = signBean.getTime();
-                    long faceId = signBean.getFaceId();
+                    String faceId = signBean.getFaceId();
                     if (passageMap.containsKey(faceId)) {
                         long time1 = passageMap.get(faceId);
                         if (time > time1) {
@@ -140,7 +146,7 @@ public class SignManager {
         if (signs == null) {
             return;
         }
-        Log.e(TAG, "run: ------ 未上传：" + signs.size());
+        Log.e(TAG, "run: ------ 未上传记录：" + signs.size());
 
         if (signs.size() <= 0) {
             try {
@@ -152,53 +158,141 @@ public class SignManager {
         }
 
         List<SignDataBean> signDataBeans = new ArrayList<>();
+        List<VisitDataBean> visitDataBeans = new ArrayList<>();
         for (Sign signBean : signs) {
-            SignDataBean signDataBean = new SignDataBean();
-            signDataBean.entryid = signBean.getEmpId() + "";
-            signDataBean.signTime = signBean.getTime();
-            signDataBeans.add(signDataBean);
+            if (signBean.getType() == 0) {
+                SignDataBean signDataBean = new SignDataBean();
+                signDataBean.entryid = signBean.getEmpId() + "";
+                signDataBean.signTime = signBean.getTime();
+                signDataBean.sign = signBean;
+                signDataBeans.add(signDataBean);
+            } else {
+                VisitDataBean bean = new VisitDataBean();
+                bean.visitorId = signBean.getEmpId() + "";
+                bean.createTime = signBean.getTime();
+                bean.headPath = signBean.getHeadPath();
+                bean.sign = signBean;
+                visitDataBeans.add(bean);
+            }
         }
 
-        String jsonStr = new Gson().toJson(signDataBeans);
-        d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
-        OkHttpUtils.post()
-                .addParams("signstr", jsonStr)
-                .addParams("deviceId", HeartBeatClient.getDeviceNo())
-                .url(ResourceUpdate.SIGNARRAY)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        d("上送失败--->" + e != null ? e.getMessage() : "NULL");
-                        e.printStackTrace();
-                        try {
-                            callback.accept(false);
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }
+        Log.e(TAG, "uploadSignRecord: 未上传考勤记录：" + signDataBeans.size());
+        Log.e(TAG, "uploadSignRecord: 未上传访客记录：" + visitDataBeans.size());
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Log.e(TAG, "onResponse: 上传结果：" + response);
-                        JSONObject jsonObject = JSONObject.parseObject(response);
-                        String status = jsonObject.getString("status");
-                        boolean isSucc = TextUtils.equals("1", status);
+        //上传考勤数据
+        uploadSignData(signDataBeans, callback);
+        //上传访客数据
+        uploadVisitData(visitDataBeans);
+    }
+
+    private void uploadVisitData(final List<VisitDataBean> visitDataBeans) {
+        if (visitDataBeans.size() > 0) {
+            d("准备上传访客记录");
+            int comid = SpUtils.getCompany().getComid();
+            String jsonStr = new Gson().toJson(visitDataBeans);
+            d(ResourceUpdate.VISITARRAY + " --- " + jsonStr);
+            Map<String, File> fileMap = new HashMap<>();
+            for (VisitDataBean visitDataBean : visitDataBeans) {
+                String headPath = visitDataBean.headPath;
+                File headFile;
+                if (TextUtils.isEmpty(headPath)) {
+                    headFile = new File(Environment.getExternalStorageDirectory(), "1.txt");
+                    if (headFile == null || !headFile.exists()) {
                         try {
-                            callback.accept(isSucc);
-                        } catch (Exception e) {
+                            headFile.createNewFile();
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if (!isSucc) {
-                            return;
-                        }
-                        for (Sign signBean : signs) {
-                            Log.e(TAG, "run: ---" + signBean.getSex());
-                            signBean.setUpload(true);
-                            DaoManager.get().addOrUpdate(signBean);
-                        }
                     }
-                });
+                } else {
+                    headFile = new File(headPath);
+                }
+                fileMap.put(headFile.getName(), headFile);
+            }
+
+            OkHttpUtils.post()
+                    .url(ResourceUpdate.VISITARRAY)
+                    .addParams("witJson", jsonStr)
+                    .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                    .addParams("comId", comid + "")
+                    .files("heads", fileMap)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onBefore(Request request, int id) {
+                            super.onBefore(request, id);
+                            d("开始上传----------");
+                        }
+
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            d("上送失败--->" + (e != null ? e.getMessage() : "NULL"));
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Log.e(TAG, "onResponse: 上传结果：" + response);
+                            JSONObject jsonObject = JSONObject.parseObject(response);
+                            String status = jsonObject.getString("status");
+                            boolean isSucc = TextUtils.equals("1", status);
+                            if (!isSucc) {
+                                return;
+                            }
+                            for (VisitDataBean visitDataBean : visitDataBeans) {
+                                Sign sign = visitDataBean.sign;
+                                sign.setUpload(true);
+                                DaoManager.get().addOrUpdate(sign);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void uploadSignData(final List<SignDataBean> signDataBeans, final Consumer<Boolean> callback) {
+        if (signDataBeans.size() > 0) {
+            String jsonStr = new Gson().toJson(signDataBeans);
+            d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
+            OkHttpUtils.post()
+                    .addParams("signstr", jsonStr)
+                    .addParams("deviceId", HeartBeatClient.getDeviceNo())
+                    .url(ResourceUpdate.SIGNARRAY)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            d("上送失败--->" + e != null ? e.getMessage() : "NULL");
+                            e.printStackTrace();
+                            try {
+                                callback.accept(false);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Log.e(TAG, "onResponse: 上传结果：" + response);
+                            JSONObject jsonObject = JSONObject.parseObject(response);
+                            String status = jsonObject.getString("status");
+                            boolean isSucc = TextUtils.equals("1", status);
+                            try {
+                                callback.accept(isSucc);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (!isSucc) {
+                                return;
+                            }
+                            for (SignDataBean signDataBean : signDataBeans) {
+                                Sign sign = signDataBean.sign;
+                                sign.setUpload(true);
+                                DaoManager.get().addOrUpdate(sign);
+                            }
+                        }
+                    });
+        }
+
     }
 
     //定时发送签到数据
@@ -252,99 +346,291 @@ public class SignManager {
             return;
         }
 
-        final long currTime = System.currentTimeMillis();
+        final Date currDate = new Date();
         final Sign sign = new Sign();
-        sign.setTime(currTime);
-        sign.setFaceId(Long.parseLong(userId));
+        sign.setTime(currDate.getTime());
+        sign.setFaceId(userId);
         if (!canPass(sign)) {
             return;
         }
 
-        User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
-        if (userBean == null) {
-            return;
-        }
-
-        sign.setEmployNum(userBean.getNumber());
-        sign.setEmpId(userBean.getId());
-        sign.setImgBytes(faceImageBytes);
-        sign.setDepart(userBean.getDepartName());
-        sign.setName(userBean.getName());
         sign.setUpload(false);
-        sign.setDate(dateFormat.format(currTime));
-        sign.setAutograph(userBean.getAutograph());
-        sign.setPosition(userBean.getPosition());
-        sign.setSex(userBean.getSex());
-        sign.setComid(userBean.getCompanyId());
+        sign.setImgBytes(faceImageBytes);
+        sign.setDate(dateFormat.format(currDate.getTime()));
+        Log.e(TAG, "checkSign:------------ " + userId);
+
+        //说明是访客
+        if (userId.startsWith("vi")) {
+            Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
+            if (visitor == null) {
+                return;
+            }
+            sign.setEmpId(visitor.getId());
+            sign.setComid(visitor.getComId());
+            sign.setName(visitor.getName());
+            sign.setDepart("访客");
+            sign.setType(-1);
+            sign.setVisEntryId(visitor.getVisEntryId());
+            sign.setAutograph("访客");
+
+            String currStart = visitor.getCurrStart();
+            String currEnd = visitor.getCurrEnd();
+
+            Log.e(TAG, "访问开始时间：" + currStart);
+            Log.e(TAG, "访问结束时间：" + currEnd);
+
+            try {
+                Date start = visitSdf.parse(currStart);
+                Date end = visitSdf.parse(currEnd);
+                //在开始时间之前或者在结束时间之后
+                if (currDate.before(start) || currDate.after(end)) {
+                    Log.e(TAG, "不在访问期内");
+                    sign.setType(-2);
+                    sign.setAutograph("不在访问期内");
+                    if (listener != null) {
+                        mAct.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onSigned(sign, getCurrentTime(currDate.getTime()));
+                            }
+                        });
+                    }
+                    return;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
+            sendVisitoRecord(sign);
+        } else {
+            User userBean = DaoManager.get().queryUserByFaceId(userId);
+            //如果在员工库中未查到
+            if (userBean == null) {
+                return;
+            }
+
+            sign.setEmployNum(userBean.getNumber());
+            sign.setEmpId(userBean.getId());
+            sign.setDepart(userBean.getDepartName());
+            sign.setName(userBean.getName());
+            sign.setAutograph(userBean.getAutograph());
+            sign.setPosition(userBean.getPosition());
+            sign.setSex(userBean.getSex());
+            sign.setComid(userBean.getCompanyId());
+            sign.setType(0);
+
+            sendSignRecord(sign);
+        }
 
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onSigned(sign, getCurrentTime(currTime));
+                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
                 }
             });
         }
-
-        sendSignRecord(sign);
     }
 
-    public void checkSign(VerifyResult verifyResult, FaceProperty faceProperty) {
-        if (isBulu) {
-            makeUpSign(verifyResult.getFaceImageBytes(), faceProperty);
+    public void checkSign(String barCode){
+        User user = DaoManager.get().queryUserByCardId(barCode);
+        if(user == null){
             return;
         }
 
-        if (verifyResult.getResult() != VerifyResult.UNKNOWN_FACE) {
-            return;
-        }
+        final Date currDate = new Date();
+        final Sign sign = new Sign();
+        sign.setTime(currDate.getTime());
+        sign.setFaceId(user.getFaceId());
+        sign.setUpload(false);
+        sign.setDate(dateFormat.format(currDate.getTime()));
 
-        byte[] faceImageBytes = verifyResult.getFaceImageBytes();
-        FaceUser user = verifyResult.getUser();
-        if (user == null) {
-            return;
+        sign.setEmployNum(user.getNumber());
+        sign.setEmpId(user.getId());
+        sign.setDepart(user.getDepartName());
+        sign.setName(user.getName());
+        sign.setAutograph(user.getAutograph());
+        sign.setPosition(user.getPosition());
+        sign.setSex(user.getSex());
+        sign.setComid(user.getCompanyId());
+        sign.setType(0);
+        sign.setHeadPath(user.getHeadPath());
+
+        sendSignRecord(sign);
+
+        if (listener != null) {
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
+                }
+            });
         }
-        String userId = user.getUserId();
+    }
+
+    public void checkSign(CompareResult compareResult) {
+//        if (isBulu) {
+//            makeUpSign(verifyResult.getFaceImageBytes());
+//            return;
+//        }
+
+        String userId = compareResult.getUserName();
         if (TextUtils.isEmpty(userId)) {
             return;
         }
 
-        final long currTime = System.currentTimeMillis();
+        final Date currDate = new Date();
         final Sign sign = new Sign();
-        sign.setTime(currTime);
-        sign.setFaceId(Long.parseLong(userId));
+        sign.setTime(currDate.getTime());
+        sign.setFaceId(userId);
         if (!canPass(sign)) {
             return;
         }
 
-        User userBean = DaoManager.get().queryUserByFaceId(Long.parseLong(userId));
-        if (userBean == null) {
-            return;
-        }
-
-        File imgFile = saveBitmap(currTime, faceImageBytes);
-        sign.setEmployNum(userBean.getNumber());
-        sign.setEmpId(userBean.getId());
-        sign.setHeadPath(imgFile.getPath());
-        sign.setDepart(userBean.getDepartName());
-        sign.setName(userBean.getName());
         sign.setUpload(false);
-        sign.setDate(dateFormat.format(currTime));
-        sign.setAutograph(userBean.getAutograph());
-        sign.setPosition(userBean.getPosition());
-        sign.setSex(userBean.getSex());
-        sign.setComid(userBean.getCompanyId());
+//        sign.setImgBytes(compareResult.getImageBytes());
+        sign.setDate(dateFormat.format(currDate.getTime()));
+        Log.e(TAG, "checkSign:------------ " + userId);
+
+        //说明是访客
+        if (userId.startsWith("vi")) {
+            Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
+            if (visitor == null) {
+                return;
+            }
+            sign.setEmpId(visitor.getId());
+            sign.setComid(visitor.getComId());
+            sign.setName(visitor.getName());
+            sign.setDepart("访客");
+            sign.setType(-1);
+            sign.setVisEntryId(visitor.getVisEntryId());
+            sign.setAutograph("访客");
+            sign.setHeadPath(visitor.getHeadPath());
+
+            String currStart = visitor.getCurrStart();
+            String currEnd = visitor.getCurrEnd();
+
+            Log.e(TAG, "访问开始时间：" + currStart);
+            Log.e(TAG, "访问结束时间：" + currEnd);
+
+            try {
+                Date start = visitSdf.parse(currStart);
+                Date end = visitSdf.parse(currEnd);
+                //在开始时间之前或者在结束时间之后
+                if (currDate.before(start) || currDate.after(end)) {
+                    Log.e(TAG, "不在访问期内");
+                    sign.setType(-2);
+                    sign.setAutograph("不在访问期内");
+                    if (listener != null) {
+                        mAct.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onSigned(sign, getCurrentTime(currDate.getTime()));
+                            }
+                        });
+                    }
+                    return;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
+            sendVisitoRecord(sign);
+        } else {
+            User userBean = DaoManager.get().queryUserByFaceId(userId);
+            //如果在员工库中未查到
+            if (userBean == null) {
+                return;
+            }
+
+            sign.setEmployNum(userBean.getNumber());
+            sign.setEmpId(userBean.getId());
+            sign.setDepart(userBean.getDepartName());
+            sign.setName(userBean.getName());
+            sign.setAutograph(userBean.getAutograph());
+            sign.setPosition(userBean.getPosition());
+            sign.setSex(userBean.getSex());
+            sign.setComid(userBean.getCompanyId());
+            sign.setType(0);
+            sign.setHeadPath(userBean.getHeadPath());
+
+            sendSignRecord(sign);
+        }
 
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onSigned(sign, getCurrentTime(currTime));
+                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
                 }
             });
         }
+    }
 
-        sendSignRecord(sign);
+    private void notifyInterviewed(long visitorId, long visEntryId) {
+        String url = ResourceUpdate.SEND_VIS_ENTRY;
+        Map<String,String> params = new HashMap<>();
+        params.put("visitorId", String.valueOf(visitorId));
+        params.put("visEntryId", String.valueOf(visEntryId));
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        Log.e(TAG, "通知被访人：" + url);
+        Log.e(TAG, "地址：" + url);
+        Log.e(TAG, "参数：" + params.toString());
+
+        OkHttpUtils.post()
+                .url(url)// TODO: 2019/12/7
+                .params(params)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "通知被访人：onError: " + (e == null ? "NULL" : e.getMessage()));
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "通知被访人：onResponse: " + response);
+                    }
+                });
+    }
+
+    private void sendVisitoRecord(final Sign signBean) {
+        Map<String, String> map = new HashMap<>();
+        map.put("deviceId", HeartBeatClient.getDeviceNo());
+        map.put("comId", "" + signBean.getComid());
+        map.put("visitorId", signBean.getEmpId() + "");
+        d("上传访客记录");
+        d("地址：" + ResourceUpdate.VISITOLOG);
+        d("参数：" + map.toString());
+
+//        File file = saveBitmap(signBean.getTime(), signBean.getImgBytes());
+//        signBean.setHeadPath(file.getPath());
+        File file = new File(signBean.getHeadPath());
+        OkHttpUtils.post()
+                .url(ResourceUpdate.VISITOLOG).params(map)
+                .addFile("heads", file.getName(), file)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        d("上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                        signBean.setUpload(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        d("上传结果：" + response);
+                        JSONObject jsonObject = JSONObject.parseObject(response);
+                        signBean.setUpload(jsonObject.getInteger("status") == 1);
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        DaoManager.get().addOrUpdate(signBean);
+                    }
+                });
     }
 
     private void sendSignRecord(final Sign signBean) {
@@ -352,29 +638,37 @@ public class SignManager {
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
         map.put("deviceId", HeartBeatClient.getDeviceNo());
+        d("上传考勤记录");
+        d("地址：" + ResourceUpdate.VISITOLOG);
+        d("参数：" + map.toString());
+
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                d("上传失败：" + (e == null ? "NULL" : e.getMessage()));
                 signBean.setUpload(false);
             }
 
             @Override
             public void onResponse(String response, int id) {
+                d("上传结果：" + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 signBean.setUpload(jsonObject.getInteger("status") == 1);
             }
 
             @Override
             public void onAfter(int id) {
-                File imgFile = saveBitmap(signBean.getTime(), signBean.getImgBytes());
-                signBean.setHeadPath(imgFile.getPath());
                 DaoManager.get().addOrUpdate(signBean);
+                /*File imgFile = saveBitmap(signBean.getTime(), signBean.getImgBytes());
+                if(imgFile != null){
+                    signBean.setHeadPath(imgFile.getPath());
+                }*/
             }
         });
     }
 
     private boolean canPass(Sign signBean) {
-        long faceId = signBean.getFaceId();
+        String faceId = signBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
             passageMap.put(faceId, signBean.getTime());
             return true;
@@ -392,6 +686,14 @@ public class SignManager {
     class SignDataBean {
         String entryid;
         long signTime;
+        Sign sign;
+    }
+
+    class VisitDataBean {
+        String visitorId;
+        long createTime;
+        String headPath;
+        Sign sign;
     }
 
     private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
@@ -523,6 +825,9 @@ public class SignManager {
      * @return
      */
     public File saveBitmap(long time, byte[] mBitmapByteArry) {
+        if(mBitmapByteArry == null){
+            return null;
+        }
         long start = System.currentTimeMillis();
         File filePic;
         try {

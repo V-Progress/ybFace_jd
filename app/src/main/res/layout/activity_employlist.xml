@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_root"
-    android:background="@mipmap/bj">
+    android:background="@drawable/skin_main_screen_background"
+    android:id="@+id/rl_root">
     <TextView
         android:id="@+id/tv_deviceNo"
         android:layout_width="wrap_content"
@@ -51,6 +51,28 @@
             android:background="@mipmap/icon_depart_spinner"
             android:tag="@string/act_employList_bm"
             android:padding="2dp"></Spinner>
+
+        <LinearLayout
+            android:gravity="top"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:textColorHint="@color/gray_low"
+                android:textColor="@color/white"
+                android:hint="员工名"
+                android:id="@+id/edt_query"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:textColor="@color/white"
+                android:text="搜索"
+                android:background="@drawable/shape_employ_button"
+                android:onClick="queryClick"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp" />
+        </LinearLayout>
 
         <Button
             android:visibility="gone"
@@ -172,6 +194,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_margin="6dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="-20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp">
+            <View
+                android:background="#ED8E17"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="下载头像失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#FA0808"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="添加人脸库失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#A2A2A2"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="更新头像失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </RelativeLayout>
 
