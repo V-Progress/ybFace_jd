@@ -396,4 +396,5 @@
     <string name="updateManager_xzsb">download failed</string>
 
     <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
+    <string name="System_Setting_save_threshold">SAVE</string>
 </resources>

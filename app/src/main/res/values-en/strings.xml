@@ -479,4 +479,5 @@
     <string name="batch_process_finished_info">process finished!\ntotal count =  %d \nsuccess count = %d \nfailed count = %d \nfailed images are in directory \' %s \'</string>
 
     <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
+    <string name="System_Setting_save_threshold">SAVE</string>
 </resources>
