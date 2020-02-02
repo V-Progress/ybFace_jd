@@ -52,7 +52,6 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import skin.support.SkinCompatManager;
 import skin.support.app.SkinAppCompatViewInflater;
-import skin.support.app.SkinCardViewInflater;
 import skin.support.constraint.app.SkinConstraintViewInflater;
 import skin.support.design.app.SkinMaterialViewInflater;
 import skin.support.utils.Slog;
@@ -113,7 +112,7 @@ public class APP extends Application {
                 .addInflater(new SkinAppCompatViewInflater())   // 基础控件换肤
                 .addInflater(new SkinMaterialViewInflater())    // material design
                 .addInflater(new SkinConstraintViewInflater())  // ConstraintLayout
-                .addInflater(new SkinCardViewInflater())        // CardView v7
+//                .addInflater(new SkinCardViewInflater())        // CardView v7
 //                .addInflater(new SkinCircleImageViewInflater()) // hdodenhof/CircleImageView
 //                .addInflater(new SkinFlycoTabLayoutInflater())  // H07000223/FlycoTabLayout
                 .setSkinStatusBarColorEnable(true)              // 关闭状态栏换肤

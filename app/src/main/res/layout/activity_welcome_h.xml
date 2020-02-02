@@ -6,88 +6,81 @@
     xmlns:match="http://schemas.android.com/apk/res-auto">
 
     <!--android:background="@mipmap/welcome_bg_h"-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+
+    <RelativeLayout
         android:background="@drawable/skin_main_screen_background"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.yunbiao.faceview.FaceView
+            android:layout_centerInParent="true"
+            android:id="@+id/face_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <ImageView
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginRight="10dp"
+            android:onClick="goSetting"
+            android:scaleType="centerInside"
+            android:id="@+id/iv_main_logo"
+            android:layout_width="wrap_content"
+            android:maxWidth="200dp"
+            android:maxHeight="100dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/yb_logo" />
+
+        <TextView
+            android:textStyle="bold"
+            android:layout_marginTop="26dp"
+            android:layout_toRightOf="@+id/iv_main_logo"
+            android:id="@+id/tv_main_abbname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/lignt_line"
-            android:rotation="180" />
+            android:layout_marginLeft="10dp"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="30dp" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
+        <TextClock
+            android:layout_marginTop="26dp"
+            android:layout_marginRight="35dp"
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+            android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+            android:textColor="@color/horizontal_item_visitor_name"
+            android:textSize="28dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_list_container"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:gravity="right"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/textClock"
+            android:orientation="vertical"/>
+    </RelativeLayout>
 
-            <com.yunbiao.faceview.FaceView
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_centerInParent="true"
-                android:id="@+id/face_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+    <ImageView
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/lignt_line"
+        android:rotation="180" />
 
-            <ImageView
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="10dp"
-                android:onClick="goSetting"
-                android:scaleType="centerInside"
-                android:id="@+id/iv_main_logo"
-                android:layout_width="wrap_content"
-                android:maxWidth="200dp"
-                android:maxHeight="100dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@mipmap/yb_logo" />
-
-            <TextView
-                android:textStyle="bold"
-                android:layout_marginTop="35dp"
-                android:layout_toRightOf="@+id/iv_main_logo"
-                android:id="@+id/tv_main_abbname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="30dp" />
-
-            <TextClock
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="35dp"
-                android:id="@+id/textClock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:format24Hour="yyyy/MM/dd  HH:mm:ss"
-                android:format12Hour="yyyy/MM/dd  HH:mm:ss"
-                android:textColor="@color/horizontal_item_visitor_name"
-                android:textSize="28dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_list_container"
-                android:paddingTop="10dp"
-                android:paddingLeft="10dp"
-                android:gravity="right"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_below="@+id/textClock"
-                android:orientation="vertical"/>
-        </RelativeLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:background="@mipmap/lignt_line" />
-    </LinearLayout>
+    <ImageView
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:background="@mipmap/lignt_line" />
 </FrameLayout>

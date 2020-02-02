@@ -46,7 +46,9 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -194,6 +196,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         initPieChart();
 
         MultipleSignDialog.instance().init(getActivity());
+        VipDialogManager.instance().initBG(getActivity());
 
         //初始化语音系统//todo 7.0以上无法加载讯飞语音库
         KDXFSpeechManager.instance().init(getActivity()).welcome();
@@ -204,6 +207,9 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         }
 
         yuyin = getActivity().getResources().getString(R.string.fment_sign_tip_hello);
+
+//        ivQRCode.setVisibility(View.VISIBLE);
+//        Glide.with(getActivity()).load(R.mipmap.zkhl).into(ivQRCode);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -223,7 +229,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     //语音播报
     private void speak(int signType, String signerName) {
-        String speakStr = getString(R.string.fment_sign_tip_welcome);
+        /*String speakStr = getString(R.string.fment_sign_tip_welcome);
         String goTips = getString(R.string.fment_sign_tip_goTips);
         String downTips = getString(R.string.fment_sign_tip_downTips);
         Company company = SpUtils.getCompany();
@@ -244,8 +250,9 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
                 }
                 speakStr = String.format(" %s " + downTips, signerName);
                 break;
-        }
-        KDXFSpeechManager.instance().playText(speakStr);
+        }*/
+//        KDXFSpeechManager.instance().playText(speakStr);
+        KDXFSpeechManager.instance().playText(signerName);
     }
 
     //设置饼图属性
@@ -286,13 +293,16 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         rlv.scrollToPosition(0);
         updateNumber();
 
-//        MultipleSignDialog.instance().sign(sign);
-//
-//        VipDialogManager.showVipDialog(getActivity(), sign);
+        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
+        if(faceDialog){
+            VipDialogManager.showVipDialog(getActivity(), sign);
+//            MultipleSignDialog.instance().sign(sign);
+        }
 
         if (sign.getType() == -2) {
             return;
         }
+
         ((WelComeActivity) getActivity()).openDoor();
         speak(signType, sign.getName());
     }
@@ -313,72 +323,67 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
     //更新签到列表
     private void updateNumber() {
-        ThreadUitls.runInThread(new Runnable() {
-            @Override
-            public void run() {
+        List<Sign> mNewSignList = removeDuplicateCase(mSignList);
 
-                List<Sign> mNewSignList = removeDuplicateCase(mSignList);
-
-                int male = 0;
-                for (Sign signBean : mNewSignList) {
-                    if (signBean.getSex() == 1) {
-                        male = male + 1;
-                    }
-                }
-
-                final int total = mNewSignList.size();
-                final int female = total - male;
-                final int maleNum = male;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                            String signTips = getString(R.string.fment_sign_tip_yqd) + "   <font color='#fff600'>" + total + "</font>   " + getString(R.string.base_people);
-                            String totalSex = "（" + getString(R.string.base_male) + " <font color='#fff600'>" + maleNum + "</font>   " + getString(R.string.base_female) + "  <font color='#fff600'>" + female + "</font> ）";
-                            tvTotal.setText(Html.fromHtml(signTips));
-                            tvTotalSex.setText(Html.fromHtml(totalSex));
-
-                            if (tvTotal1 != null) {
-                                tvTotal1.setText(total + "");
-                            }
-                            if (tvMale1 != null) {
-                                tvMale1.setText(maleNum + "");
-                            }
-                            if (tvFemale1 != null) {
-                                tvFemale1.setText(female + "");
-                            }
-                        } else {
-                            tvTotal.setText("" + total);
-                            tvSignMale.setText(getString(R.string.base_male) + ": " + maleNum + getString(R.string.base_people));
-                            tvSignFemale.setText(getString(R.string.base_female) + ": " + female + getString(R.string.base_people));
-
-                            //设置饼图数据
-                            List<PieEntry> dataEntry = new ArrayList<>();
-                            List<Integer> dataColors = new ArrayList<>();
-
-                            if (maleNum == 0 && female == 0) {
-                                dataEntry.add(new PieEntry(100, ""));
-                                dataColors.add(getResources().getColor(R.color.white));
-                            } else {
-                                dataEntry.add(new PieEntry(maleNum, getString(R.string.base_male)));
-                                dataEntry.add(new PieEntry(female, getString(R.string.base_female)));
-                                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
-                                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
-                            }
-
-                            pieChart.clear();
-                            PieDataSet pieDataSet = new PieDataSet(dataEntry, null);
-                            pieDataSet.setColors(dataColors);
-                            PieData pieData = new PieData(pieDataSet);
-                            pieData.setDrawValues(false);//环中value显示
-                            pieChart.setData(pieData);
-                            pieChart.notifyDataSetChanged();
-                            pieChart.invalidate();
-                        }
-                    }
-                });
+        int male = 0;
+        for (Sign signBean : mNewSignList) {
+            if (signBean.getSex() == 1) {
+                male = male + 1;
             }
-        });
+        }
+
+        int total = mNewSignList.size();
+        int female = total - male;
+        int maleNum = male;
+
+        Company company = SpUtils.getCompany();
+        List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
+
+        int totalUserNum = users == null ? 0 : users.size();
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            String signTips = "已到   <font color='#fff600'>" + total + "</font>   " + getString(R.string.base_people);
+            String totalSex = "应到   <font color='#fff600'>" + totalUserNum + "</font>   " + getString(R.string.base_people);
+//          String totalSex = "（" + getString(R.string.base_male) + " <font color='#fff600'>" + maleNum + "</font>   " + getString(R.string.base_female) + "  <font color='#fff600'>" + female + "</font> ）";
+            tvTotal.setText(Html.fromHtml(signTips));
+            tvTotalSex.setText(Html.fromHtml(totalSex));
+
+            if (tvTotal1 != null) {
+                tvTotal1.setText(total + "");
+            }
+            if (tvMale1 != null) {
+                tvMale1.setText(maleNum + "");
+            }
+            if (tvFemale1 != null) {
+                tvFemale1.setText(female + "");
+            }
+        } else {
+            tvTotal.setText("" + total);
+            tvSignMale.setText(getString(R.string.base_male) + ": " + maleNum + getString(R.string.base_people));
+            tvSignFemale.setText(getString(R.string.base_female) + ": " + female + getString(R.string.base_people));
+
+            //设置饼图数据
+            List<PieEntry> dataEntry = new ArrayList<>();
+            List<Integer> dataColors = new ArrayList<>();
+
+            if (maleNum == 0 && female == 0) {
+                dataEntry.add(new PieEntry(100, ""));
+                dataColors.add(getResources().getColor(R.color.white));
+            } else {
+                dataEntry.add(new PieEntry(maleNum, getString(R.string.base_male)));
+                dataEntry.add(new PieEntry(female, getString(R.string.base_female)));
+                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
+                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
+            }
+
+            pieChart.clear();
+            PieDataSet pieDataSet = new PieDataSet(dataEntry, null);
+            pieDataSet.setColors(dataColors);
+            PieData pieData = new PieData(pieDataSet);
+            pieData.setDrawValues(false);//环中value显示
+            pieChart.setData(pieData);
+            pieChart.notifyDataSetChanged();
+            pieChart.invalidate();
+        }
     }
 
 

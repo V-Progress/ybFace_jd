@@ -38,6 +38,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -103,7 +104,7 @@ public class FaceView extends FrameLayout {
     /**
      * 活体检测的开关
      */
-    private boolean livenessDetect = false;
+    private boolean livenessDetect = true;
 
     /**
      * 用于记录人脸识别相关状态
@@ -129,7 +130,7 @@ public class FaceView extends FrameLayout {
     /**
      * 识别阈值
      */
-    private static final float SIMILAR_THRESHOLD = 0.75F;
+    private static float SIMILAR_THRESHOLD = 0.75F;
 
     private View previewView;
 
@@ -153,10 +154,17 @@ public class FaceView extends FrameLayout {
         initView();
     }
 
+    public void setSimilarThreshold() {
+        int intOrDef = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        Log.e(TAG, "initView: 即将设置阈值为：" + ((float) intOrDef / 100));
+        SIMILAR_THRESHOLD = ((float) intOrDef / 100);
+    }
+
     private void initView() {
+        setSimilarThreshold();
+
         compareResultList = new ArrayList<>();
 
-//        previewView = new TextureView(getContext());
         previewView = new SurfaceView(getContext());
         //在布局结束后才做初始化操作
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
@@ -185,211 +193,12 @@ public class FaceView extends FrameLayout {
     };
 
     private void initCamera() {
-        final FaceListener faceListener = new FaceListener() {
-            @Override
-            public void onFail(Exception e) {
-                Log.e(TAG, "onFail: " + e.getMessage());
-            }
-
-            //请求FR的回调
-            @Override
-            public void onFaceFeatureInfoGet(@Nullable final FaceFeature faceFeature, final Integer requestId, final Integer errorCode) {
-                //FR成功
-                if (faceFeature != null) {
-//                    Log.i(TAG, "onPreview: fr end = " + System.currentTimeMillis() + " trackId = " + requestId);
-                    Integer liveness = livenessMap.get(requestId);
-                    //不做活体检测的情况，直接搜索
-                    if (!livenessDetect) {
-                        searchFace(faceFeature, requestId);
-                    } else if (liveness != null && liveness == LivenessInfo.ALIVE) {//活体检测通过，搜索特征
-                        searchFace(faceFeature, requestId);
-                    } else {//活体检测未出结果，或者非活体，延迟执行该函数
-                        if (requestFeatureStatusMap.containsKey(requestId)) {
-                            Observable.timer(WAIT_LIVENESS_INTERVAL, TimeUnit.MILLISECONDS)
-                                    .subscribe(new Observer<Long>() {
-                                        Disposable disposable;
-
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                            disposable = d;
-                                            getFeatureDelayedDisposables.add(disposable);
-                                        }
-
-                                        @Override
-                                        public void onNext(Long aLong) {
-                                            onFaceFeatureInfoGet(faceFeature, requestId, errorCode);
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                            getFeatureDelayedDisposables.remove(disposable);
-                                        }
-                                    });
-                        }
-                    }
-
-                }
-                //特征提取失败
-                else {
-                    if (increaseAndGetValue(extractErrorRetryMap, requestId) > MAX_RETRY_TIME) {
-                        extractErrorRetryMap.put(requestId, 0);
-
-                        String msg;
-                        // 传入的FaceInfo在指定的图像上无法解析人脸，此处使用的是RGB人脸数据，一般是人脸模糊
-                        if (errorCode != null && errorCode == ErrorInfo.MERR_FSDK_FACEFEATURE_LOW_CONFIDENCE_LEVEL) {
-                            msg = getContext().getString(R.string.low_confidence_level);
-                        } else {
-                            msg = "ExtractCode:" + errorCode;
-                        }
-                        faceHelper.setName(requestId, getContext().getString(R.string.recognize_failed_notice, msg));
-                        // 在尝试最大次数后，特征提取仍然失败，则认为识别未通过
-                        requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
-                        retryRecognizeDelayed(requestId);
-                    } else {
-                        requestFeatureStatusMap.put(requestId, RequestFeatureStatus.TO_RETRY);
-                    }
-                }
-            }
-
-            @Override
-            public void onFaceLivenessInfoGet(@Nullable LivenessInfo livenessInfo, final Integer requestId, Integer errorCode) {
-                if (livenessInfo != null) {
-                    int liveness = livenessInfo.getLiveness();
-                    livenessMap.put(requestId, liveness);
-                    // 非活体，重试
-                    if (liveness == LivenessInfo.NOT_ALIVE) {
-                        faceHelper.setName(requestId, "非活体");
-                        // 延迟 FAIL_RETRY_INTERVAL 后，将该人脸状态置为UNKNOWN，帧回调处理时会重新进行活体检测
-                        retryLivenessDetectDelayed(requestId);
-                    }
-                } else {
-                    if (increaseAndGetValue(livenessErrorRetryMap, requestId) > MAX_RETRY_TIME) {
-                        livenessErrorRetryMap.put(requestId, 0);
-                        String msg;
-                        // 传入的FaceInfo在指定的图像上无法解析人脸，此处使用的是RGB人脸数据，一般是人脸模糊
-                        if (errorCode != null && errorCode == ErrorInfo.MERR_FSDK_FACEFEATURE_LOW_CONFIDENCE_LEVEL) {
-                            msg = getContext().getString(R.string.low_confidence_level);
-                        } else {
-                            msg = "ProcessCode:" + errorCode;
-                        }
-                        faceHelper.setName(requestId, getContext().getString(R.string.recognize_failed_notice, msg));
-                        retryLivenessDetectDelayed(requestId);
-                    } else {
-                        livenessMap.put(requestId, LivenessInfo.UNKNOWN);
-                    }
-                }
-            }
-        };
-
-        CameraListener cameraListener = new CameraListener() {
-            @Override
-            public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
-                Camera.Size lastPreviewSize = previewSize;
-                previewSize = camera.getParameters().getPreviewSize();
-                drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
-                        , cameraId, isMirror, false, false);
-                Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
-                Log.i(TAG, "CameraDisplayOrientation: " + drawHelper.getCameraDisplayOrientation());
-                // 切换相机的时候可能会导致预览尺寸发生变化
-                if (faceHelper == null ||
-                        lastPreviewSize == null ||
-                        lastPreviewSize.width != previewSize.width || lastPreviewSize.height != previewSize.height) {
-                    Integer trackedFaceCount = null;
-                    // 记录切换时的人脸序号
-                    if (faceHelper != null) {
-                        trackedFaceCount = faceHelper.getTrackedFaceCount();
-                        faceHelper.release();
-                    }
-                    faceHelper = new FaceHelper.Builder()
-                            .ftEngine(ftEngine)
-                            .frEngine(frEngine)
-                            .flEngine(flEngine)
-                            .frQueueSize(MAX_DETECT_NUM)
-                            .flQueueSize(MAX_DETECT_NUM)
-                            .imgQueueSize(MAX_DETECT_NUM)
-                            .previewSize(previewSize)
-                            .faceListener(faceListener)
-                            .trackedFaceCount(trackedFaceCount == null ? ConfigUtil.getTrackedFaceCount(getContext().getApplicationContext()) : trackedFaceCount)
-                            .build();
-                }
-            }
-
-            @Override
-            public void onPreview(final byte[] nv21, Camera camera) {
-                mCurrBytes = nv21;
-                if (faceRectView != null) {
-                    faceRectView.clearFaceInfo();
-                }
-                List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21);
-                infoList = facePreviewInfoList;
-                if (facePreviewInfoList != null && faceRectView != null && drawHelper != null) {
-                    drawPreviewInfo(facePreviewInfoList);
-                }
-                clearLeftFace(facePreviewInfoList);
-
-                if (callback != null) {
-                    callback.onFaceDetection(facePreviewInfoList != null && facePreviewInfoList.size() > 0,facePreviewInfoList);
-                }
-
-                if (facePreviewInfoList != null && facePreviewInfoList.size() > 0 && previewSize != null) {
-                    for (int i = 0; i < facePreviewInfoList.size(); i++) {
-                        Integer status = requestFeatureStatusMap.get(facePreviewInfoList.get(i).getTrackId());
-                        /**
-                         * 在活体检测开启，在人脸识别状态不为成功或人脸活体状态不为处理中（ANALYZING）且不为处理完成（ALIVE、NOT_ALIVE）时重新进行活体检测
-                         */
-
-                        if (livenessDetect && (status == null || status != RequestFeatureStatus.SUCCEED)) {
-                            Integer liveness = livenessMap.get(facePreviewInfoList.get(i).getTrackId());
-                            if (liveness == null
-                                    || (liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING)) {
-                                livenessMap.put(facePreviewInfoList.get(i).getTrackId(), RequestLivenessStatus.ANALYZING);
-                                faceHelper.requestFaceLiveness(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId(), LivenessType.RGB);
-                            }
-                        }
-
-                        /**
-                         * 对于每个人脸，若状态为空或者为失败，则请求特征提取（可根据需要添加其他判断以限制特征提取次数），
-                         * 特征提取回传的人脸特征结果在{@link FaceListener#onFaceFeatureInfoGet(FaceFeature, Integer, Integer)}中回传
-                         */
-                        if (status == null
-                                || status == RequestFeatureStatus.TO_RETRY) {
-                            requestFeatureStatusMap.put(facePreviewInfoList.get(i).getTrackId(), RequestFeatureStatus.SEARCHING);
-                            faceHelper.requestFaceFeature(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId());
-//                            Log.i(TAG, "onPreview: fr start = " + System.currentTimeMillis() + " trackId = " + facePreviewInfoList.get(i).getTrackedFaceCount());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCameraClosed() {
-                Log.i(TAG, "onCameraClosed: ");
-            }
-
-            @Override
-            public void onCameraError(Exception e) {
-                Log.i(TAG, "onCameraError: " + e.getMessage());
-            }
-
-            @Override
-            public void onCameraConfigurationChanged(int cameraID, int displayOrientation) {
-                if (drawHelper != null) {
-                    drawHelper.setCameraDisplayOrientation(displayOrientation);
-                }
-                Log.i(TAG, "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
-            }
-        };
-
+        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
-                .rotation(APP.getActivity().getWindowManager().getDefaultDisplay().getRotation())
+                .rotation(angle)
                 .specificCameraId(rgbCameraID != null ? rgbCameraID : Camera.CameraInfo.CAMERA_FACING_FRONT)
-                .isMirror(false)
+                .isMirror(true)
                 .previewOn(previewView)
                 .cameraListener(cameraListener)
                 .build();
@@ -397,7 +206,225 @@ public class FaceView extends FrameLayout {
         cameraHelper.start();
     }
 
+    private CameraListener cameraListener = new CameraListener() {
+        @Override
+        public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
+            boolean isHMirror = SpUtils.isMirror();
+            Log.e(TAG, "onCameraOpened: ---------- " + isHMirror);
+
+            Camera.Size lastPreviewSize = previewSize;
+            previewSize = camera.getParameters().getPreviewSize();
+            drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
+                    , cameraId, isMirror, isHMirror, false);
+            Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
+            Log.i(TAG, "CameraDisplayOrientation: " + drawHelper.getCameraDisplayOrientation());
+            // 切换相机的时候可能会导致预览尺寸发生变化
+            if (faceHelper == null ||
+                    lastPreviewSize == null ||
+                    lastPreviewSize.width != previewSize.width || lastPreviewSize.height != previewSize.height) {
+                Integer trackedFaceCount = null;
+                // 记录切换时的人脸序号
+                if (faceHelper != null) {
+                    trackedFaceCount = faceHelper.getTrackedFaceCount();
+                    faceHelper.release();
+                }
+                faceHelper = new FaceHelper.Builder()
+                        .ftEngine(ftEngine)
+                        .frEngine(frEngine)
+                        .flEngine(flEngine)
+                        .frQueueSize(MAX_DETECT_NUM)
+                        .flQueueSize(MAX_DETECT_NUM)
+                        .imgQueueSize(MAX_DETECT_NUM)
+                        .previewSize(previewSize)
+                        .faceListener(faceListener)
+                        .trackedFaceCount(trackedFaceCount == null ? ConfigUtil.getTrackedFaceCount(getContext().getApplicationContext()) : trackedFaceCount)
+                        .build();
+            }
+        }
+
+        @Override
+        public void onPreview(final byte[] nv21, Camera camera) {
+            mCurrBytes = nv21;
+            if (faceRectView != null) {
+                faceRectView.clearFaceInfo();
+            }
+            List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21);
+            infoList = facePreviewInfoList;
+            if (facePreviewInfoList != null && faceRectView != null && drawHelper != null) {
+                drawPreviewInfo(facePreviewInfoList);
+            }
+            clearLeftFace(facePreviewInfoList);
+
+            if (callback != null) {
+                callback.onFaceDetection(facePreviewInfoList != null && facePreviewInfoList.size() > 0, facePreviewInfoList);
+            }
+
+            if (facePreviewInfoList != null && facePreviewInfoList.size() > 0 && previewSize != null) {
+                for (int i = 0; i < facePreviewInfoList.size(); i++) {
+                    Integer status = requestFeatureStatusMap.get(facePreviewInfoList.get(i).getTrackId());
+                    /**
+                     * 在活体检测开启，在人脸识别状态不为成功或人脸活体状态不为处理中（ANALYZING）且不为处理完成（ALIVE、NOT_ALIVE）时重新进行活体检测
+                     */
+
+                    if (livenessDetect && (status == null || status != RequestFeatureStatus.SUCCEED)) {
+                        Integer liveness = livenessMap.get(facePreviewInfoList.get(i).getTrackId());
+                        if (liveness == null
+                                || (liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING)) {
+                            livenessMap.put(facePreviewInfoList.get(i).getTrackId(), RequestLivenessStatus.ANALYZING);
+                            faceHelper.requestFaceLiveness(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId(), LivenessType.RGB);
+                        }
+                    }
+
+                    /**
+                     * 对于每个人脸，若状态为空或者为失败，则请求特征提取（可根据需要添加其他判断以限制特征提取次数），
+                     * 特征提取回传的人脸特征结果在{@link FaceListener#onFaceFeatureInfoGet(FaceFeature, Integer, Integer)}中回传
+                     */
+                    if (status == null
+                            || status == RequestFeatureStatus.TO_RETRY) {
+                        requestFeatureStatusMap.put(facePreviewInfoList.get(i).getTrackId(), RequestFeatureStatus.SEARCHING);
+                        faceHelper.requestFaceFeature(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId());
+//                            Log.i(TAG, "onPreview: fr start = " + System.currentTimeMillis() + " trackId = " + facePreviewInfoList.get(i).getTrackedFaceCount());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onCameraClosed() {
+            Log.i(TAG, "onCameraClosed: ");
+        }
+
+        @Override
+        public void onCameraError(Exception e) {
+            Log.i(TAG, "onCameraError: " + e.getMessage());
+        }
+
+        @Override
+        public void onCameraConfigurationChanged(int cameraID, int displayOrientation) {
+            if (drawHelper != null) {
+                drawHelper.setCameraDisplayOrientation(displayOrientation);
+            }
+            Log.i(TAG, "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
+        }
+    };
+
+    final FaceListener faceListener = new FaceListener() {
+        @Override
+        public void onFail(Exception e) {
+            Log.e(TAG, "onFail: " + e.getMessage());
+        }
+
+        //请求FR的回调
+        @Override
+        public void onFaceFeatureInfoGet(@Nullable final FaceFeature faceFeature, final Integer requestId, final Integer errorCode) {
+            //FR成功
+            if (faceFeature != null) {
+//                    Log.i(TAG, "onPreview: fr end = " + System.currentTimeMillis() + " trackId = " + requestId);
+                Integer liveness = livenessMap.get(requestId);
+                //不做活体检测的情况，直接搜索
+                if (!livenessDetect) {
+                    searchFace(faceFeature, requestId);
+                } else if (liveness != null && liveness == LivenessInfo.ALIVE) {//活体检测通过，搜索特征
+                    searchFace(faceFeature, requestId);
+                } else {//活体检测未出结果，或者非活体，延迟执行该函数
+                    if (requestFeatureStatusMap.containsKey(requestId)) {
+                        Observable.timer(WAIT_LIVENESS_INTERVAL, TimeUnit.MILLISECONDS)
+                                .subscribe(new Observer<Long>() {
+                                    Disposable disposable;
+
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        disposable = d;
+                                        getFeatureDelayedDisposables.add(disposable);
+                                    }
+
+                                    @Override
+                                    public void onNext(Long aLong) {
+                                        onFaceFeatureInfoGet(faceFeature, requestId, errorCode);
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        getFeatureDelayedDisposables.remove(disposable);
+                                    }
+                                });
+                    }
+                }
+
+            }
+            //特征提取失败
+            else {
+                if (increaseAndGetValue(extractErrorRetryMap, requestId) > MAX_RETRY_TIME) {
+                    extractErrorRetryMap.put(requestId, 0);
+
+                    String msg;
+                    // 传入的FaceInfo在指定的图像上无法解析人脸，此处使用的是RGB人脸数据，一般是人脸模糊
+                    if (errorCode != null && errorCode == ErrorInfo.MERR_FSDK_FACEFEATURE_LOW_CONFIDENCE_LEVEL) {
+                        msg = getContext().getString(R.string.low_confidence_level);
+                    } else {
+                        msg = "ExtractCode:" + errorCode;
+                    }
+                    faceHelper.setName(requestId, getContext().getString(R.string.recognize_failed_notice, msg));
+                    // 在尝试最大次数后，特征提取仍然失败，则认为识别未通过
+                    requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
+                    retryRecognizeDelayed(requestId);
+                } else {
+                    requestFeatureStatusMap.put(requestId, RequestFeatureStatus.TO_RETRY);
+                }
+            }
+        }
+
+        @Override
+        public void onFaceLivenessInfoGet(@Nullable LivenessInfo livenessInfo, final Integer requestId, Integer errorCode) {
+            if (livenessInfo != null) {
+                int liveness = livenessInfo.getLiveness();
+                livenessMap.put(requestId, liveness);
+                // 非活体，重试
+                if (liveness == LivenessInfo.NOT_ALIVE) {
+                    faceHelper.setName(requestId, "非活体");
+                    // 延迟 FAIL_RETRY_INTERVAL 后，将该人脸状态置为UNKNOWN，帧回调处理时会重新进行活体检测
+                    retryLivenessDetectDelayed(requestId);
+                }
+            } else {
+                if (increaseAndGetValue(livenessErrorRetryMap, requestId) > MAX_RETRY_TIME) {
+                    livenessErrorRetryMap.put(requestId, 0);
+                    String msg;
+                    // 传入的FaceInfo在指定的图像上无法解析人脸，此处使用的是RGB人脸数据，一般是人脸模糊
+                    if (errorCode != null && errorCode == ErrorInfo.MERR_FSDK_FACEFEATURE_LOW_CONFIDENCE_LEVEL) {
+                        msg = getContext().getString(R.string.low_confidence_level);
+                    } else {
+                        msg = "ProcessCode:" + errorCode;
+                    }
+                    faceHelper.setName(requestId, getContext().getString(R.string.recognize_failed_notice, msg));
+                    retryLivenessDetectDelayed(requestId);
+                } else {
+                    livenessMap.put(requestId, LivenessInfo.UNKNOWN);
+                }
+            }
+        }
+    };
+
+    public void changeAngle() {
+        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        Log.e(TAG, "changeAngle111: " + angle);
+        if (cameraHelper != null) {
+            Log.e(TAG, "changeAngle222: " + angle);
+            cameraHelper.changeDisplayOrientation(angle);
+        }
+    }
+
     public void resume() {
+        boolean mirror = SpUtils.isMirror();
+        if (drawHelper != null) {
+            Log.e(TAG, "resume: ---------- " + mirror);
+            drawHelper.setMirrorHorizontal(mirror);
+        }
+
         if (cameraHelper != null && isInited) {
             Log.e(TAG, "resume: helper不为null，并且已经初始化");
             cameraHelper.start();
@@ -406,7 +433,7 @@ public class FaceView extends FrameLayout {
         }
     }
 
-    public void pause(){
+    public void pause() {
         if (cameraHelper != null && isInited) {
             cameraHelper.stop();
         }
@@ -425,18 +452,19 @@ public class FaceView extends FrameLayout {
 
     private List<FacePreviewInfo> infoList;
     private byte[] mCurrBytes;
+
     public Bitmap takePicture() {
-        if(mCurrBytes != null){
+        if (mCurrBytes != null) {
             try {
                 YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
                 Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                if(infoList != null){
+                if (infoList != null) {
                     FacePreviewInfo facePreviewInfo = infoList.get(0);
                     FaceInfo faceInfo = facePreviewInfo.getFaceInfo();
 
-                    if(faceInfo != null){
+                    if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
                         Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left
                                 , bestRect.top
@@ -458,7 +486,7 @@ public class FaceView extends FrameLayout {
         livenessDetect = isChecked;
     }
 
-    public boolean getLiveness(){
+    public boolean getLiveness() {
         return livenessDetect;
     }
 
@@ -595,12 +623,12 @@ public class FaceView extends FrameLayout {
 
     private void searchFace(final FaceFeature frFace, final Integer requestId) {
         Observable.create(new ObservableOnSubscribe<CompareResult>() {
-                    @Override
-                    public void subscribe(final ObservableEmitter<CompareResult> emitter) {
-                        CompareResult compareResult = FaceManager.getInstance().compare(frFace);
-                        emitter.onNext(compareResult);
-                    }
-                })
+            @Override
+            public void subscribe(final ObservableEmitter<CompareResult> emitter) {
+                CompareResult compareResult = FaceManager.getInstance().compare(frFace);
+                emitter.onNext(compareResult);
+            }
+        })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CompareResult>() {
@@ -650,7 +678,7 @@ public class FaceView extends FrameLayout {
                                 User user = DaoManager.get().queryUserByFaceId(userName);
                                 userName = user.getName();
                             }*/
-                            faceHelper.setName(requestId, /*compareResult.getUserName()*/"ID: "+userName);
+                            faceHelper.setName(requestId, /*compareResult.getUserName()*/"ID: " + userName);
 
                             if (callback != null) {
                                 callback.onFaceVerify(compareResult);

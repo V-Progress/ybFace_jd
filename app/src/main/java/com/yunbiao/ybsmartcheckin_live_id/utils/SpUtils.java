@@ -31,7 +31,7 @@ public class SpUtils {
     public static final String CAMERA_WIDTH = "cameraWidth";//摄像头宽
     public static final String CAMERA_HEIGHT = "cameraHeight";//摄像头高
 
-    public  static final String CITYNAME= "city";//城市
+    public static final String CITYNAME = "city";//城市
     public static final String MENU_PWD = "menu_pwd";//用户访问密码
     public static final String EXP_DATE = "expDate";//过期时间
     public static final String SKIN_ID = "skinId";
@@ -42,8 +42,6 @@ public class SpUtils {
     public static Company mCacheCompany;//全局缓存
     public static final String COMPANYID = "companyid";//公司ID
     public static final String COMPANY_INFO = "companyInfo";//公司视频宣传
-    public static final String COMPANY_LOGO = "companyLogo";//公司logo
-    public static final String COMPANY_QRCODE = "companyQRCode";//公司二维码
     public static final String COMPANY_AD_HENG = "ad_heng";//横屏广告
     public static final String COMPANY_AD_SHU = "ad_shu";//竖屏广告
 
@@ -58,29 +56,37 @@ public class SpUtils {
 
     public static final String LAST_INIT_TIME = "lastInitTime";//上次更新时间
 
-    public static void init(){
+    public static final String IP_CACHE = "ipCache";
+    public static final String RESOURCE_PORT_CACHE = "resourcePortCache";
+    public static final String XMPP_PORT_CACHE = "xmppPortCache";
+    public static final String PROJECT_NAME_SUFFIX = "projectNameSuffix";
+
+    public static final String FACE_DIALOG = "faceDialog";
+    public static final String SIMILAR_THRESHOLD = "similarThreshold";
+
+    public static void init() {
         getCompany();
     }
 
-    public static void setCompany(final Company company){
+    public static void setCompany(final Company company) {
         mCacheCompany = company;
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> e) throws Exception {
                 String json = new Gson().toJson(company);
-                saveStr(COMPANY_INFO,json);
+                saveStr(COMPANY_INFO, json);
             }
         }).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public static Company getCompany(){
-        if(mCacheCompany == null){
+    public static Company getCompany() {
+        if (mCacheCompany == null) {
             String str = SpUtils.getStr(COMPANY_INFO);
-            if(!TextUtils.isEmpty(str)){
+            if (!TextUtils.isEmpty(str)) {
                 Company company = new Gson().fromJson(str, Company.class);
                 mCacheCompany = company;
             }
-            if(mCacheCompany == null){
+            if (mCacheCompany == null) {
                 mCacheCompany = new Company();
                 mCacheCompany.setComid(0);
             }
@@ -89,51 +95,58 @@ public class SpUtils {
     }
 
     static {
-        sp = APP.getContext().getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        sp = APP.getContext().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
     }
 
-    public static boolean isMirror(){
-        return getBoolean(IS_MIRROR,true);
+    public static boolean isMirror() {
+        return getBoolean(IS_MIRROR, true);
     }
 
-    public static void setMirror(boolean b){
-        saveBoolean(IS_MIRROR,b);
+    public static void setMirror(boolean b) {
+        saveBoolean(IS_MIRROR, b);
     }
 
-    public static void saveStr(String key, String value){
-        if(sp != null){
-            sp.edit().putString(key,value).commit();
+    public static void saveStr(String key, String value) {
+        if (sp != null) {
+            sp.edit().putString(key, value).commit();
         }
     }
 
-    public static void saveInt(String key,int value){
-        if(sp != null){
-            sp.edit().putInt(key,value).commit();
+    public static void saveInt(String key, int value) {
+        if (sp != null) {
+            sp.edit().putInt(key, value).commit();
         }
     }
 
-    public static void saveLong(String key,long value){
-        if(sp != null){
-            sp.edit().putLong(key,value).commit();
+    public static void saveFloat(String key, float value) {
+        if (sp != null) {
+            sp.edit().putFloat(key, value).commit();
         }
     }
 
-    public static long getLong(String key){
-        if(sp != null){
-            return sp.getLong(key,0);
+    public static void saveLong(String key, long value) {
+        if (sp != null) {
+            sp.edit().putLong(key, value).commit();
+        }
+    }
+
+    public static long getLong(String key) {
+        if (sp != null) {
+            return sp.getLong(key, 0);
         }
         return 0;
     }
 
-    public static String getStr(String key){
-        if(sp != null){
-            return sp.getString(key,"");
+    public static String getStr(String key) {
+        if (sp != null) {
+            return sp.getString(key, "");
         }
         return "";
     }
-    public static String getStr(String key,String defaultValue){
-        if(sp != null){
-            return sp.getString(key,defaultValue);
+
+    public static String getStr(String key, String defaultValue) {
+        if (sp != null) {
+            return sp.getString(key, defaultValue);
         }
         return defaultValue;
     }
@@ -152,35 +165,42 @@ public class SpUtils {
 //        }
 //    }
 
-    public static int getInt(String key){
-        if(sp != null){
-            return sp.getInt(key,0);
+    public static int getInt(String key) {
+        if (sp != null) {
+            return sp.getInt(key, 0);
         }
         return 0;
     }
 
-    public static int getIntOrDef(String key,int def){
-        if(sp != null){
-            return sp.getInt(key,def);
+    public static Float getFloat(String key, float defaultValue) {
+        if (sp != null) {
+            return sp.getFloat(key, defaultValue);
+        }
+        return 0f;
+    }
+
+    public static int getIntOrDef(String key, int def) {
+        if (sp != null) {
+            return sp.getInt(key, def);
         }
         return def;
     }
 
-    public static void clear(Context context){
-        if(sp != null){
+    public static void clear(Context context) {
+        if (sp != null) {
             sp.edit().clear().apply();
         }
     }
 
-    public static void saveBoolean(String key,boolean b){
-        if(sp != null){
-            sp.edit().putBoolean(key,b).commit();
+    public static void saveBoolean(String key, boolean b) {
+        if (sp != null) {
+            sp.edit().putBoolean(key, b).commit();
         }
     }
 
-    public static boolean getBoolean(String key,boolean defValue){
-        if(sp != null){
-            return sp.getBoolean(key,defValue);
+    public static boolean getBoolean(String key, boolean defValue) {
+        if (sp != null) {
+            return sp.getBoolean(key, defValue);
         }
         return defValue;
     }

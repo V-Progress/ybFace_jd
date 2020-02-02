@@ -77,7 +77,6 @@ public class AdsFragment extends Fragment implements AdsListener {
 
     private long MAX_TIME = 30;
     private long onTime = MAX_TIME;
-    private List<String> mAdsList = new ArrayList<>();
     private ObjectAnimator objectAnimator;
     private TextView tvNumber;
     private MixedPlayerLayout mixedPlayer;
@@ -203,7 +202,7 @@ public class AdsFragment extends Fragment implements AdsListener {
     private void getAdsData() {
         int companyid = SpUtils.getInt(SpUtils.COMPANYID);
         int type = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 1;
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         map.put("comId", companyid + "");
         map.put("type", type + "");
         OkHttpUtils.post().url(ResourceUpdate.GETAD).params(map).build().execute(new StringCallback() {
@@ -217,13 +216,21 @@ public class AdsFragment extends Fragment implements AdsListener {
             public void onResponse(String response, int id) {
                 d("请求成功..." + response);
                 AdvertBean advertBean = new Gson().fromJson(response, AdvertBean.class);
-                if (advertBean == null || advertBean.getStatus() != 1 || advertBean.getAdvertObject() == null) {
+                if(advertBean == null){
                     return;
                 }
+
+                if(advertBean.getStatus() != 1 || advertBean.getAdvertObject() == null){
+                    mixedPlayer.setDatas(null);
+                    return;
+                }
+
                 List<AdvertBean.AdvertObjectEntity.ImgArrayEntity> imgArray = advertBean.getAdvertObject().getImgArray();
-                if (imgArray == null) {
+                if (imgArray == null || imgArray.size() <= 0) {
+                    mixedPlayer.setDatas(null);
                     return;
                 }
+
                 if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                     SpUtils.saveStr(SpUtils.COMPANY_AD_SHU, response);
                 } else {
@@ -266,7 +273,7 @@ public class AdsFragment extends Fragment implements AdsListener {
     }
 
     private void checkAds(List<AdvertBean.AdvertObjectEntity.ImgArrayEntity> imgArray) {
-        mAdsList.clear();
+        final List<String> adsList = new ArrayList<>();
         Queue<String> urlQueue = new LinkedList<>();
         for (AdvertBean.AdvertObjectEntity.ImgArrayEntity imgArrayEntity : imgArray) {
             String adUrl = imgArrayEntity.getAdvertimg();
@@ -276,13 +283,13 @@ public class AdsFragment extends Fragment implements AdsListener {
             @Override
             public void getAds(File file) {
                 d("getAds: ---------- 下载成功：" + file.getPath());
-                mAdsList.add(file.getPath());
+                adsList.add(file.getPath());
             }
 
             @Override
             public void finish() {
                 d("finish: ---------- 结束");
-                mixedPlayer.setDatas(mAdsList);
+                mixedPlayer.setDatas(adsList);
             }
         });
     }

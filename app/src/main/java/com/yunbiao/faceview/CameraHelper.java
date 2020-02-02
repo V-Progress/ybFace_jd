@@ -33,13 +33,12 @@ public class CameraHelper implements Camera.PreviewCallback {
     private int rotation;
     private int additionalRotation;
     private boolean isMirror = false;
-    private ExecutorService executorService;
 
-    public int getWidth(){
+    public int getWidth() {
         return previewSize.width;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return previewSize.height;
     }
 
@@ -62,7 +61,6 @@ public class CameraHelper implements Camera.PreviewCallback {
     }
 
     public void init() {
-        executorService = Executors.newSingleThreadExecutor();
         if (previewDisplayView instanceof TextureView) {
             ((TextureView) this.previewDisplayView).setSurfaceTextureListener(textureListener);
         } else if (previewDisplayView instanceof SurfaceView) {
@@ -109,7 +107,11 @@ public class CameraHelper implements Camera.PreviewCallback {
                 previewSize = parameters.getPreviewSize();
                 List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
                 if (supportedPreviewSizes != null && supportedPreviewSizes.size() > 0) {
+                    for (Camera.Size supportedPreviewSize : supportedPreviewSizes) {
+                        Log.e(TAG, "start: " + supportedPreviewSize.width + " --- " + supportedPreviewSize.height);
+                    }
                     previewSize = getBestSupportedSize(supportedPreviewSizes, previewViewSize);
+                    Log.e(TAG, "start: 最佳：" + previewSize.width + " --- " + previewSize.height);
                 }
                 Log.e(TAG, "run: 最佳宽高：" + previewSize.width + " --- " + previewSize.height);
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
@@ -335,15 +337,20 @@ public class CameraHelper implements Camera.PreviewCallback {
     };
 
     public void changeDisplayOrientation(int rotation) {
+        Log.e(TAG, "changeDisplayOrientation11111: " + rotation);
+        this.rotation = rotation;
+        displayOrientation = getCameraOri(rotation);
+
         if (mCamera != null) {
-            this.rotation = rotation;
-            displayOrientation = getCameraOri(rotation);
+            Log.e(TAG, "changeDisplayOrientation222222: " + displayOrientation);
             mCamera.setDisplayOrientation(displayOrientation);
             if (cameraListener != null) {
+                Log.e(TAG, "changeDisplayOrientation333333: " + displayOrientation);
                 cameraListener.onCameraConfigurationChanged(mCameraId, displayOrientation);
             }
         }
     }
+
     public boolean switchCamera() {
         if (Camera.getNumberOfCameras() < 2) {
             return false;

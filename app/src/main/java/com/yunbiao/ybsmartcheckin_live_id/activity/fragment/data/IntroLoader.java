@@ -17,12 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 
 public class IntroLoader {
@@ -33,46 +27,93 @@ public class IntroLoader {
     private static final String TAG = "IntroLoader";
 
     public static void loadData(final LoadListener loadListener) {
-        loadListener.before();
-        Observable.create(new ObservableOnSubscribe<String>() {
+        loadListener.onStart();
+
+        final String cacheData = SpUtils.getStr(SpUtils.COMPANY_INFO);
+        int compId = SpUtils.getInt(SpUtils.COMPANYID);
+        OkHttpUtils.post().url(ResourceUpdate.getCompInfo).addParams("comId", compId + "").build().execute(new StringCallback() {
             @Override
-            public void subscribe(final ObservableEmitter<String> e) throws Exception {
-                final String cacheData = SpUtils.getStr(SpUtils.COMPANY_INFO);
-                if (TextUtils.isEmpty(cacheData)) {
-                    e.onNext("");
-                    return;
+            public void onError(Call call, Exception e, int id) {
+                Log.d(TAG, "请求失败... " + e != null ? e.getMessage() : "NULL");
+                loadListener.onFailed(e);
+                if (!TextUtils.isEmpty(cacheData)) {
+                    loadCacheData(cacheData, loadListener);
                 }
-
-                InfoBean infoBean = new Gson().fromJson(cacheData, InfoBean.class);
-                if (infoBean == null || infoBean.status != 1 || infoBean.getPropaArray() == null) {
-                    e.onNext("");
-                    return;
-                }
-
-                loadListener.loadBefore();
-                final List<PlayBean> playList = getPlayList(infoBean.getPropaArray());
-                loadResource(playList, new DownloadListener() {
-                    @Override
-                    public void getSingle(PlayBean bean) {
-                        loadListener.loadSingle(bean);
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        d("全部处理结束... ");
-                        loadListener.loadCacheComplete();
-                        e.onNext(cacheData);
-                    }
-                });
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+
             @Override
-            public void accept(String result) throws Exception {
-                if(TextUtils.isEmpty(result)){
-                    loadListener.noCache();
+            public void onResponse(String response, int id) {
+                Log.d(TAG, "onResponse: --------------- " + response);
+                if (TextUtils.isEmpty(response)) {
+                    loadListener.onFailed(new Exception("Response is null"));
+                    if (!TextUtils.isEmpty(cacheData)) {
+                        loadListener.onStarLoadCache();
+                    }
+                    return;
                 }
 
-                loadCompanyInfo(result,loadListener);
+                //如果缓存数据不为空并且与之相同，则不再处理数据
+                if (TextUtils.equals(response, cacheData)) {
+                    Log.d(TAG, "数据无变化，不继续处理... ");
+                    //直接加载缓存 todo
+                    loadCacheData(cacheData, loadListener);
+                    return;
+                }
+
+                InfoBean infoBean = new Gson().fromJson(response, InfoBean.class);
+                if (infoBean == null) {
+                    loadListener.onFailed(new Exception("Format InfoBean failed"));
+                    return;
+                }
+
+                final List<InfoBean.Propa> propaArray = infoBean.getPropaArray();
+                if (propaArray == null || propaArray.size() <= 0) {
+                    loadListener.onNoData();
+                    SpUtils.saveStr(SpUtils.COMPANY_INFO, "");
+                    return;
+                }
+
+                SpUtils.saveStr(SpUtils.COMPANY_INFO, response);
+
+                handleData(propaArray, loadListener);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
+                loadListener.onFinish();
+            }
+        });
+    }
+
+    private static void loadCacheData(String cacheData, LoadListener loadListener) {
+        InfoBean infoBean = new Gson().fromJson(cacheData, InfoBean.class);
+        if (infoBean == null) {
+            return;
+        }
+
+        final List<InfoBean.Propa> propaArray = infoBean.getPropaArray();
+        if (propaArray == null || propaArray.size() <= 0) {
+            return;
+        }
+
+        loadListener.onStarLoadCache();
+        handleData(propaArray, loadListener);
+    }
+
+    private static void handleData(List<InfoBean.Propa> propaArray, final LoadListener loadListener) {
+        final List<PlayBean> playList = getPlayList(propaArray);
+        loadResource(playList, new DownloadListener() {
+            @Override
+            public void getSingle(PlayBean bean) {
+                loadListener.onLoadSuccess(bean);
+                Log.e(TAG, "getSingle: " + bean.toString());
+            }
+
+            @Override
+            public void onFinished() {
+                d("全部处理结束... ");
+                loadListener.onLoadFinish();
             }
         });
     }
@@ -108,63 +149,6 @@ public class IntroLoader {
             playList.add(playBean);
         }
         return playList;
-    }
-
-    //从网络加载开始
-    private static void loadCompanyInfo(final String cacheData, final LoadListener loadListener) {
-        loadListener.startRequest();
-        int compId = SpUtils.getInt(SpUtils.COMPANYID);
-        OkHttpUtils.post().url(ResourceUpdate.getCompInfo).addParams("comId", compId + "").build().execute(new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                Log.d(TAG, "请求失败... " + e != null ? e.getMessage() : "NULL");
-                loadListener.requestFailed();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Log.d(TAG, "onResponse: --------------- " + response);
-                if (TextUtils.isEmpty(response)) {
-                    loadListener.requestFailed();
-                    return;
-                }
-                //如果缓存数据不为空并且与之相同，则不再处理数据
-                if (!TextUtils.isEmpty(cacheData) && TextUtils.equals(cacheData, response)) {
-                    loadListener.requestFailed();
-                    Log.d(TAG, "数据无变化，不继续处理... ");
-                    return;
-                }
-                InfoBean infoBean = new Gson().fromJson(response, InfoBean.class);
-                if (infoBean == null || infoBean.status != 1) {
-                    loadListener.requestFailed();
-                    return;
-                }
-                final List<InfoBean.Propa> propaArray = infoBean.getPropaArray();
-                if (propaArray == null || propaArray.size() <= 0) {
-                    loadListener.requestFailed();
-                    return;
-                }
-
-                SpUtils.saveStr(SpUtils.COMPANY_INFO, response);
-
-                loadListener.requestComplete();
-                loadListener.loadBefore();
-                final List<PlayBean> playList = getPlayList(infoBean.getPropaArray());
-                loadResource(playList, new DownloadListener() {
-                    @Override
-                    public void getSingle(PlayBean bean) {
-                        loadListener.loadSingle(bean);
-                        Log.e(TAG, "getSingle: " + bean.toString());
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        d("全部处理结束... ");
-                        loadListener.loadFinish();
-                    }
-                });
-            }
-        });
     }
 
     public interface DownloadListener {
@@ -241,7 +225,7 @@ public class IntroLoader {
         });
     }
 
-    private static void d(String log){
+    private static void d(String log) {
         Log.d(TAG, log);
     }
 

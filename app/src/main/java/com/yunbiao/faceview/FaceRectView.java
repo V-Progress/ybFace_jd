@@ -21,7 +21,7 @@ public class FaceRectView extends View {
     private Paint paint;
 
     // 默认人脸框厚度
-    private static final int DEFAULT_FACE_RECT_THICKNESS = 6;
+    private static final int DEFAULT_FACE_RECT_THICKNESS = 3;
 
     public FaceRectView(Context context) {
         this(context, null);

@@ -84,7 +84,7 @@ public class SplashActivity extends BaseActivity {
                                 int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
                                 if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
                                     Log.e(TAG, "激活成功或已激活");
-                                    startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+                                    jump();
                                 } else {
                                     Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
                                 }
@@ -101,6 +101,13 @@ public class SplashActivity extends BaseActivity {
             }
         });
         ybPermission.checkPermission(this,PERMISSONS);
+    }
+
+    private void jump(){
+        // TODO: 2019/12/21 设置IP地址
+        Constants.checkSetIp();
+
+        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
     }
 
     private void transferDBData(final Runnable runnable){

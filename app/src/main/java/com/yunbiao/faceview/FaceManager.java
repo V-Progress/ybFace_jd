@@ -29,7 +29,10 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +42,7 @@ public class FaceManager {
     private static FaceManager faceManager = new FaceManager();
     private FaceEngine compareEngin;
     private List<FaceRegisterInfo> faceRegisterInfos = new ArrayList<>();
+    private int MAX_FACE_NUM = 1000;
 
     private String FEATURES_PATH;
 
@@ -88,6 +92,14 @@ public class FaceManager {
         return faceRegisterInfos.size();
     }
 
+    public int getMAX_FACE_NUM() {
+        return MAX_FACE_NUM;
+    }
+
+    public void setMAX_FACE_NUM(int MAX_FACE_NUM) {
+        this.MAX_FACE_NUM = MAX_FACE_NUM;
+    }
+
     public void reloadRegisterList() {
         long start = System.currentTimeMillis();
 
@@ -102,11 +114,23 @@ public class FaceManager {
         if (featureFiles == null || featureFiles.length == 0) {
             return;
         }
-        int allFeatures = featureFiles.length;
+
+        List<File> fileList = Arrays.asList(featureFiles);
+        if (fileList.size() >= MAX_FACE_NUM) {
+            //清除逻辑(先把数据翻转，然后挨个删除，直到小鱼当前设置的最大值)
+            Collections.reverse(fileList);
+            //如果特征文件数量大于最大数量
+            Iterator<File> iterator = fileList.iterator();
+            while (fileList.size() >= MAX_FACE_NUM) {
+                iterator.remove();
+            }
+        }
+
+        int allFeatures = fileList.size();
         for (int i = 0; i < allFeatures; i++) {
             FileInputStream fis = null;
             try {
-                File featureFile = featureFiles[i];
+                File featureFile = fileList.get(i);
                 fis = new FileInputStream(featureFile);
                 byte[] feature = new byte[FaceFeature.FEATURE_SIZE];
                 fis.read(feature);
@@ -138,14 +162,18 @@ public class FaceManager {
         }
     }
 
-    public boolean checkFace(String faceId){
+    public boolean checkFace(String faceId) {
         File featureFile = new File(FEATURES_PATH + faceId);
         return featureFile != null && featureFile.exists();
     }
 
     public boolean addUser(final String userId, String imageFile) {
+        if (faceRegisterInfos.size() >= MAX_FACE_NUM) {
+            return false;
+        }
+
         File file = new File(imageFile);
-        if(file == null || !file.exists()){
+        if (file == null || !file.exists()) {
             return false;
         }
         Bitmap bitmap = BitmapFactory.decodeFile(imageFile);

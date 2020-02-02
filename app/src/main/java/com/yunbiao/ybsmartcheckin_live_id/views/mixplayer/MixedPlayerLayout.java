@@ -72,15 +72,6 @@ public class MixedPlayerLayout extends FrameLayout {
         }
     }
 
-    public void setDatas(String[] dataArray) {
-        if (dataArray == null) {
-            setDatas((List<String>) null);
-            return;
-        }
-        List<String> strings = Arrays.asList(dataArray);
-        setDatas(strings);
-    }
-
     public void setDatas(List<String> dataPathList) {
         stop();//停止任务
         mCurrIndex = 0;//复位指针

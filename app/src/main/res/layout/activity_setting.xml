@@ -43,7 +43,66 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="设置人脸相似度阈值" />
+
+                <EditText
+                    android:textColorHint="@color/gray_low"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:maxLength="5"
+                    android:inputType="number"
+                    android:background="@drawable/line_net_edt"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/edt_similar_threshold"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:text="@string/System_Setting_save_threshold"
+                    android:textColor="#59B4CA"
+                    android:background="@drawable/shape_system_name"
+                    android:id="@+id/btn_set_similar_threshold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/cb_mirror"/>
+
+                <TextView
+                    android:textSize="20dp"
+                    android:gravity="center"
+                    android:text="最佳阈值区间：75 - 90（数值越大，误识率越低，识别速度越慢）"
+                    android:textColor="#ff0000"
+                    android:layout_marginLeft="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="开启人脸弹窗" />
+
+                <Switch
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:id="@+id/sw_face_dialog"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
@@ -182,6 +241,108 @@
                 style="@style/setting_text_child"
                 android:onClick="modifyPWD"
                 android:text="@string/act_sys_glmmxg" />
+
+            <LinearLayout
+                android:layout_gravity="center"
+                android:padding="20dp"
+                android:layout_marginTop="50dp"
+                android:orientation="vertical"
+                android:background="@drawable/shape_spinner_drop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:text="  I  P  地  址："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:digits="0123456789."
+                        android:textColorHint="@color/gray_low"
+                        android:id="@+id/edt_ip"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:text="资 源 端 口："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:maxLength="6"
+                        android:inputType="number"
+                        android:textColorHint="@color/gray_low"
+                        android:id="@+id/edt_res_port"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:text="XMPP端口："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:maxLength="6"
+                        android:inputType="number"
+                        android:textColorHint="@color/gray_low"
+                        android:id="@+id/edt_xmpp_port"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:text="项    目    名："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:digits="abcdefghijklmnopqrstuvwxyz123456789/"
+                        android:textColorHint="@color/gray_low"
+                        android:id="@+id/edt_pro_name"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_save_address"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/selector_btn_take_photo"
+                    android:text="保存"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

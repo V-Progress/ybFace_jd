@@ -1,29 +1,37 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity.fragment.data;
 
-import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.bean.PathBean;
-
 public abstract class  LoadListener {
-    public void before(){}
+    /***
+     * 开始加载
+     */
+    public void onStart(){}
 
-    public void loadCacheComplete(){}
+    /***
+     * 加载失败
+     * @param e
+     */
+    public void onFailed(Exception e){}
 
-    public void noCache(){}
+    public void onFinish(){}
 
-    public void startRequest(){}
+    /***
+     * 加载缓存
+     */
+    public void onStarLoadCache(){}
 
-    public void requestFailed(){}
+    /***
+     * 加载成功（不论是缓存还是网络）
+     * @param bean
+     */
+    public void onLoadSuccess(IntroLoader.PlayBean bean){}
 
-    public void requestComplete(){}
+    /***
+     * 结束
+     */
+    public void onLoadFinish(){}
 
-    public void loadBefore(){}
-
-    public void loadSingle(IntroLoader.PlayBean bean){}
-
-    public void loadFinish(){}
-
-
-    public void ads_start(){}
-    public void ads_loadSignle(PathBean pathBean){}
-    public void ads_loadTime(int time){}
-    public void ads_loadFinish(){}
+    /***
+     * 没有数据
+     */
+    public void onNoData(){}
 }

@@ -1,6 +1,8 @@
 package com.yunbiao.ybsmartcheckin_live_id.afinel;
 
 import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -15,12 +17,13 @@ public class Constants {
 //    public static String RESOURCE_URL = RESOURCE_HOST + ":" + RESOURCE_PORT + "/";
 
     //天津港
-    public static final String XMPP_HOST = BuildConfig.HOST;
-    public static final String XMPP_PORT = BuildConfig.XMPP_PORT;
-    public static final String RESOURCE_HOST = NetConfig.PRE + BuildConfig.HOST;
-    public static final String RESOURCE_PORT = BuildConfig.RESOURCE_PORT;
+    public static String XMPP_HOST = BuildConfig.HOST;
+    public static String XMPP_PORT = BuildConfig.XMPP_PORT;
+    public static String RESOURCE_HOST = BuildConfig.HOST;
+    public static String RESOURCE_PORT = BuildConfig.RESOURCE_PORT;
+    public static String RESOURCE_SUFFIX = BuildConfig.SUFFIX;
     //生成主地址
-    public static String RESOURCE_URL = RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + BuildConfig.SUFFIX;
+    public static String RESOURCE_URL = NetConfig.PRE +  RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
 
 
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
@@ -46,6 +49,33 @@ public class Constants {
         Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
         Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
+    }
+
+    private static final String TAG = "Constants";
+    public static void checkSetIp(){
+        String ip = SpUtils.getStr(SpUtils.IP_CACHE);
+        String resourcePort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
+        String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
+        String suffix = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
+        if(TextUtils.isEmpty(ip) || TextUtils.isEmpty(resourcePort) || TextUtils.isEmpty(xmppPort)|| TextUtils.isEmpty(suffix)){
+            Log.e(TAG, "IP地址：" + Constants.XMPP_HOST);
+            Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
+            Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
+            Log.e(TAG, "项目名：" + Constants.RESOURCE_SUFFIX);
+            Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
+        } else {
+            Constants.XMPP_HOST = ip;
+            Constants.XMPP_PORT = xmppPort;
+            Constants.RESOURCE_HOST = ip;
+            Constants.RESOURCE_PORT = resourcePort;
+            Constants.RESOURCE_URL =  Constants.NetConfig.PRE + Constants.RESOURCE_HOST + Constants.NetConfig.COLON + Constants.RESOURCE_PORT + suffix;
+
+            Log.e(TAG, "资源IP：" + Constants.RESOURCE_HOST);
+            Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
+            Log.e(TAG, "xmppIP：" + Constants.XMPP_HOST);
+            Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
+            Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
+        }
     }
 
     public interface NetConfig {

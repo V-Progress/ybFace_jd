@@ -97,7 +97,9 @@ public class SyncManager {
 
         SyncDialog.setStep(APP.getActivity().getString(R.string.sync_company_1));
         d("获取公司信息");
+        d("地址：" + ResourceUpdate.COMPANYINFO);
         d("参数：" + HeartBeatClient.getDeviceNo());
+
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
@@ -144,6 +146,8 @@ public class SyncManager {
                 Log.e("canSync", "comid-----------> " + comid);
                 Log.e("canSync", "company.getComid()-----------> " + company.getComid());
 
+                //设置闹钟
+//                AlarmManagerUtil.setAlarm(companyResponse.getCompany());
 
                 //保存部门数据
                 saveCompanyInfo(company);

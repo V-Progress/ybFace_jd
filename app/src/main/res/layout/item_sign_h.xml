@@ -5,8 +5,8 @@
     android:padding="10dp">
 
     <FrameLayout
-        android:layout_width="80dp"
-        android:layout_height="80dp">
+        android:layout_width="60dp"
+        android:layout_height="60dp">
         <ImageView
             android:scaleType="fitCenter"
             android:src="@drawable/skin_sign_list_head_background"
@@ -16,8 +16,8 @@
             android:padding="2dp"
             android:background="@mipmap/head_bg"
             android:id="@+id/iv_head_item"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_centerVertical="true" />
     </FrameLayout>
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/horizontal_item_visitor_name"
-            android:textSize="22dp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/tv_time_item"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/iv_userPhoto"
             android:textColor="@color/horizontal_item_visitor_name"
-            android:textSize="20dp" />
+            android:textSize="16dp" />
 
     </LinearLayout>
 

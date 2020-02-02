@@ -173,7 +173,7 @@ public class SplashActivity extends Activity {
             //生成数据库唯一名称
             String dbUniqueId = getDBUniqueId(company.getBindType(), company.getComid(), company.getDepId());
 
-            //初始化数据库
+            //初始化数据库y
             DaoManager.get().initDb(dbUniqueId);
 
             //同步数据库（公司、部门）

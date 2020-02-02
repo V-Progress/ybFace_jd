@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':skin_halloween', ':skin_double_eleven', ':skin_christmas_green', ':skin_christmas_red', ':skin_yuandan', 'vertical_scroll_player'

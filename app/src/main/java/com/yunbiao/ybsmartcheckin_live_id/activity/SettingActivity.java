@@ -34,10 +34,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yunbiao.faceview.CameraHelper;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
@@ -48,6 +51,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,6 +86,8 @@ public class SettingActivity extends BaseActivity {
     private Spinner spnCameraSize;
     private Switch swAlready;
     private EditText edtDelay;
+    private Switch switchFaceDialog;
+    private EditText edtSimilar;
 
     @Override
     protected int getPortraitLayout() {
@@ -102,6 +109,9 @@ public class SettingActivity extends BaseActivity {
         spnCameraSize = findViewById(R.id.spn_camera_size);
         swAlready = findViewById(R.id.sw_setting_already);
         edtDelay = findViewById(R.id.edt_delay);
+        switchFaceDialog = findViewById(R.id.sw_face_dialog);
+        edtSimilar = findViewById(R.id.edt_similar_threshold);
+
         findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -111,6 +121,8 @@ public class SettingActivity extends BaseActivity {
                 return false;
             }
         });
+
+        initSetIp();
     }
 
 
@@ -120,18 +132,22 @@ public class SettingActivity extends BaseActivity {
         edtDelay.setText(cacheDelay + "");
         edtDelay.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = edtDelay.getText().toString();
-                if(TextUtils.isEmpty(s1)){
+                if (TextUtils.isEmpty(s1)) {
                     return;
                 }
                 int delay = Integer.parseInt(s1);
-                SpUtils.saveInt(SpUtils.GPIO_DELAY,delay);
-                UIUtils.showShort(SettingActivity.this,getString(R.string.act_set_error_modify_success));
+                SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
+                UIUtils.showShort(SettingActivity.this, getString(R.string.act_set_error_modify_success));
             }
         });
 
@@ -152,24 +168,66 @@ public class SettingActivity extends BaseActivity {
         }, 0, 3, TimeUnit.SECONDS);
 
         //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back)  : getString(R.string.act_set_tip_front) ) + getString(R.string.act_set_tip_fbl)  + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
+        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
 
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(mirror);
+        cbMirror.setChecked(!mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(isChecked);
-                FaceBoxUtil.setIsMirror();
+                SpUtils.setMirror(!isChecked);
             }
         });
 
         //摄像头角度
         int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        btnAngle.setText(getString(R.string.act_set_tip_angle)+":" + angle);
+        btnAngle.setText(getString(R.string.act_set_tip_angle) + ":" + angle);
 
         setListSize();
+
+        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
+        switchFaceDialog.setChecked(faceDialog);
+        switchFaceDialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.FACE_DIALOG, isChecked);
+            }
+        });
+
+        setSimilarInfo();
+    }
+
+    private void setSimilarInfo() {
+        int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        edtSimilar.setText(similar + "");
+
+        findViewById(R.id.btn_set_similar_threshold).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String similar = edtSimilar.getText().toString();
+                int sml = Integer.parseInt(similar);
+                if (sml >= 100) {//太大
+                    UIUtils.showTitleTip(SettingActivity.this, "阈值过大将导致无法识别\n请重新设置");
+                    return;
+                } else if (sml <= 65) {//太小
+                    UIUtils.showTitleTip(SettingActivity.this, "阈值过小会导致误识率过高\n请重新设置");
+                    return;
+                } else if (sml > 90) {//比较大
+                    UIUtils.showTitleTip(SettingActivity.this, "阈值设置较大，识别速度将有所变慢\n设置成功");
+                } else if (sml < 75) {//比较小
+                    UIUtils.showTitleTip(SettingActivity.this, "阈值设置较小，误识率将增高\n设置成功");
+                } else {
+                    UIUtils.showTitleTip(SettingActivity.this, "设置成功");
+                }
+
+                SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
+                WelComeActivity activity = APP.getActivity();
+                if (activity != null) {
+                    activity.setFaceViewSimilar();
+                }
+            }
+        });
     }
 
     private void checkNet() {
@@ -178,7 +236,7 @@ public class SettingActivity extends BaseActivity {
         if (intenetConnected) {
             net = getString(R.string.act_set_tip_ytwlipdz) + getHostIp() + "】";
         } else {
-            net = "【WIFI，" + getWifiInfo(0) + getString(R.string.act_set_tip_IPAddress)+ getWifiInfo(1) + "】";
+            net = "【WIFI，" + getWifiInfo(0) + getString(R.string.act_set_tip_IPAddress) + getWifiInfo(1) + "】";
         }
         tvNetState.setText(net);
     }
@@ -233,7 +291,7 @@ public class SettingActivity extends BaseActivity {
         }
         if (type == 0) {
 
-            return getActivity().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + getActivity().getResources().getString(R.string.act_set_tip_xhqd)+ wi.getRssi();
+            return getActivity().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + getActivity().getResources().getString(R.string.act_set_tip_xhqd) + wi.getRssi();
         }
 
         //获取32位整型IP地址
@@ -491,9 +549,9 @@ public class SettingActivity extends BaseActivity {
         } else {
             anInt = CameraSettings.ROTATION_0;
         }
-        ((Button) view).setText(getString(R.string.act_set_tip_angle)+":" + anInt);
+        ((Button) view).setText(getString(R.string.act_set_tip_angle) + ":" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
-        CameraSettings.setCameraDisplayRotation(anInt);
+        EventBus.getDefault().post(new DisplayOrientationEvent());
     }
 
     public void rebootDevice(View view) {
@@ -576,7 +634,7 @@ public class SettingActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail)+":" + e != null ? e.getMessage() : "NULL");
+                                UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail) + ":" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
@@ -614,4 +672,66 @@ public class SettingActivity extends BaseActivity {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+
+    private void initSetIp() {
+        final EditText edtIp = findViewById(R.id.edt_ip);
+        final EditText edtResPort = findViewById(R.id.edt_res_port);
+        final EditText edtXmppPort = findViewById(R.id.edt_xmpp_port);
+        final EditText edtProName = findViewById(R.id.edt_pro_name);
+        Button btnSave = findViewById(R.id.btn_save_address);
+
+        final String ip = SpUtils.getStr(SpUtils.IP_CACHE);
+        final String resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
+        final String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
+        final String proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
+        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
+            edtIp.setHint(Constants.NetConfig.PRO_URL);
+            edtResPort.setHint(Constants.NetConfig.PRO_RES_PORT);
+            edtXmppPort.setHint(Constants.NetConfig.PRO_XMPP_PORT);
+            edtProName.setHint(Constants.NetConfig.PRO_SUFFIX);
+        } else {
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
+        }
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mIp = edtIp.getText().toString();
+                String mResPort = edtResPort.getText().toString();
+                String mXmppPort = edtXmppPort.getText().toString();
+                String mProName = edtProName.getText().toString();
+                if (TextUtils.isEmpty(mIp)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置IP地址");
+                    return;
+                }
+                if (TextUtils.isEmpty(mResPort)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置接口端口");
+                    return;
+                }
+                if (TextUtils.isEmpty(mXmppPort)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置XMPP端口");
+                    return;
+                }
+                if (TextUtils.isEmpty(mProName)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置项目名");
+                    return;
+                }
+
+                if (TextUtils.equals(ip, mIp) && TextUtils.equals(resPort, mResPort) && TextUtils.equals(xmppPort, mXmppPort) && TextUtils.equals(proName, mProName)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "未修改");
+                    return;
+                }
+
+                SpUtils.saveStr(SpUtils.IP_CACHE, mIp);
+                SpUtils.saveStr(SpUtils.RESOURCE_PORT_CACHE, mResPort);
+                SpUtils.saveStr(SpUtils.XMPP_PORT_CACHE, mXmppPort);
+                SpUtils.saveStr(SpUtils.PROJECT_NAME_SUFFIX, mProName);
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
+            }
+        });
+
+    }
 }

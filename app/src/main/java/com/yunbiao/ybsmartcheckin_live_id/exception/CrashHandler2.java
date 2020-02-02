@@ -57,8 +57,6 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
     public static final String SECURE_INFO = "SECURE_INFO";
     public static final String MEM_INFO = "MEM_INFO";
 
-
-
     private String mExceptionInfo;
     private String mMemInfo;
 

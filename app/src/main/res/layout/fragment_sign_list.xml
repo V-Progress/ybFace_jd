@@ -19,6 +19,7 @@
             android:layout_marginRight="10dp">
 
             <Switch
+                android:visibility="invisible"
                 android:id="@+id/switch_liveness"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,6 +70,7 @@
             android:padding="5dp">
 
             <LinearLayout
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
@@ -107,6 +109,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:layout_weight="1"
@@ -160,7 +163,6 @@
             </LinearLayout>
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_total_sign_list"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -171,7 +173,6 @@
                 android:textSize="24dp" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_total_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"

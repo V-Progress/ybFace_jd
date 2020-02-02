@@ -28,6 +28,8 @@ android {
             buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_RES_PORT"
             // 资源后缀
             buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_SUFFIX"
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
         }
         debug {
             minifyEnabled false
@@ -41,6 +43,8 @@ android {
             buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_RES_PORT"
             // 资源后缀
             buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_SUFFIX"
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
         }
     }
 
@@ -150,11 +154,13 @@ dependencies {
     // skin-support 基础控件支持
     implementation 'skin.support:skin-support-design:4.0.4'
     // skin-support-design material design 控件支持[可选]
-    implementation 'skin.support:skin-support-cardview:4.0.4'
+//    implementation 'skin.support:skin-support-cardview:4.0.4'
     // skin-support-cardview CardView 控件支持[可选]
     implementation 'skin.support:skin-support-constraint-layout:4.0.4'
+
     implementation project(path: ':vertical_scroll_player')
     // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
+
     implementation files('libs/arcsoft_face.jar')
     implementation files('libs/arcsoft_image_util.jar')
     implementation files('libs/commons-io-2.6.jar')

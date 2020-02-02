@@ -25,6 +25,7 @@ import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
@@ -108,15 +109,15 @@ public class WelComeActivity extends BaseGpioActivity {
         SignFragment signListFragment = new SignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
+        //加载广告Fragment
+        adsFragment = new AdsFragment();
+        addFragment(R.id.ll_face_main, adsFragment);
+
 //        只有竖屏情况下加载信息展示Fragment
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             InformationFragment informationFragment = new InformationFragment();
             replaceFragment(R.id.layout_h, informationFragment);
         }
-
-        //加载广告Fragment
-        adsFragment = new AdsFragment();
-        addFragment(R.id.ll_face_main, adsFragment);
     }
 
     //U口读卡器,类似于外接键盘
@@ -189,30 +190,6 @@ public class WelComeActivity extends BaseGpioActivity {
         }
     };
 
-    /*人脸识别回调，由上到下执行*//*
-    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
-        @Override
-        public void onReady() {
-            SyncManager.instance().requestCompany();
-        }
-
-        @Override
-        public void onFaceDetection(Boolean hasFace) {
-            if(hasFace){
-                onLight();
-                if(adsFragment != null){
-                    adsFragment.detectFace();
-                }
-            }
-        }
-
-        @Override
-        public void onFaceVerify(VerifyResult verifyResult) {
-            if (verifyResult != null)
-                SignManager.instance().checkSign(verifyResult);
-        }
-    };*/
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event){
         Company company = SpUtils.getCompany();
@@ -231,14 +208,11 @@ public class WelComeActivity extends BaseGpioActivity {
         ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivMainLogo);
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void update(UpdateLogoEvent event){
-//        Log.e("112233", "11111: 收到更新图标的事件" );
-//        String logoPath = event.getLogoPath();
-//        if(!TextUtils.isEmpty(logoPath)){
-//            Glide.with(getActivity()).load(logoPath).asBitmap().into(ivMainLogo);
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(DisplayOrientationEvent event){
+        Log.e(TAG, "update: 收到摄像头更新事件");
+        faceView.changeAngle();
+    }
 
     private void startXmpp() {//开启xmpp
         serviceManager = new ServiceManager(this);
@@ -294,17 +268,22 @@ public class WelComeActivity extends BaseGpioActivity {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+    public void setFaceViewSimilar(){
+        Log.e(TAG, "setFaceViewSimilar: 设置人脸识别阈值");
+        faceView.setSimilarThreshold();
+    }
+
     private void goSetting() {
-//        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-//        if (!TextUtils.isEmpty(pwd)) {
-//            inputPwd(new Runnable() {
-//                @Override
-//                public void run() {
-//                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
-//                }
-//            });
-//            return;
-//        }
+        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+        if (!TextUtils.isEmpty(pwd)) {
+            inputPwd(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+                }
+            });
+            return;
+        }
         startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
     }
 
@@ -364,13 +343,12 @@ public class WelComeActivity extends BaseGpioActivity {
     protected void onResume() {
         super.onResume();
         faceView.resume();
-//        faceView.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        faceView.pause();
+        faceView.pause();
     }
 
     @Override
