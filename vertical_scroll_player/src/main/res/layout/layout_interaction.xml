@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:paddingRight="10dp"
+    android:layout_gravity="right|center_vertical"
+    android:layout_height="340dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:scaleType="centerInside"
+        android:layout_weight="1"
+        android:id="@+id/iv_good"
+        android:src="@mipmap/button_thumbs_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="26dp"
+        android:textColor="#ffffff"
+        android:id="@+id/tv_good_num"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:scaleType="centerInside"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:id="@+id/iv_watch"
+        android:src="@mipmap/button_watch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="26dp"
+        android:textColor="#ffffff"
+        android:id="@+id/tv_watch_num"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:scaleType="centerInside"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:id="@+id/iv_share"
+        android:src="@mipmap/button_forward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
