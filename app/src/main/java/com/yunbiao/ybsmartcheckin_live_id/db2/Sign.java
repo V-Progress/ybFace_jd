@@ -48,14 +48,17 @@ public class Sign {
 
     private long visEntryId;
 
+    private float temperature;
+
     @Transient
     private byte[] imgBytes;
 
-    @Generated(hash = 664543716)
+    @Generated(hash = 1996633570)
     public Sign(Long id, String faceId, String name, String position,
             String headPath, long time, boolean isUpload, long empId, String date,
             String depart, int sex, int age, String employNum, String birthday,
-            String autograph, int comid, int type, long visEntryId) {
+            String autograph, int comid, int type, long visEntryId,
+            float temperature) {
         this.id = id;
         this.faceId = faceId;
         this.name = name;
@@ -74,12 +77,20 @@ public class Sign {
         this.comid = comid;
         this.type = type;
         this.visEntryId = visEntryId;
+        this.temperature = temperature;
     }
 
     @Generated(hash = 2025164192)
     public Sign() {
     }
 
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
 
     public int getType() {
         return type;

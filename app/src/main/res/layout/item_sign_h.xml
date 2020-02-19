@@ -27,19 +27,31 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tv_name_item"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/horizontal_item_visitor_name"
-            android:textSize="16dp" />
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_name_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:id="@+id/tv_temp_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/iv_userPhoto"
+                android:textSize="16dp" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_time_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/iv_userPhoto"
-            android:textColor="@color/horizontal_item_visitor_name"
             android:textSize="16dp" />
 
     </LinearLayout>

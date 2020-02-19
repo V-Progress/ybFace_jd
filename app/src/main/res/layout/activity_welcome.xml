@@ -50,19 +50,30 @@
                 android:textColor="@drawable/skin_main_title_text_color"
                 android:textSize="30dp" />
 
+            <TextView
+                android:drawableLeft="@mipmap/temperature_white_icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/tv_ambient_temperature_main"
+                android:layout_marginRight="10dp"
+                android:textSize="26dp"
+                android:textColor="@color/skin_color_main_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <TextClock
+                android:layout_toLeftOf="@+id/tv_ambient_temperature_main"
                 android:textColor="@color/skin_color_main_clock"
                 android:id="@+id/textClock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textSize="26dp" />
         </RelativeLayout>
 
-        <FrameLayout
+        <RelativeLayout
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_gravity="center_horizontal"
@@ -82,11 +93,61 @@
                 android:layout_height="wrap_content"/>
 
             <FrameLayout
-                android:layout_gravity="bottom"
+                android:layout_alignParentBottom="true"
                 android:id="@+id/ll_list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        </FrameLayout>
+
+            <TextView
+                android:visibility="invisible"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:textSize="28dp"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:id="@+id/tv_temp_tips_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/fl_face_range"
+                android:layout_centerInParent="true"
+                android:background="@drawable/shape_temperature_frame_background"
+                android:layout_width="400dp"
+                android:layout_height="400dp">
+
+                <View
+                    android:id="@+id/view_face_distance"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="240dp"
+                    android:layout_height="100dp"/>
+
+                <TextView
+                    android:layout_gravity="right"
+                    android:layout_margin="5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:id="@+id/tv_temperature_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="36.6℃" />
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:id="@+id/tv_range_tips_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:layout_centerInParent="true"
+                    android:background="#4D000000"
+                    android:textColor="@color/white"
+                    android:textSize="38dp"/>
+            </FrameLayout>
+
+        </RelativeLayout>
 
         <FrameLayout
             android:layout_marginLeft="10dp"

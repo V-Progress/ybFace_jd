@@ -12,7 +12,6 @@ import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.jdcn.WelComeSmallActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -77,17 +76,12 @@ public class SplashActivity extends BaseActivity {
 //                            APP.getContext().cauchException();
                             APP.getContext().initDB();
 
-                            if(Config.deviceType == Config.DEVICE_SMALL_FACE){
-                                startActivity(new Intent(SplashActivity.this, WelComeSmallActivity.class));
+                            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+                            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                                Log.e(TAG, "激活成功或已激活");
+                                jump();
                             } else {
-
-                                int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-                                if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                                    Log.e(TAG, "激活成功或已激活");
-                                    jump();
-                                } else {
-                                    Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
                             }
 
                             overridePendingTransition(0,0);

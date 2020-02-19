@@ -231,7 +231,7 @@ public class FaceHelper {
                 /*
                  * 若需要多人脸搜索，删除此行代码
                  */
-//                TrackUtil.keepMaxFace(faceInfoList);
+                TrackUtil.keepMaxFace(faceInfoList);
                 refreshTrackId(faceInfoList);
             }
             facePreviewInfoList.clear();

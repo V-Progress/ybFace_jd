@@ -1,6 +1,5 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,8 +13,6 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
-import com.jdjr.risk.face.local.user.FaceUser;
-import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
@@ -30,8 +27,8 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,9 +63,8 @@ public class SignManager {
     private static SignManager instance;
     private SignDao signDao;
     private final int UPDATE_TIME = 20;
-    private SignEventListener listener;
+    //    private SignEventListener listener;
     private String today;
-    private Activity mAct;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
@@ -105,42 +101,64 @@ public class SignManager {
         autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.MINUTES);
     }
 
+    public List<Sign> getTodaySignData() {
+        int compId = SpUtils.getInt(SpUtils.COMPANYID);
+        List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId, today);
+        Collections.reverse(signs);
+        return signs;
+    }
+
     //初始化线程
     private Runnable initRunnable = new Runnable() {
         @Override
         public void run() {
             int compId = SpUtils.getInt(SpUtils.COMPANYID);
             final List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId, today);
-            if (signs != null) {
-                for (Sign signBean : signs) {
-                    long time = signBean.getTime();
-                    String faceId = signBean.getFaceId();
-                    if (passageMap.containsKey(faceId)) {
-                        long time1 = passageMap.get(faceId);
-                        if (time > time1) {
-                            passageMap.put(faceId, time);
-                        } else {
-                            continue;
-                        }
+            if (signs == null) {
+                return;
+            }
+            for (Sign signBean : signs) {
+                String faceId = signBean.getFaceId();
+                long time = signBean.getTime();
+
+                if (passageMap.containsKey(faceId)) {
+                    long time1 = passageMap.get(faceId);
+                    if (time > time1) {
+                        passageMap.put(faceId, time);
+                    } else {
+                        continue;
                     }
+                } else {
+                    passageMap.put(faceId, time);
                 }
             }
-
-            Collections.reverse(signs);
-
-            if (listener != null) {
-                mAct.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onPrepared(signs);
-                    }
-                });
-            }
-
-            clearJDVerifyRecord();
         }
     };
 
+    //定时发送签到数据
+    private Runnable autoUploadRunnable = new Runnable() {
+        @Override
+        public void run() {
+            String currDate = dateFormat.format(new Date());
+            if (!TextUtils.equals(currDate, today)) {
+                today = currDate;
+                passageMap.clear();
+                initRunnable.run();
+            }
+
+            uploadSignRecord(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    if (aBoolean) {
+                        EventBus.getDefault().post(new UpdateSignDataEvent());
+                    }
+                    d("处理情况：" + aBoolean);
+                }
+            });
+        }
+    };
+
+    //开始上传记录
     public void uploadSignRecord(final Consumer<Boolean> callback) {
         final List<Sign> signs = DaoManager.get().querySignByUpload(false);
         if (signs == null) {
@@ -180,12 +198,13 @@ public class SignManager {
         Log.e(TAG, "uploadSignRecord: 未上传访客记录：" + visitDataBeans.size());
 
         //上传考勤数据
-        uploadSignData(signDataBeans, callback);
+        uploadSignDataList(signDataBeans, callback);
         //上传访客数据
-        uploadVisitData(visitDataBeans);
+        uploadVisitDataList(visitDataBeans);
     }
 
-    private void uploadVisitData(final List<VisitDataBean> visitDataBeans) {
+    //上传访客记录列表
+    private void uploadVisitDataList(final List<VisitDataBean> visitDataBeans) {
         if (visitDataBeans.size() > 0) {
             d("准备上传访客记录");
             int comid = SpUtils.getCompany().getComid();
@@ -249,7 +268,8 @@ public class SignManager {
         }
     }
 
-    private void uploadSignData(final List<SignDataBean> signDataBeans, final Consumer<Boolean> callback) {
+    //上传考勤记录列表
+    private void uploadSignDataList(final List<SignDataBean> signDataBeans, final Consumer<Boolean> callback) {
         if (signDataBeans.size() > 0) {
             String jsonStr = new Gson().toJson(signDataBeans);
             d(ResourceUpdate.SIGNARRAY + " --- " + jsonStr);
@@ -292,151 +312,18 @@ public class SignManager {
                         }
                     });
         }
-
     }
 
-    //定时发送签到数据
-    private Runnable autoUploadRunnable = new Runnable() {
-        @Override
-        public void run() {
-            String currDate = dateFormat.format(new Date());
-            if (!TextUtils.equals(currDate, today)) {
-                today = currDate;
-                passageMap.clear();
-                initRunnable.run();
-            }
-
-            uploadSignRecord(new Consumer<Boolean>() {
-                @Override
-                public void accept(Boolean aBoolean) throws Exception {
-                    if (aBoolean) {
-                        EventBus.getDefault().post(new UpdateSignDataEvent());
-                    }
-                    d("处理情况：" + aBoolean);
-                }
-            });
-
-            clearJDVerifyRecord();
-        }
-    };
-
-    public SignManager init(@NonNull Activity mAct, @NonNull SignEventListener signEventListener) {
-        this.mAct = mAct;
-        listener = signEventListener;
-
-        return instance();
-    }
-
-    public void checkSign(VerifyResult verifyResult) {
-        if (isBulu) {
-            makeUpSign(verifyResult.getFaceImageBytes());
-            return;
-        }
-        if (verifyResult.getResult() != VerifyResult.UNKNOWN_FACE) {
-            return;
-        }
-
-        final byte[] faceImageBytes = verifyResult.getFaceImageBytes();
-        FaceUser user = verifyResult.getUser();
-        if (user == null) {
-            return;
-        }
-        String userId = user.getUserId();
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        }
-
-        final Date currDate = new Date();
-        final Sign sign = new Sign();
-        sign.setTime(currDate.getTime());
-        sign.setFaceId(userId);
-        if (!canPass(sign)) {
-            return;
-        }
-
-        sign.setUpload(false);
-        sign.setImgBytes(faceImageBytes);
-        sign.setDate(dateFormat.format(currDate.getTime()));
-        Log.e(TAG, "checkSign:------------ " + userId);
-
-        //说明是访客
-        if (userId.startsWith("vi")) {
-            Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
-            if (visitor == null) {
-                return;
-            }
-            sign.setEmpId(visitor.getId());
-            sign.setComid(visitor.getComId());
-            sign.setName(visitor.getName());
-            sign.setDepart("访客");
-            sign.setType(-1);
-            sign.setVisEntryId(visitor.getVisEntryId());
-            sign.setAutograph("访客");
-
-            String currStart = visitor.getCurrStart();
-            String currEnd = visitor.getCurrEnd();
-
-            Log.e(TAG, "访问开始时间：" + currStart);
-            Log.e(TAG, "访问结束时间：" + currEnd);
-
-            try {
-                Date start = visitSdf.parse(currStart);
-                Date end = visitSdf.parse(currEnd);
-                //在开始时间之前或者在结束时间之后
-                if (currDate.before(start) || currDate.after(end)) {
-                    Log.e(TAG, "不在访问期内");
-                    sign.setType(-2);
-                    sign.setAutograph("不在访问期内");
-                    if (listener != null) {
-                        mAct.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onSigned(sign, getCurrentTime(currDate.getTime()));
-                            }
-                        });
-                    }
-                    return;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
-            sendVisitoRecord(sign);
-        } else {
-            User userBean = DaoManager.get().queryUserByFaceId(userId);
-            //如果在员工库中未查到
-            if (userBean == null) {
-                return;
-            }
-
-            sign.setEmployNum(userBean.getNumber());
-            sign.setEmpId(userBean.getId());
-            sign.setDepart(userBean.getDepartName());
-            sign.setName(userBean.getName());
-            sign.setAutograph(userBean.getAutograph());
-            sign.setPosition(userBean.getPosition());
-            sign.setSex(userBean.getSex());
-            sign.setComid(userBean.getCompanyId());
-            sign.setType(0);
-
-            sendSignRecord(sign);
-        }
-
-        if (listener != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
-                }
-            });
-        }
-    }
-
-    public void checkSign(String barCode){
+    /**
+     * 刷卡打卡
+     *
+     * @param barCode
+     * @return
+     */
+    public Sign checkSignForCard(String barCode) {
         User user = DaoManager.get().queryUserByCardId(barCode);
-        if(user == null){
-            return;
+        if (user == null) {
+            return null;
         }
 
         final Date currDate = new Date();
@@ -459,119 +346,122 @@ public class SignManager {
 
         sendSignRecord(sign);
 
-        if (listener != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
-                }
-            });
-        }
+        return sign;
     }
 
-    public void checkSign(CompareResult compareResult) {
-//        if (isBulu) {
-//            makeUpSign(verifyResult.getFaceImageBytes());
-//            return;
-//        }
-
+    //人脸打卡和访客打卡
+    public Sign checkSignData(CompareResult compareResult, float temperature) {
         String userId = compareResult.getUserName();
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        }
-
         final Date currDate = new Date();
         final Sign sign = new Sign();
         sign.setTime(currDate.getTime());
         sign.setFaceId(userId);
-        if (!canPass(sign)) {
-            return;
-        }
+        sign.setTemperature(temperature);
 
-        sign.setUpload(false);
+        if (canPass(sign)) {//可以打卡
+            sign.setUpload(false);
 //        sign.setImgBytes(compareResult.getImageBytes());
-        sign.setDate(dateFormat.format(currDate.getTime()));
-        Log.e(TAG, "checkSign:------------ " + userId);
+            sign.setDate(dateFormat.format(currDate.getTime()));
 
-        //说明是访客
-        if (userId.startsWith("vi")) {
-            Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
-            if (visitor == null) {
-                return;
-            }
-            sign.setEmpId(visitor.getId());
-            sign.setComid(visitor.getComId());
-            sign.setName(visitor.getName());
-            sign.setDepart("访客");
-            sign.setType(-1);
-            sign.setVisEntryId(visitor.getVisEntryId());
-            sign.setAutograph("访客");
-            sign.setHeadPath(visitor.getHeadPath());
+            if (userId.startsWith("vi")) {
+                Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
+                if (visitor != null) {
+                    sign.setEmpId(visitor.getId());
+                    sign.setComid(visitor.getComId());
+                    sign.setName(visitor.getName());
+                    sign.setDepart("访客");
+                    sign.setType(-1);
+                    sign.setVisEntryId(visitor.getVisEntryId());
+                    sign.setAutograph("访客");
+                    sign.setHeadPath(visitor.getHeadPath());
 
-            String currStart = visitor.getCurrStart();
-            String currEnd = visitor.getCurrEnd();
+                    String currStart = visitor.getCurrStart();
+                    String currEnd = visitor.getCurrEnd();
 
-            Log.e(TAG, "访问开始时间：" + currStart);
-            Log.e(TAG, "访问结束时间：" + currEnd);
+                    Log.e(TAG, "访问开始时间：" + currStart);
+                    Log.e(TAG, "访问结束时间：" + currEnd);
 
-            try {
-                Date start = visitSdf.parse(currStart);
-                Date end = visitSdf.parse(currEnd);
-                //在开始时间之前或者在结束时间之后
-                if (currDate.before(start) || currDate.after(end)) {
-                    Log.e(TAG, "不在访问期内");
-                    sign.setType(-2);
-                    sign.setAutograph("不在访问期内");
-                    if (listener != null) {
-                        mAct.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onSigned(sign, getCurrentTime(currDate.getTime()));
-                            }
-                        });
+                    try {
+                        Date start = visitSdf.parse(currStart);
+                        Date end = visitSdf.parse(currEnd);
+                        //在开始时间之前或者在结束时间之后
+                        if (currDate.before(start) || currDate.after(end)) {
+                            Log.e(TAG, "不在访问期内");
+                            sign.setType(-2);
+                            sign.setAutograph("不在访问期内");
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    return;
+
+                    notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
+                    sendVisitRecord(sign);
+
+                    return sign;
                 }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
-            sendVisitoRecord(sign);
-        } else {
-            User userBean = DaoManager.get().queryUserByFaceId(userId);
-            //如果在员工库中未查到
-            if (userBean == null) {
-                return;
-            }
-
-            sign.setEmployNum(userBean.getNumber());
-            sign.setEmpId(userBean.getId());
-            sign.setDepart(userBean.getDepartName());
-            sign.setName(userBean.getName());
-            sign.setAutograph(userBean.getAutograph());
-            sign.setPosition(userBean.getPosition());
-            sign.setSex(userBean.getSex());
-            sign.setComid(userBean.getCompanyId());
-            sign.setType(0);
-            sign.setHeadPath(userBean.getHeadPath());
-
-            sendSignRecord(sign);
-        }
-
-        if (listener != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onSigned(sign, getCurrentTime(currDate.getTime()));
+            } else {
+                User userBean = DaoManager.get().queryUserByFaceId(userId);
+                //如果在员工库中未查到
+                if (userBean == null) {
+                    return null;
                 }
-            });
+
+                sign.setEmployNum(userBean.getNumber());
+                sign.setEmpId(userBean.getId());
+                sign.setDepart(userBean.getDepartName());
+                sign.setName(userBean.getName());
+                sign.setAutograph(userBean.getAutograph());
+                sign.setPosition(userBean.getPosition());
+                sign.setSex(userBean.getSex());
+                sign.setComid(userBean.getCompanyId());
+                sign.setType(0);
+                sign.setHeadPath(userBean.getHeadPath());
+
+                sendSignRecord(sign);
+
+                return sign;
+            }
         }
+        return null;
     }
 
+    public void uploadTemperException(Bitmap bitmap, float temperatureValue, String entryId) {
+        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+
+        File file = saveBitmap(System.currentTimeMillis(), bitmap);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("comId", SpUtils.getCompany().getComid() + "");
+        params.put("temper", temperatureValue + "");
+        if (!TextUtils.isEmpty(entryId)) {
+            params.put("entryId", entryId);
+        }
+        Log.e(TAG, "上传温度");
+        Log.e(TAG, "地址：" + url);
+        Log.e(TAG, "参数: " + params.toString());
+        OkHttpUtils.post()
+                .url(url)
+                .params(params)
+                .addFile("heads", file.getName(), file)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: 上传成功：" + response);
+                    }
+                });
+    }
+
+    //通知被访人
     private void notifyInterviewed(long visitorId, long visEntryId) {
         String url = ResourceUpdate.SEND_VIS_ENTRY;
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("visitorId", String.valueOf(visitorId));
         params.put("visEntryId", String.valueOf(visEntryId));
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
@@ -596,7 +486,8 @@ public class SignManager {
                 });
     }
 
-    private void sendVisitoRecord(final Sign signBean) {
+    //上送单条访客记录
+    private void sendVisitRecord(final Sign signBean) {
         Map<String, String> map = new HashMap<>();
         map.put("deviceId", HeartBeatClient.getDeviceNo());
         map.put("comId", "" + signBean.getComid());
@@ -633,11 +524,13 @@ public class SignManager {
                 });
     }
 
+    //上送单条考勤记录
     private void sendSignRecord(final Sign signBean) {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
         map.put("deviceId", HeartBeatClient.getDeviceNo());
+        map.put("temper", signBean.getTemperature() + "");
         d("上传考勤记录");
         d("地址：" + ResourceUpdate.VISITOLOG);
         d("参数：" + map.toString());
@@ -667,6 +560,7 @@ public class SignManager {
         });
     }
 
+    //判断是否可打卡
     private boolean canPass(Sign signBean) {
         String faceId = signBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
@@ -683,54 +577,7 @@ public class SignManager {
         return isCanPass;
     }
 
-    class SignDataBean {
-        String entryid;
-        long signTime;
-        Sign sign;
-    }
-
-    class VisitDataBean {
-        String visitorId;
-        long createTime;
-        String headPath;
-        Sign sign;
-    }
-
-    private int getCurrentTime(long currTime) {//得到现在的时间与获取到的上下班时间对比
-        Company company = SpUtils.getCompany();
-        String gotime = "09:00";
-        String downTime = "18:00";
-        if (company != null) {
-            if (!TextUtils.isEmpty(company.getGotime()))
-                gotime = company.getGotime();
-            if (!TextUtils.isEmpty(company.getDowntime()))
-                downTime = company.getDowntime();
-        }
-
-        try {
-            Date hourDate = typeSdf.parse(typeSdf.format(currTime));//现在的时间
-            Date dataMorn = typeSdf.parse(gotime);//上班时间
-            Date dataNoon = typeSdf.parse(downTime);//下班时间
-
-            if (hourDate.getTime() < dataMorn.getTime() + 1000 * 60 * 30) {//现在的时间小于上班时间+半个小时，就返回type1
-                return 1;
-            } else if (hourDate.getTime() >= dataMorn.getTime() + 1000 * 60 * 30 && hourDate.getTime() < dataNoon.getTime()) {//其他时间，就返回type0
-                return 0;
-            } else if (hourDate.getTime() > dataNoon.getTime()) {//现在的时间大于下班时间，就返回type2
-                return 2;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private void d(@NonNull String msg) {
-        if (isDebug) {
-            Log.d(TAG, msg);
-        }
-    }
-
+    //*************************************************************************************************8
     public boolean isBuluState() {
         return isBulu;
     }
@@ -770,14 +617,14 @@ public class SignManager {
                 signBean.setComid(SpUtils.getInt(SpUtils.COMPANYID));
                 Log.e(TAG, "run: -------------- " + signBean.toString());
 
-                if (listener != null) {
+                /*if (listener != null) {
                     mAct.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             listener.onMakeUped(signBean, true);
                         }
                     });
-                }
+                }*/
 
                 int companyid = SpUtils.getInt(SpUtils.COMPANYID);
                 final Map<String, String> map = new HashMap<>();
@@ -819,21 +666,9 @@ public class SignManager {
         });
     }
 
-    /**
-     * 保存bitmap到本地
-     *
-     * @return
-     */
-    public File saveBitmap(long time, byte[] mBitmapByteArry) {
-        if(mBitmapByteArry == null){
-            return null;
-        }
-        long start = System.currentTimeMillis();
+    public File saveBitmap(long time, Bitmap bitmap) {
         File filePic;
         try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            final Bitmap image = BitmapFactory.decodeByteArray(mBitmapByteArry, 0, mBitmapByteArry.length, options);
-
             //格式化时间
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String today = sdf.format(time);
@@ -845,44 +680,49 @@ public class SignManager {
                 filePic.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(filePic);
-            image.compress(Bitmap.CompressFormat.JPEG, Config.getCompressRatio(), fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, Config.getCompressRatio(), fos);
             fos.flush();
             fos.close();
+
+            return filePic;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-        long end = System.currentTimeMillis();
-        Log.e("Compress", "saveBitmap: 压缩耗时----- " + (end - start));
-        return filePic;
     }
 
-    /*定时清除京东SDK验证记录*/
-    private void clearJDVerifyRecord() {
-        int count = 0;
-        int failed = 0;
-        File dirFile = new File(APP.getContext().getDir("VerifyRecord", Context.MODE_PRIVATE).getAbsolutePath());
-        File[] files = dirFile.listFiles();
-        for (File file : files) {
-            if (file != null) {
-                if (file.delete()) {
-                    count++;
-                } else {
-                    failed++;
-                }
-            } else {
-                failed++;
-            }
+    /**
+     * 保存bitmap到本地
+     *
+     * @return
+     */
+    public File saveBitmap(long time, byte[] mBitmapByteArry) {
+        if (mBitmapByteArry == null) {
+            return null;
         }
-        Log.e(TAG, "总共清除记录：" + count + "条" + "，失败：" + failed + "条");
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        final Bitmap image = BitmapFactory.decodeByteArray(mBitmapByteArry, 0, mBitmapByteArry.length, options);
+
+        return saveBitmap(time, image);
     }
 
-    public interface SignEventListener {
-        void onPrepared(List<Sign> mList);
+    class SignDataBean {
+        String entryid;
+        long signTime;
+        Sign sign;
+    }
 
-        void onSigned(Sign sign, int signType);
+    class VisitDataBean {
+        String visitorId;
+        long createTime;
+        String headPath;
+        Sign sign;
+    }
 
-        void onMakeUped(Sign sign, boolean makeUpSuccess);
+    private void d(@NonNull String msg) {
+        if (isDebug) {
+            Log.d(TAG, msg);
+        }
     }
 
 }

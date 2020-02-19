@@ -64,6 +64,11 @@ public class SpUtils {
     public static final String FACE_DIALOG = "faceDialog";
     public static final String SIMILAR_THRESHOLD = "similarThreshold";
 
+    //温度检测开关
+    public static final String TEMPERATURE_ENABLED = "temperatureEnabled";
+    public static final String TEMP_CORRECT_VALUE = "tempCorrectValue";//测温矫正值
+    public static final String AMB_CORRECT_VALUE = "ambCorrectValue";//环境温度校正值
+
     public static void init() {
         getCompany();
     }

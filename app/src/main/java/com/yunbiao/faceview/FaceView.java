@@ -1,11 +1,10 @@
 package com.yunbiao.faceview;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -14,7 +13,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -32,12 +30,7 @@ import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.VersionInfo;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
-import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
-import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -206,6 +199,83 @@ public class FaceView extends FrameLayout {
         cameraHelper.start();
     }
 
+    private List<FacePreviewInfo> infoList;
+    private byte[] mCurrBytes;
+
+    public Bitmap getHeadImgByte(int trackId) {
+        if (mCurrBytes != null) {
+            try {
+                YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
+                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                if (infoList != null) {
+                    FaceInfo faceInfo = null;
+                    for (FacePreviewInfo facePreviewInfo : infoList) {
+                        if (facePreviewInfo.getTrackId() == trackId) {
+                            faceInfo = facePreviewInfo.getFaceInfo();
+                            break;
+                        }
+                    }
+
+                    if (faceInfo != null) {
+                        Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
+                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left
+                                , bestRect.top
+                                , bestRect.right - bestRect.left
+                                , bestRect.bottom - bestRect.top);
+
+                        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+                        if (bitmap != null && angle != 0) {
+                            Bitmap bitmap1 = adjustPhotoRotation1(bitmap, angle);
+                            return bitmap1;
+                        }
+                        return bitmap;
+                    }
+                }
+                stream.close();
+                return bmp;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private Bitmap adjustPhotoRotation1(Bitmap bm, final int orientationDegree) {
+        Matrix m = new Matrix();
+        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+        try {
+            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+            return bm1;
+        } catch (OutOfMemoryError ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean checkFaceDistance(Rect faceRect, int distance) {
+        int faceWidth = faceRect.right - faceRect.left;
+        Log.e(TAG, "checkFaceDistance: 脸宽：" + faceWidth + "---框宽：" + distance);
+        return faceWidth < distance;
+    }
+
+    private Rect mAreaRect = new Rect();
+    public boolean checkFaceInFrame(Rect faceRect, View areaView,RectCallback rectCallback) {
+        areaView.getGlobalVisibleRect(mAreaRect);
+        mAreaRect.left += 50;
+        mAreaRect.right += 50;
+        mAreaRect.top += 50;
+        mAreaRect.bottom += 50;
+        Rect rect = drawHelper.adjustRect(faceRect);
+        rectCallback.onAreaRect(mAreaRect,rect);
+        return mAreaRect.contains(rect);
+    }
+
+    public interface RectCallback{
+        void onAreaRect(Rect mAreaRect,Rect mFaceRect);
+    }
+
     private CameraListener cameraListener = new CameraListener() {
         @Override
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
@@ -256,7 +326,13 @@ public class FaceView extends FrameLayout {
             clearLeftFace(facePreviewInfoList);
 
             if (callback != null) {
-                callback.onFaceDetection(facePreviewInfoList != null && facePreviewInfoList.size() > 0, facePreviewInfoList);
+                boolean hasFace = facePreviewInfoList != null && facePreviewInfoList.size() > 0;
+                callback.onFaceDetection(hasFace, facePreviewInfoList);
+
+                boolean canNext = callback.onFaceDetection(hasFace, hasFace ? facePreviewInfoList.get(0) : null);
+                if (!canNext) {
+                    return;
+                }
             }
 
             if (facePreviewInfoList != null && facePreviewInfoList.size() > 0 && previewSize != null) {
@@ -283,7 +359,6 @@ public class FaceView extends FrameLayout {
                             || status == RequestFeatureStatus.TO_RETRY) {
                         requestFeatureStatusMap.put(facePreviewInfoList.get(i).getTrackId(), RequestFeatureStatus.SEARCHING);
                         faceHelper.requestFaceFeature(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId());
-//                            Log.i(TAG, "onPreview: fr start = " + System.currentTimeMillis() + " trackId = " + facePreviewInfoList.get(i).getTrackedFaceCount());
                     }
                 }
             }
@@ -450,8 +525,6 @@ public class FaceView extends FrameLayout {
         this.callback = callback;
     }
 
-    private List<FacePreviewInfo> infoList;
-    private byte[] mCurrBytes;
 
     public Bitmap takePicture() {
         if (mCurrBytes != null) {
@@ -494,6 +567,8 @@ public class FaceView extends FrameLayout {
         void onReady();
 
         void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList);
+
+        boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo);
 
         void onFaceVerify(CompareResult faceAuth);
     }
@@ -642,11 +717,21 @@ public class FaceView extends FrameLayout {
                         if (compareResult == null || compareResult.getUserName() == null) {
                             requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
                             faceHelper.setName(requestId, "VISITOR " + requestId);
+                            //回调识别失败的结果，说明是陌生人
+                            if (callback != null) {
+                                CompareResult cr = new CompareResult("", -1);
+                                cr.setTrackId(requestId);
+                                callback.onFaceVerify(cr);
+                            }
                             return;
                         }
                         Log.e(TAG, "人脸对比：" + requestId + " --- " + compareResult.getTrackId() + " --- " + compareResult.getUserName() + " --- " + compareResult.getSimilar());
 
                         if (compareResult.getSimilar() > SIMILAR_THRESHOLD) {
+                            if (callback != null) {
+                                callback.onFaceVerify(compareResult);
+                            }
+
                             boolean isAdded = false;
                             if (compareResultList == null) {
                                 requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
@@ -679,12 +764,13 @@ public class FaceView extends FrameLayout {
                                 userName = user.getName();
                             }*/
                             faceHelper.setName(requestId, /*compareResult.getUserName()*/"ID: " + userName);
-
-                            if (callback != null) {
-                                callback.onFaceVerify(compareResult);
-                            }
-
                         } else {
+                            //回调识别失败的结果，说明是陌生人
+                            if (callback != null) {
+                                CompareResult cr = new CompareResult("", -1);
+                                cr.setTrackId(requestId);
+                                callback.onFaceVerify(cr);
+                            }
                             faceHelper.setName(requestId, "未注册");
                             retryRecognizeDelayed(requestId);
                         }
@@ -692,6 +778,12 @@ public class FaceView extends FrameLayout {
 
                     @Override
                     public void onError(Throwable e) {
+                        //回调识别失败的结果，说明是陌生人
+                        if (callback != null) {
+                            CompareResult cr = new CompareResult("", -1);
+                            cr.setTrackId(requestId);
+                            callback.onFaceVerify(cr);
+                        }
                         faceHelper.setName(requestId, "未注册");
                         retryRecognizeDelayed(requestId);
                     }

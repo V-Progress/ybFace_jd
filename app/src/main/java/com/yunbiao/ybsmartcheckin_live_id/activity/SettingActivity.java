@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -22,19 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yunbiao.faceview.CameraHelper;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -45,7 +41,6 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FaceBoxUtil;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -78,16 +73,6 @@ import okhttp3.Call;
 
 public class SettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
-    private TextView tvNetState;
-    private TextView tvCpuTemper;
-    private TextView tvCamera;
-    private CheckBox cbMirror;
-    private Button btnAngle;
-    private Spinner spnCameraSize;
-    private Switch swAlready;
-    private EditText edtDelay;
-    private Switch switchFaceDialog;
-    private EditText edtSimilar;
 
     @Override
     protected int getPortraitLayout() {
@@ -101,17 +86,6 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvNetState = findViewById(R.id.tv_wifi_state);
-        tvCpuTemper = findViewById(R.id.tv_cpu_temper);
-        tvCamera = findViewById(R.id.tv_camera);
-        cbMirror = findViewById(R.id.cb_mirror);
-        btnAngle = findViewById(R.id.btn_setAngle);
-        spnCameraSize = findViewById(R.id.spn_camera_size);
-        swAlready = findViewById(R.id.sw_setting_already);
-        edtDelay = findViewById(R.id.edt_delay);
-        switchFaceDialog = findViewById(R.id.sw_face_dialog);
-        edtSimilar = findViewById(R.id.edt_similar_threshold);
-
         findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -121,13 +95,156 @@ public class SettingActivity extends BaseActivity {
                 return false;
             }
         });
-
-        initSetIp();
     }
 
 
     @Override
     protected void initData() {
+        initSetIp();
+
+        startUpdateCpuTemperature();
+
+        initRelayDelay();
+
+        initNetInfo();
+
+        initFaceRectMirrorSetting();
+
+        initCameraSizeSetting();
+
+        initSimilarSetting();
+
+        initTemperatureSetting();
+
+        initFaceVipDialogSetting();
+
+        initCameraSetting();
+    }
+
+    //初始化IP设置
+    private void initSetIp() {
+        final EditText edtIp = findViewById(R.id.edt_ip);
+        final EditText edtResPort = findViewById(R.id.edt_res_port);
+        final EditText edtXmppPort = findViewById(R.id.edt_xmpp_port);
+        final EditText edtProName = findViewById(R.id.edt_pro_name);
+        Button btnSave = findViewById(R.id.btn_save_address);
+
+        final String ip = SpUtils.getStr(SpUtils.IP_CACHE);
+        final String resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
+        final String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
+        final String proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
+        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
+            edtIp.setHint(Constants.NetConfig.PRO_URL);
+            edtResPort.setHint(Constants.NetConfig.PRO_RES_PORT);
+            edtXmppPort.setHint(Constants.NetConfig.PRO_XMPP_PORT);
+            edtProName.setHint(Constants.NetConfig.PRO_SUFFIX);
+        } else {
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
+        }
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mIp = edtIp.getText().toString();
+                String mResPort = edtResPort.getText().toString();
+                String mXmppPort = edtXmppPort.getText().toString();
+                String mProName = edtProName.getText().toString();
+                if (TextUtils.isEmpty(mIp)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置IP地址");
+                    return;
+                }
+                if (TextUtils.isEmpty(mResPort)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置接口端口");
+                    return;
+                }
+                if (TextUtils.isEmpty(mXmppPort)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置XMPP端口");
+                    return;
+                }
+                if (TextUtils.isEmpty(mProName)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "请设置项目名");
+                    return;
+                }
+
+                if (TextUtils.equals(ip, mIp) && TextUtils.equals(resPort, mResPort) && TextUtils.equals(xmppPort, mXmppPort) && TextUtils.equals(proName, mProName)) {
+                    UIUtils.showTitleTip(SettingActivity.this, "未修改");
+                    return;
+                }
+
+                SpUtils.saveStr(SpUtils.IP_CACHE, mIp);
+                SpUtils.saveStr(SpUtils.RESOURCE_PORT_CACHE, mResPort);
+                SpUtils.saveStr(SpUtils.XMPP_PORT_CACHE, mXmppPort);
+                SpUtils.saveStr(SpUtils.PROJECT_NAME_SUFFIX, mProName);
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
+            }
+        });
+    }
+
+    //初始化人脸弹窗开关
+    private void initFaceVipDialogSetting(){
+        Switch switchFaceDialog = findViewById(R.id.sw_face_dialog);
+        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
+        switchFaceDialog.setChecked(faceDialog);
+        switchFaceDialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.FACE_DIALOG, isChecked);
+            }
+        });
+
+    }
+
+    //初始化摄像头设置
+    private void initCameraSetting(){
+        TextView tvCamera = findViewById(R.id.tv_camera);
+        //摄像头模式
+        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
+        //摄像头角度
+        Button btnAngle = findViewById(R.id.btn_setAngle);
+        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        btnAngle.setText(getString(R.string.act_set_tip_angle) + ":" + angle);
+    }
+
+    //初始化人脸框镜像设置
+    private void initFaceRectMirrorSetting(){
+        CheckBox cbMirror = findViewById(R.id.cb_mirror);
+        //人脸框镜像
+        final boolean mirror = SpUtils.isMirror();
+        cbMirror.setChecked(!mirror);
+        cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.setMirror(!isChecked);
+            }
+        });
+
+    }
+
+    //开始自动更新CPU温度
+    private void startUpdateCpuTemperature(){
+        final TextView tvCpuTemper = findViewById(R.id.tv_cpu_temper);
+        //获取CPU温度
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                final String s = CpuUtils.getCpuTemperatureFinder() + "℃";
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvCpuTemper.setText(s);
+                    }
+                });
+            }
+        }, 0, 3, TimeUnit.SECONDS);
+
+    }
+
+    //初始化继电器设置
+    private void initRelayDelay() {
+        final EditText edtDelay = findViewById(R.id.edt_delay);
         int cacheDelay = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
         edtDelay.setText(cacheDelay + "");
         edtDelay.addTextChangedListener(new TextWatcher() {
@@ -150,55 +267,56 @@ public class SettingActivity extends BaseActivity {
                 UIUtils.showShort(SettingActivity.this, getString(R.string.act_set_error_modify_success));
             }
         });
-
-        checkNet();
-
-        //获取CPU温度
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                final String s = CpuUtils.getCpuTemperatureFinder() + "℃";
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCpuTemper.setText(s);
-                    }
-                });
-            }
-        }, 0, 3, TimeUnit.SECONDS);
-
-        //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
-
-        //人脸框镜像
-        final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(!mirror);
-        cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(!isChecked);
-            }
-        });
-
-        //摄像头角度
-        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        btnAngle.setText(getString(R.string.act_set_tip_angle) + ":" + angle);
-
-        setListSize();
-
-        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
-        switchFaceDialog.setChecked(faceDialog);
-        switchFaceDialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.FACE_DIALOG, isChecked);
-            }
-        });
-
-        setSimilarInfo();
     }
 
-    private void setSimilarInfo() {
+    //初始化温度检测模块的设置
+    private void initTemperatureSetting() {
+        Switch swTemperature = findViewById(R.id.sw_temperature_setting);
+        boolean enabled = SpUtils.getBoolean(SpUtils.TEMPERATURE_ENABLED, true);
+        swTemperature.setChecked(enabled);
+
+        swTemperature.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.TEMPERATURE_ENABLED, isChecked);
+            }
+        });
+
+        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);
+        final EditText edtAmbCorr = findViewById(R.id.edt_ambient_correct_setting);
+        edtAmbCorr.setHint(ambCorrValue + "");
+
+        Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f);
+        final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
+        edtTempCorr.setHint(tempCorrValue + "");
+
+        Button btnSave = findViewById(R.id.btn_save_temp_setting);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ambCorrInput = edtAmbCorr.getText().toString();
+                if (TextUtils.isEmpty(ambCorrInput)) {
+                    edtAmbCorr.setText(ambCorrValue + "");
+                }
+
+                String tempCorrInput = edtTempCorr.getText().toString();
+                if (TextUtils.isEmpty(tempCorrInput)) {
+                    edtTempCorr.setText(tempCorrInput + "");
+                }
+
+                ambCorrInput = edtAmbCorr.getText().toString();
+                tempCorrInput = edtTempCorr.getText().toString();
+
+                SpUtils.saveFloat(SpUtils.AMB_CORRECT_VALUE, Float.parseFloat(ambCorrInput));
+                SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, Float.parseFloat(tempCorrInput));
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
+            }
+        });
+    }
+
+    //初始化相似度阈值设置
+    private void initSimilarSetting() {
+        final EditText edtSimilar = findViewById(R.id.edt_similar_threshold);
         int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
         edtSimilar.setText(similar + "");
 
@@ -230,9 +348,11 @@ public class SettingActivity extends BaseActivity {
         });
     }
 
-    private void checkNet() {
+    //初始化网络信息
+    private void initNetInfo() {
+        TextView tvNetState = findViewById(R.id.tv_wifi_state);
         String net = "";
-        boolean intenetConnected = isIntenetConnected(this);
+        boolean intenetConnected = isInternetConnected(this);
         if (intenetConnected) {
             net = getString(R.string.act_set_tip_ytwlipdz) + getHostIp() + "】";
         } else {
@@ -241,7 +361,131 @@ public class SettingActivity extends BaseActivity {
         tvNetState.setText(net);
     }
 
-    private static boolean isIntenetConnected(Context context) {
+    //初始化摄像头尺寸设置
+    private void initCameraSizeSetting() {
+        List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
+        if (supportSizeList == null) {
+            return;
+        }
+        Collections.sort(supportSizeList, new Comparator<Camera.Size>() {
+            @Override
+            public int compare(Camera.Size o1, Camera.Size o2) {
+                if (o1.width > o2.width) {
+                    return -1;
+                }
+
+                if (o1.width == o2.width) {
+                    if (o1.height > o2.height) {
+                        return -1;
+                    }
+                    return 0;
+                }
+                return 1;
+            }
+        });
+
+
+        final List<SizeBean> sizeBeanList = new ArrayList<>();
+        for (Camera.Size size : supportSizeList) {
+            SizeBean sizeBean = new SizeBean();
+            sizeBean.width = size.width;
+            sizeBean.height = size.height;
+            float i = (float) size.width / (float) size.height;
+
+            if (i < 1.6) {
+                if (i > 1.3) {
+                    sizeBean.desc = "（4 : 3）";
+                } else {
+                    sizeBean.desc = "（5 : 4）";
+                }
+            } else {
+                sizeBean.desc = "（16 : 9）";
+            }
+
+            if (sizeBean.width == 1280 && sizeBean.height == 720) {
+                sizeBean.desc += getString(R.string.act_set_tip_zj);
+            } else if (sizeBean.width == 1920 && sizeBean.height == 1080) {
+                sizeBean.desc += getString(R.string.act_set_tip_zd);
+            }
+            sizeBeanList.add(sizeBean);
+        }
+
+        int cameraWidth = CameraSettings.getCameraWidth();
+        int cameraHeight = CameraSettings.getCameraHeight();
+
+        int index = 0;
+        for (int i = 0; i < sizeBeanList.size(); i++) {
+            SizeBean sizeBean = sizeBeanList.get(i);
+            if (cameraWidth == sizeBean.width && cameraHeight == sizeBean.height) {
+                index = i;
+            }
+        }
+
+        Spinner spnCameraSize = findViewById(R.id.spn_camera_size);
+        spnCameraSize.setAdapter(new SizeAdapter(sizeBeanList));
+        Drawable drawable = getResources().getDrawable(R.drawable.shape_spinner_drop);
+        spnCameraSize.setPopupBackgroundDrawable(drawable);
+        spnCameraSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                SizeBean sizeBean = sizeBeanList.get(position);
+                CameraSettings.setCameraPreviewWidth(sizeBean.width);
+                CameraSettings.setCameraPreviewHeight(sizeBean.height);
+                SpUtils.saveInt(SpUtils.CAMERA_WIDTH, sizeBean.width);
+                SpUtils.saveInt(SpUtils.CAMERA_HEIGHT, sizeBean.height);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spnCameraSize.setSelection(index);
+    }
+
+    public void modifyPWD(View view) {
+        setPwd();
+    }
+
+    public void checkUpgrade(View view) {
+        UpdateVersionControl.getInstance().checkUpdate(this);
+    }
+
+    public void setAngle(final View view) {
+        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        if (anInt == CameraSettings.ROTATION_0) {
+            anInt = CameraSettings.ROTATION_90;
+        } else if (anInt == CameraSettings.ROTATION_90) {
+            anInt = CameraSettings.ROTATION_180;
+        } else if (anInt == CameraSettings.ROTATION_180) {
+            anInt = CameraSettings.ROTATION_270;
+        } else {
+            anInt = CameraSettings.ROTATION_0;
+        }
+        ((Button) view).setText(getString(R.string.act_set_tip_angle) + ":" + anInt);
+        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
+        EventBus.getDefault().post(new DisplayOrientationEvent());
+    }
+
+    public void rebootDevice(View view) {
+        showAlert(getString(R.string.act_set_tip_sbjcqsfjx), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
+                progressDialog.setTitle(getString(R.string.act_set_tip_reStart));
+                progressDialog.setMessage(getString(R.string.act_set_tip_3shjcqsb));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                UIUtils.restart.start();
+            }
+        }, null, null);
+    }
+
+    /**
+     * ====功能区==================================================================================================
+     */
+
+    private static boolean isInternetConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mInternetNetWorkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
@@ -278,7 +522,7 @@ public class SettingActivity extends BaseActivity {
         return hostIp;
     }
 
-    public static String getWifiInfo(int type) {
+    private static String getWifiInfo(int type) {
         WifiManager wifiManager = (WifiManager) APP.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             return null;
@@ -323,7 +567,7 @@ public class SettingActivity extends BaseActivity {
      * @param object
      * @return
      */
-    public static boolean isNullObject(Object object) {
+    private static boolean isNullObject(Object object) {
 
         if (object == null) {
             return true;
@@ -332,7 +576,7 @@ public class SettingActivity extends BaseActivity {
         return false;
     }
 
-    public static class CpuUtils {
+    private static class CpuUtils {
         private CpuUtils() {
             //no instance
         }
@@ -405,86 +649,6 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
-    private void setListSize() {
-        List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
-        if (supportSizeList == null) {
-            return;
-        }
-        Collections.sort(supportSizeList, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size o1, Camera.Size o2) {
-                if (o1.width > o2.width) {
-                    return -1;
-                }
-
-                if (o1.width == o2.width) {
-                    if (o1.height > o2.height) {
-                        return -1;
-                    }
-                    return 0;
-                }
-                return 1;
-            }
-        });
-
-
-        final List<SizeBean> sizeBeanList = new ArrayList<>();
-        for (Camera.Size size : supportSizeList) {
-            SizeBean sizeBean = new SizeBean();
-            sizeBean.width = size.width;
-            sizeBean.height = size.height;
-            float i = (float) size.width / (float) size.height;
-
-            if (i < 1.6) {
-                if (i > 1.3) {
-                    sizeBean.desc = "（4 : 3）";
-                } else {
-                    sizeBean.desc = "（5 : 4）";
-                }
-            } else {
-                sizeBean.desc = "（16 : 9）";
-            }
-
-            if (sizeBean.width == 1280 && sizeBean.height == 720) {
-                sizeBean.desc += getString(R.string.act_set_tip_zj);
-            } else if (sizeBean.width == 1920 && sizeBean.height == 1080) {
-                sizeBean.desc += getString(R.string.act_set_tip_zd);
-            }
-            sizeBeanList.add(sizeBean);
-        }
-
-        int cameraWidth = CameraSettings.getCameraWidth();
-        int cameraHeight = CameraSettings.getCameraHeight();
-
-        int index = 0;
-        for (int i = 0; i < sizeBeanList.size(); i++) {
-            SizeBean sizeBean = sizeBeanList.get(i);
-            if (cameraWidth == sizeBean.width && cameraHeight == sizeBean.height) {
-                index = i;
-            }
-        }
-
-        spnCameraSize.setAdapter(new SizeAdapter(sizeBeanList));
-        Drawable drawable = getResources().getDrawable(R.drawable.shape_spinner_drop);
-        spnCameraSize.setPopupBackgroundDrawable(drawable);
-        spnCameraSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                SizeBean sizeBean = sizeBeanList.get(position);
-                CameraSettings.setCameraPreviewWidth(sizeBean.width);
-                CameraSettings.setCameraPreviewHeight(sizeBean.height);
-                SpUtils.saveInt(SpUtils.CAMERA_WIDTH, sizeBean.width);
-                SpUtils.saveInt(SpUtils.CAMERA_HEIGHT, sizeBean.height);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        spnCameraSize.setSelection(index);
-    }
-
     class SizeAdapter extends BaseAdapter {
         List<SizeBean> sizeBeanList;
 
@@ -524,48 +688,6 @@ public class SettingActivity extends BaseActivity {
         int width;
         int height;
         String desc;
-    }
-
-    /**
-     * ====功能区==================================================================================================
-     */
-
-    public void modifyPWD(View view) {
-        setPwd();
-    }
-
-    public void checkUpgrade(View view) {
-        UpdateVersionControl.getInstance().checkUpdate(this);
-    }
-
-    public void setAngle(final View view) {
-        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-        if (anInt == CameraSettings.ROTATION_0) {
-            anInt = CameraSettings.ROTATION_90;
-        } else if (anInt == CameraSettings.ROTATION_90) {
-            anInt = CameraSettings.ROTATION_180;
-        } else if (anInt == CameraSettings.ROTATION_180) {
-            anInt = CameraSettings.ROTATION_270;
-        } else {
-            anInt = CameraSettings.ROTATION_0;
-        }
-        ((Button) view).setText(getString(R.string.act_set_tip_angle) + ":" + anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
-        EventBus.getDefault().post(new DisplayOrientationEvent());
-    }
-
-    public void rebootDevice(View view) {
-        showAlert(getString(R.string.act_set_tip_sbjcqsfjx), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
-                progressDialog.setTitle(getString(R.string.act_set_tip_reStart));
-                progressDialog.setMessage(getString(R.string.act_set_tip_3shjcqsb));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                UIUtils.restart.start();
-            }
-        }, null, null);
     }
 
     private void showAlert(String msg, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancel, DialogInterface.OnDismissListener onDissmissListener) {
@@ -672,66 +794,4 @@ public class SettingActivity extends BaseActivity {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-
-    private void initSetIp() {
-        final EditText edtIp = findViewById(R.id.edt_ip);
-        final EditText edtResPort = findViewById(R.id.edt_res_port);
-        final EditText edtXmppPort = findViewById(R.id.edt_xmpp_port);
-        final EditText edtProName = findViewById(R.id.edt_pro_name);
-        Button btnSave = findViewById(R.id.btn_save_address);
-
-        final String ip = SpUtils.getStr(SpUtils.IP_CACHE);
-        final String resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-        final String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-        final String proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-            edtIp.setHint(Constants.NetConfig.PRO_URL);
-            edtResPort.setHint(Constants.NetConfig.PRO_RES_PORT);
-            edtXmppPort.setHint(Constants.NetConfig.PRO_XMPP_PORT);
-            edtProName.setHint(Constants.NetConfig.PRO_SUFFIX);
-        } else {
-            edtIp.setText(ip);
-            edtResPort.setText(resPort);
-            edtXmppPort.setText(xmppPort);
-            edtProName.setText(proName);
-        }
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String mIp = edtIp.getText().toString();
-                String mResPort = edtResPort.getText().toString();
-                String mXmppPort = edtXmppPort.getText().toString();
-                String mProName = edtProName.getText().toString();
-                if (TextUtils.isEmpty(mIp)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "请设置IP地址");
-                    return;
-                }
-                if (TextUtils.isEmpty(mResPort)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "请设置接口端口");
-                    return;
-                }
-                if (TextUtils.isEmpty(mXmppPort)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "请设置XMPP端口");
-                    return;
-                }
-                if (TextUtils.isEmpty(mProName)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "请设置项目名");
-                    return;
-                }
-
-                if (TextUtils.equals(ip, mIp) && TextUtils.equals(resPort, mResPort) && TextUtils.equals(xmppPort, mXmppPort) && TextUtils.equals(proName, mProName)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "未修改");
-                    return;
-                }
-
-                SpUtils.saveStr(SpUtils.IP_CACHE, mIp);
-                SpUtils.saveStr(SpUtils.RESOURCE_PORT_CACHE, mResPort);
-                SpUtils.saveStr(SpUtils.XMPP_PORT_CACHE, mXmppPort);
-                SpUtils.saveStr(SpUtils.PROJECT_NAME_SUFFIX, mProName);
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
-            }
-        });
-
-    }
 }

@@ -165,6 +165,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         }
 
         @Override
+        public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
+            return false;
+        }
+
+        @Override
         public void onFaceVerify(CompareResult faceAuth) {
 
         }

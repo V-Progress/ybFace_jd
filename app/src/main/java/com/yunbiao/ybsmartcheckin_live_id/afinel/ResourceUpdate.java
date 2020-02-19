@@ -40,6 +40,8 @@ public class ResourceUpdate {
     public static String getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
     public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
 
+    public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";
+
     /**
      * 判断服务器中的设备是否在线
      **/

@@ -74,9 +74,6 @@
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
-        <activity
-            android:name=".activity.jdcn.WelComeSmallActivity"
-            android:launchMode="singleTask" />
         <activity android:name=".activity.EmployListActivity" />
         <activity android:name=".activity.DepartListActivity" />
         <activity

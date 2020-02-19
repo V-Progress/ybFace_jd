@@ -23,7 +23,8 @@
 
     <color name="horizontal_chart_female">#67FF9A</color>
     <color name="horizontal_chart_male">#00D7FE</color>
-    <color name="horizontal_item_visitor_name">#034da6</color>
+    <color name="horizontal_item_visitor_name_normal">#034da6</color>
+    <color name="horizontal_item_visitor_name_warning">#fffc00</color>
 
     <!--以下是可换皮肤配色-->
     <color name="skin_color_main_clock">@color/white</color>

@@ -13,7 +13,7 @@ android {
         flavorDimensions "default"
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi', 'armeabi-v7a'//, 'arm64-v8a' , 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a'//,'armeabi','arm64-v8a','x86','x86_64'
         }
     }
     buildTypes {
@@ -68,7 +68,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 17//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 18//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
 //这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
         targetGenDir 'src/main/java'

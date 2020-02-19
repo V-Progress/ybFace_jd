@@ -66,7 +66,7 @@ import java.util.TreeSet;
 
 import static com.jdjr.risk.face.local.thread.ThreadHelper.runOnUiThread;
 
-public class SignFragment extends Fragment implements SignManager.SignEventListener {
+public class SignFragment extends Fragment/* implements SignManager.SignEventListener*/ {
 
     private TextView tvTotal;
     private TextView tvTotal1;
@@ -159,26 +159,6 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         }
     };
 
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            // Add top margin only for the first item to avoid double space between items
-            if (parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
@@ -195,26 +175,14 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
 
         initPieChart();
 
-        MultipleSignDialog.instance().init(getActivity());
-        VipDialogManager.instance().initBG(getActivity());
-
-        //初始化语音系统//todo 7.0以上无法加载讯飞语音库
-        KDXFSpeechManager.instance().init(getActivity()).welcome();
-
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             //公告
             NoticeManager.getInstance().initSignData();
         }
-
-        yuyin = getActivity().getResources().getString(R.string.fment_sign_tip_hello);
-
-//        ivQRCode.setVisibility(View.VISIBLE);
-//        Glide.with(getActivity()).load(R.mipmap.zkhl).into(ivQRCode);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
-        SignManager.instance().init(getActivity(), this);
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             //公告
             NoticeManager.getInstance().initSignData();
@@ -223,36 +191,18 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         ivQRCode.setVisibility(View.VISIBLE);
         Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
-    }
 
-    private String yuyin = "";
+        //加载已存在的记录
+        List<Sign> todaySignData = SignManager.instance().getTodaySignData();
+        if (todaySignData == null) {
+            return;
+        }
+        mSignList.addAll(todaySignData);
+        signAdapter.notifyDataSetChanged();
+        updateNumber();
 
-    //语音播报
-    private void speak(int signType, String signerName) {
-        /*String speakStr = getString(R.string.fment_sign_tip_welcome);
-        String goTips = getString(R.string.fment_sign_tip_goTips);
-        String downTips = getString(R.string.fment_sign_tip_downTips);
-        Company company = SpUtils.getCompany();
-
-        switch (signType) {
-            case 0:
-                speakStr = String.format(yuyin, signerName);
-                break;
-            case 1:
-                if (company != null && !TextUtils.isEmpty(company.getGotips())) {
-                    goTips = company.getGotips();
-                }
-                speakStr = String.format(" %s " + goTips, signerName);
-                break;
-            case 2:
-                if (company != null && !TextUtils.isEmpty(company.getDowntips())) {
-                    downTips = company.getDowntips();
-                }
-                speakStr = String.format(" %s " + downTips, signerName);
-                break;
-        }*/
-//        KDXFSpeechManager.instance().playText(speakStr);
-        KDXFSpeechManager.instance().playText(signerName);
+        //自动清理服务
+        ResourceCleanManager.instance().startAutoCleanService();
     }
 
     //设置饼图属性
@@ -272,42 +222,14 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         pieChart.setNoDataText("");//不显示无数据提醒
     }
 
-    @Override
-    public void onPrepared(List<Sign> mList) {
-        if (mList == null) {
-            return;
-        }
-        mSignList.addAll(mList);
-        signAdapter.notifyDataSetChanged();
-        updateNumber();
-
-        //自动清理服务
-        ResourceCleanManager.instance().startAutoCleanService();
-    }
-
-    @Override
-    public void onSigned(Sign sign, int signType) {
-        Log.e(TAG, "onSigned: "+sign.getName() );
+    public void addSignData(Sign sign) {
         mSignList.add(0, sign);
         signAdapter.notifyItemInserted(0);
         rlv.scrollToPosition(0);
         updateNumber();
-
-        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
-        if(faceDialog){
-            VipDialogManager.showVipDialog(getActivity(), sign);
-//            MultipleSignDialog.instance().sign(sign);
-        }
-
-        if (sign.getType() == -2) {
-            return;
-        }
-
-        ((WelComeActivity) getActivity()).openDoor();
-        speak(signType, sign.getName());
     }
 
-    @Override
+    /*@Override
     public void onMakeUped(Sign sign, boolean makeUpSuccess) {
         mSignList.add(0, sign);
         signAdapter.notifyItemInserted(0);
@@ -319,7 +241,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         btnBulu.setEnabled(true);
         btnBulu.setVisibility(View.VISIBLE);
         aivBulu.setVisibility(View.GONE);
-    }
+    }*/
 
     //更新签到列表
     private void updateNumber() {
@@ -415,6 +337,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
     }
 
     class SignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         private List<Sign> signBeanList;
         private Context mContext;
         private int orientation;
@@ -440,18 +363,7 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             ViewHolder vh = (ViewHolder) viewHolder;
             Sign signBean = signBeanList.get(i);
-
-            byte[] imgBytes = signBean.getImgBytes();
-            String headPath = signBean.getHeadPath();
-            if (imgBytes != null) {
-                Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(vh.ivHead);
-            } else if (!TextUtils.isEmpty(headPath)) {
-                Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(vh.ivHead);
-            }
-
-            vh.tvName.setText(signBean.getName());
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-            vh.tvTime.setText(df.format(signBean.getTime()));
+            vh.bindData(mContext, signBean);
         }
 
         @Override
@@ -463,12 +375,38 @@ public class SignFragment extends Fragment implements SignManager.SignEventListe
             ImageView ivHead;
             TextView tvName;
             TextView tvTime;
+            TextView tvTemp;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivHead = itemView.findViewById(R.id.iv_head_item);
                 tvName = itemView.findViewById(R.id.tv_name_item);
                 tvTime = itemView.findViewById(R.id.tv_time_item);
+                tvTemp = itemView.findViewById(R.id.tv_temp_item);
+            }
+
+            public void bindData(Context context, Sign signBean) {
+                byte[] imgBytes = signBean.getImgBytes();
+                String headPath = signBean.getHeadPath();
+                if (imgBytes != null) {
+                    Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(ivHead);
+                } else if (!TextUtils.isEmpty(headPath)) {
+                    Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
+                }
+
+                tvName.setText(signBean.getName());
+                tvTime.setText(df.format(signBean.getTime()));
+                tvTemp.setText(signBean.getTemperature() + "℃");
+
+                if(signBean.getTemperature() < 37.3){
+                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
+                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
+                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
+                } else {
+                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                }
             }
         }
     }
