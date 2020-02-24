@@ -10,7 +10,7 @@
     </style>
 
     <style name="DialogStyle" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground"> @android:color/transparent </item>
+        <item name="android:windowBackground">@android:color/transparent</item>
 
     </style>
 
@@ -36,6 +36,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="system_item_ll_h">
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingBottom">10dp</item>
@@ -61,6 +62,7 @@
         <item name="android:textSize">36dp</item>
         <item name="android:padding">18dp</item>
     </style>
+
     <style name="system_item_lable_tv_h_small">
         <item name="android:textColor">@color/WHITE</item>
         <item name="android:layout_height">wrap_content</item>
@@ -77,6 +79,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">36dp</item>
     </style>
+
     <style name="sustem_item_info_shape" parent="system_item_info">
         <item name="android:background">@drawable/shape_employ_button</item>
         <item name="android:paddingTop">10dp</item>
@@ -84,6 +87,7 @@
         <item name="android:paddingLeft">30dp</item>
         <item name="android:paddingRight">30dp</item>
     </style>
+
     <style name="sustem_item_info_shape_small" parent="system_item_info">
         <item name="android:background">@drawable/shape_employ_button</item>
         <item name="android:paddingTop">5dp</item>
@@ -129,6 +133,7 @@
     </style>
 
     <style name="setting_text_child" parent="setting_text">
+        <item name="android:layout_marginTop">10dp</item>
         <item name="android:background">@drawable/selector_btn_take_photo</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">10dp</item>
@@ -146,4 +151,39 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@style/load_pop_anim</item>
     </style>
+
+    <style name="style_setting_input_number_edt">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/line_net_edt</item>
+        <item name="android:inputType">number</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/gray_low</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLength">5</item>
+    </style>
+
+    <style name="style_setting_input_number_decimal_edt" parent="style_setting_input_number_edt">
+        <item name="android:inputType">number|numberDecimal</item>
+    </style>
+
+    <style name="style_setting_input_number_signed_edt" parent="style_setting_input_number_edt">
+        <item name="android:inputType">number|numberSigned</item>
+    </style>
+
+    <style name="style_setting_input_number_decimal_signed_edt" parent="style_setting_input_number_edt">
+        <item name="android:inputType">number|numberSigned|numberDecimal</item>
+    </style>
+
+    <style name="style_setting_input_save_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:background">@drawable/shape_system_name</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:text">保存</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 </resources>

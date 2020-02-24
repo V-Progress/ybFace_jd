@@ -178,7 +178,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(UpdateSignDataEvent event){
+    public void update(UpdateSignDataEvent event) {
         loadSignList();
     }
 
@@ -198,10 +198,19 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void run() {
                 mShowList.clear();
-                mSignList = DaoManager.get().querySignByComIdAndDate(SpUtils.getInt(SpUtils.COMPANYID),queryDate);
+                mSignList = DaoManager.get().querySignByComIdAndDate(SpUtils.getInt(SpUtils.COMPANYID), queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
                     tips(getString(R.string.act_sign_tip_zwsj));
                     return;
+                }
+
+                //删除类型为-9的记录
+                Iterator<Sign> iterator = mSignList.iterator();
+                while (iterator.hasNext()) {
+                    Sign next = iterator.next();
+                    if (next.getType() == -9) {
+                        iterator.remove();
+                    }
                 }
 
                 for (Sign signBean : mSignList) {
@@ -232,11 +241,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 SignManager.instance().uploadSignRecord(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        if(aBoolean){
+                        if (aBoolean) {
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SignActivity.this, (aBoolean ? getString(R.string.act_sign_tip_sccg): getString(R.string.act_sign_tip_scsbqjcwl)));
+                        UIUtils.showShort(SignActivity.this, (aBoolean ? getString(R.string.act_sign_tip_sccg) : getString(R.string.act_sign_tip_scsbqjcwl)));
                     }
                 });
                 break;
@@ -310,7 +319,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 List<ExportSignBean> exportList = new ArrayList<>();
                 List<Sign> signs = DaoManager.get().queryAll(Sign.class);
                 for (Sign sign : signs) {
-                    if(sign.isUpload()){
+                    if (sign.isUpload()) {
                         continue;
                     }
                     ExportSignBean exportSignBean = new ExportSignBean();
@@ -324,7 +333,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_sjyqbsc)+"\n"+getString(R.string.act_sign_tip_mykdcdsj));
+                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_sjyqbsc) + "\n" + getString(R.string.act_sign_tip_mykdcdsj));
                         }
                     });
                     return;
@@ -355,7 +364,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         if (jsonFile.exists()) {
-                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dccgwjlj)+":\n" + jsonFile.getPath());
+                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dccgwjlj) + ":\n" + jsonFile.getPath());
                         } else {
                             UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dcsb));
                         }
@@ -367,7 +376,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    class ExportSignBean{
+    class ExportSignBean {
         private long entryid;
         private long signTime;
 

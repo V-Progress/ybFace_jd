@@ -13,22 +13,12 @@ import com.arcsoft.face.FaceEngine;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignBean;
-import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
@@ -68,26 +58,19 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onFinish(boolean isComplete) {
                 if(isComplete){
-                    transferDBData(new Runnable() {
-                        @Override
-                        public void run() {
-                            Constants.initStorage();
-                            SpUtils.init();
-//                            APP.getContext().cauchException();
-                            APP.getContext().initDB();
+                    Constants.initStorage();
+                    SpUtils.init();
 
-                            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-                            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                                Log.e(TAG, "激活成功或已激活");
-                                jump();
-                            } else {
-                                Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
-                            }
+                    int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+                    if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                        Log.e(TAG, "激活成功或已激活");
+                        jump();
+                    } else {
+                        Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
+                    }
 
-                            overridePendingTransition(0,0);
-                            finish();
-                        }
-                    });
+                    overridePendingTransition(0,0);
+                    finish();
                     return;
                 } else {
                     UIUtils.showTitleTip(SplashActivity.this,getString(R.string.act_spl_tip_qxsqsb));
@@ -102,65 +85,6 @@ public class SplashActivity extends BaseActivity {
         Constants.checkSetIp();
 
         startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
-    }
-
-    private void transferDBData(final Runnable runnable){
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setTitle(getString(R.string.base_tip));
-        progressDialog.show();
-
-        final List<SignBean> signBeans = APP.getSignDao().selectAll();
-        if(signBeans.size() <= 0){
-            progressDialog.dismiss();
-            runnable.run();
-            return;
-        }
-
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
-                d("正在迁移签到数据------------");
-                e.onNext(3);
-                int anInt = SpUtils.getInt(SpUtils.COMPANYID);
-                for (SignBean signBean : signBeans) {
-                    Sign sign = new Sign();
-                    sign.setComid(anInt);
-                    sign.setEmpId(signBean.getEmpId());
-                    sign.setHeadPath(signBean.getImgUrl());
-                    sign.setTime(signBean.getTime());
-                    sign.setUpload(signBean.isUpload());
-                    sign.setName(signBean.getName());
-                    sign.setDate(signBean.getDate());
-                    d(sign.toString());
-                    long l = DaoManager.get().addOrUpdate(sign);
-                    d("迁移结果："  + l);
-                    APP.getSignDao().delete(signBean);
-                }
-
-                Thread.sleep(2000);
-
-                d("迁移签到数据结束------------");
-                e.onNext(4);
-
-                Thread.sleep(2000);
-                e.onNext(5);
-            }
-        }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-            @Override
-            public void accept(Integer o) throws Exception {
-                if(0 == 3){
-                    progressDialog.setMessage(getString(R.string.act_spl_tip_zzjxsjqy));
-                } else if(0 == 4){
-                    progressDialog.setMessage(getString(R.string.act_spl_tip_qywc));
-                } else{
-                    progressDialog.dismiss();
-                    runnable.run();
-                }
-            }
-        });
     }
 
     @Override

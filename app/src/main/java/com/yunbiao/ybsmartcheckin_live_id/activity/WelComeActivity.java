@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -19,16 +21,12 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
-import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
@@ -52,6 +50,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
@@ -59,7 +58,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -82,23 +80,15 @@ public class WelComeActivity extends BaseGpioActivity {
     //摄像头分辨率
     public static com.yunbiao.faceview.FaceView faceView;
     private AdsFragment adsFragment;
-    private TextView tvTemp;
-    private TextView tvRangeTips;
     private SignFragment signListFragment;
+    private TextView tvTemperature;
+    private TextView tvRangeTips;
     private TextView tvAmbient;
     private TextView tvTempTips;
 
     //判断是否开启测温
-    private boolean isTemperatureEnabled = false;
-    private FrameLayout flFaceRange;
-    private TextView tvHasTest;
-    private TextView tvRangeTest;
-    private TextView tvDistanceTest;
     private View viewDistance;
-    private TextView tvTempTest;
-    private TextView tvAreaTest;
-    private TextView tvFaceTest;
-    private Switch swTest;
+    private View personFrame;
 
     @Override
     protected int getPortraitLayout() {
@@ -109,8 +99,6 @@ public class WelComeActivity extends BaseGpioActivity {
     protected int getLandscapeLayout() {
         return R.layout.activity_welcome_h;
     }
-
-    private boolean isFanZhuanTest = false;
 
     @Override
     protected void initView() {
@@ -123,28 +111,12 @@ public class WelComeActivity extends BaseGpioActivity {
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
         tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
 
-        flFaceRange = findViewById(R.id.fl_face_range);//额头检测框
-        viewDistance = findViewById(R.id.view_face_distance);
+        personFrame = findViewById(R.id.iv_person_frame);
+        viewDistance = findViewById(R.id.view_face_distance);//人脸限制区域
         tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
-        tvTemp = findViewById(R.id.tv_temperature_main);//实时检测温度
+        tvTemperature = findViewById(R.id.tv_temperature_main);//实时检测温度
         tvRangeTips = findViewById(R.id.tv_range_tips_main);//人脸距离提示
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
-
-        //测试提示
-        tvHasTest = findViewById(R.id.tv_has_test);
-        tvDistanceTest = findViewById(R.id.tv_distance_test);
-        tvRangeTest = findViewById(R.id.tv_range_test);
-        tvTempTest = findViewById(R.id.tv_temp_test);
-        tvAreaTest = findViewById(R.id.tv_area_rect_test);
-        tvFaceTest = findViewById(R.id.tv_face_rect_test);
-        swTest = findViewById(R.id.sw_test);
-        swTest.setChecked(isFanZhuanTest);
-        swTest.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isFanZhuanTest = isChecked;
-            }
-        });
 
         //加载签到列表Fragment
         signListFragment = new SignFragment();
@@ -159,6 +131,22 @@ public class WelComeActivity extends BaseGpioActivity {
             InformationFragment informationFragment = new InformationFragment();
             replaceFragment(R.id.layout_h, informationFragment);
         }
+
+        initTest();
+    }
+
+    private Button btnTest0;
+
+    private void initTest() {
+        btnTest0 = findViewById(R.id.btn_test_0);
+        btnTest0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCacheTemperatureHighestValue = 0f;
+                mCacheValueForTempModel = 0f;
+                mCacheTime = 0;
+            }
+        });
     }
 
     /**
@@ -198,101 +186,43 @@ public class WelComeActivity extends BaseGpioActivity {
                 UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
             }
         }, 5 * 1000);
-
-        startUpdateTemperatureRunnable();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        isTemperatureEnabled = SpUtils.getBoolean(SpUtils.TEMPERATURE_ENABLED, true);
-        if (!isTemperatureEnabled) {
-            closeTemperatureTips();
+        //获取模式标识
+        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
+        boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
+        if (isTemperatureEnabled) {
+            personFrame.setVisibility(View.VISIBLE);
+            tvAmbient.setVisibility(View.VISIBLE);
+            tvRangeTips.setVisibility(View.VISIBLE);
+            tvTempTips.setVisibility(View.VISIBLE);
+            startUpdateTemperatureRunnable();
+        } else {
+            personFrame.setVisibility(View.GONE);
+            tvAmbient.setVisibility(View.GONE);
+            tvRangeTips.setVisibility(View.GONE);
+            tvTempTips.setVisibility(View.GONE);
+            temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
         }
 
+        //设置测温补正值
         InfraredTemperatureUtils.getIns().setaCorrectionValue(SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f));
         InfraredTemperatureUtils.getIns().setmCorrectionValue(SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f));
+        //设置活体开关
+        boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+        faceView.setLiveness(livenessEnabled);
+        //设置测温延时
+        mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
 
+        //测温最小阈值
+        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
+        //测温报警阈值
+        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
         faceView.resume();
     }
-
-    /****温控检测区域************************************************************************************************/
-    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
-
-    private void closeTemperatureTips() {
-        flFaceRange.setVisibility(View.GONE);
-        viewDistance.setVisibility(View.GONE);
-        tvAmbient.setVisibility(View.GONE);
-        tvTemp.setVisibility(View.GONE);
-        tvRangeTips.setVisibility(View.GONE);
-        tvTempTips.setVisibility(View.GONE);
-    }
-
-    private Handler temperatureUpdateHandler = new Handler();
-
-    //开始自动测温
-    private void startUpdateTemperatureRunnable() {
-        InfraredTemperatureUtils.getIns().initSerialPort();
-        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
-        temperatureUpdateHandler.post(temperatureUpdateRunnable);
-    }
-
-    private Runnable temperatureUpdateRunnable = new Runnable() {
-        @Override
-        public void run() {
-            //获取检测温度
-            float measuringTemperatureF = InfraredTemperatureUtils.getIns().getMeasuringTemperatureF();
-            tvTemp.setText(decimalFormat.format(measuringTemperatureF) + " ℃");
-
-            //获取环境温度
-            float ambientTemperatureF = InfraredTemperatureUtils.getIns().getAmbientTemperatureF();
-            tvAmbient.setText(decimalFormat.format(ambientTemperatureF) + "℃");
-
-            temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 500);
-        }
-    };
-
-    //关闭测温串口
-    private void closeUpdateTemperatureRunnable() {
-        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
-        InfraredTemperatureUtils.getIns().closeSerialPort();
-    }
-
-    //设置温度提示框的内容
-    private void showTemperatureTips(final String tips, final int backgroundId) {
-        //如果未显示，则显示
-        if (!tvTempTips.isShown()) {
-            tvTempTips.post(new Runnable() {
-                @Override
-                public void run() {
-                    tvTempTips.setVisibility(View.VISIBLE);
-                }
-            });
-        }
-
-        //然后修改显示内容
-        tvTempTips.post(new Runnable() {
-            @Override
-            public void run() {
-                tvTempTips.setText(tips);
-                tvTempTips.setBackgroundResource(backgroundId);
-            }
-        });
-
-        //发送计时关闭任务
-        tempTipsHandler.removeMessages(0);
-        tempTipsHandler.sendEmptyMessageDelayed(0, 2000);
-    }
-
-    //计时器
-    private Handler tempTipsHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (tvTempTips.isShown()) {
-                tvTempTips.setVisibility(View.INVISIBLE);
-            }
-        }
-    };
 
     /*****识别相关回调******************************************************************************************/
     private com.yunbiao.faceview.FaceView.FaceCallback faceCallback = new com.yunbiao.faceview.FaceView.FaceCallback() {
@@ -308,16 +238,12 @@ public class WelComeActivity extends BaseGpioActivity {
 
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
-
+            canDetection = hasFace;
             if (!hasFace) {//如果没有人脸
                 mStrangerTempTrackId = -1;
-                tvHasTest.setText("无人");
-                tvDistanceTest.setText("");
-                tvRangeTest.setText("");
-                tvTempTest.setText("");
+                setRangeTips("");
                 return false;
             }
-            tvHasTest.setText("有人");
 
             //检测到人后开灯
             onLight();
@@ -326,53 +252,42 @@ public class WelComeActivity extends BaseGpioActivity {
                 adsFragment.detectFace();
             }
 
-            //判断测温逻辑是否开启
-            if (isTemperatureEnabled) {
-                //如果未初始化完成
-                if (tvRangeTips == null) {
-                    return false;
-                }
+            //如果是测温模式则不走识别逻辑
+            if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                return false;
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {//如果是人脸+测温则判断模式
                 //取出人脸的rect
                 Rect rect = facePreviewInfo.getFaceInfo().getRect();
-                if (rect == null) {//如果巨星为null
+                //如果未初始化完成
+                if (tvRangeTips == null || rect == null) {
                     return false;
                 }
                 //判断人脸距离是否合适
-                if (faceView.checkFaceDistance(rect, viewDistance.getMeasuredWidth())) {
-                    tvRangeTips.setText("距离太远，请靠近");
-                    tvDistanceTest.setText("距离太远");
-                    tvRangeTest.setText("");
-                    tvTempTest.setText("");
+                if (!faceView.checkFaceInDistance(rect, viewDistance.getMeasuredWidth())) {
+                    mCacheTime = 0;
+                    setRangeTips("距离太远，请靠近");
                     return false;
                 }
-                tvDistanceTest.setText("距离合适");
-
-                //判断人脸区域是否正确
-                boolean faceInframe = faceView.checkFaceInFrame(rect, flFaceRange, new FaceView.RectCallback() {
-                    @Override
-                    public void onAreaRect(Rect mAreaRect, Rect mFaceRect) {
-                        tvAreaTest.setText("区域坐标：左：" + mAreaRect.left + "，右：" + mAreaRect.right + "\n上：" + mAreaRect.top + "，下：" + mAreaRect.bottom);
-                        tvFaceTest.setText("人脸坐标：左：" + mFaceRect.left + "，右：" + mFaceRect.right + "\n上：" + mFaceRect.top + "，下：" + mFaceRect.bottom);
-                    }
-                });
-
-                if (!faceInframe) {
-                    tvRangeTips.setText("请将脸部对准人脸识别区域");
-                    tvRangeTest.setText("请对准区域");
-                    tvTempTest.setText("");
+                //检测人脸是否在框内
+                if (!faceView.checkFaceInFrame2(rect, viewDistance)) {
+                    mCacheTime = 0;
+                    setRangeTips("请将脸部对准人脸识别区域");
                     return false;
                 }
-                tvRangeTest.setText("已对准");
-                //都合适，隐藏提示
-                tvRangeTips.setText("");
-
                 //判断当前温度，取36度以上再进行识别
-                float measuringTemperatureF = InfraredTemperatureUtils.getIns().getMeasuringTemperatureF();
-                if (measuringTemperatureF < 36.0f) {
-                    tvTempTest.setText("等待温度");
+                if (mCacheTemperatureHighestValue <= mTempMinThreshold) {
                     return false;
                 }
-                tvTempTest.setText(measuringTemperatureF + "℃");
+                //如果当前缓存时间是0则重置
+                if (mCacheTime == 0) {
+                    mCacheTime = System.currentTimeMillis();
+                    return false;
+                } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                    setRangeTips("正在测温");
+                    return false;
+                }
+                //都合适，隐藏提示
+                setRangeTips("");
             }
 
             return true;
@@ -380,63 +295,46 @@ public class WelComeActivity extends BaseGpioActivity {
 
         @Override
         public void onFaceVerify(CompareResult compareResult) {
-            //进入测温流程
-            if (isTemperatureEnabled) {
-                float measuringTemperatureF = InfraredTemperatureUtils.getIns().getMeasuringTemperatureF();
-                measuringTemperatureF = Float.parseFloat(decimalFormat.format(measuringTemperatureF));
-                final boolean isWarning = measuringTemperatureF >= 37.3;
+            if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
+                Bitmap bitmap = faceView.takePicture();
+                if (bitmap == null) {
+                    return;
+                }
 
-                //如果是陌生人
+                boolean isWarning = mCacheTemperatureHighestValue >= mTempWarningThreshold;
+                Sign sign = null;
                 if (compareResult.getSimilar() == -1) {
-                    if (mStrangerTempTrackId != compareResult.getTrackId()) {//判断缓存的Id
-                        //还没有播报过
-                        if (isWarning) {
-                            showTemperatureTips("体温异常 " + measuringTemperatureF + "℃", R.drawable.shape_main_frame_temperature_warning);
-                            KDXFSpeechManager.instance().playText("体温异常");
-                        } else {
-                            showTemperatureTips("体温正常 " + measuringTemperatureF + "℃", R.drawable.shape_main_frame_temperature_normal);
-                            KDXFSpeechManager.instance().playText("体温正常");
-                        }
-
-//                        Bitmap headImgByte = faceView.getHeadImgByte(compareResult.getTrackId());
-//                        SignManager.instance().uploadTemperException(headImgByte, measuringTemperatureF, null);
-
-                        mStrangerTempTrackId = compareResult.getTrackId();
-                    } else {
-                        //已经播报过了
+                    //代表已经播报过
+                    if (mStrangerTempTrackId == compareResult.getTrackId()) {
+                        return;
                     }
+                    mStrangerTempTrackId = compareResult.getTrackId();
+                    //直接上报温度
+                    sign = SignManager.instance().getTemperatureSign(mCacheTemperatureHighestValue);
                 } else {
                     mStrangerTempTrackId = -1;
-                    Sign sign = SignManager.instance().checkSignData(compareResult, measuringTemperatureF);
+                    sign = SignManager.instance().checkSignData(compareResult, mCacheTemperatureHighestValue);
                     if (sign == null) {
                         return;
                     }
-//                    Bitmap headImgByte = faceView.getHeadImgByte(compareResult.getTrackId());
-//                    SignManager.instance().uploadTemperException(headImgByte, measuringTemperatureF, sign.getEmpId() + "");
-
-                    if (isWarning) {
-                        showTemperatureTips("体温异常 " + measuringTemperatureF + "℃", R.drawable.shape_main_frame_temperature_warning);
-                        KDXFSpeechManager.instance().playText("体温异常");
-                    } else {
-                        if (signListFragment != null) {
-                            signListFragment.addSignData(sign);
-                        }
-
-                        if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                            VipDialogManager.showVipDialog(getActivity(), sign);
-                        }
-
-                        showTemperatureTips("体温正常 " + measuringTemperatureF + "℃", R.drawable.shape_main_frame_temperature_normal);
-                        KDXFSpeechManager.instance().playText(sign.getName() + "，体温正常");
-
-                        if (sign.getType() == -2) {
-                            return;
-                        }
-
-                        openDoor();
-                    }
                 }
-            } else {//进入普通识别流程
+
+                playTips(isWarning, sign.getName());
+
+                sign.setImgBitmap(bitmap);
+                if (signListFragment != null) {
+                    signListFragment.addSignData(sign);
+                }
+
+                SignManager.instance().uploadTemperatureSign(sign);
+                //如果是过期或陌生人则结束
+                if (sign.getType() == -2 || sign.getType() == -9) {
+                    return;
+                }
+                openDoor();
+                return;
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_ONLY) {
+                //======以下是普通识别流程====================================
                 if (compareResult == null || compareResult.getSimilar() == -1) {
                     return;
                 }
@@ -462,8 +360,6 @@ public class WelComeActivity extends BaseGpioActivity {
             }
         }
     };
-    //判断陌生人有没有播报过的缓存，如果该Id不等于认证的Id说明没播报过，在非陌生人的地方和检测不到人脸时重置该Id
-    private int mStrangerTempTrackId = -1;
 
     private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
         @Override
@@ -488,6 +384,244 @@ public class WelComeActivity extends BaseGpioActivity {
             openDoor();
         }
     };
+
+    /****温控检测区域************************************************************************************************/
+    private boolean canDetection = false;//是否可以采集温度
+    //判断陌生人有没有播报过的缓存，如果该Id不等于认证的Id说明没播报过，在非陌生人的地方和检测不到人脸时重置该Id
+    private int mStrangerTempTrackId = -1;//ID缓存，用于判断该用户有没有被提示过
+    private int mGetTempDelayTime = 0;//采集温度延时
+    private float mTempMinThreshold = 36.0f;//最小阈值
+    private float mTempWarningThreshold = 37.3f;//报警值
+    private int mCurrModel = 0;//当前模式
+
+    private long mCacheTime = 0;//时间缓存
+    private float mCacheTemperatureHighestValue = 0f;//最高温度值缓存
+    private float mCacheValueForTempModel = 0f;//专为测温模式缓存的数值,用于判断该次有没有被播报,防止多次播报
+
+    private void setTemperatureModule(boolean isOpen) {
+        int show;
+        if (isOpen) {
+            show = View.VISIBLE;
+        } else {
+            show = View.GONE;
+        }
+        personFrame.setVisibility(show);
+        tvAmbient.setVisibility(show);
+        tvRangeTips.setVisibility(show);
+        tvTempTips.setVisibility(show);
+    }
+
+    private void setRangeTips(String tips) {
+        String s = tvRangeTips.getText().toString();
+        if (TextUtils.isEmpty(tips) && TextUtils.isEmpty(s)) {
+            return;
+        }
+        if (TextUtils.equals(tips, s)) {
+            return;
+        }
+        tvRangeTips.setText(tips);
+    }
+
+    private float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
+    }
+
+    private Handler temperatureUpdateHandler = new Handler();
+
+    //开始自动测温
+    private void startUpdateTemperatureRunnable() {
+        InfraredTemperatureUtils.getIns().initSerialPort();
+        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
+        temperatureUpdateHandler.post(temperatureUpdateRunnable);
+    }
+
+    private Runnable temperatureUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //获取环境温度
+            float ambientTemperatureF = formatF(InfraredTemperatureUtils.getIns().getAmbientTemperatureF());
+            if (ambientTemperatureF <= 0f) {
+                if (tvAmbient.isShown()) {
+                    tvAmbient.setVisibility(View.GONE);
+                }
+            } else {
+                tvAmbient.setText(ambientTemperatureF + "℃");
+            }
+
+            //获取检测温度
+            float measuringTemperatureF = formatF(InfraredTemperatureUtils.getIns().getMeasuringTemperatureF());
+            tvTemperature.setText(measuringTemperatureF + " ℃");
+
+            if (measuringTemperatureF < mTempWarningThreshold) {
+                tvTemperature.setTextColor(Color.GREEN);
+            } else {
+                tvTemperature.setTextColor(Color.RED);
+            }
+            /*
+             * 检测温度
+             * 缓存温度
+             * 如果检测温度大于阈值则说明有人,开始存最大值
+             * 如果检测温度小于阈值说明没有人,存值归0
+             * 如果存值也大于阈值,则判断时间,时间到,提示,时间不到,提示正在测温
+             *
+             *
+             * */
+            //如果是仅测温模式的话,则判断数值是否超过阈值,如果超过则开始判断延迟时间
+            if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                //如果大于阈值则开始存最高值
+                if (measuringTemperatureF >= mTempMinThreshold) {
+                    //收起海报界面
+                    if (adsFragment != null) {
+                        adsFragment.detectFace();
+                    }
+                    //如果检测温度大于当前缓存的最高温度则保存
+                    if (measuringTemperatureF > mCacheTemperatureHighestValue) {
+                        mCacheTemperatureHighestValue = formatF(measuringTemperatureF);
+                    }
+                    //如果当前缓存时间是0则重置
+                    if (mCacheTime == 0) {
+                        mCacheTime = System.currentTimeMillis();
+                        temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                        return;
+                    } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                        UIUtils.showShort(WelComeActivity.this, "正在测温");
+                        temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                        return;
+                    }
+                } else {//如果温度小于阈值则归零
+                    mCacheTemperatureHighestValue = 0f;
+                    mCacheValueForTempModel = 0f;
+                    mCacheTime = 0;
+                }
+
+                //在缓存值大于
+                if (mCacheTemperatureHighestValue >= mTempMinThreshold) {
+                    if (mCacheValueForTempModel == 0f) {
+                        Bitmap currCameraFrame = faceView.getCurrCameraFrame();
+                        if (currCameraFrame != null) {
+                            mCacheValueForTempModel = mCacheTemperatureHighestValue;
+                            boolean isWarning = mCacheTemperatureHighestValue >= mTempWarningThreshold;
+
+                            Sign temperatureSign = SignManager.instance().getTemperatureSign(mCacheTemperatureHighestValue);
+                            temperatureSign.setImgBitmap(currCameraFrame);
+
+                            //提示
+                            playTips(isWarning, "");
+                            //更新记录
+                            if (signListFragment != null) {
+                                signListFragment.addSignData(temperatureSign);
+                            }
+                            //上传记录
+                            SignManager.instance().uploadTemperatureSign(temperatureSign);
+                        }
+                    }
+                } else {
+                    mCacheTemperatureHighestValue = 0f;
+                    mCacheValueForTempModel = 0f;
+                    mCacheTime = 0;
+                }
+
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
+                if (canDetection) {
+                    if (measuringTemperatureF > mCacheTemperatureHighestValue) {
+                        mCacheTemperatureHighestValue = formatF(measuringTemperatureF);
+                    }
+                } else {
+                    if (mCacheTemperatureHighestValue != 0.0f) {
+                        mCacheTemperatureHighestValue = 0.0f;
+                    }
+                }
+            }
+
+            temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+        }
+    };
+
+    //关闭测温串口
+    private void closeUpdateTemperatureRunnable() {
+        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
+        InfraredTemperatureUtils.getIns().closeSerialPort();
+    }
+
+    private Message tipsMessage;
+
+    //设置温度提示框的内容
+    private void showTemperatureTips(final String tips, final int backgroundId, int time) {
+        //如果未显示，则显示
+        if (!tvTempTips.isShown()) {
+            tempTipsHandler.sendEmptyMessage(1);
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("tips", tips);
+        bundle.putInt("background", backgroundId);
+        tipsMessage = new Message();
+        tipsMessage.what = 2;
+        tipsMessage.setData(bundle);
+        tempTipsHandler.sendMessage(tipsMessage);
+
+        tempTipsHandler.sendEmptyMessageDelayed(0, time);
+    }
+
+    //计时器
+    private Handler tempTipsHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    if (tvTempTips.isShown()) {
+                        tvTempTips.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+                case 1:
+                    tvTempTips.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    Bundle data = msg.getData();
+                    String tips = data.getString("tips");
+                    int bgId = data.getInt("background");
+                    tvTempTips.setText(tips);
+                    tvTempTips.setBackgroundResource(bgId);
+                    break;
+            }
+
+        }
+    };
+
+    private void playTips(boolean isWarning, String signName) {
+        String tip;
+        Runnable warningRunnable;
+        int bgId;
+        //体温正常
+        if (isWarning) {
+            tip = "体温异常";
+            bgId = R.drawable.shape_main_frame_temperature_warning;
+            warningRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    KDXFSpeechManager.instance().playWaningRing();
+                }
+            };
+            ledRed();
+        } else {
+            tip = "体温正常";
+            bgId = R.drawable.shape_main_frame_temperature_normal;
+            warningRunnable = null;
+            KDXFSpeechManager.instance().stopNormal();
+            KDXFSpeechManager.instance().stopWarningRing();
+            ledGreen();//显示绿灯
+        }
+
+        tip += mCacheTemperatureHighestValue + "℃";
+
+        int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
+        Log.e(TAG, "playTips: 延迟关闭时间：" + time);
+        resetLedDelay(time);//5秒后重置灯光为蓝色
+        showTemperatureTips(tip, bgId, time);
+        KDXFSpeechManager.instance().playNormal((TextUtils.isEmpty(signName) ? "" : signName) + tip, warningRunnable);
+    }
+
+    /****温控检测区域************************************************************************************************/
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {

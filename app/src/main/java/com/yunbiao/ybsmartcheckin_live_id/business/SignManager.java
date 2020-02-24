@@ -1,6 +1,5 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -11,23 +10,20 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arcsoft.face.util.ImageUtils;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.yunbiao.faceview.CompareResult;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -61,7 +57,6 @@ import okhttp3.Request;
 public class SignManager {
     private final String TAG = getClass().getSimpleName();
     private static SignManager instance;
-    private SignDao signDao;
     private final int UPDATE_TIME = 20;
     //    private SignEventListener listener;
     private String today;
@@ -92,7 +87,6 @@ public class SignManager {
     private SignManager() {
         //初始化当前时间
         today = dateFormat.format(new Date());
-        signDao = APP.getSignDao();
 
         threadPool = Executors.newFixedThreadPool(2);
         threadPool.execute(initRunnable);
@@ -177,6 +171,7 @@ public class SignManager {
 
         List<SignDataBean> signDataBeans = new ArrayList<>();
         List<VisitDataBean> visitDataBeans = new ArrayList<>();
+        List<StrangerDataBean> strangerDataBeanList = new ArrayList<>();
         for (Sign signBean : signs) {
             if (signBean.getType() == 0) {
                 SignDataBean signDataBean = new SignDataBean();
@@ -184,6 +179,13 @@ public class SignManager {
                 signDataBean.signTime = signBean.getTime();
                 signDataBean.sign = signBean;
                 signDataBeans.add(signDataBean);
+            } else if (signBean.getType() == -9) {
+                StrangerDataBean bean = new StrangerDataBean();
+                bean.createTime = signBean.getTime();
+                bean.temper = signBean.getTemperature();
+                bean.headPath = signBean.getHeadPath();
+                bean.sign = signBean;
+                strangerDataBeanList.add(bean);
             } else {
                 VisitDataBean bean = new VisitDataBean();
                 bean.visitorId = signBean.getEmpId() + "";
@@ -196,11 +198,80 @@ public class SignManager {
 
         Log.e(TAG, "uploadSignRecord: 未上传考勤记录：" + signDataBeans.size());
         Log.e(TAG, "uploadSignRecord: 未上传访客记录：" + visitDataBeans.size());
+        Log.e(TAG, "uploadSignRecord: 未上传陌生记录：" + strangerDataBeanList.size());
 
         //上传考勤数据
         uploadSignDataList(signDataBeans, callback);
         //上传访客数据
         uploadVisitDataList(visitDataBeans);
+        //上传陌生人访问记录
+        uploadStrangerData(strangerDataBeanList);
+    }
+
+    //上传陌生人访问记录
+    private void uploadStrangerData(final List<StrangerDataBean> strangerDataBeanList) {
+        if (strangerDataBeanList.size() > 0) {
+            d("准备上传陌生人访问记录");
+            int comid = SpUtils.getCompany().getComid();
+            String jsonStr = new Gson().toJson(strangerDataBeanList);
+            d(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY + " --- " + jsonStr);
+            Map<String, File> fileMap = new HashMap<>();
+            for (StrangerDataBean bean : strangerDataBeanList) {
+                String headPath = bean.headPath;
+                File headFile;
+                if (TextUtils.isEmpty(headPath)) {
+                    headFile = new File(Environment.getExternalStorageDirectory(), "1.txt");
+                    if (headFile == null || !headFile.exists()) {
+                        try {
+                            headFile.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    headFile = new File(headPath);
+                }
+                fileMap.put(headFile.getName(), headFile);
+            }
+
+            OkHttpUtils.post()
+                    .url(ResourceUpdate.VISITARRAY)
+                    .addParams("witJson", jsonStr)
+                    .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                    .addParams("comId", comid + "")
+                    .files("heads", fileMap)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onBefore(Request request, int id) {
+                            super.onBefore(request, id);
+                            d("开始上传----------");
+                        }
+
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            d("上送失败--->" + (e != null ? e.getMessage() : "NULL"));
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Log.e(TAG, "onResponse: 上传结果：" + response);
+                            JSONObject jsonObject = JSONObject.parseObject(response);
+                            String status = jsonObject.getString("status");
+                            boolean isSucc = TextUtils.equals("1", status);
+                            if (!isSucc) {
+                                return;
+                            }
+
+                            for (StrangerDataBean bean : strangerDataBeanList) {
+                                Sign sign = bean.sign;
+                                sign.setUpload(true);
+                                DaoManager.get().addOrUpdate(sign);
+                            }
+                        }
+                    });
+        }
     }
 
     //上传访客记录列表
@@ -360,7 +431,6 @@ public class SignManager {
 
         if (canPass(sign)) {//可以打卡
             sign.setUpload(false);
-//        sign.setImgBytes(compareResult.getImageBytes());
             sign.setDate(dateFormat.format(currDate.getTime()));
 
             if (userId.startsWith("vi")) {
@@ -425,17 +495,32 @@ public class SignManager {
         return null;
     }
 
-    public void uploadTemperException(Bitmap bitmap, float temperatureValue, String entryId) {
-        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+    public Sign getTemperatureSign(float temperatureValue) {
+        Date currDate = new Date();
+        final Sign sign = new Sign();
+        sign.setType(-9);
+        sign.setTime(currDate.getTime());
+        sign.setTemperature(temperatureValue);
+        sign.setDate(dateFormat.format(currDate));
+        sign.setUpload(false);
+        return sign;
+    }
 
-        File file = saveBitmap(System.currentTimeMillis(), bitmap);
+    /*0：主线程add
+1：子线程上传
+2：子线程addOrUpdate
+3.主线程addOrUpdate*/
+    public void uploadTemperatureSign(final Sign sign) {
+        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+        File file = saveBitmap(sign.getTime(),sign.getImgBitmap());
+        sign.setHeadPath(file.getPath());
 
         Map<String, String> params = new HashMap<>();
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("comId", SpUtils.getCompany().getComid() + "");
-        params.put("temper", temperatureValue + "");
-        if (!TextUtils.isEmpty(entryId)) {
-            params.put("entryId", entryId);
+        params.put("temper", sign.getTemperature() + "");
+        if (sign.getType() != -9) {
+            params.put("entryId", sign.getEmpId() + "");
         }
         Log.e(TAG, "上传温度");
         Log.e(TAG, "地址：" + url);
@@ -449,13 +534,63 @@ public class SignManager {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                        sign.setUpload(false);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, "onResponse: 上传成功：" + response);
+                        sign.setUpload(true);
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        DaoManager.get().addOrUpdate(sign);
                     }
                 });
+
+        /*threadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+                File file = saveBitmap(sign.getTime(),sign.getImgBitmap());
+                sign.setHeadPath(file.getPath());
+
+                Map<String, String> params = new HashMap<>();
+                params.put("deviceNo", HeartBeatClient.getDeviceNo());
+                params.put("comId", SpUtils.getCompany().getComid() + "");
+                params.put("temper", sign.getTemperature() + "");
+                if (sign.getType() != -9) {
+                    params.put("entryId", sign.getEmpId() + "");
+                }
+                Log.e(TAG, "上传温度");
+                Log.e(TAG, "地址：" + url);
+                Log.e(TAG, "参数: " + params.toString());
+                OkHttpUtils.post()
+                        .url(url)
+                        .params(params)
+                        .addFile("heads", file.getName(), file)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                                sign.setUpload(false);
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                Log.e(TAG, "onResponse: 上传成功：" + response);
+                                sign.setUpload(true);
+                            }
+
+                            @Override
+                            public void onAfter(int id) {
+                                DaoManager.get().addOrUpdate(sign);
+                            }
+                        });
+            }
+        });*/
     }
 
     //通知被访人
@@ -709,14 +844,21 @@ public class SignManager {
     class SignDataBean {
         String entryid;
         long signTime;
-        Sign sign;
+        transient Sign sign;
     }
 
     class VisitDataBean {
         String visitorId;
         long createTime;
-        String headPath;
-        Sign sign;
+        transient String headPath;
+        transient Sign sign;
+    }
+
+    class StrangerDataBean {
+        long createTime;
+        float temper;
+        transient String headPath;
+        transient Sign sign;
     }
 
     private void d(@NonNull String msg) {

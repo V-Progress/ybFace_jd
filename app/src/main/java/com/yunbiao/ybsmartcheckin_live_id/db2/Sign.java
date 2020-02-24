@@ -1,9 +1,12 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
+import android.graphics.Bitmap;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -11,8 +14,8 @@ import java.util.Arrays;
 @Entity
 public class Sign {
 
-    @Id
-    private Long id;
+    @Id(autoincrement = true)
+    private Long id = null;
 
     private String faceId;
 
@@ -53,6 +56,10 @@ public class Sign {
     @Transient
     private byte[] imgBytes;
 
+    @Transient
+    private Bitmap imgBitmap;
+
+
     @Generated(hash = 1996633570)
     public Sign(Long id, String faceId, String name, String position,
             String headPath, long time, boolean isUpload, long empId, String date,
@@ -82,6 +89,15 @@ public class Sign {
 
     @Generated(hash = 2025164192)
     public Sign() {
+    }
+
+
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
     }
 
     public float getTemperature() {

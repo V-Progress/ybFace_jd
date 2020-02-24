@@ -30,8 +30,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.db.DatabaseHelper;
-import com.yunbiao.ybsmartcheckin_live_id.db.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
@@ -62,7 +60,6 @@ public class APP extends Application {
     private static final String TAG = "APP";
     private static APP instance;
     private static SmdtManager smdt;
-    private static SignDao signDao;
     private static WelComeActivity activity;
 
     public static WelComeActivity getActivity() {
@@ -90,9 +87,7 @@ public class APP extends Application {
 
         DaoManager.get().initDb();
 
-        initDB();
-
-//        cauchException();
+        cauchException();
 
         initBugly();
 
@@ -188,19 +183,6 @@ public class APP extends Application {
                 filePrinter);
     }
 
-    public void initDB() {
-        try {
-            DatabaseHelper.createDatabase(this);
-            signDao = new SignDao(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static SignDao getSignDao() {
-        return signDao;
-    }
-
     // -------------------异常捕获-----捕获异常后重启系统-----------------//
     public void cauchException() {
         CrashHandler2.CrashUploader uploader = new CrashHandler2.CrashUploader() {
@@ -250,13 +232,11 @@ public class APP extends Application {
         strategy.setCrashHandleCallback(new CrashReport.CrashHandleCallback() {
             @Override
             public synchronized Map<String, String> onCrashHandleStart(int crashType, String errorType, String errorMessage, String errorStack) {
-                Log.e("APP", "onCrashHandleStart:11111111111111111111 ");
                 return super.onCrashHandleStart(crashType, errorType, errorMessage, errorStack);
             }
 
             @Override
             public synchronized byte[] onCrashHandleStart2GetExtraDatas(int crashType, String errorType, String errorMessage, String errorStack) {
-                Log.e("APP", "onCrashHandleStart:22222222222222222222 ");
                 return super.onCrashHandleStart2GetExtraDatas(crashType, errorType, errorMessage, errorStack);
             }
         });

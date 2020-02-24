@@ -206,7 +206,7 @@ public class CoreInfoHandler {
         OkHttpUtils.post()
                 .url(ResourceUpdate.UPDATE_DEVICE_TYPE)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
-                .addParams("type", "1 ")
+                .addParams("type", "7")
                 .build()
                 .execute(new StringCallback() {
                     @Override

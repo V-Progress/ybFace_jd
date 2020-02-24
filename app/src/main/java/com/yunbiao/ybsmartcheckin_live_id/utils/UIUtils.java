@@ -22,19 +22,21 @@ import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
  */
 
 public class UIUtils {
+    private static Toast mTipsToast;
 
-    private static Toast mToast;
-
-    public static void showShort(Activity context,String message){
-        showTitleTip(context,message);
+    public static void showShort(Activity context, String message) {
+        showTitleTip(context, message);
     }
 
-    private static Toast mTipsToast;
-    public static void showTitleTip(Context context,String title) {
-        if(mTipsToast != null){
+    private static void cancelTitleTips(){
+        if (mTipsToast != null) {
             mTipsToast.cancel();
             mTipsToast = null;
         }
+    }
+
+    public static void showTitleTip(Context context, String title) {
+        cancelTitleTips();
         int padding = 20;
         TextView textView = new TextView(context);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -42,7 +44,7 @@ public class UIUtils {
         textView.setTextSize(36);
         textView.setText(title);
         textView.setTextColor(Color.WHITE);
-        textView.setPadding(padding,padding,padding,padding);
+        textView.setPadding(padding, padding, padding, padding);
         textView.setGravity(Gravity.CENTER);
         textView.setElevation(10);
 
@@ -55,6 +57,7 @@ public class UIUtils {
 
 
     public static ProgressDialog pd;
+
     // CoreInfoHandler 关机重启三秒等待
     public static ProgressDialog coreInfoShow3sDialog(Context context) {
         ProgressDialog pd = new ProgressDialog(context);
@@ -75,21 +78,29 @@ public class UIUtils {
         pd.show();
 
         Window window = pd.getWindow();
-        window.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
+        window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         window.setWindowAnimations(R.style.mystyle);
     }
 
     public static CountDownTimer restart = new CountDownTimer(3 * 1000, 1000) {//3秒
-        @Override public void onTick(long millisUntilFinished) {}
-        @Override public void onFinish() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+        }
+
+        @Override
+        public void onFinish() {
             // 重启
             PowerOffTool.getPowerOffTool().restart();
         }
     };
 
     public static CountDownTimer powerShutDown = new CountDownTimer(3 * 1000, 1000) {//3秒
-        @Override public void onTick(long millisUntilFinished) {}
-        @Override public void onFinish() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+        }
+
+        @Override
+        public void onFinish() {
             // 关机
             PowerOffTool.getPowerOffTool().powerShutdown();
         }
@@ -97,21 +108,22 @@ public class UIUtils {
 
 
     private static Dialog dialog;
-    public static void showNetLoading(Context context){
+
+    public static void showNetLoading(Context context) {
         dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         FrameLayout frameLayout = new FrameLayout(context);
         frameLayout.setBackgroundColor(Color.TRANSPARENT);
         AVLoadingIndicatorView avLoadingIndicatorView = new AVLoadingIndicatorView(context);
         avLoadingIndicatorView.setBackgroundColor(Color.TRANSPARENT);
-        frameLayout.addView(avLoadingIndicatorView,new FrameLayout.LayoutParams(300,200, Gravity.CENTER));
-        dialog.setContentView(frameLayout,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        frameLayout.addView(avLoadingIndicatorView, new FrameLayout.LayoutParams(300, 200, Gravity.CENTER));
+        dialog.setContentView(frameLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         dialog.setCancelable(false);
         dialog.show();
     }
 
-    public static void dismissNetLoading(){
-        if(dialog != null && dialog.isShowing()){
+    public static void dismissNetLoading() {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }

@@ -68,15 +68,14 @@
             android:layout_height="wrap_content">
 
             <TextClock
-                android:text="121311212"
                 android:id="@+id/textClock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/tv_ambient_temperature_main"
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
-                android:textColor="@color/horizontal_item_visitor_name_normal"
+                android:textColor="@color/text_clock_color_main"
                 android:textSize="28dp" />
 
             <TextView
@@ -84,113 +83,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@mipmap/temperature_icon"
-                android:textColor="@color/horizontal_item_visitor_name_normal"
+                android:textColor="@color/text_clock_color_main"
                 android:textSize="28dp" />
         </LinearLayout>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/iv_person_frame"
+            android:translationY="80dp"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/person_frame"
+            android:scaleType="fitXY"
+            android:layout_width="1000dp"
+            android:layout_height="1200dp" />
+
+        <View
+            android:visibility="invisible"
             android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/fl_face_range"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Switch
-                android:id="@+id/sw_test"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="翻转坐标"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tv_has_test"
-                android:textColor="@color/white"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:textColor="@color/white"
-                android:id="@+id/tv_distance_test"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_range_test"
-                android:textColor="@color/white"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_temp_test"
-                android:textColor="@color/white"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:textColor="@color/white"
-                android:id="@+id/tv_area_rect_test"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:textColor="@color/white"
-                android:id="@+id/tv_face_rect_test"
-                android:background="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:background="@drawable/shape_temperature_frame_background"
+            android:id="@+id/view_face_distance"
+            android:layout_width="450dp"
+            android:layout_height="450dp"
+            android:layout_gravity="center" />
 
         <TextView
+            android:visibility="invisible"
+            android:layout_below="@+id/tv_temp_tips_main"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:id="@+id/tv_temperature_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="65dp"
+            android:textColor="@color/white"
+            android:textSize="25dp" />
+
+        <TextView
+            android:textStyle="bold"
             android:id="@+id/tv_temp_tips_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:padding="16dp"
             android:textColor="@color/white"
             android:textSize="28dp"
             android:visibility="invisible" />
 
-        <FrameLayout
-            android:id="@+id/fl_face_range"
-            android:layout_width="480dp"
-            android:layout_height="480dp"
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_range_tips_main"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/shape_temperature_frame_background">
-
-            <View
-                android:id="@+id/view_face_distance"
-                android:layout_width="260dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:id="@+id/tv_temperature_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="right"
-                android:layout_margin="5dp"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
-
-            <TextView
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:id="@+id/tv_range_tips_main"
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:layout_centerInParent="true"
-                android:background="#4D000000"
-                android:textColor="@color/white"
-                android:textSize="38dp"/>
-        </FrameLayout>
+            android:background="#4D000000"
+            android:textColor="@color/white"
+            android:textSize="40dp"/>
 
     </RelativeLayout>
 
@@ -209,4 +157,12 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
         android:background="@mipmap/lignt_line" />
+
+    <Button
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/btn_test_0"
+        android:text="点击归0"
+        android:layout_width="200dp"
+        android:layout_height="100dp" />
 </FrameLayout>

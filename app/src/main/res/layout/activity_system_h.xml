@@ -199,7 +199,7 @@
                 android:paddingRight="40dp">
 
                 <TableRow
-                    android:layout_margin="30dp"
+                    android:layout_margin="26dp"
                     android:gravity="center"
                     android:weightSum="2">
 
@@ -207,7 +207,7 @@
                         android:id="@+id/btn_depart_system"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="40dp"
+                        android:layout_marginRight="20dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
@@ -229,15 +229,15 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_margin="30dp"
-                    android:layout_weight="2"
+                    android:layout_margin="26dp"
+                    android:weightSum="2"
                     android:gravity="center">
 
                     <Button
                         android:id="@+id/btn_data_system"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="40dp"
+                        android:layout_marginRight="20dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
@@ -260,20 +260,20 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_margin="30dp"
+                    android:layout_margin="26dp"
                     android:gravity="center"
                     android:weightSum="2">
 
                     <Button
-                        android:onClick="seeVisitor"
                         android:nextFocusDown="@+id/btn_data_system"
                         android:nextFocusRight="@+id/btn_add_system"
+                        android:onClick="seeVisitor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginRight="20dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
-                        android:padding="30dp"
+                        android:padding="26dp"
                         android:text="@string/System_Visitor"
                         android:textColor="@color/white"
                         android:textSize="36dp" />
@@ -287,69 +287,69 @@
                         android:layout_marginLeft="50dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
-                        android:padding="30dp"
+                        android:padding="25dp"
                         android:text="@string/System_skin_select"
                         android:textColor="@color/white"
                         android:textSize="36dp" />
+
                 </TableRow>
             </TableLayout>
 
-            <FrameLayout
+
+            <LinearLayout
+                android:padding="5dp"
+                android:background="@drawable/shape_employ_button"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:gravity="right|center">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="60dp"
-                    android:background="@drawable/shape_employ_button">
-
-                    <com.roger.match.library.MatchTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="30dp"
-                        match:text="YUNBIAO WULIAN"
-                        match:textColor="@color/white"
-                        match:textSize="60dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:gravity="right|center">
-
-                        <TextView
-                            android:id="@+id/tv_version_system"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="20dp" />
-
-                        <Button
-                            android:id="@+id/btn_update_system"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:background="@drawable/selector_btn_take_photo"
-                            android:text="@string/System_update"
-                            android:textColor="@color/white"
-                            android:textSize="25dp" />
-                    </LinearLayout>
-
-                </FrameLayout>
-
-                <TextView
+                <com.roger.match.library.MatchTextView
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="30dp"
-                    android:gravity="center"
-                    android:text="@string/System_copyright"
-                    android:textColor="@color/white"
-                    android:textSize="16dp" />
-            </FrameLayout>
+                    android:layout_gravity="center"
+                    match:text="YUNBIAO WULIAN"
+                    match:textColor="@color/white"
+                    match:textSize="60dp" />
 
+                <LinearLayout
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/tv_version_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <Button
+                        android:id="@+id/btn_update_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:text="@string/System_update"
+                        android:textColor="@color/white"
+                        android:textSize="25dp" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:text="@string/System_copyright"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
 
         </LinearLayout>
     </LinearLayout>

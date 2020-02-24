@@ -2,7 +2,6 @@ package com.yunbiao.ybsmartcheckin_live_id.serialport;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.utils.HexUtil;
@@ -43,6 +42,8 @@ import android_serialport_api.SerialPort;
  *
  * 6、获取测量温度
  *    InfraredTemperatureUtils.getIns.getMeasuringTemperatureF()
+ *
+ * 7、TN905元件没有环境温度数据，现以测量温度同时作为环境温度，在没人的时获取环境温度为正确的环境温度
  */
 
 public class InfraredTemperatureUtils {
@@ -67,8 +68,8 @@ public class InfraredTemperatureUtils {
 
     //环境温度校正值，默认为0.0
     private float aCorrectionValue = 0.0f;
-    //测量温度校正值，默认为1.5
-    private float mCorrectionValue = 1.5f;
+    //测量温度校正值，默认为0.0
+    private float mCorrectionValue = 0.0f;
 
     public static InfraredTemperatureUtils getIns() {
         synchronized (InfraredTemperatureUtils.class) {
@@ -178,14 +179,23 @@ public class InfraredTemperatureUtils {
     private String lastReceive = "";
     private void handleReadData(String readStr) {
         if (!TextUtils.isEmpty(readStr)) {
-            if (lastReceive == "" && !readStr.equals("BB")) {
+            if ((!readStr.equals("BB") && !readStr.equals("CC")) && lastReceive == "") {
                 return;
             }
             String allReceive = lastReceive + readStr;
             lastReceive += readStr;
-            if (allReceive.endsWith("0D0A")) {
+            if (allReceive.startsWith("BB") && allReceive.endsWith("0D0A")) {
                 if (allReceive.length() == 84) {
-                    analyticalTemperature(allReceive);
+                    analyticalTemperatureNLX90614(allReceive);
+                    lastReceive = "";
+                } else {
+                    //无效数据
+                    lastReceive = "";
+                }
+            }
+            if (allReceive.startsWith("CC") && allReceive.endsWith("0D0A")) {
+                if (allReceive.length() == 20) {
+                    analyticalTemperatureTN905(allReceive);
                     lastReceive = "";
                 } else {
                     //无效数据
@@ -195,32 +205,56 @@ public class InfraredTemperatureUtils {
         }
     }
 
-    //解析温度
-    private void analyticalTemperature(String tData) {
+    //解析温度 - NLX90614元件
+    private void analyticalTemperatureNLX90614(String tData) {
 //        Log.i(LOGTAG, "tData = " + tData);
         String[] tempDatas = tData.split("20A1E3430A");
 
         String ambientTemperatureStr = tempDatas[0].substring(20, 30);
-        ambientTemperatureF = Float.valueOf(new BigDecimal(new String(HexUtil.hexStr2Bytes(ambientTemperatureStr))).add(new BigDecimal(String.valueOf(aCorrectionValue))).toString());
+        ambientTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(ambientTemperatureStr)));
 //        Log.i(LOGTAG, "ambientTemperatureF = " + ambientTemperatureF);
 
         String measuringTemperatureStr = tempDatas[1].substring(20, 30);
         measuringTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
         if (measuringTemperatureF < 31.00f) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(5.00f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(5.00f)).toString());
         } else if (31.00f <= measuringTemperatureF && measuringTemperatureF <= 31.90f) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(4.90f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(4.90f)).toString());
         } else if (32.00f <= measuringTemperatureF && measuringTemperatureF <= 32.50f) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(4.05f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(4.05f)).toString());
         } else if (32.60f <= measuringTemperatureF && measuringTemperatureF <= 32.90f) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(3.75f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(3.75f)).toString());
         } else if (33.00f <= measuringTemperatureF && measuringTemperatureF <= 33.50f) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(3.30f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(3.30f)).toString());
         } else if (33.60f <= measuringTemperatureF) {
-            measuringTemperatureF = Float.valueOf(new BigDecimal(String.valueOf(measuringTemperatureF)).add(new BigDecimal(String.valueOf(2.87f))).toString());
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(2.87f)).toString());
         }
-//        measuringTemperatureF = Float.valueOf(new BigDecimal(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr))).add(new BigDecimal(String.valueOf(mCorrectionValue))).toString());
+//        measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(mCorrectionValue)).toString());
 //        Log.i(LOGTAG, "measuringTemperatureF = " + measuringTemperatureF);
+    }
+
+    //解析温度 - TN905元件
+    private void analyticalTemperatureTN905(String tData) {
+//        Log.i(LOGTAG, "tData = " + tData);
+        String measuringTemperatureStr = tData.substring(2, 12);
+        ambientTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
+        measuringTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
+
+        /*if (measuringTemperatureF < 29.f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(7.00f)).toString());
+        } else if (29.00f <= measuringTemperatureF && measuringTemperatureF <= 29.50f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(6.80f)).toString());
+        } else if (29.60f <= measuringTemperatureF && measuringTemperatureF <= 29.90f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(6.60f)).toString());
+        } else if (30.00f <= measuringTemperatureF && measuringTemperatureF <= 30.40f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(6.10f)).toString());
+        } else if (31.00f <= measuringTemperatureF && measuringTemperatureF <= 31.40f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(5.40f)).toString());
+        } else if (31.50f <= measuringTemperatureF && measuringTemperatureF <= 31.90f) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(5.20f)).toString());
+        } else if (measuringTemperatureF >= 32.0) {
+            measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(4.20f)).toString());
+        }*/
     }
 
     //设置环境温度校正值
@@ -235,12 +269,20 @@ public class InfraredTemperatureUtils {
 
     //获取环境温度
     public float getAmbientTemperatureF() {
-        return ambientTemperatureF;
+        if (aCorrectionValue > 0) {
+            return new BigDecimal(ambientTemperatureF).add(new BigDecimal(aCorrectionValue)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        } else {
+            return new BigDecimal(ambientTemperatureF).subtract(new BigDecimal(Math.abs(aCorrectionValue))).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        }
     }
 
     //获取测量温度
     public float getMeasuringTemperatureF() {
-        return measuringTemperatureF;
+        if (mCorrectionValue > 0) {
+            return new BigDecimal(measuringTemperatureF).add(new BigDecimal(mCorrectionValue)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        } else {
+            return new BigDecimal(measuringTemperatureF).subtract(new BigDecimal(Math.abs(mCorrectionValue))).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        }
     }
 
     public void closeSerialPort() {

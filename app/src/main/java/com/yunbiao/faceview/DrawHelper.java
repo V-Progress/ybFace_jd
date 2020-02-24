@@ -219,9 +219,9 @@ public class DrawHelper {
                     + (drawInfo.getLiveness() == LivenessInfo.ALIVE ? "ALIVE" : (drawInfo.getLiveness() == LivenessInfo.NOT_ALIVE ? "NOT_ALIVE" : "UNKNOWN"));
             canvas.drawText(str, rect.left, rect.top - 10, paint);
         } else {
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setTextSize(rect.width() / 8);
-            canvas.drawText(drawInfo.getName(), rect.left, rect.top - 10, paint);
+//            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+//            paint.setTextSize(rect.width() / 8);
+//            canvas.drawText(drawInfo.getName(), rect.left, rect.top - 10, paint);
         }
     }
 

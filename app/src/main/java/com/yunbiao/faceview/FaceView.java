@@ -97,7 +97,7 @@ public class FaceView extends FrameLayout {
     /**
      * 活体检测的开关
      */
-    private boolean livenessDetect = true;
+    private boolean livenessDetect = false;
 
     /**
      * 用于记录人脸识别相关状态
@@ -254,26 +254,46 @@ public class FaceView extends FrameLayout {
         return null;
     }
 
-    public boolean checkFaceDistance(Rect faceRect, int distance) {
+    public boolean checkFaceInDistance(Rect faceRect, int distance) {
         int faceWidth = faceRect.right - faceRect.left;
-        Log.e(TAG, "checkFaceDistance: 脸宽：" + faceWidth + "---框宽：" + distance);
-        return faceWidth < distance;
+        return faceWidth >= distance;
     }
 
     private Rect mAreaRect = new Rect();
-    public boolean checkFaceInFrame(Rect faceRect, View areaView,RectCallback rectCallback) {
+
+    public boolean checkFaceInFrame(Rect faceRect, View areaView, RectCallback rectCallback) {
         areaView.getGlobalVisibleRect(mAreaRect);
-        mAreaRect.left += 50;
+        mAreaRect.left -= 50;
         mAreaRect.right += 50;
-        mAreaRect.top += 50;
+        mAreaRect.top -= 50;
         mAreaRect.bottom += 50;
         Rect rect = drawHelper.adjustRect(faceRect);
-        rectCallback.onAreaRect(mAreaRect,rect);
+        rectCallback.onAreaRect(mAreaRect, rect);
         return mAreaRect.contains(rect);
     }
 
-    public interface RectCallback{
-        void onAreaRect(Rect mAreaRect,Rect mFaceRect);
+    public boolean checkFaceInFrame(Rect faceRect, View areaView) {
+        areaView.getGlobalVisibleRect(mAreaRect);
+        mAreaRect.left -= 20;
+        mAreaRect.right += 20;
+        mAreaRect.top -= 20;
+        mAreaRect.bottom += 20;
+        Rect rect = drawHelper.adjustRect(faceRect);
+        return mAreaRect.contains(rect);
+    }
+
+    public boolean checkFaceInFrame2(Rect faceRect, View areaView) {
+        areaView.getGlobalVisibleRect(mAreaRect);
+        mAreaRect.left += 20;
+        mAreaRect.right -= 20;
+        mAreaRect.top += 20;
+        mAreaRect.bottom -= 20;
+        Rect rect = drawHelper.adjustRect(faceRect);
+        return rect.contains(mAreaRect);
+    }
+
+    public interface RectCallback {
+        void onAreaRect(Rect mAreaRect, Rect mFaceRect);
     }
 
     private CameraListener cameraListener = new CameraListener() {
@@ -327,8 +347,6 @@ public class FaceView extends FrameLayout {
 
             if (callback != null) {
                 boolean hasFace = facePreviewInfoList != null && facePreviewInfoList.size() > 0;
-                callback.onFaceDetection(hasFace, facePreviewInfoList);
-
                 boolean canNext = callback.onFaceDetection(hasFace, hasFace ? facePreviewInfoList.get(0) : null);
                 if (!canNext) {
                     return;
@@ -525,6 +543,20 @@ public class FaceView extends FrameLayout {
         this.callback = callback;
     }
 
+    public Bitmap getCurrCameraFrame() {
+        try {
+            byte[] clone = mCurrBytes.clone();
+            YuvImage image = new YuvImage(clone, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
+            Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+            stream.close();
+            return bmp;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public Bitmap takePicture() {
         if (mCurrBytes != null) {
@@ -533,7 +565,7 @@ public class FaceView extends FrameLayout {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
                 Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                if (infoList != null) {
+                if (infoList != null && infoList.size() > 0) {
                     FacePreviewInfo facePreviewInfo = infoList.get(0);
                     FaceInfo faceInfo = facePreviewInfo.getFaceInfo();
 
@@ -545,6 +577,8 @@ public class FaceView extends FrameLayout {
                                 , bestRect.bottom - bestRect.top);
                         return bitmap;
                     }
+                } else {
+                    return null;
                 }
                 stream.close();
                 return bmp;
@@ -728,10 +762,6 @@ public class FaceView extends FrameLayout {
                         Log.e(TAG, "人脸对比：" + requestId + " --- " + compareResult.getTrackId() + " --- " + compareResult.getUserName() + " --- " + compareResult.getSimilar());
 
                         if (compareResult.getSimilar() > SIMILAR_THRESHOLD) {
-                            if (callback != null) {
-                                callback.onFaceVerify(compareResult);
-                            }
-
                             boolean isAdded = false;
                             if (compareResultList == null) {
                                 requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
@@ -763,6 +793,9 @@ public class FaceView extends FrameLayout {
                                 User user = DaoManager.get().queryUserByFaceId(userName);
                                 userName = user.getName();
                             }*/
+                            if (callback != null) {
+                                callback.onFaceVerify(compareResult);
+                            }
                             faceHelper.setName(requestId, /*compareResult.getUserName()*/"ID: " + userName);
                         } else {
                             //回调识别失败的结果，说明是陌生人

@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public abstract class BaseGpioActivity extends BaseActivity {
+public abstract class BaseGpioActivity extends LedControlActivity {
     private boolean isOpened = false;//是否已开锁
 //    private boolean isAlwayOpen = false;//常开
     private Handler timeHanlder = new Handler();

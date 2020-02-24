@@ -65,9 +65,17 @@ public class SpUtils {
     public static final String SIMILAR_THRESHOLD = "similarThreshold";
 
     //温度检测开关
-    public static final String TEMPERATURE_ENABLED = "temperatureEnabled";
+    public static final String TEMPERATURE_ENABLED = "temperatureEnabled";//测温模块开关
     public static final String TEMP_CORRECT_VALUE = "tempCorrectValue";//测温矫正值
     public static final String AMB_CORRECT_VALUE = "ambCorrectValue";//环境温度校正值
+
+    public static final String LIVENESS_ENABLED = "livenessEnabled";//活体开关
+
+    public static final String MODEL_SETTING = "modelSetting";//模式设置
+    public static final String TEMP_TIPS_TIME = "tempTipsTime";//提示时间
+    public static final String GET_TEMP_DELAY_TIME = "getTempDelayTime";//取温延迟
+    public static final String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";//温度报警阈值
+    public static final String TEMP_MIN_THRESHOLD = "tempWarningThreshold";//温度最低阈值
 
     public static void init() {
         getCompany();

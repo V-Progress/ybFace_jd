@@ -100,6 +100,8 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        initModelSetting();
+
         initSetIp();
 
         startUpdateCpuTemperature();
@@ -119,6 +121,47 @@ public class SettingActivity extends BaseActivity {
         initFaceVipDialogSetting();
 
         initCameraSetting();
+
+        initLivenessSetting();
+    }
+
+    private void initModelSetting() {
+        final String[] items = {"人脸识别", "人脸 + 体温", "体温"};
+        final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
+        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
+        tvModelSetting.setText("当前模式:  " + items[model]);
+
+        tvModelSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+                builder.setTitle("选择模式");
+                builder.setSingleChoiceItems(items, whichModel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SpUtils.saveInt(SpUtils.MODEL_SETTING, which);
+                        tvModelSetting.setText("当前模式:  " + items[which]);
+                        UIUtils.showShort(SettingActivity.this, items[which]);
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+    }
+
+    private void initLivenessSetting() {
+        Switch swLiveness = findViewById(R.id.sw_liveness_setting);
+        boolean liveness = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+        swLiveness.setChecked(liveness);
+        swLiveness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, isChecked);
+            }
+        });
     }
 
     //初始化IP设置
@@ -184,7 +227,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     //初始化人脸弹窗开关
-    private void initFaceVipDialogSetting(){
+    private void initFaceVipDialogSetting() {
         Switch switchFaceDialog = findViewById(R.id.sw_face_dialog);
         boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
         switchFaceDialog.setChecked(faceDialog);
@@ -198,7 +241,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     //初始化摄像头设置
-    private void initCameraSetting(){
+    private void initCameraSetting() {
         TextView tvCamera = findViewById(R.id.tv_camera);
         //摄像头模式
         tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
@@ -209,7 +252,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     //初始化人脸框镜像设置
-    private void initFaceRectMirrorSetting(){
+    private void initFaceRectMirrorSetting() {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
@@ -224,7 +267,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     //开始自动更新CPU温度
-    private void startUpdateCpuTemperature(){
+    private void startUpdateCpuTemperature() {
         final TextView tvCpuTemper = findViewById(R.id.tv_cpu_temper);
         //获取CPU温度
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
@@ -271,25 +314,48 @@ public class SettingActivity extends BaseActivity {
 
     //初始化温度检测模块的设置
     private void initTemperatureSetting() {
+        //温度开关
         Switch swTemperature = findViewById(R.id.sw_temperature_setting);
         boolean enabled = SpUtils.getBoolean(SpUtils.TEMPERATURE_ENABLED, true);
         swTemperature.setChecked(enabled);
-
         swTemperature.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(SpUtils.TEMPERATURE_ENABLED, isChecked);
+                if (isChecked) {
+                    Switch swLiveness = findViewById(R.id.sw_liveness_setting);
+                    swLiveness.setChecked(false);
+                    SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, false);
+                }
             }
         });
 
+        //提示时间
+        final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
+        Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
+        final int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
+        edtTipsTime.setText(time + "");
+        btnSaveTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int saveTime = time;
+                String s = edtTipsTime.getText().toString();
+                if (!TextUtils.isEmpty(s)) {
+                    saveTime = Integer.parseInt(s);
+                }
+                edtTipsTime.setText(saveTime + "");
+                SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
+            }
+        });
+
+        //设置温度补正
         final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);
         final EditText edtAmbCorr = findViewById(R.id.edt_ambient_correct_setting);
         edtAmbCorr.setHint(ambCorrValue + "");
-
-        Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f);
+        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f);
         final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
         edtTempCorr.setHint(tempCorrValue + "");
-
         Button btnSave = findViewById(R.id.btn_save_temp_setting);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,7 +367,7 @@ public class SettingActivity extends BaseActivity {
 
                 String tempCorrInput = edtTempCorr.getText().toString();
                 if (TextUtils.isEmpty(tempCorrInput)) {
-                    edtTempCorr.setText(tempCorrInput + "");
+                    edtTempCorr.setText(tempCorrValue + "");
                 }
 
                 ambCorrInput = edtAmbCorr.getText().toString();
@@ -310,6 +376,54 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveFloat(SpUtils.AMB_CORRECT_VALUE, Float.parseFloat(ambCorrInput));
                 SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, Float.parseFloat(tempCorrInput));
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功");
+            }
+        });
+
+        //取温延时
+        final EditText edtGetDelay = findViewById(R.id.edt_get_temp_delay_setting);
+        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
+        edtGetDelay.setText(delayTime + "");
+        Button btnSaveGetDelay = findViewById(R.id.btn_save_get_temp_delay_setting);
+        btnSaveGetDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String getTempDelayInput = edtGetDelay.getText().toString();
+                if (TextUtils.isEmpty(getTempDelayInput)) {
+                    edtGetDelay.setText(delayTime + "");
+                }
+
+                getTempDelayInput = edtGetDelay.getText().toString();
+
+                SpUtils.saveInt(SpUtils.GET_TEMP_DELAY_TIME, Integer.parseInt(getTempDelayInput));
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
+            }
+        });
+
+        //温度最低阈值、温度报警阈值
+        final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
+        final EditText edtWarningThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
+        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
+        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        edtMinThreshold.setText(minValue + "");
+        edtWarningThreshold.setText(warningValue + "");
+        Button btnSaveThreshold = findViewById(R.id.btn_save_temp_threshold_setting);
+        btnSaveThreshold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String minInput = edtMinThreshold.getText().toString();
+                if (TextUtils.isEmpty(minInput)) {
+                    edtMinThreshold.setText(minValue + "");
+                }
+
+                String warningInput = edtWarningThreshold.getText().toString();
+                if (TextUtils.isEmpty(warningInput)) {
+                    edtWarningThreshold.setText(warningValue + "");
+                }
+
+                minInput = edtMinThreshold.getText().toString();
+                warningInput = edtWarningThreshold.getText().toString();
+                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, Float.parseFloat(minInput));
+                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, Float.parseFloat(warningInput));
             }
         });
     }

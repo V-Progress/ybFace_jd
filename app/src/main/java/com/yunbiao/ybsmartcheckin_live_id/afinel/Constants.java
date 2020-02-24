@@ -122,6 +122,12 @@ public class Constants {
 //        String DEV_RES_PORT = "8088";
 //        String DEV_SUFFIX = "/ybface/";
     }
+
+    public interface Model{
+        int MODEL_FACE_ONLY = 0;
+        int MODEL_FACE_TEMPERATURE = 1;
+        int MODEL_TEMPERATURE_ONLY = 2;
+    }
 }
 
 

@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -53,10 +54,13 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
+import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -388,24 +392,29 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             public void bindData(Context context, Sign signBean) {
                 byte[] imgBytes = signBean.getImgBytes();
                 String headPath = signBean.getHeadPath();
+                Bitmap imgBitmap = signBean.getImgBitmap();
                 if (imgBytes != null) {
                     Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(ivHead);
                 } else if (!TextUtils.isEmpty(headPath)) {
                     Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
+                } else if(imgBitmap != null){
+                    ivHead.setImageBitmap(imgBitmap);
                 }
 
-                tvName.setText(signBean.getName());
+                tvName.setText(signBean.getType() != -9 ? signBean.getName() : "访客");
                 tvTime.setText(df.format(signBean.getTime()));
                 tvTemp.setText(signBean.getTemperature() + "℃");
 
-                if(signBean.getTemperature() < 37.3){
-                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
-                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
-                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal));
-                } else {
+                if (signBean.getTemperature() >= 37.3f) {
+                    ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_warning);
                     tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
                     tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
                     tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                } else {
+                    ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_normal);
+                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
+                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
+                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
                 }
             }
         }

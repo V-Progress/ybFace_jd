@@ -19,7 +19,7 @@
             android:layout_marginRight="10dp">
 
             <Switch
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:id="@+id/switch_liveness"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -41,6 +41,7 @@ public class ResourceUpdate {
     public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
 
     public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";
+    public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = WEB_BASE_URL + "api/facewitness/checkByarrayTemper.html";
 
     /**
      * 判断服务器中的设备是否在线

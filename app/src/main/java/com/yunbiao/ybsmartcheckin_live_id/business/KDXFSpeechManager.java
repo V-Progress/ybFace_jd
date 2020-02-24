@@ -5,12 +5,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -29,6 +35,8 @@ import java.util.Queue;
  */
 
 public class KDXFSpeechManager {
+    private static final String TAG = "KDXFSpeechManager";
+
     private static KDXFSpeechManager instance;
     private static AudioManager audioManager = null; // 音频
     private static TextToSpeech mTextToSpeech;//语音类
@@ -50,10 +58,27 @@ public class KDXFSpeechManager {
         return instance;
     }
 
+    private boolean soundPoolLoadCompleted = false;
+    private SoundPool mSoundPool;
+    private int mVoiceId = -1;
+    private int mPlayId = -1;
+
     private KDXFSpeechManager() {
+        AudioAttributes.Builder ab = new AudioAttributes.Builder();
+        ab.setLegacyStreamType(AudioManager.STREAM_ALARM);
+        ab.setUsage(AudioAttributes.USAGE_ALARM);
+        mSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(ab.build()).build();
+        mVoiceId = mSoundPool.load(APP.getContext(), R.raw.warning_ring, 1);
+        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                soundPoolLoadCompleted = true;
+                Log.e(TAG, "onLoadComplete: 警报音已加载完毕");
+            }
+        });
     }
 
-    public KDXFSpeechManager init(Activity context){
+    public KDXFSpeechManager init(Activity context) {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         initTextToSpeech(context);
         return instance;
@@ -111,8 +136,8 @@ public class KDXFSpeechManager {
     }
 
     //初始化完成后检查队列
-    private void checkQueue(){
-        if(!(utterQueue.size()>0)){
+    private void checkQueue() {
+        if (!(utterQueue.size() > 0)) {
             return;
         }
         final UtterBean utterBean = utterQueue.poll();
@@ -128,36 +153,38 @@ public class KDXFSpeechManager {
     }
 
     //语音和回调模型
-    class UtterBean{
+    class UtterBean {
         String utter;
         VoicePlayListener listener;
+
         public UtterBean(String utter, VoicePlayListener listener) {
             this.utter = utter;
             this.listener = listener;
         }
     }
+
     //消息队列
     private Queue<UtterBean> utterQueue = new LinkedList<>();
 
     /***
      * 播放欢迎语
      */
-    public void welcome(){
-        playText(UTTERANCE_WELCOME,null);
+    public void welcome() {
+        playText(UTTERANCE_WELCOME, null);
     }
 
     /***
      * 播放文字
      * @param message
      */
-    public void playText(final String message){
+    public void playText(final String message) {
         if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
                 && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
             playRing();
             return;
         }
 
-        playText(message,null);
+        playText(message, null);
     }
 
     /***
@@ -167,11 +194,11 @@ public class KDXFSpeechManager {
      */
     public void playText(final String message, final VoicePlayListener listener) {
 
-        if(TextUtils.isEmpty(message)){
+        if (TextUtils.isEmpty(message)) {
             return;
         }
-        if(!isInited){
-            UtterBean u = new UtterBean(message,listener);
+        if (!isInited) {
+            UtterBean u = new UtterBean(message, listener);
             utterQueue.offer(u);
             return;
         }
@@ -189,7 +216,7 @@ public class KDXFSpeechManager {
         mTextToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
             @Override
             public void onUtteranceCompleted(String utteranceId) {
-                if(TextUtils.equals(message,utteranceId) && listener != null){
+                if (TextUtils.equals(message, utteranceId) && listener != null) {
                     listener.playComplete(utteranceId);
                 }
                 restoreVolumn();
@@ -200,7 +227,7 @@ public class KDXFSpeechManager {
         mTextToSpeech.speak(message, TextToSpeech.QUEUE_ADD, textToSpeechMap);
     }
 
-    public void destroy(){
+    public void destroy() {
         if (mTextToSpeech != null) {
             //停止TextToSpeech
             mTextToSpeech.stop();
@@ -211,7 +238,7 @@ public class KDXFSpeechManager {
         }
     }
 
-    private void restoreVolumn(){
+    private void restoreVolumn() {
         if (ontimeList.size() > 0) {
             ontimeList.remove(0);
             if (ontimeList.size() > 0) {
@@ -234,12 +261,87 @@ public class KDXFSpeechManager {
         }
     }
 
-    public interface VoicePlayListener{
+    public interface VoicePlayListener {
         void playComplete(String uttId);
     }
-    private void playRing(){
+
+    private void playRing() {
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone rt = RingtoneManager.getRingtone(APP.getContext(), uri);
         rt.play();
     }
+
+    public void playWaningRing() {
+        stopWarningRing();
+        if (soundPoolLoadCompleted && mVoiceId != -1) {
+            mPlayId = mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
+        }
+    }
+
+    public void stopWarningRing() {
+        if (mPlayId != -1) {
+            mSoundPool.stop(mPlayId);
+            mPlayId = -1;
+        }
+    }
+
+
+    public void playNormal(final String message) {
+        playNormalAddCallback(TextToSpeech.QUEUE_ADD, message, null);
+    }
+    public void playNormal(final String message,Runnable runnable) {
+        playNormalAddCallback(TextToSpeech.QUEUE_ADD, message, runnable);
+    }
+
+    private String mMessage;
+
+    private void playNormalAddCallback(int queueMode, final String message, final Runnable runnable) {
+        if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
+                && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        if (mTextToSpeech.isSpeaking() && TextUtils.equals(message, mMessage)) {
+            return;
+        } else {
+            mMessage = message;
+        }
+
+        /**
+         * 如果有背景音乐的处理
+         */
+        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0) {
+            CURRENT_SOUND = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
+        textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
+        textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
+        mTextToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+            @Override
+            public void onUtteranceCompleted(String utteranceId) {
+                restoreVolumn();
+                if (runnable != null) {
+                    runnable.run();
+                }
+            }
+        });
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        mTextToSpeech.speak(message, queueMode, textToSpeechMap);
+    }
+
+    public void stopNormal() {
+        if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
+                && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
+            return;
+        }
+        if (!mTextToSpeech.isSpeaking()) {
+            return;
+        }
+        mTextToSpeech.stop();
+    }
+
 }
