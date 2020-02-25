@@ -88,7 +88,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
     //判断是否开启测温
     private View viewDistance;
-    private View personFrame;
+    private View tempDetectionDot;
 
     @Override
     protected int getPortraitLayout() {
@@ -111,7 +111,7 @@ public class WelComeActivity extends BaseGpioActivity {
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
         tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
 
-        personFrame = findViewById(R.id.iv_person_frame);
+        tempDetectionDot = findViewById(R.id.iv_temp_detection_dot_main);
         viewDistance = findViewById(R.id.view_face_distance);//人脸限制区域
         tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
         tvTemperature = findViewById(R.id.tv_temperature_main);//实时检测温度
@@ -135,8 +135,8 @@ public class WelComeActivity extends BaseGpioActivity {
 
     private void initAds() {
         boolean enabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
-        if(enabled){
-            if(adsFragment != null && adsFragment.isAdded()){
+        if (enabled) {
+            if (adsFragment != null && adsFragment.isAdded()) {
                 return;
             }
             //加载广告Fragment
@@ -146,7 +146,44 @@ public class WelComeActivity extends BaseGpioActivity {
             removeFragment(adsFragment);
         }
 
+        Button btnFar = findViewById(R.id.btn_test_distance_far);
+        Button btnOk = findViewById(R.id.btn_test_distance_ok);
+        Button btnReset = findViewById(R.id.btn_test_reset);
+        Button btnNo = findViewById(R.id.btn_test_no);
+        Button btnWarning = findViewById(R.id.btn_test_distance_ok_warning);
+        btnFar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 5.0f;
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 35.0f;
+            }
+        });
+        btnWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 37.0f;
+            }
+        });
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 0.0f;
+            }
+        });
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 0.0f;
+            }
+        });
     }
+
+    private float mTestCorrValue = 0.0f;
 
     private void initTest() {
         btnTest0 = findViewById(R.id.btn_test_0);
@@ -207,13 +244,13 @@ public class WelComeActivity extends BaseGpioActivity {
         mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
         boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
         if (isTemperatureEnabled) {
-            personFrame.setVisibility(View.VISIBLE);
+            tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.VISIBLE);
             tvRangeTips.setVisibility(View.VISIBLE);
             tvTempTips.setVisibility(View.VISIBLE);
             startUpdateTemperatureRunnable();
         } else {
-            personFrame.setVisibility(View.GONE);
+            tempDetectionDot.setVisibility(View.GONE);
             tvAmbient.setVisibility(View.GONE);
             tvRangeTips.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
@@ -253,7 +290,9 @@ public class WelComeActivity extends BaseGpioActivity {
             canDetection = hasFace;
             if (!hasFace) {//如果没有人脸
                 mStrangerTempTrackId = -1;
-                setRangeTips("");
+                if(mCurrModel != Constants.Model.MODEL_TEMPERATURE_ONLY){
+                    setRangeTips("");
+                }
                 return false;
             }
 
@@ -274,18 +313,32 @@ public class WelComeActivity extends BaseGpioActivity {
                 if (tvRangeTips == null || rect == null) {
                     return false;
                 }
-                //判断人脸距离是否合适
-                if (!faceView.checkFaceInDistance(rect, viewDistance.getMeasuredWidth())) {
+                Rect realRect = faceView.getRealRect(rect);
+                int minWidth = viewDistance.getMeasuredWidth();
+                int maxHeight = faceView.getHeight();
+
+                //判断人脸距离是否太远
+                if (faceView.checkFaceToFar(realRect, minWidth)) {
                     mCacheTime = 0;
                     setRangeTips("距离太远，请靠近");
+                    KDXFSpeechManager.instance().playNormal("请靠近点");
+                    return false;
+                } else if (faceView.checkFaceTooClose(realRect, maxHeight)) {
+                    mCacheTime = 0;
+                    setRangeTips("距离太近，请远一点");
+                    KDXFSpeechManager.instance().playNormal("请远一点");
                     return false;
                 }
+                setRangeTips("");
+
                 //检测人脸是否在框内
-                if (!faceView.checkFaceInFrame2(rect, viewDistance)) {
+                if (!faceView.checkFaceInFrame2(realRect, viewDistance)) {
                     mCacheTime = 0;
                     setRangeTips("请将脸部对准人脸识别区域");
                     return false;
                 }
+                setRangeTips("");
+
                 //判断当前温度，取36度以上再进行识别
                 if (mCacheTemperatureHighestValue <= mTempMinThreshold) {
                     return false;
@@ -405,23 +458,10 @@ public class WelComeActivity extends BaseGpioActivity {
     private float mTempMinThreshold = 36.0f;//最小阈值
     private float mTempWarningThreshold = 37.3f;//报警值
     private int mCurrModel = 0;//当前模式
-
+    private float mCacheDetectionValue = 0f;
     private long mCacheTime = 0;//时间缓存
     private float mCacheTemperatureHighestValue = 0f;//最高温度值缓存
     private float mCacheValueForTempModel = 0f;//专为测温模式缓存的数值,用于判断该次有没有被播报,防止多次播报
-
-    private void setTemperatureModule(boolean isOpen) {
-        int show;
-        if (isOpen) {
-            show = View.VISIBLE;
-        } else {
-            show = View.GONE;
-        }
-        personFrame.setVisibility(show);
-        tvAmbient.setVisibility(show);
-        tvRangeTips.setVisibility(show);
-        tvTempTips.setVisibility(show);
-    }
 
     private void setRangeTips(String tips) {
         String s = tvRangeTips.getText().toString();
@@ -462,7 +502,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
             //获取检测温度
             float measuringTemperatureF = formatF(InfraredTemperatureUtils.getIns().getMeasuringTemperatureF());
-//            measuringTemperatureF += 36.6;
+            measuringTemperatureF += mTestCorrValue;
             tvTemperature.setText(measuringTemperatureF + " ℃");
 
             if (measuringTemperatureF < mTempWarningThreshold) {
@@ -481,6 +521,41 @@ public class WelComeActivity extends BaseGpioActivity {
              * */
             //如果是仅测温模式的话,则判断数值是否超过阈值,如果超过则开始判断延迟时间
             if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+
+                //如果为0说明是初始化状态
+                if (mCacheDetectionValue == 0f) {
+                    mCacheTime = 0;//取温缓存时间重置
+                    mCacheValueForTempModel = 0f;//防重复缓存值重置
+                    mCacheTemperatureHighestValue = 0f;//缓存最终值重置
+                    mCacheDetectionValue = measuringTemperatureF;
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    setRangeTips("");
+                    return;
+                }
+
+                //如果检测温度比缓存温度小，说明没人，或者有人走了
+                else if (measuringTemperatureF < mCacheDetectionValue) {
+                    mCacheTime = 0;
+                    mCacheValueForTempModel = 0f;
+                    mCacheTemperatureHighestValue = 0f;
+                    mCacheDetectionValue = measuringTemperatureF;
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    setRangeTips("");
+                    return;
+                }
+
+                //如果比缓存温度高过3度，且小于阈值，说明距离较远
+                else if (measuringTemperatureF - mCacheDetectionValue > 3.0f && measuringTemperatureF < mTempMinThreshold) {
+                    mCacheTime = 0;
+                    mCacheValueForTempModel = 0f;
+                    mCacheTemperatureHighestValue = 0f;
+                    setRangeTips("距离太远，请靠近");
+                    KDXFSpeechManager.instance().playNormal("请靠近点");
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    return;
+                }
+
+                setRangeTips("");
                 //如果大于阈值则开始存最高值
                 if (measuringTemperatureF >= mTempMinThreshold) {
                     //收起海报界面

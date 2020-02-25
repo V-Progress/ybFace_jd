@@ -254,12 +254,24 @@ public class FaceView extends FrameLayout {
         return null;
     }
 
-    public boolean checkFaceInDistance(Rect faceRect, int distance) {
+    public boolean checkFaceToFar(Rect faceRect, int distance) {
         int faceWidth = faceRect.right - faceRect.left;
-        return faceWidth >= distance;
+        return faceWidth < distance;
+    }
+
+    public boolean checkFaceTooClose(Rect faceRect, int distance) {
+        int faceHeight = faceRect.bottom - faceRect.top;
+        return faceHeight >= distance;
     }
 
     private Rect mAreaRect = new Rect();
+
+    public Rect getRealRect(Rect faceRect) {
+        if (drawHelper == null) {
+            return null;
+        }
+        return drawHelper.adjustRect(faceRect);
+    }
 
     public boolean checkFaceInFrame(Rect faceRect, View areaView, RectCallback rectCallback) {
         areaView.getGlobalVisibleRect(mAreaRect);
@@ -288,8 +300,7 @@ public class FaceView extends FrameLayout {
         mAreaRect.right -= 20;
         mAreaRect.top += 20;
         mAreaRect.bottom -= 20;
-        Rect rect = drawHelper.adjustRect(faceRect);
-        return rect.contains(mAreaRect);
+        return faceRect.contains(mAreaRect);
     }
 
     public interface RectCallback {
@@ -544,7 +555,7 @@ public class FaceView extends FrameLayout {
     }
 
     public Bitmap getCurrCameraFrame() {
-        if(mCurrBytes != null){
+        if (mCurrBytes != null) {
             try {
                 byte[] clone = mCurrBytes.clone();
                 YuvImage image = new YuvImage(clone, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);

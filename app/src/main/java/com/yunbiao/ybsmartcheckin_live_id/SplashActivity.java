@@ -85,8 +85,8 @@ public class SplashActivity extends BaseActivity {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
 
-//        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
-        startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
+        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+//        startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
     }
 
     @Override

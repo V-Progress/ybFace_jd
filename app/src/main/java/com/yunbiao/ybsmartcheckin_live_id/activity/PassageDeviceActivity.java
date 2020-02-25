@@ -95,7 +95,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     //判断是否开启测温
     private View viewDistance;
-    private View personFrame;
 
     @Override
     protected void initView() {
@@ -105,7 +104,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         faceView.setCallback(faceCallback);
         ivMainLogo = findViewById(R.id.iv_main_logo);
 
-        personFrame = findViewById(R.id.iv_person_frame);
         viewDistance = findViewById(R.id.view_face_distance);//人脸限制区域
         tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
         tvTemperature = findViewById(R.id.tv_temperature_main);//实时检测温度
@@ -125,8 +123,8 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     private void initAds() {
         boolean enabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
-        if(enabled){
-            if(adsFragment != null && adsFragment.isAdded()){
+        if (enabled) {
+            if (adsFragment != null && adsFragment.isAdded()) {
                 return;
             }
             //加载广告Fragment
@@ -185,13 +183,11 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
         boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
         if (isTemperatureEnabled) {
-            personFrame.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.VISIBLE);
             tvRangeTips.setVisibility(View.VISIBLE);
             tvTempTips.setVisibility(View.VISIBLE);
             startUpdateTemperatureRunnable();
         } else {
-            personFrame.setVisibility(View.GONE);
             tvAmbient.setVisibility(View.GONE);
             tvRangeTips.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
@@ -252,10 +248,16 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                 if (tvRangeTips == null || rect == null) {
                     return false;
                 }
+                Rect realRect = faceView.getRealRect(rect);
+                int minWidth = viewDistance.getMeasuredWidth();
                 //判断人脸距离是否合适
-                if (!faceView.checkFaceInDistance(rect, viewDistance.getMeasuredWidth())) {
+                if (faceView.checkFaceToFar(realRect, minWidth)) {
                     mCacheTime = 0;
                     setRangeTips("距离太远，请靠近");
+                    return false;
+                } else if (faceView.checkFaceTooClose(realRect, minWidth)) {
+                    mCacheTime = 0;
+                    setRangeTips("距离太近，请远一点");
                     return false;
                 }
                 //检测人脸是否在框内
@@ -395,7 +397,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         } else {
             show = View.GONE;
         }
-        personFrame.setVisibility(show);
         tvAmbient.setVisibility(show);
         tvRangeTips.setVisibility(show);
         tvTempTips.setVisibility(show);
