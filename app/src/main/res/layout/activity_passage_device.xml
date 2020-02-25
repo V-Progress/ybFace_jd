@@ -7,15 +7,15 @@
     tools:context=".activity.PassageDeviceActivity">
 
     <com.yunbiao.faceview.FaceView
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:id="@+id/face_view"
-        android:layout_height="match_parent"/>
+        android:layout_height="1422dp"/>
 
     <RelativeLayout
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <ImageView
             android:layout_marginTop="10dp"
