@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
+import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -84,7 +85,8 @@ public class SplashActivity extends BaseActivity {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
 
-        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+//        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+        startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
     }
 
     @Override

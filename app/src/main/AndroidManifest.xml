@@ -53,7 +53,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity"></activity>
+        <activity android:name=".activity.PassageDeviceActivity"></activity>
+        <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
 
@@ -101,6 +102,7 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
@@ -151,7 +153,6 @@
                 <action android:name="alarm_action" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

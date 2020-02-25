@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
@@ -60,15 +61,15 @@ public class APP extends Application {
     private static final String TAG = "APP";
     private static APP instance;
     private static SmdtManager smdt;
-    private static WelComeActivity activity;
+    private static Activity activity;
 
-    public static WelComeActivity getActivity() {
+    public static Activity getActivity() {
         return activity;
     }
 
     private static XHApiManager xhApiManager;
 
-    public static void setActivity(WelComeActivity activity) {
+    public static void setActivity(Activity activity) {
         APP.activity = activity;
     }
 

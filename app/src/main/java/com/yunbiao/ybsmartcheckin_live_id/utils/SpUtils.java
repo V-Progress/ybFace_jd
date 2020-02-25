@@ -75,7 +75,8 @@ public class SpUtils {
     public static final String TEMP_TIPS_TIME = "tempTipsTime";//提示时间
     public static final String GET_TEMP_DELAY_TIME = "getTempDelayTime";//取温延迟
     public static final String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";//温度报警阈值
-    public static final String TEMP_MIN_THRESHOLD = "tempWarningThreshold";//温度最低阈值
+    public static final String TEMP_MIN_THRESHOLD = "tempMinThreshold";//温度最低阈值
+    public static final String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
 
     public static void init() {
         getCompany();

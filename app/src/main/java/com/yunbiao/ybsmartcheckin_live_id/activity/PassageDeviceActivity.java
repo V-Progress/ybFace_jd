@@ -1,14 +1,16 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Gpio;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
+import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
@@ -50,7 +53,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
@@ -60,16 +62,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-/**
- * Created by Administrator on 2018/11/26.
- */
+public class PassageDeviceActivity extends BaseGpioActivity {
 
-public class WelComeActivity extends BaseGpioActivity {
+    private FaceView faceView;
+
+    @Override
+    protected int getPortraitLayout() {
+        return R.layout.activity_passage_device;
+    }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_passage_device;
+    }
+
     private static final String TAG = "WelComeActivity";
     private ImageView ivMainLogo;//公司logo
-    private TextView tvMainAbbName;//公司名
-    private TextView tvMainTopTitle;//标题
-    private TextView tvMainBottomTitle;//底部标题
 
     // xmpp推送服务
     private ServiceManager serviceManager;
@@ -78,7 +86,6 @@ public class WelComeActivity extends BaseGpioActivity {
     private ReadCardUtils readCardUtils;
 
     //摄像头分辨率
-    public static com.yunbiao.faceview.FaceView faceView;
     private AdsFragment adsFragment;
     private SignFragment signListFragment;
     private TextView tvTemperature;
@@ -91,25 +98,12 @@ public class WelComeActivity extends BaseGpioActivity {
     private View personFrame;
 
     @Override
-    protected int getPortraitLayout() {
-        return R.layout.activity_welcome;
-    }
-
-    @Override
-    protected int getLandscapeLayout() {
-        return R.layout.activity_welcome_h;
-    }
-
-    @Override
     protected void initView() {
         APP.setActivity(this);
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
         ivMainLogo = findViewById(R.id.iv_main_logo);
-        tvMainAbbName = findViewById(R.id.tv_main_abbname);
-        tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
-        tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
 
         personFrame = findViewById(R.id.iv_person_frame);
         viewDistance = findViewById(R.id.view_face_distance);//人脸限制区域
@@ -119,19 +113,15 @@ public class WelComeActivity extends BaseGpioActivity {
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
 
         //加载签到列表Fragment
-        signListFragment = new SignFragment();
-        replaceFragment(R.id.ll_list_container, signListFragment);
+//        signListFragment = new SignFragment();
+//        replaceFragment(R.id.ll_list_container, signListFragment);
 
 //        只有竖屏情况下加载信息展示Fragment
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            InformationFragment informationFragment = new InformationFragment();
-            replaceFragment(R.id.layout_h, informationFragment);
-        }
-
-        initTest();
+//        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+//            InformationFragment informationFragment = new InformationFragment();
+//            replaceFragment(R.id.layout_h, informationFragment);
+//        }
     }
-
-    private Button btnTest0;
 
     private void initAds() {
         boolean enabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
@@ -146,18 +136,6 @@ public class WelComeActivity extends BaseGpioActivity {
             removeFragment(adsFragment);
         }
 
-    }
-
-    private void initTest() {
-        btnTest0 = findViewById(R.id.btn_test_0);
-        btnTest0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCacheTemperatureHighestValue = 0f;
-                mCacheValueForTempModel = 0f;
-                mCacheTime = 0;
-            }
-        });
     }
 
     /**
@@ -194,7 +172,7 @@ public class WelComeActivity extends BaseGpioActivity {
             @Override
             public void run() {
                 Log.e(TAG, "run: ------- ");
-                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
+                UpdateVersionControl.getInstance().checkUpdate(PassageDeviceActivity.this);
             }
         }, 5 * 1000);
     }
@@ -237,7 +215,7 @@ public class WelComeActivity extends BaseGpioActivity {
     }
 
     /*****识别相关回调******************************************************************************************/
-    private com.yunbiao.faceview.FaceView.FaceCallback faceCallback = new com.yunbiao.faceview.FaceView.FaceCallback() {
+    private FaceView.FaceCallback faceCallback = new com.yunbiao.faceview.FaceView.FaceCallback() {
         @Override
         public void onReady() {
             SyncManager.instance().requestCompany();
@@ -640,9 +618,9 @@ public class WelComeActivity extends BaseGpioActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
         Company company = SpUtils.getCompany();
-        if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
-        if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());
-        if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
+//        if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
+//        if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());
+//        if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
 
         EventBus.getDefault().post(new UpdateMediaEvent());
 
@@ -679,7 +657,7 @@ public class WelComeActivity extends BaseGpioActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_input_pwd);
 
-        final Animation animation = AnimationUtils.loadAnimation(WelComeActivity.this, R.anim.anim_edt_shake);
+        final Animation animation = AnimationUtils.loadAnimation(PassageDeviceActivity.this, R.anim.anim_edt_shake);
         final View rootView = dialog.findViewById(R.id.ll_input_pwd);
         Button btnConfirm = (Button) dialog.findViewById(R.id.btn_input_confirm);
         final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_input_pwd);
@@ -726,12 +704,12 @@ public class WelComeActivity extends BaseGpioActivity {
             inputPwd(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+                    startActivity(new Intent(PassageDeviceActivity.this, SystemActivity.class));
                 }
             });
             return;
         }
-        startActivity(new Intent(WelComeActivity.this, SystemActivity.class));
+        startActivity(new Intent(PassageDeviceActivity.this, SystemActivity.class));
     }
 
     private void onBackKeyPressed(Runnable runnable) {

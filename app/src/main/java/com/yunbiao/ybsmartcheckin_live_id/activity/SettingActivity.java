@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -123,6 +124,20 @@ public class SettingActivity extends BaseActivity {
         initCameraSetting();
 
         initLivenessSetting();
+
+        initPosteSetting();
+    }
+
+    private void initPosteSetting() {
+        boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
+        Switch swPoster = findViewById(R.id.sw_poster_setting);
+        swPoster.setChecked(isEnabled);
+        swPoster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.POSTER_ENABLED, isChecked);
+            }
+        });
     }
 
     private void initModelSetting() {
@@ -400,12 +415,13 @@ public class SettingActivity extends BaseActivity {
         });
 
         //温度最低阈值、温度报警阈值
-        final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
-        final EditText edtWarningThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
         final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
         final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
+        final EditText edtWarningThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
         edtMinThreshold.setText(minValue + "");
         edtWarningThreshold.setText(warningValue + "");
+
         Button btnSaveThreshold = findViewById(R.id.btn_save_temp_threshold_setting);
         btnSaveThreshold.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,6 +440,8 @@ public class SettingActivity extends BaseActivity {
                 warningInput = edtWarningThreshold.getText().toString();
                 SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, Float.parseFloat(minInput));
                 SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, Float.parseFloat(warningInput));
+
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
             }
         });
     }
@@ -454,9 +472,9 @@ public class SettingActivity extends BaseActivity {
                 }
 
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
-                WelComeActivity activity = APP.getActivity();
-                if (activity != null) {
-                    activity.setFaceViewSimilar();
+                Activity activity = APP.getActivity();
+                if (activity != null && activity instanceof WelComeActivity) {
+                    ((WelComeActivity) activity).setFaceViewSimilar();
                 }
             }
         });

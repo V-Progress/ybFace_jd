@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.system;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Handler;
 import android.util.Log;
@@ -150,7 +151,7 @@ public class CoreInfoHandler {
                     }
                     break;
                 case PUSH_TO_UPDATE:
-                    WelComeActivity activity = APP.getActivity();
+                    Activity activity = APP.getActivity();
                     UpdateVersionControl.getInstance().checkUpdate(activity);
                     break;
                 case ADS_PUSH:

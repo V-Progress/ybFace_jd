@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -56,15 +58,15 @@ public abstract class BaseActivity extends FragmentActivity {
         int landscapeLayout = getLandscapeLayout();
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            if(portraitLayout == 0){
-                UIUtils.showShort(this,getString(R.string.act_base_zwspqqhhp));
+            if (portraitLayout == 0) {
+                UIUtils.showShort(this, getString(R.string.act_base_zwspqqhhp));
                 APP.exit();
                 return;
             }
             setContentView(portraitLayout);
         } else {
-            if(landscapeLayout == 0){
-                UIUtils.showShort(this,getString(R.string.act_base_zwhpqqhhp));
+            if (landscapeLayout == 0) {
+                UIUtils.showShort(this, getString(R.string.act_base_zwhpqqhhp));
                 APP.exit();
                 return;
             }
@@ -76,21 +78,27 @@ public abstract class BaseActivity extends FragmentActivity {
         initData();
     }
 
-    protected void replaceFragment(int id, Fragment fragment){
-        if(mFragmentManager == null){
+    protected void replaceFragment(int id, Fragment fragment) {
+        if (mFragmentManager == null) {
             return;
         }
-        mFragmentManager.beginTransaction().replace(id,fragment).commit();
+        mFragmentManager.beginTransaction().replace(id, fragment).commit();
     }
 
-    protected void addFragment(int id, Fragment fragment){
-        if(mFragmentManager == null){
+    protected void addFragment(int id, Fragment fragment) {
+        if (mFragmentManager == null) {
             return;
         }
-        mFragmentManager.beginTransaction().add(id,fragment).commit();
+        mFragmentManager.beginTransaction().add(id, fragment).commit();
     }
 
-    public void onBack(View view){
+    protected void removeFragment(Fragment fragment) {
+        if (fragment != null && fragment.isAdded()) {
+            mFragmentManager.beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    public void onBack(View view) {
         finish();
     }
 
@@ -104,10 +112,11 @@ public abstract class BaseActivity extends FragmentActivity {
      * @return
      */
     protected abstract int getPortraitLayout();
+
     protected abstract int getLandscapeLayout();
 
-    protected void bindImageView(String urlOrPath, final ImageView iv){
-        if(TextUtils.isEmpty(urlOrPath)){
+    protected void bindImageView(String urlOrPath, final ImageView iv) {
+        if (TextUtils.isEmpty(urlOrPath)) {
             return;
         }
         Glide.with(this).load(urlOrPath).skipMemoryCache(true).crossFade(500).into(iv);
@@ -116,12 +125,16 @@ public abstract class BaseActivity extends FragmentActivity {
     /***
      * 初始化View
      */
-    protected void initView(){};
+    protected void initView() {
+    }
+
+    ;
 
     /***
      * 初始化数据
      */
-    protected void initData(){}
+    protected void initData() {
+    }
 
     @Override
     protected void onResume() {
@@ -151,14 +164,14 @@ public abstract class BaseActivity extends FragmentActivity {
      */
     public static Activity getActivity() {
         for (Activity activity : activities) {
-            if (isForeground(activity,activity.getClass().getSimpleName())) {
+            if (isForeground(activity, activity.getClass().getSimpleName())) {
                 return activity;
             }
         }
         return activities.get(activities.size() - 1);
     }
 
-    public static boolean  isForeground(Context context, String className) {
+    public static boolean isForeground(Context context, String className) {
         if (context == null || TextUtils.isEmpty(className)) {
             return false;
         }
@@ -189,9 +202,9 @@ public abstract class BaseActivity extends FragmentActivity {
         finish(activity);
     }
 
-    protected void d(String log){
-        if(isLog){
-            Log.d(this.getClass().getSimpleName(),log);
+    protected void d(String log) {
+        if (isLog) {
+            Log.d(this.getClass().getSimpleName(), log);
         }
     }
 

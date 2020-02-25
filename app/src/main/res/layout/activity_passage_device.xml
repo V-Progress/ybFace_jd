@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PassageDeviceActivity">
+
+    <com.yunbiao.faceview.FaceView
+        android:layout_width="match_parent"
+        android:id="@+id/face_view"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:id="@+id/iv_main_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="200dp"
+            android:maxHeight="100dp"
+            android:onClick="goSetting"
+            android:scaleType="centerInside"
+            android:src="@mipmap/yb_logo" />
+
+        <LinearLayout
+            android:id="@+id/ll_clock_area"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextClock
+                android:id="@+id/textClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/tv_ambient_temperature_main"
+                android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+                android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+                android:textColor="@color/text_clock_color_main"
+                android:textSize="28dp" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_ambient_temperature_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/temperature_icon"
+                android:textColor="@color/text_clock_color_main"
+                android:textSize="28dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_person_frame"
+            android:translationY="80dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/person_frame"
+            android:scaleType="fitXY"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <View
+            android:visibility="invisible"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_temperature_frame_background"
+            android:id="@+id/view_face_distance"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:visibility="invisible"
+            android:layout_below="@+id/tv_temp_tips_main"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:id="@+id/tv_temperature_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="65dp"
+            android:textColor="@color/white"
+            android:textSize="25dp" />
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/tv_temp_tips_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            android:textSize="28dp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_range_tips_main"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:background="#4D000000"
+            android:textColor="@color/white"
+            android:textSize="30dp"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/ll_face_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>
