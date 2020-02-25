@@ -283,7 +283,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTime = System.currentTimeMillis();
                     return false;
                 } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                    setRangeTips("正在测温");
+                    showTemperatureTips("正在测温",R.drawable.shape_main_frame_temperature_ing,3000);
                     return false;
                 }
                 //都合适，隐藏提示
@@ -450,6 +450,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
             //获取检测温度
             float measuringTemperatureF = formatF(InfraredTemperatureUtils.getIns().getMeasuringTemperatureF());
+//            measuringTemperatureF += 36.6;
             tvTemperature.setText(measuringTemperatureF + " ℃");
 
             if (measuringTemperatureF < mTempWarningThreshold) {
@@ -484,7 +485,7 @@ public class WelComeActivity extends BaseGpioActivity {
                         temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                         return;
                     } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                        UIUtils.showShort(WelComeActivity.this, "正在测温");
+                        showTemperatureTips("正在测温",R.drawable.shape_main_frame_temperature_ing,3000);
                         temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                         return;
                     }
@@ -560,6 +561,7 @@ public class WelComeActivity extends BaseGpioActivity {
         tipsMessage.setData(bundle);
         tempTipsHandler.sendMessage(tipsMessage);
 
+        tempTipsHandler.removeMessages(0);
         tempTipsHandler.sendEmptyMessageDelayed(0, time);
     }
 

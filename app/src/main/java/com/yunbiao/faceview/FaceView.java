@@ -544,16 +544,18 @@ public class FaceView extends FrameLayout {
     }
 
     public Bitmap getCurrCameraFrame() {
-        try {
-            byte[] clone = mCurrBytes.clone();
-            YuvImage image = new YuvImage(clone, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
-            Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-            stream.close();
-            return bmp;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(mCurrBytes != null){
+            try {
+                byte[] clone = mCurrBytes.clone();
+                YuvImage image = new YuvImage(clone, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
+                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                stream.close();
+                return bmp;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
