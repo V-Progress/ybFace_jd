@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/skin_main_screen_background"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingBottom="10dp"
-    android:fitsSystemWindows="true"
     tools:context=".activity.SettingActivity">
 
     <include layout="@layout/head_layout" />
@@ -112,21 +112,34 @@
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
+
                 <TextView
-                    android:drawablePadding="10dp"
+                    android:id="@+id/tv_model_setting"
+                    style="@style/setting_text"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
                     android:drawableLeft="@mipmap/icon_arrow_down"
                     android:drawableRight="@mipmap/icon_arrow_down"
-                    android:clickable="true"
+                    android:drawablePadding="10dp"
                     android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:id="@+id/tv_model_setting"
+                    android:paddingBottom="20dp" />
+
+                <TextView
+                    android:id="@+id/tv_port_path_setting"
+                    style="@style/setting_text"
                     android:layout_width="wrap_content"
-                    style="@style/setting_text"  />
+                    android:clickable="true"
+                    android:drawableLeft="@mipmap/icon_arrow_down"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:drawablePadding="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/setting_text"
@@ -150,24 +163,16 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="测温矫正值" />
+                        android:text="开启距离提示" />
 
-                    <EditText
-                        android:id="@+id/edt_temp_correct_setting"
-                        style="@style/style_setting_input_number_decimal_signed_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:layout_marginLeft="20dp"
-                        android:text="环境温度矫正值" />
-
-                    <EditText
-                        android:id="@+id/edt_ambient_correct_setting"
-                        style="@style/style_setting_input_number_decimal_signed_edt" />
-
-                    <Button
-                        android:id="@+id/btn_save_temp_setting"
-                        style="@style/style_setting_input_save_button" />
+                    <Switch
+                        android:id="@+id/sw_distance_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -196,11 +201,41 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="取温延时" />
+                        android:text="高低温差值" />
+
+                    <EditText
+                        android:id="@+id/edt_temp_d_value_setting"
+                        style="@style/style_setting_input_number_decimal_edt" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="℃" />
+
+                    <Button
+                        android:id="@+id/btn_save_temp_d_value_setting"
+                        style="@style/style_setting_input_save_button" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_marginLeft="20dp"
+                        android:text="用于检测人来或人走后的温度差"
+                        android:textColor="#ff0000" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="测温时长" />
 
                     <EditText
                         android:id="@+id/edt_get_temp_delay_setting"
@@ -212,6 +247,34 @@
 
                     <Button
                         android:id="@+id/btn_save_get_temp_delay_setting"
+                        style="@style/style_setting_input_save_button" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="测温矫正值" />
+
+                    <EditText
+                        android:id="@+id/edt_temp_correct_setting"
+                        style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_marginLeft="20dp"
+                        android:text="环境温度矫正值" />
+
+                    <EditText
+                        android:id="@+id/edt_ambient_correct_setting"
+                        style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                    <Button
+                        android:id="@+id/btn_save_temp_setting"
                         style="@style/style_setting_input_save_button" />
                 </LinearLayout>
 

@@ -42,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
+import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -125,10 +126,64 @@ public class SettingActivity extends BaseActivity {
 
         initLivenessSetting();
 
-        initPosteSetting();
+        initPosterSetting();
+
+        initPortSetting();
     }
 
-    private void initPosteSetting() {
+    private void initPortSetting() {
+        //转换成List然后排序
+        final String[] allPortPath = InfraredTemperatureUtils.getAllPortPath();
+        if (allPortPath == null || allPortPath.length <= 0) {
+            return;
+        }
+        final List<String> portList = Arrays.asList(allPortPath);
+        Collections.sort(portList);
+        //生成串口名
+        final String[] portNames = new String[portList.size()];
+        for (int i = 0; i < portList.size(); i++) {
+            String portPath = portList.get(i);
+            portNames[i] = "串口" + portPath.substring(portPath.length() - 1);
+        }
+        //获取当前选中的索引
+        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        final int index = portList.indexOf(cachePort);
+        //设置显示
+        final TextView tvPortPath = findViewById(R.id.tv_port_path_setting);
+        tvPortPath.setText("当前端口:  " + portNames[index]);
+
+        tvPortPath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+                int selectedIndex = portList.indexOf(cachePort);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+                builder.setTitle("选择端口");
+                builder.setSingleChoiceItems(portNames, selectedIndex, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //获取真实端口号并缓存
+                        String selectedPort = portList.get(which);
+                        Log.e(TAG, "onClick: " + selectedPort);
+                        SpUtils.saveStr(SpUtils.PORT_PATH, selectedPort);
+                        //获取端口名并显示
+                        String portName = portNames[which];
+                        tvPortPath.setText("当前端口:  " + portName);
+                        UIUtils.showShort(SettingActivity.this, portName);
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
+
+
+    }
+
+    private void initPosterSetting() {
         boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
         Switch swPoster = findViewById(R.id.sw_poster_setting);
         swPoster.setChecked(isEnabled);
@@ -141,7 +196,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initModelSetting() {
-        final String[] items = {"人脸识别", "人脸 + 体温", "体温"};
+        final String[] items = {"人脸识别", "人脸 + 体温", "体温", "热成像模式"};
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
         tvModelSetting.setText("当前模式:  " + items[model]);
@@ -149,12 +204,17 @@ public class SettingActivity extends BaseActivity {
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
+                final int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
                 builder.setTitle("选择模式");
                 builder.setSingleChoiceItems(items, whichModel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (which == items.length - 1) {
+                            UIUtils.showShort(SettingActivity.this, "正在开发中...");
+                            return;
+                        }
+
                         SpUtils.saveInt(SpUtils.MODEL_SETTING, which);
                         tvModelSetting.setText("当前模式:  " + items[which]);
                         UIUtils.showShort(SettingActivity.this, items[which]);
@@ -441,6 +501,33 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, Float.parseFloat(minInput));
                 SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, Float.parseFloat(warningInput));
 
+                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
+            }
+        });
+
+        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, false);
+        Switch swDistance = findViewById(R.id.sw_distance_setting);
+        swDistance.setChecked(distanceEnabled);
+        swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.DISTANCE_TIPS_ENABLED, isChecked);
+            }
+        });
+
+        Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
+        final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
+        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);
+        edtTempDValue.setText(dValue + "");
+        btnSaveDValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = edtTempDValue.getText().toString();
+                if (TextUtils.isEmpty(s)) {
+                    edtTempDValue.setText(dValue + "");
+                }
+                s = edtTempDValue.getText().toString();
+                SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功");
             }
         });

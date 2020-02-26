@@ -421,7 +421,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     //开始自动测温
     private void startUpdateTemperatureRunnable() {
-        InfraredTemperatureUtils.getIns().initSerialPort();
+        InfraredTemperatureUtils.getIns().initSerialPort("/dev/ttyS1");
         temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
         temperatureUpdateHandler.post(temperatureUpdateRunnable);
     }

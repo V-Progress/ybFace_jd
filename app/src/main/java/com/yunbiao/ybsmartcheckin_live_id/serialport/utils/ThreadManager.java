@@ -21,9 +21,13 @@ public class ThreadManager {
     //门控
     private final ExecutorService gatePool;
 
+    //串口写任务
+    private final ExecutorService spWritePool;
+
     private ThreadManager() {
         mAsyncTaskPool = Executors.newCachedThreadPool();
         gatePool = Executors.newFixedThreadPool(FIXED_NUMBER);
+        spWritePool = Executors.newFixedThreadPool(FIXED_NUMBER);
     }
 
     synchronized public static ThreadManager getInstance() {
@@ -40,6 +44,13 @@ public class ThreadManager {
         gatePool.execute(command);
     }
 
+    public void addToSPWriteThread(Runnable command) {
+        if (command == null || spWritePool == null) {
+            return;
+        }
+        spWritePool.execute(command);
+    }
+
     public void shutDownGateThread (boolean now) {
         if (gatePool == null) {
             return;
@@ -48,6 +59,17 @@ public class ThreadManager {
             gatePool.shutdownNow();
         } else {
             gatePool.shutdown();
+        }
+    }
+
+    public void shutDownSPWriteThread(boolean now) {
+        if (spWritePool == null) {
+            return;
+        }
+        if (now) {
+            spWritePool.shutdownNow();
+        } else {
+            spWritePool.shutdown();
         }
     }
 
@@ -60,6 +82,7 @@ public class ThreadManager {
 
     public void clearThreadResource() {
         shutDownGateThread(false);
+        shutDownSPWriteThread(false);
 
         toNull();
     }

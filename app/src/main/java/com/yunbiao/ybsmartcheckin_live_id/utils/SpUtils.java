@@ -77,6 +77,9 @@ public class SpUtils {
     public static final String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";//温度报警阈值
     public static final String TEMP_MIN_THRESHOLD = "tempMinThreshold";//温度最低阈值
     public static final String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
+    public static final String DISTANCE_TIPS_ENABLED = "distanceTipsEnabled";//距离提示开关
+    public static final String TEMP_D_VALUE = "tempDValue";//高低温差值
+    public static final String PORT_PATH = "portPath";//端口号缓存
 
     public static void init() {
         getCompany();

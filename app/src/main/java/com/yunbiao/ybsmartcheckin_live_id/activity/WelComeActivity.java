@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
+import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
@@ -50,7 +51,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
@@ -59,6 +59,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2018/11/26.
@@ -78,7 +79,7 @@ public class WelComeActivity extends BaseGpioActivity {
     private ReadCardUtils readCardUtils;
 
     //摄像头分辨率
-    public static com.yunbiao.faceview.FaceView faceView;
+    public static FaceView faceView;
     private AdsFragment adsFragment;
     private SignFragment signListFragment;
     private TextView tvTemperature;
@@ -89,6 +90,7 @@ public class WelComeActivity extends BaseGpioActivity {
     //判断是否开启测温
     private View viewDistance;
     private View tempDetectionDot;
+    private boolean isPosterEnabled;//大屏海报是否开启
 
     @Override
     protected int getPortraitLayout() {
@@ -129,119 +131,35 @@ public class WelComeActivity extends BaseGpioActivity {
         }
 
         initTest();
-    }
 
-    private Button btnTest0;
-
-    private void initAds() {
-        boolean enabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
-        if (enabled) {
-            if (adsFragment != null && adsFragment.isAdded()) {
-                return;
-            }
-            //加载广告Fragment
-            adsFragment = new AdsFragment();
-            addFragment(R.id.ll_face_main, adsFragment);
-        } else {
-            removeFragment(adsFragment);
-        }
-
-        Button btnFar = findViewById(R.id.btn_test_distance_far);
-        Button btnOk = findViewById(R.id.btn_test_distance_ok);
-        Button btnReset = findViewById(R.id.btn_test_reset);
-        Button btnNo = findViewById(R.id.btn_test_no);
-        Button btnWarning = findViewById(R.id.btn_test_distance_ok_warning);
-        btnFar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTestCorrValue = 5.0f;
-            }
-        });
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTestCorrValue = 35.0f;
-            }
-        });
-        btnWarning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTestCorrValue = 37.0f;
-            }
-        });
-        btnNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTestCorrValue = 0.0f;
-            }
-        });
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTestCorrValue = 0.0f;
-            }
-        });
-    }
-
-    private float mTestCorrValue = 0.0f;
-
-    private void initTest() {
-        btnTest0 = findViewById(R.id.btn_test_0);
-        btnTest0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCacheTemperatureHighestValue = 0f;
-                mCacheValueForTempModel = 0f;
-                mCacheTime = 0;
-            }
-        });
-    }
-
-    /**
-     * 读卡器初始化
-     */
-    private void initCardReader() {
-        //读卡器声明
-        readCardUtils = new ReadCardUtils();
-        readCardUtils.setReadSuccessListener(readCardListener);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ReadCardUtils.isInputFromReader(this, event)) {
-            if (readCardUtils != null) {
-                readCardUtils.resolveKeyEvent(event);
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    protected void initData() {
-        initCardReader();
-
-        KDXFSpeechManager.instance().init(getActivity()).welcome();
-
-        //开启Xmpp
-        startXmpp();
-        //初始化定位工具
-        LocateManager.instance().init(this);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: ------- ");
-                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
-            }
-        }, 5 * 1000);
+        mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initAds();
-        //获取模式标识
-        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);
+        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        if (!TextUtils.equals(portPath, mCurrPortPath)) {
+            mCurrPortPath = portPath;
+            InfraredTemperatureUtils.getIns().initSerialPort(portPath);
+        }
+
+        isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);//大屏海报开关
+        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);//当前模式
+        distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, false);//距离提示开关
+        mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
+        mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);//设置测温延时
+        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f); //测温最小阈值
+        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f); //测温报警阈值
+        mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);//高低温差值（用于判断高度）
+
+        if (signListFragment != null) {
+            signListFragment.setModelText(mCurrModel == Constants.Model.MODEL_FACE_ONLY ? "人脸识别" : mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE ? "人脸 + 体温" : "测温模式");
+        }
+
+        initAds(mCurrModel);
+
         boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
         if (isTemperatureEnabled) {
             tempDetectionDot.setVisibility(View.VISIBLE);
@@ -263,13 +181,7 @@ public class WelComeActivity extends BaseGpioActivity {
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
         faceView.setLiveness(livenessEnabled);
-        //设置测温延时
-        mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
 
-        //测温最小阈值
-        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
-        //测温报警阈值
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
         faceView.resume();
     }
 
@@ -289,8 +201,8 @@ public class WelComeActivity extends BaseGpioActivity {
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
             canDetection = hasFace;
             if (!hasFace) {//如果没有人脸
-                mStrangerTempTrackId = -1;
-                if(mCurrModel != Constants.Model.MODEL_TEMPERATURE_ONLY){
+                mCacheStrangerTempTrackId = -1;
+                if (mCurrModel != Constants.Model.MODEL_TEMPERATURE_ONLY) {
                     setRangeTips("");
                 }
                 return false;
@@ -321,12 +233,16 @@ public class WelComeActivity extends BaseGpioActivity {
                 if (faceView.checkFaceToFar(realRect, minWidth)) {
                     mCacheTime = 0;
                     setRangeTips("距离太远，请靠近");
-                    KDXFSpeechManager.instance().playNormal("请靠近点");
+                    if (distanceTipsEnabled) {
+                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                    }
                     return false;
                 } else if (faceView.checkFaceTooClose(realRect, maxHeight)) {
                     mCacheTime = 0;
                     setRangeTips("距离太近，请远一点");
-                    KDXFSpeechManager.instance().playNormal("请远一点");
+                    if (distanceTipsEnabled) {
+                        KDXFSpeechManager.instance().playNormal("请远一点");
+                    }
                     return false;
                 }
                 setRangeTips("");
@@ -370,14 +286,14 @@ public class WelComeActivity extends BaseGpioActivity {
                 Sign sign = null;
                 if (compareResult.getSimilar() == -1) {
                     //代表已经播报过
-                    if (mStrangerTempTrackId == compareResult.getTrackId()) {
+                    if (mCacheStrangerTempTrackId == compareResult.getTrackId()) {
                         return;
                     }
-                    mStrangerTempTrackId = compareResult.getTrackId();
+                    mCacheStrangerTempTrackId = compareResult.getTrackId();
                     //直接上报温度
                     sign = SignManager.instance().getTemperatureSign(mCacheTemperatureHighestValue);
                 } else {
-                    mStrangerTempTrackId = -1;
+                    mCacheStrangerTempTrackId = -1;
                     sign = SignManager.instance().checkSignData(compareResult, mCacheTemperatureHighestValue);
                     if (sign == null) {
                         return;
@@ -451,17 +367,32 @@ public class WelComeActivity extends BaseGpioActivity {
     };
 
     /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
+    /****温控检测区域************************************************************************************************/
     private boolean canDetection = false;//是否可以采集温度
-    //判断陌生人有没有播报过的缓存，如果该Id不等于认证的Id说明没播报过，在非陌生人的地方和检测不到人脸时重置该Id
-    private int mStrangerTempTrackId = -1;//ID缓存，用于判断该用户有没有被提示过
-    private int mGetTempDelayTime = 0;//采集温度延时
+    //开关类
+    private int mCurrModel = 0;//当前模式
+    private String mCurrPortPath = "";
+    private boolean distanceTipsEnabled = false;//距离提示语音播报
+
+    //设置类
+    private int mGetTempDelayTime = 1000;//采集温度延时
     private float mTempMinThreshold = 36.0f;//最小阈值
     private float mTempWarningThreshold = 37.3f;//报警值
-    private int mCurrModel = 0;//当前模式
-    private float mCacheDetectionValue = 0f;
+    private int mTempTipsCloseDelayTime = 5000;//温度提示关闭延迟
+    private float mTempDValue = 3.0f;
+
+    //缓存值类
+    private float mCacheDetectionValue = 0f;//检测值缓存，用于检测是否有人进来和有人离开
     private long mCacheTime = 0;//时间缓存
     private float mCacheTemperatureHighestValue = 0f;//最高温度值缓存
     private float mCacheValueForTempModel = 0f;//专为测温模式缓存的数值,用于判断该次有没有被播报,防止多次播报
+    private int mCacheStrangerTempTrackId = -1;//判断陌生人有没有播报过的缓存，如果该Id不等于认证的Id说明没播报过，在非陌生人的地方和检测不到人脸时重置该Id
 
     private void setRangeTips(String tips) {
         String s = tvRangeTips.getText().toString();
@@ -482,7 +413,6 @@ public class WelComeActivity extends BaseGpioActivity {
 
     //开始自动测温
     private void startUpdateTemperatureRunnable() {
-        InfraredTemperatureUtils.getIns().initSerialPort();
         temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
         temperatureUpdateHandler.post(temperatureUpdateRunnable);
     }
@@ -502,6 +432,8 @@ public class WelComeActivity extends BaseGpioActivity {
 
             //获取检测温度
             float measuringTemperatureF = formatF(InfraredTemperatureUtils.getIns().getMeasuringTemperatureF());
+//            measuringTemperatureF += 24.5f;
+
             measuringTemperatureF += mTestCorrValue;
             tvTemperature.setText(measuringTemperatureF + " ℃");
 
@@ -521,36 +453,44 @@ public class WelComeActivity extends BaseGpioActivity {
              * */
             //如果是仅测温模式的话,则判断数值是否超过阈值,如果超过则开始判断延迟时间
             if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
-
                 //如果为0说明是初始化状态
                 if (mCacheDetectionValue == 0f) {
                     mCacheTime = 0;//取温缓存时间重置
                     mCacheValueForTempModel = 0f;//防重复缓存值重置
                     mCacheTemperatureHighestValue = 0f;//缓存最终值重置
                     mCacheDetectionValue = measuringTemperatureF;
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                     setRangeTips("");
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
-                //如果检测温度比缓存温度小，说明没人，或者有人走了
-                else if (measuringTemperatureF < mCacheDetectionValue) {
+                //如果检测温度比缓存温度小,或者测温值与缓存值之差小于3度则略过，，说明没人，或者有人走了
+                if (measuringTemperatureF <= mCacheDetectionValue) {
                     mCacheTime = 0;
                     mCacheValueForTempModel = 0f;
                     mCacheTemperatureHighestValue = 0f;
                     mCacheDetectionValue = measuringTemperatureF;
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                     setRangeTips("");
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
-                //如果比缓存温度高过3度，且小于阈值，说明距离较远
-                else if (measuringTemperatureF - mCacheDetectionValue > 3.0f && measuringTemperatureF < mTempMinThreshold) {
+                //如果温度差小于这个数说明是温度波动,不用理会
+                if (measuringTemperatureF - mCacheDetectionValue < mTempDValue) {
+                    setRangeTips("");
+                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    return;
+                }
+
+                //如果比缓存温度高过3度，且，检测值小于阈值，说明距离较远
+                if (measuringTemperatureF - mCacheDetectionValue >= mTempDValue && measuringTemperatureF < mTempMinThreshold) {
                     mCacheTime = 0;
                     mCacheValueForTempModel = 0f;
                     mCacheTemperatureHighestValue = 0f;
                     setRangeTips("距离太远，请靠近");
-                    KDXFSpeechManager.instance().playNormal("请靠近点");
+                    if (distanceTipsEnabled) {
+                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                    }
                     temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
@@ -703,14 +643,130 @@ public class WelComeActivity extends BaseGpioActivity {
 
         tip += mCacheTemperatureHighestValue + "℃";
 
-        int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
-        Log.e(TAG, "playTips: 延迟关闭时间：" + time);
-        resetLedDelay(time);//5秒后重置灯光为蓝色
-        showTemperatureTips(tip, bgId, time);
+
+        Log.e(TAG, "playTips: 延迟关闭时间：" + mTempTipsCloseDelayTime);
+        resetLedDelay(mTempTipsCloseDelayTime);//5秒后重置灯光为蓝色
+        showTemperatureTips(tip, bgId, mTempTipsCloseDelayTime);
         KDXFSpeechManager.instance().playNormal((TextUtils.isEmpty(signName) ? "" : signName) + tip, warningRunnable);
     }
 
-    /****温控检测区域************************************************************************************************/
+    /*=======测试配置================================*/
+    private float mTestCorrValue = 0.0f;
+
+    private TextView tvTempMinCache;
+    private TextView tvTempMaxCache;
+
+    private void initTest() {
+        tvTempMinCache = findViewById(R.id.tv_temperature_cache_min_main);
+        tvTempMaxCache = findViewById(R.id.tv_temperature_cache_max_main);
+
+        Button btnFar = findViewById(R.id.btn_test_distance_far);
+        Button btnOk = findViewById(R.id.btn_test_distance_ok);
+        Button btnReset = findViewById(R.id.btn_test_reset);
+        Button btnNo = findViewById(R.id.btn_test_no);
+        Button btnWarning = findViewById(R.id.btn_test_distance_ok_warning);
+        Button btnJiangWen = findViewById(R.id.btn_jiang_wen);
+        btnFar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 25.0f;
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 35.0f;
+            }
+        });
+        btnWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 37.0f;
+            }
+        });
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 0.0f;
+            }
+        });
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTestCorrValue = 0.0f;
+            }
+        });
+        btnJiangWen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Random random = new Random();
+                int i = random.nextInt(13);
+                mTestCorrValue = i;
+            }
+        });
+    }
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /****************************************************************************************************/
+    /**
+     * @param mCurrModel
+     **************************************************************************************************/
+    private void initAds(int mCurrModel) {
+        if (isPosterEnabled) {
+            if (adsFragment != null && adsFragment.isAdded()) {
+                return;
+            }
+            //加载广告Fragment
+            adsFragment = new AdsFragment();
+            addFragment(R.id.ll_face_main, adsFragment);
+        } else {
+            removeFragment(adsFragment);
+            adsFragment = null;
+        }
+    }
+
+    /**
+     * 读卡器初始化
+     */
+    private void initCardReader() {
+        //读卡器声明
+        readCardUtils = new ReadCardUtils();
+        readCardUtils.setReadSuccessListener(readCardListener);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (ReadCardUtils.isInputFromReader(this, event)) {
+            if (readCardUtils != null) {
+                readCardUtils.resolveKeyEvent(event);
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    protected void initData() {
+        initCardReader();
+
+        KDXFSpeechManager.instance().init(getActivity()).welcome();
+
+        //开启Xmpp
+        startXmpp();
+        //初始化定位工具
+        LocateManager.instance().init(this);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: ------- ");
+                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
+            }
+        }, 5 * 1000);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {

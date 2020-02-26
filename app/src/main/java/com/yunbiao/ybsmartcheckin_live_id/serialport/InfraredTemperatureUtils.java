@@ -16,6 +16,7 @@ import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
 
 import android_serialport_api.SerialPort;
+import android_serialport_api.SerialPortFinder;
 
 /**
  * Created by chen on 2020/2/15.
@@ -44,6 +45,12 @@ import android_serialport_api.SerialPort;
  *    InfraredTemperatureUtils.getIns.getMeasuringTemperatureF()
  *
  * 7、TN905元件没有环境温度数据，现以测量温度同时作为环境温度，在没人的时获取环境温度为正确的环境温度
+ *
+ * -------------------- 2020-2-26 更新 --------------------
+ * 1、初始化方法增加串口地址参数portPath
+ *      init(float aCorrectionValue, float mCorrectionValue, String portPath)
+ *      initSerialPort(final String portPath)
+ * 2、增加静态方法getAllPortPath()，获取所有串口地址
  */
 
 public class InfraredTemperatureUtils {
@@ -80,13 +87,13 @@ public class InfraredTemperatureUtils {
         }
     }
 
-    public void init(float aCorrectionValue, float mCorrectionValue) {
-        initSerialPort();
+    public void init(float aCorrectionValue, float mCorrectionValue, String portPath) {
+        initSerialPort(portPath);
         setaCorrectionValue(aCorrectionValue);
         setmCorrectionValue(mCorrectionValue);
     }
 
-    public void initSerialPort() {
+    public void initSerialPort(final String portPath) {
         if (mSerialPort != null) {
             closeSerialPort();
         }
@@ -94,7 +101,7 @@ public class InfraredTemperatureUtils {
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    mSerialPort = SerialPortHelper.newSerialPort(APP.getContext(), "/dev/ttyS4", 9600);
+                    mSerialPort = SerialPortHelper.newSerialPort(APP.getContext(), portPath, 9600);
                     mOutputStream = mSerialPort.getOutputStream();
                     mInputStream = mSerialPort.getInputStream();
                     mInputChannel = mInputStream.getChannel();
@@ -121,6 +128,10 @@ public class InfraredTemperatureUtils {
                 super.onPostExecute(aVoid);
             }
         });
+    }
+
+    public static String[] getAllPortPath() {
+        return new SerialPortFinder().getAllDevicesPath();
     }
 
     //指定串口是否已打开
@@ -216,9 +227,9 @@ public class InfraredTemperatureUtils {
 
         String measuringTemperatureStr = tempDatas[1].substring(20, 30);
         measuringTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
-        if (measuringTemperatureF < 31.00f) {
+        /*if (measuringTemperatureF < 31.00f) {
             measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(5.00f)).toString());
-        } else if (31.00f <= measuringTemperatureF && measuringTemperatureF <= 31.90f) {
+        } else */if (31.00f <= measuringTemperatureF && measuringTemperatureF <= 31.90f) {
             measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(4.90f)).toString());
         } else if (32.00f <= measuringTemperatureF && measuringTemperatureF <= 32.50f) {
             measuringTemperatureF = Float.valueOf(new BigDecimal(measuringTemperatureF).add(new BigDecimal(4.05f)).toString());
@@ -237,7 +248,8 @@ public class InfraredTemperatureUtils {
     private void analyticalTemperatureTN905(String tData) {
 //        Log.i(LOGTAG, "tData = " + tData);
         String measuringTemperatureStr = tData.substring(2, 12);
-        ambientTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
+        ambientTemperatureF = 0;
+//        ambientTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
         measuringTemperatureF = Float.valueOf(new String(HexUtil.hexStr2Bytes(measuringTemperatureStr)));
 
         /*if (measuringTemperatureF < 29.f) {
@@ -269,6 +281,9 @@ public class InfraredTemperatureUtils {
 
     //获取环境温度
     public float getAmbientTemperatureF() {
+        if (ambientTemperatureF == 0) {
+            return ambientTemperatureF;
+        }
         if (aCorrectionValue > 0) {
             return new BigDecimal(ambientTemperatureF).add(new BigDecimal(aCorrectionValue)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
         } else {

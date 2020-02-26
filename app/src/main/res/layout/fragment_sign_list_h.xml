@@ -3,69 +3,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:paddingLeft="20dp"
     android:paddingRight="10dp"
     android:paddingBottom="10dp"
-    android:orientation="horizontal"
     tools:ignore="MissingDefaultResource">
 
     <FrameLayout
-        android:layout_above="@+id/iv_qrcode_sign_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_qrcode_sign_list"
         android:layout_centerVertical="true">
 
         <Button
-            android:visibility="gone"
             android:id="@+id/btn_bulu_sign_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@mipmap/bg_btn_bulu"
             android:text="@string/fment_sign_bl"
             android:textColor="@color/blue_all_title_bg"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:visibility="gone" />
 
         <Switch
-            android:visibility="gone"
             android:id="@+id/switch_liveness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="活体检测" />
+            android:text="活体检测"
+            android:visibility="gone" />
 
         <com.wang.avi.AVLoadingIndicatorView
-            android:visibility="gone"
             android:id="@+id/aiv_bulu_sign_list"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
     </FrameLayout>
 
+    <TextView
+        android:layout_marginBottom="10dp"
+        android:id="@+id/tv_model_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_qrcode_sign_list"
+        android:background="@drawable/shape_model_main_background"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:textColor="#46C6F4" />
+
     <ImageView
+        android:id="@+id/iv_qrcode_sign_list"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:padding="10dp"
         android:background="@mipmap/qrcode_sign_list"
-        android:id="@+id/iv_qrcode_sign_list"
-        android:scaleType="centerInside"
-        android:layout_width="130dp"
-        android:layout_height="130dp" />
+        android:padding="10dp"
+        android:scaleType="centerInside" />
 
     <LinearLayout
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:id="@+id/layout_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/skin_main_notice_horn_background"
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/skin_main_notice_horn_src"
-            android:scaleType="fitXY"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY"
+            android:src="@drawable/skin_main_notice_horn_src" />
 
         <TextView
             android:id="@+id/tv_notice_sign_list"
@@ -83,27 +96,27 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rlv_sign_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
             android:layout_above="@+id/ll_total_area"
+            android:layout_centerInParent="true"
             android:columnWidth="20dp"
             android:numColumns="1"
             android:verticalSpacing="14dp" />
 
         <LinearLayout
             android:id="@+id/ll_total_area"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_weight="3.5"
+            android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="20dp">
 
@@ -169,10 +182,10 @@
                 </LinearLayout>
 
                 <com.github.mikephil.charting.charts.PieChart
-                    android:layout_centerInParent="true"
                     android:id="@+id/pie_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
@@ -277,25 +290,8 @@
 </RelativeLayout>
 
 
-<!--<LinearLayout-->
-<!--android:id="@+id/ll_load_container"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:gravity="center_vertical"-->
-<!--android:orientation="vertical">-->
+    <!--<LinearLayout--><!--android:id="@+id/ll_load_container"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:gravity="center_vertical"--><!--android:orientation="vertical">-->
 
-<!--<com.wang.avi.AVLoadingIndicatorView-->
-    <!--android:id="@+id/avloding"-->
-    <!--match:indicator="LineScalePulseOutRapid"-->
-    <!--android:layout_width="140dp"-->
-    <!--android:layout_height="80dp" />-->
+    <!--<com.wang.avi.AVLoadingIndicatorView--><!--android:id="@+id/avloding"--><!--match:indicator="LineScalePulseOutRapid"--><!--android:layout_width="140dp"--><!--android:layout_height="80dp" />-->
 
-<!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:gravity="center"-->
-    <!--android:text="正在加载数据..."-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="24dp" />-->
-<!--</LinearLayout>-->
+    <!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_marginTop="20dp"--><!--android:gravity="center"--><!--android:text="正在加载数据..."--><!--android:textColor="@color/white"--><!--android:textSize="24dp" />--><!--</LinearLayout>-->

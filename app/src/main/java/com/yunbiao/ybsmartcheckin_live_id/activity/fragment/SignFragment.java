@@ -90,6 +90,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     private TextView tvTotalSex;
     private TextView tvMale1;
     private TextView tvFemale1;
+    private TextView tvModel;
 
     @Nullable
     @Override
@@ -136,6 +137,9 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         tvTotal = rootView.findViewById(R.id.tv_total_sign_list);
         tvTotalSex = rootView.findViewById(R.id.tv_total_sex);
 
+        tvModel = rootView.findViewById(R.id.tv_model_sign);
+        setModelText(mModel);
+
         //横屏专用
         pieChart = rootView.findViewById(R.id.pie_chart);
         tvSignMale = rootView.findViewById(R.id.tv_sign_number_male);
@@ -162,6 +166,18 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             SignManager.instance().startBulu();
         }
     };
+
+    private String mModel = "";
+
+    public void setModelText(String model) {
+        if (TextUtils.isEmpty(model)) {
+            return;
+        }
+        mModel = model;
+        if (tvModel != null) {
+            tvModel.setText(mModel);
+        }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -397,7 +413,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
                     Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(ivHead);
                 } else if (!TextUtils.isEmpty(headPath)) {
                     Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
-                } else if(imgBitmap != null){
+                } else if (imgBitmap != null) {
                     ivHead.setImageBitmap(imgBitmap);
                 }
 
