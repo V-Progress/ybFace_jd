@@ -25,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
@@ -512,8 +513,15 @@ public class SignManager {
 3.主线程addOrUpdate*/
     public void uploadTemperatureSign(final Sign sign) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
-        File file = saveBitmap(sign.getTime(),sign.getImgBitmap());
+
+        File file = saveBitmap(sign.getTime(), sign.getImgBitmap());
         sign.setHeadPath(file.getPath());
+
+        File hotFile = null;
+        Bitmap hotImageBitmap = sign.getHotImageBitmap();
+        if (hotImageBitmap != null) {
+            hotFile = saveBitmap("hot_", sign.getTime(), hotImageBitmap);
+        }
 
         Map<String, String> params = new HashMap<>();
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
@@ -525,72 +533,31 @@ public class SignManager {
         Log.e(TAG, "上传温度");
         Log.e(TAG, "地址：" + url);
         Log.e(TAG, "参数: " + params.toString());
-        OkHttpUtils.post()
+        PostFormBuilder builder = OkHttpUtils.post()
                 .url(url)
-                .params(params)
-                .addFile("heads", file.getName(), file)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
-                        sign.setUpload(false);
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Log.e(TAG, "onResponse: 上传成功：" + response);
-                        sign.setUpload(true);
-                    }
-
-                    @Override
-                    public void onAfter(int id) {
-                        DaoManager.get().addOrUpdate(sign);
-                    }
-                });
-
-        /*threadPool.submit(new Runnable() {
+                .params(params);
+        builder.addFile("heads", file.getName(), file);
+        if (hotFile != null) {
+            builder.addFile("reHead", hotFile.getName(), hotFile);
+        }
+        builder.build().execute(new StringCallback() {
             @Override
-            public void run() {
-                String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
-                File file = saveBitmap(sign.getTime(),sign.getImgBitmap());
-                sign.setHeadPath(file.getPath());
-
-                Map<String, String> params = new HashMap<>();
-                params.put("deviceNo", HeartBeatClient.getDeviceNo());
-                params.put("comId", SpUtils.getCompany().getComid() + "");
-                params.put("temper", sign.getTemperature() + "");
-                if (sign.getType() != -9) {
-                    params.put("entryId", sign.getEmpId() + "");
-                }
-                Log.e(TAG, "上传温度");
-                Log.e(TAG, "地址：" + url);
-                Log.e(TAG, "参数: " + params.toString());
-                OkHttpUtils.post()
-                        .url(url)
-                        .params(params)
-                        .addFile("heads", file.getName(), file)
-                        .build()
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
-                                sign.setUpload(false);
-                            }
-
-                            @Override
-                            public void onResponse(String response, int id) {
-                                Log.e(TAG, "onResponse: 上传成功：" + response);
-                                sign.setUpload(true);
-                            }
-
-                            @Override
-                            public void onAfter(int id) {
-                                DaoManager.get().addOrUpdate(sign);
-                            }
-                        });
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                sign.setUpload(false);
             }
-        });*/
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 上传成功：" + response);
+                sign.setUpload(true);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                DaoManager.get().addOrUpdate(sign);
+            }
+        });
     }
 
     //通知被访人
@@ -802,6 +769,10 @@ public class SignManager {
     }
 
     public File saveBitmap(long time, Bitmap bitmap) {
+        return saveBitmap("", time, bitmap);
+    }
+
+    public File saveBitmap(String preName, long time, Bitmap bitmap) {
         File filePic;
         try {
             //格式化时间
@@ -809,7 +780,10 @@ public class SignManager {
             String today = sdf.format(time);
             sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String sdfTime = sdf.format(time);
-            filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + sdfTime + ".jpg");
+
+            //添加附加名
+            preName = TextUtils.isEmpty(preName) ? "" : (preName + "_");
+            filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + preName + sdfTime + ".jpg");
             if (!filePic.exists()) {
                 filePic.getParentFile().mkdirs();
                 filePic.createNewFile();
@@ -838,7 +812,7 @@ public class SignManager {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         final Bitmap image = BitmapFactory.decodeByteArray(mBitmapByteArry, 0, mBitmapByteArry.length, options);
 
-        return saveBitmap(time, image);
+        return saveBitmap("", time, image);
     }
 
     class SignDataBean {

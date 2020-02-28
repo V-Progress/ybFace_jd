@@ -80,6 +80,12 @@ public class SpUtils {
     public static final String DISTANCE_TIPS_ENABLED = "distanceTipsEnabled";//距离提示开关
     public static final String TEMP_D_VALUE = "tempDValue";//高低温差值
     public static final String PORT_PATH = "portPath";//端口号缓存
+    public static final String BAUD_RATE = "baudRate";//波特率
+    public static final String THERMAL_IMAGE_MIRROR = "thermalImageMirror";//热成像画面镜像
+    public static final String BODY_PERCENT = "bodyPercent";//身体占比
+    public static final String BODY_MIN_T = "bodyMinT";//身体占比
+    public static final String BODY_MAX_T = "bodyMaxT";//身体占比
+    public static final String GET_TEMP_DELAY_ENABLED = "getTempDelayEnabled";
 
     public static void init() {
         getCompany();

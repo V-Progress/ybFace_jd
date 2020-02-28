@@ -91,6 +91,11 @@ public class WelComeActivity extends BaseGpioActivity {
     private View viewDistance;
     private View tempDetectionDot;
     private boolean isPosterEnabled;//大屏海报是否开启
+    private float mAmbCorrValue;
+    private float mTempCorrValue;
+    private ImageView ivThermalImaging;
+    private TextView tvThermalPercent;
+    private View llThermalArea;
 
     @Override
     protected int getPortraitLayout() {
@@ -119,6 +124,9 @@ public class WelComeActivity extends BaseGpioActivity {
         tvTemperature = findViewById(R.id.tv_temperature_main);//实时检测温度
         tvRangeTips = findViewById(R.id.tv_range_tips_main);//人脸距离提示
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
+        ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);
+        tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);
+        llThermalArea = findViewById(R.id.ll_thermal_area_main);
 
         //加载签到列表Fragment
         signListFragment = new SignFragment();
@@ -132,35 +140,75 @@ public class WelComeActivity extends BaseGpioActivity {
 
         initTest();
 
+        /*红外模块是9600，热成像模块是115200*/
         mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
-        InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath);
+        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
+        InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
-        if (!TextUtils.equals(portPath, mCurrPortPath)) {
-            mCurrPortPath = portPath;
-            InfraredTemperatureUtils.getIns().initSerialPort(portPath);
-        }
-
+        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);//当前模式
         isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);//大屏海报开关
-        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, 0);//当前模式
-        distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, false);//距离提示开关
+        distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);//距离提示开关
         mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
         mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);//设置测温延时
         mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f); //测温最小阈值
         mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f); //测温报警阈值
         mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);//高低温差值（用于判断高度）
+        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);//环境温度补正
+        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);//体温检测补正
+        mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, false);//热成像图像镜像
+        mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, 350);//最低体温值
+        mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, 400);//最高体温值
+        mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, 3);//身体占比
 
         if (signListFragment != null) {
-            signListFragment.setModelText(mCurrModel == Constants.Model.MODEL_FACE_ONLY ? "人脸识别" : mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE ? "人脸 + 体温" : "测温模式");
+            signListFragment.setModelText(Constants.Model.models[mCurrModel]);
         }
 
         initAds(mCurrModel);
 
-        boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
+        //初始化测温模块
+        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
+        if (!TextUtils.equals(portPath, mCurrPortPath) || baudRate != mCurrBaudRate) {
+            mCurrPortPath = portPath;
+            mCurrBaudRate = baudRate;
+            InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
+        }
+
+        //根据模式选择启动逻辑
+        if (mCurrModel == Constants.Model.MODEL_FACE_ONLY) {
+            tempDetectionDot.setVisibility(View.GONE);
+            tvAmbient.setVisibility(View.GONE);
+            tvRangeTips.setVisibility(View.GONE);
+            tvTempTips.setVisibility(View.GONE);
+            llThermalArea.setVisibility(View.GONE);
+            closeInfraedTemperature();
+            closeThermalImaging();
+        } else if (mCurrModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY || mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {//热成像模式
+            tempDetectionDot.setVisibility(View.VISIBLE);
+            tvAmbient.setVisibility(View.GONE);
+            tvRangeTips.setVisibility(View.VISIBLE);
+            tvTempTips.setVisibility(View.VISIBLE);
+            llThermalArea.setVisibility(View.VISIBLE);
+            Log.e(TAG, "onResume: 开始热成像逻辑");
+            closeInfraedTemperature();
+            startThermalImaging();
+        } else {//红外测温模式
+            tempDetectionDot.setVisibility(View.VISIBLE);
+            tvAmbient.setVisibility(View.VISIBLE);
+            tvRangeTips.setVisibility(View.VISIBLE);
+            tvTempTips.setVisibility(View.VISIBLE);
+            llThermalArea.setVisibility(View.GONE);
+
+            closeThermalImaging();
+            startInfraredTemperature();
+        }
+
+     /*   boolean isTemperatureEnabled = mCurrModel != Constants.Model.MODEL_FACE_ONLY;
         if (isTemperatureEnabled) {
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.VISIBLE);
@@ -172,12 +220,13 @@ public class WelComeActivity extends BaseGpioActivity {
             tvAmbient.setVisibility(View.GONE);
             tvRangeTips.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
-            temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
+            infraredHandler.removeCallbacks(temperatureUpdateRunnable);
         }
-
+*/
         //设置测温补正值
-        InfraredTemperatureUtils.getIns().setaCorrectionValue(SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f));
-        InfraredTemperatureUtils.getIns().setmCorrectionValue(SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f));
+        InfraredTemperatureUtils.getIns().setaCorrectionValue(mAmbCorrValue);
+        InfraredTemperatureUtils.getIns().setmCorrectionValue(mTempCorrValue);
+
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
         faceView.setLiveness(livenessEnabled);
@@ -202,7 +251,7 @@ public class WelComeActivity extends BaseGpioActivity {
             canDetection = hasFace;
             if (!hasFace) {//如果没有人脸
                 mCacheStrangerTempTrackId = -1;
-                if (mCurrModel != Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING || mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
                     setRangeTips("");
                 }
                 return false;
@@ -215,8 +264,8 @@ public class WelComeActivity extends BaseGpioActivity {
                 adsFragment.detectFace();
             }
 
-            //如果是测温模式则不走识别逻辑
-            if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+            //如果是红外模式和热成像模式则不走识别逻辑
+            if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY || mCurrModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
                 return false;
             } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {//如果是人脸+测温则判断模式
                 //取出人脸的rect
@@ -225,6 +274,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 if (tvRangeTips == null || rect == null) {
                     return false;
                 }
+
                 Rect realRect = faceView.getRealRect(rect);
                 int minWidth = viewDistance.getMeasuredWidth();
                 int maxHeight = faceView.getHeight();
@@ -256,15 +306,44 @@ public class WelComeActivity extends BaseGpioActivity {
                 setRangeTips("");
 
                 //判断当前温度，取36度以上再进行识别
-                if (mCacheTemperatureHighestValue <= mTempMinThreshold) {
+                if (mCacheTemperatureHighestValue < mTempMinThreshold) {
                     return false;
                 }
-                //如果当前缓存时间是0则重置
-                if (mCacheTime == 0) {
-                    mCacheTime = System.currentTimeMillis();
+                if (getTempDelayEnabled) {
+                    //如果当前缓存时间是0则重置
+                    if (mCacheTime == 0) {
+                        mCacheTime = System.currentTimeMillis();
+                        return false;
+                    } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        return false;
+                    }
+                }
+                //都合适，隐藏提示
+                setRangeTips("");
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {
+                //取出人脸的rect
+                Rect rect = facePreviewInfo.getFaceInfo().getRect();
+                //如果未初始化完成
+                if (tvRangeTips == null || rect == null) {
                     return false;
-                } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                    showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                }
+                Rect realRect = faceView.getRealRect(rect);
+                int minWidth = viewDistance.getMeasuredWidth();
+                //判断人脸距离
+                if (faceView.checkFaceToFar(realRect, minWidth / 2)) {
+                    setRangeTips("距离太远，请靠近");
+                    if (distanceTipsEnabled) {
+                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                    }
+                    return false;
+                }
+                //判断最高温度值是否大于阈值
+                if (mCacheTemperatureHighestValue < mTempMinThreshold) {
+                    return false;
+                }
+                //判断热成像图像为null的话则等待
+                if (mCacheHotImage == null) {
                     return false;
                 }
                 //都合适，隐藏提示
@@ -276,7 +355,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         @Override
         public void onFaceVerify(CompareResult compareResult) {
-            if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
+            if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE || mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {
                 Bitmap bitmap = faceView.takePicture();
                 if (bitmap == null) {
                     return;
@@ -300,9 +379,11 @@ public class WelComeActivity extends BaseGpioActivity {
                     }
                 }
 
-                playTips(isWarning, sign.getName());
+                playTips(isWarning, sign.getName(), sign.getTemperature());
 
                 sign.setImgBitmap(bitmap);
+                sign.setHotImageBitmap(mCacheHotImage);
+
                 if (signListFragment != null) {
                     signListFragment.addSignData(sign);
                 }
@@ -376,9 +457,12 @@ public class WelComeActivity extends BaseGpioActivity {
     /****温控检测区域************************************************************************************************/
     private boolean canDetection = false;//是否可以采集温度
     //开关类
+    private boolean distanceTipsEnabled = true;//距离提示语音播报
+    private boolean mThermalImgMirror = false;
     private int mCurrModel = 0;//当前模式
-    private String mCurrPortPath = "";
-    private boolean distanceTipsEnabled = false;//距离提示语音播报
+    private String mCurrPortPath = "";//当前端口号
+    private int mCurrBaudRate;//当前波特率
+    private boolean getTempDelayEnabled = true;
 
     //设置类
     private int mGetTempDelayTime = 1000;//采集温度延时
@@ -386,6 +470,10 @@ public class WelComeActivity extends BaseGpioActivity {
     private float mTempWarningThreshold = 37.3f;//报警值
     private int mTempTipsCloseDelayTime = 5000;//温度提示关闭延迟
     private float mTempDValue = 3.0f;
+
+    private int mCurrBodyMinT = 350;//当前最低体温
+    private int mCurrBodyMaxT = 400;//当前最高体温
+    private int mCurrBodyPercent = 3;//当前身体占比
 
     //缓存值类
     private float mCacheDetectionValue = 0f;//检测值缓存，用于检测是否有人进来和有人离开
@@ -409,12 +497,180 @@ public class WelComeActivity extends BaseGpioActivity {
         return (float) (Math.round(fValue * 10)) / 10;
     }
 
-    private Handler temperatureUpdateHandler = new Handler();
+    //=热成像测温逻辑==================================================
+    private void startThermalImaging() {
+        Log.e(TAG, "startThermalImaging: 开始执行热成像逻辑");
+        InfraredTemperatureUtils.getIns().closeHotImage3232();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InfraredTemperatureUtils.getIns().startHotImage3232(mThermalImgMirror, mCurrBodyMinT, mCurrBodyMaxT, mCurrBodyPercent, hotImageDataCallBack);
+            }
+        }, 1000);
 
-    //开始自动测温
-    private void startUpdateTemperatureRunnable() {
-        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
-        temperatureUpdateHandler.post(temperatureUpdateRunnable);
+        /*testHandler.removeCallbacks(testRunnable);
+        testHandler.post(testRunnable);*/
+    }
+/*
+    private boolean testBoolean = false;
+    private Runnable testRunnable = new Runnable() {
+        @Override
+        public void run() {
+            float testValue = 1.0f;
+            testValue += mTestCorrValue;
+
+            int resId = testBoolean ? R.mipmap.ads_bg : R.mipmap.bg_head_show;
+            testBoolean = !testBoolean;
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+
+            hotImageDataCallBack.newestHotImageData(bitmap, testValue, testValue, testValue);
+            testHandler.postDelayed(testRunnable, 500);
+        }
+    };
+    private Handler testHandler = new Handler();*/
+
+
+    private boolean mCacheWaitTag = false;
+    private long mCacheLastCallbackTime = 0;
+    private InfraredTemperatureUtils.HotImageDataCallBack hotImageDataCallBack = new InfraredTemperatureUtils.HotImageDataCallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
+            if (ivThermalImaging != null) {
+                ivThermalImaging.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (tvSensorTTest != null) {
+                            tvSensorTTest.setText("传感器：" + sensorT + "");
+                        }
+                        if (tvMinTest != null) {
+                            tvMinTest.setText("最低温度：" + minT + "");
+                        }
+                        if (tvMaxTest != null) {
+                            tvMaxTest.setText("最高温度：" + maxT + "");
+                        }
+                        if (tvBodyMaxT != null) {
+                            tvBodyMaxT.setText("人体温度：" + bodyMaxT);
+                        }
+                        if (tvThermalPercent != null) {
+                            tvThermalPercent.setText(bodyPercentage + "，" + isBody);
+                        }
+
+                        if (mCacheLastCallbackTime == 0) {
+                            mCacheLastCallbackTime = System.currentTimeMillis();
+                        } else {
+                            long l1 = System.currentTimeMillis();
+                            long l = l1 - mCacheLastCallbackTime;
+                            if (tvCallbackTimeTest != null) {
+                                tvCallbackTimeTest.setText("回调间隔：" + l);
+                            }
+                            mCacheLastCallbackTime = l1;
+                        }
+
+                        ivThermalImaging.setImageBitmap(imageBmp);
+                    }
+                });
+            }
+
+            //仅热成像模式
+            if (mCurrModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+                //如果有人
+                if (isBody) {
+                    //如果是有人的话，则存最高值
+                    if (bodyMaxT > mCacheTemperatureHighestValue) {
+                        mCacheTemperatureHighestValue = bodyMaxT;
+                    }
+
+                    if (mCacheTemperatureHighestValue >= mTempMinThreshold) {
+                        if (adsFragment != null) {
+                            adsFragment.detectFace();
+                        }
+                        if (false == mCacheWaitTag) {
+                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            mCacheWaitTag = true;
+                            return;
+                        }
+
+                        //判断缓存标记
+                        if (mCacheValueForTempModel != 0) {
+                            return;
+                        }
+                        mCacheValueForTempModel = mCacheTemperatureHighestValue;
+
+                        //截取摄像头画面并提示
+                        Bitmap currCameraFrame = faceView.getCurrCameraFrame();
+                        if (currCameraFrame == null) {
+                            return;
+                        }
+                        boolean isWarning = mCacheTemperatureHighestValue >= mTempWarningThreshold;
+
+                        final Sign temperatureSign = SignManager.instance().getTemperatureSign(mCacheTemperatureHighestValue);
+                        temperatureSign.setImgBitmap(currCameraFrame);
+                        temperatureSign.setHotImageBitmap(imageBmp);
+
+                        //提示
+                        playTips(isWarning, "", temperatureSign.getTemperature());
+                        //更新记录
+                        if (signListFragment != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    signListFragment.addSignData(temperatureSign);
+                                }
+                            });
+                        }
+                        //上传记录
+                        SignManager.instance().uploadTemperatureSign(temperatureSign);
+                    }
+                } else {
+                    mCacheTemperatureHighestValue = 0f;
+                    mCacheValueForTempModel = 0f;
+                    mCacheTime = 0;
+                    mCacheWaitTag = false;
+                }
+            }
+
+            //人脸+热成像模式
+            else if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {
+                if (isBody && canDetection) {
+                    mCacheHotImage = imageBmp;
+                    if (bodyMaxT > mCacheTemperatureHighestValue) {
+                        mCacheTemperatureHighestValue = bodyMaxT;
+                    }
+                } else {
+                    if (mCacheHotImage != null) {
+                        mCacheHotImage.recycle();
+                        mCacheHotImage = null;
+                    }
+                    mCacheTemperatureHighestValue = 0f;
+                }
+            }
+        }
+    };
+
+    private Bitmap mCacheHotImage = null;
+
+    private void closeThermalImaging() {
+        InfraredTemperatureUtils.getIns().closeHotImage3232();
+    }
+
+    //========================================================
+    private Handler infraredHandler;
+
+    //开始红外测温逻辑
+    private void startInfraredTemperature() {
+        closeInfraedTemperature();
+        if (infraredHandler == null) {
+            infraredHandler = new Handler();
+        }
+        infraredHandler.post(temperatureUpdateRunnable);
+    }
+
+    //关闭
+    private void closeInfraedTemperature() {
+        if (infraredHandler != null) {
+            infraredHandler.removeCallbacks(temperatureUpdateRunnable);
+        }
+        infraredHandler = null;
     }
 
     private Runnable temperatureUpdateRunnable = new Runnable() {
@@ -432,7 +688,6 @@ public class WelComeActivity extends BaseGpioActivity {
 
             //获取检测温度
             float measuringTemperatureF = formatF(InfraredTemperatureUtils.getIns().getMeasuringTemperatureF());
-//            measuringTemperatureF += 24.5f;
 
             measuringTemperatureF += mTestCorrValue;
             tvTemperature.setText(measuringTemperatureF + " ℃");
@@ -453,14 +708,23 @@ public class WelComeActivity extends BaseGpioActivity {
              * */
             //如果是仅测温模式的话,则判断数值是否超过阈值,如果超过则开始判断延迟时间
             if (mCurrModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                if (measuringTemperatureF <= mTempCorrValue) {
+                    mCacheTime = 0;//取温缓存时间重置
+                    mCacheValueForTempModel = 0f;//防重复缓存值重置
+                    mCacheTemperatureHighestValue = 0f;//缓存最终值重置
+                    setRangeTips("");
+                    infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    return;
+                }
+
                 //如果为0说明是初始化状态
                 if (mCacheDetectionValue == 0f) {
                     mCacheTime = 0;//取温缓存时间重置
                     mCacheValueForTempModel = 0f;//防重复缓存值重置
                     mCacheTemperatureHighestValue = 0f;//缓存最终值重置
-                    mCacheDetectionValue = measuringTemperatureF;
+                    mCacheDetectionValue = measuringTemperatureF;//在w
                     setRangeTips("");
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
@@ -471,14 +735,14 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTemperatureHighestValue = 0f;
                     mCacheDetectionValue = measuringTemperatureF;
                     setRangeTips("");
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
                 //如果温度差小于这个数说明是温度波动,不用理会
                 if (measuringTemperatureF - mCacheDetectionValue < mTempDValue) {
                     setRangeTips("");
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
@@ -491,7 +755,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     if (distanceTipsEnabled) {
                         KDXFSpeechManager.instance().playNormal("请靠近点");
                     }
-                    temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+                    infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
                 }
 
@@ -507,14 +771,16 @@ public class WelComeActivity extends BaseGpioActivity {
                         mCacheTemperatureHighestValue = formatF(measuringTemperatureF);
                     }
                     //如果当前缓存时间是0则重置
-                    if (mCacheTime == 0) {
-                        mCacheTime = System.currentTimeMillis();
-                        temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
-                        return;
-                    } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
-                        temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
-                        return;
+                    if (getTempDelayEnabled) {
+                        if (mCacheTime == 0) {
+                            mCacheTime = System.currentTimeMillis();
+                            infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
+                            return;
+                        } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
+                            return;
+                        }
                     }
                 } else {//如果温度小于阈值则归零
                     mCacheTemperatureHighestValue = 0f;
@@ -522,7 +788,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTime = 0;
                 }
 
-                //在缓存值大于
+                //在最终值大于最小值的时候
                 if (mCacheTemperatureHighestValue >= mTempMinThreshold) {
                     if (mCacheValueForTempModel == 0f) {
                         Bitmap currCameraFrame = faceView.getCurrCameraFrame();
@@ -534,7 +800,7 @@ public class WelComeActivity extends BaseGpioActivity {
                             temperatureSign.setImgBitmap(currCameraFrame);
 
                             //提示
-                            playTips(isWarning, "");
+                            playTips(isWarning, "", temperatureSign.getTemperature());
                             //更新记录
                             if (signListFragment != null) {
                                 signListFragment.addSignData(temperatureSign);
@@ -549,7 +815,8 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTime = 0;
                 }
 
-            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
+                //如果是人脸+热成像或者人脸+红外，就走存最高值的逻辑
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE/* || mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING*/) {
                 if (canDetection) {
                     if (measuringTemperatureF > mCacheTemperatureHighestValue) {
                         mCacheTemperatureHighestValue = formatF(measuringTemperatureF);
@@ -561,15 +828,9 @@ public class WelComeActivity extends BaseGpioActivity {
                 }
             }
 
-            temperatureUpdateHandler.postDelayed(temperatureUpdateRunnable, 400);
+            infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
         }
     };
-
-    //关闭测温串口
-    private void closeUpdateTemperatureRunnable() {
-        temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
-        InfraredTemperatureUtils.getIns().closeSerialPort();
-    }
 
     private Message tipsMessage;
 
@@ -617,7 +878,7 @@ public class WelComeActivity extends BaseGpioActivity {
         }
     };
 
-    private void playTips(boolean isWarning, String signName) {
+    private void playTips(boolean isWarning, String signName, float temperature) {
         String tip;
         Runnable warningRunnable;
         int bgId;
@@ -641,8 +902,7 @@ public class WelComeActivity extends BaseGpioActivity {
             ledGreen();//显示绿灯
         }
 
-        tip += mCacheTemperatureHighestValue + "℃";
-
+        tip += temperature + "℃";
 
         Log.e(TAG, "playTips: 延迟关闭时间：" + mTempTipsCloseDelayTime);
         resetLedDelay(mTempTipsCloseDelayTime);//5秒后重置灯光为蓝色
@@ -655,6 +915,11 @@ public class WelComeActivity extends BaseGpioActivity {
 
     private TextView tvTempMinCache;
     private TextView tvTempMaxCache;
+    private TextView tvSensorTTest;
+    private TextView tvMaxTest;
+    private TextView tvMinTest;
+    private TextView tvBodyMaxT;
+    private TextView tvCallbackTimeTest;
 
     private void initTest() {
         tvTempMinCache = findViewById(R.id.tv_temperature_cache_min_main);
@@ -704,6 +969,12 @@ public class WelComeActivity extends BaseGpioActivity {
                 mTestCorrValue = i;
             }
         });
+
+        tvSensorTTest = findViewById(R.id.tv_sensorT_test);
+        tvMaxTest = findViewById(R.id.tv_maxT_test);
+        tvMinTest = findViewById(R.id.tv_minT_test);
+        tvBodyMaxT = findViewById(R.id.tv_bodyMaxT_test);
+        tvCallbackTimeTest = findViewById(R.id.tv_callback_time_test);
     }
     /****************************************************************************************************/
     /****************************************************************************************************/
@@ -929,7 +1200,8 @@ public class WelComeActivity extends BaseGpioActivity {
             readCardUtils.removeScanSuccessListener();
             readCardUtils = null;
         }
-        closeUpdateTemperatureRunnable();
+
+        InfraredTemperatureUtils.getIns().closeSerialPort();
         faceView.destory();
         destoryXmpp();
 

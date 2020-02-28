@@ -196,7 +196,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
         //设置测温补正值
         InfraredTemperatureUtils.getIns().setaCorrectionValue(SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f));
-        InfraredTemperatureUtils.getIns().setmCorrectionValue(SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 1.5f));
+        InfraredTemperatureUtils.getIns().setmCorrectionValue(SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f));
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
         faceView.setLiveness(livenessEnabled);
@@ -421,7 +421,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     //开始自动测温
     private void startUpdateTemperatureRunnable() {
-        InfraredTemperatureUtils.getIns().initSerialPort("/dev/ttyS1");
+        InfraredTemperatureUtils.getIns().initSerialPort("/dev/ttyS1",9600);
         temperatureUpdateHandler.removeCallbacks(temperatureUpdateRunnable);
         temperatureUpdateHandler.post(temperatureUpdateRunnable);
     }

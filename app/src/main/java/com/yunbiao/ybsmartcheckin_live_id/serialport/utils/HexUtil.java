@@ -16,6 +16,23 @@ public class HexUtil {
         return ret;
     }
 
+    //取反
+    public static String parseHex2Opposite(String src) {
+        String hexStr;
+        byte[] er = hexStr2Bytes(src);
+        byte erBefore[] = new byte[er.length];
+        for (int i = 0; i < er.length; i++) {
+            erBefore[i] = (byte) ~er[i];
+        }
+        hexStr = bytes2HexStr(erBefore, erBefore.length);
+        if (hexStr.length() < src.length()) {
+            for (int j = 0; j < src.length() - hexStr.length(); j++) {
+                hexStr = "0" + hexStr;
+            }
+        }
+        return hexStr;
+    }
+
     public static String bytes2HexStr(byte[] b, int size) {
         StringBuffer result = new StringBuffer();
         String hex;

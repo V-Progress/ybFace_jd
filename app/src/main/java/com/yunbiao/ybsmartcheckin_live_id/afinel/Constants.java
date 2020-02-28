@@ -127,6 +127,9 @@ public class Constants {
         int MODEL_FACE_ONLY = 0;
         int MODEL_FACE_TEMPERATURE = 1;
         int MODEL_TEMPERATURE_ONLY = 2;
+        int MODEL_THERMAL_IMAGING_ONLY = 3;
+        int MODEL_FACE_THERMAL_IMAGING = 4;
+        String[] models = {"人脸识别", "人脸 + 红外", "红外测温", "热成像测温", "人脸 + 热成像"};
     }
 }
 

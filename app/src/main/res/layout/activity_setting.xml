@@ -169,10 +169,114 @@
                         android:id="@+id/sw_distance_setting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginLeft="20dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:textColor="@color/white" />
+
+
+                    <TextView
+                        android:layout_marginLeft="30dp"
+                        style="@style/setting_text"
+                        android:text="热成像画面镜像" />
+
+                    <Switch
+                        android:id="@+id/sw_thermal_imag_mirror_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="波特率" />
+
+                    <EditText
+                        android:id="@+id/edt_baud_rate_setting"
+                        style="@style/style_setting_input_number_edt"
+                        android:maxLength="6" />
+
+                    <Button
+                        android:id="@+id/btn_save_baud_rate_setting"
+                        style="@style/style_setting_input_save_button" />
+
+
+                    <TextView
+                        android:layout_marginLeft="20dp"
+                        style="@style/setting_text"
+                        android:text="建议值：" />
+
+
+                    <Button
+                        android:text="红外测温：9600"
+                        android:id="@+id/btn_save_infared_baud_rate_setting"
+                        style="@style/style_setting_input_save_button" />
+
+
+                    <Button
+                        android:text="热成像测温：115200"
+                        android:id="@+id/btn_set_thermal_baud_rate_setting"
+                        style="@style/style_setting_input_save_button" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="人体占比：" />
+
+                    <EditText
+                        android:id="@+id/edt_body_percent_setting"
+                        style="@style/style_setting_input_number_edt"
+                        android:maxLength="3" />
+
+                    <Button
+                        android:id="@+id/btn_save_body_percent_setting"
+                        style="@style/style_setting_input_save_button" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="最低体温：" />
+
+                    <EditText
+                        android:id="@+id/edt_body_min_t_setting"
+                        style="@style/style_setting_input_number_edt"
+                        android:maxLength="3" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="最高体温：" />
+
+                    <EditText
+                        android:id="@+id/edt_body_max_t_setting"
+                        style="@style/style_setting_input_number_edt"
+                        android:maxLength="3" />
+
+                    <Button
+                        android:id="@+id/btn_save_body_t_setting"
+                        style="@style/style_setting_input_save_button" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -232,6 +336,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="开启测温延时" />
+
+                    <Switch
+                        android:id="@+id/sw_get_temp_delay_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+
 
                     <TextView
                         style="@style/setting_text"

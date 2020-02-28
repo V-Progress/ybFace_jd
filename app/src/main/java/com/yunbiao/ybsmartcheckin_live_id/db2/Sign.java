@@ -59,6 +59,8 @@ public class Sign {
     @Transient
     private Bitmap imgBitmap;
 
+    @Transient
+    private Bitmap hotImageBitmap;
 
     @Generated(hash = 1996633570)
     public Sign(Long id, String faceId, String name, String position,
@@ -91,6 +93,13 @@ public class Sign {
     public Sign() {
     }
 
+    public Bitmap getHotImageBitmap() {
+        return hotImageBitmap;
+    }
+
+    public void setHotImageBitmap(Bitmap hotImageBitmap) {
+        this.hotImageBitmap = hotImageBitmap;
+    }
 
     public Bitmap getImgBitmap() {
         return imgBitmap;
