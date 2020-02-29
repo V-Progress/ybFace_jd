@@ -186,4 +186,30 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="edt_style_edt_emp">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@mipmap/bg_edit</item>
+        <item name="android:textColor">@color/font_green</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="tv_style_edt_emp">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/font_green</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="item_style_edt_emp">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+
+    </style>
 </resources>

@@ -140,6 +140,11 @@ public class Constants {
         int MODEL_FACE_THERMAL_IMAGING = 4;
         String[] models = {"人脸识别", "人脸 + 红外", "红外测温", "热成像测温", "人脸 + 热成像"};
     }
+
+    public interface serverModel {
+        int YUN = 0;//云端
+        int JU = 1;//局域网
+    }
 }
 
 

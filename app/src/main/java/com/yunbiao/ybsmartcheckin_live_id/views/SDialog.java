@@ -25,7 +25,8 @@ public class SDialog extends Dialog {
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; //核心代码是这个属性。
-        attributes.gravity = Gravity.LEFT|Gravity.BOTTOM;
+        attributes.gravity = Gravity.RIGHT|Gravity.TOP;
+        attributes.y = 100;
         window.setDimAmount(0f);
         window.setAttributes(attributes);
     }

@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -72,6 +74,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
+import okhttp3.Request;
 
 public class SettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
@@ -233,43 +236,6 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
-        final int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
-        final EditText edtBaudRate = findViewById(R.id.edt_baud_rate_setting);
-        edtBaudRate.setText(baudRate + "");
-
-        Button btnSaveBaudRate = findViewById(R.id.btn_save_baud_rate_setting);
-        btnSaveBaudRate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String input = edtBaudRate.getText().toString();
-                if (TextUtils.isEmpty(input)) {
-                    edtBaudRate.setText(baudRate + "");
-                }
-                input = edtBaudRate.getText().toString();
-                SpUtils.saveInt(SpUtils.BAUD_RATE, Integer.parseInt(input));
-                UIUtils.showShort(SettingActivity.this, "保存成功");
-            }
-        });
-
-        Button btnInfaredBaudRate = findViewById(R.id.btn_save_infared_baud_rate_setting);
-        Button btnThermalBaudRate = findViewById(R.id.btn_set_thermal_baud_rate_setting);
-        btnInfaredBaudRate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edtBaudRate.setText(9600 + "");
-                SpUtils.saveInt(SpUtils.BAUD_RATE, 9600);//115200
-                UIUtils.showShort(SettingActivity.this, "保存成功");
-            }
-        });
-        btnThermalBaudRate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edtBaudRate.setText(115200 + "");
-                SpUtils.saveInt(SpUtils.BAUD_RATE, 115200);//115200
-                UIUtils.showShort(SettingActivity.this, "保存成功");
-            }
-        });
-
         boolean thermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, false);
         Switch swThermalMirror = findViewById(R.id.sw_thermal_imag_mirror_setting);
         swThermalMirror.setChecked(thermalImgMirror);
@@ -295,10 +261,20 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initModelSetting() {
-        final String[] items = Constants.Model.models;
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
+        final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
+
+        final String[] items = Constants.Model.models;
         int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);
-        tvModelSetting.setText("当前模式:  " + items[model]);
+        tvModelSetting.setText(items[model]);
+
+        if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+            tvBaudRate.setText(9600 + "（红外测温）");
+        } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+            tvBaudRate.setText(115200 + "（热成像测温）");
+        } else {
+            tvBaudRate.setText("");
+        }
 
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,7 +286,18 @@ public class SettingActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SpUtils.saveInt(SpUtils.MODEL_SETTING, which);
-                        tvModelSetting.setText("当前模式:  " + items[which]);
+                        tvModelSetting.setText(items[which]);
+
+                        if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                            tvBaudRate.setText(9600 + "（红外测温）");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, 9600);
+                        } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+                            tvBaudRate.setText(115200 + "（热成像测温）");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, 115200);
+                        } else {
+                            tvBaudRate.setText("");
+                        }
+
                         UIUtils.showShort(SettingActivity.this, items[which]);
                         dialog.dismiss();
                     }
@@ -319,6 +306,207 @@ public class SettingActivity extends BaseActivity {
                 alertDialog.show();
             }
         });
+
+        //修改测温延时
+        Switch swGetTempDelay = findViewById(R.id.sw_get_temp_delay_setting);
+        final EditText edtGetDelay = findViewById(R.id.edt_get_temp_delay_setting);
+        boolean delayEnabled = SpUtils.getBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, true);
+        swGetTempDelay.setChecked(delayEnabled);
+        swGetTempDelay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, isChecked);
+            }
+        });
+
+        //取温延时
+        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
+        edtGetDelay.setText(delayTime + "");
+
+        //修改校正值
+        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);
+        Button btnTempCorrSub = findViewById(R.id.btn_temp_corr_sub_setting);
+        final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
+        Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
+        edtTempCorr.setText(tempCorrValue + "");
+        View.OnClickListener tempCorrClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtTempCorr.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    edtTempCorr.setText(tempCorrValue + "");
+                }
+                value = edtTempCorr.getText().toString();
+                float v1 = formatF(Float.parseFloat(value));
+                switch (v.getId()) {
+                    case R.id.btn_temp_corr_sub_setting:
+                        v1 -= 0.1;
+                        break;
+                    case R.id.btn_temp_corr_add_setting:
+                        v1 += 0.1;
+                        break;
+                }
+                v1 = formatF(v1);
+                edtTempCorr.setText(v1 + "");
+            }
+        };
+        btnTempCorrSub.setOnClickListener(tempCorrClickListener);
+        btnTempCorrAdd.setOnClickListener(tempCorrClickListener);
+
+        //环境温度补正
+        final EditText edtAmbCorr = findViewById(R.id.edt_ambient_correct_setting);
+        Button btnAmbCorrSub = findViewById(R.id.btn_amb_corr_sub_setting);
+        Button btnAmbCorrAdd = findViewById(R.id.btn_amb_corr_add_setting);
+        //设置温度补正
+        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);
+        edtAmbCorr.setText(ambCorrValue + "");
+        View.OnClickListener ambCorrClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtAmbCorr.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    edtAmbCorr.setText(ambCorrValue + "");
+                }
+                value = edtAmbCorr.getText().toString();
+                float v1 = formatF(Float.parseFloat(value));
+                switch (v.getId()) {
+                    case R.id.btn_amb_corr_sub_setting:
+                        v1 -= 0.1;
+                        break;
+                    case R.id.btn_amb_corr_add_setting:
+                        v1 += 0.1;
+                        break;
+                }
+                v1 = formatF(v1);
+                edtAmbCorr.setText(v1 + "");
+            }
+        };
+        btnAmbCorrSub.setOnClickListener(ambCorrClickListener);
+        btnAmbCorrAdd.setOnClickListener(ambCorrClickListener);
+
+        //修改测温阈值
+        Button btnMinSub = findViewById(R.id.btn_temp_min_threshold_sub_setting);
+        final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
+        Button btnMinAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
+        //温度最低阈值、温度报警阈值
+        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
+        edtMinThreshold.setText(minValue + "");
+        View.OnClickListener minClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtMinThreshold.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    edtMinThreshold.setText(minValue + "");
+                }
+                value = edtMinThreshold.getText().toString();
+                float v1 = formatF(Float.parseFloat(value));
+                switch (v.getId()) {
+                    case R.id.btn_temp_min_threshold_sub_setting:
+                        v1 -= 0.1;
+                        break;
+                    case R.id.btn_temp_min_threshold_add_setting:
+                        v1 += 0.1;
+                        break;
+                }
+                v1 = formatF(v1);
+                edtMinThreshold.setText(v1 + "");
+            }
+        };
+        btnMinSub.setOnClickListener(minClickListener);
+        btnMinAdd.setOnClickListener(minClickListener);
+
+        Button btnWarnSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
+        final EditText edtWarnThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
+        Button btnWarnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
+        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        edtWarnThreshold.setText(warningValue + "");
+        View.OnClickListener warnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtWarnThreshold.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    edtWarnThreshold.setText(warningValue + "");
+                }
+                value = edtWarnThreshold.getText().toString();
+                float v1 = formatF(Float.parseFloat(value));
+                switch (v.getId()) {
+                    case R.id.btn_temp_warning_threshold_sub_setting:
+                        v1 -= 0.1;
+                        break;
+                    case R.id.btn_temp_warning_threshold_add_setting:
+                        v1 += 0.1;
+                        break;
+                }
+                v1 = formatF(v1);
+                edtWarnThreshold.setText(v1 + "");
+            }
+        };
+        btnWarnSub.setOnClickListener(warnClickListener);
+        btnWarnAdd.setOnClickListener(warnClickListener);
+
+        //距离提示
+        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);
+        Switch swDistance = findViewById(R.id.sw_distance_setting);
+        swDistance.setChecked(distanceEnabled);
+        swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.DISTANCE_TIPS_ENABLED, isChecked);
+            }
+        });
+
+        //保存全部
+        Button btnSaveAll = findViewById(R.id.btn_save_all);
+        btnSaveAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //存测温延时
+                String getTempDelayInput = edtGetDelay.getText().toString();
+                if (TextUtils.isEmpty(getTempDelayInput)) {
+                    edtGetDelay.setText(delayTime + "");
+                    getTempDelayInput = edtGetDelay.getText().toString();
+                }
+                SpUtils.saveInt(SpUtils.GET_TEMP_DELAY_TIME, Integer.parseInt(getTempDelayInput));
+
+                //测温补正
+                String tempCorr = edtTempCorr.getText().toString();
+                if (TextUtils.isEmpty(tempCorr)) {
+                    edtTempCorr.setText(tempCorrValue + "");
+                    tempCorr = edtTempCorr.getText().toString();
+                }
+                SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, formatF(Float.parseFloat(tempCorr)));
+
+                //环境温度补正
+                String ambCorr = edtAmbCorr.getText().toString();
+                if (TextUtils.isEmpty(ambCorr)) {
+                    edtAmbCorr.setText(ambCorrValue + "");
+                    tempCorr = edtAmbCorr.getText().toString();
+                }
+                SpUtils.saveFloat(SpUtils.AMB_CORRECT_VALUE, formatF(Float.parseFloat(tempCorr)));
+
+                //测温阈值
+                String value = edtMinThreshold.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    edtMinThreshold.setText(minValue + "");
+                    value = edtMinThreshold.getText().toString();
+                }
+                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, formatF(Float.parseFloat(value)));
+
+                //报警值
+                String warnValue = edtWarnThreshold.getText().toString();
+                if (TextUtils.isEmpty(warnValue)) {
+                    edtWarnThreshold.setText(warningValue + "");
+                }
+                warnValue = edtWarnThreshold.getText().toString();
+                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, formatF(Float.parseFloat(warnValue)));
+
+                UIUtils.showShort(SettingActivity.this, "保存成功");
+            }
+        });
+    }
+
+    private float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
     }
 
     private void initLivenessSetting() {
@@ -333,29 +521,43 @@ public class SettingActivity extends BaseActivity {
         });
     }
 
+    private EditText edtIp;
+    private EditText edtResPort;
+    private EditText edtXmppPort;
+    private EditText edtProName;
+
     //初始化IP设置
     private void initSetIp() {
-        final EditText edtIp = findViewById(R.id.edt_ip);
-        final EditText edtResPort = findViewById(R.id.edt_res_port);
-        final EditText edtXmppPort = findViewById(R.id.edt_xmpp_port);
-        final EditText edtProName = findViewById(R.id.edt_pro_name);
+        edtIp = findViewById(R.id.edt_ip);
+        edtResPort = findViewById(R.id.edt_res_port);
+        edtXmppPort = findViewById(R.id.edt_xmpp_port);
+        edtProName = findViewById(R.id.edt_pro_name);
+
+        RadioGroup rgServerModel = findViewById(R.id.rg_server_model);
+        final RadioButton rbYun = findViewById(R.id.rb_yun);
+        final RadioButton rbJu = findViewById(R.id.rb_ju);
+
         Button btnSave = findViewById(R.id.btn_save_address);
 
-        final String ip = SpUtils.getStr(SpUtils.IP_CACHE);
-        final String resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-        final String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-        final String proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-            edtIp.setHint(Constants.NetConfig.PRO_URL);
-            edtResPort.setHint(Constants.NetConfig.PRO_RES_PORT);
-            edtXmppPort.setHint(Constants.NetConfig.PRO_XMPP_PORT);
-            edtProName.setHint(Constants.NetConfig.PRO_SUFFIX);
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            rbYun.setChecked(true);
+            setServerInfo(Constants.serverModel.YUN);
         } else {
-            edtIp.setText(ip);
-            edtResPort.setText(resPort);
-            edtXmppPort.setText(xmppPort);
-            edtProName.setText(proName);
+            rbJu.setChecked(true);
+            setServerInfo(Constants.serverModel.JU);
         }
+
+        rgServerModel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (rbYun.isChecked()) {
+                    setServerInfo(Constants.serverModel.YUN);
+                }
+                if (rbJu.isChecked()) {
+                    setServerInfo(Constants.serverModel.JU);
+                }
+            }
+        });
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,18 +583,63 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
 
-                if (TextUtils.equals(ip, mIp) && TextUtils.equals(resPort, mResPort) && TextUtils.equals(xmppPort, mXmppPort) && TextUtils.equals(proName, mProName)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "未修改");
-                    return;
+                if (rbYun.isChecked()) {
+                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                } else if (rbJu.isChecked()) {
+                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
-
-                SpUtils.saveStr(SpUtils.IP_CACHE, mIp);
-                SpUtils.saveStr(SpUtils.RESOURCE_PORT_CACHE, mResPort);
-                SpUtils.saveStr(SpUtils.XMPP_PORT_CACHE, mXmppPort);
-                SpUtils.saveStr(SpUtils.PROJECT_NAME_SUFFIX, mProName);
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
             }
         });
+    }
+
+    private void setServerInfo(int model) {
+        String ip;
+        String resPort;
+        String xmppPort;
+        String proName;
+
+        if (model == Constants.serverModel.YUN) {
+            ip = SpUtils.getStr(SpUtils.IP_CACHE);
+            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
+
+            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
+                edtIp.setText(Constants.NetConfig.PRO_URL);
+                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
+                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
+                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
+            } else {
+                edtIp.setText(ip);
+                edtResPort.setText(resPort);
+                edtXmppPort.setText(xmppPort);
+                edtProName.setText(proName);
+            }
+
+            edtIp.setEnabled(false);
+            edtResPort.setEnabled(false);
+            edtXmppPort.setEnabled(false);
+            edtProName.setEnabled(false);
+        } else {
+            ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
+            resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+            edtIp.setEnabled(true);
+            edtResPort.setEnabled(true);
+            edtXmppPort.setEnabled(true);
+            edtProName.setEnabled(true);
+
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
+        }
     }
 
     //初始化人脸弹窗开关
@@ -411,9 +658,9 @@ public class SettingActivity extends BaseActivity {
 
     //初始化摄像头设置
     private void initCameraSetting() {
-        TextView tvCamera = findViewById(R.id.tv_camera);
-        //摄像头模式
-        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
+//        TextView tvCamera = findViewById(R.id.tv_camera);
+//        //摄像头模式
+//        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
         //摄像头角度
         Button btnAngle = findViewById(R.id.btn_setAngle);
         int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
@@ -483,22 +730,6 @@ public class SettingActivity extends BaseActivity {
 
     //初始化温度检测模块的设置
     private void initTemperatureSetting() {
-        //温度开关
-        Switch swTemperature = findViewById(R.id.sw_temperature_setting);
-        boolean enabled = SpUtils.getBoolean(SpUtils.TEMPERATURE_ENABLED, true);
-        swTemperature.setChecked(enabled);
-        swTemperature.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.TEMPERATURE_ENABLED, isChecked);
-                if (isChecked) {
-                    Switch swLiveness = findViewById(R.id.sw_liveness_setting);
-                    swLiveness.setChecked(false);
-                    SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, false);
-                }
-            }
-        });
-
         //提示时间
         final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
         Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
@@ -515,107 +746,6 @@ public class SettingActivity extends BaseActivity {
                 edtTipsTime.setText(saveTime + "");
                 SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功");
-            }
-        });
-
-        //设置温度补正
-        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);
-        final EditText edtAmbCorr = findViewById(R.id.edt_ambient_correct_setting);
-        edtAmbCorr.setHint(ambCorrValue + "");
-        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);
-        final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
-        edtTempCorr.setHint(tempCorrValue + "");
-        Button btnSave = findViewById(R.id.btn_save_temp_setting);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ambCorrInput = edtAmbCorr.getText().toString();
-                if (TextUtils.isEmpty(ambCorrInput)) {
-                    edtAmbCorr.setText(ambCorrValue + "");
-                }
-
-                String tempCorrInput = edtTempCorr.getText().toString();
-                if (TextUtils.isEmpty(tempCorrInput)) {
-                    edtTempCorr.setText(tempCorrValue + "");
-                }
-
-                ambCorrInput = edtAmbCorr.getText().toString();
-                tempCorrInput = edtTempCorr.getText().toString();
-
-                SpUtils.saveFloat(SpUtils.AMB_CORRECT_VALUE, Float.parseFloat(ambCorrInput));
-                SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, Float.parseFloat(tempCorrInput));
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
-            }
-        });
-
-        boolean delayEnabled = SpUtils.getBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, true);
-        Switch swGetTempDelay = findViewById(R.id.sw_get_temp_delay_setting);
-        swGetTempDelay.setChecked(delayEnabled);
-        swGetTempDelay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, isChecked);
-            }
-        });
-
-        //取温延时
-        final EditText edtGetDelay = findViewById(R.id.edt_get_temp_delay_setting);
-        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
-        edtGetDelay.setText(delayTime + "");
-        Button btnSaveGetDelay = findViewById(R.id.btn_save_get_temp_delay_setting);
-        btnSaveGetDelay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String getTempDelayInput = edtGetDelay.getText().toString();
-                if (TextUtils.isEmpty(getTempDelayInput)) {
-                    edtGetDelay.setText(delayTime + "");
-                }
-
-                getTempDelayInput = edtGetDelay.getText().toString();
-
-                SpUtils.saveInt(SpUtils.GET_TEMP_DELAY_TIME, Integer.parseInt(getTempDelayInput));
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
-            }
-        });
-
-        //温度最低阈值、温度报警阈值
-        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
-        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
-        final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
-        final EditText edtWarningThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
-        edtMinThreshold.setText(minValue + "");
-        edtWarningThreshold.setText(warningValue + "");
-
-        Button btnSaveThreshold = findViewById(R.id.btn_save_temp_threshold_setting);
-        btnSaveThreshold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String minInput = edtMinThreshold.getText().toString();
-                if (TextUtils.isEmpty(minInput)) {
-                    edtMinThreshold.setText(minValue + "");
-                }
-
-                String warningInput = edtWarningThreshold.getText().toString();
-                if (TextUtils.isEmpty(warningInput)) {
-                    edtWarningThreshold.setText(warningValue + "");
-                }
-
-                minInput = edtMinThreshold.getText().toString();
-                warningInput = edtWarningThreshold.getText().toString();
-                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, Float.parseFloat(minInput));
-                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, Float.parseFloat(warningInput));
-
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
-            }
-        });
-
-        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);
-        Switch swDistance = findViewById(R.id.sw_distance_setting);
-        swDistance.setChecked(distanceEnabled);
-        swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.DISTANCE_TIPS_ENABLED, isChecked);
             }
         });
 
@@ -1075,6 +1205,12 @@ public class SettingActivity extends BaseActivity {
                 params.put("password", pwd2);
                 OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
                     @Override
+                    public void onBefore(Request request, int id) {
+                        super.onBefore(request, id);
+                        UIUtils.showNetLoading(SettingActivity.this);
+                    }
+
+                    @Override
                     public void onError(Call call, final Exception e, int id) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -1104,6 +1240,7 @@ public class SettingActivity extends BaseActivity {
 
                     @Override
                     public void onAfter(int id) {
+                        UIUtils.dismissNetLoading();
                         btnConfirm.setEnabled(true);
                         btnCancel.setEnabled(true);
                     }

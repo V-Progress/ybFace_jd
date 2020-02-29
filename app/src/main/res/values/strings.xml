@@ -114,6 +114,7 @@
     <string name="act_sys_second">秒</string>
     <string name="act_sys_CPU_tem">CPU温度:</string>
     <string name="act_sys_camera">摄像头</string>
+    <string name="act_sys_cameraAngle">摄像头方向</string>
     <string name="act_sys_totalOne">共1个</string>
     <string name="act_sys_dqsy">【当前使用：】</string>
     <string name="act_sys_dqwl">当前网络:</string>
@@ -286,7 +287,7 @@
     <string name="act_editEmploy_jbxx">基本信息</string>
     <string name="act_editEmploy_name">姓名:</string>
     <string name="act_editEmploy_sex">性别:</string>
-    <string name="act_editEmploy_bm">部门:</string>
+    <string name="act_editEmploy_bm">部     门:</string>
     <string name="act_editEmploy_ygbh">员工编号:</string>
     <string name="act_editEmploy_zw">职位:</string>
     <string name="act_editEmploy_csrq">出生日期:</string>
@@ -374,6 +375,7 @@
     <string name="sync_get_failed">获取失败，即将重试</string>
     <string name="sync_not_bind">设备未绑定</string>
     <string name="sync_not_depart">公司未设置部门</string>
+    <string name="sync_params_error">参数错误</string>
 
     <string name="edit_not_edit">未做任何修改</string>
 

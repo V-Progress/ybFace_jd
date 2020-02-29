@@ -65,7 +65,6 @@ public class SpUtils {
     public static final String SIMILAR_THRESHOLD = "similarThreshold";
 
     //温度检测开关
-    public static final String TEMPERATURE_ENABLED = "temperatureEnabled";//测温模块开关
     public static final String TEMP_CORRECT_VALUE = "tempCorrectValue";//测温矫正值
     public static final String AMB_CORRECT_VALUE = "ambCorrectValue";//环境温度校正值
 
@@ -87,6 +86,11 @@ public class SpUtils {
     public static final String BODY_MAX_T = "bodyMaxT";//身体占比
     public static final String GET_TEMP_DELAY_ENABLED = "getTempDelayEnabled";
 
+    public static final String SERVER_MODEL = "serverModel";
+    public static final String JU_IP_CACHE = "juIpCache";
+    public static final String JU_RESOURCE_PORT_CACHE = "juResourcePortCache";
+    public static final String JU_XMPP_PORT_CACHE = "juXmppPortCache";
+    public static final String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";
 
 
     public static void init() {

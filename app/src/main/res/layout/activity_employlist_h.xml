@@ -12,8 +12,8 @@
         android:textSize="20dp"
         android:textColor="@color/theme_green"
         android:text=""
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="20dp"/>
     <TextView
         android:id="@+id/tv_ads_addname"
         android:layout_width="wrap_content"
@@ -22,21 +22,21 @@
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:text="@string/employ_list_title"
-        android:layout_marginTop="36dp" />
+        android:layout_marginTop="26dp" />
 
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="26dp"
         android:src="@mipmap/icon_back"
         android:layout_marginRight="40dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginBottom="40dp"
@@ -65,6 +65,47 @@
             android:layout_toRightOf="@+id/sp_depart"
             android:paddingLeft="5dp"
             android:layout_marginLeft="20dp"/>
+
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_margin="6dp"
+            android:layout_marginBottom="-20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp">
+            <View
+                android:background="#ED8E17"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="下载头像失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#FA0808"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="添加人脸库失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#A2A2A2"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="更新头像失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_sync"
@@ -172,48 +213,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
-
-        <LinearLayout
-            android:gravity="center"
-            android:layout_margin="6dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="-20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp">
-            <View
-                android:background="#ED8E17"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="下载头像失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <View
-                android:layout_marginLeft="10dp"
-                android:background="#FA0808"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="添加人脸库失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <View
-                android:layout_marginLeft="10dp"
-                android:background="#A2A2A2"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="更新头像失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
 
     </RelativeLayout>
 

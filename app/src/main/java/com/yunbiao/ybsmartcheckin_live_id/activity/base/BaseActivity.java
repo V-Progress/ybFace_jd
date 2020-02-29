@@ -76,6 +76,18 @@ public abstract class BaseActivity extends FragmentActivity {
         initView();
 
         initData();
+
+        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                setFullscreen(false, false);
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                setFullscreen(false, false);
+            }
+        });
     }
 
     public void setFullscreen(boolean isShowStatusBar, boolean isShowNavigationBar) {

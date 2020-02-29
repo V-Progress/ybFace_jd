@@ -113,52 +113,73 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_model_setting"
-                    style="@style/setting_text"
-                    android:layout_width="wrap_content"
-                    android:clickable="true"
-                    android:drawableLeft="@mipmap/icon_arrow_down"
-                    android:drawableRight="@mipmap/icon_arrow_down"
-                    android:drawablePadding="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp" />
-
-                <TextView
-                    android:id="@+id/tv_port_path_setting"
-                    style="@style/setting_text"
-                    android:layout_width="wrap_content"
-                    android:clickable="true"
-                    android:drawableLeft="@mipmap/icon_arrow_down"
-                    android:drawableRight="@mipmap/icon_arrow_down"
-                    android:drawablePadding="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp" />
-
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="开启测温模块" />
+                        android:text="当前模式：" />
 
-                    <Switch
-                        android:id="@+id/sw_temperature_setting"
+
+                    <TextView
+                        android:id="@+id/tv_model_setting"
+                        style="@style/setting_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:background="@drawable/shape_system_name"
+                        android:clickable="true"
+                        android:drawableRight="@mipmap/icon_arrow_down"
+                        android:drawablePadding="10dp"
                         android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
                         android:paddingRight="10dp"
-                        android:textColor="@color/white" />
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="当前串口：" />
+
+                    <TextView
+                        android:id="@+id/tv_port_path_setting"
+                        style="@style/setting_text"
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/shape_system_name"
+                        android:clickable="true"
+                        android:drawableRight="@mipmap/icon_arrow_down"
+                        android:drawablePadding="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="波特率" />
+
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/tv_baud_rate_setting"
+                        style="@style/setting_text" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -176,8 +197,8 @@
 
 
                     <TextView
-                        android:layout_marginLeft="30dp"
                         style="@style/setting_text"
+                        android:layout_marginLeft="30dp"
                         android:text="热成像画面镜像" />
 
                     <Switch
@@ -198,38 +219,194 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="波特率" />
+                        android:text="开启测温延时" />
 
-                    <EditText
-                        android:id="@+id/edt_baud_rate_setting"
-                        style="@style/style_setting_input_number_edt"
-                        android:maxLength="6" />
-
-                    <Button
-                        android:id="@+id/btn_save_baud_rate_setting"
-                        style="@style/style_setting_input_save_button" />
-
+                    <Switch
+                        android:id="@+id/sw_get_temp_delay_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
 
                     <TextView
-                        android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="建议值：" />
+                        android:text="测温延时" />
 
+                    <EditText
+                        android:id="@+id/edt_get_temp_delay_setting"
+                        style="@style/style_setting_input_number_edt" />
 
-                    <Button
-                        android:text="红外测温：9600"
-                        android:id="@+id/btn_save_infared_baud_rate_setting"
-                        style="@style/style_setting_input_save_button" />
-
-
-                    <Button
-                        android:text="热成像测温：115200"
-                        android:id="@+id/btn_set_thermal_baud_rate_setting"
-                        style="@style/style_setting_input_save_button" />
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="毫秒" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="测温矫正值" />
+
+                    <Button
+                        android:id="@+id/btn_temp_corr_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_temp_correct_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_temp_corr_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_marginLeft="30dp"
+                        android:text="环境温度矫正值" />
+
+                    <Button
+                        android:id="@+id/btn_amb_corr_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_ambient_correct_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_amb_corr_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
 
                 <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="测温阈值" />
+
+                    <Button
+                        android:id="@+id/btn_temp_min_threshold_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_temp_min_threshold_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_temp_min_threshold_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+
+                    <TextView
+                        android:layout_marginLeft="30dp"
+                        style="@style/setting_text"
+                        android:text="测温报警值" />
+
+                    <Button
+                        android:id="@+id/btn_temp_warning_threshold_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_temp_warning_threshold_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_temp_warning_threshold_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_save_all"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/style_setting_input_save_button"
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -249,11 +426,13 @@
                         style="@style/style_setting_input_save_button" />
 
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
 
                     <TextView
@@ -280,6 +459,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -303,6 +483,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -332,104 +513,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="开启测温延时" />
-
-                    <Switch
-                        android:id="@+id/sw_get_temp_delay_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="@color/white" />
-
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="测温时长" />
-
-                    <EditText
-                        android:id="@+id/edt_get_temp_delay_setting"
-                        style="@style/style_setting_input_number_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="毫秒" />
-
-                    <Button
-                        android:id="@+id/btn_save_get_temp_delay_setting"
-                        style="@style/style_setting_input_save_button" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="测温矫正值" />
-
-                    <EditText
-                        android:id="@+id/edt_temp_correct_setting"
-                        style="@style/style_setting_input_number_decimal_signed_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:layout_marginLeft="20dp"
-                        android:text="环境温度矫正值" />
-
-                    <EditText
-                        android:id="@+id/edt_ambient_correct_setting"
-                        style="@style/style_setting_input_number_decimal_signed_edt" />
-
-                    <Button
-                        android:id="@+id/btn_save_temp_setting"
-                        style="@style/style_setting_input_save_button" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="测温最低值" />
-
-                    <EditText
-                        android:id="@+id/edt_temp_min_threshold_setting"
-                        style="@style/style_setting_input_number_decimal_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="℃" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:layout_marginLeft="10dp"
-                        android:text="测温报警值" />
-
-                    <EditText
-                        android:id="@+id/edt_temp_warning_threshold_setting"
-                        style="@style/style_setting_input_number_decimal_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="℃" />
-
-                    <Button
-                        android:id="@+id/btn_save_temp_threshold_setting"
-                        style="@style/style_setting_input_save_button" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -518,16 +601,18 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_camera" />
+                    android:text="@string/act_sys_cameraAngle" />
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_totalOne" />
+                    android:text="@string/act_sys_totalOne"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_camera"
                     style="@style/setting_text"
-                    android:text="@string/act_sys_dqsy" />
+                    android:text="@string/act_sys_dqsy"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_setAngle"
@@ -588,110 +673,145 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/shape_spinner_drop"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <RadioGroup
+                    android:id="@+id/rg_server_model"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="30dp"
+                    android:orientation="vertical">
 
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/rb_yun"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="  I  P  地  址："
+                        android:gravity="center_vertical"
+                        android:text="云端"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
 
-                    <EditText
-                        android:id="@+id/edt_ip"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:digits="0123456789."
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/gray_low" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/rb_ju"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="资 源 端 口："
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:text="局域网"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
-
-                    <EditText
-                        android:id="@+id/edt_res_port"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:maxLength="6"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/gray_low" />
-                </LinearLayout>
+                </RadioGroup>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_spinner_drop"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="XMPP端口："
-                        android:textColor="@color/white"
-                        android:textSize="18dp" />
+                        android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/edt_xmpp_port"
-                        android:layout_width="300dp"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="  I  P  地  址："
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+
+                        <EditText
+                            android:id="@+id/edt_ip"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789."
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/gray_low" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:maxLength="6"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="资 源 端 口："
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+
+                        <EditText
+                            android:id="@+id/edt_res_port"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/gray_low" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="XMPP端口："
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+
+                        <EditText
+                            android:id="@+id/edt_xmpp_port"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/gray_low" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="项    目    名："
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+
+                        <EditText
+                            android:id="@+id/edt_pro_name"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyz123456789/"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/gray_low" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_save_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:text="保存"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/gray_low" />
+                        android:textSize="20dp" />
+
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="项    目    名："
-                        android:textColor="@color/white"
-                        android:textSize="18dp" />
-
-                    <EditText
-                        android:id="@+id/edt_pro_name"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:digits="abcdefghijklmnopqrstuvwxyz123456789/"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/gray_low" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_save_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/selector_btn_take_photo"
-                    android:text="保存"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
-
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

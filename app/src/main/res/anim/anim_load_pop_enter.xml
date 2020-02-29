@@ -4,5 +4,5 @@
     android:fillAfter="true"
     android:interpolator="@android:anim/decelerate_interpolator"
     >
-    <translate android:fromXDelta="-1000" android:toXDelta="0"/>
+    <translate android:fromXDelta="100%" android:toXDelta="0%"/>
 </set>

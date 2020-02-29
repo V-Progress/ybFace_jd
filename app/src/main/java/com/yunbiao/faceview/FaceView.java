@@ -545,7 +545,9 @@ public class FaceView extends FrameLayout {
 
     public void destory() {
         unInitEngine();
-        cameraHelper.release();
+        if (cameraHelper != null) {
+            cameraHelper.release();
+        }
     }
 
     private FaceCallback callback;
@@ -584,10 +586,7 @@ public class FaceView extends FrameLayout {
 
                     if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
-                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left
-                                , bestRect.top
-                                , bestRect.right - bestRect.left
-                                , bestRect.bottom - bestRect.top);
+                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, bestRect.right - bestRect.left, bestRect.bottom - bestRect.top);
                         return bitmap;
                     }
                 } else {

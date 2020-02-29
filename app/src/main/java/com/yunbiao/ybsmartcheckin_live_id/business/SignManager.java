@@ -90,7 +90,6 @@ public class SignManager {
         today = dateFormat.format(new Date());
 
         threadPool = Executors.newFixedThreadPool(2);
-        threadPool.execute(initRunnable);
 
         autoUploadThread = Executors.newSingleThreadScheduledExecutor();
         autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 10, UPDATE_TIME, TimeUnit.MINUTES);
@@ -99,36 +98,12 @@ public class SignManager {
     public List<Sign> getTodaySignData() {
         int compId = SpUtils.getInt(SpUtils.COMPANYID);
         List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId, today);
+        if (signs == null || signs.size() <= 0) {
+            return null;
+        }
         Collections.reverse(signs);
         return signs;
     }
-
-    //初始化线程
-    private Runnable initRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int compId = SpUtils.getInt(SpUtils.COMPANYID);
-            final List<Sign> signs = DaoManager.get().querySignByComIdAndDate(compId, today);
-            if (signs == null) {
-                return;
-            }
-            for (Sign signBean : signs) {
-                String faceId = signBean.getFaceId();
-                long time = signBean.getTime();
-
-                if (passageMap.containsKey(faceId)) {
-                    long time1 = passageMap.get(faceId);
-                    if (time > time1) {
-                        passageMap.put(faceId, time);
-                    } else {
-                        continue;
-                    }
-                } else {
-                    passageMap.put(faceId, time);
-                }
-            }
-        }
-    };
 
     //定时发送签到数据
     private Runnable autoUploadRunnable = new Runnable() {
@@ -138,7 +113,6 @@ public class SignManager {
             if (!TextUtils.equals(currDate, today)) {
                 today = currDate;
                 passageMap.clear();
-                initRunnable.run();
             }
 
             uploadSignRecord(new Consumer<Boolean>() {

@@ -128,7 +128,7 @@ public class SyncManager {
                 }
 
                 if (companyResponse.getStatus() != 1) {
-                    retryGetCompany(1);
+                    retryGetCompany(companyResponse.getStatus());
                     return;
                 }
 
@@ -202,9 +202,9 @@ public class SyncManager {
                         }
 
                         StaffResponse staffResponse = null;
-                        try{
+                        try {
                             staffResponse = new Gson().fromJson(response, StaffResponse.class);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -403,14 +403,14 @@ public class SyncManager {
                 List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
                 Log.e(TAG, "updateFace: 用户总数：" + (users == null ? 0 : users.size()));
 
-                if(users == null){
+                if (users == null) {
                     dissmissDialog();
                     return;
                 }
 
                 int totalSize = users.size();
                 for (int i = 0; i < totalSize; i++) {
-                    SyncDialog.setProgress(i , totalSize);
+                    SyncDialog.setProgress(i, totalSize);
 
                     User user = users.get(i);
                     String faceId = user.getFaceId();
@@ -421,7 +421,7 @@ public class SyncManager {
                     boolean isExists = FaceManager.getInstance().checkFace(faceId);
 
                     //人脸文件存在，并且状态是无需更新时则不继续
-                    if(addTag != UserInfo.HEAD_HAS_UPDATE && isExists){
+                    if (addTag != UserInfo.HEAD_HAS_UPDATE && isExists) {
                         Log.e(TAG, "照片未更新且文件存在：" + i + " --- " + faceId);
                         continue;
                     }
@@ -430,7 +430,7 @@ public class SyncManager {
                     boolean addUser = FaceManager.getInstance().addUser(faceId, headPath);
 
                     //添加人脸库失败，并且addTag为下载图片失败或添加人脸库失败的时候，无需更新数据库
-                    if((!addUser) && (addTag == UserInfo.HEAD_DOWNLOAD_FAILED || addTag == UserInfo.ADD_FACE_DB_FAILED)){
+                    if ((!addUser) && (addTag == UserInfo.HEAD_DOWNLOAD_FAILED || addTag == UserInfo.ADD_FACE_DB_FAILED)) {
                         Log.e(TAG, "添加失败且无需更新：" + i + " --- " + faceId + " --- " + addTag);
                         continue;
                     }
@@ -602,6 +602,15 @@ public class SyncManager {
             case 1:
                 SyncDialog.setStep(APP.getActivity().getString(R.string.sync_not_depart));
                 break;
+            case -1:
+                SyncDialog.setStep(APP.getActivity().getString(R.string.sync_params_error));
+                break;
+            case 4:
+                SyncDialog.setStep(APP.getActivity().getString(R.string.sync_not_bind));
+                break;
+            default:
+                SyncDialog.setStep(APP.getActivity().getString(R.string.sync_get_failed));
+                break;
         }
         d("重新获取公司信息");
         new Handler().postDelayed(new Runnable() {
@@ -641,7 +650,6 @@ public class SyncManager {
 
         //2019.10.21 添加  获取是否显示职称，默认显示displayPosition，1是显示
         SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
-
     }
 
     private void d(String log) {

@@ -147,6 +147,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         public void onReady() {
         }
 
+
+
         @Override
         public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
             if (hasFace) {
@@ -166,6 +168,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
+            if (hasFace) {
+                mHasFace = facePreviewInfo != null ? 1 : -1;
+            } else {
+                mHasFace = -1;
+            }
             return false;
         }
 
@@ -205,6 +212,12 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
+        if(departs == null || departs.size() <= 0){
+            UIUtils.showShort(EditEmployActivity.this,"请先设置部门");
+            finish();
+            return;
+        }
+
         for (Depart depart : departs) {
             departNames.add(depart.getDepName());
             departIds.add(depart.getDepId());
@@ -250,8 +263,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     //初始化新增逻辑
     private void initAddLogic() {
         mTempUser = new User();
-        mTempUser.setDepartName(departNames.get(0));
-        mTempUser.setDepartId(departIds.get(0));
+        if(departNames.size() > 0){
+            mTempUser.setDepartName(departNames.get(0));
+        }
+
+        if(departIds.size() > 0){
+            mTempUser.setDepartId(departIds.get(0));
+        }
 
         setUserInfo();
     }
@@ -368,7 +386,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         mTempUser.setAutograph(autograph);
         mTempUser.setCompanyId(SpUtils.getCompany().getComid());
 
-        UIUtils.showTitleTip(this, "可以提交添加了");
         Log.e(TAG, "后User：" + mTempUser.toString());
         submitParams(ResourceUpdate.ADDSTAFF);
     }

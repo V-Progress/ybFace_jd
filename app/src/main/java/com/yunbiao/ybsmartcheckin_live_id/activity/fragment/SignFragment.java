@@ -91,6 +91,8 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     private TextView tvMale1;
     private TextView tvFemale1;
     private TextView tvModel;
+    private int mCurrModel = -1;
+    private float mCurrWarningThreshold = 0.0f;
 
     @Nullable
     @Override
@@ -155,6 +157,54 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
+        rlv.setLayoutManager(linearLayoutManager);
+        rlv.setAdapter(signAdapter);
+        rlv.setItemAnimator(new DefaultItemAnimator());
+        rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                outRect.left = 10;
+                outRect.right = 10;
+            }
+        });
+
+        initPieChart();
+
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //公告
+            NoticeManager.getInstance().initSignData();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        Log.e(TAG, "onResume: 重加载数据");
+        int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);
+        if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
+            mCurrWarningThreshold = warningThreshold;
+            mCurrModel = newModel;
+            loadSignData();
+        }
+    }
+
+    private void loadSignData() {
+        mSignList.clear();
+        signAdapter.notifyDataSetChanged();
+        //加载已存在的记录
+        List<Sign> todaySignData = SignManager.instance().getTodaySignData();
+        if (todaySignData != null) {
+            mSignList.addAll(todaySignData);
+        }
+        signAdapter.notifyDataSetChanged();
+        updateNumber();
+    }
+
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -179,28 +229,6 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
-        rlv.setLayoutManager(linearLayoutManager);
-        rlv.setAdapter(signAdapter);
-        rlv.setItemAnimator(new DefaultItemAnimator());
-        rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.left = 10;
-                outRect.right = 10;
-            }
-        });
-
-        initPieChart();
-
-        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //公告
-            NoticeManager.getInstance().initSignData();
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -212,14 +240,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
 
-        //加载已存在的记录
-        List<Sign> todaySignData = SignManager.instance().getTodaySignData();
-        if (todaySignData == null) {
-            return;
-        }
-        mSignList.addAll(todaySignData);
-        signAdapter.notifyDataSetChanged();
-        updateNumber();
+        loadSignData();
 
         //自动清理服务
         ResourceCleanManager.instance().startAutoCleanService();
@@ -268,15 +289,19 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         List<Sign> mNewSignList = removeDuplicateCase(mSignList);
 
         int male = 0;
+        int female = 0;
+        int total = 0;
         for (Sign signBean : mNewSignList) {
+            if (signBean.getType() == -9) {
+                continue;
+            }
+            total++;
             if (signBean.getSex() == 1) {
-                male = male + 1;
+                male++;
+            } else {
+                female++;
             }
         }
-
-        int total = mNewSignList.size();
-        int female = total - male;
-        int maleNum = male;
 
         Company company = SpUtils.getCompany();
         List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
@@ -293,25 +318,25 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
                 tvTotal1.setText(total + "");
             }
             if (tvMale1 != null) {
-                tvMale1.setText(maleNum + "");
+                tvMale1.setText(male + "");
             }
             if (tvFemale1 != null) {
                 tvFemale1.setText(female + "");
             }
         } else {
             tvTotal.setText("" + total);
-            tvSignMale.setText(getString(R.string.base_male) + ": " + maleNum + getString(R.string.base_people));
+            tvSignMale.setText(getString(R.string.base_male) + ": " + male + getString(R.string.base_people));
             tvSignFemale.setText(getString(R.string.base_female) + ": " + female + getString(R.string.base_people));
 
             //设置饼图数据
             List<PieEntry> dataEntry = new ArrayList<>();
             List<Integer> dataColors = new ArrayList<>();
 
-            if (maleNum == 0 && female == 0) {
+            if (male == 0 && female == 0) {
                 dataEntry.add(new PieEntry(100, ""));
                 dataColors.add(getResources().getColor(R.color.white));
             } else {
-                dataEntry.add(new PieEntry(maleNum, getString(R.string.base_male)));
+                dataEntry.add(new PieEntry(male, getString(R.string.base_male)));
                 dataEntry.add(new PieEntry(female, getString(R.string.base_female)));
                 dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
                 dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
@@ -419,9 +444,15 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
 
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : "访客");
                 tvTime.setText(df.format(signBean.getTime()));
-                tvTemp.setText(signBean.getTemperature() + "℃");
 
-                if (signBean.getTemperature() >= 37.3f) {
+                tvTemp.setText(signBean.getTemperature() + "℃");
+                if (mCurrModel == Constants.Model.MODEL_FACE_ONLY || signBean.getTemperature() == 0.0f) {
+                    tvTemp.setVisibility(View.INVISIBLE);
+                } else {
+                    tvTemp.setVisibility(View.VISIBLE);
+                }
+
+                if (signBean.getTemperature() >= mCurrWarningThreshold) {
                     ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_warning);
                     tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
                     tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));

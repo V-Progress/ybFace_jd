@@ -111,6 +111,8 @@
     <string name="act_sys_second">second</string>
     <string name="act_sys_CPU_tem">CPU temperature:</string>
     <string name="act_sys_camera">camera</string>
+
+    <string name="act_sys_cameraAngle">camera orientation</string>
     <string name="act_sys_totalOne">1 in total</string>
     <string name="act_sys_dqsy">【Current use:】</string>
     <string name="act_sys_dqwl">Current network:</string>
@@ -384,6 +386,7 @@
     <string name="sync_get_failed">Failed to get, will try again</string>
     <string name="sync_not_bind">Device not bound</string>
     <string name="sync_not_depart">Department not set</string>
+    <string name="sync_params_error">params error</string>
 
     <!-- RestartAPPTool -->
     <string name="restartAPPTool_sftcyy">Whether to quit the app？</string>
