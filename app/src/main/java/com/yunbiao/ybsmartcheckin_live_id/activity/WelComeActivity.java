@@ -199,7 +199,6 @@ public class WelComeActivity extends BaseGpioActivity {
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.GONE);
             tvRangeTips.setVisibility(View.VISIBLE);
-            tvTempTips.setVisibility(View.VISIBLE);
             llThermalArea.setVisibility(View.VISIBLE);
             Log.e(TAG, "onResume: 开始热成像逻辑");
             closeInfraedTemperature();
@@ -208,7 +207,6 @@ public class WelComeActivity extends BaseGpioActivity {
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.VISIBLE);
             tvRangeTips.setVisibility(View.VISIBLE);
-            tvTempTips.setVisibility(View.VISIBLE);
             llThermalArea.setVisibility(View.GONE);
 
             closeThermalImaging();
