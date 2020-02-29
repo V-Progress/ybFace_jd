@@ -684,7 +684,14 @@ public class InfraredTemperatureUtils {
             float maxF = new BigDecimal(maxT).divide(new BigDecimal(10), 1, BigDecimal.ROUND_HALF_UP).floatValue();
             float minF = new BigDecimal(minT).divide(new BigDecimal(10), 1, BigDecimal.ROUND_HALF_UP).floatValue();
             float bodyMaxF = new BigDecimal(bodyMaxT).divide(new BigDecimal(10), 1, BigDecimal.ROUND_HALF_UP).floatValue();
-            if (mCorrectionValue > 0) {
+
+            if (bodyMaxF >= 35.0 && bodyMaxF <= 35.5) {
+                bodyMaxF = new BigDecimal(bodyMaxF).add(new BigDecimal(0.5f)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+            }
+            if (bodyMaxF > 35.5 && bodyMaxF <= 35.7) {
+                bodyMaxF = new BigDecimal(bodyMaxF).add(new BigDecimal(0.3f)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+            }
+            if (mCorrectionValue >= 0) {
                 bodyMaxF = new BigDecimal(bodyMaxF).add(new BigDecimal(mCorrectionValue)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
             } else {
                 bodyMaxF = new BigDecimal(bodyMaxF).subtract(new BigDecimal(Math.abs(mCorrectionValue))).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();

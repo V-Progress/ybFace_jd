@@ -15,6 +15,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.DeviceInfoBean;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
@@ -204,20 +205,21 @@ public class CoreInfoHandler {
     }
 
     public static void updateDeviceType() {
+        Log.e(TAG, "updateDeviceType: 更新设备类型");
         OkHttpUtils.post()
                 .url(ResourceUpdate.UPDATE_DEVICE_TYPE)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
-                .addParams("type", "7")
+                .addParams("type",  Constants.DEVICE_TYPE + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                        Log.e(TAG, "更新设备类型onError: " + (e == null ? "NULL" : e.getMessage()));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "onResponse: " + response);
+                        Log.e(TAG, "更新设备类型onResponse: " + response);
                     }
                 });
     }

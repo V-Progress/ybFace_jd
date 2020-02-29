@@ -62,7 +62,7 @@ public class SyncDialog {
 
     private void initDialog(){
         dialog = new SDialog(APP.getContext());
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
     }
 
     private void initView(){

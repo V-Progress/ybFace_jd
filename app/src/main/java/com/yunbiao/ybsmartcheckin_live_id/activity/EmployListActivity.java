@@ -272,7 +272,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     public void itemEditClick(View v, final int postion) {
-        showDialog(getString(R.string.act_employList_tip_qdscm), new DialogInterface.OnClickListener() {
+        showDialog(getString(R.string.act_employList_tip_qdxgm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(EmployListActivity.this, EditEmployActivity.class);

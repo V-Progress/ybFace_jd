@@ -78,6 +78,14 @@ public class Constants {
         }
     }
 
+
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
+
+    public interface DeviceType {
+        int CHECK_IN = 1;//考勤机
+        int TEMPERATURE_CHECK_IN = 7;//测温考勤机
+    }
+
     public interface NetConfig {
         String PRE = "http://";
         String COLON = ":";
@@ -89,6 +97,7 @@ public class Constants {
         String PRO_RES_PORT = "8080";//数据端口
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
+
 
         /***
          * 曾辉环境

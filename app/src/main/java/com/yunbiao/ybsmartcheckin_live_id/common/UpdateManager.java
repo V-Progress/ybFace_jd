@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -82,11 +83,11 @@ public class UpdateManager {
         //判断是否需要更新
         HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("clientVersion", version);
-        paramMap.put("type", 1+ "");
+        paramMap.put("type", Constants.DEVICE_TYPE + "");
         MyXutils.getInstance().post(ResourceUpdate.VERSION_URL, paramMap, new MyXutils.XCallBack() {
             @Override
             public void onSuccess(String result) {
-                Log.e("UpdateManager", "checkUpdateInfo------------->"+result );
+                Log.e("UpdateManager", "checkUpdateInfo------------->" + result);
                 if (result.startsWith("\"")) {
                     result = result.substring(1, result.length() - 1);
                 }
@@ -104,27 +105,28 @@ public class UpdateManager {
             }
         });
     }
+
     private void judgeIsUpdate(String isUpdate) {
         //返回
         switch (isUpdate) {
             case "1": //不需要更新
-                if(mContext != null){
-                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_dqbbwzxbb));
+                if (mContext != null) {
+                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_dqbbwzxbb));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
                 }
                 break;
             case "faile":  //网络不通，或者解析出错
-                if(mContext != null){
-                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_wlljsbqjcwl));
+                if (mContext != null) {
+                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_wlljsbqjcwl));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();
                 }
                 break;
             default:
-                if(mContext != null){
+                if (mContext != null) {
                     UIUtils.updatePd(mContext);
                 }
                 setOnReceivedProgressRun(new OnReceivedProgressRun() {
@@ -187,8 +189,8 @@ public class UpdateManager {
             } catch (IOException e) {
                 e.printStackTrace();
 
-                if(mContext != null){
-                    UIUtils.showShort(mContext,mContext.getString(R.string.updateManager_xzsb));
+                if (mContext != null) {
+                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_xzsb));
                 }
                 if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
                     UIUtils.pd.dismiss();

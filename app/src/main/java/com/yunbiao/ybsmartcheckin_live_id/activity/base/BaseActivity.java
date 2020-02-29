@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 
@@ -23,6 +25,8 @@ import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.utils.KeyboardStatusDetector;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -40,11 +44,7 @@ public abstract class BaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //隐藏navigation
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        // 隐藏状态栏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setFullscreen(false, false);
         activities.add(this);
 
         mCurrentOrientation = getResources().getConfiguration().orientation;
@@ -76,6 +76,36 @@ public abstract class BaseActivity extends FragmentActivity {
         initView();
 
         initData();
+    }
+
+    public void setFullscreen(boolean isShowStatusBar, boolean isShowNavigationBar) {
+        //专门设置一下状态栏导航栏背景颜色为透明，凸显效果。
+        setNavigationStatusColor(Color.TRANSPARENT);
+
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+
+        if (!isShowStatusBar) {
+            uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+        if (!isShowNavigationBar) {
+            uiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
+        getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+    }
+
+    public void setNavigationStatusColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setNavigationBarColor(color);
+            getWindow().setStatusBarColor(color);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
     }
 
     protected void replaceFragment(int id, Fragment fragment) {

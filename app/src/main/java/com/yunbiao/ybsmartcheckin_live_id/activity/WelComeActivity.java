@@ -312,6 +312,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 if (getTempDelayEnabled) {
                     //如果当前缓存时间是0则重置
                     if (mCacheTime == 0) {
+                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
                         mCacheTime = System.currentTimeMillis();
                         return false;
                     } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
@@ -319,8 +320,6 @@ public class WelComeActivity extends BaseGpioActivity {
                         return false;
                     }
                 }
-                //都合适，隐藏提示
-                setRangeTips("");
             } else if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {
                 //取出人脸的rect
                 Rect rect = facePreviewInfo.getFaceInfo().getRect();
@@ -338,9 +337,23 @@ public class WelComeActivity extends BaseGpioActivity {
                     }
                     return false;
                 }
+                setRangeTips("距离太远，请靠近");
+
                 //判断最高温度值是否大于阈值
                 if (mCacheTemperatureHighestValue < mTempMinThreshold) {
                     return false;
+                }
+
+                //进入延时取值环节
+                if (getTempDelayEnabled) {
+                    if (mCacheTime == 0) {
+                        mCacheTime = System.currentTimeMillis();
+                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        return false;
+                    } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        return false;
+                    }
                 }
                 //判断热成像图像为null的话则等待
                 if (mCacheHotImage == null) {
@@ -507,30 +520,8 @@ public class WelComeActivity extends BaseGpioActivity {
                 InfraredTemperatureUtils.getIns().startHotImage3232(mThermalImgMirror, mCurrBodyMinT, mCurrBodyMaxT, mCurrBodyPercent, hotImageDataCallBack);
             }
         }, 1000);
-
-        /*testHandler.removeCallbacks(testRunnable);
-        testHandler.post(testRunnable);*/
     }
-/*
-    private boolean testBoolean = false;
-    private Runnable testRunnable = new Runnable() {
-        @Override
-        public void run() {
-            float testValue = 1.0f;
-            testValue += mTestCorrValue;
 
-            int resId = testBoolean ? R.mipmap.ads_bg : R.mipmap.bg_head_show;
-            testBoolean = !testBoolean;
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
-
-            hotImageDataCallBack.newestHotImageData(bitmap, testValue, testValue, testValue);
-            testHandler.postDelayed(testRunnable, 500);
-        }
-    };
-    private Handler testHandler = new Handler();*/
-
-
-    private boolean mCacheWaitTag = false;
     private long mCacheLastCallbackTime = 0;
     private InfraredTemperatureUtils.HotImageDataCallBack hotImageDataCallBack = new InfraredTemperatureUtils.HotImageDataCallBack() {
         @Override
@@ -584,10 +575,16 @@ public class WelComeActivity extends BaseGpioActivity {
                         if (adsFragment != null) {
                             adsFragment.detectFace();
                         }
-                        if (false == mCacheWaitTag) {
-                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
-                            mCacheWaitTag = true;
-                            return;
+
+                        if (getTempDelayEnabled) {
+                            if (mCacheTime == 0) {
+                                showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                                mCacheTime = System.currentTimeMillis();
+                                return;
+                            } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
+                                showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                                return;
+                            }
                         }
 
                         //判断缓存标记
@@ -625,7 +622,6 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTemperatureHighestValue = 0f;
                     mCacheValueForTempModel = 0f;
                     mCacheTime = 0;
-                    mCacheWaitTag = false;
                 }
             }
 
@@ -773,6 +769,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     //如果当前缓存时间是0则重置
                     if (getTempDelayEnabled) {
                         if (mCacheTime == 0) {
+                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
                             mCacheTime = System.currentTimeMillis();
                             infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                             return;

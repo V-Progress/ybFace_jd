@@ -196,7 +196,7 @@ public class SettingActivity extends BaseActivity {
         final String[] portNames = new String[portList.size()];
         for (int i = 0; i < portList.size(); i++) {
             String portPath = portList.get(i);
-            portNames[i] = "串口" + portPath.substring(portPath.length() - 1);
+            portNames[i] = "串口" + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
         }
         //获取当前选中的索引
         String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
