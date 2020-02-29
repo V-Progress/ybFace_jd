@@ -87,6 +87,8 @@ public class SpUtils {
     public static final String BODY_MAX_T = "bodyMaxT";//身体占比
     public static final String GET_TEMP_DELAY_ENABLED = "getTempDelayEnabled";
 
+
+
     public static void init() {
         getCompany();
     }
