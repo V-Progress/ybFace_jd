@@ -141,7 +141,7 @@ public class WelComeActivity extends BaseGpioActivity {
         initTest();
 
         /*红外模块是9600，热成像模块是115200*/
-        mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
         mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
         InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
     }
@@ -150,7 +150,7 @@ public class WelComeActivity extends BaseGpioActivity {
     protected void onResume() {
         super.onResume();
         mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);//当前模式
-        isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);//大屏海报开关
+        isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
         distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);//距离提示开关
         mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
         mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);//设置测温延时
@@ -159,7 +159,7 @@ public class WelComeActivity extends BaseGpioActivity {
         mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);//高低温差值（用于判断高度）
         mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);//环境温度补正
         mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);//体温检测补正
-        mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, false);//热成像图像镜像
+        mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);//热成像图像镜像
         mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, 350);//最低体温值
         mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, 400);//最高体温值
         mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, 3);//身体占比
@@ -169,7 +169,7 @@ public class WelComeActivity extends BaseGpioActivity {
         }
 
         //初始化测温模块
-        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
         int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
         if (!TextUtils.equals(portPath, mCurrPortPath) || baudRate != mCurrBaudRate) {
             mCurrPortPath = portPath;

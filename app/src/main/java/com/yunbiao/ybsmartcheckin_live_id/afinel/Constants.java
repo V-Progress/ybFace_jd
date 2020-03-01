@@ -129,6 +129,12 @@ public class Constants {
 
     public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? 270 : 0;
 
+    public static final String DEFAULT_PORT_PATH = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? "/dev/ttyS1" : "/dev/ttyS4";
+
+    public static final boolean DEFAULT_POSTER_ENABLED = SCREEN_TYPE != ScreenType.TYPE_PORTRAIT_8_800_1280;
+
+    public static final boolean DEFAULT_THERMAL_IMAGE_MIRROR = true;
+
     public interface ScreenType {
         int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸
         int TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080 = 1;//横板21寸和10寸

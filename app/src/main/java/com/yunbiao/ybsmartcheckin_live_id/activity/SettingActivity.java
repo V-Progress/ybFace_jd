@@ -202,7 +202,7 @@ public class SettingActivity extends BaseActivity {
             portNames[i] = "串口" + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
         }
         //获取当前选中的索引
-        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH,  Constants.DEFAULT_PORT_PATH);
         final int index = portList.indexOf(cachePort);
         //设置显示
         final TextView tvPortPath = findViewById(R.id.tv_port_path_setting);
@@ -212,7 +212,7 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, "/dev/ttyS4");
+                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH,  Constants.DEFAULT_PORT_PATH);
                 int selectedIndex = portList.indexOf(cachePort);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
@@ -236,7 +236,7 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
-        boolean thermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, false);
+        boolean thermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);
         Switch swThermalMirror = findViewById(R.id.sw_thermal_imag_mirror_setting);
         swThermalMirror.setChecked(thermalImgMirror);
 
@@ -249,7 +249,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initPosterSetting() {
-        boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);
+        boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);
         Switch swPoster = findViewById(R.id.sw_poster_setting);
         swPoster.setChecked(isEnabled);
         swPoster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
