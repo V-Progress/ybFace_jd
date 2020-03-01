@@ -25,13 +25,6 @@
             android:textSize="20dp"
             android:visibility="gone" />
 
-        <Switch
-            android:id="@+id/switch_liveness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="活体检测"
-            android:visibility="gone" />
-
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/aiv_bulu_sign_list"
             android:layout_width="wrap_content"

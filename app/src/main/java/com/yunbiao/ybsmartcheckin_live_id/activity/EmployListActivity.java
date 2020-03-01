@@ -22,6 +22,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -80,11 +81,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected int getLandscapeLayout() {
-        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
-            return R.layout.activity_employlist_h_small;
-        } else {
-            return R.layout.activity_employlist_h;
-        }
+        return R.layout.activity_employlist;
     }
 
     @Override

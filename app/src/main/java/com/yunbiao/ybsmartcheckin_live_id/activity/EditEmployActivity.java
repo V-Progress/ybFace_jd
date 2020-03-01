@@ -11,6 +11,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -26,7 +27,6 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
@@ -46,12 +46,9 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,23 +95,26 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private User mTempUser = null;
 
     private int type;
+    private TextView tvTitle;
 
     @Override
     protected int getPortraitLayout() {
+        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
+            return R.layout.activity_editemploy_fake_landscape;
+        }
         return R.layout.activity_editemploy;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
-            return R.layout.activity_editemploy_h_small;
-        } else {
-            return R.layout.activity_editemploy_h;
-        }
+        return R.layout.activity_editemploy_h;
     }
+
+    private Animation animation;
 
     @Override
     protected void initView() {
+        tvTitle = findViewById(R.id.tv_title_edt);
         faceView = findViewById(R.id.face_view);
         et_name = findViewById(R.id.et_name);
         sp_depart = findViewById(R.id.sp_depart);
@@ -139,6 +139,60 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         iv_back.setOnClickListener(this);
 
         faceView.setCallback(faceCallback);
+
+        /*if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
+            final RelativeLayout rlInputInfoArea = findViewById(R.id.rl_input_info_area);
+            final Button btnShowInputArea = findViewById(R.id.btn_show_input_area);
+            btnShowInputArea.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (rlInputInfoArea.isShown()) {
+                        animation = AnimationUtils.loadAnimation(EditEmployActivity.this, R.anim.anim_load_pop_exit);
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                btnShowInputArea.setText("填\n写\n信\n息");
+                                rlInputInfoArea.setVisibility(View.GONE);
+                                btnShowInputArea.setEnabled(false);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                btnShowInputArea.setEnabled(true);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    } else {
+                        animation = AnimationUtils.loadAnimation(EditEmployActivity.this, R.anim.anim_load_pop_enter);
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                btnShowInputArea.setText("返\n回\n拍\n照");
+                                rlInputInfoArea.setVisibility(View.VISIBLE);
+                                btnShowInputArea.setEnabled(false);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                btnShowInputArea.setEnabled(true);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                        });
+                    }
+
+                    animation.setInterpolator(new LinearInterpolator());
+                    animation.setDuration(500);
+                    rlInputInfoArea.startAnimation(animation);
+                }
+            });
+        }*/
     }
 
     private int mHasFace = -1;
@@ -146,7 +200,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         @Override
         public void onReady() {
         }
-
 
 
         @Override
@@ -198,9 +251,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         //如果是修改，则只初始化部门
         if (type == TYPE_ADD) {
+            tvTitle.setText("添加员工");
             d("类型：新增");
             initAddLogic();
         } else {
+            tvTitle.setText("修改信息");
             d("类型：修改");
             initEditLogic();
         }
@@ -212,11 +267,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
-        if(departs == null || departs.size() <= 0){
+        /*if(departs == null || departs.size() <= 0){
             UIUtils.showShort(EditEmployActivity.this,"请先设置部门");
             finish();
             return;
-        }
+        }*/
 
         for (Depart depart : departs) {
             departNames.add(depart.getDepName());
@@ -263,11 +318,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     //初始化新增逻辑
     private void initAddLogic() {
         mTempUser = new User();
-        if(departNames.size() > 0){
+        if (departNames.size() > 0) {
             mTempUser.setDepartName(departNames.get(0));
         }
 
-        if(departIds.size() > 0){
+        if (departIds.size() > 0) {
             mTempUser.setDepartId(departIds.get(0));
         }
 
@@ -283,7 +338,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         et_job.setText(TextUtils.isEmpty(mTempUser.getPosition()) ? "" : mTempUser.getPosition());
         et_sign.setText(TextUtils.isEmpty(mTempUser.getAutograph()) ? "" : mTempUser.getAutograph());
         tv_birth.setText(TextUtils.isEmpty(mTempUser.getBirthday()) ? "" : mTempUser.getBirthday());
-        Glide.with(this).load(TextUtils.isEmpty(mTempUser.getHeadPath()) ? R.mipmap.avatar : mTempUser.getHeadPath()).asBitmap().into(iv_capture);
+        Glide.with(this).load(TextUtils.isEmpty(mTempUser.getHeadPath()) ? R.mipmap.image_default_head : mTempUser.getHeadPath()).asBitmap().into(iv_capture);
     }
 
     @Override
@@ -409,18 +464,18 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         PostFormBuilder builder = OkHttpUtils.post().url(url);
         if (type == TYPE_ADD) {
-            params.put("comId",mTempUser.getCompanyId()+"");
+            params.put("comId", mTempUser.getCompanyId() + "");
             File file = new File(mTempUser.getHeadPath());
             builder.addFile("head", file.getName(), file);
         } else {
-            params.put("id", mTempUser.getId()+"");
+            params.put("id", mTempUser.getId() + "");
             if (!TextUtils.equals(mCurrUser.getHeadPath(), mTempUser.getHeadPath())) {
                 Log.e(TAG, "submitParams: 头像不相同，需要更新头像");
                 File file = new File(mTempUser.getHeadPath());
                 builder.addFile("head", file.getName(), file);
             } else {
-                File file = new File(Environment.getExternalStorageDirectory(),"1.txt");
-                if(!file.exists()){
+                File file = new File(Environment.getExternalStorageDirectory(), "1.txt");
+                if (!file.exists()) {
                     try {
                         file.createNewFile();
                     } catch (IOException e) {

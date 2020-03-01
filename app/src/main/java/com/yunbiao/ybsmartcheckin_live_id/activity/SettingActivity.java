@@ -265,7 +265,7 @@ public class SettingActivity extends BaseActivity {
         final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
 
         final String[] items = Constants.Model.models;
-        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);
+        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         tvModelSetting.setText(items[model]);
 
         if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
@@ -279,7 +279,7 @@ public class SettingActivity extends BaseActivity {
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);
+                final int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
                 builder.setTitle("选择模式");
                 builder.setSingleChoiceItems(items, whichModel, new DialogInterface.OnClickListener() {
@@ -663,7 +663,7 @@ public class SettingActivity extends BaseActivity {
 //        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
         //摄像头角度
         Button btnAngle = findViewById(R.id.btn_setAngle);
-        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         btnAngle.setText(getString(R.string.act_set_tip_angle) + ":" + angle);
     }
 
@@ -794,8 +794,12 @@ public class SettingActivity extends BaseActivity {
 
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getActivity();
-                if (activity != null && activity instanceof WelComeActivity) {
-                    ((WelComeActivity) activity).setFaceViewSimilar();
+                if (activity != null) {
+                    if (activity instanceof WelComeActivity) {
+                        ((WelComeActivity) activity).setFaceViewSimilar();
+                    } else if (activity instanceof PassageDeviceActivity) {
+                        ((PassageDeviceActivity) activity).setFaceViewSimilar();
+                    }
                 }
             }
         });
@@ -905,7 +909,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void setAngle(final View view) {
-        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         if (anInt == CameraSettings.ROTATION_0) {
             anInt = CameraSettings.ROTATION_90;
         } else if (anInt == CameraSettings.ROTATION_90) {

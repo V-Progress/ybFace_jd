@@ -23,7 +23,7 @@ public class Constants {
     public static String RESOURCE_PORT = BuildConfig.RESOURCE_PORT;
     public static String RESOURCE_SUFFIX = BuildConfig.SUFFIX;
     //生成主地址
-    public static String RESOURCE_URL = NetConfig.PRE +  RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
+    public static String RESOURCE_URL = NetConfig.PRE + RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
 
 
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
@@ -52,12 +52,13 @@ public class Constants {
     }
 
     private static final String TAG = "Constants";
-    public static void checkSetIp(){
+
+    public static void checkSetIp() {
         String ip = SpUtils.getStr(SpUtils.IP_CACHE);
         String resourcePort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
         String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
         String suffix = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-        if(TextUtils.isEmpty(ip) || TextUtils.isEmpty(resourcePort) || TextUtils.isEmpty(xmppPort)|| TextUtils.isEmpty(suffix)){
+        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resourcePort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(suffix)) {
             Log.e(TAG, "IP地址：" + Constants.XMPP_HOST);
             Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
             Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
@@ -68,7 +69,7 @@ public class Constants {
             Constants.XMPP_PORT = xmppPort;
             Constants.RESOURCE_HOST = ip;
             Constants.RESOURCE_PORT = resourcePort;
-            Constants.RESOURCE_URL =  Constants.NetConfig.PRE + Constants.RESOURCE_HOST + Constants.NetConfig.COLON + Constants.RESOURCE_PORT + suffix;
+            Constants.RESOURCE_URL = Constants.NetConfig.PRE + Constants.RESOURCE_HOST + Constants.NetConfig.COLON + Constants.RESOURCE_PORT + suffix;
 
             Log.e(TAG, "资源IP：" + Constants.RESOURCE_HOST);
             Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
@@ -76,14 +77,6 @@ public class Constants {
             Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
             Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
         }
-    }
-
-
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
-
-    public interface DeviceType {
-        int CHECK_IN = 1;//考勤机
-        int TEMPERATURE_CHECK_IN = 7;//测温考勤机
     }
 
     public interface NetConfig {
@@ -98,15 +91,6 @@ public class Constants {
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
 
-
-        /***
-         * 曾辉环境
-         */
-//        String DEV_URL = "192.168.1.45";
-//        String DEV_RES_PORT = "8082";
-//        String DEV_XMPP_PORT = "5222";
-//        String DEV_SUFFIX = "/";
-
         /***
          * 正式环境
          */
@@ -114,25 +98,16 @@ public class Constants {
         String DEV_RES_PORT = "8080";
         String DEV_XMPP_PORT = "5222";
         String DEV_SUFFIX = "/";
-
-        /***
-         * 张继桃环境
-         */
-//        String DEV_URL = "192.168.1.54";
-//        String DEV_RES_PORT = "8088";
-//        String DEV_XMPP_PORT = "5222";
-//        String DEV_SUFFIX = "/ybface/";
-
-        /***
-         * 测试环境
-         */
-//        String DEV_URL = "121.69.8.238";
-//        String DEV_XMPP_PORT = "5222";
-//        String DEV_RES_PORT = "8088";
-//        String DEV_SUFFIX = "/ybface/";
     }
 
-    public interface Model{
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
+
+    public interface DeviceType {
+        int CHECK_IN = 1;//考勤机
+        int TEMPERATURE_CHECK_IN = 7;//测温考勤机
+    }
+
+    public interface Model {
         int MODEL_FACE_ONLY = 0;
         int MODEL_FACE_TEMPERATURE = 1;
         int MODEL_TEMPERATURE_ONLY = 2;
@@ -144,6 +119,20 @@ public class Constants {
     public interface serverModel {
         int YUN = 0;//云端
         int JU = 1;//局域网
+    }
+
+    //屏幕类型
+    public final static int SCREEN_TYPE = ScreenType.TYPE_PORTRAIT_8_800_1280;
+
+    //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
+    public static final int DEFAULT_TEMP_MODEL = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? Model.MODEL_THERMAL_IMAGING_ONLY : Model.MODEL_TEMPERATURE_ONLY;
+
+    public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? 270 : 0;
+
+    public interface ScreenType {
+        int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸
+        int TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080 = 1;//横板21寸和10寸
+        int TYPE_PORTRAIT_8_800_1280 = 2;//竖屏闸机
     }
 }
 

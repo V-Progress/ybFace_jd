@@ -5,121 +5,180 @@
     android:layout_height="match_parent"
     android:background="@drawable/skin_main_screen_background"
     android:id="@+id/rl_root">
-    <TextView
-        android:id="@+id/tv_deviceNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:textColor="@color/theme_green"
-        android:text=""
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"/>
-    <TextView
-        android:id="@+id/tv_ads_addname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="32dp"
-        android:textColor="@color/white"
-        android:layout_centerHorizontal="true"
-        android:text="@string/employ_list_title"
-        android:layout_marginTop="36dp" />
 
-    <ImageView
-        android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="36dp"
-        android:src="@mipmap/icon_back"
-        android:layout_marginRight="40dp" />
+    <RelativeLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:id="@+id/rl_title_Area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/tv_deviceNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="@color/theme_green"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_ads_addname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32dp"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:text="@string/employ_list_title" />
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_back"
+            android:layout_marginRight="40dp" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/shape_employ_list"
-        android:padding="20dp"
-        android:layout_below="@+id/tv_ads_addname">
+        android:padding="15dp"
+        android:layout_below="@+id/rl_title_Area">
 
-        <Spinner
-            android:id="@+id/sp_depart"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:background="@mipmap/icon_depart_spinner"
-            android:tag="@string/act_employList_bm"
-            android:padding="2dp"></Spinner>
-
-        <LinearLayout
-            android:gravity="top"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_control_area"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <EditText
-                android:textColorHint="@color/gray_low"
-                android:textColor="@color/white"
-                android:hint="员工名"
-                android:id="@+id/edt_query"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/sp_depart"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:background="@mipmap/icon_depart_spinner"
+                android:tag="@string/act_employList_bm"
+                android:padding="2dp"/>
+
+            <LinearLayout
+                android:layout_toLeftOf="@+id/btn_addEmploy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:gravity="center"
+                    android:layout_gravity="bottom"
+                    android:background="@mipmap/bg_edit"
+                    android:textColorHint="@color/gray_low"
+                    android:textColor="@color/white"
+                    android:hint="员工名"
+                    android:id="@+id/edt_query"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:layout_marginRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:drawableLeft="@mipmap/query_icon"
+                    android:textColor="@color/white"
+                    android:text="搜索"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:onClick="queryClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp" />
+            </LinearLayout>
 
             <Button
-                android:textColor="@color/white"
-                android:text="搜索"
+                android:visibility="gone"
+                android:id="@+id/btn_addDepart"
+                android:layout_width="108dp"
+                android:layout_height="44dp"
                 android:background="@drawable/shape_employ_button"
-                android:onClick="queryClick"
+                android:text="@string/act_employList_addDepart"
+                android:textColor="#64DCFE"
+                android:textSize="16dp"
+                android:drawableLeft="@mipmap/icon_add"
+                android:layout_toRightOf="@+id/sp_depart"
+                android:paddingLeft="5dp"
+                android:layout_marginLeft="20dp"/>
+
+            <Button
+                android:id="@+id/btn_sync"
+                android:layout_width="108dp"
+                android:layout_height="44dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/shape_bg_btnsync"
+                android:drawableLeft="@mipmap/icon_sync"
+                android:paddingLeft="18dp"
+                android:text="@string/employ_list_depart_sync"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/btn_addEmploy"
+                android:layout_width="108dp"
+                android:layout_height="44dp"
+                android:background="@drawable/shape_employ_button"
+                android:layout_toLeftOf="@+id/btn_sync"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@mipmap/icon_add"
+                android:paddingLeft="18dp"
+                android:text="@string/act_employList_add"
+                android:textColor="#64DCFE"
+                android:textSize="20dp" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_tuli_area"
+            android:layout_below="@+id/rl_control_area"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:background="#ED8E17"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="下载头像失败"
                 android:layout_width="wrap_content"
-                android:layout_height="44dp" />
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#FA0808"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="添加人脸库失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginLeft="10dp"
+                android:background="#A2A2A2"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="更新头像失败"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <Button
-            android:visibility="gone"
-            android:id="@+id/btn_addDepart"
-            android:layout_width="108dp"
-            android:layout_height="44dp"
-            android:background="@drawable/shape_employ_button"
-            android:text="@string/act_employList_addDepart"
-            android:textColor="#64DCFE"
-            android:textSize="16dp"
-            android:drawableLeft="@mipmap/icon_add"
-            android:layout_toRightOf="@+id/sp_depart"
-            android:paddingLeft="5dp"
-            android:layout_marginLeft="20dp"/>
-
-        <Button
-            android:id="@+id/btn_sync"
-            android:layout_width="108dp"
-            android:layout_height="44dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/shape_bg_btnsync"
-            android:drawableLeft="@mipmap/icon_sync"
-            android:paddingLeft="18dp"
-            android:text="@string/employ_list_depart_sync"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:visibility="visible"/>
-
-        <Button
-            android:id="@+id/btn_addEmploy"
-            android:layout_width="108dp"
-            android:layout_height="44dp"
-            android:background="@drawable/shape_employ_button"
-            android:layout_toLeftOf="@+id/btn_sync"
-            android:layout_marginRight="10dp"
-            android:drawableLeft="@mipmap/icon_add"
-            android:paddingLeft="18dp"
-            android:text="@string/act_employList_add"
-            android:textColor="#64DCFE"
-            android:textSize="20dp" />
 
         <LinearLayout
             android:id="@+id/layout_title"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:background="@drawable/shape_employ_list"
-            android:layout_below="@+id/btn_sync"
+            android:layout_below="@+id/ll_tuli_area"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -194,48 +253,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
-
-        <LinearLayout
-            android:gravity="center"
-            android:layout_margin="6dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="-20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp">
-            <View
-                android:background="#ED8E17"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="下载头像失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <View
-                android:layout_marginLeft="10dp"
-                android:background="#FA0808"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="添加人脸库失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <View
-                android:layout_marginLeft="10dp"
-                android:background="#A2A2A2"
-                android:layout_width="14dp"
-                android:layout_height="14dp"/>
-            <TextView
-                android:textSize="12dp"
-                android:textColor="@color/white"
-                android:text="更新头像失败"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
 
     </RelativeLayout>
 

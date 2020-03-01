@@ -13,6 +13,7 @@ import com.jdjr.risk.face.local.detect.BaseProperty;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.frame.FaceFrameManager;
 import com.jdjr.risk.face.local.verify.VerifyResult;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FaceBoxUtil;
@@ -78,7 +79,7 @@ public class FaceView extends FrameLayout {
         addView(faceFrameView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         faceFrameView.setZOrderMediaOverlay(true);
 
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE,CameraSettings.ROTATION_0);
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         CameraSettings.setCameraDisplayRotation(angle);
 
         ExtCameraManager instance = ExtCameraManager.instance();

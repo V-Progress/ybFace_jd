@@ -60,7 +60,6 @@ import timber.log.Timber;
 public class APP extends Application {
     private static final String TAG = "APP";
     private static APP instance;
-    private static SmdtManager smdt;
     private static Activity activity;
 
     public static Activity getActivity() {
@@ -209,7 +208,6 @@ public class APP extends Application {
 
         //初始化xutils 3.0
         x.Ext.init(this);
-        smdt = SmdtManager.create(this);
 
         OkHttpClient build = new OkHttpClient.Builder()
                 .connectTimeout(60 * 3, TimeUnit.SECONDS)
@@ -334,11 +332,6 @@ public class APP extends Application {
     public static APP getContext() {
         return instance;
     }
-
-    public static SmdtManager getSmdt() {
-        return smdt;
-    }
-
 
     @Override
     public void onLowMemory() {

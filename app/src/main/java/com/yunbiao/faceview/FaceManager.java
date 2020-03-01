@@ -172,27 +172,39 @@ public class FaceManager {
             return false;
         }
 
-        File file = new File(imageFile);
-        if (file == null || !file.exists()) {
-            return false;
+        try {
+            File file = new File(imageFile);
+            if (file == null || !file.exists()) {
+                return false;
+            }
+            //转换成bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile);
+            if(bitmap == null){
+                return false;
+            }
+            //裁剪图片为合适的尺寸
+            bitmap = ArcSoftImageUtil.getAlignedBitmap(bitmap, true);
+            if(bitmap == null){
+                return false;
+            }
+            //创建等同于bitmap大小的byte[]
+            byte[] bgr24 = ArcSoftImageUtil.createImageData(bitmap.getWidth(), bitmap.getHeight(), ArcSoftImageFormat.BGR24);
+            //为byte[]赋值
+            int transformCode = ArcSoftImageUtil.bitmapToImageData(bitmap, bgr24, ArcSoftImageFormat.BGR24);
+            //释放bitmap
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+/*            if (!bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap = null;
+            }*/
+            if (transformCode == ArcSoftImageUtilError.CODE_SUCCESS) {
+                return registerBgr24(userId, bgr24, width, height);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile);
-        //裁剪
-        bitmap = ArcSoftImageUtil.getAlignedBitmap(bitmap, true);
-        //创建
-        byte[] bgr24 = ArcSoftImageUtil.createImageData(bitmap.getWidth(), bitmap.getHeight(), ArcSoftImageFormat.BGR24);
-        //赋值
-        int transformCode = ArcSoftImageUtil.bitmapToImageData(bitmap, bgr24, ArcSoftImageFormat.BGR24);
-        //释放bitmap
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        if (!bitmap.isRecycled()) {
-            bitmap.recycle();
-            bitmap = null;
-        }
-        if (transformCode == ArcSoftImageUtilError.CODE_SUCCESS) {
-            return registerBgr24(userId, bgr24, width, height);
-        }
+
         return false;
     }
 

@@ -32,7 +32,6 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
@@ -76,7 +75,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private Button btn_data_system;
     private Button btn_setting_system;
     private TextView btn_update_system;
-    private Button btn_setnet_system;
     private TextView tv_company_system;
     private TextView tv_deviceno_system;
     private TextView tv_exp_system;
@@ -87,7 +85,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private TextView tvNetState;
     private TextView tvCameraInfo;
     private ImageView ivQrCode;
-    private TextView tvQrLable;
     private ImageView ivLogo;
     private TextView tvCompName;
     private View ivBack;
@@ -98,16 +95,15 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected int getPortraitLayout() {
+        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
+            return R.layout.activity_system_fake_landscape;
+        }
         return R.layout.activity_system;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
-            return R.layout.activity_system_h_small;
-        } else {
-            return R.layout.activity_system_h;
-        }
+        return R.layout.activity_system_h;
     }
 
     @Override
@@ -129,7 +125,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         btn_data_system = (Button) findViewById(R.id.btn_data_system);
         btn_setting_system = (Button) findViewById(R.id.btn_setting_system);
         btn_update_system = (TextView) findViewById(R.id.btn_update_system);
-        btn_setnet_system = (Button) findViewById(R.id.btn_setnet_system);
 
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
         tv_company_system = (TextView) findViewById(R.id.tv_company_system);
@@ -139,14 +134,12 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         tv_version_system = (TextView) findViewById(R.id.tv_version_system);
         tv_online_system = (TextView) findViewById(R.id.tv_online_system);
         ivQrCode = (ImageView) findViewById(R.id.iv_qrcode_system);
-        tvQrLable = (TextView) findViewById(R.id.tv_qr_lable);
 
         btn_depart_system.setOnClickListener(this);
         btn_add_system.setOnClickListener(this);
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
-        btn_setnet_system.setOnClickListener(this);
     }
 
     @Override
@@ -184,7 +177,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     public void setInfo() {
         Company company = SpUtils.getCompany();
-        ImageFileLoader.i().loadAndSave(this,company.getComlogo(), Constants.DATA_PATH,ivLogo);
+        ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
 
         tv_company_system.setText(company.getComname());
 
@@ -213,7 +206,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.btn_add_system:
                 Intent intent = new Intent(this, EditEmployActivity.class);
-                intent.putExtra(EditEmployActivity.KEY_TYPE,EditEmployActivity.TYPE_ADD);
+                intent.putExtra(EditEmployActivity.KEY_TYPE, EditEmployActivity.TYPE_ADD);
                 startActivity(intent);
                 break;
             case R.id.btn_data_system:
@@ -258,7 +251,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         Log.e("123", "onUpgradeNoVersion: 55555555555555555555");
                     }
                 };
-                Beta.checkUpgrade(true,false);
+                Beta.checkUpgrade(true, false);
                 break;
             case R.id.btn_setnet_system:
                 setNetServer();
@@ -268,13 +261,12 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
-    private void updateServerState(){
+    private void updateServerState() {
         String host = Constants.RESOURCE_URL;
         tv_server_system.setText(getString(R.string.act_sys_tip_cloundService));
         if (host.contains("192.168.")) {
             tv_server_system.setText(getString(R.string.act_sys_tip_localService));
             ivQrCode.setVisibility(View.GONE);
-            tvQrLable.setVisibility(View.GONE);
         } else {
 //            ivQrCode.setVisibility(View.VISIBLE);
 //            tvQrLable.setVisibility(View.VISIBLE);
@@ -304,19 +296,25 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 //        });
 //    }
 
-    private void setTextWatchers(final EditText[] editTexts){
+    private void setTextWatchers(final EditText[] editTexts) {
         for (int i = 0; i < editTexts.length; i++) {
             EditText editText = editTexts[i];
             final int finalI = i;
             editText.addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(s.length()>=3 && (finalI <editTexts.length-1)){
-                        editTexts[finalI +1].requestFocus();
-                    } else if((s.length()<=0) && (finalI != 0)){
-                        editTexts[finalI-1].requestFocus();
+                    if (s.length() >= 3 && (finalI < editTexts.length - 1)) {
+                        editTexts[finalI + 1].requestFocus();
+                    } else if ((s.length() <= 0) && (finalI != 0)) {
+                        editTexts[finalI - 1].requestFocus();
                     }
                 }
             });
@@ -324,7 +322,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     //设置网络服务
-    private void setNetServer(){
+    private void setNetServer() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_set_server);
@@ -335,7 +333,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         final EditText tvIp2 = (EditText) dialog.findViewById(R.id.edt_server_ip_2);
         final EditText tvIp3 = (EditText) dialog.findViewById(R.id.edt_server_ip_3);
         final EditText tvSPort = (EditText) dialog.findViewById(R.id.edt_server_port);
-        final EditText[] ipEdts = {tvIp0,tvIp1,tvIp2,tvIp3,tvSPort};
+        final EditText[] ipEdts = {tvIp0, tvIp1, tvIp2, tvIp3, tvSPort};
         setTextWatchers(ipEdts);
 
         final EditText tvRIp0 = (EditText) dialog.findViewById(R.id.edt_res_ip_0);
@@ -343,16 +341,17 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         final EditText tvRIp2 = (EditText) dialog.findViewById(R.id.edt_res_ip_2);
         final EditText tvRIp3 = (EditText) dialog.findViewById(R.id.edt_res_ip_3);
         final EditText tvRPort = (EditText) dialog.findViewById(R.id.edt_res_port);
-        final EditText[] resEdits = {tvRIp0,tvRIp1,tvRIp2,tvRIp3,tvRPort};
+        final EditText[] resEdits = {tvRIp0, tvRIp1, tvRIp2, tvRIp3, tvRPort};
         setTextWatchers(resEdits);
 
         Button btnCancel = (Button) dialog.findViewById(R.id.btn_net_cancel);
         Button btnConfirm = (Button) dialog.findViewById(R.id.btn_net_confirm);
         View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_net_cancel:
-                        if(dialog.isShowing()){
+                        if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
                         break;
@@ -362,11 +361,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         String ip2 = tvIp2.getText().toString();
                         String ip3 = tvIp3.getText().toString();
                         String sPort = tvSPort.getText().toString();
-                        if(TextUtils.isEmpty(ip0)
+                        if (TextUtils.isEmpty(ip0)
                                 || TextUtils.isEmpty(ip1)
                                 || TextUtils.isEmpty(ip2)
                                 || TextUtils.isEmpty(ip3)
-                                || TextUtils.isEmpty(sPort)){
+                                || TextUtils.isEmpty(sPort)) {
                             tvTips.setText(getString(R.string.act_sys_tip_yfwipdzhdkhbnwk));
                             return;
                         }
@@ -376,11 +375,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                         String rip2 = tvRIp2.getText().toString();
                         String rip3 = tvRIp3.getText().toString();
                         String rport = tvRPort.getText().toString();
-                        if(TextUtils.isEmpty(ip0)
+                        if (TextUtils.isEmpty(ip0)
                                 || TextUtils.isEmpty(ip1)
                                 || TextUtils.isEmpty(ip2)
                                 || TextUtils.isEmpty(ip3)
-                                || TextUtils.isEmpty(rport)){
+                                || TextUtils.isEmpty(rport)) {
                             tvTips.setText(getString(R.string.act_sys_tip_zyipdzhdkbnwk));
                             return;
                         }
@@ -396,18 +395,18 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
         dialog.show();
         Window window = dialog.getWindow();
-        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         } else {
             Display defaultDisplay = getWindowManager().getDefaultDisplay();
             int width = defaultDisplay.getWidth();
             int height = defaultDisplay.getHeight();
-            window.setLayout(width/2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout(width / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
-    public void setPwd(){
+    public void setPwd() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_set_pwd);
@@ -424,57 +423,57 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             }
         });
 
-        btnConfirm .setOnClickListener(new View.OnClickListener() {
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(edtPwd.getText())){
+                if (TextUtils.isEmpty(edtPwd.getText())) {
                     edtPwd.setError(getString(R.string.act_sys_error_mmbkwk));
                     return;
                 }
-                if(edtPwd.getText().length()<6){
+                if (edtPwd.getText().length() < 6) {
                     edtPwd.setError(getString(R.string.act_sys_error_mmzssr6w));
                     return;
                 }
-                if(TextUtils.isEmpty(edtPwd2.getText())){
+                if (TextUtils.isEmpty(edtPwd2.getText())) {
                     edtPwd2.setError(getString(R.string.act_sys_error_qzcsrmm));
                     return;
                 }
                 String pwd = edtPwd.getText().toString();
                 final String pwd2 = edtPwd2.getText().toString();
-                if(!TextUtils.equals(pwd,pwd2)){
+                if (!TextUtils.equals(pwd, pwd2)) {
                     edtPwd2.setError(getString(R.string.act_sys_error_lcsrdmmbyz));
                     return;
                 }
 
                 btnCancel.setEnabled(false);
                 btnConfirm.setEnabled(false);
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("deviceNo", HeartBeatClient.getDeviceNo());
-                params.put("password",pwd2);
+                params.put("password", pwd2);
                 OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, final Exception e, int id) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SystemActivity.this,getString(R.string.act_sys_error_modify_fail)+"：" + e!=null?e.getMessage():"NULL");
+                                UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_fail) + "：" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        JSONObject jsonObject =JSONObject.parseObject(response);
+                        JSONObject jsonObject = JSONObject.parseObject(response);
                         final Integer status = jsonObject.getInteger("status");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(status == 1){
-                                    UIUtils.showTitleTip(SystemActivity.this,getString(R.string. act_sys_error_modify_success));
-                                    SpUtils.saveStr(SpUtils.MENU_PWD,pwd2);
+                                if (status == 1) {
+                                    UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_success));
+                                    SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip(SystemActivity.this,getString(R.string.act_sys_error_modify_fail));
+                                    UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_fail));
                                 }
                             }
                         });
@@ -494,21 +493,21 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
-    public void setAngle(View view){
-        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+    public void setAngle(View view) {
+        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
 
-        if(anInt == CameraSettings.ROTATION_0){
+        if (anInt == CameraSettings.ROTATION_0) {
             anInt = CameraSettings.ROTATION_90;
-        } else if(anInt == CameraSettings.ROTATION_90) {
+        } else if (anInt == CameraSettings.ROTATION_90) {
             anInt = CameraSettings.ROTATION_180;
-        } else if(anInt == CameraSettings.ROTATION_180){
+        } else if (anInt == CameraSettings.ROTATION_180) {
             anInt = CameraSettings.ROTATION_270;
         } else {
             anInt = CameraSettings.ROTATION_0;
         }
         CameraSettings.setCameraDisplayRotation(anInt);
-        ((Button)view).setText(getString(R.string.act_sys_tip_angle)+"：" + anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE,anInt);
+        ((Button) view).setText(getString(R.string.act_sys_tip_angle) + "：" + anInt);
+        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
     }
 
     public void showSetting() {
@@ -561,7 +560,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         cbMirror = (CheckBox) dialog.findViewById(R.id.cb_mirror);
 
         Button btn = (Button) dialog.findViewById(R.id.btn_setAngle);
-        int anInt = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         btn.setText("角度：" + anInt);
 
 //        setCamOri(dialog);
@@ -604,24 +603,24 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
         dialog.show();
         Window window = dialog.getWindow();
-        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         } else {
             Display defaultDisplay = getWindowManager().getDefaultDisplay();
             int width = defaultDisplay.getWidth();
-            window.setLayout((int) (width/1.5), ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout((int) (width / 1.5), ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
-    private void checkDataSize(){
+    private void checkDataSize() {
         FileUtils.getDataSize(new FileUtils.OnSizeCallback() {
             @Override
             public void getSize(long size) {
-                if(size > 0){
+                if (size > 0) {
                     size = size / 1024 / 1024;
                 }
-                tvDataSize.setText(size+"mb");
+                tvDataSize.setText(size + "mb");
             }
         });
     }
@@ -633,11 +632,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     //设置网络状态
-    private void setNetState(){
+    private void setNetState() {
         CheckNet checkNet = new CheckNet(this);
         boolean intenetConnected = checkNet.isIntenetConnected();
-        if(intenetConnected){//网线连接
-            if(checkNet.isEtherneteConncted()){//已连接
+        if (intenetConnected) {//网线连接
+            if (checkNet.isEtherneteConncted()) {//已连接
                 tvNetState.setText(getString(R.string.act_sys_tip_wxlj));
             } else {
                 tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwl));
@@ -646,14 +645,14 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         }
 
         boolean wifiEnabled = checkNet.isWifiEnabled();
-        if(!wifiEnabled){
+        if (!wifiEnabled) {
             //代表无网络
             tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
             return;
         }
 
         boolean wifiConnected = checkNet.isWifiConnected();
-        if(!wifiConnected){
+        if (!wifiConnected) {
             //代表无网络
             tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
             return;
@@ -667,22 +666,22 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     //设置摄像头信息
-    private void setCameraInfo(){
+    private void setCameraInfo() {
         CheckCamera checkCamera = new CheckCamera();
         String cameraInfo = checkCamera.getCameraInfo();
         tvCameraInfo.setText(cameraInfo);
     }
 
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener){
-        showAlert(msg,onClickListener,null);
+    private void showAlert(String msg, Dialog.OnClickListener onClickListener) {
+        showAlert(msg, onClickListener, null);
     }
 
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener, DialogInterface.OnDismissListener onDissmissListener){
+    private void showAlert(String msg, Dialog.OnClickListener onClickListener, DialogInterface.OnDismissListener onDissmissListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.base_tip));
         builder.setMessage(msg);
-        builder.setPositiveButton(getString(R.string.base_ensure),onClickListener);
-        if(onDissmissListener != null){
+        builder.setPositiveButton(getString(R.string.base_ensure), onClickListener);
+        if (onDissmissListener != null) {
             builder.setOnDismissListener(onDissmissListener);
         }
 
@@ -692,24 +691,24 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
-    class SkinModel{
+    class SkinModel {
         String skinName;
         File skinFile;
     }
 
     public void seeVisitor(View view) {
-        startActivity(new Intent(this,VisitorActivity.class));
+        startActivity(new Intent(this, VisitorActivity.class));
     }
 
     public void selectSkin(View view) {
         final File file = new File(Constants.SKIN_PATH);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.mkdirs();
         }
         final File[] files = file.listFiles();
 
-        if(files == null || files.length <= 0){
-            UIUtils.showTitleTip(this,"暂无皮肤");
+        if (files == null || files.length <= 0) {
+            UIUtils.showTitleTip(this, "暂无皮肤");
             return;
         }
 
@@ -719,7 +718,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         skinList.add(skinModel);
 
         for (File file1 : files) {
-            if(file1.getName().endsWith(".skin")){
+            if (file1.getName().endsWith(".skin")) {
                 SkinModel skin = new SkinModel();
                 skin.skinName = file1.getName();
                 skin.skinFile = file1;
@@ -745,10 +744,10 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                VH vh ;
-                if(convertView == null){
+                VH vh;
+                if (convertView == null) {
                     vh = new VH();
-                    convertView = View.inflate(parent.getContext(),android.R.layout.simple_list_item_1,null);
+                    convertView = View.inflate(parent.getContext(), android.R.layout.simple_list_item_1, null);
                     vh.tv = convertView.findViewById(android.R.id.text1);
                     convertView.setTag(vh);
                 } else {
@@ -758,7 +757,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 vh.tv.setText(skinModel.skinName);
                 return convertView;
             }
-            class VH{
+
+            class VH {
                 TextView tv;
             }
         }, new DialogInterface.OnClickListener() {
@@ -767,7 +767,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 Log.e(TAG, "onClick: " + which);
                 SkinModel skinModel = skinList.get(which);
                 File skinFile = skinModel.skinFile;
-                if(which == 0 || skinFile == null){
+                if (which == 0 || skinFile == null) {
                     SkinCompatManager.getInstance().restoreDefaultTheme();
                 } else {
                     load(skinFile.getName());
@@ -779,28 +779,29 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     private static final String TAG = "SystemActivity";
-    private void load(final String apkName){
+
+    private void load(final String apkName) {
         Log.e(TAG, "load: 加载：" + " : " + apkName);
         SkinLoader.setSkin(apkName);
     }
 
-    class CheckCamera{
-        public String getCameraInfo(){
+    class CheckCamera {
+        public String getCameraInfo() {
             StringBuilder cameraInfo = new StringBuilder();
             int numberOfCameras = android.hardware.Camera.getNumberOfCameras();
-            if(numberOfCameras <= 0){
+            if (numberOfCameras <= 0) {
                 return getString(R.string.act_sys_tip_noCamera);
             }
             for (int i = 0; i < numberOfCameras; i++) {
                 android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-                android.hardware.Camera.getCameraInfo(i,info);
+                android.hardware.Camera.getCameraInfo(i, info);
                 boolean isFront = info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
                 int orientation = info.orientation;
                 cameraInfo
-                        .append(getString(R.string.act_sys_tip_total)+numberOfCameras+getString(R.string.act_sys_tip_ge)+":")
-                        .append("【"+getString(R.string.act_sys_tip_bh)+":"+i+"，")
-                        .append(isFront ? getString(R.string.act_sys_tip_front):getString(R.string.act_sys_tip_back))
-                        .append("，"+getString(R.string.act_sys_tip_angle)+":"+orientation)
+                        .append(getString(R.string.act_sys_tip_total) + numberOfCameras + getString(R.string.act_sys_tip_ge) + ":")
+                        .append("【" + getString(R.string.act_sys_tip_bh) + ":" + i + "，")
+                        .append(isFront ? getString(R.string.act_sys_tip_front) : getString(R.string.act_sys_tip_back))
+                        .append("，" + getString(R.string.act_sys_tip_angle) + ":" + orientation)
                         .append("】");
             }
 
@@ -809,8 +810,8 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     }
 
     class CheckNet {
-        private  WifiManager wifiManager;
-        private  ConnectivityManager connectManager;
+        private WifiManager wifiManager;
+        private ConnectivityManager connectManager;
         private Context context;
 
         public CheckNet(Context context) {
@@ -856,7 +857,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             return info.isConnected();
         }
 
-        public boolean isEtherneteConncted(){
+        public boolean isEtherneteConncted() {
             NetworkInfo info = connectManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
             return info.isConnected();
         }
@@ -870,17 +871,17 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             return "NULL";
         }
 
-        public String getStrength(){
+        public String getStrength() {
             String strength = "";
             WifiInfo info = wifiManager.getConnectionInfo();
             int rssi = info.getRssi();
-            if(rssi<=0 && rssi >= -50){//信号最好
-                strength =  getString(R.string.act_sys_tip_strong);
-            }else if(rssi< -50 && rssi >= -70){//信号一般
+            if (rssi <= 0 && rssi >= -50) {//信号最好
+                strength = getString(R.string.act_sys_tip_strong);
+            } else if (rssi < -50 && rssi >= -70) {//信号一般
                 strength = getString(R.string.act_sys_tip_general);
-            }else if(rssi > -70){
+            } else if (rssi > -70) {
                 strength = getString(R.string.act_sys_tip_poor);
-            }else if(rssi <= -200){
+            } else if (rssi <= -200) {
                 strength = getString(R.string.act_sys_tip_wwl);
             }
             return strength;

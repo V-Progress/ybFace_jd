@@ -18,6 +18,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -83,11 +84,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected int getLandscapeLayout() {
-        if (Config.deviceType == Config.DEVICE_SMALL_FACE) {
-            return R.layout.activity_table_h_small;
-        } else {
-            return R.layout.activity_table_h;
-        }
+        return R.layout.activity_table;
     }
 
     @Override

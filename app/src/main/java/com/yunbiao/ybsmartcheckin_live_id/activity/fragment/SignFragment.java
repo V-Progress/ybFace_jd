@@ -21,11 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.animation.Easing;
@@ -35,40 +32,29 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.NoticeManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.sign.MultipleSignDialog;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
-import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.ByteArrayOutputStream;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static com.jdjr.risk.face.local.thread.ThreadHelper.runOnUiThread;
 
 public class SignFragment extends Fragment/* implements SignManager.SignEventListener*/ {
 
@@ -98,30 +84,25 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
-        mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
+        mCurrentOrientation =  getActivity().getResources().getConfiguration().orientation;
 
         int orientation;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
-            orientation = LinearLayoutManager.HORIZONTAL;
+            if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280){
+                rootView = inflater.inflate(R.layout.fragment_sign_list_fake_landscape, container, false);
+                orientation = LinearLayoutManager.HORIZONTAL;
+                /*只在横屏初始化公告*/
+                NoticeManager.getInstance().init(rootView);
+            } else {
+                rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
+                orientation = LinearLayoutManager.HORIZONTAL;
+            }
         } else {
             rootView = inflater.inflate(R.layout.fragment_sign_list_h, container, false);
             orientation = LinearLayoutManager.VERTICAL;
             /*只在横屏初始化公告*/
             NoticeManager.getInstance().init(rootView);
         }
-
-        Switch switchLiveness = rootView.findViewById(R.id.switch_liveness);
-        final FaceView faceView = ((WelComeActivity) getActivity()).faceView;
-        switchLiveness.setChecked(faceView.getLiveness());
-        switchLiveness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                faceView.setLiveness(isChecked);
-
-                Toast.makeText(getActivity(), "活体检测状态：" + faceView.getLiveness(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
 
@@ -185,7 +166,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
 
         float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
         Log.e(TAG, "onResume: 重加载数据");
-        int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);
+        int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
             mCurrWarningThreshold = warningThreshold;
             mCurrModel = newModel;

@@ -149,7 +149,7 @@ public class WelComeActivity extends BaseGpioActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.Model.MODEL_TEMPERATURE_ONLY);//当前模式
+        mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);//当前模式
         isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, true);//大屏海报开关
         distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);//距离提示开关
         mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
@@ -391,8 +391,11 @@ public class WelComeActivity extends BaseGpioActivity {
                 }
 
                 SignManager.instance().uploadTemperatureSign(sign);
+
+
+                // TODO: 2020/3/1 处理这部分逻辑 如果体温不正常不让进门
                 //如果是过期或陌生人则结束
-                if (sign.getType() == -2 || sign.getType() == -9) {
+                if (sign.getType() == -2 || sign.getType() == -9 || isWarning) {
                     return;
                 }
                 openDoor();
@@ -597,7 +600,7 @@ public class WelComeActivity extends BaseGpioActivity {
                         temperatureSign.setHotImageBitmap(imageBmp);
 
                         //提示
-                        playTips(isWarning, "", temperatureSign.getTemperature());
+                        playTipsAddOpenDoor(isWarning, "", temperatureSign.getTemperature());
                         //更新记录
                         if (signListFragment != null) {
                             runOnUiThread(new Runnable() {
@@ -625,10 +628,6 @@ public class WelComeActivity extends BaseGpioActivity {
                         mCacheTemperatureHighestValue = bodyMaxT;
                     }
                 } else {
-                    if (mCacheHotImage != null) {
-                        mCacheHotImage.recycle();
-                        mCacheHotImage = null;
-                    }
                     mCacheTemperatureHighestValue = 0f;
                 }
             }
@@ -789,7 +788,7 @@ public class WelComeActivity extends BaseGpioActivity {
                             temperatureSign.setImgBitmap(currCameraFrame);
 
                             //提示
-                            playTips(isWarning, "", temperatureSign.getTemperature());
+                            playTipsAddOpenDoor(isWarning, "", temperatureSign.getTemperature());
                             //更新记录
                             if (signListFragment != null) {
                                 signListFragment.addSignData(temperatureSign);
@@ -804,8 +803,8 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTime = 0;
                 }
 
-                //如果是人脸+热成像或者人脸+红外，就走存最高值的逻辑
-            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE/* || mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING*/) {
+                //如果是人脸+红外，就走存最高值的逻辑
+            } else if (mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
                 if (canDetection) {
                     if (measuringTemperatureF > mCacheTemperatureHighestValue) {
                         mCacheTemperatureHighestValue = formatF(measuringTemperatureF);
@@ -874,6 +873,13 @@ public class WelComeActivity extends BaseGpioActivity {
         }
     };
 
+    private void playTipsAddOpenDoor(boolean isWarning, String signName, float temperature) {
+        if (!isWarning) {
+            openDoor();
+        }
+        playTips(isWarning, signName, temperature);
+    }
+
     private void playTips(boolean isWarning, String signName, float temperature) {
         String tip;
         Runnable warningRunnable;
@@ -904,6 +910,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     resetLedDelay(0);//5秒后重置灯光为蓝色
                 }
             };
+            openDoor();
         }
 
         tip += temperature + "℃";

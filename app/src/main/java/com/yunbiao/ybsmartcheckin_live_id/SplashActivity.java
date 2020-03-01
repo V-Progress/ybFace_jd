@@ -1,7 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -85,8 +84,11 @@ public class SplashActivity extends BaseActivity {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
 
-        startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
-//        startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
+        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
+            startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
+        } else {
+            startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+        }
     }
 
     @Override

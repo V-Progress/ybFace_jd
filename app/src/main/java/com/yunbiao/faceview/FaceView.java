@@ -30,7 +30,9 @@ import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.VersionInfo;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
+import com.arcsoft.face.util.ImageUtils;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -186,7 +188,7 @@ public class FaceView extends FrameLayout {
     };
 
     private void initCamera() {
-        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
                 .rotation(angle)
@@ -201,58 +203,6 @@ public class FaceView extends FrameLayout {
 
     private List<FacePreviewInfo> infoList;
     private byte[] mCurrBytes;
-
-    public Bitmap getHeadImgByte(int trackId) {
-        if (mCurrBytes != null) {
-            try {
-                YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
-                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                if (infoList != null) {
-                    FaceInfo faceInfo = null;
-                    for (FacePreviewInfo facePreviewInfo : infoList) {
-                        if (facePreviewInfo.getTrackId() == trackId) {
-                            faceInfo = facePreviewInfo.getFaceInfo();
-                            break;
-                        }
-                    }
-
-                    if (faceInfo != null) {
-                        Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
-                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left
-                                , bestRect.top
-                                , bestRect.right - bestRect.left
-                                , bestRect.bottom - bestRect.top);
-
-                        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
-                        if (bitmap != null && angle != 0) {
-                            Bitmap bitmap1 = adjustPhotoRotation1(bitmap, angle);
-                            return bitmap1;
-                        }
-                        return bitmap;
-                    }
-                }
-                stream.close();
-                return bmp;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    private Bitmap adjustPhotoRotation1(Bitmap bm, final int orientationDegree) {
-        Matrix m = new Matrix();
-        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
-        try {
-            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-            return bm1;
-        } catch (OutOfMemoryError ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
 
     public boolean checkFaceToFar(Rect faceRect, int distance) {
         int faceWidth = faceRect.right - faceRect.left;
@@ -514,7 +464,7 @@ public class FaceView extends FrameLayout {
     };
 
     public void changeAngle() {
-        int angle = SpUtils.getInt(SpUtils.CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         Log.e(TAG, "changeAngle111: " + angle);
         if (cameraHelper != null) {
             Log.e(TAG, "changeAngle222: " + angle);
@@ -564,11 +514,29 @@ public class FaceView extends FrameLayout {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
                 Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+
+                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                if (bmp != null && angle != 0) {
+                    Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
+                    return bitmap1;
+                }
                 stream.close();
                 return bmp;
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        return null;
+    }
+
+    private Bitmap adjustPhotoRotation1(Bitmap bm, final int orientationDegree) {
+        Matrix m = new Matrix();
+        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+        try {
+            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+            return bm1;
+        } catch (OutOfMemoryError ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -587,6 +555,11 @@ public class FaceView extends FrameLayout {
                     if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
                         Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, bestRect.right - bestRect.left, bestRect.bottom - bestRect.top);
+                        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                        if (bmp != null && angle != 0) {
+                            Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
+                            return bitmap1;
+                        }
                         return bitmap;
                     }
                 } else {

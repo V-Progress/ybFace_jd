@@ -49,6 +49,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
         mCurrentOrientation = getResources().getConfiguration().orientation;
 
+
         //判断是否支持触屏
         isSupportTouch = getResources().getConfiguration().touchscreen == Configuration.TOUCHSCREEN_FINGER;
 
