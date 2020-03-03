@@ -73,21 +73,21 @@
                     android:background="@mipmap/bg_edit"
                     android:textColorHint="@color/gray_low"
                     android:textColor="@color/white"
-                    android:hint="员工名"
+                    android:hint="@string/act_emp_list_input_name_hint"
                     android:id="@+id/edt_query"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:layout_marginRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:drawableLeft="@mipmap/query_icon"
-                    android:textColor="@color/white"
-                    android:text="搜索"
-                    android:background="@drawable/shape_bg_btnsync"
-                    android:onClick="queryClick"
                     android:layout_width="wrap_content"
-                    android:layout_height="44dp" />
+                    android:layout_height="34dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:drawableLeft="@mipmap/query_icon"
+                    android:onClick="queryClick"
+                    android:paddingLeft="10dp"
+                    android:text="@string/act_emp_list_query_button"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <Button

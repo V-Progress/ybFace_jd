@@ -151,7 +151,7 @@
 
                 <TextView
                     style="@style/tv_style_edt_emp"
-                    android:text="姓&#8195;&#8195;名:" />
+                    android:text="@string/act_editEmploy_name" />
 
                 <EditText
                     android:id="@+id/et_name"
@@ -163,7 +163,7 @@
 
                 <TextView
                     style="@style/tv_style_edt_emp"
-                    android:text="性&#8195;&#8195;别:"/>
+                    android:text="@string/act_editEmploy_sex"/>
 
                 <RadioGroup
                     android:layout_marginLeft="20dp"
@@ -200,7 +200,7 @@
 
                 <TextView
                     style="@style/tv_style_edt_emp"
-                    android:text="部&#8195;&#8195;门:"/>
+                    android:text="@string/act_editEmploy_bm"/>
 
                 <Spinner
                     android:id="@+id/sp_depart"
@@ -226,7 +226,7 @@
 
                 <TextView
                     style="@style/tv_style_edt_emp"
-                    android:text="职&#8195;&#8195;位:" />
+                    android:text="@string/act_editEmploy_zw" />
 
                 <EditText
                     android:id="@+id/et_job"

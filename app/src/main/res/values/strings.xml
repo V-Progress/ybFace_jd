@@ -123,6 +123,8 @@
     <string name="act_sys_jcsj">检测升级</string>
     <string name="act_sys_glmmxg">管理密码修改</string>
 
+    <string name="act_emp_list_input_name_hint">员工姓名</string>
+    <string name="act_emp_list_query_button">搜索</string>
 
     <string name="act_sys_tip_online">在线</string>
     <string name="act_sys_tip_outline">离线</string>
@@ -285,11 +287,11 @@
     <string name="act_editEmploy_pz">拍照</string>
     <string name="act_editEmploy_reset">重置</string>
     <string name="act_editEmploy_jbxx">基本信息</string>
-    <string name="act_editEmploy_name">姓名:</string>
-    <string name="act_editEmploy_sex">性别:</string>
-    <string name="act_editEmploy_bm">部     门:</string>
+    <string name="act_editEmploy_name">姓&#8195;&#8195;名:</string>
+    <string name="act_editEmploy_sex">性&#8195;&#8195;别:</string>
+    <string name="act_editEmploy_bm">部&#8195;&#8195;门:</string>
     <string name="act_editEmploy_ygbh">员工编号:</string>
-    <string name="act_editEmploy_zw">职位:</string>
+    <string name="act_editEmploy_zw">职&#8195;&#8195;位:</string>
     <string name="act_editEmploy_csrq">出生日期:</string>
     <string name="act_editEmploy_gxqm">个性签名:</string>
     <string name="act_editEmploy_zjyg">增加员工</string>

@@ -3,7 +3,7 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
-    <string name="System_title">YBFaceAttendance</string>
+    <string name="System_title">YBFace</string>
     <string name="System_deviceNo">device number:</string>
     <string name="System_bindCode">bind code:</string>
     <string name="System_Company">company:</string>
@@ -16,6 +16,9 @@
     <string name="System_update">upgrade</string>
     <string name="System_copyright">copyright:北京云标科技有限公司</string>
     <string name="System_skin_select">skin</string>
+
+    <string name="act_emp_list_input_name_hint">name</string>
+    <string name="act_emp_list_query_button">query</string>
 
     <string name="System_Visitor">Visitor</string>
     <string name="System_Service_offline">off-line</string>

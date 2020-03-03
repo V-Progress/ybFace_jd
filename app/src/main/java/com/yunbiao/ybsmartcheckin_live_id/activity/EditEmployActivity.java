@@ -251,11 +251,12 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         //如果是修改，则只初始化部门
         if (type == TYPE_ADD) {
-            tvTitle.setText("添加员工");
+
+            tvTitle.setText(getResources().getString(R.string.act_editEmploy_zjyg));
             d("类型：新增");
             initAddLogic();
         } else {
-            tvTitle.setText("修改信息");
+            tvTitle.setText(getResources().getString(R.string.act_editEmploy_xgxx));
             d("类型：修改");
             initEditLogic();
         }
