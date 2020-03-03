@@ -113,7 +113,7 @@ public class Constants {
         int MODEL_TEMPERATURE_ONLY = 2;
         int MODEL_THERMAL_IMAGING_ONLY = 3;
         int MODEL_FACE_THERMAL_IMAGING = 4;
-        String[] models = {"人脸识别", "人脸 + 红外", "红外测温", "热成像测温", "人脸 + 热成像"};
+        String[] models = {"人脸识别", "人脸识别 + 红外测温", "红外测温(不考勤)", "热成像测温(不考勤)", "人脸识别 + 热成像测温"};
     }
 
     public interface serverModel {
@@ -122,18 +122,40 @@ public class Constants {
     }
 
     //屏幕类型
-    public final static int SCREEN_TYPE = ScreenType.TYPE_PORTRAIT_8_800_1280;
-
+    public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? Model.MODEL_THERMAL_IMAGING_ONLY : Model.MODEL_TEMPERATURE_ONLY;
-
+    //屏幕角度默认值
     public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? 270 : 0;
-
+    //端口号
     public static final String DEFAULT_PORT_PATH = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? "/dev/ttyS1" : "/dev/ttyS4";
-
+    //大屏海报开启状态
     public static final boolean DEFAULT_POSTER_ENABLED = SCREEN_TYPE != ScreenType.TYPE_PORTRAIT_8_800_1280;
-
+    //默认热成像镜像
     public static final boolean DEFAULT_THERMAL_IMAGE_MIRROR = true;
+    //默认最小阈值
+    public static final float DEFAULT_TEMP_MIN_THRESHOLD_VALUE = 35.5F;
+    //默认身体百分比
+    public static final int DEFAULT_BODY_PERCENT_VALUE = 1;
+    //默认热成像最小体温
+    public static final int DEFAULT_BODY_MIN_T_VALUE = 340;
+    //默认热成像最大体温值
+    public static final int DEFAULT_BODY_MAX_T_VALUE = 400;
+    //测温报警值
+    public static final float DEFAULT_TEMP_WARNING_THRESHOLD_VALUE = 37.3f;
+    //取温延时默认值
+    public static final int DEFAULT_GET_TEMP_DELAY_TIME_VALUE = 1000;
+    //距离提示开关
+    public static final boolean DEFAULT_DISTANCE_TIPS_ENABLED_VALUE = true;
+    //检测温差值
+    public static final float DEFAULT_TEMP_D_VALUE_VALUE = 3.0f;
+    //环境温度补正
+    public static final float DEFAULT_AMB_CORRECT_VALUE = 0.0F;
+    //检测温度补正
+    public static final float DEFAULT_TEMP_CORRECT_VALUE = 0.0f;
+    //默认波特率
+    public static final int INFARED_TEMP_BAUD_RATE = 9600;
+    public static final int THERMAL_IMAGING_BAUD_RATE = 115200;
 
     public interface ScreenType {
         int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸

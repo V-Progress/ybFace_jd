@@ -142,7 +142,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         /*红外模块是9600，热成像模块是115200*/
         mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
+        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
         InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
     }
 
@@ -151,18 +151,18 @@ public class WelComeActivity extends BaseGpioActivity {
         super.onResume();
         mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);//当前模式
         isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
-        distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);//距离提示开关
-        mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
-        mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);//设置测温延时
-        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f); //测温最小阈值
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f); //测温报警阈值
-        mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);//高低温差值（用于判断高度）
-        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);//环境温度补正
-        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);//体温检测补正
+        distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);//距离提示开关
+//        mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
+        mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, Constants.DEFAULT_GET_TEMP_DELAY_TIME_VALUE);//设置测温延时
+        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
+        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
+        mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);//高低温差值（用于判断高度）
+        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
+        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
         mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);//热成像图像镜像
-        mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, 350);//最低体温值
-        mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, 400);//最高体温值
-        mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, 3);//身体占比
+        mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);//最低体温值
+        mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);//最高体温值
+        mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);//身体占比
 
         if (signListFragment != null) {
             signListFragment.setModelText(Constants.Model.models[mCurrModel]);
@@ -170,7 +170,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         //初始化测温模块
         String portPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, 9600);
+        int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
         if (!TextUtils.equals(portPath, mCurrPortPath) || baudRate != mCurrBaudRate) {
             mCurrPortPath = portPath;
             mCurrBaudRate = baudRate;
@@ -467,18 +467,15 @@ public class WelComeActivity extends BaseGpioActivity {
     private int mCurrModel = 0;//当前模式
     private String mCurrPortPath = "";//当前端口号
     private int mCurrBaudRate;//当前波特率
-    private boolean getTempDelayEnabled = true;
-
+    private boolean getTempDelayEnabled = true;//延时取温
     //设置类
-    private int mGetTempDelayTime = 1000;//采集温度延时
-    private float mTempMinThreshold = 36.0f;//最小阈值
-    private float mTempWarningThreshold = 37.3f;//报警值
-    private int mTempTipsCloseDelayTime = 5000;//温度提示关闭延迟
-    private float mTempDValue = 3.0f;
-
-    private int mCurrBodyMinT = 350;//当前最低体温
-    private int mCurrBodyMaxT = 400;//当前最高体温
-    private int mCurrBodyPercent = 3;//当前身体占比
+    private int mGetTempDelayTime;//采集温度延时
+    private float mTempMinThreshold;//最小阈值
+    private float mTempWarningThreshold;//报警值
+    private float mTempDValue;
+    private int mCurrBodyMinT;//当前最低体温
+    private int mCurrBodyMaxT;//当前最高体温
+    private int mCurrBodyPercent;//当前身体占比
 
     //缓存值类
     private float mCacheDetectionValue = 0f;//检测值缓存，用于检测是否有人进来和有人离开
@@ -514,7 +511,6 @@ public class WelComeActivity extends BaseGpioActivity {
         }, 1000);
     }
 
-    private long mCacheLastCallbackTime = 0;
     private InfraredTemperatureUtils.HotImageDataCallBack hotImageDataCallBack = new InfraredTemperatureUtils.HotImageDataCallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
@@ -525,33 +521,6 @@ public class WelComeActivity extends BaseGpioActivity {
                         ivThermalImaging.setImageBitmap(imageBmp);
                         if (tvThermalPercent != null) {
                             tvThermalPercent.setText("热成像 体温：" + bodyMaxT + "℃");
-                        }
-
-                        if (true) {
-                            return;
-                        }
-                        if (tvSensorTTest != null) {
-                            tvSensorTTest.setText("传感器：" + sensorT + "");
-                        }
-                        if (tvMinTest != null) {
-                            tvMinTest.setText("最低温度：" + minT + "");
-                        }
-                        if (tvMaxTest != null) {
-                            tvMaxTest.setText("最高温度：" + maxT + "");
-                        }
-                        if (tvBodyMaxT != null) {
-                            tvBodyMaxT.setText("人体温度：" + bodyMaxT);
-                        }
-
-                        if (mCacheLastCallbackTime == 0) {
-                            mCacheLastCallbackTime = System.currentTimeMillis();
-                        } else {
-                            long l1 = System.currentTimeMillis();
-                            long l = l1 - mCacheLastCallbackTime;
-                            if (tvCallbackTimeTest != null) {
-                                tvCallbackTimeTest.setText("回调间隔：" + l);
-                            }
-                            mCacheLastCallbackTime = l1;
                         }
                     }
                 });
@@ -915,7 +884,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         tip += temperature + "℃";
 
-        Log.e(TAG, "playTips: 延迟关闭时间：" + mTempTipsCloseDelayTime);
+//        Log.e(TAG, "playTips: 延迟关闭时间：" + mTempTipsCloseDelayTime);
 //        resetLedDelay(mTempTipsCloseDelayTime);//5秒后重置灯光为蓝色
         showTemperatureTips(tip, bgId, -1);
         KDXFSpeechManager.instance().playNormal((TextUtils.isEmpty(signName) ? "" : signName) + tip, warningRunnable);

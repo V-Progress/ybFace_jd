@@ -63,35 +63,31 @@ public class SpUtils {
 
     public static final String FACE_DIALOG = "faceDialog";
     public static final String SIMILAR_THRESHOLD = "similarThreshold";
-
-    //温度检测开关
-    public static final String TEMP_CORRECT_VALUE = "tempCorrectValue";//测温矫正值
-    public static final String AMB_CORRECT_VALUE = "ambCorrectValue";//环境温度校正值
-
     public static final String LIVENESS_ENABLED = "livenessEnabled";//活体开关
 
+    //测温相关配置
+    public static final String TEMP_CORRECT_VALUE = "tempCorrectValue";//测温矫正值
+    public static final String AMB_CORRECT_VALUE = "ambCorrectValue";//环境温度校正值
     public static final String MODEL_SETTING = "modelSetting";//模式设置
     public static final String TEMP_TIPS_TIME = "tempTipsTime";//提示时间
     public static final String GET_TEMP_DELAY_TIME = "getTempDelayTime";//取温延迟
     public static final String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";//温度报警阈值
-    public static final String TEMP_MIN_THRESHOLD = "tempMinThreshold";//温度最低阈值
+    public static final String TEMP_MIN_THRESHOLD = "tempMinThreshold";//温度最低阈值：默认值35.5f----------
     public static final String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
     public static final String DISTANCE_TIPS_ENABLED = "distanceTipsEnabled";//距离提示开关
     public static final String TEMP_D_VALUE = "tempDValue";//高低温差值
     public static final String PORT_PATH = "portPath";//端口号缓存
     public static final String BAUD_RATE = "baudRate";//波特率
     public static final String THERMAL_IMAGE_MIRROR = "thermalImageMirror";//热成像画面镜像
-    public static final String BODY_PERCENT = "bodyPercent";//身体占比
-    public static final String BODY_MIN_T = "bodyMinT";//身体占比
+    public static final String BODY_PERCENT = "bodyPercent";//身体占比：默认值1----------
+    public static final String BODY_MIN_T = "bodyMinT";//身体占比：默认值340------------
     public static final String BODY_MAX_T = "bodyMaxT";//身体占比
     public static final String GET_TEMP_DELAY_ENABLED = "getTempDelayEnabled";
-
-    public static final String SERVER_MODEL = "serverModel";
-    public static final String JU_IP_CACHE = "juIpCache";
-    public static final String JU_RESOURCE_PORT_CACHE = "juResourcePortCache";
-    public static final String JU_XMPP_PORT_CACHE = "juXmppPortCache";
-    public static final String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";
-
+    public static final String SERVER_MODEL = "serverModel";//服务模式
+    public static final String JU_IP_CACHE = "juIpCache";//IP
+    public static final String JU_RESOURCE_PORT_CACHE = "juResourcePortCache";//端口
+    public static final String JU_XMPP_PORT_CACHE = "juXmppPortCache";//XMPP端口
+    public static final String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
 
     public static void init() {
         getCompany();

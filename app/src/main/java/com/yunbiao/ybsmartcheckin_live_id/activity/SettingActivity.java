@@ -138,7 +138,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initBodySetting() {
-        final int bodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, 3);
+        final int bodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);
         final EditText edtBodyPercent = findViewById(R.id.edt_body_percent_setting);
         edtBodyPercent.setText(bodyPercent + "");
 
@@ -157,8 +157,8 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
-        final int minT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, 350);
-        final int maxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, 400);
+        final int minT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);
+        final int maxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);
         final EditText edtMinT = findViewById(R.id.edt_body_min_t_setting);
         edtMinT.setText(minT + "");
         final EditText edtMaxT = findViewById(R.id.edt_body_max_t_setting);
@@ -202,7 +202,7 @@ public class SettingActivity extends BaseActivity {
             portNames[i] = "串口" + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
         }
         //获取当前选中的索引
-        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH,  Constants.DEFAULT_PORT_PATH);
+        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
         final int index = portList.indexOf(cachePort);
         //设置显示
         final TextView tvPortPath = findViewById(R.id.tv_port_path_setting);
@@ -212,7 +212,7 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH,  Constants.DEFAULT_PORT_PATH);
+                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
                 int selectedIndex = portList.indexOf(cachePort);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
@@ -269,9 +269,9 @@ public class SettingActivity extends BaseActivity {
         tvModelSetting.setText(items[model]);
 
         if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
-            tvBaudRate.setText(9600 + "（红外测温）");
+            tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
         } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
-            tvBaudRate.setText(115200 + "（热成像测温）");
+            tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
         } else {
             tvBaudRate.setText("");
         }
@@ -289,11 +289,11 @@ public class SettingActivity extends BaseActivity {
                         tvModelSetting.setText(items[which]);
 
                         if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
-                            tvBaudRate.setText(9600 + "（红外测温）");
-                            SpUtils.saveInt(SpUtils.BAUD_RATE, 9600);
+                            tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
                         } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
-                            tvBaudRate.setText(115200 + "（热成像测温）");
-                            SpUtils.saveInt(SpUtils.BAUD_RATE, 115200);
+                            tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.THERMAL_IMAGING_BAUD_RATE);
                         } else {
                             tvBaudRate.setText("");
                         }
@@ -320,11 +320,11 @@ public class SettingActivity extends BaseActivity {
         });
 
         //取温延时
-        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, 1000);
+        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, Constants.DEFAULT_GET_TEMP_DELAY_TIME_VALUE);
         edtGetDelay.setText(delayTime + "");
 
         //修改校正值
-        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, 0.0f);
+        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
         Button btnTempCorrSub = findViewById(R.id.btn_temp_corr_sub_setting);
         final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
         Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
@@ -358,7 +358,7 @@ public class SettingActivity extends BaseActivity {
         Button btnAmbCorrSub = findViewById(R.id.btn_amb_corr_sub_setting);
         Button btnAmbCorrAdd = findViewById(R.id.btn_amb_corr_add_setting);
         //设置温度补正
-        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, 0.0f);
+        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);
         edtAmbCorr.setText(ambCorrValue + "");
         View.OnClickListener ambCorrClickListener = new View.OnClickListener() {
             @Override
@@ -389,7 +389,7 @@ public class SettingActivity extends BaseActivity {
         final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
         Button btnMinAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
         //温度最低阈值、温度报警阈值
-        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, 36.0f);
+        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
         edtMinThreshold.setText(minValue + "");
         View.OnClickListener minClickListener = new View.OnClickListener() {
             @Override
@@ -418,7 +418,7 @@ public class SettingActivity extends BaseActivity {
         Button btnWarnSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
         final EditText edtWarnThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
         Button btnWarnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
-        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
         edtWarnThreshold.setText(warningValue + "");
         View.OnClickListener warnClickListener = new View.OnClickListener() {
             @Override
@@ -445,7 +445,7 @@ public class SettingActivity extends BaseActivity {
         btnWarnAdd.setOnClickListener(warnClickListener);
 
         //距离提示
-        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, true);
+        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);
         Switch swDistance = findViewById(R.id.sw_distance_setting);
         swDistance.setChecked(distanceEnabled);
         swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -751,7 +751,7 @@ public class SettingActivity extends BaseActivity {
 
         Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
         final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
-        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, 3.0f);
+        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);
         edtTempDValue.setText(dValue + "");
         btnSaveDValue.setOnClickListener(new View.OnClickListener() {
             @Override

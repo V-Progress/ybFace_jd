@@ -164,7 +164,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     public void onResume() {
         super.onResume();
 
-        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, 37.3f);
+        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD,  Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
         Log.e(TAG, "onResume: 重加载数据");
         int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {

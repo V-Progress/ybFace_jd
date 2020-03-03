@@ -35,10 +35,12 @@ public abstract class LedControlActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try {
-            mSmdtManager = SmdtManager.create(this);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280){
+            try {
+                mSmdtManager = SmdtManager.create(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         resetLedDelay(1000);
