@@ -102,9 +102,42 @@ public class SettingActivity extends BaseActivity {
         });
     }
 
+    private void initUISetting() {
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
+        edtWelComeTips.setText(welcomeTips);
+        edtWelComeTips.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputWelcome = s.toString();
+                SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
+            }
+        });
+
+        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+        Switch swQrCode = findViewById(R.id.sw_qrcode_setting);
+        swQrCode.setChecked(qrCodeEnabled);
+        swQrCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SpUtils.QRCODE_ENABLED, isChecked);
+            }
+        });
+    }
 
     @Override
     protected void initData() {
+        initUISetting();
         //当前模式
         initModelSetting();
         //设置IP
@@ -131,8 +164,6 @@ public class SettingActivity extends BaseActivity {
         initLivenessSetting();
         //大屏海报开关
         initPosterSetting();
-        //串口号设置
-        initPortSetting();
         //设置热成像身体检测相关的参数
         initBodySetting();
         //读卡器模块
@@ -152,57 +183,93 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initBodySetting() {
-        final int bodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);
+        Button btnBodyPercentSub = findViewById(R.id.btn_body_percent_sub_setting);
+        Button btnBodyPercentAdd = findViewById(R.id.btn_body_percent_add_setting);
         final EditText edtBodyPercent = findViewById(R.id.edt_body_percent_setting);
+        final int bodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);
         edtBodyPercent.setText(bodyPercent + "");
 
-        Button btnSavePercent = findViewById(R.id.btn_save_body_percent_setting);
-        btnSavePercent.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener bodyPercentOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String percentInput = edtBodyPercent.getText().toString();
-                if (TextUtils.isEmpty(percentInput)) {
-                    edtBodyPercent.setText(bodyPercent + "");
+                String percentValue = edtBodyPercent.getText().toString();
+                int value = Integer.parseInt(percentValue);
+                if (v.getId() == R.id.btn_body_percent_sub_setting) {
+                    value -= 1;
+                    if (value <= 1) {
+                        value = 1;
+                    }
+                } else {
+                    value += 1;
                 }
-                percentInput = edtBodyPercent.getText().toString();
-                SpUtils.saveInt(SpUtils.BODY_PERCENT, Integer.parseInt(percentInput));
-
-                UIUtils.showShort(SettingActivity.this, "保存成功");
+                edtBodyPercent.setText(value + "");
+                SpUtils.saveInt(SpUtils.BODY_PERCENT, value);
             }
-        });
+        };
+        btnBodyPercentSub.setOnClickListener(bodyPercentOnClickListener);
+        btnBodyPercentAdd.setOnClickListener(bodyPercentOnClickListener);
 
-        final int minT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);
-        final int maxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);
+        Button btnMinTSub = findViewById(R.id.btn_body_min_t_sub_setting);
+        Button btnMinTAdd = findViewById(R.id.btn_body_min_t_add_setting);
         final EditText edtMinT = findViewById(R.id.edt_body_min_t_setting);
-        edtMinT.setText(minT + "");
-        final EditText edtMaxT = findViewById(R.id.edt_body_max_t_setting);
-        edtMaxT.setText(maxT + "");
+        final int minT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);
 
-        Button btnSaveBodyT = findViewById(R.id.btn_save_body_t_setting);
-        btnSaveBodyT.setOnClickListener(new View.OnClickListener() {
+        float textValue = minT;
+        edtMinT.setText((textValue / 10) + "");
+        View.OnClickListener minTClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String minTInput = edtMinT.getText().toString();
-                if (TextUtils.isEmpty(minTInput)) {
-                    edtMinT.setText(minT + "");
-                }
+                String minT = edtMinT.getText().toString();
+                float value = Float.parseFloat(minT);
+                value = formatF(value);
 
-                String maxTInput = edtMaxT.getText().toString();
-                if (TextUtils.isEmpty(maxTInput)) {
-                    edtMaxT.setText(maxT + "");
+                if (v.getId() == R.id.btn_body_min_t_sub_setting) {
+                    value -= 0.1;
+                    if (value <= 25.0f) {
+                        value = 25.0f;
+                    }
+                } else {
+                    value += 0.1;
                 }
-                minTInput = edtMinT.getText().toString();
-                maxTInput = edtMaxT.getText().toString();
-                SpUtils.saveInt(SpUtils.BODY_MIN_T, Integer.parseInt(minTInput));
-                SpUtils.saveInt(SpUtils.BODY_MAX_T, Integer.parseInt(maxTInput));
+                value = formatF(value);
+                edtMinT.setText(value + "");
 
-                UIUtils.showShort(SettingActivity.this, "保存成功");
+                SpUtils.saveInt(SpUtils.BODY_MIN_T, (int) (value * 10));
             }
-        });
-    }
+        };
+        btnMinTSub.setOnClickListener(minTClickListener);
+        btnMinTAdd.setOnClickListener(minTClickListener);
 
-    private void initPortSetting() {
+        Button btnMaxTSub = findViewById(R.id.btn_body_max_t_sub_setting);
+        Button btnMaxTAdd = findViewById(R.id.btn_body_max_t_add_setting);
+        final EditText edtMaxT = findViewById(R.id.edt_body_max_t_setting);
+        final int maxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);
+        float tValue = maxT;
+        edtMaxT.setText((tValue / 10) + "");
 
+        View.OnClickListener maxTClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String maxT = edtMaxT.getText().toString();
+                float value = Float.parseFloat(maxT);
+                value = formatF(value);
+
+                if (v.getId() == R.id.btn_body_max_t_sub_setting) {
+                    value -= 0.1;
+                    if (value <= 40.0f) {
+                        value = 40.0f;
+                    }
+                } else {
+                    value += 0.1;
+                }
+                value = formatF(value);
+                edtMaxT.setText(value + "");
+
+                SpUtils.saveInt(SpUtils.BODY_MAX_T, (int) (value * 10));
+            }
+        };
+        btnMaxTSub.setOnClickListener(maxTClickListener);
+        btnMaxTAdd.setOnClickListener(maxTClickListener);
     }
 
     private void initPosterSetting() {
@@ -218,6 +285,8 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initModelSetting() {
+        final View llTempRangeArea = findViewById(R.id.ll_temp_range_area);
+        final View llThermalMirrorArea = findViewById(R.id.ll_thermal_mirror_area);
         //模式==================================================================================
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
@@ -225,8 +294,12 @@ public class SettingActivity extends BaseActivity {
         int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         tvModelSetting.setText(items[model]);
         if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+            llThermalMirrorArea.setVisibility(View.GONE);
+            llTempRangeArea.setVisibility(View.GONE);
             tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
         } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+            llThermalMirrorArea.setVisibility(View.VISIBLE);
+            llTempRangeArea.setVisibility(View.VISIBLE);
             tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
         } else {
             tvBaudRate.setText("");
@@ -244,9 +317,13 @@ public class SettingActivity extends BaseActivity {
                         tvModelSetting.setText(items[which]);
 
                         if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                            llThermalMirrorArea.setVisibility(View.GONE);
+                            llTempRangeArea.setVisibility(View.GONE);
                             tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
                             SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
                         } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+                            llThermalMirrorArea.setVisibility(View.VISIBLE);
+                            llTempRangeArea.setVisibility(View.VISIBLE);
                             tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
                             SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.THERMAL_IMAGING_BAUD_RATE);
                         } else {

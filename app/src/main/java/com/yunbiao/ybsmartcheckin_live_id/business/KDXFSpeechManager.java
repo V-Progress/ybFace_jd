@@ -21,7 +21,9 @@ import android.view.Window;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.HandleMessageUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,7 +172,11 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        playText(UTTERANCE_WELCOME, null);
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        if (TextUtils.isEmpty(welcomeTips)) {
+            return;
+        }
+        playText(welcomeTips, null);
     }
 
     /***
@@ -289,7 +295,8 @@ public class KDXFSpeechManager {
     public void playNormal(final String message) {
         playNormalAddCallback(TextToSpeech.QUEUE_ADD, message, null);
     }
-    public void playNormal(final String message,Runnable runnable) {
+
+    public void playNormal(final String message, Runnable runnable) {
         playNormalAddCallback(TextToSpeech.QUEUE_ADD, message, runnable);
     }
 

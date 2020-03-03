@@ -113,7 +113,7 @@ public class Constants {
         int MODEL_TEMPERATURE_ONLY = 2;
         int MODEL_THERMAL_IMAGING_ONLY = 3;
         int MODEL_FACE_THERMAL_IMAGING = 4;
-        String[] models = {"人脸识别", "人脸识别 + 红外测温", "红外测温(不考勤)", "热成像测温(不考勤)", "人脸识别 + 热成像测温"};
+        String[] models = {"人脸识别考勤模式", "人脸识别+红外测温模式", "红外测温模式(不考勤)", "热成像测温模式(不考勤)", "人脸识别+热成像测温模式"};
     }
 
     public interface serverModel {
@@ -122,7 +122,9 @@ public class Constants {
     }
 
     //屏幕类型
-    public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
+    public final static int SCREEN_TYPE = ScreenType.TYPE_PORTRAIT_8_800_1280;
+
+
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? Model.MODEL_THERMAL_IMAGING_ONLY : Model.MODEL_TEMPERATURE_ONLY;
     //屏幕角度默认值
@@ -157,6 +159,8 @@ public class Constants {
     public static final int INFARED_TEMP_BAUD_RATE = 9600;
     public static final int THERMAL_IMAGING_BAUD_RATE = 115200;
     public static final boolean DEFAULT_READ_CARD_ENABLED = false;
+    public static final String DEFAULT_WELCOME_TIPS = "欢迎使用云标智能考勤系统";
+    public static final boolean DEFAULT_QRCODE_ENABLED = true;
 
     public interface ScreenType {
         int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸

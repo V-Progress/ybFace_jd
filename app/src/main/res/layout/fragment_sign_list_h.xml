@@ -34,28 +34,33 @@
 
     </FrameLayout>
 
-    <TextView
-        android:layout_marginBottom="10dp"
-        android:id="@+id/tv_model_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/iv_qrcode_sign_list"
-        android:background="@drawable/shape_model_main_background"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:textColor="#46C6F4" />
-
-    <ImageView
-        android:id="@+id/iv_qrcode_sign_list"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+    <LinearLayout
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:background="@mipmap/qrcode_sign_list"
-        android:padding="10dp"
-        android:scaleType="centerInside" />
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginBottom="10dp"
+            android:id="@+id/tv_model_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_model_main_background"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="#46C6F4" />
+
+        <ImageView
+            android:id="@+id/iv_qrcode_sign_list"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/qrcode_sign_list"
+            android:padding="10dp"
+            android:scaleType="centerInside" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_subTitle"

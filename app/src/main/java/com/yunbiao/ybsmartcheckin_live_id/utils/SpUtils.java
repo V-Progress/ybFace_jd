@@ -89,6 +89,8 @@ public class SpUtils {
     public static final String JU_XMPP_PORT_CACHE = "juXmppPortCache";//XMPP端口
     public static final String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
     public static final String READ_CARD_ENABLED = "readCardEnabled";//读卡模块
+    public static final String WELCOM_TIPS = "welcomeTips";//欢迎语
+    public static final String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
 
     public static void init() {
         getCompany();

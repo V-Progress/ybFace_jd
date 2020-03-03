@@ -84,11 +84,11 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
-        mCurrentOrientation =  getActivity().getResources().getConfiguration().orientation;
+        mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
 
         int orientation;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280){
+            if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
                 rootView = inflater.inflate(R.layout.fragment_sign_list_fake_landscape, container, false);
                 orientation = LinearLayoutManager.HORIZONTAL;
                 /*只在横屏初始化公告*/
@@ -164,7 +164,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     public void onResume() {
         super.onResume();
 
-        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD,  Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
+        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
         Log.e(TAG, "onResume: 重加载数据");
         int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
@@ -172,6 +172,9 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             mCurrModel = newModel;
             loadSignData();
         }
+
+        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+        ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
     }
 
     private void loadSignData() {
@@ -217,7 +220,6 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             NoticeManager.getInstance().initSignData();
         }
 
-        ivQRCode.setVisibility(View.VISIBLE);
         Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
 

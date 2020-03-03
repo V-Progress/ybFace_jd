@@ -110,7 +110,7 @@
     <!--activity_system  -->
     <string name="act_sys_kqrlkjx">开启人脸框镜像</string>
     <string name="act_sys_open">开启</string>
-    <string name="act_sys_jdqys">继电器延时</string>
+    <string name="act_sys_jdqys">开门时间</string>
     <string name="act_sys_second">秒</string>
     <string name="act_sys_CPU_tem">CPU温度:</string>
     <string name="act_sys_camera">摄像头</string>

@@ -64,7 +64,7 @@ public class SignManager {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
-    private long verifyOffsetTime = 10000;//验证间隔时间
+    private long verifyOffsetTime = 0;//验证间隔时间
 
     private SimpleDateFormat visitSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
@@ -73,6 +73,10 @@ public class SignManager {
     private boolean isBuluing = false;
 
     private Map<String, Long> passageMap = new HashMap<>();
+
+    public void setVerifyDelay(long delayTime) {
+        verifyOffsetTime = delayTime;
+    }
 
     public static SignManager instance() {
         if (instance == null) {
@@ -495,6 +499,15 @@ public class SignManager {
         Bitmap hotImageBitmap = sign.getHotImageBitmap();
         if (hotImageBitmap != null) {
             hotFile = saveBitmap("hot_", sign.getTime(), hotImageBitmap);
+        } else {
+            hotFile = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
+            if(!hotFile.exists()){
+                try {
+                    hotFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         Map<String, String> params = new HashMap<>();
@@ -511,9 +524,8 @@ public class SignManager {
                 .url(url)
                 .params(params);
         builder.addFile("heads", file.getName(), file);
-        if (hotFile != null) {
-            builder.addFile("reHead", hotFile.getName(), hotFile);
-        }
+        builder.addFile("reHead", hotFile.getName(), hotFile);
+
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
