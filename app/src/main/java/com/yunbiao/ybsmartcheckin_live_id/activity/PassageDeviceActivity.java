@@ -40,7 +40,6 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
-import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -70,9 +69,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     // xmpp推送服务
     private ServiceManager serviceManager;
-
-    //U口读卡器,类似于外接键盘
-    private ReadCardUtils readCardUtils;
 
     //摄像头分辨率
     public static FaceView faceView;
@@ -197,6 +193,13 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
             closeThermalImaging();
             startInfraredTemperature();
+        }
+
+        //如果未开读卡
+        boolean readCardEnabled = SpUtils.getBoolean(SpUtils.READ_CARD_ENABLED, Constants.DEFAULT_READ_CARD_ENABLED);
+        closeCardReader();
+        if (readCardEnabled) {
+            initCardReader();
         }
 
         initAds(mCurrModel);
@@ -972,46 +975,9 @@ public class PassageDeviceActivity extends BaseGpioActivity {
     /****************************************************************************************************/
     /****************************************************************************************************/
     /****************************************************************************************************/
-    /**
-     * @param mCurrModel
-     **************************************************************************************************/
-    private void initAds(int mCurrModel) {
-        if (isPosterEnabled) {
-            if (adsFragment != null && adsFragment.isAdded()) {
-                return;
-            }
-            //加载广告Fragment
-            adsFragment = new AdsFragment();
-            addFragment(R.id.ll_face_main, adsFragment);
-        } else {
-            removeFragment(adsFragment);
-            adsFragment = null;
-        }
-    }
-
-    /**
-     * 读卡器初始化
-     */
-    private void initCardReader() {
-        //读卡器声明
-        readCardUtils = new ReadCardUtils();
-        readCardUtils.setReadSuccessListener(readCardListener);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ReadCardUtils.isInputFromReader(this, event)) {
-            if (readCardUtils != null) {
-                readCardUtils.resolveKeyEvent(event);
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
 
     @Override
     protected void initData() {
-        initCardReader();
-
         KDXFSpeechManager.instance().init(getActivity()).welcome();
 
         //开启Xmpp
@@ -1058,6 +1024,52 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         if (serviceManager != null) {
             serviceManager.stopService();
             serviceManager = null;
+        }
+    }
+
+    /**
+     * @param mCurrModel
+     **************************************************************************************************/
+    private void initAds(int mCurrModel) {
+        if (isPosterEnabled) {
+            if (adsFragment != null && adsFragment.isAdded()) {
+                return;
+            }
+            //加载广告Fragment
+            adsFragment = new AdsFragment();
+            addFragment(R.id.ll_face_main, adsFragment);
+        } else {
+            removeFragment(adsFragment);
+            adsFragment = null;
+        }
+    }
+
+    /**
+     * 读卡器初始化==========================================================================================
+     * 读卡器初始化==========================================================================================
+     * 读卡器初始化==========================================================================================
+     */
+    //U口读卡器,类似于外接键盘
+    private ReadCardUtils readCardUtils;
+
+    private void initCardReader() {
+        //读卡器声明
+        readCardUtils = new ReadCardUtils();
+        readCardUtils.setReadSuccessListener(readCardListener);
+    }
+
+    private void closeCardReader() {
+        if (readCardUtils != null) {
+            readCardUtils.removeScanSuccessListener();
+            readCardUtils = null;
+        }
+    }
+
+    private void handleKeyEvent(KeyEvent event) {
+        if (ReadCardUtils.isInputFromReader(this, event)) {
+            if (readCardUtils != null) {
+                readCardUtils.resolveKeyEvent(event);
+            }
         }
     }
 
@@ -1122,6 +1134,12 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         startActivity(new Intent(PassageDeviceActivity.this, SystemActivity.class));
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        handleKeyEvent(event);
+        return super.dispatchKeyEvent(event);
+    }
+
     private void onBackKeyPressed(Runnable runnable) {
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
         if (!TextUtils.isEmpty(pwd)) {
@@ -1182,10 +1200,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (readCardUtils != null) {
-            readCardUtils.removeScanSuccessListener();
-            readCardUtils = null;
-        }
 
         InfraredTemperatureUtils.getIns().closeSerialPort();
         faceView.destory();

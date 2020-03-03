@@ -171,9 +171,9 @@
                         android:text="波特率" />
 
                     <TextView
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/tv_baud_rate_setting"
-                        style="@style/setting_text" />
+                        style="@style/setting_text"
+                        android:layout_marginLeft="10dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -212,6 +212,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -232,15 +233,40 @@
 
                     <TextView
                         style="@style/setting_text"
+                        android:layout_marginLeft="30dp"
                         android:text="测温延时" />
 
-                    <EditText
-                        android:id="@+id/edt_get_temp_delay_setting"
-                        style="@style/style_setting_input_number_edt" />
+                    <Button
+                        android:id="@+id/btn_get_temp_delay_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
 
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="毫秒" />
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_get_temp_delay_setting"
+                            style="@style/style_setting_input_number_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="毫秒" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_get_temp_delay_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -271,7 +297,8 @@
 
                         <EditText
                             android:id="@+id/edt_temp_correct_setting"
-                            style="@style/style_setting_input_number_decimal_signed_edt" />
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
 
                         <TextView
                             style="@style/setting_text"
@@ -306,7 +333,8 @@
 
                         <EditText
                             android:id="@+id/edt_ambient_correct_setting"
-                            style="@style/style_setting_input_number_decimal_signed_edt" />
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
 
                         <TextView
                             style="@style/setting_text"
@@ -321,10 +349,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -348,7 +376,8 @@
 
                         <EditText
                             android:id="@+id/edt_temp_min_threshold_setting"
-                            style="@style/style_setting_input_number_decimal_signed_edt" />
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
 
                         <TextView
                             style="@style/setting_text"
@@ -362,8 +391,8 @@
                         android:background="@mipmap/icon_jia" />
 
                     <TextView
-                        android:layout_marginLeft="30dp"
                         style="@style/setting_text"
+                        android:layout_marginLeft="30dp"
                         android:text="测温报警值" />
 
                     <Button
@@ -383,7 +412,8 @@
 
                         <EditText
                             android:id="@+id/edt_temp_warning_threshold_setting"
-                            style="@style/style_setting_input_number_decimal_signed_edt" />
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
 
                         <TextView
                             style="@style/setting_text"
@@ -397,20 +427,12 @@
                         android:background="@mipmap/icon_jia" />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btn_save_all"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginTop="10dp"
-                    style="@style/style_setting_input_save_button"
-                    android:layout_width="500dp"
-                    android:layout_height="wrap_content" />
-
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/setting_text"
@@ -428,11 +450,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
 
                     <TextView
@@ -459,11 +481,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/setting_text"
@@ -483,11 +505,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/setting_text"
@@ -548,6 +570,25 @@
 
                 <Switch
                     android:id="@+id/sw_poster_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="读卡器" />
+
+                <Switch
+                    android:id="@+id/sw_readcard_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"

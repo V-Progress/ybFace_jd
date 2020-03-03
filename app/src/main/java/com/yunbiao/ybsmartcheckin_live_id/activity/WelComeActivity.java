@@ -235,6 +235,7 @@ public class WelComeActivity extends BaseGpioActivity {
             if (!hasFace) {//如果没有人脸
                 mCacheStrangerTempTrackId = -1;
                 if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING || mCurrModel == Constants.Model.MODEL_FACE_TEMPERATURE) {
+                    dismissTemperatureTips(0);
                     setRangeTips("");
                 }
                 return false;
@@ -812,9 +813,11 @@ public class WelComeActivity extends BaseGpioActivity {
     }
 
     private void dismissTemperatureTips(int time) {
-        tempTipsHandler.removeMessages(0);
-        boolean b = tempTipsHandler.sendEmptyMessageDelayed(0, time);
-        Log.e(TAG, "dismissTemperatureTips: 发送隐藏提示的消息" + b);
+        if (tvTempTips.isShown()) {
+            tempTipsHandler.removeMessages(0);
+            boolean b = tempTipsHandler.sendEmptyMessageDelayed(0, time);
+            Log.e(TAG, "dismissTemperatureTips: 发送隐藏提示的消息" + b);
+        }
     }
 
     //计时器
