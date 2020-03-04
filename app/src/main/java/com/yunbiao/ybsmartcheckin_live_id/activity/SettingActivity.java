@@ -300,7 +300,7 @@ public class SettingActivity extends BaseActivity {
         } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
             llThermalMirrorArea.setVisibility(View.VISIBLE);
             llTempRangeArea.setVisibility(View.VISIBLE);
-            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE +"");
+            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE + "");
         } else {
             tvBaudRate.setText("");
         }
@@ -319,12 +319,12 @@ public class SettingActivity extends BaseActivity {
                         if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
                             llThermalMirrorArea.setVisibility(View.GONE);
                             llTempRangeArea.setVisibility(View.GONE);
-                            tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE +"");
+                            tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE + "");
                             SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.BaudRate.INFARED_TEMP_BAUD_RATE);
                         } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
                             llThermalMirrorArea.setVisibility(View.VISIBLE);
                             llTempRangeArea.setVisibility(View.VISIBLE);
-                            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE +"");
+                            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE + "");
                             SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE);
                         } else {
                             tvBaudRate.setText("");
@@ -550,7 +550,48 @@ public class SettingActivity extends BaseActivity {
         };
         btnWarnSub.setOnClickListener(warnClickListener);
         btnWarnAdd.setOnClickListener(warnClickListener);
+
+        //体温播报设置==========================================================================================
+        String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.temperature_tips_normal_main));
+        EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
+        edtNormalTips.setHint(normalTips);
+        edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s.toString();
+                SpUtils.saveStr(SpUtils.NORMAL_TIPS, TextUtils.isEmpty(input) ? "" : input);
+            }
+        });
+        String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.temperature_tips_warning_main));
+        EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
+        edtWarningTips.setHint(warningTips);
+        edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s.toString();
+                SpUtils.saveStr(SpUtils.WARNING_TIPS,  TextUtils.isEmpty(input) ? "" : input);
+            }
+        });
     }
+
+    class TextWatcherImpl implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    }
+
 
     private float formatF(float fValue) {
         return (float) (Math.round(fValue * 10)) / 10;

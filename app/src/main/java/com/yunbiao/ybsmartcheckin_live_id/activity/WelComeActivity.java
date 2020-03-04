@@ -57,6 +57,7 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1044,12 +1045,18 @@ public class WelComeActivity extends BaseGpioActivity {
     }
 
     private void playTips(boolean isWarning, String signName, float temperature) {
-        String tip;
+        String speechTips;
+        String textTips;
         Runnable warningRunnable;
         int bgId;
         //体温正常
         if (isWarning) {
-            tip = getResources().getString(R.string.temperature_tips_warning_main);
+            String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS);
+            speechTips = TextUtils.isEmpty(warningTips)
+                    ? getResources().getString(R.string.temperature_tips_warning_main) + temperature + "℃"
+                    : warningTips;
+            textTips = getResources().getString(R.string.temperature_tips_warning_main) + temperature + "℃";
+
             bgId = R.drawable.shape_main_frame_temperature_warning;
             warningRunnable = new Runnable() {
                 @Override
@@ -1061,7 +1068,12 @@ public class WelComeActivity extends BaseGpioActivity {
             };
             ledRed();
         } else {
-            tip = getResources().getString(R.string.temperature_tips_normal_main);
+            String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS);
+            speechTips = TextUtils.isEmpty(normalTips)
+                    ? getResources().getString(R.string.temperature_tips_normal_main) + temperature + "℃"
+                    : normalTips;
+            textTips = getResources().getString(R.string.temperature_tips_normal_main) + temperature + "℃";
+
             bgId = R.drawable.shape_main_frame_temperature_normal;
             KDXFSpeechManager.instance().stopNormal();
             KDXFSpeechManager.instance().stopWarningRing();
@@ -1076,12 +1088,8 @@ public class WelComeActivity extends BaseGpioActivity {
             openDoor();
         }
 
-        tip += temperature + "℃";
-
-//        Log.e(TAG, "playTips: 延迟关闭时间：" + mTempTipsCloseDelayTime);
-//        resetLedDelay(mTempTipsCloseDelayTime);//5秒后重置灯光为蓝色
-        showTemperatureTips(tip, bgId, -1);
-        KDXFSpeechManager.instance().playNormal((TextUtils.isEmpty(signName) ? "" : (signName + "，")) + tip, warningRunnable);
+        showTemperatureTips(textTips, bgId, -1);
+        KDXFSpeechManager.instance().playNormal((TextUtils.isEmpty(signName) ? "" : (signName + "，")) + speechTips, warningRunnable);
     }
 
     /*=======测试配置================================*/

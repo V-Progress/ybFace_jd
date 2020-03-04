@@ -92,6 +92,9 @@ public class SpUtils {
     public static final String WELCOM_TIPS = "welcomeTips";//欢迎语
     public static final String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
 
+    public static final String NORMAL_TIPS = "normalTips";//体温正常播报
+    public static final String WARNING_TIPS = "warningTips";//体温异常播报
+
     public static void init() {
         getCompany();
     }

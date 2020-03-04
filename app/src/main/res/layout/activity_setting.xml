@@ -571,6 +571,50 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="体温正常播报内容" />
+
+                    <EditText
+                        android:padding="5dp"
+                        android:background="@drawable/shape_system_name"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/edt_normal_tips_tips"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:inputType="text"
+                        android:maxLength="20" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="体温异常播报内容" />
+
+                    <EditText
+                        android:padding="5dp"
+                        android:background="@drawable/shape_system_name"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/edt_warning_tips_tips"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:inputType="text"
+                        android:maxLength="20" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
