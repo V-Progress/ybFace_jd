@@ -81,6 +81,8 @@ public class APP extends Application {
         super.onCreate();
         instance = this;
 
+        Constants.Model.initModels(APP.getContext());
+
         Timber.plant(new Timber.DebugTree());
 
         initGpio();

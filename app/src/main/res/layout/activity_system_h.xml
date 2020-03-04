@@ -213,7 +213,7 @@
                         android:padding="26dp"
                         android:text="@string/System_Manage"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
 
                     <Button
                         android:id="@+id/btn_add_system"
@@ -225,7 +225,7 @@
                         android:padding="26dp"
                         android:text="@string/System_Add"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
                 </TableRow>
 
                 <TableRow
@@ -243,7 +243,7 @@
                         android:padding="26dp"
                         android:text="@string/System_Record"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
 
                     <Button
                         android:id="@+id/btn_setting_system"
@@ -255,7 +255,7 @@
                         android:padding="26dp"
                         android:text="@string/System_Setting"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
 
                 </TableRow>
 
@@ -276,7 +276,7 @@
                         android:padding="26dp"
                         android:text="@string/System_Visitor"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
 
                     <Button
                         android:onClick="selectSkin"
@@ -290,7 +290,7 @@
                         android:padding="25dp"
                         android:text="@string/System_skin_select"
                         android:textColor="@color/white"
-                        android:textSize="36dp" />
+                        android:textSize="32dp" />
 
                 </TableRow>
             </TableLayout>

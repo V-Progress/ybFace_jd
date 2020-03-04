@@ -23,8 +23,6 @@ public class Sign {
 
     private String position;
 
-    private String headPath;
-
     private long time;
 
     private boolean isUpload;
@@ -53,6 +51,10 @@ public class Sign {
 
     private float temperature;
 
+    private String headPath;
+
+    private String hotImgPath;
+
     @Transient
     private byte[] imgBytes;
 
@@ -62,17 +64,16 @@ public class Sign {
     @Transient
     private Bitmap hotImageBitmap;
 
-    @Generated(hash = 1996633570)
-    public Sign(Long id, String faceId, String name, String position,
-            String headPath, long time, boolean isUpload, long empId, String date,
-            String depart, int sex, int age, String employNum, String birthday,
-            String autograph, int comid, int type, long visEntryId,
-            float temperature) {
+    @Generated(hash = 1176966692)
+    public Sign(Long id, String faceId, String name, String position, long time,
+            boolean isUpload, long empId, String date, String depart, int sex,
+            int age, String employNum, String birthday, String autograph, int comid,
+            int type, long visEntryId, float temperature, String headPath,
+            String hotImgPath) {
         this.id = id;
         this.faceId = faceId;
         this.name = name;
         this.position = position;
-        this.headPath = headPath;
         this.time = time;
         this.isUpload = isUpload;
         this.empId = empId;
@@ -87,10 +88,20 @@ public class Sign {
         this.type = type;
         this.visEntryId = visEntryId;
         this.temperature = temperature;
+        this.headPath = headPath;
+        this.hotImgPath = hotImgPath;
     }
 
     @Generated(hash = 2025164192)
     public Sign() {
+    }
+
+    public String getHotImgPath() {
+        return hotImgPath;
+    }
+
+    public void setHotImgPath(String hotImgPath) {
+        this.hotImgPath = hotImgPath;
     }
 
     public Bitmap getHotImageBitmap() {

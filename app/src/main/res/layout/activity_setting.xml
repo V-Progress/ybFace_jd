@@ -50,13 +50,14 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="设置人脸相似度阈值" />
+                    android:text="@string/set_face_similar_threshold_setting" />
 
                 <EditText
                     android:id="@+id/edt_similar_threshold"
                     style="@style/style_setting_input_number_edt" />
 
                 <Button
+                    android:text="@string/save_service_info_setting"
                     android:id="@+id/btn_set_similar_threshold"
                     style="@style/style_setting_input_save_button" />
 
@@ -65,7 +66,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="30dp"
                     android:gravity="center"
-                    android:text="推荐阈值：80（数值越大，误识率越低，识别速度越慢）"
+                    android:text="@string/recommend_valuez_setting"
                     android:textColor="#ff0000"
                     android:textSize="20dp" />
             </LinearLayout>
@@ -77,7 +78,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="开启人脸弹窗" />
+                    android:text="@string/enable_face_dialog_setting" />
 
                 <Switch
                     android:id="@+id/sw_face_dialog"
@@ -96,7 +97,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="开启活体检测" />
+                    android:text="@string/enable_liveness_setting" />
 
                 <Switch
                     android:id="@+id/sw_liveness_setting"
@@ -109,7 +110,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_kqrlkjx" />
+                    android:text="@string/camera_mirror_setting" />
 
                 <CheckBox
                     android:id="@+id/cb_mirror"
@@ -134,9 +135,10 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="当前模式：" />
+                        android:text="@string/current_model_setting" />
 
                     <TextView
+                        android:layout_marginLeft="20dp"
                         android:id="@+id/tv_model_setting"
                         style="@style/setting_text"
                         android:layout_width="wrap_content"
@@ -158,9 +160,10 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="当前串口：" />
+                        android:text="@string/current_port_path_setting" />
 
                     <TextView
+                        android:layout_marginLeft="20dp"
                         android:id="@+id/tv_port_path_setting"
                         style="@style/setting_text"
                         android:layout_width="wrap_content"
@@ -176,7 +179,7 @@
                     <TextView
                         android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="波特率" />
+                        android:text="@string/baud_rate_setting" />
 
                     <TextView
                         android:id="@+id/tv_baud_rate_setting"
@@ -192,7 +195,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="开启距离提示" />
+                        android:text="@string/enable_distance_tips_setting" />
 
                     <Switch
                         android:id="@+id/sw_distance_setting"
@@ -211,7 +214,7 @@
                         android:layout_height="wrap_content">
                         <TextView
                             style="@style/setting_text"
-                            android:text="热成像画面镜像" />
+                            android:text="@string/thermal_imaging_mirror_setting" />
 
                         <Switch
                             android:id="@+id/sw_thermal_imag_mirror_setting"
@@ -233,7 +236,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="开启测温延时" />
+                        android:text="@string/open_temperature_delay_time_setting" />
 
                     <Switch
                         android:id="@+id/sw_get_temp_delay_setting"
@@ -247,7 +250,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="测温延时" />
+                        android:text="@string/check_temperature_delay_time_setting" />
 
                     <Button
                         android:id="@+id/btn_get_temp_delay_sub_setting"
@@ -271,7 +274,7 @@
 
                         <TextView
                             style="@style/setting_text"
-                            android:text="毫秒" />
+                            android:text="@string/ms_setting" />
                     </LinearLayout>
 
                     <Button
@@ -291,7 +294,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="体温矫正值" />
+                        android:text="@string/check_temperature_correct_setting" />
 
                     <Button
                         android:id="@+id/btn_temp_corr_sub_setting"
@@ -327,7 +330,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="环境温度矫正值" />
+                        android:text="@string/ambient_temperature_correct_setting" />
 
                     <Button
                         android:id="@+id/btn_amb_corr_sub_setting"
@@ -370,7 +373,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="最低体温播报" />
+                        android:text="@string/temperature_threshold_setting" />
 
                     <Button
                         android:id="@+id/btn_temp_min_threshold_sub_setting"
@@ -406,7 +409,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="体温报警值" />
+                        android:text="@string/temerature_warning_value_setting" />
 
                     <Button
                         android:id="@+id/btn_temp_warning_threshold_sub_setting"
@@ -481,6 +484,7 @@
                         android:background="@mipmap/icon_jia" />
                 </LinearLayout>
 
+                <!--todo -->
                 <LinearLayout
                     android:id="@+id/ll_temp_range_area"
                     android:gravity="center_vertical"
@@ -492,10 +496,11 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_height="wrap_content"
-                        android:text="体温测温范围：" />
+                        android:text="@string/thermal_temp_range" />
                     <TextView
+                        android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="最低" />
+                        android:text="@string/minimum_setting" />
 
                     <Button
                         android:id="@+id/btn_body_min_t_sub_setting"
@@ -516,6 +521,10 @@
                             android:id="@+id/edt_body_min_t_setting"
                             style="@style/style_setting_input_number_edt"
                             android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
                     </LinearLayout>
 
                     <Button
@@ -527,7 +536,7 @@
                     <TextView
                         android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="最高" />
+                        android:text="@string/highest_setting" />
 
                     <Button
                         android:id="@+id/btn_body_max_t_sub_setting"
@@ -548,6 +557,10 @@
                             android:id="@+id/edt_body_max_t_setting"
                             style="@style/style_setting_input_number_edt"
                             android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
                     </LinearLayout>
 
                     <Button
@@ -621,7 +634,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="开启屏保" />
+                    android:text="@string/screen_saver_setting" />
 
                 <Switch
                     android:id="@+id/sw_poster_setting"
@@ -640,7 +653,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="欢迎语" />
+                    android:text="@string/welcome_speech_setting" />
 
                 <EditText
                     android:background="@drawable/shape_system_name"
@@ -660,7 +673,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="显示二维码" />
+                    android:text="@string/show_qr_code_setting" />
 
                 <Switch
                     android:id="@+id/sw_qrcode_setting"
@@ -679,7 +692,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="IC读卡器" />
+                    android:text="@string/enable_ic_card_setting" />
 
                 <Switch
                     android:id="@+id/sw_readcard_setting"
@@ -699,7 +712,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_jdqys" />
+                    android:text="@string/relay_delay_time_setting" />
 
                 <EditText
                     android:id="@+id/edt_delay"
@@ -708,13 +721,13 @@
                 <TextView
                     style="@style/setting_text"
                     android:layout_marginLeft="10dp"
-                    android:text="@string/act_sys_second" />
+                    android:text="@string/s_setting" />
 
                 <TextView
                     android:textColor="@android:color/holo_red_light"
                     style="@style/setting_text"
                     android:layout_marginLeft="10dp"
-                    android:text="（此时间之后自动关门）" />
+                    android:text="@string/auto_close_door_setting" />
             </LinearLayout>
 
             <LinearLayout
@@ -742,7 +755,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_cameraAngle" />
+                    android:text="@string/camera_angle_setting" />
 
                 <TextView
                     style="@style/setting_text"
@@ -828,7 +841,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="云端"
+                        android:text="@string/cloud_service_setting"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
 
@@ -838,7 +851,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center_vertical"
-                        android:text="局域网"
+                        android:text="@string/local_service_setting"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
                 </RadioGroup>
@@ -859,7 +872,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="  I  P  地  址："
+                            android:text="@string/ip_address_setting"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -881,7 +894,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="资 源 端 口："
+                            android:text="@string/resource_port_setting"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -904,7 +917,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="XMPP端口："
+                            android:text="@string/im_port_setting"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -927,7 +940,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="项    目    名："
+                            android:text="@string/project_name_setting"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -947,7 +960,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/selector_btn_take_photo"
-                        android:text="保存"
+                        android:text="@string/save_service_info_setting"
                         android:textColor="@color/white"
                         android:textSize="20dp" />
 

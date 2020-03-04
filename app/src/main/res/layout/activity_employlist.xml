@@ -79,8 +79,9 @@
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
+                    android:textSize="20dp"
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/shape_bg_btnsync"
                     android:drawableLeft="@mipmap/query_icon"
@@ -146,7 +147,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="下载头像失败"
+                android:text="@string/act_download_head_image_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <View
@@ -157,7 +158,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="添加人脸库失败"
+                android:text="@string/act_add_face_db_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <View
@@ -168,7 +169,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="更新头像失败"
+                android:text="@string/act_update_head_image_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

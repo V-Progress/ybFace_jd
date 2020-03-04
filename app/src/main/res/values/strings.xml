@@ -3,6 +3,10 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
+    <string name="temperature_tips_warning_main">体温异常</string>
+    <string name="temperature_tips_normal_main">体温正常</string>
+    <string name="temperature_chekcing_main">正在测温</string>
+
     <string name="System_title">云标智能考勤系统</string>
     <string name="System_deviceNo">设备编号:</string>
     <string name="System_bindCode">绑&#8194;定&#8194;码:</string>
@@ -29,6 +33,13 @@
     <string name="employ_list_field_depart">部门</string>
     <string name="employ_list_field_position">职位</string>
     <string name="employ_list_field_control">操作</string>
+    <string name="base_delete">删除</string>
+    <string name="base_edit">编辑</string>
+    <string name="act_employList_add">新增</string>
+    <string name="act_download_head_image_failed">下载头像失败</string>
+    <string name="act_add_face_db_failed">添加人脸库失败</string>
+    <string name="act_update_head_image_failed">更新头像失败</string>
+
 
     <!--访客列表-->
     <string name="visitor_list_title">访客列表</string>
@@ -60,7 +71,61 @@
     <string name="sign_list_filed_job">职位</string>
     <string name="sign_list_filed_head">头像</string>
 
+    <string name="distance_so_far_tips_main">请靠近点</string><!--Please approach-->
+    <string name="distance_so_far_text_tips_main">距离太远，请靠近</string><!--Please approach-->
+    <string name="thermal_update_main">热成像 体温：</string>
+    <string name="please_waiting_main">请等待</string>
+    <string name="distance_so_close_tips_main">请远一点</string>
+    <string name="distance_so_close_text_tips_main">距离太近，请远一点</string>
+    <string name="please_range_tips_main">请将面部对准识别区域</string>
+
     <!--设置-->
+    <string name="face_only_model">人脸识别考勤</string>
+    <string name="face_infared_model">人脸识别+红外测温模式</string>
+    <string name="infared_only_model">红外测温模式（不考勤）</string>
+    <string name="thermal_only_model">热成像测温模式（不考勤）</string>
+    <string name="face_thermal_model">人脸识别+热成像测温模式</string>
+    <string name="temp_measuring_setting">正在测温</string>
+    <string name="port_setting">串口</string>
+    <string name="select_port_setting">选择串口</string>
+    <string name="current_port_path_setting">当前串口</string>
+    <string name="select_model_setting">选择模式</string>
+    <string name="thermal_temp_range">体温测温范围</string><!--Temperature measurement range-->
+    <string name="minimum_setting">最低</string><!--minimum-->
+    <string name="highest_setting">最高</string><!--Highest-->
+    <string name="ms_setting">毫秒</string>
+    <string name="s_setting">毫秒</string>
+    <string name="welcome_speech_setting">欢迎语</string><!--Welcome speech-->
+    <string name="show_qr_code_setting">显示二维码</string>
+    <string name="enable_ic_card_setting">IC读卡器</string>
+    <string name="auto_close_door_setting">（此时间之后自动关门）</string><!--Automatic closing-->
+    <string name="set_face_similar_threshold_setting">设置人脸相似度阈值</string>
+    <string name="recommend_valuez_setting">推荐阈值：80</string>
+    <string name="enable_face_dialog_setting">开启人脸弹框</string>
+    <string name="enable_liveness_setting">开启活体检测</string>
+    <string name="current_model_setting">当前模式</string>
+    <string name="baud_rate_setting">波特率</string>
+    <string name="enable_distance_tips_setting">开启距离提示</string>
+    <string name="thermal_imaging_mirror_setting">热成像画面镜像</string>
+    <string name="open_temperature_delay_time_setting">开启测温延时</string>
+    <string name="check_temperature_delay_time_setting">测温延时</string>
+    <string name="check_temperature_correct_setting">测温矫正值</string>
+    <string name="ambient_temperature_correct_setting">环境温矫正值</string>
+    <string name="temperature_threshold_setting">最低体温播报</string>
+    <string name="temerature_warning_value_setting">测温报警值</string>
+    <string name="camera_mirror_setting">开启人脸框镜像</string>
+    <string name="screen_saver_setting">屏保</string>
+    <string name="relay_delay_time_setting">开门时间</string>
+    <string name="camera_angle_setting">摄像头角度</string>
+    <string name="update_setting">软件更新</string>
+    <string name="edit_password_setting">修改密码</string>
+    <string name="cloud_service_setting">云端</string>
+    <string name="local_service_setting">局域网</string>
+    <string name="ip_address_setting">IP地址</string>
+    <string name="resource_port_setting">服务端口</string>
+    <string name="im_port_setting">通信端口</string>
+    <string name="project_name_setting">项目名</string>
+    <string name="save_service_info_setting">保存服务</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
@@ -78,8 +143,6 @@
     <string name="base_month">月</string>
     <string name="base_day">日</string>
     <string name="base_department">部门</string>
-    <string name="base_delete">删除</string>
-    <string name="base_edit">编辑</string>
     <string name="base_saveSuccessfully">保存成功</string>
 
     <!--activity_splash  -->
@@ -254,7 +317,6 @@
     <string name="act_employList_tip_scsb">删除失败</string>
     <string name="act_employList_tip_sccg">删除成功</string>
 
-    <string name="act_employList_add">新增</string>
     <string name="act_employList_bm">部门</string>
     <string name="act_employList_addDepart">新增部门</string>
 
@@ -287,15 +349,14 @@
     <string name="act_editEmploy_pz">拍照</string>
     <string name="act_editEmploy_reset">重置</string>
     <string name="act_editEmploy_jbxx">基本信息</string>
-    <string name="act_editEmploy_name">姓&#8195;&#8195;名:</string>
-    <string name="act_editEmploy_sex">性&#8195;&#8195;别:</string>
-    <string name="act_editEmploy_bm">部&#8195;&#8195;门:</string>
+    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
+    <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
+    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
     <string name="act_editEmploy_ygbh">员工编号:</string>
-    <string name="act_editEmploy_zw">职&#8195;&#8195;位:</string>
+    <string name="act_editEmploy_zw">职&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
     <string name="act_editEmploy_csrq">出生日期:</string>
     <string name="act_editEmploy_gxqm">个性签名:</string>
     <string name="act_editEmploy_zjyg">增加员工</string>
-
 
     <!--activity_Sign-->
     <string name="act_sign_tip_qb">全部</string>
@@ -390,7 +451,6 @@
     <string name="updateManager_dqbbwzxbb">当前版本为最新版本</string>
     <string name="updateManager_wlljsbqjcwl">网络连接失败，请检查网络</string>
     <string name="updateManager_xzsb">下载失败</string>
-
 
 
     <!--settings、choose function page-->

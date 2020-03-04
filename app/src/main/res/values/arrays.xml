@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="models">
+        <item>@string/face_only_model</item>
+        <item>@string/face_infared_model</item>
+        <item>@string/infared_only_model</item>
+        <item>@string/thermal_only_model</item>
+        <item>@string/face_thermal_model</item>
+    </string-array>
+</resources>

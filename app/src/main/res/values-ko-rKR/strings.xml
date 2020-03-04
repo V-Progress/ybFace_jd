@@ -17,6 +17,15 @@
     <string name="System_copyright">copyright:北京云标科技有限公司</string>
     <string name="System_skin_select">skin</string>
 
+    <string name="distance_so_far_tips_main">Please approach</string><!--Please approach-->
+    <string name="distance_so_far_text_tips_main">Please approach</string><!--Please approach-->
+    <string name="thermal_update_main">Temperature：</string>
+    <string name="please_waiting_main">Please wait</string>
+    <string name="distance_so_close_tips_main">Please stay away</string>
+    <string name="distance_so_close_text_tips_main">Please stay away</string>
+    <string name="please_range_tips_main">Please aim your face at the recognition area</string>
+
+    <string name="temp_measuring_setting">measuring</string>
     <string name="act_emp_list_input_name_hint">name</string>
     <string name="System_Service_offline">off-line</string>
     <string name="act_emp_list_query_button">query</string>
@@ -30,6 +39,9 @@
     <string name="employ_list_field_depart">Department</string>
     <string name="employ_list_field_position">Position</string>
     <string name="employ_list_field_control">Operation</string>
+    <string name="act_download_head_image_failed">Header image download faile</string>
+    <string name="act_add_face_db_failed">Header image is not valid</string>
+    <string name="act_update_head_image_failed">Header image update faile</string>
 
     <!--访客列表-->
     <string name="visitor_list_title">Visitor</string>
@@ -39,17 +51,17 @@
     <string name="visitor_list_filed_time">Time Slot</string>
 
     <!--新增员工-->
-    <string name="employ_add_title">Add Staff</string>
-    <string name="employ_add_info">information</string>
-    <string name="employ_add_takephoto">take</string>
+    <string name="employ_add_title">Add user</string>
+    <string name="employ_add_info">Information</string>
+    <string name="employ_add_takephoto">Take Photo</string>
     <string name="employ_add_retry">reset</string>
-    <string name="employ_add_name">Name:</string>
+    <string name="employ_add_name">Username:</string>
     <string name="employ_add_depart">Department:</string>
-    <string name="employ_add_number">Number:</string>
+    <string name="employ_add_number">User Id:</string>
     <string name="employ_add_job">Position:</string>
     <string name="employ_add_birthday">Birthday:</string>
-    <string name="employ_add_signature">Signature:</string>
-    <string name="employ_add_confirm">OK</string>
+    <string name="employ_add_signature">Life motto:</string>
+    <string name="employ_add_confirm">Submit</string>
     <string name="employ_add_cancel">Cancel</string>
 
     <!--离线数据-->
@@ -61,6 +73,55 @@
     <string name="sign_list_filed_job">Position</string>
     <string name="sign_list_filed_head">Head</string>
 
+    <!--设置-->
+    <string name="face_only_model">Face recognition</string>
+    <string name="face_infared_model">Face + Infrared</string>
+    <string name="infared_only_model">Infrared Temperature</string>
+    <string name="thermal_only_model">Thermography</string>
+    <string name="face_thermal_model">Face + Thermography</string>
+
+    <!--设置-->
+    <string name="current_port_path_setting">Current Port</string>
+    <string name="port_setting">Port</string>
+    <string name="select_port_setting">Select Port</string>
+    <string name="select_model_setting">Select Model</string>
+    <string name="thermal_temp_range">Temperature measurement range</string><!--Temperature measurement range-->
+    <string name="minimum_setting">minimum</string><!--minimum-->
+    <string name="highest_setting">Highest</string><!--Highest-->
+    <string name="ms_setting">ms</string>
+    <string name="s_setting">s</string>
+    <string name="welcome_speech_setting">Welcome speech</string><!--Welcome speech-->
+    <string name="show_qr_code_setting">Show QR code</string>
+    <string name="enable_ic_card_setting">IC card reader</string>
+    <string name="auto_close_door_setting">（Automatic closing）</string><!--Automatic closing-->
+    <string name="open_temperature_delay_time_setting">Open Temperature time delay</string>
+    <string name="set_face_similar_threshold_setting">Face compare similarity</string>
+    <string name="enable_face_dialog_setting">show face infomaction</string>
+    <string name="enable_liveness_setting">Face in vivo detection</string>
+    <string name="current_model_setting">model</string>
+    <string name="baud_rate_setting">Baud Rate</string>
+    <string name="enable_distance_tips_setting">Distance Remind</string>
+    <string name="thermal_imaging_mirror_setting">Infrared imaging Mirroring</string>
+    <string name="check_temperature_delay_time_setting">Temperature time delay</string>
+    <string name="check_temperature_correct_setting">Temperature correct a deviation</string>
+    <string name="ambient_temperature_correct_setting">Ambient Temperature correct a deviation</string>
+    <string name="temperature_threshold_setting">Temperature threshold</string>
+    <string name="temerature_warning_value_setting">Temperature Alarm</string>
+    <string name="camera_mirror_setting">Camera Mirroring</string>
+    <string name="screen_saver_setting">Screensaver</string>
+    <string name="relay_delay_time_setting">Door close time</string>
+    <string name="camera_angle_setting">Camera Angle</string>
+    <string name="update_setting">Software Update</string>
+    <string name="edit_password_setting">password edit</string>
+    <string name="cloud_service_setting">Cloud Service</string>
+    <string name="local_service_setting">Local Service</string>
+    <string name="ip_address_setting">IP ADDRESS</string>
+    <string name="resource_port_setting">Port</string>
+    <string name="im_port_setting">TCP Port</string>
+    <string name="project_name_setting">Project Name</string>
+    <string name="save_service_info_setting">Submit</string>
+    <string name="recommend_valuez_setting">Recommend Value：80</string>
+
 
 
 
@@ -68,7 +129,7 @@
 
     <!--通用的  -->
     <string name="base_tip">tip</string>
-    <string name="base_ensure">YES</string>
+    <string name="base_ensure">submit</string>
     <string name="base_cancel">NO</string>
     <string name="base_male">male</string>
     <string name="base_female">female</string>
@@ -94,12 +155,12 @@
     <string name="act_wel_error_mmclqcxsrb">The password is wrong, re-enter it.</string>
 
     <!--activity_wel   layout_input_pwd.xml-->
-    <string name="act_wel_glmm">Password management</string>
-    <string name="act_wel_qsrglmm">Please enter an administrative password</string>
+    <string name="act_wel_glmm">password</string>
+    <string name="act_wel_qsrglmm">Please enter password</string>
 
     <!--activity_wel_small  -->
     <string name="act_welSmall_hello">Hello </string>
-    <string name="act_welSmall_error_bywjsrmmo">Do not forget to enter your password</string>
+    <string name="act_welSmall_error_bywjsrmmo">password is not null</string>
     <string name="act_welSmall_error_mmclcxsrb">The password is wrong, re-enter it.</string>
     <string name="act_welSmall_tip_nhhygl"> Hello %s, welcome</string>
     <string name="act_welSmall_tip_sbqdcg">Successful sign-in at work</string>

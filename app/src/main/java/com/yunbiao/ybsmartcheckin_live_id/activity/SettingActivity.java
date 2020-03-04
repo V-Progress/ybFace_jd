@@ -296,11 +296,11 @@ public class SettingActivity extends BaseActivity {
         if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
             llThermalMirrorArea.setVisibility(View.GONE);
             llTempRangeArea.setVisibility(View.GONE);
-            tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
+            tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE + "");
         } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
             llThermalMirrorArea.setVisibility(View.VISIBLE);
             llTempRangeArea.setVisibility(View.VISIBLE);
-            tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
+            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE +"");
         } else {
             tvBaudRate.setText("");
         }
@@ -309,7 +309,7 @@ public class SettingActivity extends BaseActivity {
             public void onClick(View v) {
                 final int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-                builder.setTitle("选择模式");
+                builder.setTitle(getResources().getString(R.string.select_model_setting));
                 builder.setSingleChoiceItems(items, whichModel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -319,13 +319,13 @@ public class SettingActivity extends BaseActivity {
                         if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
                             llThermalMirrorArea.setVisibility(View.GONE);
                             llTempRangeArea.setVisibility(View.GONE);
-                            tvBaudRate.setText(Constants.INFARED_TEMP_BAUD_RATE + "（红外测温）");
-                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
+                            tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE +"");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.BaudRate.INFARED_TEMP_BAUD_RATE);
                         } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
                             llThermalMirrorArea.setVisibility(View.VISIBLE);
                             llTempRangeArea.setVisibility(View.VISIBLE);
-                            tvBaudRate.setText(Constants.THERMAL_IMAGING_BAUD_RATE + "（热成像测温）");
-                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.THERMAL_IMAGING_BAUD_RATE);
+                            tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE +"");
+                            SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE);
                         } else {
                             tvBaudRate.setText("");
                         }
@@ -349,12 +349,12 @@ public class SettingActivity extends BaseActivity {
         final String[] portNames = new String[portList.size()];
         for (int i = 0; i < portList.size(); i++) {
             String portPath = portList.get(i);
-            portNames[i] = "串口" + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
+            portNames[i] = getResources().getString(R.string.port_setting) + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
         }
         String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
         final int index = portList.indexOf(cachePort);
         final TextView tvPortPath = findViewById(R.id.tv_port_path_setting);
-        tvPortPath.setText("当前端口:  " + portNames[index]);
+        tvPortPath.setText("" + portNames[index]);
         tvPortPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -363,7 +363,7 @@ public class SettingActivity extends BaseActivity {
                 int selectedIndex = portList.indexOf(cachePort);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-                builder.setTitle("选择端口");
+                builder.setTitle(getResources().getString(R.string.select_port_setting));
                 builder.setSingleChoiceItems(portNames, selectedIndex, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -373,7 +373,7 @@ public class SettingActivity extends BaseActivity {
                         SpUtils.saveStr(SpUtils.PORT_PATH, selectedPort);
                         //获取端口名并显示
                         String portName = portNames[which];
-                        tvPortPath.setText("当前端口:  " + portName);
+                        tvPortPath.setText("" + portName);
                         UIUtils.showShort(SettingActivity.this, portName);
                         dialog.dismiss();
                     }

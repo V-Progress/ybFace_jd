@@ -29,6 +29,7 @@ import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.xbill.DNS.SIG0;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -480,15 +481,12 @@ public class SignManager {
         sign.setType(-9);
         sign.setTime(currDate.getTime());
         sign.setTemperature(temperatureValue);
-        sign.setDate(dateFormat.format(currDate));
+        sign.setDate(dateFormat.format(currDate.getTime()));
+        sign.setComid(SpUtils.getCompany().getComid());
         sign.setUpload(false);
         return sign;
     }
 
-    /*0：主线程add
-1：子线程上传
-2：子线程addOrUpdate
-3.主线程addOrUpdate*/
     public void uploadTemperatureSign(final Sign sign) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
@@ -501,7 +499,7 @@ public class SignManager {
             hotFile = saveBitmap("hot_", sign.getTime(), hotImageBitmap);
         } else {
             hotFile = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
-            if(!hotFile.exists()){
+            if (!hotFile.exists()) {
                 try {
                     hotFile.createNewFile();
                 } catch (IOException e) {
@@ -509,6 +507,12 @@ public class SignManager {
                 }
             }
         }
+        sign.setHotImgPath(hotFile.getPath());
+        sign.setUpload(false);
+        long l = DaoManager.get().addOrUpdate(sign);
+        Log.e(TAG, "uploadTemperatureSign: 存储结果：" + l);
+
+        final long time = sign.getTime();
 
         Map<String, String> params = new HashMap<>();
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
@@ -536,12 +540,17 @@ public class SignManager {
             @Override
             public void onResponse(String response, int id) {
                 Log.e(TAG, "onResponse: 上传成功：" + response);
-                sign.setUpload(true);
+                Sign sign = DaoManager.get().querySignByTime(time);
+                if(sign != null){
+                    sign.setUpload(true);
+                    long l = DaoManager.get().addOrUpdate(sign);
+                    Log.e(TAG, "onResponse: 更新结果：" + l);
+                }
             }
 
             @Override
             public void onAfter(int id) {
-                DaoManager.get().addOrUpdate(sign);
+
             }
         });
     }
@@ -623,27 +632,26 @@ public class SignManager {
         d("地址：" + ResourceUpdate.VISITOLOG);
         d("参数：" + map.toString());
 
+        DaoManager.get().addOrUpdate(signBean);
+        final long time = signBean.getTime();
+
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("上传失败：" + (e == null ? "NULL" : e.getMessage()));
-                signBean.setUpload(false);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 d("上传结果：" + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
-                signBean.setUpload(jsonObject.getInteger("status") == 1);
+                Sign sign = DaoManager.get().querySignByTime(time);
+                sign.setUpload(jsonObject.getInteger("status") == 1);
+                DaoManager.get().addOrUpdate(sign);
             }
 
             @Override
             public void onAfter(int id) {
-                DaoManager.get().addOrUpdate(signBean);
-                /*File imgFile = saveBitmap(signBean.getTime(), signBean.getImgBytes());
-                if(imgFile != null){
-                    signBean.setHeadPath(imgFile.getPath());
-                }*/
             }
         });
     }

@@ -144,7 +144,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         /*红外模块是9600，热成像模块是115200*/
         mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
+        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.DEFAULT_BAUD_RATE);
         InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
     }
 
@@ -154,7 +154,6 @@ public class WelComeActivity extends BaseGpioActivity {
         mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);//当前模式
         isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
         distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);//距离提示开关
-//        mTempTipsCloseDelayTime = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 6000);//温度延时关闭提示
         mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, Constants.DEFAULT_GET_TEMP_DELAY_TIME_VALUE);//设置测温延时
         mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
         mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
@@ -175,7 +174,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         //初始化测温模块
         String portPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.INFARED_TEMP_BAUD_RATE);
+        int baudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.DEFAULT_BAUD_RATE);
         if (!TextUtils.equals(portPath, mCurrPortPath) || baudRate != mCurrBaudRate) {
             mCurrPortPath = portPath;
             mCurrBaudRate = baudRate;
@@ -203,14 +202,15 @@ public class WelComeActivity extends BaseGpioActivity {
         } else if (mCurrModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY || mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {//热成像模式
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.GONE);
+            tvRangeTips.setText("");
             tvRangeTips.setVisibility(View.VISIBLE);
             llThermalArea.setVisibility(View.VISIBLE);
-            Log.e(TAG, "onResume: 开始热成像逻辑");
             closeInfraedTemperature();
             startThermalImaging();
         } else {//红外测温模式
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.VISIBLE);
+            tvRangeTips.setText("");
             tvRangeTips.setVisibility(View.VISIBLE);
             llThermalArea.setVisibility(View.GONE);
 
@@ -273,16 +273,16 @@ public class WelComeActivity extends BaseGpioActivity {
                     return false;
                 } else if (faceView.checkFaceToFar(realRect, minWidth)) {
                     mCacheTime = 0;
-                    setRangeTips("距离太远，请靠近");
+                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
                     }
                     return false;
                 } else if (faceView.checkFaceTooClose(realRect, maxHeight)) {
                     mCacheTime = 0;
-                    setRangeTips("距离太近，请远一点");
+                    setRangeTips(getResources().getString(R.string.distance_so_close_text_tips_main));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal("请远一点");
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_close_tips_main));
                     }
                     return false;
                 }
@@ -291,7 +291,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 //检测人脸是否在框内
                 if (!faceView.checkFaceInFrame2(realRect, viewDistance)) {
                     mCacheTime = 0;
-                    setRangeTips("请将脸部对准人脸识别区域");
+                    setRangeTips(getResources().getString(R.string.please_range_tips_main));
                     return false;
                 }
                 setRangeTips("");
@@ -303,11 +303,11 @@ public class WelComeActivity extends BaseGpioActivity {
                 if (getTempDelayEnabled) {
                     //如果当前缓存时间是0则重置
                     if (mCacheTime == 0) {
-                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                         mCacheTime = System.currentTimeMillis();
                         return false;
                     } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                         return false;
                     }
                 }
@@ -319,9 +319,9 @@ public class WelComeActivity extends BaseGpioActivity {
                 Rect realRect = faceView.getRealRect(rect);
                 int distanceWidth = viewDistance.getMeasuredWidth();
                 if (faceView.checkFaceToFar(realRect, distanceWidth / 2)) {
-                    setRangeTips("距离太远，请靠近");
+                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
                     }
                     return false;
                 }
@@ -330,11 +330,11 @@ public class WelComeActivity extends BaseGpioActivity {
                 //判断时间
                 if (getTempDelayEnabled) {
                     if (mCacheTime_TI == 0) {
-                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                         mCacheTime_TI = System.currentTimeMillis();
                         return false;
                     } else if (System.currentTimeMillis() - mCacheTime_TI < mGetTempDelayTime) {
-                        showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                         return false;
                     }
                 }
@@ -348,7 +348,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
                 Float maxValue = Collections.max(mTemperatureCacheList);
                 if (maxValue < mTempMinThreshold) {
-                    showTemperatureTips("请等待", R.drawable.shape_main_frame_temperature_ing, 3000);
+                    showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
                     mBroadCastFlag = false;
                     mTemperatureCacheList.clear();
                     mCacheTime_TI = 0;
@@ -371,7 +371,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 Bitmap facePicture = faceView.takePicture();
                 //如果三要素不存在，则重置状态
                 if (facePicture == null || mCacheHotImage == null || mTemperatureCacheList.size() <= 0) {
-                    showTemperatureTips("请等待", R.drawable.shape_main_frame_temperature_ing, 3000);
+                    showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
                     mBroadCastFlag = false;
                     mTemperatureCacheList.clear();
                     mCacheTime_TI = 0;
@@ -578,7 +578,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     public void run() {
                         ivThermalImaging.setImageBitmap(imageBmp);
                         if (tvThermalPercent != null) {
-                            tvThermalPercent.setText("热成像 体温：" + bodyMaxT + "℃");
+                            tvThermalPercent.setText(getResources().getString(R.string.thermal_update_main) + bodyMaxT + "℃");
                         }
                     }
                 });
@@ -606,11 +606,11 @@ public class WelComeActivity extends BaseGpioActivity {
 
                     if (getTempDelayEnabled) {
                         if (mCacheTime_TI == 0) {
-                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                             mCacheTime_TI = System.currentTimeMillis();
                             return;
                         } else if (System.currentTimeMillis() - mCacheTime_TI < mGetTempDelayTime) {
-                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                             return;
                         }
                     }
@@ -618,7 +618,7 @@ public class WelComeActivity extends BaseGpioActivity {
                     Float maxValue = Collections.max(mTemperatureCacheList);
 
                     if (maxValue < mTempMinThreshold) {
-                        showTemperatureTips("请等待", R.drawable.shape_main_frame_temperature_ing, 3000);
+                        showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
                         mTemperatureCacheList.clear();
                         mBroadCastFlag = false;
                         mCacheTime_TI = 0;
@@ -900,9 +900,9 @@ public class WelComeActivity extends BaseGpioActivity {
                     mCacheTime = 0;
                     mCacheValueForTempModel = 0f;
                     mCacheTemperatureHighestValue = 0f;
-                    setRangeTips("距离太远，请靠近");
+                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal("请靠近点");
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
                     }
                     infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
@@ -922,12 +922,12 @@ public class WelComeActivity extends BaseGpioActivity {
                     //如果当前缓存时间是0则重置
                     if (getTempDelayEnabled) {
                         if (mCacheTime == 0) {
-                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                             mCacheTime = System.currentTimeMillis();
                             infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                             return;
                         } else if (System.currentTimeMillis() - mCacheTime < mGetTempDelayTime) {
-                            showTemperatureTips("正在测温", R.drawable.shape_main_frame_temperature_ing, 3000);
+                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
                             infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                             return;
                         }
@@ -1049,7 +1049,7 @@ public class WelComeActivity extends BaseGpioActivity {
         int bgId;
         //体温正常
         if (isWarning) {
-            tip = "体温异常";
+            tip = getResources().getString(R.string.temperature_tips_warning_main);
             bgId = R.drawable.shape_main_frame_temperature_warning;
             warningRunnable = new Runnable() {
                 @Override
@@ -1061,7 +1061,7 @@ public class WelComeActivity extends BaseGpioActivity {
             };
             ledRed();
         } else {
-            tip = "体温正常";
+            tip = getResources().getString(R.string.temperature_tips_normal_main);
             bgId = R.drawable.shape_main_frame_temperature_normal;
             KDXFSpeechManager.instance().stopNormal();
             KDXFSpeechManager.instance().stopWarningRing();

@@ -1,10 +1,12 @@
 package com.yunbiao.ybsmartcheckin_live_id.afinel;
 
+import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 public class Constants {
@@ -107,13 +109,17 @@ public class Constants {
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
     }
 
-    public interface Model {
-        int MODEL_FACE_ONLY = 0;
-        int MODEL_FACE_TEMPERATURE = 1;
-        int MODEL_TEMPERATURE_ONLY = 2;
-        int MODEL_THERMAL_IMAGING_ONLY = 3;
-        int MODEL_FACE_THERMAL_IMAGING = 4;
-        String[] models = {"人脸识别考勤模式", "人脸识别+红外测温模式", "红外测温模式(不考勤)", "热成像测温模式(不考勤)", "人脸识别+热成像测温模式"};
+    public static class Model {
+        public static int MODEL_FACE_ONLY = 0;
+        public static int MODEL_FACE_TEMPERATURE = 1;
+        public static int MODEL_TEMPERATURE_ONLY = 2;
+        public static int MODEL_THERMAL_IMAGING_ONLY = 3;
+        public static int MODEL_FACE_THERMAL_IMAGING = 4;
+        public static String[] models;
+
+        public static void initModels(Context context) {
+            models = context.getResources().getStringArray(R.array.models);
+        }
     }
 
     public interface serverModel {
@@ -122,11 +128,13 @@ public class Constants {
     }
 
     //屏幕类型
-    public final static int SCREEN_TYPE = ScreenType.TYPE_PORTRAIT_8_800_1280;
+    public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
 
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
-    public static final int DEFAULT_TEMP_MODEL = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? Model.MODEL_THERMAL_IMAGING_ONLY : Model.MODEL_TEMPERATURE_ONLY;
+    public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
+    //默认波特率
+    public static final int DEFAULT_BAUD_RATE = BaudRate.THERMAL_IMAGING_BAUD_RATE;
     //屏幕角度默认值
     public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? 270 : 0;
     //端口号
@@ -155,12 +163,15 @@ public class Constants {
     public static final float DEFAULT_AMB_CORRECT_VALUE = 0.0F;
     //检测温度补正
     public static final float DEFAULT_TEMP_CORRECT_VALUE = 0.0f;
-    //默认波特率
-    public static final int INFARED_TEMP_BAUD_RATE = 9600;
-    public static final int THERMAL_IMAGING_BAUD_RATE = 115200;
+
     public static final boolean DEFAULT_READ_CARD_ENABLED = false;
     public static final String DEFAULT_WELCOME_TIPS = "欢迎使用云标智能考勤系统";
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
+
+    public interface BaudRate {
+        int INFARED_TEMP_BAUD_RATE = 9600;
+        int THERMAL_IMAGING_BAUD_RATE = 115200;
+    }
 
     public interface ScreenType {
         int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸
