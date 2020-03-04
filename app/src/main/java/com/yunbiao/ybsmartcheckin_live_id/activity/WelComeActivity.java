@@ -619,10 +619,10 @@ public class WelComeActivity extends BaseGpioActivity {
                     Float maxValue = Collections.max(mTemperatureCacheList);
 
                     if (maxValue < mTempMinThreshold) {
-                        showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
+                        /*showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
                         mTemperatureCacheList.clear();
                         mBroadCastFlag = false;
-                        mCacheTime_TI = 0;
+                        mCacheTime_TI = 0;*/
                         return;
                     }
 
