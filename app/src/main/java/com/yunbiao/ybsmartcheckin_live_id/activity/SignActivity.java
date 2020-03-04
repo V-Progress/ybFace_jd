@@ -202,13 +202,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 }
 
                 //删除类型为-9的记录
-                Iterator<Sign> iterator = mSignList.iterator();
+                /*Iterator<Sign> iterator = mSignList.iterator();
                 while (iterator.hasNext()) {
                     Sign next = iterator.next();
                     if (next.getType() == -9) {
                         iterator.remove();
                     }
-                }
+                }*/
 
                 for (Sign signBean : mSignList) {
                     if (DATA_MODE == MODE_UNSENDED && !signBean.isUpload()) {

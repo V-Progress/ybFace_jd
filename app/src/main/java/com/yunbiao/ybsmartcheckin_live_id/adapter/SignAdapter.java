@@ -51,43 +51,47 @@ public class SignAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-       ViewHolder viewHolder=null;
-        if (convertView == null){
-            convertView = View.inflate(context, R.layout.item_sign,null);
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            convertView = View.inflate(context, R.layout.item_sign, null);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        else {
-            viewHolder= (ViewHolder) convertView.getTag();
+        Sign vip = mlist.get(position);
+        viewHolder.tv_No.setText(position + 1 + "");
+        if (!TextUtils.isEmpty(vip.getEmployNum())) {
+            viewHolder.tv_date.setText(vip.getTime() + "");
         }
-        Sign vip=mlist.get(position);
-        viewHolder.tv_No.setText(position+1+"");
-        if (!TextUtils.isEmpty(vip.getEmployNum())){
-            viewHolder.tv_date.setText(vip.getTime()+"");
-        }
-        if (!TextUtils.isEmpty(vip.getName())){
+
+        if (vip.getType() == -9) {
+            viewHolder.tv_employName.setText("访客");
+        } else if (!TextUtils.isEmpty(vip.getName())) {
             viewHolder.tv_employName.setText(vip.getName());
         }
-        if (!TextUtils.isEmpty(vip.getDepart())){
+
+        if (!TextUtils.isEmpty(vip.getDepart())) {
             viewHolder.tv_employDepart.setText(vip.getDepart());
         }
 
-        if (!TextUtils.isEmpty(vip.getPosition())){
+
+        if (!TextUtils.isEmpty(vip.getPosition())) {
             viewHolder.tv_employJob.setText(vip.getPosition());
         }
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         viewHolder.tv_date.setText(df.format(vip.getTime()));
-        if (position%2==1){
+        if (position % 2 == 1) {
             convertView.setBackgroundColor(Color.parseColor("#07216d"));
         }
-        if (!TextUtils.isEmpty(vip.getHeadPath())){
-            x.image().bind(viewHolder.iv_photo,vip.getHeadPath());
+        if (!TextUtils.isEmpty(vip.getHeadPath())) {
+            x.image().bind(viewHolder.iv_photo, vip.getHeadPath());
         }
 
         return convertView;
     }
 
-    class ViewHolder{
+    class ViewHolder {
         TextView tv_No;
         TextView tv_date;
         TextView tv_employName;
@@ -98,13 +102,13 @@ public class SignAdapter extends BaseAdapter {
 
 
         public ViewHolder(View convertView) {
-            tv_No= (TextView) convertView.findViewById(R.id.tv_No);
-            tv_date= (TextView) convertView.findViewById(R.id.tv_date);
-            tv_employName= (TextView) convertView.findViewById(R.id.tv_employName);
-            tv_employDepart= (TextView) convertView.findViewById(R.id.tv_employDepart);
-            tv_employJob= (TextView) convertView.findViewById(R.id.tv_employJob);
-            tv_edit= (TextView) convertView.findViewById(R.id.tv_edit);
-            iv_photo= (ImageView) convertView.findViewById(R.id.iv_photo);
+            tv_No = (TextView) convertView.findViewById(R.id.tv_No);
+            tv_date = (TextView) convertView.findViewById(R.id.tv_date);
+            tv_employName = (TextView) convertView.findViewById(R.id.tv_employName);
+            tv_employDepart = (TextView) convertView.findViewById(R.id.tv_employDepart);
+            tv_employJob = (TextView) convertView.findViewById(R.id.tv_employJob);
+            tv_edit = (TextView) convertView.findViewById(R.id.tv_edit);
+            iv_photo = (ImageView) convertView.findViewById(R.id.iv_photo);
 
         }
     }
