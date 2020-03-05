@@ -2,6 +2,9 @@ package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,14 +25,19 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.xutils.common.util.FileUtil;
+import org.xutils.common.util.IOUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import io.reactivex.functions.Consumer;
 
@@ -74,6 +83,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private Spinner spnDataMode;
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private DateFormat dateFormatter = new SimpleDateFormat("yyyy年MM月dd日");
+    private DateFormat dateFormat1 = new SimpleDateFormat("yyyy年MM月dd日");
+    private DateFormat dateFormat2 = new SimpleDateFormat("HH:mm:ss");
     private Button btnUpload;
     private SignAdapter adapter;
 
@@ -285,8 +296,99 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean isExporting = false;
 
-    public void exportToUD(View view) {
-        if (isExporting) {
+    public void exportToUD(final View view) {
+        //获取U盘地址
+        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
+        usbDiskPath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(usbDiskPath);
+        if (!file.exists()) {
+            isExporting = false;
+            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_qcrup));
+            return;
+        }
+        String[] list = file.list();
+        for (String s : list) {
+            File usbFile = new File(file, s);
+            if (usbFile.isDirectory()) {
+                file = usbFile;
+            }
+        }
+        //创建记录最外层目录
+        final File dirFile = new File(file, dateFormat.format(new Date()) + "_导出记录");
+        if (!dirFile.exists()) {
+            boolean mkdirs = dirFile.mkdirs();
+            Log.e(TAG, "exportToUD: 创建外层目录：" + dirFile.getPath() + " --- " + mkdirs);
+        }
+        //创建图片目录
+        final File imgDir = new File(dirFile, "image");
+        if (!imgDir.exists()) {
+            boolean mkdirs = imgDir.mkdirs();
+            Log.e(TAG, "exportToUD: 创建图片目录：" + imgDir.getPath() + " --- " + mkdirs);
+        }
+        //创建xls文件
+        final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_导出记录.xls");
+        //获取源数据
+        final List<Sign> signs = DaoManager.get().queryAll(Sign.class);
+        Log.e(TAG, "export: 源数据：" + (signs == null ? 0 : signs.size()));
+        if (signs == null || signs.size() <= 0) {
+            UIUtils.showShort(this, "没有数据");
+            return;
+        }
+        //生成导出数据
+        final List<List<String>> tableData = createTableData(signs);
+        Log.e(TAG, "export: 导出数据：" + tableData.size());
+        if (tableData == null || tableData.size() <= 0) {
+            UIUtils.showShort(this, "生成导出数据失败");
+            return;
+        }
+        UIUtils.showNetLoading(this);
+        view.setEnabled(false);
+        //开始导出
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: 拷贝图片");
+                for (Sign sign : signs) {
+                    String headPath = sign.getHeadPath();
+                    String hotImgPath = sign.getHotImgPath();
+
+                    if (!TextUtils.isEmpty(headPath)) {
+                        File headFile = new File(headPath);
+                        if (headFile.exists()) {
+                            boolean copy = FileUtil.copy(headFile.getPath(), imgDir.getPath() + File.separator + headFile.getName());
+                            Log.e(TAG, "run: 头像，拷贝结果：" + copy);
+                        }
+                    }
+
+                    if (!TextUtils.isEmpty(hotImgPath)) {
+                        File hotImageFile = new File(hotImgPath);
+                        if (hotImageFile.exists()) {
+                            boolean copy = FileUtil.copy(hotImageFile.getPath(), imgDir.getPath() + File.separator + hotImageFile.getName());
+                            Log.e(TAG, "run: 热图，拷贝结果：" + copy);
+                        }
+                    }
+                }
+
+                ExcelUtils.initExcel(excelFile.getPath(), title);
+                final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
+                Log.e(TAG, "run: excel，导出结果：" + result);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setEnabled(true);
+                        UIUtils.dismissNetLoading();
+                        UIUtils.showShort(SignActivity.this, result ? ("导出成功\n目录：" + dirFile.getPath()) : "导出失败");
+                    }
+                });
+            }
+        });
+
+
+
+
+
+
+        /*if (isExporting) {
             UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_zzdcqsd));
             return;
         }
@@ -370,27 +472,42 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
                 isExporting = false;
             }
-        });
+        });*/
     }
 
-    class ExportSignBean {
-        private long entryid;
-        private long signTime;
+    private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
 
-        public long getSignTime() {
-            return signTime;
-        }
+    public List<List<String>> createTableData(List<Sign> signs) {
+        List<List<String>> tableDatas = new ArrayList<>();
+        if (signs != null) {
+            for (int i = 0; i < signs.size(); i++) {
+                Sign sign = signs.get(i);
+                List<String> beanList = new ArrayList<>();
 
-        public void setSignTime(long signTime) {
-            this.signTime = signTime;
+                beanList.add(TextUtils.isEmpty(sign.getName()) ? "" : sign.getName());
+                beanList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
+                beanList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
+                beanList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
+                beanList.add(dateFormat1.format(sign.getTime()) + "");
+                beanList.add(dateFormat2.format(sign.getTime()) + "");
+                beanList.add(sign.getTemperature() + "");
+                beanList.add(new File(sign.getHeadPath()).getName() + "");
+                beanList.add(TextUtils.isEmpty(sign.getHotImgPath()) ? "" : new File(sign.getHotImgPath()).getName());
+                tableDatas.add(beanList);
+            }
         }
+        return tableDatas;
+    }
 
-        public long getEntryid() {
-            return entryid;
-        }
+    private String getSDPath() {
+        File sdDir = new File(Environment.getExternalStorageDirectory().getPath());
+        return sdDir.getPath();
+    }
 
-        public void setEntryid(long entryid) {
-            this.entryid = entryid;
+    public void makeDir(File dir) {
+        if (!dir.getParentFile().exists()) {
+            makeDir(dir.getParentFile());
         }
+        dir.mkdir();
     }
 }

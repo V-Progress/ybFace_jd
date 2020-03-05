@@ -103,8 +103,10 @@ dependencies {
     implementation fileTree(includes: ['android_sdk-release.aar'], dir: 'libs')
     implementation fileTree(includes: ['FaceLocalSDK-release_201906101703.aar'], dir: 'libs')
     implementation files('libs/XHApi.jar')
+
     //将latestVersion替换成上面 jitpack 后面的版本号
     implementation files('libs/XHApi.jar')
+
     //友盟
     implementation 'com.roger.match.library:library:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -174,4 +176,5 @@ dependencies {
     implementation files('libs/arcsoft_image_util.jar')
     implementation files('libs/commons-io-2.6.jar')
     implementation files('libs/SmdtAccessControl_1_2.jar')
+    implementation files('libs/jxl-2.6.12.jar')
 }
