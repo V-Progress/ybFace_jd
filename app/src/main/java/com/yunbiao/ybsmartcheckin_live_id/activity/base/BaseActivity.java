@@ -36,7 +36,6 @@ import java.util.List;
 public abstract class BaseActivity extends FragmentActivity {
     protected boolean isLog = true;
     private static final String TAG = "BaseActivity";
-    private static List<Activity> activities = new ArrayList<Activity>();
     protected int mCurrentOrientation;
     protected FragmentManager mFragmentManager;
     private boolean isSupportTouch;
@@ -45,10 +44,9 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setFullscreen(false, false);
-        activities.add(this);
+        APP.addActivity(this);
 
         mCurrentOrientation = getResources().getConfiguration().orientation;
-
 
         //判断是否支持触屏
         isSupportTouch = getResources().getConfiguration().touchscreen == Configuration.TOUCHSCREEN_FINGER;
@@ -171,8 +169,6 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void initView() {
     }
 
-    ;
-
     /***
      * 初始化数据
      */
@@ -193,7 +189,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        activities.remove(this);
+        APP.removeActivity(this);
         super.onDestroy();
     }
 
@@ -202,63 +198,9 @@ public abstract class BaseActivity extends FragmentActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * 获得Activity
-     */
-    public static Activity getActivity() {
-        for (Activity activity : activities) {
-            if (isForeground(activity, activity.getClass().getSimpleName())) {
-                return activity;
-            }
-        }
-        return activities.get(activities.size() - 1);
-    }
-
-    public static boolean isForeground(Context context, String className) {
-        if (context == null || TextUtils.isEmpty(className)) {
-            return false;
-        }
-
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
-        if (list != null && list.size() > 0) {
-            ComponentName cpn = list.get(0).topActivity;
-            if (className.equals(cpn.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-
-    }
-
-    /**
-     * finish所有Activity
-     */
-    public static void finishAll() {
-        finish(null);
-    }
-
-    /**
-     * finish所有其它Activity
-     */
-    public static void finishOthers(Class<? extends Activity> activity) {
-        finish(activity);
-    }
-
     protected void d(String log) {
         if (isLog) {
             Log.d(this.getClass().getSimpleName(), log);
-        }
-    }
-
-    public static void finish(Class<? extends Activity> currentActivity) {
-        for (Iterator<Activity> iterator = activities.iterator(); iterator.hasNext(); ) {
-            Activity activity = iterator.next();
-            if (activity.getClass() == currentActivity) {
-                continue;
-            }
-            iterator.remove();
-            activity.finish();
         }
     }
 

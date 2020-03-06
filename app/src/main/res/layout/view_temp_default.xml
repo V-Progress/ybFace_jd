@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="600dp"
+    android:layout_height="139dp"
+    android:id="@+id/view_temp_default"
+    android:background="@mipmap/bg_warn">
+    <TextView
+        android:id="@+id/tv_ssm_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:text="随申码:"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/tv_canPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/selector_tv_canpass"
+        android:background="@null"
+        android:layout_alignTop="@+id/tv_ssm_t"
+        android:layout_toRightOf="@+id/tv_ssm_t"
+        android:layout_marginLeft="68dp"
+        android:text="可以通行"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/tv_canpass"
+        android:drawablePadding="10dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_noPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/selector_tv_nopasspass"
+        android:background="@null"
+        android:layout_alignTop="@+id/tv_ssm_t"
+        android:layout_toRightOf="@+id/tv_canPass"
+        android:layout_marginLeft="68dp"
+        android:text="不可通行"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/tv_nopass"
+        android:drawablePadding="10dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_ensurePass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/selector_tv_ensurepass"
+        android:background="@null"
+        android:layout_alignTop="@+id/tv_ssm_t"
+        android:layout_toRightOf="@+id/tv_noPass"
+        android:layout_marginLeft="68dp"
+        android:text="可以通行"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/tv_ensurepass"
+        android:drawablePadding="10dp"
+        />
+</RelativeLayout>

@@ -16,6 +16,7 @@ import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -27,6 +28,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.request.RequestCall;
 
 import org.greenrobot.eventbus.EventBus;
 import org.xbill.DNS.SIG0;
@@ -541,7 +543,7 @@ public class SignManager {
             public void onResponse(String response, int id) {
                 Log.e(TAG, "onResponse: 上传成功：" + response);
                 Sign sign = DaoManager.get().querySignByTime(time);
-                if(sign != null){
+                if (sign != null) {
                     sign.setUpload(true);
                     long l = DaoManager.get().addOrUpdate(sign);
                     Log.e(TAG, "onResponse: 更新结果：" + l);
@@ -671,6 +673,58 @@ public class SignManager {
             passageMap.put(faceId, currTime);
         }
         return isCanPass;
+    }
+
+    public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
+        Log.e(TAG, "上传身份信息");
+        String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
+        Log.e(TAG, "地址" + uploadIdcard);
+        Log.e(TAG, "身份证图：" + (idCardBitmap == null ? 0 + "---" + 0 : idCardBitmap.getWidth() + "---" + idCardBitmap.getHeight()));
+        Log.e(TAG, "人脸图：" + (faceBitmap == null ? 0 + "---" + 0 : faceBitmap.getWidth() + "---" + faceBitmap.getHeight()));
+        Log.e(TAG, "热量图：" + (reBitmap == null ? 0 + "---" + 0 : reBitmap.getWidth() + "---" + reBitmap.getHeight()));
+
+        Map<String, String> params = new HashMap();
+        params.put("similar", similar + "");
+        params.put("name", msg.name.trim());
+        params.put("sex", TextUtils.equals(msg.sex, "男") ? "1" : "0");
+        params.put("nation", msg.nation_str);
+        params.put("birthDate", msg.birth_year + "-" + msg.birth_month);
+        params.put("IdCard", msg.id_num);
+        params.put("address", msg.address);
+        params.put("termDate", msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
+        params.put("isPass", isPass + "");
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("comId", SpUtils.getCompany().getComid() + "");
+        params.put("temper", temper + "");
+        Log.e(TAG, "uploadIdCardAndReImage: " + params.toString());
+
+        PostFormBuilder builder = OkHttpUtils.post().url(uploadIdcard).params(params);
+
+        long l = System.currentTimeMillis();
+        File idCardFile = saveBitmap("idCard_", l, idCardBitmap);
+        builder.addFile("oldHeads", idCardFile.getName(), idCardFile);
+        Log.e(TAG, "存身份证图：" + idCardFile.getPath());
+
+        File faceFile = saveBitmap(l, faceBitmap);
+        builder.addFile("newHeads", faceFile.getName(), faceFile);
+        Log.e(TAG, "存人脸图：" + faceFile.getPath());
+
+        File reFile = saveBitmap("re_", l, reBitmap);
+        builder.addFile("reHead", reFile.getName(), reFile);
+        Log.e(TAG, "存热量图：" + reFile.getPath());
+
+        RequestCall build = builder.build();
+        build.execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: " + response);
+            }
+        });
     }
 
     //*************************************************************************************************8

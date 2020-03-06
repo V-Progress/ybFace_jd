@@ -81,17 +81,14 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private TextView tv_server_system;
     private TextView tv_version_system;
     private TextView tv_online_system;
-    private TextView tvDataSize;
-    private TextView tvNetState;
-    private TextView tvCameraInfo;
     private ImageView ivQrCode;
     private ImageView ivLogo;
-    private TextView tvCompName;
     private View ivBack;
     private TextView tv_bindcode_syetem;
-    private CheckBox cbMirror;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private Button btnVisitorSystem;
+    private Button btnSkinSystem;
 
     @Override
     protected int getPortraitLayout() {
@@ -110,7 +107,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     protected void initView() {
         EventBus.getDefault().register(this);
         ivLogo = (ImageView) findViewById(R.id.iv_system_logo);
-        tvCompName = (TextView) findViewById(R.id.tv_system_compName);
 
         ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +116,13 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
             }
         });
 
-        btn_depart_system = (Button) findViewById(R.id.btn_depart_system);
-        btn_add_system = (Button) findViewById(R.id.btn_add_system);
-        btn_data_system = (Button) findViewById(R.id.btn_data_system);
-        btn_setting_system = (Button) findViewById(R.id.btn_setting_system);
-        btn_update_system = (TextView) findViewById(R.id.btn_update_system);
+        btn_depart_system = findViewById(R.id.btn_depart_system);
+        btn_add_system = findViewById(R.id.btn_add_system);
+        btn_data_system = findViewById(R.id.btn_data_system);
+        btn_setting_system = findViewById(R.id.btn_setting_system);
+        btn_update_system = findViewById(R.id.btn_update_system);
+        btnVisitorSystem = findViewById(R.id.btn_visitor_system);
+        btnSkinSystem = findViewById(R.id.btn_skin_system);
 
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
         tv_company_system = (TextView) findViewById(R.id.tv_company_system);
@@ -140,6 +138,15 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
+
+        int intOrDef = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
+        if(intOrDef == Constants.Model.MODEL_CERTIFICATES_THERMAL){
+            btn_depart_system.setVisibility(View.GONE);
+            btn_add_system.setVisibility(View.GONE);
+            btnVisitorSystem.setVisibility(View.GONE);
+            btn_data_system.setVisibility(View.GONE);
+            btnSkinSystem.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -253,9 +260,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 };
                 Beta.checkUpgrade(true, false);
                 break;
-            case R.id.btn_setnet_system:
-                setNetServer();
-                break;
             default:
                 break;
         }
@@ -272,29 +276,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 //            tvQrLable.setVisibility(View.VISIBLE);
         }
     }
-
-    // TODO: 2019/6/27 ComById
-//    public void setComId(View view) {
-//        final String text = ((EditText) findViewById(R.id.edt_comid)).getText().toString();
-//        if(TextUtils.isEmpty(text)){
-//            UIUtils.showTitleTip("公司ID不可为空");
-//            return;
-//        }
-//        showAlert("公司ID修改为:" + text + "\n重启应用后生效，是否重启？", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                SpUtils.saveCompanyId(Integer.valueOf(text));
-//                finishAll();
-//                RestartAPPTool.restartAPP(SystemActivity.this);
-//            }
-//        }, new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialog) {
-//                ((EditText)findViewById(R.id.edt_comid)).setText("");
-//                ((EditText)findViewById(R.id.edt_comid)).setHint("" +SpUtils.getCompanyId());
-//            }
-//        });
-//    }
 
     private void setTextWatchers(final EditText[] editTexts) {
         for (int i = 0; i < editTexts.length; i++) {
@@ -321,374 +302,10 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
-    //设置网络服务
-    private void setNetServer() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_set_server);
-
-        final TextView tvTips = (TextView) dialog.findViewById(R.id.tv_net_tips);
-        final EditText tvIp0 = (EditText) dialog.findViewById(R.id.edt_server_ip_0);
-        final EditText tvIp1 = (EditText) dialog.findViewById(R.id.edt_server_ip_1);
-        final EditText tvIp2 = (EditText) dialog.findViewById(R.id.edt_server_ip_2);
-        final EditText tvIp3 = (EditText) dialog.findViewById(R.id.edt_server_ip_3);
-        final EditText tvSPort = (EditText) dialog.findViewById(R.id.edt_server_port);
-        final EditText[] ipEdts = {tvIp0, tvIp1, tvIp2, tvIp3, tvSPort};
-        setTextWatchers(ipEdts);
-
-        final EditText tvRIp0 = (EditText) dialog.findViewById(R.id.edt_res_ip_0);
-        final EditText tvRIp1 = (EditText) dialog.findViewById(R.id.edt_res_ip_1);
-        final EditText tvRIp2 = (EditText) dialog.findViewById(R.id.edt_res_ip_2);
-        final EditText tvRIp3 = (EditText) dialog.findViewById(R.id.edt_res_ip_3);
-        final EditText tvRPort = (EditText) dialog.findViewById(R.id.edt_res_port);
-        final EditText[] resEdits = {tvRIp0, tvRIp1, tvRIp2, tvRIp3, tvRPort};
-        setTextWatchers(resEdits);
-
-        Button btnCancel = (Button) dialog.findViewById(R.id.btn_net_cancel);
-        Button btnConfirm = (Button) dialog.findViewById(R.id.btn_net_confirm);
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.btn_net_cancel:
-                        if (dialog.isShowing()) {
-                            dialog.dismiss();
-                        }
-                        break;
-                    case R.id.btn_net_confirm:
-                        String ip0 = tvIp0.getText().toString();
-                        String ip1 = tvIp1.getText().toString();
-                        String ip2 = tvIp2.getText().toString();
-                        String ip3 = tvIp3.getText().toString();
-                        String sPort = tvSPort.getText().toString();
-                        if (TextUtils.isEmpty(ip0)
-                                || TextUtils.isEmpty(ip1)
-                                || TextUtils.isEmpty(ip2)
-                                || TextUtils.isEmpty(ip3)
-                                || TextUtils.isEmpty(sPort)) {
-                            tvTips.setText(getString(R.string.act_sys_tip_yfwipdzhdkhbnwk));
-                            return;
-                        }
-
-                        String rip0 = tvRIp0.getText().toString();
-                        String rip1 = tvRIp1.getText().toString();
-                        String rip2 = tvRIp2.getText().toString();
-                        String rip3 = tvRIp3.getText().toString();
-                        String rport = tvRPort.getText().toString();
-                        if (TextUtils.isEmpty(ip0)
-                                || TextUtils.isEmpty(ip1)
-                                || TextUtils.isEmpty(ip2)
-                                || TextUtils.isEmpty(ip3)
-                                || TextUtils.isEmpty(rport)) {
-                            tvTips.setText(getString(R.string.act_sys_tip_zyipdzhdkbnwk));
-                            return;
-                        }
-
-
-                        RestartAPPTool.restartAPP(SystemActivity.this);
-                        break;
-                }
-            }
-        };
-        btnCancel.setOnClickListener(onClickListener);
-        btnConfirm.setOnClickListener(onClickListener);
-
-        dialog.show();
-        Window window = dialog.getWindow();
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else {
-            Display defaultDisplay = getWindowManager().getDefaultDisplay();
-            int width = defaultDisplay.getWidth();
-            int height = defaultDisplay.getHeight();
-            window.setLayout(width / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        window.setWindowAnimations(R.style.mystyle);  //添加动画
-    }
-
-    public void setPwd() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_set_pwd);
-
-        final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_set_pwd);
-        final EditText edtPwd2 = (EditText) dialog.findViewById(R.id.edt_set_pwd_again);
-        final Button btnCancel = (Button) dialog.findViewById(R.id.btn_pwd_cancel);
-        final Button btnConfirm = (Button) dialog.findViewById(R.id.btn_pwd_confirm);
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(edtPwd.getText())) {
-                    edtPwd.setError(getString(R.string.act_sys_error_mmbkwk));
-                    return;
-                }
-                if (edtPwd.getText().length() < 6) {
-                    edtPwd.setError(getString(R.string.act_sys_error_mmzssr6w));
-                    return;
-                }
-                if (TextUtils.isEmpty(edtPwd2.getText())) {
-                    edtPwd2.setError(getString(R.string.act_sys_error_qzcsrmm));
-                    return;
-                }
-                String pwd = edtPwd.getText().toString();
-                final String pwd2 = edtPwd2.getText().toString();
-                if (!TextUtils.equals(pwd, pwd2)) {
-                    edtPwd2.setError(getString(R.string.act_sys_error_lcsrdmmbyz));
-                    return;
-                }
-
-                btnCancel.setEnabled(false);
-                btnConfirm.setEnabled(false);
-                Map<String, String> params = new HashMap<>();
-                params.put("deviceNo", HeartBeatClient.getDeviceNo());
-                params.put("password", pwd2);
-                OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, final Exception e, int id) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_fail) + "：" + e != null ? e.getMessage() : "NULL");
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        JSONObject jsonObject = JSONObject.parseObject(response);
-                        final Integer status = jsonObject.getInteger("status");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (status == 1) {
-                                    UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_success));
-                                    SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
-                                    dialog.dismiss();
-                                } else {
-                                    UIUtils.showTitleTip(SystemActivity.this, getString(R.string.act_sys_error_modify_fail));
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAfter(int id) {
-                        btnConfirm.setEnabled(true);
-                        btnCancel.setEnabled(true);
-                    }
-                });
-            }
-        });
-
-        dialog.show();
-        Window window = dialog.getWindow();
-        window.setWindowAnimations(R.style.mystyle);  //添加动画
-    }
-
-    public void setAngle(View view) {
-        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-
-        if (anInt == CameraSettings.ROTATION_0) {
-            anInt = CameraSettings.ROTATION_90;
-        } else if (anInt == CameraSettings.ROTATION_90) {
-            anInt = CameraSettings.ROTATION_180;
-        } else if (anInt == CameraSettings.ROTATION_180) {
-            anInt = CameraSettings.ROTATION_270;
-        } else {
-            anInt = CameraSettings.ROTATION_0;
-        }
-        CameraSettings.setCameraDisplayRotation(anInt);
-        ((Button) view).setText(getString(R.string.act_sys_tip_angle) + "：" + anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
-    }
-
-    public void showSetting() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(View.inflate(this, R.layout.layout_setting, null));
-
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.tv_setting_clear_cache:
-                        showAlert(getString(R.string.act_sys_tip_cczjqcyyhcfsfjx), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // TODO: 2019/4/1 清除缓存
-                                SpUtils.clear(SystemActivity.this);
-                                RestartAPPTool.restartAPP(SystemActivity.this);
-                            }
-                        });
-                        break;
-                    case R.id.tv_setting_clear_data:
-//                        showAlert("此操作将清空应用数据并重启系统，是否继续？\n包括【人脸数据、员工信息、广告资源、签到数据】", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                boolean b = FileUtils.clearData();
-//                                if(b){
-//                                    finishAll();
-//                                    RestartAPPTool.restartAPP(SystemActivity.this);
-//                                }
-//                            }
-//                        });
-                        break;
-                    case R.id.tv_setting_pwd:
-                        setPwd();
-                        break;
-                    case R.id.tv_setting_check_camera:
-                        setCameraInfo();
-                        break;
-                }
-            }
-        };
-        dialog.findViewById(R.id.tv_setting_clear_cache).setOnClickListener(onClickListener);
-        dialog.findViewById(R.id.tv_setting_clear_data).setOnClickListener(onClickListener);
-        dialog.findViewById(R.id.tv_setting_pwd).setOnClickListener(onClickListener);
-        dialog.findViewById(R.id.tv_setting_check_camera).setOnClickListener(onClickListener);
-        tvDataSize = (TextView) dialog.findViewById(R.id.tv_setting_data_size);
-        tvNetState = (TextView) dialog.findViewById(R.id.tv_setting_net_state);
-        tvCameraInfo = (TextView) dialog.findViewById(R.id.tv_setting_camera_info);
-        cbMirror = (CheckBox) dialog.findViewById(R.id.cb_mirror);
-
-        Button btn = (Button) dialog.findViewById(R.id.btn_setAngle);
-        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-        btn.setText("角度：" + anInt);
-
-//        setCamOri(dialog);
-        checkDataSize();
-
-        final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(true);
-        cbMirror.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAlert(getString(R.string.act_sys_tip_ggsxtpzxycqyycnsx), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                }, new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        cbMirror.setChecked(mirror);
-                    }
-                });
-            }
-        });
-
-
-        Button btn_close_setting = (Button) dialog.findViewById(R.id.btn_close_setting);
-        btn_close_setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                setNetState();
-                setCameraInfo();
-            }
-        });
-
-        dialog.show();
-        Window window = dialog.getWindow();
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else {
-            Display defaultDisplay = getWindowManager().getDefaultDisplay();
-            int width = defaultDisplay.getWidth();
-            window.setLayout((int) (width / 1.5), ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        window.setWindowAnimations(R.style.mystyle);  //添加动画
-    }
-
-    private void checkDataSize() {
-        FileUtils.getDataSize(new FileUtils.OnSizeCallback() {
-            @Override
-            public void getSize(long size) {
-                if (size > 0) {
-                    size = size / 1024 / 1024;
-                }
-                tvDataSize.setText(size + "mb");
-            }
-        });
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-    }
-
-    //设置网络状态
-    private void setNetState() {
-        CheckNet checkNet = new CheckNet(this);
-        boolean intenetConnected = checkNet.isIntenetConnected();
-        if (intenetConnected) {//网线连接
-            if (checkNet.isEtherneteConncted()) {//已连接
-                tvNetState.setText(getString(R.string.act_sys_tip_wxlj));
-            } else {
-                tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwl));
-            }
-            return;
-        }
-
-        boolean wifiEnabled = checkNet.isWifiEnabled();
-        if (!wifiEnabled) {
-            //代表无网络
-            tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
-            return;
-        }
-
-        boolean wifiConnected = checkNet.isWifiConnected();
-        if (!wifiConnected) {
-            //代表无网络
-            tvNetState.setText(getString(R.string.act_sys_tip_wxlj_wwllj));
-            return;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getString(R.string.act_sys_tip_wxlj_wllx_wifi));
-        stringBuilder.append(getString(R.string.act_sys_tip_wxlj_wlmc));
-        stringBuilder.append(getString(R.string.act_sys_tip_xh));
-        tvNetState.setText(stringBuilder.toString());
-    }
-
-    //设置摄像头信息
-    private void setCameraInfo() {
-        CheckCamera checkCamera = new CheckCamera();
-        String cameraInfo = checkCamera.getCameraInfo();
-        tvCameraInfo.setText(cameraInfo);
-    }
-
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener) {
-        showAlert(msg, onClickListener, null);
-    }
-
-    private void showAlert(String msg, Dialog.OnClickListener onClickListener, DialogInterface.OnDismissListener onDissmissListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.base_tip));
-        builder.setMessage(msg);
-        builder.setPositiveButton(getString(R.string.base_ensure), onClickListener);
-        if (onDissmissListener != null) {
-            builder.setOnDismissListener(onDissmissListener);
-        }
-
-        AlertDialog alertDialog = builder.create();
-        Window window = alertDialog.getWindow();
-        alertDialog.show();
-        window.setWindowAnimations(R.style.mystyle);  //添加动画
     }
 
     class SkinModel {
@@ -784,109 +401,5 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         Log.e(TAG, "load: 加载：" + " : " + apkName);
         SkinLoader.setSkin(apkName);
     }
-
-    class CheckCamera {
-        public String getCameraInfo() {
-            StringBuilder cameraInfo = new StringBuilder();
-            int numberOfCameras = android.hardware.Camera.getNumberOfCameras();
-            if (numberOfCameras <= 0) {
-                return getString(R.string.act_sys_tip_noCamera);
-            }
-            for (int i = 0; i < numberOfCameras; i++) {
-                android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-                android.hardware.Camera.getCameraInfo(i, info);
-                boolean isFront = info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
-                int orientation = info.orientation;
-                cameraInfo
-                        .append(getString(R.string.act_sys_tip_total) + numberOfCameras + getString(R.string.act_sys_tip_ge) + ":")
-                        .append("【" + getString(R.string.act_sys_tip_bh) + ":" + i + "，")
-                        .append(isFront ? getString(R.string.act_sys_tip_front) : getString(R.string.act_sys_tip_back))
-                        .append("，" + getString(R.string.act_sys_tip_angle) + ":" + orientation)
-                        .append("】");
-            }
-
-            return cameraInfo.toString();
-        }
-    }
-
-    class CheckNet {
-        private WifiManager wifiManager;
-        private ConnectivityManager connectManager;
-        private Context context;
-
-        public CheckNet(Context context) {
-            this.context = context;
-            wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            connectManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        }
-
-        /**
-         * 判断以太网网络是否可用
-         *
-         * @return
-         */
-        public boolean isIntenetConnected() {
-            if (context != null) {
-                ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mInternetNetWorkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
-                boolean hasInternet = !isNullObject(mInternetNetWorkInfo) && mInternetNetWorkInfo.isConnected() && mInternetNetWorkInfo.isAvailable();
-                return hasInternet;
-            }
-            return false;
-        }
-
-        /**
-         * 判断对象是否为空
-         *
-         * @param object
-         * @return
-         */
-        private boolean isNullObject(Object object) {
-            return object == null;
-        }
-
-        //获取wifi状态
-        public boolean isWifiEnabled() {
-            int wifiState = wifiManager.getWifiState();
-            return wifiState == WifiManager.WIFI_STATE_ENABLED;
-        }
-
-        public boolean isWifiConnected() {
-            //wifi连接
-            NetworkInfo info = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return info.isConnected();
-        }
-
-        public boolean isEtherneteConncted() {
-            NetworkInfo info = connectManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
-            return info.isConnected();
-        }
-
-        //获取wifi名称
-        public String getWifiName() {
-            WifiInfo info = wifiManager.getConnectionInfo();
-            if ((info != null) && (!TextUtils.isEmpty(info.getSSID()))) {
-                return info.getSSID();
-            }
-            return "NULL";
-        }
-
-        public String getStrength() {
-            String strength = "";
-            WifiInfo info = wifiManager.getConnectionInfo();
-            int rssi = info.getRssi();
-            if (rssi <= 0 && rssi >= -50) {//信号最好
-                strength = getString(R.string.act_sys_tip_strong);
-            } else if (rssi < -50 && rssi >= -70) {//信号一般
-                strength = getString(R.string.act_sys_tip_general);
-            } else if (rssi > -70) {
-                strength = getString(R.string.act_sys_tip_poor);
-            } else if (rssi <= -200) {
-                strength = getString(R.string.act_sys_tip_wwl);
-            }
-            return strength;
-        }
-    }
-
 }
 

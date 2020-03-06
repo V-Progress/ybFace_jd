@@ -1,16 +1,11 @@
 package com.yunbiao.ybsmartcheckin_live_id.views;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -45,9 +40,9 @@ public class SyncDialog {
     private Handler updateHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if (mStep.equals(APP.getActivity().getString(R.string.sync_get_failed)) ||
-                    mStep.equals(APP.getActivity().getString(R.string.sync_not_bind)) ||
-                    mStep.equals(APP.getActivity().getString(R.string.sync_not_depart))) {
+            if (mStep.equals(APP.getMainActivity().getString(R.string.sync_get_failed)) ||
+                    mStep.equals(APP.getMainActivity().getString(R.string.sync_not_bind)) ||
+                    mStep.equals(APP.getMainActivity().getString(R.string.sync_not_depart))) {
                 tvInfo.setTextColor(Color.RED);
             } else {
                 tvInfo.setTextColor(Color.parseColor("#2d2a2a"));

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
+import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -24,11 +25,11 @@ public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
 
     public static String[] PERMISSONS = {android.Manifest.permission.READ_EXTERNAL_STORAGE
-            ,android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ,android.Manifest.permission.ACCESS_FINE_LOCATION
-            ,android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ,android.Manifest.permission.READ_PHONE_STATE
-            ,android.Manifest.permission.CAMERA
+            , android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            , android.Manifest.permission.ACCESS_FINE_LOCATION
+            , android.Manifest.permission.ACCESS_COARSE_LOCATION
+            , android.Manifest.permission.READ_PHONE_STATE
+            , android.Manifest.permission.CAMERA
             /*,Manifest.permission.SYSTEM_ALERT_WINDOW*/};
     private YBPermission ybPermission;
 
@@ -47,7 +48,7 @@ public class SplashActivity extends BaseActivity {
 //        APP.bindProtectService();
 
         Config.deviceType = CommonUtils.getBroadType();
-        ybPermission = new YBPermission(new YBPermission.PermissionListener(){
+        ybPermission = new YBPermission(new YBPermission.PermissionListener() {
             @Override
             public void onPermissionFailed(String[] objects) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -57,7 +58,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFinish(boolean isComplete) {
-                if(isComplete){
+                if (isComplete) {
                     Constants.initStorage();
                     SpUtils.init();
 
@@ -69,49 +70,59 @@ public class SplashActivity extends BaseActivity {
                         Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
                     }
 
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     finish();
                     return;
                 } else {
-                    UIUtils.showTitleTip(SplashActivity.this,getString(R.string.act_spl_tip_qxsqsb));
+                    UIUtils.showTitleTip(SplashActivity.this, getString(R.string.act_spl_tip_qxsqsb));
                 }
             }
         });
-        ybPermission.checkPermission(this,PERMISSONS);
+        ybPermission.checkPermission(this, PERMISSONS);
     }
 
-    private void jump(){
+    private void jump() {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
 
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
+        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
+
+        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {//竖屏八寸
             startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
-        } else {
-            startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080) {//横屏21、10寸
+            if (model == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
+                startActivity(new Intent(this, CertificatesActivity.class));
+            } else {
+                startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+            }
+        } else {//竖屏42寸
+
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,  int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ybPermission.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        ybPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public static class YBPermission{
+    public static class YBPermission {
         public static final int PERMISSION_REQUEST_CODE = 101;
         private PermissionListener permissionListener;
+
         public YBPermission(PermissionListener permissionListener) {
             this.permissionListener = permissionListener;
         }
 
-        interface PermissionListener{
+        interface PermissionListener {
             void onPermissionFailed(String[] objects);
+
             void onFinish(boolean isComplete);
         }
 
-        public void checkPermission(Activity activity,String[] permissions){
-            if(permissions == null || permissions.length <= 0){
-                if(permissionListener != null){
+        public void checkPermission(Activity activity, String[] permissions) {
+            if (permissions == null || permissions.length <= 0) {
+                if (permissionListener != null) {
                     permissionListener.onFinish(false);
                 }
                 return;
@@ -126,25 +137,25 @@ public class SplashActivity extends BaseActivity {
                 }
             }
 
-            if(deniedPermissionList .size() > 0){
+            if (deniedPermissionList.size() > 0) {
                 String[] strings = deniedPermissionList.toArray(new String[deniedPermissionList.size()]);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    activity.requestPermissions(strings,PERMISSION_REQUEST_CODE);
+                    activity.requestPermissions(strings, PERMISSION_REQUEST_CODE);
                 }
             } else {
-                if(permissionListener != null){
+                if (permissionListener != null) {
                     permissionListener.onFinish(true);
                 }
             }
         }
 
-        public void onRequestPermissionsResult(int requestCode, String[] permissions,  int[] grantResults){
-            if(requestCode != PERMISSION_REQUEST_CODE){
+        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+            if (requestCode != PERMISSION_REQUEST_CODE) {
                 return;
             }
 
-            if (permissions == null || permissions.length<=0) {
-                if(permissionListener != null){
+            if (permissions == null || permissions.length <= 0) {
+                if (permissionListener != null) {
                     permissionListener.onFinish(false);
                 }
                 return;
@@ -156,14 +167,14 @@ public class SplashActivity extends BaseActivity {
                     permiList.add(permissions[i]);
                 }
             }
-            if(permiList.size() <= 0){
-                if(permissionListener != null){
+            if (permiList.size() <= 0) {
+                if (permissionListener != null) {
                     permissionListener.onFinish(true);
                 }
                 return;
             }
 
-            if(permissionListener != null){
+            if (permissionListener != null) {
                 permissionListener.onPermissionFailed(permiList.toArray(new String[permiList.size()]));
             }
         }

@@ -1,8 +1,10 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
-import android.app.smdt.SmdtManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -44,6 +46,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -60,16 +64,64 @@ import timber.log.Timber;
 public class APP extends Application {
     private static final String TAG = "APP";
     private static APP instance;
-    private static Activity activity;
+    private static Activity mainActivity;
+    private static List<Activity> activityList = new ArrayList<>();
 
-    public static Activity getActivity() {
-        return activity;
+    /**
+     * 获得Activity
+     */
+    public static Activity getForegroundActivity() {
+        for (Activity activity : activityList) {
+            if (isForeground(activity, activity.getClass().getSimpleName())) {
+                return activity;
+            }
+        }
+        return activityList.get(activityList.size() - 1);
+    }
+
+    public static boolean isForeground(Context context, String className) {
+        if (context == null || TextUtils.isEmpty(className)) {
+            return false;
+        }
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+        if (list != null && list.size() > 0) {
+            ComponentName cpn = list.get(0).topActivity;
+            if (className.equals(cpn.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public static void addActivity(Activity activity) {
+        if (!activityList.contains(activity)) {
+            activityList.add(activity);
+        }
+    }
+
+    public static void removeActivity(Activity activity) {
+        if (activityList.contains(activity)) {
+            activityList.remove(activity);
+        }
+    }
+
+    public static void finishAllActivity() {
+        for (Activity activity : activityList) {
+            activity.finish();
+        }
+    }
+
+    public static Activity getMainActivity() {
+        return mainActivity;
     }
 
     private static XHApiManager xhApiManager;
 
-    public static void setActivity(Activity activity) {
-        APP.activity = activity;
+    public static void setMainActivity(Activity activity) {
+        APP.mainActivity = activity;
     }
 
     public static XHApiManager getXHApi() {
@@ -150,39 +202,6 @@ public class APP extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }*/
-    }
-
-    private void initXLog() {
-        LogConfiguration config = new LogConfiguration.Builder()
-                .tag("MY_TAG")                                         // 指定 TAG，默认为 "X-LOG"
-                .t()                                                   // 允许打印线程信息，默认禁止
-                .st(2)                                                 // 允许打印深度为2的调用栈信息，默认禁止
-                .b()                                                   // 允许打印日志边框，默认禁止
-//                .jsonFormatter(new MyJsonFormatter())                  // 指定 JSON 格式化器，默认为 DefaultJsonFormatter
-//                .xmlFormatter(new MyXmlFormatter())                    // 指定 XML 格式化器，默认为 DefaultXmlFormatter
-//                .throwableFormatter(new MyThrowableFormatter())        // 指定可抛出异常格式化器，默认为 DefaultThrowableFormatter
-//                .threadFormatter(new MyThreadFormatter())              // 指定线程信息格式化器，默认为 DefaultThreadFormatter
-//                .stackTraceFormatter(new MyStackTraceFormatter())      // 指定调用栈信息格式化器，默认为 DefaultStackTraceFormatter
-//                .borderFormatter(new MyBoardFormatter())               // 指定边框格式化器，默认为 DefaultBorderFormatter
-//                .addObjectFormatter(AnyClass.class,                    // 为指定类添加格式化器
-//                        new AnyClassObjectFormatter())                 // 默认使用 Object.toString()
-                .build();
-
-        Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
-        Printer consolePrinter = new ConsolePrinter();             // Printer that print the log to console using System.out
-        Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
-                .Builder(Environment.getExternalStorageDirectory().getPath() + "/ybLog")                              // Specify the path to save log file
-                .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
-                .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
-//                .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
-//                .flattener(new MyFlattener())                          // Default: DefaultFlattener
-                .build();
-
-        XLog.init(                                                 // Initialize XLog
-                LogLevel.ALL,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
-                androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter(for Android)/ConsolePrinter(for java) will be used.
-                consolePrinter,
-                filePrinter);
     }
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//
@@ -348,6 +367,7 @@ public class APP extends Application {
     }
 
     public static void restart() {
+        exit();
         RestartAPPTool.restartAPP(getContext());
     }
 
@@ -362,6 +382,7 @@ public class APP extends Application {
 
     public static void exit() {
         unbindProtectService();
+        finishAllActivity();
         //关闭整个应用
         System.exit(0);
     }

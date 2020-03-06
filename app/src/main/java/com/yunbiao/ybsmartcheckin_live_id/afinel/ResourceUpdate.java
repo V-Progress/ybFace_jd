@@ -43,6 +43,8 @@ public class ResourceUpdate {
     public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";
     public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = WEB_BASE_URL + "api/facewitness/checkByarrayTemper.html";
 
+    public static String UPLOAD_IDCARD = WEB_BASE_URL + "/api/witness/checktemper.html";
+
     /**
      * 判断服务器中的设备是否在线
      **/

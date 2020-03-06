@@ -59,7 +59,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="30dp"
-            android:nextFocusDown="@+id/btn_setnet_system"
             android:padding="20dp"
             android:src="@mipmap/icon_back" />
 
@@ -168,32 +167,6 @@
             android:id="@+id/tv_exp_system"
             style="@style/system_item_info"
             android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tv_qr_lable"
-            style="@style/system_item_info"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/act_sys_smxfo"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:gravity="center_vertical|right"
-        android:orientation="horizontal"
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp">
-
-        <ImageView
-            android:id="@+id/iv_qrcode_system"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp"
-            android:src="@mipmap/img_ewm"
-            android:visibility="gone" />
     </LinearLayout>
 
     <TableLayout
@@ -278,6 +251,7 @@
             android:weightSum="2">
 
             <Button
+                android:id="@+id/btn_visitor_system"
                 android:onClick="seeVisitor"
                 android:nextFocusDown="@+id/btn_data_system"
                 android:nextFocusRight="@+id/btn_add_system"
@@ -292,6 +266,7 @@
                 android:textSize="26dp" />
 
             <Button
+                android:id="@+id/btn_skin_system"
                 android:onClick="selectSkin"
                 android:nextFocusDown="@+id/btn_setting_system"
                 android:nextFocusLeft="@+id/btn_depart_system"

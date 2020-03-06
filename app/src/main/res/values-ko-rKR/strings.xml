@@ -79,6 +79,7 @@
     <string name="infared_only_model">Infrared Temperature</string>
     <string name="thermal_only_model">Thermography</string>
     <string name="face_thermal_model">Face + Thermography</string>
+    <string name="certificates_model">ID Card + Thermography</string>
 
     <!--设置-->
     <string name="current_port_path_setting">Current Port</string>

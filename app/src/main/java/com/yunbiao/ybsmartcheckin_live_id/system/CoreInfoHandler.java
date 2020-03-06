@@ -6,13 +6,10 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.yunbiao.yb_smart_attendance.CommonData;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -138,13 +135,13 @@ public class CoreInfoHandler {
                     }
 
                     if (content.getRestart() == 0) {
-                        ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(BaseActivity.getActivity());
+                        ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(APP.getForegroundActivity());
                         progressDialog.setTitle("关机");
                         progressDialog.setMessage("3秒后将关闭设备");
                         progressDialog.show();
                         UIUtils.powerShutDown.start();
                     } else if (content.getRestart() == 1) {
-                        ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(BaseActivity.getActivity());
+                        ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(APP.getForegroundActivity());
                         progressDialog.setTitle("重启");
                         progressDialog.setMessage("3秒后将重启设备");
                         progressDialog.show();
@@ -152,7 +149,7 @@ public class CoreInfoHandler {
                     }
                     break;
                 case PUSH_TO_UPDATE:
-                    Activity activity = APP.getActivity();
+                    Activity activity = APP.getMainActivity();
                     UpdateVersionControl.getInstance().checkUpdate(activity);
                     break;
                 case ADS_PUSH:

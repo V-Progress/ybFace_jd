@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_temp_verify"
+    android:layout_width="match_parent"
+    android:background="#0E1328"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_bg_verifyStatus"
+        android:background="@mipmap/bg_verify_pass"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="1dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_verifyStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="167dp"
+            android:src="@mipmap/icon_verify_pass" />
+
+        <TextView
+            android:id="@+id/iv_verifyInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="禁止通行"
+            android:textColor="@color/white"
+            android:textSize="48dp" />
+    </LinearLayout>
+</RelativeLayout>

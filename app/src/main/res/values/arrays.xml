@@ -6,5 +6,6 @@
         <item>@string/infared_only_model</item>
         <item>@string/thermal_only_model</item>
         <item>@string/face_thermal_model</item>
+        <item>@string/certificates_model</item>
     </string-array>
 </resources>

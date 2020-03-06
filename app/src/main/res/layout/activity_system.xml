@@ -60,7 +60,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="30dp"
-            android:nextFocusDown="@+id/btn_setnet_system"
             android:padding="30dp"
             android:src="@mipmap/icon_back" />
 
@@ -129,26 +128,6 @@
         <TextView
             android:id="@+id/tv_server_system"
             style="@style/system_item_info" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="70dp"
-            android:gravity="right|center_vertical">
-
-            <Button
-                android:id="@+id/btn_setnet_system"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_btn_take_photo"
-                android:nextFocusDown="@+id/btn_add_system"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:text="设置"
-                android:textColor="@color/white"
-                android:textSize="28dp"
-                android:visibility="gone" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -163,32 +142,6 @@
             android:id="@+id/tv_exp_system"
             style="@style/system_item_info"
             android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tv_qr_lable"
-            style="@style/system_item_info"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/act_sys_smxfo"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:gravity="center_vertical|right"
-        android:orientation="horizontal"
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp">
-
-        <ImageView
-            android:id="@+id/iv_qrcode_system"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp"
-            android:src="@mipmap/img_ewm"
-            android:visibility="gone" />
     </LinearLayout>
 
     <TableLayout
@@ -274,6 +227,7 @@
             android:weightSum="2">
 
             <Button
+                android:id="@+id/btn_visitor_system"
                 android:onClick="seeVisitor"
                 android:nextFocusDown="@+id/btn_data_system"
                 android:nextFocusRight="@+id/btn_add_system"
@@ -288,6 +242,7 @@
                 android:textSize="36dp" />
 
             <Button
+                android:id="@+id/btn_skin_system"
                 android:onClick="selectSkin"
                 android:nextFocusDown="@+id/btn_setting_system"
                 android:nextFocusLeft="@+id/btn_depart_system"

@@ -1,17 +1,13 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Gpio;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -103,7 +99,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     @Override
     protected void initView() {
-        APP.setActivity(this);
+        APP.setMainActivity(this);
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
@@ -447,7 +443,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                 }
 
                 if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                    VipDialogManager.showVipDialog(getActivity(), sign);
+                    VipDialogManager.showVipDialog(PassageDeviceActivity.this, sign);
                 }
 
                 KDXFSpeechManager.instance().playText(sign.getName());
@@ -472,7 +468,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
             }
 
             if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                VipDialogManager.showVipDialog(getActivity(), sign);
+                VipDialogManager.showVipDialog(PassageDeviceActivity.this, sign);
             }
 
             KDXFSpeechManager.instance().playText(sign.getName());
@@ -1044,7 +1040,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
     @Override
     protected void initData() {
-        KDXFSpeechManager.instance().init(getActivity()).welcome();
+        KDXFSpeechManager.instance().init(this).welcome();
 
         //开启Xmpp
         startXmpp();

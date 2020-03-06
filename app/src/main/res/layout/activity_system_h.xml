@@ -121,25 +121,6 @@
                 <TextView
                     android:id="@+id/tv_server_system"
                     style="@style/system_item_info" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="right|center_vertical"
-                    android:paddingRight="100dp">
-
-                    <Button
-                        android:visibility="gone"
-                        android:id="@+id/btn_setnet_system"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/selector_btn_take_photo"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:text="设置"
-                        android:textColor="@color/white"
-                        android:textSize="28dp" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -154,32 +135,7 @@
                     android:id="@+id/tv_exp_system"
                     style="@style/system_item_info"
                     android:layout_weight="1" />
-
-                <TextView
-                    android:visibility="gone"
-                    android:layout_marginRight="80dp"
-                    android:textSize="28dp"
-                    android:id="@+id/tv_qr_lable"
-                    style="@style/system_item_info"
-                    android:text="@string/act_sys_smxfo" />
-
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:visibility="gone"
-                    android:id="@+id/iv_qrcode_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="20dp"
-                    android:src="@mipmap/img_ewm" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -265,6 +221,7 @@
                     android:weightSum="2">
 
                     <Button
+                        android:id="@+id/btn_visitor_system"
                         android:nextFocusDown="@+id/btn_data_system"
                         android:nextFocusRight="@+id/btn_add_system"
                         android:onClick="seeVisitor"
@@ -279,6 +236,7 @@
                         android:textSize="32dp" />
 
                     <Button
+                        android:id="@+id/btn_skin_system"
                         android:onClick="selectSkin"
                         android:nextFocusDown="@+id/btn_setting_system"
                         android:nextFocusLeft="@+id/btn_depart_system"

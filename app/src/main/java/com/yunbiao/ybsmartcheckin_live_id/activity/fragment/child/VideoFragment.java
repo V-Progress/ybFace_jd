@@ -116,13 +116,13 @@ public class VideoFragment extends Fragment {
         verticalPlayer.setImageSet(new VerticalPlayer.ImageSet() {
             @Override
             public void set(String path, ImageView imageView) {
-                Glide.with(getActivity()).load(path).asBitmap().into(imageView);
+                Glide.with(getMainActivity()).load(path).asBitmap().into(imageView);
             }
         });
         verticalPlayer.setInteractionListener(new InteractionListener() {
             @Override
             public void clickView(PlayElement element, View playView) {
-                Toast.makeText(getActivity(), "点击了主屏幕", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getMainActivity(), "点击了主屏幕", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -133,12 +133,12 @@ public class VideoFragment extends Fragment {
 
             @Override
             public void clickWatch(PlayElement element, View ivWatch) {
-                Toast.makeText(getActivity(), "点击了播放量", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getMainActivity(), "点击了播放量", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void clickShare(PlayElement element, View thumbsUpView) {
-                Toast.makeText(getActivity(), "分享一下", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getMainActivity(), "分享一下", Toast.LENGTH_SHORT).show();
             }
         });
         verticalPlayer.setUpdateWatchListener(new UpdateWatchListener() {

@@ -48,12 +48,13 @@
         android:name=".APP"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.PassageDeviceActivity"></activity>
+        <activity android:name=".activity.CertificatesActivity"></activity>
+        <activity android:name=".activity.PassageDeviceActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />

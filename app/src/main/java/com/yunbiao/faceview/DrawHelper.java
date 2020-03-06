@@ -58,6 +58,10 @@ public class DrawHelper {
         faceRectView.addFaceInfo(drawInfoList);
     }
 
+    public void draw(FaceRectView faceRectView, DrawInfo drawInfo) {
+        faceRectView.addFaceInfo(drawInfo);
+    }
+
     /**
      * 调整人脸框用来绘制
      *

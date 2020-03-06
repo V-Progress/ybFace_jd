@@ -85,6 +85,10 @@
     <string name="infared_only_model">红外测温模式（不考勤）</string>
     <string name="thermal_only_model">热成像测温模式（不考勤）</string>
     <string name="face_thermal_model">人脸识别+热成像测温模式</string>
+    <string name="certificates_model">人证比对+热成像测温模式</string>
+
+
+
     <string name="temp_measuring_setting">正在测温</string>
     <string name="port_setting">串口</string>
     <string name="select_port_setting">选择串口</string>

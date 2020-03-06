@@ -262,7 +262,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         rlv.scrollToPosition(0);
         updateNumber();
 
-        VipDialogManager.showBuluDialog(getActivity(), sign.getHeadPath(), makeUpSuccess);
+        VipDialogManager.showBuluDialog(getMainActivity(), sign.getHeadPath(), makeUpSuccess);
         KDXFSpeechManager.instance().playText(makeUpSuccess ? getString(R.string.fment_sign_tip_blcg) + "！" : getString(R.string.fment_sign_tip_blsb) + "！");
         btnBulu.setEnabled(true);
         btnBulu.setVisibility(View.VISIBLE);

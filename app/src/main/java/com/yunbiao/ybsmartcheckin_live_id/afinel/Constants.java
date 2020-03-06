@@ -115,6 +115,7 @@ public class Constants {
         public static int MODEL_TEMPERATURE_ONLY = 2;
         public static int MODEL_THERMAL_IMAGING_ONLY = 3;
         public static int MODEL_FACE_THERMAL_IMAGING = 4;
+        public static int MODEL_CERTIFICATES_THERMAL = 5;
         public static String[] models;
 
         public static void initModels(Context context) {
@@ -129,7 +130,6 @@ public class Constants {
 
     //屏幕类型
     public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
-
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;

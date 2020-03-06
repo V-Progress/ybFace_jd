@@ -57,7 +57,6 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,7 +111,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
     @Override
     protected void initView() {
-        APP.setActivity(this);
+        APP.setMainActivity(this);
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
@@ -157,11 +156,11 @@ public class WelComeActivity extends BaseGpioActivity {
         distanceTipsEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);//距离提示开关
         mGetTempDelayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, Constants.DEFAULT_GET_TEMP_DELAY_TIME_VALUE);//设置测温延时
         mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
         mTempDValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);//高低温差值（用于判断高度）
         mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
         mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
         mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);//热成像图像镜像
+        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
         mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);//最低体温值
         mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);//最高体温值
         mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);//身体占比
@@ -466,7 +465,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 }
 
                 if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                    VipDialogManager.showVipDialog(getActivity(), sign);
+                    VipDialogManager.showVipDialog(WelComeActivity.this, sign);
                 }
 
                 KDXFSpeechManager.instance().playText(sign.getName());
@@ -491,7 +490,7 @@ public class WelComeActivity extends BaseGpioActivity {
             }
 
             if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                VipDialogManager.showVipDialog(getActivity(), sign);
+                VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
 
             KDXFSpeechManager.instance().playText(sign.getName());
@@ -1193,19 +1192,19 @@ public class WelComeActivity extends BaseGpioActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ReadCardUtils.isInputFromReader(this, event)) {
+        /*if (ReadCardUtils.isInputFromReader(this, event)) {
             if (readCardUtils != null) {
                 readCardUtils.resolveKeyEvent(event);
             }
-        }
+        }*/
         return super.dispatchKeyEvent(event);
     }
 
     @Override
     protected void initData() {
-        initCardReader();
+//        initCardReader();
 
-        KDXFSpeechManager.instance().init(getActivity()).welcome();
+        KDXFSpeechManager.instance().init(this).welcome();
 
         //开启Xmpp
         startXmpp();
@@ -1223,6 +1222,8 @@ public class WelComeActivity extends BaseGpioActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
+
+        Log.e(TAG, "update: 11111111111111");
         Company company = SpUtils.getCompany();
         if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
         if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());

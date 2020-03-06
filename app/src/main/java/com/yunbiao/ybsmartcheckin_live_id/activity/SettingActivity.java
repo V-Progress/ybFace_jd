@@ -35,7 +35,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -291,13 +290,13 @@ public class SettingActivity extends BaseActivity {
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
         final String[] items = Constants.Model.models;
-        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
+        final int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
         tvModelSetting.setText(items[model]);
         if (model == Constants.Model.MODEL_FACE_TEMPERATURE || model == Constants.Model.MODEL_TEMPERATURE_ONLY) {
             llThermalMirrorArea.setVisibility(View.GONE);
             llTempRangeArea.setVisibility(View.GONE);
             tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE + "");
-        } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+        } else if (model == Constants.Model.MODEL_FACE_THERMAL_IMAGING || model == Constants.Model.MODEL_THERMAL_IMAGING_ONLY || model == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
             llThermalMirrorArea.setVisibility(View.VISIBLE);
             llTempRangeArea.setVisibility(View.VISIBLE);
             tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE + "");
@@ -307,21 +306,64 @@ public class SettingActivity extends BaseActivity {
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int whichModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
+                final int currModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
                 builder.setTitle(getResources().getString(R.string.select_model_setting));
-                builder.setSingleChoiceItems(items, whichModel, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(items, currModel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SpUtils.saveInt(SpUtils.MODEL_SETTING, which);
-                        tvModelSetting.setText(items[which]);
+                    public void onClick(DialogInterface dialog, final int whichModel) {
+                        dialog.dismiss();
 
-                        if (which == Constants.Model.MODEL_FACE_TEMPERATURE || which == Constants.Model.MODEL_TEMPERATURE_ONLY) {
+                        if (currModel == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+                            builder.setMessage("切出当前模式需要重启，是否继续");
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton("重启", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SpUtils.saveInt(SpUtils.MODEL_SETTING, whichModel);
+                                    dialog.dismiss();
+                                    APP.exit();
+                                }
+                            });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                            return;
+                        }
+
+                        if (whichModel == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+                            builder.setMessage("切换此模式需要重启，是否继续");
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton("重启", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SpUtils.saveInt(SpUtils.MODEL_SETTING, whichModel);
+                                    dialog.dismiss();
+                                    APP.exit();
+                                }
+                            });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                            return;
+                        }
+
+                        if (whichModel == Constants.Model.MODEL_FACE_TEMPERATURE || whichModel == Constants.Model.MODEL_TEMPERATURE_ONLY) {
                             llThermalMirrorArea.setVisibility(View.GONE);
                             llTempRangeArea.setVisibility(View.GONE);
                             tvBaudRate.setText(Constants.BaudRate.INFARED_TEMP_BAUD_RATE + "");
                             SpUtils.saveInt(SpUtils.BAUD_RATE, Constants.BaudRate.INFARED_TEMP_BAUD_RATE);
-                        } else if (which == Constants.Model.MODEL_FACE_THERMAL_IMAGING || which == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
+                        } else if (whichModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING || whichModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
                             llThermalMirrorArea.setVisibility(View.VISIBLE);
                             llTempRangeArea.setVisibility(View.VISIBLE);
                             tvBaudRate.setText(Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE + "");
@@ -330,8 +372,10 @@ public class SettingActivity extends BaseActivity {
                             tvBaudRate.setText("");
                         }
 
-                        UIUtils.showShort(SettingActivity.this, items[which]);
-                        dialog.dismiss();
+                        SpUtils.saveInt(SpUtils.MODEL_SETTING, whichModel);
+
+                        tvModelSetting.setText(items[whichModel]);
+
                     }
                 });
                 AlertDialog alertDialog = builder.create();
@@ -554,7 +598,7 @@ public class SettingActivity extends BaseActivity {
         //体温播报设置==========================================================================================
         String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.temperature_tips_normal_main));
         EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
-        edtNormalTips.setHint(normalTips);
+        edtNormalTips.setText(normalTips);
         edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -564,12 +608,12 @@ public class SettingActivity extends BaseActivity {
         });
         String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.temperature_tips_warning_main));
         EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
-        edtWarningTips.setHint(warningTips);
+        edtWarningTips.setText(warningTips);
         edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 String input = s.toString();
-                SpUtils.saveStr(SpUtils.WARNING_TIPS,  TextUtils.isEmpty(input) ? "" : input);
+                SpUtils.saveStr(SpUtils.WARNING_TIPS, TextUtils.isEmpty(input) ? "" : input);
             }
         });
     }
@@ -881,12 +925,14 @@ public class SettingActivity extends BaseActivity {
                 }
 
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
-                Activity activity = APP.getActivity();
+                Activity activity = APP.getMainActivity();
                 if (activity != null) {
                     if (activity instanceof WelComeActivity) {
                         ((WelComeActivity) activity).setFaceViewSimilar();
                     } else if (activity instanceof PassageDeviceActivity) {
                         ((PassageDeviceActivity) activity).setFaceViewSimilar();
+                    } else if (activity instanceof CertificatesActivity) {
+                        ((CertificatesActivity) activity).setFaceViewSimilar();
                     }
                 }
             }
@@ -1079,8 +1125,7 @@ public class SettingActivity extends BaseActivity {
             return null;
         }
         if (type == 0) {
-
-            return getActivity().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + getActivity().getResources().getString(R.string.act_set_tip_xhqd) + wi.getRssi();
+            return APP.getContext().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + APP.getContext().getResources().getString(R.string.act_set_tip_xhqd) + wi.getRssi();
         }
 
         //获取32位整型IP地址

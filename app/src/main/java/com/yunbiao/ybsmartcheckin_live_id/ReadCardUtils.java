@@ -127,10 +127,10 @@ public class ReadCardUtils {
             return false;
         }
 //        event.getDevice().getControllerNumber();
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
-            //实体按键，若按键为返回、音量加减、返回false
-            return false;
-        }
+//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
+//            //实体按键，若按键为返回、音量加减、返回false
+//            return false;
+//        }
         if (event.getDevice().getSources() == (InputDevice.SOURCE_KEYBOARD | InputDevice.SOURCE_DPAD | InputDevice.SOURCE_CLASS_BUTTON)) {
             //虚拟按键返回false
             return false;
