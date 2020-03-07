@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.arcsoft.face.FaceFeature;
 import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.FaceSimilar;
-import com.arcsoft.face.LivenessInfo;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -41,9 +40,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
@@ -58,6 +55,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CertificatesActivity extends BaseGpioActivity {
 
@@ -89,6 +87,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private ImageView ivLogo;
     private View llBgVerifyStatus;
     private ReadCardUtils readCardUtils;
+    private ConcurrentLinkedQueue<FaceFeature> featureCacheList;
 
     @Override
     protected int getPortraitLayout() {
@@ -129,6 +128,9 @@ public class CertificatesActivity extends BaseGpioActivity {
         });
     }
 
+    private final int DEFAULT_FACE_IMAGE = R.mipmap.icon_face_moren;
+    private final int DEFAULT_IDCARD_IMAGE = R.mipmap.icon_idcard_moren;
+
     @Override
     protected void initData() {
         initCardReader();
@@ -143,6 +145,8 @@ public class CertificatesActivity extends BaseGpioActivity {
         mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
         mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE);
         InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
+
+        featureCacheList = new ConcurrentLinkedQueue();
     }
 
     @Override
@@ -163,7 +167,6 @@ public class CertificatesActivity extends BaseGpioActivity {
             InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
         }
 
-
         //设置测温补正值
         InfraredTemperatureUtils.getIns().setaCorrectionValue(mAmbCorrValue);
         InfraredTemperatureUtils.getIns().setmCorrectionValue(mTempCorrValue);
@@ -175,7 +178,18 @@ public class CertificatesActivity extends BaseGpioActivity {
         certificatesView.resume();
     }
 
-    private long mCacheSetImageTime = 0;
+    private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
+        @Override
+        public void getCardInfo(IdCardMsg msg) {
+            if (msg.name == null || msg.ptoto == null) {
+                tvTip.setText("证件读取失败,请重试");
+                KDXFSpeechManager.instance().playNormal("证件读取失败,请重试");
+                return;
+            }
+            setIdCardImage(msg);
+        }
+    };
+
     private CertificatesView.FaceCallback faceCallback = new CertificatesView.FaceCallback() {
 
         @Override
@@ -184,253 +198,299 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
 
         @Override
-        public void onFaceBitmap(Bitmap faceBitmap) {
-            if (faceBitmap == null) {
-                ivFace.setImageResource(R.mipmap.icon_face_moren);
-                ivIdCard.setImageResource(R.mipmap.icon_idcard_moren);
-                return;
-            }
-            ivFace.setImageBitmap(faceBitmap);
-        }
-
-        @Override
-        public boolean onFaceDetection(boolean hasFace, FaceInfo FaceInfo) {
+        public void onFaceDetection(boolean hasFace, FaceInfo faceInfo) {
             if (hasFace) {
-                if (mCacheSetImageTime == 0 || System.currentTimeMillis() - mCacheSetImageTime > 2000) {
-                    mCacheSetImageTime = System.currentTimeMillis();
-                    Bitmap faceBitmap = certificatesView.getFaceBitmap(FaceInfo);
-                    ivFace.setImageBitmap(faceBitmap);
-                }
-                sendFaceCompare();
+                setFaceImage(faceInfo);
             } else {
-                isPlayFace = false;
-                mCacheSetImageTime = 0;
-                ivFace.setImageResource(R.mipmap.icon_face_moren);
+                removeFaceImage();
             }
-            return false;
-        }
-
-        @Override
-        public void onCompareResult(boolean hasIdCard, float similar, boolean isPass) {
-
         }
     };
 
-    private FaceFeature idCardFeature = null;
+
+    /*
+     * 以mCacheFaceId为判断依据
+     * 在刷卡时判断是否有人脸,如果有,则将mCacheFaceId置为-1,代表先刷卡
+     * 1.mCacheFaceId为-1时,代表初始化或者先刷卡,不清除身份证信息
+     * 2.如果此时人脸出去再进来,此时mCacheFaceId肯定不为-1,此时判断为下一个人,清除身份信息
+     *
+     * */
+    private long mSetFaceImageTime = 0;//缓存时间,两秒刷新一次
+    private int mCacheFaceId = -1;//缓存ID
+    private int currFaceImageId = -1;//当前设置的ImageId,避免重复绘制消耗性能
+
+    //显示人脸头像
+    private void setFaceImage(FaceInfo faceInfo) {
+        if (mSetFaceImageTime == 0 || System.currentTimeMillis() - mSetFaceImageTime > 2000) {
+            mSetFaceImageTime = System.currentTimeMillis();
+            Bitmap faceBitmap = certificatesView.getFaceBitmap(faceInfo);
+            ivFace.setImageBitmap(faceBitmap);
+            currFaceImageId = -1;
+
+            //如果缓存为-1,代表先刷卡,不清楚身份证信息
+            if (mCacheFaceId == -1) {
+                mCacheFaceId = faceInfo.getFaceId();
+                startCompareThread();
+            } else
+                //如果缓存ID不为-1,代表后进来的人,则清除身份证信息
+                if (mCacheFaceId != faceInfo.getFaceId()) {
+                    mCacheFaceId = faceInfo.getFaceId();
+                    mSetFaceImageTime = 0;
+                    mIdCardBitmap = null;
+                    clearUITips();
+                    startCompareThread();
+                }
+        }
+    }
+
+    //人脸移除时关闭对比线程清除缓存时间,不控制mCacheId的变化
+    private void removeFaceImage() {
+        //清除人脸的时候不清除缓存ID
+        mSetFaceImageTime = 0;
+        closeCompareThread();
+        if (currFaceImageId != DEFAULT_FACE_IMAGE) {
+            currFaceImageId = DEFAULT_FACE_IMAGE;
+            featureCacheList.clear();
+        }
+    }
+
+    private Bitmap mIdCardBitmap = null;
     private IdCardMsg mIdCardMsg = null;
-    private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
-        @Override
-        public void getCardInfo(IdCardMsg msg) {
-            if (msg.name == null || msg.ptoto == null) {
-                Log.e(TAG, "getCardInfo: 请重新读卡");
-                return;
-            }
-            mIdCardMsg = msg;
-            byte[] bytes = IDCardReader.getInstance().decodeToBitmap(msg.ptoto);
-            final Bitmap bp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            ivIdCard.setImageBitmap(bp);
 
-            tvName.setText(msg.name);
-
-
-            String nativeplace = IDCardReader.getNativeplace(msg.id_num);
-            tvOrigin.setText(nativeplace);
-
-
-            idCardFeature = certificatesView.inputIdCard(bp);
-            sendIdCardCompareMessage();
+    private void setIdCardImage(IdCardMsg idCardMsg) {
+        mIdCardMsg = idCardMsg;
+        byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
+        mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        String nativeplace = IDCardReader.getNativeplace(idCardMsg.id_num);
+        //由此判断是先刷脸还是先刷卡
+        if (!certificatesView.hasFace()) {
+            sendSpeechTip("请正视摄像头");
+            mCacheFaceId = -1;
+            resultHandler.removeMessages(-1);
+            resultHandler.sendEmptyMessageDelayed(-1, 8000);
+        } else {
+            startCompareThread();
         }
-    };
 
-    private Handler handler = new Handler() {
+        ivIdCard.setImageBitmap(mIdCardBitmap);
+        tvName.setText(idCardMsg.name);
+        tvOrigin.setText(nativeplace);
+    }
+
+    //对比线程
+    private boolean isRunning = false;
+    private Thread compareThread = null;
+
+    private String TIP_READ_ID_CARD = "请将身份证置于刷卡区";
+
+    private void startCompareThread() {
+        if (compareThread != null && compareThread.isAlive()) {
+            return;
+        }
+        resultHandler.removeMessages(-1);
+        isRunning = true;
+        compareThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isRunning) {
+                    if (mIdCardBitmap == null) {
+                        String s = tvTip.getText().toString();
+                        if (!TextUtils.equals(s, TIP_READ_ID_CARD)) {
+                            sendTextTips(TIP_READ_ID_CARD);
+                        }
+                        continue;
+                    }
+
+                    sendSpeechTip("正在验证");
+
+                    Log.e(TAG, "run: 正在验证");
+                    //人脸进来后添加人脸特征
+                    while (featureCacheList.size() < 5) {
+                        Log.e(TAG, "run: 添加人脸");
+                        FaceFeature faceFeature = certificatesView.getFaceFeature();
+                        if (faceFeature != null) {
+                            featureCacheList.add(faceFeature);
+                        }
+                        if (!certificatesView.hasFace()) {
+                            break;
+                        }
+                    }
+
+                    Log.e(TAG, "继续进行");
+
+                    FaceFeature idCardFeature = certificatesView.inputIdCard(mIdCardBitmap);
+
+                    float finalSimilar = 0;
+                    for (FaceFeature faceFeature : featureCacheList) {
+                        FaceSimilar compare = certificatesView.compare(faceFeature, idCardFeature);
+                        float comapareSimilar = compare.getScore();
+                        Log.e(TAG, "run: 对比:" + comapareSimilar);
+                        if (comapareSimilar > finalSimilar) {
+                            finalSimilar = comapareSimilar;
+                        }
+                    }
+
+                    sendResult(finalSimilar);
+
+                    featureCacheList.clear();
+                    closeCompareThread();
+                    break;
+                }
+            }
+        });
+        compareThread.start();
+    }
+
+    private void closeCompareThread() {
+        if (isRunning) {
+            Log.e(TAG, "startCompareThread: 结束");
+            isRunning = false;
+            compareThread = null;
+        }
+    }
+
+    private void sendTextTips(String text) {
+        Message message = Message.obtain();
+        message.what = -2;
+        message.obj = text;
+        resultHandler.sendMessage(message);
+    }
+
+    private void sendResult(float similar) {
+        Message message = Message.obtain();
+        message.what = 1;
+        message.obj = similar;
+        resultHandler.sendMessage(message);
+    }
+
+    private void sendSpeechTip(String tip) {
+        Message message = Message.obtain();
+        message.what = 0;
+        message.obj = tip;
+        resultHandler.sendMessage(message);
+    }
+
+    private Handler resultHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1://人脸识别请求对比
-                    if (idCardFeature == null) {
-                        tvTip.setText("请将身份证置于刷卡区");
-                    } else {
-                        sendCompareMessage(1000);
-                    }
-                    break;
-                case 2://刷卡器请求对比
-                    if (!certificatesView.hasFace()) {
-                        //如果一直没有人脸，则3秒后清除证件信息
-                        tvTip.setText("请面向摄像头");
-                        playText("请面向摄像头", null);
-                        sendResetMessage(3000);
-                    } else {
-                        sendCompareMessage(1000);
-                    }
-                    break;
                 case -2:
-                    reset();
+                    String text = (String) msg.obj;
+                    tvTip.setText(text);
                     break;
-                default:
-                    boolean live = certificatesView.getLivenessInfo() == LivenessInfo.ALIVE;
-                    if (!live) {
-                        ledRed();
-                        playText("活体认证失败，请重试", null);
-                        tvTip.setText("活体检测失败");
-                        sendResetMessage(300);
-                        break;
-                    }
-                    FaceFeature faceFeature = certificatesView.getFaceFeature();
-                    FaceSimilar compare = certificatesView.compare(faceFeature, idCardFeature);
-                    int similar = (int) (compare.getScore() * 100);
-                    boolean isPass = compare.getScore() >= certificatesView.SIMILAR_THRESHOLD;
-                    tvSimilar.setText("相似度" + similar + "%");
-                    if (!isPass) {
-                        ledRed();
-                        showVerifyTips(false);
-                        tvTip.setText("人证不匹配，请重试");
-                        playText("人证不匹配", new Runnable() {
-                            @Override
-                            public void run() {
-                                sendResetMessage(2000);
-                            }
-                        });
-                        break;
-                    }
+                case -1:
+                    mIdCardBitmap = null;
+                    ivIdCard.setImageResource(DEFAULT_IDCARD_IMAGE);
+                    tvName.setText("");
+                    tvOrigin.setText("");
+                    break;
+                case 0://语音提醒
+                    String tip = (String) msg.obj;
+                    tvTip.setText(tip);
+                    KDXFSpeechManager.instance().playNormal(tip);
+                    break;
+                case 1:
+                    float similar = (float) msg.obj;
 
-                    if (mTemperatureCacheList.size() <= 0) {
-                        ledRed();
-                        showVerifyTips(false);
-                        tvTip.setText("测温失败，请重试");
-                        playText("测温失败，请重试", new Runnable() {
-                            @Override
-                            public void run() {
-                                sendResetMessage(500);
-                            }
-                        });
-                        break;
+                    int intSimilar = (int) (similar * 100);//取出相似度
+                    Float maxTemp = 0f;
+                    if (mTemperatureCacheList != null && mTemperatureCacheList.size() > 0) {
+                        maxTemp = Collections.max(mTemperatureCacheList);//取出最大温度
                     }
+                    boolean isVerify = similar >= CertificatesView.SIMILAR_THRESHOLD;
+                    boolean isNormal = maxTemp != 0f && maxTemp < mTempWarningThreshold;//是否正常
 
-                    Float maxValue = Collections.max(mTemperatureCacheList);
-                    boolean isWarning = maxValue >= mTempWarningThreshold;
-                    setTempTextTip(maxValue, isWarning);
+                    final boolean isPass = isVerify && isNormal;
+
+                    setUITips(isVerify, isNormal, isPass, maxTemp, intSimilar);
 
                     Bitmap faceBitmap = ((BitmapDrawable) ivFace.getDrawable()).getBitmap();
                     Bitmap idCardBitmap = ((BitmapDrawable) ivIdCard.getDrawable()).getBitmap();
+                    SignManager.instance().uploadIdCardAndReImage(maxTemp, mIdCardMsg, intSimilar, (isPass ? 0 : 1), idCardBitmap, faceBitmap, mCacheHotImage);
 
-                    Runnable runnable = null;
-                    String tip;
-                    if (isWarning) {
-                        ledRed();
-                        tip = "人证匹配通过，体温异常";
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                KDXFSpeechManager.instance().playWaningRing();
-                                sendResetMessage(500);
-                            }
-                        };
-                    } else {
-                        ledGreen();
-                        tip = "人证匹配通过，体温正常";
-                        openDoor();
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                sendResetMessage(500);
-                            }
-                        };
-                    }
-                    tvTip.setText(tip);
-                    playText(tip, runnable);
-
-
-                    SignManager.instance().uploadIdCardAndReImage(maxValue, mIdCardMsg, similar, (isPass && !isWarning ? 0 : 1), idCardBitmap, faceBitmap, mCacheHotImage);
+                    resultHandler.removeMessages(2);
+                    resultHandler.sendEmptyMessageDelayed(2, 10000);
                     break;
-
+                case 2:
+                    clearUITips();
+                    break;
+                default:
+                    break;
             }
         }
     };
 
-    //发送对比命令
-    private void sendCompareMessage(int delay) {
-        handler.removeMessages(-2);
-        tvTip.setText("正在验证");
-        playText("正在验证", null);
-        handler.removeMessages(0);
-        handler.sendEmptyMessageDelayed(0, delay);
+    private void clearUITips() {
+        tvOStatus.setText("");
+        ivStatus.setImageBitmap(null);
+        tvSimilar.setText("");
+        tvTemp.setText("");
+        verifyStatusTip.setVisibility(View.GONE);
+        tvTip.setText("");
+        ivIdCard.setImageResource(DEFAULT_IDCARD_IMAGE);
+        tvName.setText("");
+        tvOrigin.setText("");
+        ivFace.setImageResource(DEFAULT_FACE_IMAGE);
+        KDXFSpeechManager.instance().stopNormal();
+        KDXFSpeechManager.instance().stopWarningRing();
+        resetLedDelay(0);
     }
 
-    //发送重置命令
-    private void sendResetMessage(int delay) {
-        handler.removeMessages(-2);
-        handler.sendEmptyMessageDelayed(-2, delay);
-    }
+    private void setUITips(boolean isVerify, boolean isNormal, final boolean isPass, float maxTemp, int intSimilar) {
+        String message;
+        if (isVerify) {
+            message = "验证通过,";
+        } else {
+            message = "人证不匹配,";
+        }
 
-    private void showTempTips(float temp, boolean isWarning) {
-        Log.e(TAG, "showTempTips: 11111111111111111111111");
-        tvTemp.setText(temp + "℃");
-        if (!isWarning) {
+        if (isNormal) {
+            message += "体温正常";
             tvOStatus.setText("正常");
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
+            message += "体温异常";
             tvOStatus.setText("异常");
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
         }
-    }
 
-    private void showVerifyTips(boolean isPass) {
+        tvSimilar.setText("相似度" + intSimilar + "%");
+        tvTemp.setText(maxTemp + "℃");
+        tvTip.setText(message);
+
         if (!verifyStatusTip.isShown()) {
             verifyStatusTip.setVisibility(View.VISIBLE);
         }
-        llBgVerifyStatus.setBackgroundResource(isPass ? R.mipmap.bg_verify_pass : R.mipmap.bg_verify_nopass);
-        ivVerifyStatus.setImageResource(isPass ? R.mipmap.icon_verify_pass : R.mipmap.icon_verify_nopass);
-        tvVerifyInfo.setText(isPass ? "可以通行" : "禁止通行");
-    }
 
-    private void reset() {
-        resetLedDelay(0);
-        idCardFeature = null;
-        mIdCardMsg = null;
-        ivIdCard.setImageResource(R.mipmap.icon_idcard_moren);
-        ivFace.setImageResource(R.mipmap.icon_face_moren);
-        tvTip.setText("");
-        tvSimilar.setText("");
-        tvName.setText("");
-        tvOrigin.setText("");
-        tvTemp.setText("");
-        tvOStatus.setText("");
-        ivStatus.setImageBitmap(null);
-        if (verifyStatusTip.isShown()) {
-            verifyStatusTip.setVisibility(View.GONE);
+        if (isPass) {
+            message += ",请通行";
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
+            tvVerifyInfo.setText("可以通行");
+            ledGreen();
+        } else {
+            message += ",禁止通行";
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
+            tvVerifyInfo.setText("禁止通行");
+            ledRed();
         }
-    }
 
-    //发送人脸对比命令
-    private boolean isPlayFace = false;
-
-    private void sendFaceCompare() {
-        if (isPlayFace) {
-            return;
-        }
-        isPlayFace = true;
-        handler.sendEmptyMessage(1);
-    }
-
-    //发送身份证对比命令
-    private void sendIdCardCompareMessage() {
-        handler.sendEmptyMessage(2);
-    }
-
-    //设置文字状态提示
-    private void setTempTextTip(float temp, boolean isWarning) {
-        showTempTips(temp, isWarning);
-        showVerifyTips(!isWarning);
-    }
-
-    //播放语音文字
-    private void playText(String text, Runnable runnable) {
-        KDXFSpeechManager.instance().stopNormal();
-        KDXFSpeechManager.instance().playNormal(text, runnable);
+        KDXFSpeechManager.instance().playNormal(message, new Runnable() {
+            @Override
+            public void run() {
+                if (isPass) {
+                    resetLedDelay(0);
+                } else {
+                    KDXFSpeechManager.instance().playWaningRing();
+                    resetLedDelay(3000);
+                }
+            }
+        });
     }
 
     //=热成像测温逻辑==================================================

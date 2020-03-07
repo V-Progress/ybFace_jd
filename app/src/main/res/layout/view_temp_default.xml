@@ -1,64 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_temp_default"
     android:layout_width="600dp"
     android:layout_height="139dp"
-    android:id="@+id/view_temp_default"
     android:background="@mipmap/bg_warn">
+
     <TextView
+        android:layout_centerVertical="true"
         android:id="@+id/tv_ssm_t"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:textColor="@color/white"
-        android:text="随申码:"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"/>
+        android:text="健康码:"
+        android:textColor="@color/white"
+        android:textSize="30dp" />
+
     <TextView
+        android:drawablePadding="5dp"
         android:id="@+id/tv_canPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/selector_tv_canpass"
-        android:background="@null"
-        android:layout_alignTop="@+id/tv_ssm_t"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="40dp"
         android:layout_toRightOf="@+id/tv_ssm_t"
-        android:layout_marginLeft="68dp"
-        android:text="可以通行"
+        android:background="@null"
+        android:drawableTop="@mipmap/icon_pass_qrcode"
         android:gravity="center"
-        android:textSize="20dp"
+        android:text="可以通行"
         android:textColor="@color/tv_canpass"
-        android:drawablePadding="10dp"
-        />
+        android:textSize="20dp" />
 
     <TextView
+        android:drawablePadding="5dp"
         android:id="@+id/tv_noPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/selector_tv_nopasspass"
-        android:background="@null"
-        android:layout_alignTop="@+id/tv_ssm_t"
-        android:layout_toRightOf="@+id/tv_canPass"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="68dp"
-        android:text="不可通行"
+        android:layout_toRightOf="@+id/tv_canPass"
+        android:background="@null"
+        android:drawableTop="@mipmap/icon_nopass_qrcode"
         android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="@color/tv_nopass"
-        android:drawablePadding="10dp"
-        />
+        android:text="禁止通行"
+        android:textColor="@color/tv_canpass"
+        android:textSize="20dp" />
 
     <TextView
+        android:drawablePadding="5dp"
         android:id="@+id/tv_ensurePass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/selector_tv_ensurepass"
-        android:background="@null"
-        android:layout_alignTop="@+id/tv_ssm_t"
-        android:layout_toRightOf="@+id/tv_noPass"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="68dp"
-        android:text="可以通行"
+        android:layout_toRightOf="@+id/tv_noPass"
+        android:background="@null"
+        android:drawableTop="@mipmap/icon_what_qrcode"
         android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="@color/tv_ensurepass"
-        android:drawablePadding="10dp"
-        />
+        android:text="确认通行"
+        android:textColor="@color/tv_canpass"
+        android:textSize="20dp" />
 </RelativeLayout>

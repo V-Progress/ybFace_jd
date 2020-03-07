@@ -679,16 +679,16 @@ public class SignManager {
         Log.e(TAG, "上传身份信息");
         String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
         Log.e(TAG, "地址" + uploadIdcard);
-        Log.e(TAG, "身份证图：" + (idCardBitmap == null ? 0 + "---" + 0 : idCardBitmap.getWidth() + "---" + idCardBitmap.getHeight()));
-        Log.e(TAG, "人脸图：" + (faceBitmap == null ? 0 + "---" + 0 : faceBitmap.getWidth() + "---" + faceBitmap.getHeight()));
-        Log.e(TAG, "热量图：" + (reBitmap == null ? 0 + "---" + 0 : reBitmap.getWidth() + "---" + reBitmap.getHeight()));
+        Log.e(TAG, "身份证图：" + (idCardBitmap == null ? (0 + "---" + 0) : (idCardBitmap.getWidth() + "---" + idCardBitmap.getHeight())));
+        Log.e(TAG, "人脸图：" + (faceBitmap == null ? (0 + "---" + 0) : (faceBitmap.getWidth() + "---" + faceBitmap.getHeight())));
+        Log.e(TAG, "热量图：" + (reBitmap == null ? (0 + "---" + 0) : (reBitmap.getWidth() + "---" + reBitmap.getHeight())));
 
         Map<String, String> params = new HashMap();
         params.put("similar", similar + "");
         params.put("name", msg.name.trim());
         params.put("sex", TextUtils.equals(msg.sex, "男") ? "1" : "0");
         params.put("nation", msg.nation_str);
-        params.put("birthDate", msg.birth_year + "-" + msg.birth_month);
+        params.put("birthDate", msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
         params.put("IdCard", msg.id_num);
         params.put("address", msg.address);
         params.put("termDate", msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
@@ -699,20 +699,57 @@ public class SignManager {
         Log.e(TAG, "uploadIdCardAndReImage: " + params.toString());
 
         PostFormBuilder builder = OkHttpUtils.post().url(uploadIdcard).params(params);
-
+        //存身份证图
         long l = System.currentTimeMillis();
-        File idCardFile = saveBitmap("idCard_", l, idCardBitmap);
+        File idCardFile;
+        if (idCardBitmap != null) {
+            idCardFile = saveBitmap("idCard_", l, idCardBitmap);
+            Log.e(TAG, "存身份证图：" + idCardFile.getPath());
+        } else {
+            idCardFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!idCardFile.exists()) {
+                try {
+                    idCardFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         builder.addFile("oldHeads", idCardFile.getName(), idCardFile);
-        Log.e(TAG, "存身份证图：" + idCardFile.getPath());
-
-        File faceFile = saveBitmap(l, faceBitmap);
+        //存人脸图
+        File faceFile = null;
+        if(faceBitmap != null){
+            faceFile = saveBitmap(l, faceBitmap);
+            Log.e(TAG, "存人脸图：" + faceFile.getPath());
+        } else {
+            faceFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!faceFile.exists()) {
+                try {
+                    faceFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         builder.addFile("newHeads", faceFile.getName(), faceFile);
-        Log.e(TAG, "存人脸图：" + faceFile.getPath());
-
-        File reFile = saveBitmap("re_", l, reBitmap);
+        //存热量图
+        File reFile = null;
+        if (reBitmap != null) {
+            reFile = saveBitmap("re_", l, reBitmap);
+            Log.e(TAG, "存热量图：" + reFile.getPath());
+        } else {
+            reFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!reFile.exists()) {
+                try {
+                    reFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         builder.addFile("reHead", reFile.getName(), reFile);
-        Log.e(TAG, "存热量图：" + reFile.getPath());
 
+        //创建请求
         RequestCall build = builder.build();
         build.execute(new StringCallback() {
             @Override

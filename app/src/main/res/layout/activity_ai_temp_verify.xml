@@ -60,12 +60,30 @@
             <com.yunbiao.faceview.CertificatesView
                 android:id="@+id/certificates_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/iv_hot_image"
+            <LinearLayout
+                android:padding="5dp"
+                android:background="@mipmap/bg_warn"
                 android:layout_width="160dp"
-                android:layout_height="160dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_hot_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp" />
+
+                <TextView
+                    android:background="#3D000000"
+                    android:id="@+id/tv_temp_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
         </RelativeLayout>
 
         <TextView
@@ -229,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="28dp"
                 android:layout_toRightOf="@+id/tv_origin_t"
-                android:textColor="@color/red"
+                android:textColor="@color/white"
                 android:textSize="24dp" />
         </RelativeLayout>
 
@@ -285,21 +303,21 @@
                 android:layout_toRightOf="@+id/tv_ostatus" />
         </RelativeLayout>
 
-
         <FrameLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="139dp">
+            android:layout_height="139dp"
+            android:layout_marginTop="10dp">
+
             <include
                 layout="@layout/view_temp_default"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <include
                 layout="@layout/view_temp_verify"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
 

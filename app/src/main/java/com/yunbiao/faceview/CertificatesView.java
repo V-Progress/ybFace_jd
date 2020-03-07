@@ -124,7 +124,6 @@ public class CertificatesView extends FrameLayout {
         cameraHelper.start();
     }
 
-    private List<FacePreviewInfo> infoList;
     private byte[] mCurrBytes;
 
     public boolean checkFaceToFar(Rect faceRect, int distance) {
@@ -183,11 +182,7 @@ public class CertificatesView extends FrameLayout {
     public interface FaceCallback {
         void onReady();
 
-        void onFaceBitmap(Bitmap faceBitmap);
-
-        boolean onFaceDetection(boolean hasFace, FaceInfo FaceInfo);
-
-        void onCompareResult(boolean hasIdCard, float similar, boolean isPass);
+        void onFaceDetection(boolean hasFace, FaceInfo FaceInfo);
     }
 
     public Bitmap getFaceBitmap(FaceInfo faceInfo) {
@@ -227,7 +222,7 @@ public class CertificatesView extends FrameLayout {
     private final long GET_FACE_BITMAP_DELAY_TIME = 1000;
     private final long COMPARE_DELAY_TIME = 10000;
 
-    public FaceFeature inputIdCard(Bitmap bmp) {
+    public synchronized FaceFeature inputIdCard(Bitmap bmp) {
         if (bmp == null) {
             return null;
         }
@@ -259,6 +254,25 @@ public class CertificatesView extends FrameLayout {
         }
 
         return faceFeature;
+    }
+
+    public synchronized FaceFeature getFaceFeature() {
+        if(faceInfoList != null && faceInfoList.size() > 0){
+            synchronized (this){
+                if(faceInfoList != null && faceInfoList.size() > 0){
+                    try{
+                        FaceInfo faceInfo = faceInfoList.get(0);
+                        //提取特征
+                        FaceFeature faceFeature = new FaceFeature();
+                        frEngine.extractFaceFeature(mCurrBytes, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfo, faceFeature);
+                        return faceFeature;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private CameraListener cameraListener = new CameraListener() {
@@ -322,17 +336,6 @@ public class CertificatesView extends FrameLayout {
 
     public boolean hasFace() {
         return faceInfoList != null && faceInfoList.size() > 0;
-    }
-
-    public FaceFeature getFaceFeature() {
-        if (faceInfoList != null && faceInfoList.size() > 0) {
-            FaceInfo faceInfo = faceInfoList.get(0);
-            //提取特征
-            FaceFeature faceFeature = new FaceFeature();
-            frEngine.extractFaceFeature(mCurrBytes, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfo, faceFeature);
-            return faceFeature;
-        }
-        return null;
     }
 
     public int getLivenessInfo() {
@@ -444,10 +447,8 @@ public class CertificatesView extends FrameLayout {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
                 Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                if (infoList != null && infoList.size() > 0) {
-                    FacePreviewInfo facePreviewInfo = infoList.get(0);
-                    FaceInfo faceInfo = facePreviewInfo.getFaceInfo();
-
+                if (faceInfoList != null && faceInfoList.size() > 0) {
+                    FaceInfo faceInfo = faceInfoList.get(0);
                     if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
                         Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, bestRect.right - bestRect.left, bestRect.bottom - bestRect.top);
