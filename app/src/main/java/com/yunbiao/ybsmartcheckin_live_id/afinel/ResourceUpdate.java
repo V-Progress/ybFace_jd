@@ -40,6 +40,10 @@ public class ResourceUpdate {
     public static String getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
     public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
 
+    public static String GETUSERINFO_BY_CODE = WEB_BASE_URL + "/api/witness/checkcode.html";
+
+    public static String UPLOAD_CODE_VERIFY_RESULT = WEB_BASE_URL + "/api/witness/checkCodeUpload.html";
+
     public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";
     public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = WEB_BASE_URL + "api/facewitness/checkByarrayTemper.html";
 

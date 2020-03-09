@@ -95,6 +95,10 @@ public class SpUtils {
     public static final String NORMAL_TIPS = "normalTips";//体温正常播报
     public static final String WARNING_TIPS = "warningTips";//体温异常播报
 
+
+    //视美泰相关
+    public static final String SMT_MODEL_SETTING = "smt_model_setting";
+
     public static void init() {
         getCompany();
     }

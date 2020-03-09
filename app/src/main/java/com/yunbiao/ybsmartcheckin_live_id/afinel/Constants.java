@@ -136,7 +136,7 @@ public class Constants {
     //默认波特率
     public static final int DEFAULT_BAUD_RATE = BaudRate.THERMAL_IMAGING_BAUD_RATE;
     //屏幕角度默认值
-    public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? 270 : 0;
+    public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 || SCREEN_TYPE == ScreenType.TYPE_SMT_PORTRAIT_8_800_1280 ? 270 : 0;
     //端口号
     public static final String DEFAULT_PORT_PATH = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? "/dev/ttyS1" : "/dev/ttyS4";
     //大屏海报开启状态
@@ -176,9 +176,9 @@ public class Constants {
     }
 
     public interface ScreenType {
-        int TYPE_PORTRAIT_42_1920_1080 = 0;//竖版42寸
         int TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080 = 1;//横板21寸和10寸
         int TYPE_PORTRAIT_8_800_1280 = 2;//竖屏闸机
+        int TYPE_SMT_PORTRAIT_8_800_1280 = 3;
     }
 }
 

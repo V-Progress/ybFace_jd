@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PassageDeviceActivity">
+
+    <com.yunbiao.faceview.FaceView
+        android:id="@+id/face_view"
+        android:layout_width="match_parent"
+        android:layout_height="1422dp"
+        android:layout_gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_top_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_main_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="200dp"
+                android:maxHeight="100dp"
+                android:onClick="goSetting"
+                android:scaleType="centerInside"
+                android:src="@mipmap/yb_logo" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_clock_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+                <TextClock
+                    android:id="@+id/textClock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+                    android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+                    android:textColor="@color/text_clock_color_main"
+                    android:textSize="28dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fl_temp_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="280dp"
+            android:background="@drawable/shape_dot_area_background">
+
+            <TextView
+                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/tv_temperature_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_marginRight="150dp"
+                android:layout_marginLeft="150dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/iv_temp_detection_dot_main"
+                android:layout_width="100px"
+                android:layout_height="160px"
+                android:src="@mipmap/detection_dot" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_temp_tips_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_range_tips_main"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:background="#4D000000"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
+
+        <FrameLayout
+            android:id="@+id/ll_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_top_area" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_face_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

@@ -675,6 +675,50 @@ public class SignManager {
         return isCanPass;
     }
 
+    public void uploadCodeVerifyResult(String entryId, boolean isPass, Bitmap newHead, float temper, Bitmap reHead) {
+
+        Map<String, String> params = new HashMap();
+        params.put("entryId", entryId);
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("isPass", (isPass ? 0 : 1) + "");
+        params.put("temper", temper + "");
+        Log.e(TAG, "uploadCodeVerifyResult: 参数：" + params.toString());
+
+        PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.UPLOAD_CODE_VERIFY_RESULT).params(params);
+
+        File file = saveBitmap(System.currentTimeMillis(), newHead);
+        builder.addFile("newHeads", file.getName(), file);
+        Log.e(TAG, "uploadCodeVerifyResult: 截图：" + file.exists() + " --- " + file.getPath());
+
+        File reFile;
+        if (reHead != null) {
+            reFile = saveBitmap("hot_", System.currentTimeMillis(), reHead);
+        } else {
+            reFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!reFile.exists()) {
+                try {
+                    reFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.e(TAG, "uploadCodeVerifyResult: 热量图：" + reFile.exists() + " --- " + reFile.getPath());
+        builder.addFile("reHead", reFile.getName(), reFile);
+
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 上传结果：" + response);
+            }
+        });
+    }
+
     public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
         Log.e(TAG, "上传身份信息");
         String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
@@ -718,7 +762,7 @@ public class SignManager {
         builder.addFile("oldHeads", idCardFile.getName(), idCardFile);
         //存人脸图
         File faceFile = null;
-        if(faceBitmap != null){
+        if (faceBitmap != null) {
             faceFile = saveBitmap(l, faceBitmap);
             Log.e(TAG, "存人脸图：" + faceFile.getPath());
         } else {

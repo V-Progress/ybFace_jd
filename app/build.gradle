@@ -11,6 +11,7 @@ android {
         versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
+        multiDexEnabled true
         ndk {
             //设置支持的SO库架构
             abiFilters 'armeabi-v7a'//,'armeabi','arm64-v8a','x86','x86_64'
@@ -86,6 +87,7 @@ def buildTime() {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(includes: ['temperature-release.aar'], dir: 'libs')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'

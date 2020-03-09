@@ -143,13 +143,13 @@ public class APP extends Application {
 
         cauchException();
 
-        initBugly();
+//        initBugly();
 
         initUM();
 
         initUtils();
 
-        initSkinManager();
+//        initSkinManager();
     }
 
     private void initSkinManager() {

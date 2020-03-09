@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.arcsoft.face.FaceFeature;
 import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.FaceSimilar;
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -37,6 +39,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
@@ -44,9 +47,14 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ScanKeyManager;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,6 +64,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import okhttp3.Call;
+import okhttp3.Request;
 
 public class CertificatesActivity extends BaseGpioActivity {
 
@@ -88,6 +99,8 @@ public class CertificatesActivity extends BaseGpioActivity {
     private View llBgVerifyStatus;
     private ReadCardUtils readCardUtils;
     private ConcurrentLinkedQueue<FaceFeature> featureCacheList;
+    private TextView tvOriginT;
+    private TextView tvLeftTopTemp;
 
     @Override
     protected int getPortraitLayout() {
@@ -103,6 +116,8 @@ public class CertificatesActivity extends BaseGpioActivity {
     protected void initView() {
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
+        tvLeftTopTemp = findViewById(R.id.tv_temp_main);
+        tvOriginT = findViewById(R.id.tv_origin_t);
         ivLogo = findViewById(R.id.iv_logo);
         ivVerifyStatus = findViewById(R.id.iv_verifyStatus);
         tvVerifyInfo = findViewById(R.id.iv_verifyInfo);
@@ -181,6 +196,10 @@ public class CertificatesActivity extends BaseGpioActivity {
     private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
         @Override
         public void getCardInfo(IdCardMsg msg) {
+            if (isCode) {
+                tvTip.setText("请等待");
+                return;
+            }
             if (msg.name == null || msg.ptoto == null) {
                 tvTip.setText("证件读取失败,请重试");
                 KDXFSpeechManager.instance().playNormal("证件读取失败,请重试");
@@ -199,6 +218,9 @@ public class CertificatesActivity extends BaseGpioActivity {
 
         @Override
         public void onFaceDetection(boolean hasFace, FaceInfo faceInfo) {
+            if (isCode) {
+                return;
+            }
             if (hasFace) {
                 setFaceImage(faceInfo);
             } else {
@@ -227,6 +249,7 @@ public class CertificatesActivity extends BaseGpioActivity {
             ivFace.setImageBitmap(faceBitmap);
             currFaceImageId = -1;
 
+
             //如果缓存为-1,代表先刷卡,不清楚身份证信息
             if (mCacheFaceId == -1) {
                 mCacheFaceId = faceInfo.getFaceId();
@@ -237,6 +260,8 @@ public class CertificatesActivity extends BaseGpioActivity {
                     mCacheFaceId = faceInfo.getFaceId();
                     mSetFaceImageTime = 0;
                     mIdCardBitmap = null;
+                    closeCompareThread();
+                    resultHandler.removeMessages(2);
                     clearUITips();
                     startCompareThread();
                 }
@@ -258,6 +283,9 @@ public class CertificatesActivity extends BaseGpioActivity {
     private IdCardMsg mIdCardMsg = null;
 
     private void setIdCardImage(IdCardMsg idCardMsg) {
+        closeCompareThread();
+        resultHandler.removeMessages(2);
+
         mIdCardMsg = idCardMsg;
         byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
         mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -265,15 +293,18 @@ public class CertificatesActivity extends BaseGpioActivity {
         //由此判断是先刷脸还是先刷卡
         if (!certificatesView.hasFace()) {
             sendSpeechTip("请正视摄像头");
+            clearUITips();
             mCacheFaceId = -1;
             resultHandler.removeMessages(-1);
             resultHandler.sendEmptyMessageDelayed(-1, 8000);
         } else {
+            mCacheFaceId = -1;
             startCompareThread();
         }
 
         ivIdCard.setImageBitmap(mIdCardBitmap);
         tvName.setText(idCardMsg.name);
+        tvOriginT.setText("籍贯:");
         tvOrigin.setText(nativeplace);
     }
 
@@ -298,6 +329,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                         if (!TextUtils.equals(s, TIP_READ_ID_CARD)) {
                             sendTextTips(TIP_READ_ID_CARD);
                         }
+                        closeCompareThread();
                         continue;
                     }
 
@@ -374,22 +406,23 @@ public class CertificatesActivity extends BaseGpioActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case -2:
+                case -2://设置提示
                     String text = (String) msg.obj;
                     tvTip.setText(text);
                     break;
-                case -1:
+                case -1://自动清除身份信息
                     mIdCardBitmap = null;
                     ivIdCard.setImageResource(DEFAULT_IDCARD_IMAGE);
                     tvName.setText("");
                     tvOrigin.setText("");
                     break;
                 case 0://语音提醒
+                    KDXFSpeechManager.instance().stopNormal();
                     String tip = (String) msg.obj;
                     tvTip.setText(tip);
                     KDXFSpeechManager.instance().playNormal(tip);
                     break;
-                case 1:
+                case 1://人证结果提示
                     float similar = (float) msg.obj;
 
                     int intSimilar = (int) (similar * 100);//取出相似度
@@ -411,8 +444,31 @@ public class CertificatesActivity extends BaseGpioActivity {
                     resultHandler.removeMessages(2);
                     resultHandler.sendEmptyMessageDelayed(2, 10000);
                     break;
-                case 2:
+                case 3://扫码结果提示
+                    String entryId = (String) msg.obj;
+                    int color = msg.arg1;
+
+                    float temp = mCodeTempList.size() <= 0 ? 0.0f : Collections.max(mCodeTempList);
+
+                    boolean isOk = temp != 0f && temp >= 36.0f && temp < mTempWarningThreshold;//是否正常
+
+                    setUITips(true, isOk, isOk, temp, -1);
+
+                    Bitmap currCameraFrame = certificatesView.getCurrCameraFrame();
+
+                    SignManager.instance().uploadCodeVerifyResult(entryId, (isOk && color == 1), currCameraFrame, temp, mCacheHotImage);
+
+                    resultHandler.removeMessages(4);
+                    resultHandler.sendEmptyMessageDelayed(4, 5000);
+
+                    resultHandler.removeMessages(2);
+                    resultHandler.sendEmptyMessageDelayed(2, 10000);
+                    break;
+                case 2://清除UI
                     clearUITips();
+                    break;
+                case 4://清除扫码状态
+                    isCode = false;
                     break;
                 default:
                     break;
@@ -458,7 +514,9 @@ public class CertificatesActivity extends BaseGpioActivity {
             ivStatus.setImageResource(R.mipmap.icon_warning);
         }
 
-        tvSimilar.setText("相似度" + intSimilar + "%");
+        if (intSimilar != -1) {
+            tvSimilar.setText("相似度" + intSimilar + "%");
+        }
         tvTemp.setText(maxTemp + "℃");
         tvTip.setText(message);
 
@@ -517,9 +575,16 @@ public class CertificatesActivity extends BaseGpioActivity {
                     @Override
                     public void run() {
                         ivHotImage.setImageBitmap(imageBmp);
+                        tvLeftTopTemp.setText("温度：" + bodyMaxT + "℃");
                     }
                 });
             }
+
+            if (isCode) {
+                mCodeTempList.add(bodyMaxT);
+                return;
+            }
+            mCodeTempList.clear();
 
             if (isBody) {
                 if (bodyMaxT <= 0) {
@@ -711,35 +776,311 @@ public class CertificatesActivity extends BaseGpioActivity {
     /**
      * 读卡器初始化
      */
+    private ScanKeyManager scanKeyManager;
+
     private void initCardReader() {
         //读卡器声明
-        readCardUtils = new ReadCardUtils();
-        readCardUtils.setReadSuccessListener(readCardListener);
+        scanKeyManager = new ScanKeyManager(new ScanKeyManager.OnScanValueListener() {
+            @Override
+            public void onScanValue(String value) {
+                Log.e(TAG, "onScanValue: 检测到扫码：" + value);
+
+                isCode = true;
+                getUserInfoByCode(value);
+            }
+        });
+        onKeyBoardListener();
+    }
+
+    private boolean isCode = false;
+    private List<Float> mCodeTempList = new ArrayList<>();
+
+    private void getUserInfoByCode(String code) {
+        Log.e(TAG, "地址:" + ResourceUpdate.GETUSERINFO_BY_CODE);
+        Log.e(TAG, "参数：" + code);
+        OkHttpUtils.post()
+                .url(ResourceUpdate.GETUSERINFO_BY_CODE)
+                .addParams("code", code)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onBefore(Request request, int id) {
+                UIUtils.showNetLoading(CertificatesActivity.this);
+            }
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                UIUtils.showLong(CertificatesActivity.this, "获取信息失败，请重试" + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
+
+                resultHandler.removeMessages(4);
+                resultHandler.sendEmptyMessageDelayed(4, 1000);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 请求结果：" + response);
+                GetUserInfo getUserInfo = new Gson().fromJson(response, GetUserInfo.class);
+                if (getUserInfo.status != 1) {
+                    UIUtils.showLong(CertificatesActivity.this, "获取信息失败" + "（ " + getUserInfo.message + "）");
+                    return;
+                }
+                resultHandler.removeMessages(2);
+                clearUITips();
+
+                tvOriginT.setText("部门:");
+
+                String dept = getUserInfo.dept;
+                tvOrigin.setText(TextUtils.isEmpty(dept) ? "" : dept);
+                tvName.setText(getUserInfo.name);
+
+                tvTip.setText("正在测温 ");
+
+                Glide.with(CertificatesActivity.this).load(getUserInfo.head).asBitmap().into(ivIdCard);
+                resultHandler.removeMessages(3);
+                Message message = Message.obtain();
+                message.what = 3;
+                message.arg1 = TextUtils.equals("绿色", getUserInfo.color) ? 1 : TextUtils.equals("黄色", getUserInfo.color) ? 1 : 0;
+                message.obj = getUserInfo.entryId;
+                resultHandler.sendMessageDelayed(message, 1000);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                UIUtils.dismissNetLoading();
+            }
+        });
+    }
+
+    class GetUserInfo {
+        int status;
+        String entryId;
+        String message;
+        String color;
+        String name;
+        String dept;
+        String head;
     }
 
     private void closeCardReader() {
-        if (readCardUtils != null) {
-            readCardUtils.removeScanSuccessListener();
-            readCardUtils = null;
-        }
     }
-
-    private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
-        @Override
-        public void onScanSuccess(String barcode) {
-            Log.e(TAG, "onScanSuccess: " + barcode);
-
-        }
-    };
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ReadCardUtils.isInputFromReader(this, event)) {
-            if (readCardUtils != null) {
-                readCardUtils.resolveKeyEvent(event);
-            }
+        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && !isInput) {
+            scanKeyManager.analysisKeyEvent(event);
+            return true;
         }
+
         return super.dispatchKeyEvent(event);
     }
+
+    private boolean isInput = false;
+
+    //监听软件盘是否弹起
+    private void onKeyBoardListener() {
+        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                Log.e("软键盘", "键盘显示 高度" + height);
+                isInput = true;
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                Log.e("软键盘", "键盘隐藏 高度" + height);
+                isInput = false;
+            }
+        });
+    }
+
+
+    class Verifier extends Thread {
+        private static final String TAG = "Verifier";
+        private IdCardMsg idCardMsg;
+        private Bitmap idCardBitmap;
+        private static final int MAX_FACE_FEATURE_NUM = 5;
+        private List<FaceFeature> faceFeatureList = new ArrayList<>();
+        private Thread compareThread = null;
+        private boolean isComparing = true;
+        private Thread collectThread = null;
+        private boolean isCollecting = false;
+        private long NO_FACE_CLEAR_DELAY = 5000;
+        private OnCompareCallback compareCallback;
+        private long mCacheTime = 0;
+        private int mFaceId = -1;
+
+        /***
+         * 输入身份证的时候开启对比线程，并将时间重置为0
+         * @param msg
+         * @param bitmap
+         * @param compareCallback
+         */
+        public void inputIDcard(IdCardMsg msg, Bitmap bitmap, OnCompareCallback compareCallback) {
+            idCardMsg = msg;
+            idCardBitmap = bitmap;
+            mCacheTime = 0;
+            if (compareCallback != null) {
+                compareCallback.getIdCardMsg(idCardMsg, idCardBitmap);
+            }
+            startCompareThread();
+        }
+
+        public void startCollectFaceFeature(int faceId) {
+            if (mFaceId != faceId) {
+                mFaceId = faceId;
+                faceFeatureList.clear();
+                closeCollectThread();
+            }
+            if (faceFeatureList.size() > MAX_FACE_FEATURE_NUM) {
+                return;
+            }
+            if (collectThread != null && collectThread.isAlive()) {
+                return;
+            }
+            Log.e(TAG, "startCollectFaceFeature: 开启收集线程");
+            isCollecting = true;
+            collectThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (isCollecting) {
+                        if (faceFeatureList.size() <= MAX_FACE_FEATURE_NUM) {
+                            if (!certificatesView.hasFace()) {
+                                closeCollectThread();
+                                break;
+                            }
+                            Log.e(TAG, "run:当前特征数：" + faceFeatureList.size());
+                            FaceFeature faceFeature = certificatesView.getFaceFeature();
+                            if (faceFeature != null) {
+                                faceFeatureList.add(faceFeature);
+                            }
+                        } else {
+                            closeCollectThread();
+                            break;
+                        }
+                    }
+                }
+            });
+            collectThread.start();
+        }
+
+        public void closeCollectThread() {
+            if (isCollecting) {
+                Log.e(TAG, "closeCollectThread: 结束收集线程");
+                isCollecting = false;
+                collectThread = null;
+            }
+        }
+
+        private void reset() {
+            Log.e(TAG, "reset: 重置状态");
+            closeCollectThread();
+            closeCompareThread();
+            mCacheTime = 0;
+            idCardMsg = null;
+            idCardBitmap = null;
+            compareCallback = null;
+            faceFeatureList.clear();
+            if (compareCallback != null) {
+                compareCallback.onShutdown();
+            }
+        }
+
+        public void startCompareThread() {
+            Log.e(TAG, "startCompareThread: 欲开启对比线程");
+            if (compareThread != null && compareThread.isAlive()) {
+                Log.e(TAG, "startCompareThread: 对比线程正在运行");
+                return;
+            }
+            Log.e(TAG, "startCompareThread: 开启对比线程");
+            isComparing = true;
+            compareThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (isComparing) {
+                        if (!certificatesView.hasFace()) {
+                            if (mCacheTime == 0) {
+                                mCacheTime = System.currentTimeMillis();
+                            } else if (System.currentTimeMillis() - mCacheTime >= NO_FACE_CLEAR_DELAY) {
+                                Log.e(TAG, "run: " + NO_FACE_CLEAR_DELAY + "毫秒内没有人脸进入，清除身份信息");
+                                reset();
+                                closeCompareThread();
+                                break;
+                            }
+                            continue;
+                        }
+
+                        if (faceFeatureList.size() <= MAX_FACE_FEATURE_NUM) {
+                            continue;
+                        }
+
+                        Log.e(TAG, "run: 开始对比");
+                        FaceFeature idCardFeature = certificatesView.inputIdCard(idCardBitmap);
+
+                        float finalSimilar = 0;
+                        for (FaceFeature faceFeature : faceFeatureList) {
+                            FaceSimilar compare = certificatesView.compare(faceFeature, idCardFeature);
+                            float comapareSimilar = compare.getScore();
+                            Log.e(TAG, "run: 对比:" + comapareSimilar);
+                            if (comapareSimilar > finalSimilar) {
+                                finalSimilar = comapareSimilar;
+                            }
+                        }
+
+                        Log.e(TAG, "run: 结果回调：" + finalSimilar);
+
+                        if (compareCallback != null) {
+                            compareCallback.compareFinish(finalSimilar);
+                        }
+
+                        reset();
+                        break;
+                    }
+                }
+            });
+            compareThread.start();
+        }
+
+        public void closeCompareThread() {
+            if (isComparing) {
+                Log.e(TAG, "startCompareThread: 结束对比线程");
+                isComparing = false;
+                compareThread = null;
+            }
+        }
+
+    }
+
+    public interface OnCompareCallback {
+        void getIdCardMsg(IdCardMsg msg, Bitmap bitmap);
+
+        void onShutdown();
+
+        void compareFinish(float similar);
+    }
+    /*
+     * 由身份证开启验证线程
+     * 验证线程中循环检测人脸，如果没有人脸，则几秒后清除身份证缓存和信息
+     * 有人脸以后跳过清除判断，并且开启另一个线程判断人脸特征采集情况
+     * 人脸特征采集完毕，开始对比，结果返回
+     *
+     *
+     * */
+
+    private OnCompareCallback onCompareCallback = new OnCompareCallback() {
+        @Override
+        public void getIdCardMsg(IdCardMsg msg, Bitmap bitmap) {
+            Log.e(TAG, "getIdCardMsg: 收到卡号：" + msg.name);
+        }
+
+        @Override
+        public void onShutdown() {
+            Log.e(TAG, "onShutdown: 线程被中断，清除身份证信息");
+        }
+
+        @Override
+        public void compareFinish(float similar) {
+            Log.e(TAG, "compareFinish: 对比结果：" + similar);
+        }
+    };
 
 }

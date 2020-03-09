@@ -35,6 +35,26 @@ public class UIUtils {
         }
     }
 
+    public static void showLong(Activity context,String title){
+        cancelTitleTips();
+        int padding = 20;
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setBackground(context.getResources().getDrawable(R.drawable.shape_spinner_drop));
+        textView.setTextSize(36);
+        textView.setText(title);
+        textView.setTextColor(Color.WHITE);
+        textView.setPadding(padding, padding, padding, padding);
+        textView.setGravity(Gravity.CENTER);
+        textView.setElevation(10);
+
+        mTipsToast = new android.widget.Toast(context);
+        mTipsToast.setDuration(Toast.LENGTH_LONG);
+        mTipsToast.setGravity(Gravity.CENTER, 0, 0);
+        mTipsToast.setView(textView);
+        mTipsToast.show();
+    }
+
     public static void showTitleTip(Context context, String title) {
         cancelTitleTips();
         int padding = 20;

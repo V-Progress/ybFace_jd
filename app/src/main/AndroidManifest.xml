@@ -55,6 +55,7 @@
         tools:replace="label,allowBackup">
         <activity android:name=".activity.CertificatesActivity"></activity>
         <activity android:name=".activity.PassageDeviceActivity" />
+        <activity android:name=".smdt_portrait.SMTMainActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
@@ -93,6 +94,17 @@
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
             android:label="Notification Settings" />
+
+
+        <!--视美泰竖屏闸机-->
+        <activity android:name=".smdt_portrait.SMTSystemActivity"/>
+        <activity android:name=".smdt_portrait.SMTEmployListActivity"/>
+        <activity android:name=".smdt_portrait.SMTEditEmployActivity"/>
+        <activity android:name=".smdt_portrait.SMTRecordActivity"/>
+        <activity android:name=".smdt_portrait.SMTSettingActivity"/>
+        <activity android:name=".smdt_portrait.SMTVisitorActivity"/>
+        <!--视美泰竖屏闸机-->
+
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service

@@ -11,6 +11,7 @@ import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
+import com.yunbiao.ybsmartcheckin_live_id.smdt_portrait.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -84,19 +85,18 @@ public class SplashActivity extends BaseActivity {
     private void jump() {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
-
-        int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
-
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {//竖屏八寸
+        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_SMT_PORTRAIT_8_800_1280) {//视美泰8寸
+            Log.e(TAG, "jump: 11111111111");
+            startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
+        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280 ) {//竖屏八寸
             startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
         } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080) {//横屏21、10寸
+            int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
             if (model == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
                 startActivity(new Intent(this, CertificatesActivity.class));
             } else {
                 startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
             }
-        } else {//竖屏42寸
-
         }
     }
 

@@ -44,37 +44,31 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     private void open() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            if (mSmdtManager != null) {
-                mSmdtManager.setRelayIoValue(1);
+        if (mSmdtManager != null) {
+            mSmdtManager.setRelayIoValue(1);
+        }
+        if (mSmdtManager != null) {
+            for (int i = 0; i < 3; i++) {
+                int result = mSmdtManager.smdtSetExtrnalGpioValue(1, false);
             }
-        } else {
-            if (mSmdtManager != null) {
-                for (int i = 0; i < 3; i++) {
-                    int result = mSmdtManager.smdtSetExtrnalGpioValue(1, false);
-                }
-            }
-            if (xhApi != null) {
-                xhApi.XHSetGpioValue(5, 0);
-            }
+        }
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(5, 0);
         }
     }
 
     private void close() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            if (mSmdtManager != null) {
-                mSmdtManager.setRelayIoValue(0);
+        if (mSmdtManager != null) {
+            mSmdtManager.setRelayIoValue(0);
+        }
+        if (mSmdtManager != null) {
+            for (int i = 0; i < 3; i++) {
+                int result = mSmdtManager.smdtSetExtrnalGpioValue(1, true);
+                isOpened = result == 0;
             }
-        } else {
-            if (mSmdtManager != null) {
-                for (int i = 0; i < 3; i++) {
-                    int result = mSmdtManager.smdtSetExtrnalGpioValue(1, true);
-                    isOpened = result == 0;
-                }
-            }
-            if (xhApi != null) {
-                xhApi.XHSetGpioValue(5, 1);
-            }
+        }
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(5, 1);
         }
     }
 

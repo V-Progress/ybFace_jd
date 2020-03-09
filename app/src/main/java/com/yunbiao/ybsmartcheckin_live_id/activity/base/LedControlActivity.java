@@ -35,7 +35,7 @@ public abstract class LedControlActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280){
+        if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280 || Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_SMT_PORTRAIT_8_800_1280){
             try {
                 mSmdtManager = SmdtManager.create(this);
             } catch (Exception e) {
@@ -59,35 +59,23 @@ public abstract class LedControlActivity extends BaseActivity {
     };
 
     protected void ledGreen() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            smdtLedGreen();
-        } else {
-            jniLedGreen();
-        }
+        smdtLedGreen();
+        jniLedGreen();
     }
 
     protected void ledRed() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            smdtLedRed();
-        } else {
-            jniLedRed();
-        }
+        smdtLedRed();
+        jniLedRed();
     }
 
     protected void ledInit() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            smdtCloseAll();
-        } else {
-            jniLedBlue();
-        }
+        smdtCloseAll();
+        jniLedBlue();
     }
 
     protected void ledOff() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            smdtCloseAll();
-        } else {
-            jniLedOff();
-        }
+        smdtCloseAll();
+        jniLedOff();
     }
 
     /*================================================================================*/

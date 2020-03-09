@@ -45,8 +45,6 @@ public class KDXFSpeechManager {
     private boolean isInited = false;
     private static HashMap<String, String> textToSpeechMap = new HashMap<>();
     private static List<String> ontimeList = new ArrayList<>();
-    private static Integer CURRENT_SOUND = 0;
-    private final String UTTERANCE_WELCOME = "欢迎使用云标智能考勤 系统";
     private int mTTSSupport = 0;
 
     public static KDXFSpeechManager instance() {
@@ -210,12 +208,7 @@ public class KDXFSpeechManager {
         }
 
         ontimeList.add(message);
-        /**
-         * 如果有背景音乐的处理
-         */
-        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0) {
-            CURRENT_SOUND = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        }
+
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
 
@@ -225,11 +218,11 @@ public class KDXFSpeechManager {
                 if (TextUtils.equals(message, utteranceId) && listener != null) {
                     listener.playComplete(utteranceId);
                 }
-                restoreVolumn();
+//                restoreVolumn();
             }
         });
 
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+//        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         mTextToSpeech.speak(message, TextToSpeech.QUEUE_ADD, textToSpeechMap);
     }
 
@@ -241,29 +234,6 @@ public class KDXFSpeechManager {
             mTextToSpeech.shutdown();
             mTextToSpeech = null;
             isInited = false;
-        }
-    }
-
-    private void restoreVolumn() {
-        if (ontimeList.size() > 0) {
-            ontimeList.remove(0);
-            if (ontimeList.size() > 0) {
-//                                HandleMessageUtils.getInstance().sendHandler(SHOUT, uihandler, ontimeList.get(0));
-            } else {
-                //播放完成后恢复后台音乐或者视频（如果有的话）
-                HandleMessageUtils.getInstance().runInThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (CURRENT_SOUND > 0)
-                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, CURRENT_SOUND, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-                    }
-                });
-            }
         }
     }
 
@@ -318,25 +288,18 @@ public class KDXFSpeechManager {
             mMessage = message;
         }
 
-        /**
-         * 如果有背景音乐的处理
-         */
-        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0) {
-            CURRENT_SOUND = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        }
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
         mTextToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
             @Override
             public void onUtteranceCompleted(String utteranceId) {
-                restoreVolumn();
                 if (runnable != null) {
                     runnable.run();
                 }
             }
         });
 
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+//        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         mTextToSpeech.speak(message, queueMode, textToSpeechMap);
     }
 

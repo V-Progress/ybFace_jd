@@ -554,7 +554,13 @@ public class FaceView extends FrameLayout {
 
                     if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
-                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, bestRect.right - bestRect.left, bestRect.bottom - bestRect.top);
+                        int width = bestRect.right - bestRect.left;
+                        int height = bestRect.bottom - bestRect.top;
+                        if (width <= 0 || height <= 0) {
+                            return null;
+                        }
+
+                        Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
                         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
                         if (bmp != null && angle != 0) {
                             Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
