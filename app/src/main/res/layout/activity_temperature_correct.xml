@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_main"
+    android:orientation="vertical"
+    tools:context=".thermal_imaging.TemperatureCorrectActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="温度矫正"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:paddingLeft="20dp"
+            android:paddingRight="30dp"
+            android:src="@mipmap/back" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="20dp">
+
+            <com.yunbiao.faceview.FaceView
+                android:id="@+id/face_view"
+                android:layout_width="match_parent"
+                android:layout_height="560dp"
+                android:background="@mipmap/bg_camera"
+                android:padding="5dp" />
+
+            <ImageView
+                android:id="@+id/iv_thermal_corr"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="45dp"
+                android:gravity="center"
+                android:text="请根据体温枪实测温度填写"
+                android:textColor="@color/white"
+                android:textSize="30dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="50dp">
+
+            <TextView
+                android:id="@+id/tv_current_corr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="当前补偿值："
+                android:textColor="@color/white"
+                android:textSize="32dp" />
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="热成像温度："
+                    android:textColor="@color/white"
+                    android:textSize="32dp" />
+
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/tv_thermal_temp_correct"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="32dp" />
+                <Button
+                    android:textColor="@color/white"
+                    android:background="@drawable/shape_thermal_image_main"
+                    android:id="@+id/btn_click_temp_corr"
+                    android:text="点击测温"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="体温枪温度："
+                    android:textColor="@color/white"
+                    android:textSize="32dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_sub_temp_correct"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@mipmap/sub"/>
+
+                    <EditText
+                        android:id="@+id/edt_value_temp_gun"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/line_net_edt"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:text="℃"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                    <Button
+                        android:id="@+id/btn_add_temp_correct"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@mipmap/plus" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:background="@drawable/shape_thermal_image_main"
+                android:onClick="onSave"
+                android:layout_marginTop="50dp"
+                android:textSize="30dp"
+                android:textColor="@color/white"
+                android:text="保存"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

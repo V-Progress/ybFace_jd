@@ -95,9 +95,16 @@ public class SpUtils {
     public static final String NORMAL_TIPS = "normalTips";//体温正常播报
     public static final String WARNING_TIPS = "warningTips";//体温异常播报
 
+    public static final String SPEECH_DELAY = "speechDelay";//播报延时
 
     //视美泰相关
     public static final String SMT_MODEL_SETTING = "smt_model_setting";
+
+    //热成像
+    public static final String THERMAL_MODEL_SETTING = "thermalModelSetting";
+    public static final String LOW_TEMP_MODEL = "lowTempModel";
+
+    public static final String AMBIENT = "ambient";
 
     public static void init() {
         getCompany();
@@ -170,6 +177,13 @@ public class SpUtils {
             return sp.getLong(key, 0);
         }
         return 0;
+    }
+
+    public static long getLong(String key,long defaultValue){
+        if(sp != null){
+            return sp.getLong(key,defaultValue);
+        }
+        return defaultValue;
     }
 
     public static String getStr(String key) {

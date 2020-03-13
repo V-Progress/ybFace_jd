@@ -38,7 +38,7 @@
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:layout_weight="2"
-                android:text="@string/base_delete"
+                android:text="@string/employ_list_item_delete"
                 android:gravity="center"
                 />
     </LinearLayout>

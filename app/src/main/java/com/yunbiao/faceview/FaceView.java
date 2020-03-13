@@ -721,6 +721,8 @@ public class FaceView extends FrameLayout {
         }
     }
 
+
+
     private void searchFace(final FaceFeature frFace, final Integer requestId) {
         Observable.create(new ObservableOnSubscribe<CompareResult>() {
             @Override
@@ -795,6 +797,8 @@ public class FaceView extends FrameLayout {
                                 cr.setTrackId(requestId);
                                 callback.onFaceVerify(cr);
                             }
+
+                            Log.e(TAG, "onNext: 111111111111111111111111111");
                             faceHelper.setName(requestId, "未注册");
                             retryRecognizeDelayed(requestId);
                         }
@@ -803,11 +807,11 @@ public class FaceView extends FrameLayout {
                     @Override
                     public void onError(Throwable e) {
                         //回调识别失败的结果，说明是陌生人
-                        if (callback != null) {
+                       /* if (callback != null) {
                             CompareResult cr = new CompareResult("", -1);
                             cr.setTrackId(requestId);
                             callback.onFaceVerify(cr);
-                        }
+                        }*/
                         faceHelper.setName(requestId, "未注册");
                         retryRecognizeDelayed(requestId);
                     }

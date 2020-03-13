@@ -12,7 +12,6 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/iv_qrcode_sign_list"
         android:layout_centerVertical="true">
 
         <Button
@@ -35,22 +34,12 @@
     </FrameLayout>
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@+id/ll_bottom_info"
+        android:id="@+id/ll_qr_code"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_marginBottom="10dp"
-            android:id="@+id/tv_model_sign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_model_main_background"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:textColor="#46C6F4" />
 
         <ImageView
             android:id="@+id/iv_qrcode_sign_list"
@@ -62,7 +51,78 @@
             android:scaleType="centerInside" />
     </LinearLayout>
 
+    <!--
+        android:layout_toLeftOf="@+id/rl_record"-->
     <LinearLayout
+        android:id="@+id/ll_bottom_info"
+        android:layout_toLeftOf="@+id/rl_record"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_bottom_info_background_sign_fragment"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:text="和水水水水模式"
+            android:id="@+id/tv_model_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_model_main_background"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="#46C6F4" />
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:text="公司：啊飒飒飒飒飒飒飒飒飒飒"
+            android:textSize="18dp"
+            android:id="@+id/tv_company_name_sign_fragment"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:gravity="center"
+            android:text="编号：1213131121"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:id="@+id/tv_device_no_sign_fragment"
+            android:layout_weight="0.8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:text="网络正常"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:id="@+id/tv_net_state_sign_fragment"
+            android:layout_weight="0.6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:text="版本：1.4.1"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:id="@+id/tv_ver_sign_fragment"
+            android:layout_weight="0.6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
         android:id="@+id/layout_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,6 +154,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_record"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true">

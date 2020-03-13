@@ -255,16 +255,16 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                     return false;
                 } else if (faceView.checkFaceToFar(realRect, minWidth)) {
                     mCacheTime = 0;
-                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
+                    setRangeTips(getResources().getString(R.string.main_temp_tips_so_far_text));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
                     }
                     return false;
                 } else if (faceView.checkFaceTooClose(realRect, maxHeight)) {
                     mCacheTime = 0;
-                    setRangeTips(getResources().getString(R.string.distance_so_close_text_tips_main));
+                    setRangeTips(getResources().getString(R.string.main_temp_tips_so_close_text));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_close_tips_main));
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_far));
                     }
                     return false;
                 }
@@ -273,7 +273,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                 //检测人脸是否在框内
                 if (!faceView.checkFaceInFrame2(realRect, viewDistance)) {
                     mCacheTime = 0;
-                    setRangeTips(getResources().getString(R.string.please_range_tips_main));
+                    setRangeTips(getResources().getString(R.string.main_temp_tips_please_in_range));
                     return false;
                 }
                 setRangeTips("");
@@ -301,9 +301,9 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                 Rect realRect = faceView.getRealRect(rect);
                 int distanceWidth = viewDistance.getMeasuredWidth();
                 if (faceView.checkFaceToFar(realRect, distanceWidth / 2)) {
-                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
+                    setRangeTips(getResources().getString(R.string.main_temp_tips_so_far_text));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
                     }
                     return false;
                 }
@@ -330,7 +330,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
 
                 Float maxValue = Collections.max(mTemperatureCacheList);
                 if (maxValue < mTempMinThreshold) {
-                    showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
+                    showTemperatureTips(getResources().getString(R.string.main_please_waiting), R.drawable.shape_main_frame_temperature_ing, 3000);
                     mBroadCastFlag = false;
                     mTemperatureCacheList.clear();
                     mCacheTime_TI = 0;
@@ -353,7 +353,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                 Bitmap facePicture = faceView.takePicture();
                 //如果三要素不存在，则重置状态
                 if (facePicture == null || mCacheHotImage == null || mTemperatureCacheList.size() <= 0) {
-                    showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
+                    showTemperatureTips(getResources().getString(R.string.main_please_waiting), R.drawable.shape_main_frame_temperature_ing, 3000);
                     mBroadCastFlag = false;
                     mTemperatureCacheList.clear();
                     mCacheTime_TI = 0;
@@ -557,7 +557,7 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                     public void run() {
                         ivThermalImaging.setImageBitmap(imageBmp);
                         if (tvThermalPercent != null) {
-                            tvThermalPercent.setText(getResources().getString(R.string.thermal_update_main) + bodyMaxT + "℃");
+                            tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + bodyMaxT + "℃");
                         }
                     }
                 });
@@ -773,9 +773,9 @@ public class PassageDeviceActivity extends BaseGpioActivity {
                     mCacheTime = 0;
                     mCacheValueForTempModel = 0f;
                     mCacheTemperatureHighestValue = 0f;
-                    setRangeTips(getResources().getString(R.string.distance_so_far_text_tips_main));
+                    setRangeTips(getResources().getString(R.string.main_temp_tips_so_far_text));
                     if (distanceTipsEnabled) {
-                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.distance_so_far_tips_main));
+                        KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
                     }
                     infraredHandler.postDelayed(temperatureUpdateRunnable, 400);
                     return;
@@ -925,9 +925,9 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         if (isWarning) {
             String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS);
             speechTips = TextUtils.isEmpty(warningTips)
-                    ? getResources().getString(R.string.temperature_tips_warning_main) + temperature + "℃"
+                    ? getResources().getString(R.string.main_temp_warning_tips) + temperature + "℃"
                     : warningTips;
-            textTips = getResources().getString(R.string.temperature_tips_warning_main) + temperature + "℃";
+            textTips = getResources().getString(R.string.main_temp_warning_tips) + temperature + "℃";
 
             bgId = R.drawable.shape_main_frame_temperature_warning;
             warningRunnable = new Runnable() {
@@ -942,9 +942,9 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         } else {
             String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS);
             speechTips = TextUtils.isEmpty(normalTips)
-                    ? getResources().getString(R.string.temperature_tips_normal_main) + temperature + "℃"
+                    ? getResources().getString(R.string.main_temp_normal_tips) + temperature + "℃"
                     : normalTips;
-            textTips = getResources().getString(R.string.temperature_tips_normal_main) + temperature + "℃";
+            textTips = getResources().getString(R.string.main_temp_normal_tips) + temperature + "℃";
 
             bgId = R.drawable.shape_main_frame_temperature_normal;
             KDXFSpeechManager.instance().stopNormal();

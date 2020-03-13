@@ -46,6 +46,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
+import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ScanKeyManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
@@ -101,6 +102,8 @@ public class CertificatesActivity extends BaseGpioActivity {
     private ConcurrentLinkedQueue<FaceFeature> featureCacheList;
     private TextView tvOriginT;
     private TextView tvLeftTopTemp;
+    private Button btnNoIdCard;
+    private float mTempMinThreshold;
 
     @Override
     protected int getPortraitLayout() {
@@ -134,7 +137,8 @@ public class CertificatesActivity extends BaseGpioActivity {
         certificatesView = findViewById(R.id.certificates_view);
         ivFace = findViewById(R.id.iv_face);
         ivIdCard = findViewById(R.id.iv_idCard);
-
+        btnNoIdCard = findViewById(R.id.btn_no_id_card);
+        btnNoIdCard.setOnClickListener(onClickListener);
         ivLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +146,16 @@ public class CertificatesActivity extends BaseGpioActivity {
             }
         });
     }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            v.setEnabled(false);
+            tvTip.setText("正在测温，请稍等");
+            getTempHandler.sendEmptyMessageDelayed(0, 100);
+        }
+    };
+
 
     private final int DEFAULT_FACE_IMAGE = R.mipmap.icon_face_moren;
     private final int DEFAULT_IDCARD_IMAGE = R.mipmap.icon_idcard_moren;
@@ -169,6 +183,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         super.onResume();
         mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
         mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
+        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
         mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
         mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);//最低体温值
         mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);//最高体温值
@@ -551,6 +566,57 @@ public class CertificatesActivity extends BaseGpioActivity {
         });
     }
 
+    private void setUITips2(boolean isNormal, final boolean isPass, float maxTemp) {
+        tvName.setText("访客");
+        String message = "";
+        if (isNormal) {
+            message += "体温正常";
+            tvOStatus.setText("正常");
+            tvOStatus.setTextColor(Color.GREEN);
+            tvTemp.setTextColor(Color.GREEN);
+            ivStatus.setImageResource(R.mipmap.icon_normal);
+        } else {
+            message += "体温异常";
+            tvOStatus.setText("异常");
+            tvOStatus.setTextColor(Color.RED);
+            tvTemp.setTextColor(Color.RED);
+            ivStatus.setImageResource(R.mipmap.icon_warning);
+        }
+
+        tvTemp.setText(maxTemp + "℃");
+        tvTip.setText(message);
+
+        if (!verifyStatusTip.isShown()) {
+            verifyStatusTip.setVisibility(View.VISIBLE);
+        }
+
+        if (isPass) {
+            message += ",请通行";
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
+            tvVerifyInfo.setText("可以通行");
+            ledGreen();
+        } else {
+            message += ",禁止通行";
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
+            tvVerifyInfo.setText("禁止通行");
+            ledRed();
+        }
+
+        KDXFSpeechManager.instance().playNormal(message, new Runnable() {
+            @Override
+            public void run() {
+                if (isPass) {
+                    resetLedDelay(0);
+                } else {
+                    KDXFSpeechManager.instance().playWaningRing();
+                    resetLedDelay(3000);
+                }
+            }
+        });
+    }
+
     //=热成像测温逻辑==================================================
     private void startThermalImaging() {
         Log.e(TAG, "startThermalImaging: 开始执行热成像逻辑");
@@ -607,6 +673,71 @@ public class CertificatesActivity extends BaseGpioActivity {
             }
         }
     };
+
+    private Handler getTempHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                isCode = true;
+                sendEmptyMessageDelayed(1, 1000);
+                return;
+            } else if (msg.what == 1) {
+
+                if (mCodeTempList.size() <= 0) {
+                    tvTip.setText("测温失败，请重试");
+                    isCode = false;
+                    KDXFSpeechManager.instance().playNormal("测温失败，请重试");
+                    btnNoIdCard.setEnabled(true);
+                    getTempHandler.removeMessages(2);
+                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
+                    return;
+                }
+
+                isCode = false;
+                Float mean = getMean(mCodeTempList);
+                if (mean < mTempMinThreshold) {
+                    isCode = false;
+                    tvTip.setText("测温失败，请重试");
+                    KDXFSpeechManager.instance().playNormal("测温失败，请重试");
+                    btnNoIdCard.setEnabled(true);
+                    getTempHandler.removeMessages(2);
+                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
+                    return;
+                }
+
+                tvTip.setText("");
+                boolean isWarning = mean >= mTempWarningThreshold;
+
+                setUITips2(!isWarning, !isWarning, mean);
+                btnNoIdCard.setEnabled(true);
+
+                Bitmap currCameraFrame = certificatesView.getCurrCameraFrame();
+                SignManager.instance().uploadNoIdCardResult(isWarning ? 1 : 0, currCameraFrame, mean, mCacheHotImage);
+
+                getTempHandler.removeMessages(2);
+                getTempHandler.sendEmptyMessageDelayed(2, 5000);
+            } else if (msg.what == 2) {
+                clearUITips();
+            }
+        }
+    };
+
+    private float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
+    }
+
+    private float getMean(List<Float> array) {
+        float result = 0.0f;
+        if (array.size() == 0) {
+            return result;
+        }
+        for (float anArray : array) {
+            result += anArray;
+        }
+        result = result / array.size();
+        result = formatF(result);
+        return result;
+    }
 
     private void startXmpp() {//开启xmpp
         serviceManager = new ServiceManager(this);

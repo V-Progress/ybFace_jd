@@ -427,7 +427,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
                     ivHead.setImageBitmap(imgBitmap);
                 }
 
-                tvName.setText(signBean.getType() != -9 ? signBean.getName() : "访客");
+                tvName.setText(signBean.getType() != -9 ? signBean.getName() : getResources().getString(R.string.fment_sign_visitor_name));
                 tvTime.setText(df.format(signBean.getTime()));
 
                 tvTemp.setText(signBean.getTemperature() + "℃");

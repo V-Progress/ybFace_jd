@@ -287,7 +287,7 @@ public class KDXFSpeechManager {
         } else {
             mMessage = message;
         }
-
+        mTextToSpeech.setSpeechRate(1.5f);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
         mTextToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
@@ -298,7 +298,6 @@ public class KDXFSpeechManager {
                 }
             }
         });
-
 //        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         mTextToSpeech.speak(message, queueMode, textToSpeechMap);
     }

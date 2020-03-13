@@ -102,11 +102,11 @@ public class Constants {
         String DEV_SUFFIX = "/";
     }
 
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
-
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
+        int TEMPERATURE_PASSAGE = 8;//测温通行机（视美泰考勤版）
+        int TEMPERATURE_PASSAGE_SMT = 9;
     }
 
     public static class Model {
@@ -128,8 +128,25 @@ public class Constants {
         int JU = 1;//局域网
     }
 
+    public final static int JUMP_TAG = Tag.FACE_THERMAL;
+
+    public static class Tag {
+        public static int FACE_ONLY = 0;//人脸机
+        public static int FACE_THERMAL = 1;//人脸热成像
+        public static int FACE_INFARED = 2;//人脸红外
+        public static int CERTIFICATES = 3;//人证
+    }
+
     //屏幕类型
     public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
+
+    //修改设备类型
+    public static final int DEVICE_TYPE =
+            SCREEN_TYPE == ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080
+                    ? DeviceType.TEMPERATURE_CHECK_IN
+                    : SCREEN_TYPE == ScreenType.TYPE_SMT_PORTRAIT_8_800_1280
+                    ? DeviceType.TEMPERATURE_PASSAGE_SMT
+                    : DeviceType.TEMPERATURE_PASSAGE;
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
@@ -169,6 +186,12 @@ public class Constants {
     public static final String DEFAULT_WELCOME_TIPS = "欢迎使用云标智能考勤系统";
     //默认二维码
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
+    //播报延时默认值
+    public static final long DEFAULT_SPEECH_DELAY = 5000;
+
+    public static final boolean DEFAULT_LOW_TEMP = false;
+
+    public static final float DEFAULT_AMBIENT = 27.0F;
 
     public interface BaudRate {
         int INFARED_TEMP_BAUD_RATE = 9600;
@@ -180,6 +203,7 @@ public class Constants {
         int TYPE_PORTRAIT_8_800_1280 = 2;//竖屏闸机
         int TYPE_SMT_PORTRAIT_8_800_1280 = 3;
     }
+
 }
 
 

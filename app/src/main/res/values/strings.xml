@@ -3,10 +3,37 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
-    <string name="temperature_tips_warning_main">体温异常</string>
-    <string name="temperature_tips_normal_main">体温正常</string>
-    <string name="temperature_chekcing_main">正在测温</string>
+    <!--视美泰-->
+    <string name="smt_main_net_normal">网络正常</string>
+    <string name="smt_main_net_no">无网络</string>
+    <string name="smt_main_all">应到</string>
+    <string name="smt_main_already">已到</string>
+    <string name="smt_main_ver">版本:</string>
+    <string name="smt_main_company">公司:</string>
+    <string name="smt_main_device_no">编号:</string>
+    <string name="smt_main_not_bind">未绑定</string>
 
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">体温异常</string>
+    <string name="main_temp_normal_tips">体温正常</string>
+    <string name="main_temp_error_tips">非正常体温</string>
+    <string name="main_temp_tips_please_close">请靠近点</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">距离太远，请靠近</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">请远一点</string>
+    <string name="main_temp_tips_so_close_text">距离太近，请远一点</string>
+    <string name="main_thermal_temp">热成像 体温：</string>
+    <string name="main_please_waiting">请等待</string>
+    <string name="main_temp_tips_please_in_range">请将面部对准识别区域</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">正在测温</string>
+    <string name="port_setting">串口</string>
+    <string name="select_port_setting">选择串口</string>
+    <string name="auto_close_door_setting">（此时间之后自动关门）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">推荐阈值：80</string>
+    <string name="current_model_setting">当前模式</string>
+
+    <!--系统信息-->
     <string name="System_title">云标智能考勤系统</string>
     <string name="System_deviceNo">设备编号:</string>
     <string name="System_bindCode">绑&#8194;定&#8194;码:</string>
@@ -14,328 +41,58 @@
     <string name="System_Service">服务网络:</string>
     <string name="System_ValiDate">有&#8194;效&#8194;期:</string>
     <string name="System_Manage">人员管理</string>
-    <string name="System_Visitor">访客</string>
     <string name="System_Add">新增员工</string>
     <string name="System_Record">考勤记录</string>
     <string name="System_Setting">系统设置</string>
+    <string name="System_Visitor">访客</string>
+    <string name="System_skin_select">更换皮肤</string>
     <string name="System_update">升级</string>
     <string name="System_copyright">版权所有:北京云标科技有限公司</string>
-    <string name="System_skin_select">更换皮肤</string>
-
     <string name="System_Service_offline">离线</string>
+    <string name="System_online">在线</string>
+    <string name="System_offline">离线</string>
+    <string name="System_validityPeriod">无限期</string>
+    <string name="System_cloud_service">云服务</string>
+    <string name="System_local_service">本地服务</string>
 
     <!--人员管理-->
     <string name="employ_list_title">员工列表</string>
     <string name="employ_list_depart_sync">同步</string>
+    <string name="employ_List_add_user">新增</string>
+    <string name="employ_List_query_button">搜索</string>
+    <string name="employ_list_download_failed">下载头像失败</string>
+    <string name="employ_list_add_face_failed">添加人脸库失败</string>
+    <string name="employ_list_update_head_failed">更新头像失败</string>
     <string name="employ_list_field_index">序号</string>
     <string name="employ_list_field_number">员工编号</string>
     <string name="employ_list_field_name">员工名</string>
     <string name="employ_list_field_depart">部门</string>
     <string name="employ_list_field_position">职位</string>
     <string name="employ_list_field_control">操作</string>
-    <string name="base_delete">删除</string>
-    <string name="base_edit">编辑</string>
-    <string name="act_employList_add">新增</string>
-    <string name="act_download_head_image_failed">下载头像失败</string>
-    <string name="act_add_face_db_failed">添加人脸库失败</string>
-    <string name="act_update_head_image_failed">更新头像失败</string>
+    <string name="employ_list_item_delete">删除</string>
+    <string name="employ_list_item_edit">编辑</string>
+    <string name="employ_list_all_depart">全部部门</string>
+    <string name="employ_list_please_input_user_name">请输入员工姓名</string>
+    <string name="employ_list_confirm_edit">确定修改吗？</string>
+    <string name="employ_list_confirm_delete">确定删除吗？</string>
+    <string name="employ_list_delete_failed">删除失败</string>
+    <string name="employ_list_delete_success">删除成功</string>
+    <string name="employ_list_depart">部门</string>
+    <string name="employ_list_add_depart">新增部门</string>
 
-
-    <!--访客列表-->
-    <string name="visitor_list_title">访客列表</string>
-    <string name="visitor_list_filed_reason">事由</string>
-    <string name="visitor_list_filed_name">姓名</string>
-    <string name="visitor_list_filed_company">单位</string>
-    <string name="visitor_list_filed_time">访问时间段</string>
-
-    <!--新增员工-->
-    <string name="employ_add_title">增加员工</string>
-    <string name="employ_add_info">基本信息</string>
-    <string name="employ_add_takephoto">拍照</string>
-    <string name="employ_add_retry">重置</string>
-    <string name="employ_add_name">姓名:</string>
-    <string name="employ_add_depart">部门:</string>
-    <string name="employ_add_number">员工编号:</string>
-    <string name="employ_add_job">职位:</string>
-    <string name="employ_add_birthday">出生日期:</string>
-    <string name="employ_add_signature">个性签名:</string>
-    <string name="employ_add_confirm">确定</string>
-    <string name="employ_add_cancel">取消</string>
-
-    <!--离线数据-->
-    <string name="sign_list_title">人员签到统计</string>
-    <string name="sign_list_filed_index">序号</string>
-    <string name="sign_list_filed_time">时间</string>
-    <string name="sign_list_filed_name">员工名</string>
-    <string name="sign_list_filed_depart">部门</string>
-    <string name="sign_list_filed_job">职位</string>
-    <string name="sign_list_filed_head">头像</string>
-
-    <string name="distance_so_far_tips_main">请靠近点</string><!--Please approach-->
-    <string name="distance_so_far_text_tips_main">距离太远，请靠近</string><!--Please approach-->
-    <string name="thermal_update_main">热成像 体温：</string>
-    <string name="please_waiting_main">请等待</string>
-    <string name="distance_so_close_tips_main">请远一点</string>
-    <string name="distance_so_close_text_tips_main">距离太近，请远一点</string>
-    <string name="please_range_tips_main">请将面部对准识别区域</string>
-
-    <!--设置-->
-    <string name="face_only_model">人脸识别考勤</string>
-    <string name="face_infared_model">人脸识别+红外测温模式</string>
-    <string name="infared_only_model">红外测温模式（不考勤）</string>
-    <string name="thermal_only_model">热成像测温模式（不考勤）</string>
-    <string name="face_thermal_model">人脸识别+热成像测温模式</string>
-    <string name="certificates_model">人证比对+热成像测温模式</string>
-
-
-
-    <string name="temp_measuring_setting">正在测温</string>
-    <string name="port_setting">串口</string>
-    <string name="select_port_setting">选择串口</string>
-    <string name="current_port_path_setting">当前串口</string>
-    <string name="select_model_setting">选择模式</string>
-    <string name="thermal_temp_range">体温测温范围</string><!--Temperature measurement range-->
-    <string name="minimum_setting">最低</string><!--minimum-->
-    <string name="highest_setting">最高</string><!--Highest-->
-    <string name="ms_setting">毫秒</string>
-    <string name="s_setting">毫秒</string>
-    <string name="welcome_speech_setting">欢迎语</string><!--Welcome speech-->
-    <string name="show_qr_code_setting">显示二维码</string>
-    <string name="enable_ic_card_setting">IC读卡器</string>
-    <string name="auto_close_door_setting">（此时间之后自动关门）</string><!--Automatic closing-->
-    <string name="set_face_similar_threshold_setting">设置人脸相似度阈值</string>
-    <string name="recommend_valuez_setting">推荐阈值：80</string>
-    <string name="enable_face_dialog_setting">开启人脸弹框</string>
-    <string name="enable_liveness_setting">开启活体检测</string>
-    <string name="current_model_setting">当前模式</string>
-    <string name="baud_rate_setting">波特率</string>
-    <string name="enable_distance_tips_setting">开启距离提示</string>
-    <string name="thermal_imaging_mirror_setting">热成像画面镜像</string>
-    <string name="open_temperature_delay_time_setting">开启测温延时</string>
-    <string name="check_temperature_delay_time_setting">测温延时</string>
-    <string name="check_temperature_correct_setting">测温矫正值</string>
-    <string name="ambient_temperature_correct_setting">环境温矫正值</string>
-    <string name="temperature_threshold_setting">最低体温播报</string>
-    <string name="temerature_warning_value_setting">测温报警值</string>
-    <string name="camera_mirror_setting">开启人脸框镜像</string>
-    <string name="screen_saver_setting">屏保</string>
-    <string name="relay_delay_time_setting">开门时间</string>
-    <string name="camera_angle_setting">摄像头角度</string>
-    <string name="update_setting">软件更新</string>
-    <string name="edit_password_setting">修改密码</string>
-    <string name="cloud_service_setting">云端</string>
-    <string name="local_service_setting">局域网</string>
-    <string name="ip_address_setting">IP地址</string>
-    <string name="resource_port_setting">服务端口</string>
-    <string name="im_port_setting">通信端口</string>
-    <string name="project_name_setting">项目名</string>
-    <string name="save_service_info_setting">保存服务</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
-
-    <!--2019.10.21 增加字段-->
-
-    <!--通用的  -->
-    <string name="base_tip">提示</string>
-    <string name="base_ensure">确定</string>
-    <string name="base_cancel">取消</string>
-    <string name="base_male">男</string>
-    <string name="base_female">女</string>
-    <string name="base_people">人</string>
-    <string name="base_year">年</string>
-    <string name="base_month">月</string>
-    <string name="base_day">日</string>
-    <string name="base_department">部门</string>
-    <string name="base_saveSuccessfully">保存成功</string>
-
-    <!--activity_splash  -->
-    <string name="act_spl_tip_qxsqsb">权限申请失败</string>
-    <string name="act_spl_tip_zzjxsjqy">正在进行数据迁移，请不要退出软件或重启设备正在处理签到数据...</string>
-    <string name="act_spl_tip_qywc">迁移完成</string>
-
-    <!--activity_wel  -->
-    <string name="act_wel_topTitle">云标智能考勤</string>
-    <string name="act_wel_bottomTitle">云标智能考勤</string>
-
-    <string name="act_wel_error_bywjsrmmo">不要忘记输入密码哦</string>
-    <string name="act_wel_error_mmclqcxsrb">密码错了，重新输入吧</string>
-
-    <!--activity_wel   layout_input_pwd.xml-->
-    <string name="act_wel_glmm">管理密码</string>
-    <string name="act_wel_qsrglmm">请输入管理密码</string>
-
-    <!--activity_wel_small  -->
-    <string name="act_welSmall_hello">您好</string>
-    <string name="act_welSmall_error_bywjsrmmo">不要忘记输入密码哦</string>
-    <string name="act_welSmall_error_mmclcxsrb">密码错了，重新输入吧</string>
-    <string name="act_welSmall_tip_nhhygl"> 您好 %s ，欢迎光临</string>
-    <string name="act_welSmall_tip_sbqdcg">上班签到成功</string>
-    <string name="act_welSmall_tip_xbqdcg">下班签到成功</string>
-    <string name="act_welSmall_jrqd">今日签到:</string>
-
-    <!--activity_system  -->
-    <string name="act_sys_kqrlkjx">开启人脸框镜像</string>
-    <string name="act_sys_open">开启</string>
-    <string name="act_sys_jdqys">开门时间</string>
-    <string name="act_sys_second">秒</string>
-    <string name="act_sys_CPU_tem">CPU温度:</string>
-    <string name="act_sys_camera">摄像头</string>
-    <string name="act_sys_cameraAngle">摄像头方向</string>
-    <string name="act_sys_totalOne">共1个</string>
-    <string name="act_sys_dqsy">【当前使用：】</string>
-    <string name="act_sys_dqwl">当前网络:</string>
-    <string name="act_sys_WIFI_wlmc">【WIFI，网络名称：XXXXX】</string>
-    <string name="act_sys_WIFI_cqsb">重启设备</string>
-    <string name="act_sys_jcsj">检测升级</string>
-    <string name="act_sys_glmmxg">管理密码修改</string>
-
-    <string name="act_emp_list_input_name_hint">员工姓名</string>
-    <string name="act_emp_list_query_button">搜索</string>
-
-    <string name="act_sys_tip_online">在线</string>
-    <string name="act_sys_tip_outline">离线</string>
-    <string name="act_sys_tip_validityPeriod">无限期</string>//有效期（永久有效）
-
-    <string name="act_sys_tip_cloundService">云服务</string>//有效期（永久有效）
-    <string name="act_sys_tip_localService">本地服务</string>
-    <string name="act_sys_tip_yfwipdzhdkhbnwk">云服务IP地址或端口号不可为空</string>
-    <string name="act_sys_tip_zyipdzhdkbnwk">资源IP地址或端口号不可为空</string>
-
-    <string name="act_sys_error_mmbkwk">密码不可为空</string>
-    <string name="act_sys_error_mmzssr6w">密码最少输入6位</string>
-    <string name="act_sys_error_qzcsrmm">请再次输入密码</string>
-    <string name="act_sys_error_lcsrdmmbyz">两次输入的密码不一致</string>
-
-    <string name="act_sys_error_modify_fail">修改失败</string>
-    <string name="act_sys_error_modify_success">修改成功</string>
-
-    <string name="act_sys_tip_angle">角度</string>
-    <string name="act_sys_tip_cczjqcyyhcfsfjx">此操作将清除应用缓存，是否继续？</string>
-    <string name="act_sys_tip_ggsxtpzxycqyycnsx">更改摄像头配置需要重启应用才能生效，是否继续？</string>
-
-    <string name="act_sys_tip_wxlj">网线连接</string>
-    <string name="act_sys_tip_wxlj_wwl">网线连接：无网络</string>
-    <string name="act_sys_tip_wxlj_wwllj">无网络连接</string>
-
-    <string name="act_sys_tip_wxlj_wllx_wifi">网络类型:WIFI</string>
-    <string name="act_sys_tip_wxlj_wlmc">，网络名称:</string>
-    <string name="act_sys_tip_xh">，信号:</string>
-
-    <string name="act_sys_tip_noCamera">无摄像头</string>
-    <string name="act_sys_tip_total">共</string>
-    <string name="act_sys_tip_ge">个</string>
-    <string name="act_sys_tip_bh">编号</string>
-    <string name="act_sys_tip_fbl">，分辨率:</string>
-    <string name="act_sys_tip_back">后置</string>
-    <string name="act_sys_tip_front">前置</string>
-
-    <string name="act_sys_tip_auto">自动</string>
-    <string name="act_sys_tip_ytwlipdz">【以太网络，IP地址:</string>
-    <string name="act_sys_tip_IPAddress">，IP地址:</string>
-
-    <string name="act_sys_tip_mc">名称:</string>
-    <string name="act_sys_tip_xhqd">，信号强度:</string>
-    <string name="act_sys_tip_zj">最佳</string>
-    <string name="act_sys_tip_zd">最大</string>
-
-    <string name="act_sys_tip_sbjcqsfjx">设备将重启，是否继续？</string>
-    <string name="act_sys_tip_reStart">设重启</string>
-    <string name="act_sys_tip_3shjcqsb">3秒后将重启设备</string>
-
-
-    <string name="act_sys_tip_strong">强</string>
-    <string name="act_sys_tip_general">一般</string>
-    <string name="act_sys_tip_poor">差</string>
-    <string name="act_sys_tip_wwl">无网络</string>
-
-    <string name="act_sys_smxfo">扫码续费o(∩_∩)o</string>
-    <string name="act_sys_sz">设置</string>
-
-    <!--act_sys   layout_set_pwd.xml -->
-    <string name="act_sys_xtmmsz">系统密码设置</string>
-    <string name="act_sys_qsrldswmmszzm">请输入6-12位密码（数字、字母）</string>
-    <string name="act_sys_qzcsrmm">请再次输入密码</string>
-
-
-    <!--activity_setting -->
-    <string name="act_set_tip_auto">自动</string>
-    <string name="act_set_tip_back">后置</string>
-    <string name="act_set_tip_front">前置</string>
-    <string name="act_set_tip_fbl">，分辨率:</string>
-    <string name="act_set_tip_angle">角度</string>
-    <string name="act_set_tip_ytwlipdz">【以太网络，IP地址:</string>
-    <string name="act_set_tip_IPAddress">，IP地址:</string>
-    <string name="act_set_tip_zj">最佳</string>
-    <string name="act_set_tip_zd">最大</string>
-    <string name="act_set_tip_mc">名称:</string>
-    <string name="act_set_tip_xhqd">，信号强度:</string>
-
-    <string name="act_set_tip_sbjcqsfjx">设备将重启，是否继续？</string>
-    <string name="act_set_tip_reStart">设重启</string>
-    <string name="act_set_tip_3shjcqsb">3秒后将重启设备</string>
-
-    <string name="act_set_error_mmbkwk">密码不可为空</string>
-    <string name="act_set_error_mmzssr6w">密码最少输入6位</string>
-    <string name="act_set_error_qzcsrmm">请再次输入密码</string>
-    <string name="act_set_error_lcsrdmmbyz">两次输入的密码不一致</string>
-
-    <string name="act_set_error_modify_fail">修改失败</string>
-    <string name="act_set_error_modify_success">修改成功</string>
-
-    <!-- act_set head_layout.xml -->
-    <string name="act_set_txjl">通行记录</string>
-    <!-- act_set layout_dialog_set_server.xml -->
-    <string name="act_set_szfwIP">设置服务IP</string>
-    <string name="act_set_yfwdz">云服务地址&#32;:</string>
-    <string name="act_set_dkh">端口号</string>
-    <string name="act_set_zydz">资源地址&#32;:</string>
-    <string name="act_set_notice">注意：修改地址成功后将会重启应用</string>
-    <string name="act_set_qrxg">确认修改</string>
-
-    <!-- act_set layout_setting.xml -->
-    <string name="act_set_xtsz">系统设置</string>
-    <string name="act_set_xtmm">系统密码</string>
-    <string name="act_set_qchc">清除缓存</string>
-    <string name="act_set_qcsj">清除数据</string>
-    <string name="act_set_jcsxt">检测摄像头</string>
-    <string name="act_set_sfjx">是否镜像</string>
-    <string name="act_set_wlzt">网络状态</string>
-    <string name="act_set_gb">关闭</string>
-
-    <!--activity_AddEmploy -->
-    <string name="act_addEmp_tip_qxfhcjzjbm">请先返回创建增加部门！</string>
-    <string name="act_addEmp_tip_qxpz">请先拍照！</string>
-    <string name="act_addEmp_tip_mzbnwk">名字不能为空！</string>
-    <string name="act_addEmp_tip_qxfhzjbm">请返回增加部门！</string>
-    <string name="act_addEmp_tip_zwbnwk">职位不能为空！</string>
-    <string name="act_addEmp_tip_ljfwqsbqcxzs">连接服务器失败,请重新再试！</string>
-    <string name="act_addEmp_tip_bmbcz">部门不存在！</string>
-    <string name="act_addEmp_tip_tjsbcwdm">提交失败，错误代码:</string>
-    <string name="act_addEmp_tip_ygbcsbqcxzs">员工保存失败,请重新再试！</string>
-
-    <!--activity_EmployList-->
-    <string name="act_employList_tip_qbbm">全部部门</string>
-    <string name="act_employList_tip_qdxgm">确定修改吗？</string>
-    <string name="act_employList_tip_qdscm">确定删除吗？</string>
-    <string name="act_employList_tip_scsb">删除失败</string>
-    <string name="act_employList_tip_sccg">删除成功</string>
-
-    <string name="act_employList_bm">部门</string>
-    <string name="act_employList_addDepart">新增部门</string>
-
-    <!--activity_DepartList-->
-    <string name="act_departList_tip_qsrbmmc">请输入部门名称</string>
-    <string name="act_departList_tip_qdscm">确定删除吗？</string>
-
-    <string name="act_departList_bmlb">部门列表</string>
-    <string name="act_departList_add">新增</string>
-    <string name="act_departList_xh">序号</string>
-    <string name="act_departList_bmmc">部门名称</string>
-    <string name="act_departList_cz">操作</string>
-
-    <!--activity_EditEmploy-->
-
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">增加员工</string>
+    <string name="act_editEmploy_xgxx">修改信息</string>
+    <string name="act_editEmploy_pz">拍照</string>
+    <string name="act_editEmploy_reset">重置</string>
+    <string name="act_editEmploy_jbxx">基本信息</string>
+    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
+    <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
+    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
+    <string name="act_editEmploy_ygbh">员工编号:</string>
+    <string name="act_editEmploy_zw">职&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
+    <string name="act_editEmploy_csrq">出生日期:</string>
+    <string name="act_editEmploy_gxqm">个性签名:</string>
     <string name="act_editEmploy_tip_qxpz">请先拍照</string>
     <string name="act_editEmploy_tip_qtxxm">请填写姓名</string>
     <string name="act_editEmploy_tip_qxzxb">请选择性别</string>
@@ -349,91 +106,179 @@
     <string name="act_editEmploy_tip_gsyzwyg">公司没有这位员工</string>
     <string name="act_editEmploy_tip_cscw">参数错误</string>
 
-    <string name="act_editEmploy_xgxx">修改信息</string>
-    <string name="act_editEmploy_pz">拍照</string>
-    <string name="act_editEmploy_reset">重置</string>
-    <string name="act_editEmploy_jbxx">基本信息</string>
-    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
-    <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
-    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
-    <string name="act_editEmploy_ygbh">员工编号:</string>
-    <string name="act_editEmploy_zw">职&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
-    <string name="act_editEmploy_csrq">出生日期:</string>
-    <string name="act_editEmploy_gxqm">个性签名:</string>
-    <string name="act_editEmploy_zjyg">增加员工</string>
-
-    <!--activity_Sign-->
-    <string name="act_sign_tip_qb">全部</string>
-    <string name="act_sign_tip_yfs">已发送</string>
-    <string name="act_sign_tip_wfs">未发送</string>
-    <string name="act_sign_tip_zwsj">暂无数据</string>
-    <string name="act_sign_tip_sccg">上传成功</string>
-    <string name="act_sign_tip_scsbqjcwl">上传失败，请检查网络</string>
-    <string name="act_sign_tip_zzdcqsd">正在导出，请稍等</string>
-    <string name="act_sign_tip_qcrup">请插入U盘</string>
-    <string name="act_sign_tip_sjyqbsc">数据已全部上传</string>
-    <string name="act_sign_tip_mykdcdsj">没有可导出的数据</string>
-    <string name="act_sign_tip_dccgwjlj">导出成功，文件路径</string>
-    <string name="act_sign_tip_dcsb">导出失败</string>
-
-    <string name="act_sign_dcsj">导出数据</string>
-    <string name="act_sign_scsj">上传数据</string>
-    <string name="act_sign_sjyqbsc">数据已全部上传</string>
+    <!--离线数据-->
+    <string name="sign_list_title">离线记录</string>
+    <string name="sign_list_all_type">全部</string>
+    <string name="sign_list_sent">已发送</string>
+    <string name="sign_list_unsent">未发送</string>
+    <string name="sign_list_export">导出数据</string>
+    <string name="sign_list_upload">上传数据</string>
+    <string name="sign_list_filed_index">序号</string>
+    <string name="sign_list_filed_time">时间</string>
+    <string name="sign_list_filed_name">员工名</string>
+    <string name="sign_list_filed_depart">部门</string>
+    <string name="sign_list_filed_job">职位</string>
+    <string name="sign_list_filed_head">头像</string>
+    <string name="sign_list_no_data">暂无数据</string>
+    <string name="sign_list_upload_success">上传成功</string>
+    <string name="sign_list_upload_failed">上传失败，请检查网络</string>
+    <string name="sign_list_usb_disk">请插入U盘</string>
+    <string name="sign_list_all_data_sent">数据已全部上传</string>
 
 
-    <!--2019.10.22 增加字段-->
+    <!--访客列表-->
+    <string name="visitor_list_title">访客列表</string>
+    <string name="visitor_list_filed_name">姓名</string>
+    <string name="visitor_list_filed_time">访问时间段</string>
+    <string name="visitor_list_filed_company">单位</string>
+    <string name="visitor_list_filed_reason">事由</string>
 
-    <!--BaseActivity-->
-    <string name="act_base_zwspqqhhp">暂无竖屏，请切换横屏</string>
-    <string name="act_base_zwhpqqhhp">暂无横屏，请切换竖屏</string>
 
-    <!--BaseGateActivity-->
-    <string name="act_baseGate_mkmkjzsb">门控模块加载失败!</string>
+    <!--系统设置-->
+    <!--模式-->
+    <string name="face_only_model">人脸识别考勤</string>
+    <string name="face_infared_model">人脸识别+红外测温模式</string>
+    <string name="infared_only_model">红外测温模式（不考勤）</string>
+    <string name="thermal_only_model">热成像测温模式（不考勤）</string>
+    <string name="face_thermal_model">人脸识别+热成像测温模式</string>
+    <string name="certificates_model">人证比对+热成像测温模式</string>
+    <!--标签-->
+    <string name="setting_face_similar_threshold">设置人脸相似度阈值</string>
+    <string name="setting_enable_dialog">开启人脸弹框</string>
+    <string name="setting_enable_liveness">开启活体检测</string>
+    <string name="setting_camera_mirror">开启人脸框镜像</string>
+    <string name="setting_select_model">选择模式</string>
+    <string name="setting_current_port_path">当前串口</string>
+    <string name="setting_baud_rate">波特率</string>
+    <string name="setting_open">开启</string>
+    <string name="setting_enable_distance_tips">开启距离提示</string>
+    <string name="setting_thermal_imaging_mirror">热成像画面镜像</string>
+    <string name="setting_open_temperature_delay">开启测温延时</string>
+    <string name="setting_temperature_delay_time">测温延时</string>
+    <string name="setting_ms">毫秒</string>
+    <string name="setting_s">秒</string>
+    <string name="setting_temp_correct_value">测温矫正值</string>
+    <string name="setting_amb_correct_value">环境温矫正值</string>
+    <string name="setting_temperature_threshold">最低体温播报</string>
+    <string name="setting_temperature_warning">测温报警值</string>
+    <string name="setting_temp_range">体温测温范围</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">最低</string><!--minimum-->
+    <string name="setting_range_highest">最高</string><!--Highest-->
+    <string name="setting_speech_delay">连续播报间隔</string>
+    <string name="setting_screen_saver">屏保</string>
+    <string name="setting_welcome_speech">欢迎语</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">显示二维码</string>
+    <string name="setting_enable_ic_card">IC读卡器</string>
+    <string name="setting_relay_delay_time">开门时间</string>
+    <string name="setting_cpu_temp">CPU温度:</string>
+    <string name="setting_camera_angle">摄像头角度</string>
+    <string name="setting_curr_net">当前网络:</string>
+    <string name="setting_net_name">【WIFI，网络名称：XXXXX】</string>
+    <string name="setting_reboot_device">重启设备</string>
+    <string name="setting_check_update">检测升级</string>
+    <string name="setting_manage_password">管理密码修改</string>
+    <string name="setting_system_password">系统密码</string>
+    <string name="setting_please_input_password">请输入6-12位密码（数字、字母）</string>
+    <string name="setting_please_input_again">请再次输入密码</string>
+    <string name="setting_cloud_service">云端</string>
+    <string name="setting_local_service">局域网</string>
+    <string name="setting_ip_address">IP地址</string>
+    <string name="setting_xmpp_port">通信端口</string>
+    <string name="setting_resource_port">服务端口</string>
+    <string name="setting_project_name">项目名</string>
+    <string name="setting_save_service_info">保存服务</string>
+    <string name="setting_total_one">共1个</string>
+    <string name="setting_current_used">【当前使用：】</string>
+    <string name="setting_cam_angle">角度</string>
+    <string name="setting_net_prefix">【以太网络，IP地址:</string>
+    <string name="setting_ip_info">，IP地址:</string>
+    <string name="setting_best_camera_size">最佳</string>
+    <string name="setting_max_camera_size">最大</string>
+    <string name="setting_wifi_name">名称:</string>
+    <string name="setting_wifi_rssi">，信号强度:</string>
+    <string name="setting_device_will_reboot">设备将重启，是否继续？</string>
+    <string name="setting_device_reboot">设备重启</string>
+    <string name="setting_3_scond_reboot">3秒后将重启设备</string>
+    <string name="setting_password_not_null">密码不可为空</string>
+    <string name="setting_password_min_6">密码最少输入6位</string>
+    <string name="setting_please_input_password_agian">请再次输入密码</string>
+    <string name="setting_password_disaccord">两次输入的密码不一致</string>
+    <string name="setting_edit_password_failed">修改失败</string>
+    <string name="setting_edit_password_success">修改成功</string>
+    <string name="setting_current_correct_value">当前矫正值：</string>
+    <string name="setting_normal_speech_content">体温正常播报内容</string>
+    <string name="setting_warning_speech_content">体温异常播报内容</string>
 
-    <!--BaseGpioActivity-->
-    <string name="act_baseGpio_wfkzmjqjcbkxh">无法控制门禁，请检查板卡型号</string>
+    <!--通用的  -->
+    <string name="base_tip">提示</string>
+    <string name="base_ensure">确定</string>
+    <string name="base_cancel">取消</string>
+    <string name="base_male">男</string>
+    <string name="base_female">女</string>
+    <string name="base_people">人</string>
+    <string name="base_year">年</string>
+    <string name="base_month">月</string>
+    <string name="base_day">日</string>
 
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">权限申请失败</string>
+    <string name="splash_active_failed">激活失败</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">云标智能考勤</string>
+    <string name="act_wel_bottomTitle">云标智能考勤</string>
+    <string name="act_wel_error_bywjsrmmo">不要忘记输入密码哦</string>
+    <string name="act_wel_error_mmclqcxsrb">密码错了，重新输入吧</string>
+    <string name="act_wel_glmm">管理密码</string>
+    <string name="act_wel_qsrglmm">请输入管理密码</string>
     <!--AdsFragment-->
     <string name="fment_ads_slogan">智能人脸签到，让企业更放心~</string>
-
-    <!--InformationFragment-->
-
     <!--SignFragment-->
-    <string name="fment_sign_tip_hello">您好 %s</string>
-    <string name="fment_sign_tip_welcome"> 您好 %s ，欢迎光临</string>
-    <string name="fment_sign_tip_goTips">上班签到成功</string>
-    <string name="fment_sign_tip_downTips">下班签到成功</string>
-    <string name="fment_sign_tip_blcg">补录成功</string>
-    <string name="fment_sign_tip_blsb">补录失败</string>
     <string name="fment_sign_tip_yqd">已签到</string>
     <string name="fment_sign_bl">补录</string>
     <string name="fment_sign_jrqd">今日签到:</string>
+    <string name="fment_sign_visitor_name">访客</string>
+    <string name="fment_sign_company">公司：</string>
+    <string name="fment_sign_device_no">编号：</string>
+    <string name="fment_sign_version">版本：</string>
+    <string name="fment_sign_bind_code">绑定码：</string>
 
     <!--WebFragment-->
     <string name="fment_Web_back">后退</string>
     <string name="fment_Web_refresh">刷新</string>
 
 
-    <!--adapter 和 dialog-->
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">系统设置</string>
+    <string name="act_set_xtmm">系统密码</string>
+    <string name="act_set_qchc">清除缓存</string>
+    <string name="act_set_qcsj">清除数据</string>
+    <string name="act_set_jcsxt">检测摄像头</string>
+    <string name="act_set_sfjx">是否镜像</string>
+    <string name="act_set_wlzt">网络状态</string>
+    <string name="act_set_gb">关闭</string>
 
-    <!--VisitorAdapter-->
-    <string name="adapter_visitor_tourist">游客</string>
 
-    <!--SyncDialog-->
-    <string name="dialog_sync_tbjs">同步结束</string>
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">请输入部门名称</string>
+    <string name="act_departList_tip_qdscm">确定删除吗？</string>
+    <string name="act_departList_bmlb">部门列表</string>
+    <string name="act_departList_add">新增</string>
+    <string name="act_departList_xh">序号</string>
+    <string name="act_departList_bmmc">部门名称</string>
+    <string name="act_departList_cz">操作</string>
+
+    <!--InformationFragment-->
 
     <!--dialog_depart-->
     <string name="dialog_depart_qsrbmmc">请输入部门名称</string>
 
-    <!--layout_load_pop.xml-->
+    <!-- 同步 -->
     <string name="lay_loadPop_sync">同步</string>
     <string name="lay_loadPop_zlxsxx">这里显示信息</string>
-
-
-    <!-- UIUtils -->
     <string name="uiUtils_tip_notice">通知</string>
     <string name="uiUtils_tip_zzazxgyyqnxdd">正在安装相关应用，请耐心等待！</string>
-
+    <string name="dialog_sync_tbjs">同步结束</string>
     <string name="sync_company_1">获取公司信息</string>
     <string name="sync_staff_2">获取人员信息</string>
     <string name="sync_database_3">同步数据库</string>
@@ -443,7 +288,6 @@
     <string name="sync_not_bind">设备未绑定</string>
     <string name="sync_not_depart">公司未设置部门</string>
     <string name="sync_params_error">参数错误</string>
-
     <string name="edit_not_edit">未做任何修改</string>
 
     <!-- RestartAPPTool -->
@@ -456,83 +300,9 @@
     <string name="updateManager_wlljsbqjcwl">网络连接失败，请检查网络</string>
     <string name="updateManager_xzsb">下载失败</string>
 
-
-    <!--settings、choose function page-->
-    <string name="page_preview">face attributes detect(video)</string>
-    <string name="page_ir_preview">ir liveness detect(video)</string>
-    <string name="page_face_recognize">face compare 1:n(video vs database,rgb liveness detect)</string>
-    <string name="page_ir_face_recognize">face compare 1:n(video vs database,ir liveness detect)</string>
-    <string name="page_single_image">face attributes detect(image)</string>
-    <string name="page_multi_image">face compare 1:n(image vs image)</string>
-    <string name="page_face_manage">face manage</string>
-    <string name="active_engine">active engine</string>
-    <string name="active_success">active success</string>
-    <string name="already_activated">already activated</string>
-    <string name="active_failed">active failed,code is %d</string>
-    <string name="library_not_found">library not found, please check if you put .so files into the project directory app\\src\\main\\jniLibs</string>
-    <string name="ft_op_0">only detect 0 degree in video mode</string>
-    <string name="ft_op_90">only detect 90 degree in video mode</string>
-    <string name="ft_op_180">only detect 180 degree in video mode</string>
-    <string name="ft_op_270">only detect 270 degree in video mode</string>
-    <string name="ft_op_all">detect all degrees in video mode</string>
-
-    <!--face attributes detect(image) page-->
-    <string name="start_process">process</string>
-    <string name="choose_local_image">choose local image</string>
-    <string name="processing">processing</string>
-
-    <!--face compare 1:n(image vs image) page-->
-    <string name="choose_main_image">choose main image</string>
-    <string name="add_item_image">add item image</string>
-    <string name="notice_choose_main_img">please choose main image first</string>
-    <string name="compare_failed">compare failed!code is %d</string>
-
-    <!--global get picture failed notification-->
-    <string name="get_picture_failed">failed to get picture!</string>
-
-    <!--global permission denied notification-->
-    <string name="permission_denied">permission denied!</string>
-
-    <!--global init failed notification-->
-    <string name="init_failed">init failed,code is %d</string>
-    <string name="engine_not_initialized">engine not initialized! code is %d</string>
-
-    <!--single/dual camera register&recognize page-->
-    <string name="register">register</string>
-    <string name="switch_camera">switch camera</string>
-    <string name="switch_camera_failed">switch camera failed</string>
-    <string name="notice_change_detect_degree">camera switched, if no face detected, please change face detect degree in homepage</string>
-    <string name="recognize_success_notice">PASS:%s</string>
+    <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>
     <string name="low_confidence_level">face low confidence level</string>
-    <string name="specific_engine_init_failed">%s init failed, code is:%d</string>
-    <string name="liveness_detect">liveness detect</string>
-    <string name="camera_rgb">RGB CAMERA</string>
-    <string name="camera_ir">IR CAMERA</string>
-    <string name="camera_rgb_preview_size">RGB CAMERA\n%dx%d</string>
-    <string name="camera_ir_preview_size">IR CAMERA\n%dx%d</string>
-    <string name="camera_error_notice">\npossible reason:open two cameras at the same time is not allowed on this device</string>
-    <string name="draw_ir_rect_mirror_horizontal">draw IR face rect mirror horizontal</string>
-    <string name="draw_ir_rect_mirror_vertical">draw IR face rect mirror vertical</string>
-
-    <!--batch process dialog-->
-    <string name="progress_dialog_batch_register">progress: %d / %d</string>
-    <string name="progress_dialog_registering_please_wait">registering,please wait</string>
-
-    <!--batch process-->
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="batch_process_notification_register">please put the images that need to register into directory \nsdcard/arcfacedemo/register</string>
-    <string name="batch_process_no_face_need_to_delete">no face need to delete</string>
-    <string name="batch_process_confirm_delete">delete those %d images and face features?</string>
-    <string name="batch_process_batch_register">batch register</string>
-    <string name="batch_process_notification">notification</string>
-    <string name="batch_process_clear_faces">clear faces</string>
-    <string name="batch_process_path_is_not_exists">path \n%s\n is not exists</string>
-    <string name="batch_process_path_is_not_dir">path \n%s\n is not a directory</string>
-    <string name="batch_process_processing_please_wait">process start,please wait</string>
-    <string name="batch_process_finished_info">process finished!\ntotal count =  %d \nsuccess count = %d \nfailed count = %d \nfailed images are in directory \' %s \'</string>
-
     <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
     <string name="System_Setting_save_threshold">保存</string>
 </resources>

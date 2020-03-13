@@ -38,7 +38,7 @@
         android:gravity="center"
         android:onClick="exportToUD"
         android:textSize="16dp"
-        android:text="@string/act_sign_dcsj"
+        android:text="@string/sign_list_export"
         android:textColor="#64DCFE"
         android:visibility="gone" />
 
@@ -139,7 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/act_sign_sjyqbsc"
+            android:text="@string/sign_list_all_data_sent"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:visibility="gone" />

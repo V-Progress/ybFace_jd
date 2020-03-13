@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
-import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
+import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.CertificatesActivity;
+import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.smdt_portrait.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -65,17 +65,16 @@ public class SplashActivity extends BaseActivity {
 
                     int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
                     if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                        Log.e(TAG, "激活成功或已激活");
                         jump();
                     } else {
-                        Toast.makeText(SplashActivity.this, "激活失败", Toast.LENGTH_SHORT).show();
+                        UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
                     }
 
                     overridePendingTransition(0, 0);
                     finish();
                     return;
                 } else {
-                    UIUtils.showTitleTip(SplashActivity.this, getString(R.string.act_spl_tip_qxsqsb));
+                    UIUtils.showShort(SplashActivity.this, getString(R.string.splash_request_permission_failed));
                 }
             }
         });
@@ -85,17 +84,19 @@ public class SplashActivity extends BaseActivity {
     private void jump() {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
+
         if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_SMT_PORTRAIT_8_800_1280) {//视美泰8寸
-            Log.e(TAG, "jump: 11111111111");
             startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280 ) {//竖屏八寸
+        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {//竖屏八寸
             startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
         } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080) {//横屏21、10寸
-            int model = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
-            if (model == Constants.Model.MODEL_CERTIFICATES_THERMAL) {
+            //热成像
+            int mode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
+
+            if(mode == ThermalConst.CERTIFICATES){
                 startActivity(new Intent(this, CertificatesActivity.class));
             } else {
-                startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
+                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
             }
         }
     }

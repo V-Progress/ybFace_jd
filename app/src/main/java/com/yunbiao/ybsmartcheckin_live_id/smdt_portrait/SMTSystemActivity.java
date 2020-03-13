@@ -5,15 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,13 +20,8 @@ import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EditEmployActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SignActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.VisitorActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
@@ -66,7 +58,6 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
     private TextView tv_server_system;
     private TextView tv_version_system;
     private TextView tv_online_system;
-    private ImageView ivQrCode;
     private ImageView ivLogo;
     private View ivBack;
     private TextView tv_bindcode_syetem;
@@ -108,7 +99,6 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
         tv_server_system = (TextView) findViewById(R.id.tv_server_system);
         tv_version_system = (TextView) findViewById(R.id.tv_version_system);
         tv_online_system = (TextView) findViewById(R.id.tv_online_system);
-        ivQrCode = (ImageView) findViewById(R.id.iv_qrcode_system);
 
         btn_depart_system.setOnClickListener(this);
         btn_add_system.setOnClickListener(this);
@@ -147,7 +137,7 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(XmppConnectEvent connectEvent) {
-        tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.act_sys_tip_online) : getString(R.string.act_sys_tip_outline));
+        tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.System_online) : getString(R.string.System_offline));
     }
 
     public void setInfo() {
@@ -164,13 +154,13 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
         if (TextUtils.isEmpty(expDate)) {
-            expDate = getString(R.string.act_sys_tip_validityPeriod);
+            expDate = getString(R.string.System_validityPeriod);
         } else {
             expDate = dateFormat.format(new Date(Long.parseLong(expDate)));
         }
         tv_exp_system.setText(expDate);
 
-        tv_online_system.setText(CoreInfoHandler.isOnline ? getString(R.string.act_sys_tip_online) : getString(R.string.act_sys_tip_outline));
+        tv_online_system.setText(CoreInfoHandler.isOnline ? getString(R.string.System_online) : getString(R.string.System_offline));
     }
 
     public void seeVisitor(View view) {
@@ -239,10 +229,9 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
 
     private void updateServerState() {
         String host = Constants.RESOURCE_URL;
-        tv_server_system.setText(getString(R.string.act_sys_tip_cloundService));
+        tv_server_system.setText(getString(R.string.System_cloud_service));
         if (host.contains("192.168.")) {
-            tv_server_system.setText(getString(R.string.act_sys_tip_localService));
-            ivQrCode.setVisibility(View.GONE);
+            tv_server_system.setText(getString(R.string.System_local_service));
         }
     }
 

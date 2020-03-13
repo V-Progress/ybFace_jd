@@ -1,0 +1,314 @@
+<resources>
+    <string name="app_name">雲標智能考勤</string>
+    <string name="used">已用:</string>
+    <string name="no_used">/可用:</string>
+
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">網絡正常</string>
+    <string name="smt_main_net_no">無網絡</string>
+    <string name="smt_main_all">應到</string>
+    <string name="smt_main_already">已到</string>
+    <string name="smt_main_ver">版本:</string>
+    <string name="smt_main_company">公司:</string>
+    <string name="smt_main_device_no">編號:</string>
+    <string name="smt_main_not_bind">未綁定</string>
+
+
+    <!--首頁測溫提示-->
+    <string name="main_temp_warning_tips">體溫異常</string>
+    <string name="main_temp_normal_tips">體溫正常</string>
+    <string name="main_temp_error_tips">非正常體溫</string>
+    <string name="main_temp_tips_please_close">請靠近點</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">距離太遠，請靠近</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">請遠壹點</string>
+    <string name="main_temp_tips_so_close_text">距離太近，請遠壹點</string>
+    <string name="main_thermal_temp">熱成像 體溫：</string>
+    <string name="main_please_waiting">請等待</string>
+    <string name="main_temp_tips_please_in_range">請將面部對準識別區域</string>
+
+    <!--設置-->
+    <string name="temp_measuring_setting">正在測溫</string>
+    <string name="port_setting">串口</string>
+    <string name="select_port_setting">選擇串口</string>
+    <string name="auto_close_door_setting">（此時間之後自動關門）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">推薦閾值：80</string>
+    <string name="current_model_setting">當前模式</string>
+
+    <!--系統信息-->
+    <string name="System_title">雲標智能考勤系統</string>
+    <string name="System_deviceNo">設備編號:</string>
+    <string name="System_bindCode">綁&#8194;定&#8194;碼:</string>
+    <string name="System_Company">所屬公司:</string>
+    <string name="System_Service">服務網絡:</string>
+    <string name="System_ValiDate">有&#8194;效&#8194;期:</string>
+    <string name="System_Manage">人員管理</string>
+    <string name="System_Add">新增員工</string>
+    <string name="System_Record">考勤記錄</string>
+    <string name="System_Setting">系統設置</string>
+    <string name="System_Visitor">訪客</string>
+    <string name="System_skin_select">更換皮膚</string>
+    <string name="System_update">升級</string>
+    <string name="System_copyright">版權所有:北京雲標科技有限公司</string>
+    <string name="System_Service_offline">離線</string>
+    <string name="System_online">在線</string>
+    <string name="System_offline">離線</string>
+    <string name="System_validityPeriod">無限期</string>
+    <string name="System_cloud_service">雲服務</string>
+    <string name="System_local_service">本地服務</string>
+
+    <!--人員管理-->
+    <string name="employ_list_title">員工列表</string>
+    <string name="employ_list_depart_sync">同步</string>
+    <string name="employ_List_add_user">新增</string>
+    <string name="employ_List_query_button">搜索</string>
+    <string name="employ_list_download_failed">下載頭像失敗</string>
+    <string name="employ_list_add_face_failed">添加人臉庫失敗</string>
+    <string name="employ_list_update_head_failed">更新頭像失敗</string>
+    <string name="employ_list_field_index">序號</string>
+    <string name="employ_list_field_number">員工編號</string>
+    <string name="employ_list_field_name">員工名</string>
+    <string name="employ_list_field_depart">部門</string>
+    <string name="employ_list_field_position">職位</string>
+    <string name="employ_list_field_control">操作</string>
+    <string name="employ_list_item_delete">刪除</string>
+    <string name="employ_list_item_edit">編輯</string>
+    <string name="employ_list_all_depart">全部部門</string>
+    <string name="employ_list_please_input_user_name">請輸入員工姓名</string>
+    <string name="employ_list_confirm_edit">確定修改嗎？</string>
+    <string name="employ_list_confirm_delete">確定刪除嗎？</string>
+    <string name="employ_list_delete_failed">刪除失敗</string>
+    <string name="employ_list_delete_success">刪除成功</string>
+    <string name="employ_list_depart">部門</string>
+    <string name="employ_list_add_depart">新增部門</string>
+
+    <!--編輯信息-->
+    <string name="act_editEmploy_zjyg">增加員工</string>
+    <string name="act_editEmploy_xgxx">修改信息</string>
+    <string name="act_editEmploy_pz">拍照</string>
+    <string name="act_editEmploy_reset">重置</string>
+    <string name="act_editEmploy_jbxx">基本信息</string>
+    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
+    <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;別:</string>
+    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;門:</string>
+    <string name="act_editEmploy_ygbh">員工編號:</string>
+    <string name="act_editEmploy_zw">職&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
+    <string name="act_editEmploy_csrq">出生日期:</string>
+    <string name="act_editEmploy_gxqm">個性簽名:</string>
+    <string name="act_editEmploy_tip_qxpz">請先拍照</string>
+    <string name="act_editEmploy_tip_qtxxm">請填寫姓名</string>
+    <string name="act_editEmploy_tip_qxzxb">請選擇性別</string>
+    <string name="act_editEmploy_tip_qtxbh">請填寫編號</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">未找到頭像文件，請重新拍照後再試</string>
+    <string name="act_editEmploy_tip_wzrhxg">未做任何修改</string>
+    <string name="act_editEmploy_tip_tjsb">添加失敗</string>
+    <string name="act_editEmploy_tip_gygbcz">該員工不存在</string>
+    <string name="act_editEmploy_tip_bczgbm">不存在該部門</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">公司沒有這個部門</string>
+    <string name="act_editEmploy_tip_gsyzwyg">公司沒有這位員工</string>
+    <string name="act_editEmploy_tip_cscw">參數錯誤</string>
+
+    <!--離線數據-->
+    <string name="sign_list_title">離線記錄</string>
+    <string name="sign_list_all_type">全部</string>
+    <string name="sign_list_sent">已發送</string>
+    <string name="sign_list_unsent">未發送</string>
+    <string name="sign_list_export">導出數據</string>
+    <string name="sign_list_upload">上傳數據</string>
+    <string name="sign_list_filed_index">序號</string>
+    <string name="sign_list_filed_time">時間</string>
+    <string name="sign_list_filed_name">員工名</string>
+    <string name="sign_list_filed_depart">部門</string>
+    <string name="sign_list_filed_job">職位</string>
+    <string name="sign_list_filed_head">頭像</string>
+    <string name="sign_list_no_data">暫無數據</string>
+    <string name="sign_list_upload_success">上傳成功</string>
+    <string name="sign_list_upload_failed">上傳失敗，請檢查網絡</string>
+    <string name="sign_list_usb_disk">請插入U盤</string>
+    <string name="sign_list_all_data_sent">數據已全部上傳</string>
+
+
+    <!--訪客列表-->
+    <string name="visitor_list_title">訪客列表</string>
+    <string name="visitor_list_filed_name">姓名</string>
+    <string name="visitor_list_filed_time">訪問時間段</string>
+    <string name="visitor_list_filed_company">單位</string>
+    <string name="visitor_list_filed_reason">事由</string>
+
+
+    <!--系統設置-->
+    <!--模式-->
+    <string name="face_only_model">人臉識別考勤</string>
+    <string name="face_infared_model">人臉識別+紅外測溫模式</string>
+    <string name="infared_only_model">紅外測溫模式（不考勤）</string>
+    <string name="thermal_only_model">熱成像測溫模式（不考勤）</string>
+    <string name="face_thermal_model">人臉識別+熱成像測溫模式</string>
+    <string name="certificates_model">人證比對+熱成像測溫模式</string>
+    <!--標簽-->
+    <string name="setting_face_similar_threshold">設置人臉相似度閾值</string>
+    <string name="setting_enable_dialog">開啟人臉彈框</string>
+    <string name="setting_enable_liveness">開啟活體檢測</string>
+    <string name="setting_camera_mirror">開啟人臉框鏡像</string>
+    <string name="setting_select_model">選擇模式</string>
+    <string name="setting_current_port_path">當前串口</string>
+    <string name="setting_baud_rate">波特率</string>
+    <string name="setting_open">開啟</string>
+    <string name="setting_enable_distance_tips">開啟距離提示</string>
+    <string name="setting_thermal_imaging_mirror">熱成像畫面鏡像</string>
+    <string name="setting_open_temperature_delay">開啟測溫延時</string>
+    <string name="setting_temperature_delay_time">測溫延時</string>
+    <string name="setting_ms">毫秒</string>
+    <string name="setting_s">秒</string>
+    <string name="setting_temp_correct_value">測溫矯正值</string>
+    <string name="setting_amb_correct_value">環境溫矯正值</string>
+    <string name="setting_temperature_threshold">最低體溫播報</string>
+    <string name="setting_temperature_warning">測溫報警值</string>
+    <string name="setting_temp_range">體溫測溫範圍</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">最低</string><!--minimum-->
+    <string name="setting_range_highest">最高</string><!--Highest-->
+    <string name="setting_speech_delay">連續播報間隔</string>
+    <string name="setting_screen_saver">屏保</string>
+    <string name="setting_welcome_speech">歡迎語</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">顯示二維碼</string>
+    <string name="setting_enable_ic_card">IC讀卡器</string>
+    <string name="setting_relay_delay_time">開門時間</string>
+    <string name="setting_cpu_temp">CPU溫度:</string>
+    <string name="setting_camera_angle">攝像頭角度</string>
+    <string name="setting_curr_net">當前網絡:</string>
+    <string name="setting_net_name">【WIFI，網絡名稱：XXXXX】</string>
+    <string name="setting_reboot_device">重啟設備</string>
+    <string name="setting_check_update">檢測升級</string>
+    <string name="setting_manage_password">管理密碼修改</string>
+    <string name="setting_system_password">系統密碼</string>
+    <string name="setting_please_input_password">請輸入6-12位密碼（數字、字母）</string>
+    <string name="setting_please_input_again">請再次輸入密碼</string>
+    <string name="setting_cloud_service">雲端</string>
+    <string name="setting_local_service">局域網</string>
+    <string name="setting_ip_address">IP地址</string>
+    <string name="setting_xmpp_port">通信端口</string>
+    <string name="setting_resource_port">服務端口</string>
+    <string name="setting_project_name">項目名</string>
+    <string name="setting_save_service_info">保存服務</string>
+    <string name="setting_total_one">共1個</string>
+    <string name="setting_current_used">【當前使用：】</string>
+    <string name="setting_cam_angle">角度</string>
+    <string name="setting_net_prefix">【以太網絡，IP地址:</string>
+    <string name="setting_ip_info">，IP地址:</string>
+    <string name="setting_best_camera_size">最佳</string>
+    <string name="setting_max_camera_size">最大</string>
+    <string name="setting_wifi_name">名稱:</string>
+    <string name="setting_wifi_rssi">，信號強度:</string>
+    <string name="setting_device_will_reboot">設備將重啟，是否繼續？</string>
+    <string name="setting_device_reboot">設備重啟</string>
+    <string name="setting_3_scond_reboot">3秒後將重啟設備</string>
+    <string name="setting_password_not_null">密碼不可為空</string>
+    <string name="setting_password_min_6">密碼最少輸入6位</string>
+    <string name="setting_please_input_password_agian">請再次輸入密碼</string>
+    <string name="setting_password_disaccord">兩次輸入的密碼不壹致</string>
+    <string name="setting_edit_password_failed">修改失敗</string>
+    <string name="setting_edit_password_success">修改成功</string>
+
+    <string name="setting_current_correct_value">當前矯正值：</string>
+    <string name="setting_normal_speech_content">體溫正常播報內容</string>
+    <string name="setting_warning_speech_content">體溫异常播報內容</string>
+
+
+    <!--通用的  -->
+    <string name="base_tip">提示</string>
+    <string name="base_ensure">確定</string>
+    <string name="base_cancel">取消</string>
+    <string name="base_male">男</string>
+    <string name="base_female">女</string>
+    <string name="base_people">人</string>
+    <string name="base_year">年</string>
+    <string name="base_month">月</string>
+    <string name="base_day">日</string>
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">權限申請失敗</string>
+    <string name="splash_active_failed">激活失敗</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">雲標智能考勤</string>
+    <string name="act_wel_bottomTitle">雲標智能考勤</string>
+    <string name="act_wel_error_bywjsrmmo">不要忘記輸入密碼哦</string>
+    <string name="act_wel_error_mmclqcxsrb">密碼錯了，重新輸入吧</string>
+    <string name="act_wel_glmm">管理密碼</string>
+    <string name="act_wel_qsrglmm">請輸入管理密碼</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">智能人臉簽到，讓企業更放心~</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">已簽到</string>
+    <string name="fment_sign_bl">補錄</string>
+    <string name="fment_sign_jrqd">今日簽到:</string>
+
+    <string name="fment_sign_company">公司：</string>
+    <string name="fment_sign_device_no">編號：</string>
+    <string name="fment_sign_version">版本：</string>
+    <string name="fment_sign_bind_code">綁定碼：</string>
+
+    <string name="fment_sign_visitor_name">訪客</string><!--訪客-->
+    <!--WebFragment-->
+    <string name="fment_Web_back">後退</string>
+    <string name="fment_Web_refresh">刷新</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">系統設置</string>
+    <string name="act_set_xtmm">系統密碼</string>
+    <string name="act_set_qchc">清除緩存</string>
+    <string name="act_set_qcsj">清除數據</string>
+    <string name="act_set_jcsxt">檢測攝像頭</string>
+    <string name="act_set_sfjx">是否鏡像</string>
+    <string name="act_set_wlzt">網絡狀態</string>
+    <string name="act_set_gb">關閉</string>
+
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">請輸入部門名稱</string>
+    <string name="act_departList_tip_qdscm">確定刪除嗎？</string>
+    <string name="act_departList_bmlb">部門列表</string>
+    <string name="act_departList_add">新增</string>
+    <string name="act_departList_xh">序號</string>
+    <string name="act_departList_bmmc">部門名稱</string>
+    <string name="act_departList_cz">操作</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">請輸入部門名稱</string>
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">同步</string>
+    <string name="lay_loadPop_zlxsxx">這裏顯示信息</string>
+    <string name="uiUtils_tip_notice">通知</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">正在安裝相關應用，請耐心等待！</string>
+    <string name="dialog_sync_tbjs">同步結束</string>
+    <string name="sync_company_1">獲取公司信息</string>
+    <string name="sync_staff_2">獲取人員信息</string>
+    <string name="sync_database_3">同步數據庫</string>
+    <string name="sync_head_4">下載頭像</string>
+    <string name="sync_face_5">同步人臉庫</string>
+    <string name="sync_get_failed">獲取失敗，即將重試</string>
+    <string name="sync_not_bind">設備未綁定</string>
+    <string name="sync_not_depart">公司未設置部門</string>
+    <string name="sync_params_error">參數錯誤</string>
+    <string name="edit_not_edit">未做任何修改</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">是否退出應用？</string>
+    <string name="restartAPPTool_ycdht">隱藏到後臺</string>
+    <string name="restartAPPTool_exit">退出</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">當前版本為最新版本</string>
+    <string name="updateManager_wlljsbqjcwl">網絡連接失敗，請檢查網絡</string>
+    <string name="updateManager_xzsb">下載失敗</string>
+
+    <!--其他-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">xxx按鍵監聽的無障礙輔助服務</string>
+    <string name="System_Setting_save_threshold">保存</string>
+</resources>

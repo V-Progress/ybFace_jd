@@ -21,7 +21,6 @@ public abstract class BaseGpioActivity extends LedControlActivity {
         super.onCreate(savedInstanceState);
         xhApi = APP.getXHApi();
         if (mSmdtManager == null && xhApi == null) {
-            UIUtils.showShort(this, getString(R.string.act_baseGpio_wfkzmjqjcbkxh));
         }
 
         if (mSmdtManager != null) {

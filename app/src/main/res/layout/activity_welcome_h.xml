@@ -88,6 +88,26 @@
                 android:layout_height="wrap_content" />
 
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_thermal_maxT_main"
+                android:gravity="center"
+                android:background="#65000000"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_thermal_cacheT_main"
+                android:gravity="center"
+                android:background="#65000000"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
@@ -176,8 +196,8 @@
         <View
             android:visibility="invisible"
             android:id="@+id/view_face_distance"
-            android:layout_width="450dp"
-            android:layout_height="450dp"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:background="@drawable/shape_temperature_frame_background" />
@@ -193,16 +213,6 @@
             android:textSize="28dp"
             android:textStyle="bold"
             android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/tv_range_tips_main"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/shape_tips_background_main"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="40dp" />
 
     </RelativeLayout>
 

@@ -50,16 +50,16 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/set_face_similar_threshold_setting" />
+                    android:text="@string/setting_face_similar_threshold" />
 
                 <EditText
                     android:id="@+id/edt_similar_threshold"
                     style="@style/style_setting_input_number_edt" />
 
                 <Button
-                    android:text="@string/save_service_info_setting"
                     android:id="@+id/btn_set_similar_threshold"
-                    style="@style/style_setting_input_save_button" />
+                    style="@style/style_setting_input_save_button"
+                    android:text="@string/setting_save_service_info" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/enable_face_dialog_setting" />
+                    android:text="@string/setting_enable_dialog" />
 
                 <Switch
                     android:id="@+id/sw_face_dialog"
@@ -97,7 +97,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/enable_liveness_setting" />
+                    android:text="@string/setting_enable_liveness" />
 
                 <Switch
                     android:id="@+id/sw_liveness_setting"
@@ -110,7 +110,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/camera_mirror_setting" />
+                    android:text="@string/setting_camera_mirror" />
 
                 <CheckBox
                     android:id="@+id/cb_mirror"
@@ -119,7 +119,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:checked="true"
-                    android:text="@string/act_sys_open"
+                    android:text="@string/setting_open"
                     android:textColor="@color/white"
                     android:textSize="20dp" />
             </LinearLayout>
@@ -138,10 +138,10 @@
                         android:text="@string/current_model_setting" />
 
                     <TextView
-                        android:layout_marginLeft="20dp"
                         android:id="@+id/tv_model_setting"
                         style="@style/setting_text"
                         android:layout_width="wrap_content"
+                        android:layout_marginLeft="20dp"
                         android:background="@drawable/shape_system_name"
                         android:clickable="true"
                         android:drawableRight="@mipmap/icon_arrow_down"
@@ -160,13 +160,13 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/current_port_path_setting" />
+                        android:text="@string/setting_current_port_path" />
 
                     <TextView
-                        android:layout_marginLeft="20dp"
                         android:id="@+id/tv_port_path_setting"
                         style="@style/setting_text"
                         android:layout_width="wrap_content"
+                        android:layout_marginLeft="20dp"
                         android:background="@drawable/shape_system_name"
                         android:clickable="true"
                         android:drawableRight="@mipmap/icon_arrow_down"
@@ -177,11 +177,13 @@
                         android:paddingBottom="10dp" />
 
                     <TextView
-                        android:layout_marginLeft="20dp"
+                        android:visibility="gone"
                         style="@style/setting_text"
-                        android:text="@string/baud_rate_setting" />
+                        android:layout_marginLeft="20dp"
+                        android:text="@string/setting_baud_rate" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_baud_rate_setting"
                         style="@style/setting_text"
                         android:layout_marginLeft="10dp" />
@@ -195,7 +197,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/enable_distance_tips_setting" />
+                        android:text="@string/setting_enable_distance_tips" />
 
                     <Switch
                         android:id="@+id/sw_distance_setting"
@@ -208,13 +210,14 @@
 
                     <LinearLayout
                         android:id="@+id/ll_thermal_mirror_area"
-                        android:layout_marginLeft="30dp"
-                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:orientation="horizontal">
+
                         <TextView
                             style="@style/setting_text"
-                            android:text="@string/thermal_imaging_mirror_setting" />
+                            android:text="@string/setting_thermal_imaging_mirror" />
 
                         <Switch
                             android:id="@+id/sw_thermal_imag_mirror_setting"
@@ -236,7 +239,73 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/open_temperature_delay_time_setting" />
+                        android:text="低温模式" />
+
+                    <Switch
+                        android:id="@+id/sw_low_temp_model_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="低温补偿环境温度" />
+
+                    <Button
+                        android:layout_marginLeft="20dp"
+                        android:id="@+id/btn_ambient_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_ambient_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/btn_ambient_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_open_temperature_delay" />
 
                     <Switch
                         android:id="@+id/sw_get_temp_delay_setting"
@@ -250,7 +319,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="@string/check_temperature_delay_time_setting" />
+                        android:text="@string/setting_temperature_delay_time" />
 
                     <Button
                         android:id="@+id/btn_get_temp_delay_sub_setting"
@@ -274,7 +343,7 @@
 
                         <TextView
                             style="@style/setting_text"
-                            android:text="@string/ms_setting" />
+                            android:text="@string/setting_ms" />
                     </LinearLayout>
 
                     <Button
@@ -294,7 +363,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/check_temperature_correct_setting" />
+                        android:text="@string/setting_temp_correct_value" />
 
                     <Button
                         android:id="@+id/btn_temp_corr_sub_setting"
@@ -330,7 +399,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="@string/ambient_temperature_correct_setting" />
+                        android:text="@string/setting_amb_correct_value" />
 
                     <Button
                         android:id="@+id/btn_amb_corr_sub_setting"
@@ -373,7 +442,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/temperature_threshold_setting" />
+                        android:text="@string/setting_temperature_threshold" />
 
                     <Button
                         android:id="@+id/btn_temp_min_threshold_sub_setting"
@@ -409,7 +478,7 @@
                     <TextView
                         style="@style/setting_text"
                         android:layout_marginLeft="30dp"
-                        android:text="@string/temerature_warning_value_setting" />
+                        android:text="@string/setting_temperature_warning" />
 
                     <Button
                         android:id="@+id/btn_temp_warning_threshold_sub_setting"
@@ -444,12 +513,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
-                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/setting_text"
@@ -487,20 +556,21 @@
                 <!--todo -->
                 <LinearLayout
                     android:id="@+id/ll_temp_range_area"
-                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         style="@style/setting_text"
                         android:layout_height="wrap_content"
-                        android:text="@string/thermal_temp_range" />
+                        android:text="@string/setting_temp_range" />
+
                     <TextView
-                        android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="@string/minimum_setting" />
+                        android:layout_marginLeft="20dp"
+                        android:text="@string/setting_range_minimum" />
 
                     <Button
                         android:id="@+id/btn_body_min_t_sub_setting"
@@ -534,9 +604,9 @@
                         android:background="@mipmap/icon_jia" />
 
                     <TextView
-                        android:layout_marginLeft="20dp"
                         style="@style/setting_text"
-                        android:text="@string/highest_setting" />
+                        android:layout_marginLeft="20dp"
+                        android:text="@string/setting_range_highest" />
 
                     <Button
                         android:id="@+id/btn_body_max_t_sub_setting"
@@ -570,48 +640,94 @@
                         android:background="@mipmap/icon_jia" />
                 </LinearLayout>
 
+                <!--todo -->
                 <LinearLayout
-                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_height="wrap_content"
+                        android:text="连续播报间隔" />
+
+                    <Button
+                        android:id="@+id/btn_speech_delay_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_speech_delay_setting"
+                            style="@style/style_setting_input_number_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="毫秒" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_speech_delay_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/setting_text"
                         android:text="体温正常播报内容" />
 
                     <EditText
-                        android:padding="5dp"
-                        android:background="@drawable/shape_system_name"
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/edt_normal_tips_tips"
                         style="@style/style_setting_input_number_edt"
                         android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
                         android:inputType="text"
-                        android:maxLength="20" />
+                        android:maxLength="20"
+                        android:padding="5dp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/setting_text"
                         android:text="体温异常播报内容" />
 
                     <EditText
-                        android:padding="5dp"
-                        android:background="@drawable/shape_system_name"
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/edt_warning_tips_tips"
                         style="@style/style_setting_input_number_edt"
                         android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
                         android:inputType="text"
-                        android:maxLength="20" />
+                        android:maxLength="20"
+                        android:padding="5dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -678,7 +794,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/screen_saver_setting" />
+                    android:text="@string/setting_screen_saver" />
 
                 <Switch
                     android:id="@+id/sw_poster_setting"
@@ -697,14 +813,14 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/welcome_speech_setting" />
+                    android:text="@string/setting_welcome_speech" />
 
                 <EditText
-                    android:background="@drawable/shape_system_name"
-                    android:layout_marginLeft="10dp"
                     android:id="@+id/edt_welcome_tips"
                     style="@style/style_setting_input_number_edt"
                     android:layout_width="400dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/shape_system_name"
                     android:inputType="text"
                     android:maxLength="20" />
 
@@ -717,7 +833,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/show_qr_code_setting" />
+                    android:text="@string/setting_show_qr_code" />
 
                 <Switch
                     android:id="@+id/sw_qrcode_setting"
@@ -736,7 +852,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/enable_ic_card_setting" />
+                    android:text="@string/setting_enable_ic_card" />
 
                 <Switch
                     android:id="@+id/sw_readcard_setting"
@@ -756,7 +872,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/relay_delay_time_setting" />
+                    android:text="@string/setting_relay_delay_time" />
 
                 <EditText
                     android:id="@+id/edt_delay"
@@ -765,13 +881,13 @@
                 <TextView
                     style="@style/setting_text"
                     android:layout_marginLeft="10dp"
-                    android:text="@string/s_setting" />
+                    android:text="@string/setting_s" />
 
                 <TextView
-                    android:textColor="@android:color/holo_red_light"
                     style="@style/setting_text"
                     android:layout_marginLeft="10dp"
-                    android:text="@string/auto_close_door_setting" />
+                    android:text="@string/auto_close_door_setting"
+                    android:textColor="@android:color/holo_red_light" />
             </LinearLayout>
 
             <LinearLayout
@@ -782,7 +898,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_CPU_tem" />
+                    android:text="@string/setting_cpu_temp" />
 
                 <TextView
                     android:id="@+id/tv_cpu_temper"
@@ -799,17 +915,17 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/camera_angle_setting" />
+                    android:text="@string/setting_camera_angle" />
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_totalOne"
+                    android:text="@string/setting_total_one"
                     android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_camera"
                     style="@style/setting_text"
-                    android:text="@string/act_sys_dqsy"
+                    android:text="@string/setting_current_used"
                     android:visibility="gone" />
 
                 <Button
@@ -840,31 +956,31 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="@string/act_sys_dqwl" />
+                    android:text="@string/setting_curr_net" />
 
                 <TextView
                     android:id="@+id/tv_wifi_state"
                     style="@style/setting_text"
-                    android:text="@string/act_sys_WIFI_wlmc" />
+                    android:text="@string/setting_net_name" />
             </LinearLayout>
 
             <TextView
                 style="@style/setting_text_child"
                 android:layout_marginTop="10dp"
                 android:onClick="rebootDevice"
-                android:text="@string/act_sys_WIFI_cqsb" />
+                android:text="@string/setting_reboot_device" />
 
             <TextView
                 style="@style/setting_text_child"
                 android:layout_marginTop="10dp"
                 android:onClick="checkUpgrade"
-                android:text="@string/act_sys_jcsj" />
+                android:text="@string/setting_check_update" />
 
             <TextView
                 style="@style/setting_text_child"
                 android:layout_marginTop="10dp"
                 android:onClick="modifyPWD"
-                android:text="@string/act_sys_glmmxg" />
+                android:text="@string/setting_manage_password" />
 
             <LinearLayout
                 style="@style/setting_text_child"
@@ -885,7 +1001,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="@string/cloud_service_setting"
+                        android:text="@string/setting_cloud_service"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
 
@@ -895,7 +1011,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center_vertical"
-                        android:text="@string/local_service_setting"
+                        android:text="@string/setting_local_service"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
                 </RadioGroup>
@@ -916,7 +1032,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/ip_address_setting"
+                            android:text="@string/setting_ip_address"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -938,7 +1054,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/resource_port_setting"
+                            android:text="@string/setting_resource_port"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -961,7 +1077,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/im_port_setting"
+                            android:text="@string/setting_xmpp_port"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -984,7 +1100,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/project_name_setting"
+                            android:text="@string/setting_project_name"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -1004,7 +1120,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/selector_btn_take_photo"
-                        android:text="@string/save_service_info_setting"
+                        android:text="@string/setting_save_service_info"
                         android:textColor="@color/white"
                         android:textSize="20dp" />
 

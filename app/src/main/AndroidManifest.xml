@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.GET_TASKS" />
 
+    <uses-feature android:name="android.hardware.usb.host" />
+
+    <uses-permission android:name="android.hardware.usb.accessory" />
+
     <permission android:name="android.permission.REBOOT" />
     <permission android:name="android.permission.SHUTDOWN" />
     <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
@@ -53,7 +57,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.CertificatesActivity"></activity>
+        <activity android:name=".thermal_imaging.TemperatureCorrectActivity"></activity>
+        <activity android:name=".activity.TestActivity" />
+        <activity android:name=".thermal_imaging.CertificatesActivity">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+        <activity android:name=".thermal_imaging.ThermalImageActivity" />
+        <activity android:name=".thermal_imaging.ThermalSettingActivity" />
+        <activity android:name=".thermal_imaging.ThermalSystemActivity" />
         <activity android:name=".activity.PassageDeviceActivity" />
         <activity android:name=".smdt_portrait.SMTMainActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
@@ -93,19 +110,13 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" />
-
-
-        <!--视美泰竖屏闸机-->
-        <activity android:name=".smdt_portrait.SMTSystemActivity"/>
-        <activity android:name=".smdt_portrait.SMTEmployListActivity"/>
-        <activity android:name=".smdt_portrait.SMTEditEmployActivity"/>
-        <activity android:name=".smdt_portrait.SMTRecordActivity"/>
-        <activity android:name=".smdt_portrait.SMTSettingActivity"/>
-        <activity android:name=".smdt_portrait.SMTVisitorActivity"/>
-        <!--视美泰竖屏闸机-->
-
-
+            android:label="Notification Settings" /> <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".smdt_portrait.SMTSystemActivity" />
+        <activity android:name=".smdt_portrait.SMTEmployListActivity" />
+        <activity android:name=".smdt_portrait.SMTEditEmployActivity" />
+        <activity android:name=".smdt_portrait.SMTRecordActivity" />
+        <activity android:name=".smdt_portrait.SMTSettingActivity" />
+        <activity android:name=".smdt_portrait.SMTVisitorActivity" /> <!-- 视美泰竖屏闸机 -->
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service
             android:name=".ReadCardService"

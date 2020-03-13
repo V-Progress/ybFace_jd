@@ -18,24 +18,25 @@ public class DaoManager {
     public static final long FAILURE = -1;
     public static final long SUCCESS = 0;
 
-    public static DaoManager get(){
+    public static DaoManager get() {
         return daoManager;
     }
 
-    private DaoManager(){
+    private DaoManager() {
     }
 
-    public void initDb(Object uniqueId){
+    public void initDb(Object uniqueId) {
         initDb("db_" + uniqueId);
     }
-    public void initDb(){
+
+    public void initDb() {
         initDb(DB_NAME);
     }
 
 
-    public void initDb(String name){
+    public void initDb(String name) {
         Log.e(TAG, "initDb: ");
-        MySQLiteHelper helper =new MySQLiteHelper(APP.getContext(),name,null);
+        MySQLiteHelper helper = new MySQLiteHelper(APP.getContext(), name, null);
         Log.e(TAG, "initDb: " + helper);
         Database db = helper.getWritableDb();
         Log.e(TAG, "initDb: " + db);
@@ -51,45 +52,45 @@ public class DaoManager {
         daoSession.getVisitorDao().detachAll();
     }
 
-    public DaoSession getDaoSession(){
+    public DaoSession getDaoSession() {
         return daoSession;
     }
 
-    public DaoMaster getDaoMaster(){
+    public DaoMaster getDaoMaster() {
         return daoMaster;
     }
 
-    public <T> long add(T clazz){
-        if(daoSession == null){
+    public <T> long add(T clazz) {
+        if (daoSession == null) {
             return FAILURE;
         }
         return daoSession.insert(clazz);
     }
 
-    public <T> long addOrUpdate(T clazz){
-        if(daoSession == null){
+    public <T> long addOrUpdate(T clazz) {
+        if (daoSession == null) {
             return FAILURE;
         }
-       return daoSession.insertOrReplace(clazz);
+        return daoSession.insertOrReplace(clazz);
     }
 
-    public <T>long update(T t){
-        if(daoSession == null){
+    public <T> long update(T t) {
+        if (daoSession == null) {
             return FAILURE;
         }
         daoSession.update(t);
         return SUCCESS;
     }
 
-    public <T>List<T> queryAll(Class<T> clazz){
-        if(daoSession == null){
+    public <T> List<T> queryAll(Class<T> clazz) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.loadAll(clazz);
     }
 
-    public <T>long delete(T t){
-        if(daoSession == null){
+    public <T> long delete(T t) {
+        if (daoSession == null) {
             return FAILURE;
         }
         daoSession.delete(t);
@@ -102,11 +103,23 @@ public class DaoManager {
      * @param date
      * @return
      */
-    public List<Sign> querySignByComIdAndDate(int comId,String date){
-        if(daoSession == null){
+    public List<Sign> querySignByComIdAndDate(int comId, String date) {
+        if (daoSession == null) {
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.Date.eq(date)).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.Date.eq(date)).list();
+    }
+
+    /***
+     * 查询某公司下某天的所有打卡记录
+     * @param comId
+     * @return
+     */
+    public List<Sign> querySignByComId(int comId) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId)).list();
     }
 
     /***
@@ -114,11 +127,18 @@ public class DaoManager {
      * @param isUp
      * @return
      */
-    public List<Sign> querySignByUpload(boolean isUp){
-        if(daoSession == null){
+    public List<Sign> querySignByUpload(boolean isUp) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.IsUpload.eq(isUp)).list();
+    }
+
+    public Sign querySignByTime(long time) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Time.eq(time)).unique();
     }
 
     /***
@@ -126,8 +146,8 @@ public class DaoManager {
      * @param faceId
      * @return
      */
-    public User queryUserByFaceId(String faceId){
-        if(daoSession == null){
+    public User queryUserByFaceId(String faceId) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.FaceId.eq(faceId)).unique();
@@ -138,8 +158,8 @@ public class DaoManager {
      * @param id
      * @return
      */
-    public User queryUserById(long id){
-        if(daoSession == null){
+    public User queryUserById(long id) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(id)).unique();
@@ -151,11 +171,11 @@ public class DaoManager {
      * @param depId
      * @return
      */
-    public List<User> queryUserByCompIdAndDepId(int compId,long depId){
-        if(daoSession == null){
+    public List<User> queryUserByCompIdAndDepId(int compId, long depId) {
+        if (daoSession == null) {
             return null;
         }
-        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId),UserDao.Properties.DepartId.eq(depId)).list();
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId), UserDao.Properties.DepartId.eq(depId)).list();
     }
 
     /***
@@ -163,15 +183,15 @@ public class DaoManager {
      * @param compId
      * @return
      */
-    public List<User> queryUserByCompId(int compId){
-        if(daoSession == null){
+    public List<User> queryUserByCompId(int compId) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId)).list();
     }
 
-    public List<Depart> queryDepartByCompId(int compId){
-        if(daoSession == null){
+    public List<Depart> queryDepartByCompId(int compId) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getDepartDao().queryBuilder().where(DepartDao.Properties.CompId.eq(compId)).list();
@@ -182,29 +202,29 @@ public class DaoManager {
      * @param id
      * @return
      */
-    public List<User> queryUserByDepId(long id){
-        if(daoSession == null){
+    public List<User> queryUserByDepId(long id) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.DepartId.eq(id)).list();
     }
 
     public Visitor queryVisitorByFaceId(String userId) {
-        if(daoSession == null){
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.FaceId.eq(userId)).unique();
     }
 
-    public List<Visitor> queryVisitorsByCompId(int compId){
-        if(daoSession == null){
+    public List<Visitor> queryVisitorsByCompId(int compId) {
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.ComId.eq(compId)).list();
     }
 
     public User queryUserByCardId(String cardId) {
-        if(daoSession == null){
+        if (daoSession == null) {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CardId.eq(cardId)).unique();

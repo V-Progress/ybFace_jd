@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.sam.sdticreader.WltDec;
 import com.sdt.Sdtapi;
-import com.yunbiao.ybsmartcheckin_live_id.activity.IdCardMsg;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

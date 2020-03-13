@@ -15,41 +15,30 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.FileUtil;
-import org.xutils.common.util.IOUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -132,7 +121,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initSpinner() {
-        final String[] modeArray = {getString(R.string.act_sign_tip_qb), getString(R.string.act_sign_tip_yfs), getString(R.string.act_sign_tip_wfs)};
+        final String[] modeArray = {getString(R.string.sign_list_all_type), getString(R.string.sign_list_sent), getString(R.string.sign_list_unsent)};
         ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(this, R.layout.item_spinner_simple_text, modeArray);
 
         spnDataMode.setAdapter(spnAdapter);
@@ -208,7 +197,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 mShowList.clear();
                 mSignList = DaoManager.get().querySignByComIdAndDate(SpUtils.getInt(SpUtils.COMPANYID), queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
-                    tips(getString(R.string.act_sign_tip_zwsj));
+                    tips(getString(R.string.sign_list_no_data));
                     return;
                 }
 
@@ -235,7 +224,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     showData();
                     hide();
                 } else {
-                    tips(getString(R.string.act_sign_tip_zwsj));
+                    tips(getString(R.string.sign_list_no_data));
                 }
             }
         });
@@ -253,7 +242,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SignActivity.this, (aBoolean ? getString(R.string.act_sign_tip_sccg) : getString(R.string.act_sign_tip_scsbqjcwl)));
+                        UIUtils.showShort(SignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
                     }
                 });
                 break;
@@ -303,16 +292,16 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         File file = new File(usbDiskPath);
         if (!file.exists()) {
             isExporting = false;
-            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_qcrup));
+            UIUtils.showTitleTip(SignActivity.this, getString(R.string.sign_list_usb_disk));
             return;
         }
-        String[] list = file.list();
+        /*String[] list = file.list();
         for (String s : list) {
             File usbFile = new File(file, s);
             if (usbFile.isDirectory()) {
                 file = usbFile;
             }
-        }
+        }*/
         //创建记录最外层目录
         final File dirFile = new File(file, dateFormat.format(new Date()) + "_导出记录");
         if (!dirFile.exists()) {

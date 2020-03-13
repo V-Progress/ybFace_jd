@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -116,7 +115,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
     }
 
     private void initSpinner() {
-        final String[] modeArray = {getString(R.string.act_sign_tip_qb), getString(R.string.act_sign_tip_yfs), getString(R.string.act_sign_tip_wfs)};
+        final String[] modeArray = {getString(R.string.sign_list_all_type), getString(R.string.sign_list_sent), getString(R.string.sign_list_unsent)};
         ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(this, R.layout.item_spinner_simple_text, modeArray);
 
         spnDataMode.setAdapter(spnAdapter);
@@ -192,7 +191,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                 mShowList.clear();
                 mSignList = DaoManager.get().querySignByComIdAndDate(SpUtils.getInt(SpUtils.COMPANYID), queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
-                    tips(getString(R.string.act_sign_tip_zwsj));
+                    tips(getString(R.string.sign_list_no_data));
                     return;
                 }
 
@@ -219,7 +218,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                     showData();
                     hide();
                 } else {
-                    tips(getString(R.string.act_sign_tip_zwsj));
+                    tips(getString(R.string.sign_list_no_data));
                 }
             }
         });
@@ -237,7 +236,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SMTRecordActivity.this, (aBoolean ? getString(R.string.act_sign_tip_sccg) : getString(R.string.act_sign_tip_scsbqjcwl)));
+                        UIUtils.showShort(SMTRecordActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
                     }
                 });
                 break;
@@ -287,7 +286,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
         File file = new File(usbDiskPath);
         if (!file.exists()) {
             isExporting = false;
-            UIUtils.showTitleTip(SMTRecordActivity.this, getString(R.string.act_sign_tip_qcrup));
+            UIUtils.showTitleTip(SMTRecordActivity.this, getString(R.string.sign_list_usb_disk));
             return;
         }
         String[] list = file.list();

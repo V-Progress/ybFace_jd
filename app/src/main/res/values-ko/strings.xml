@@ -1,0 +1,311 @@
+<resources>
+    <string name="app_name">YBFace</string>
+    <string name="used">중고:</string>
+    <string name="no_used">/가능:</string>
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">ON-LINE</string>
+    <string name="smt_main_net_no">OFF-LINE</string>
+    <string name="smt_main_all">받다</string>
+    <string name="smt_main_already">이미</string>
+    <string name="smt_main_ver">Ver:</string>
+    <string name="smt_main_company">회사:</string>
+    <string name="smt_main_device_no">No:</string>
+    <string name="smt_main_not_bind">연결되지않음</string>
+
+
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">고열</string>
+    <string name="main_temp_normal_tips">정상</string>
+    <string name="main_temp_error_tips">비정상적 체온</string>
+    <string name="main_temp_tips_please_close">가까이 오세요</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">너무 멀어요 가까이 오세요</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">멀리있어</string>
+    <string name="main_temp_tips_so_close_text">너무 가까이</string>
+    <string name="main_thermal_temp">열 화상 체온：</string>
+    <string name="main_please_waiting">기다려주세요</string>
+    <string name="main_temp_tips_please_in_range">인식 영역을 향한 얼굴</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">측정중</string>
+    <string name="port_setting">시리얼포트</string>
+    <string name="select_port_setting">시리얼 포트 선택</string>
+    <string name="auto_close_door_setting">（이 시간이 지나면 자동으로 닫힙니다）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">권장 임계 값：80</string>
+    <string name="current_model_setting">현재 모드</string>
+
+    <!--系统信息-->
+    <string name="System_title">YBFace</string>
+    <string name="System_deviceNo">설비번호:</string>
+    <string name="System_bindCode">바인딩 코드:</string>
+    <string name="System_Company">회사:</string>
+    <string name="System_Service">서비스 네트워크:</string>
+    <string name="System_ValiDate">유효기간:</string>
+    <string name="System_Manage">인원 관리</string>
+    <string name="System_Add">인원 추가</string>
+    <string name="System_Record">출석 기록</string>
+    <string name="System_Setting">시스템 설정</string>
+    <string name="System_Visitor">방문객</string>
+    <string name="System_skin_select">피부 변경</string>
+    <string name="System_update">업그레이드</string>
+    <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string>
+    <string name="System_Service_offline">오프라인</string>
+    <string name="System_online">온라인</string>
+    <string name="System_offline">오프라인</string>
+    <string name="System_validityPeriod">무기한</string>
+    <string name="System_cloud_service">클라우드 서비스</string>
+    <string name="System_local_service">로컬 서비스</string>
+
+    <!--人员管理-->
+    <string name="employ_list_title">직원 목록</string>
+    <string name="employ_list_depart_sync">동기화</string>
+    <string name="employ_List_add_user">추가</string>
+    <string name="employ_List_query_button">검색</string>
+    <string name="employ_list_download_failed">아바타를 다운로드하지 못했습니다</string>
+    <string name="employ_list_add_face_failed">얼굴 라이브러리 추가 실패</string>
+    <string name="employ_list_update_head_failed">아바타 업데이트 실패</string>
+    <string name="employ_list_field_index">번호</string>
+    <string name="employ_list_field_number">직원번호</string>
+    <string name="employ_list_field_name">성명</string>
+    <string name="employ_list_field_depart">부서</string>
+    <string name="employ_list_field_position">직위</string>
+    <string name="employ_list_field_control">담당</string>
+    <string name="employ_list_item_delete">삭제</string>
+    <string name="employ_list_item_edit">편집</string>
+    <string name="employ_list_all_depart">모든 부서</string>
+    <string name="employ_list_please_input_user_name">직원 이름을 입력하십시오</string>
+    <string name="employ_list_confirm_edit">수정 하시겠습니까?</string>
+    <string name="employ_list_confirm_delete">삭제 하시겠습니까?</string>
+    <string name="employ_list_delete_failed">삭제 실패</string>
+    <string name="employ_list_delete_success">성공적으로 삭제되었습니다</string>
+    <string name="employ_list_depart">학과</string>
+    <string name="employ_list_add_depart">부서 추가</string>
+
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">직원 증가</string>
+    <string name="act_editEmploy_xgxx">정보 편집</string>
+    <string name="act_editEmploy_pz">사진</string>
+    <string name="act_editEmploy_reset">리셋</string>
+    <string name="act_editEmploy_jbxx">기본 정보</string>
+    <string name="act_editEmploy_name">성명:</string>
+    <string name="act_editEmploy_sex">성별:</string>
+    <string name="act_editEmploy_bm">부서:</string>
+    <string name="act_editEmploy_ygbh">직원번호:</string>
+    <string name="act_editEmploy_zw">직위:</string>
+    <string name="act_editEmploy_csrq">생년월일:</string>
+    <string name="act_editEmploy_gxqm">별칭:</string>
+    <string name="act_editEmploy_tip_qxpz">먼저 사진을 찍어주세요</string>
+    <string name="act_editEmploy_tip_qtxxm">이름을 적어주세요</string>
+    <string name="act_editEmploy_tip_qxzxb">성별을 선택하십시오</string>
+    <string name="act_editEmploy_tip_qtxbh">번호를 입력 해주세요</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">아바타 파일이 없습니다. 사진을 찍은 후 다시 시도하십시오</string>
+    <string name="act_editEmploy_tip_wzrhxg">변경 사항 없음</string>
+    <string name="act_editEmploy_tip_tjsb">추가 실패</string>
+    <string name="act_editEmploy_tip_gygbcz">직원이 존재하지 않습니다</string>
+    <string name="act_editEmploy_tip_bczgbm">부서가 존재하지 않습니다</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">회사에는이 부서가 없습니다</string>
+    <string name="act_editEmploy_tip_gsyzwyg">회사에이 직원이 없습니다</string>
+    <string name="act_editEmploy_tip_cscw">파라미터 에러</string>
+
+    <!--离线数据-->
+    <string name="sign_list_title">오프라인 데이터</string>
+    <string name="sign_list_all_type">모두</string>
+    <string name="sign_list_sent">보냄</string>
+    <string name="sign_list_unsent">보내지 않음</string>
+    <string name="sign_list_export">데이터 내보내기</string>
+    <string name="sign_list_upload">데이터 업로드</string>
+    <string name="sign_list_filed_index">번호</string>
+    <string name="sign_list_filed_time">시간</string>
+    <string name="sign_list_filed_name">성명</string>
+    <string name="sign_list_filed_depart">부서</string>
+    <string name="sign_list_filed_job">직위</string>
+    <string name="sign_list_filed_head">아바타</string>
+    <string name="sign_list_no_data">데이터가 없습니다</string>
+    <string name="sign_list_upload_success">성공적으로 업로드되었습니다</string>
+    <string name="sign_list_upload_failed">업로드에 실패했습니다. 네트워크를 확인하십시오</string>
+    <string name="sign_list_usb_disk">USB 플래시 드라이브를 삽입하십시오</string>
+    <string name="sign_list_all_data_sent">모든 데이터가 업로드되었습니다</string>
+
+
+    <!--访客列表-->
+    <string name="visitor_list_title">방문자 목록</string>
+    <string name="visitor_list_filed_name">이름</string>
+    <string name="visitor_list_filed_time">액세스 기간</string>
+    <string name="visitor_list_filed_company">단위</string>
+    <string name="visitor_list_filed_reason">원인</string>
+
+
+    <!--系统设置-->
+    <!--模式-->
+    <string name="face_only_model">얼굴인증</string>
+    <string name="face_infared_model">얼굴인증및 적외선</string>
+    <string name="infared_only_model">열화상 온도측정</string>
+    <string name="thermal_only_model">열상 이미지</string>
+    <string name="face_thermal_model">얼굴인증 및 열상이미지</string>
+    <string name="certificates_model">신분증 및 열상이미지</string>
+    <!--标签-->
+    <string name="setting_face_similar_threshold">얼굴 유사도 설정</string>
+    <string name="setting_enable_dialog">얼굴 정보</string>
+    <string name="setting_enable_liveness">실제 얼굴 판별 On</string>
+    <string name="setting_camera_mirror">미러링 켜기</string>
+    <string name="setting_select_model">모드 선택</string>
+    <string name="setting_current_port_path">현재 직렬 포트</string>
+    <string name="setting_baud_rate">데이터 비트</string>
+    <string name="setting_open">On</string>
+    <string name="setting_enable_distance_tips">거리표시 On</string>
+    <string name="setting_thermal_imaging_mirror">열화상 미러링</string>
+    <string name="setting_open_temperature_delay">온도 측정 지연 On</string>
+    <string name="setting_temperature_delay_time">온도 측정 지연</string>
+    <string name="setting_ms">ms</string>
+    <string name="setting_s">s</string>
+    <string name="setting_temp_correct_value">온도값 보정</string>
+    <string name="setting_amb_correct_value">주변 온도 보정</string>
+    <string name="setting_temperature_threshold">최저 온도 보고서</string>
+    <string name="setting_temperature_warning">온도 측정 경보값</string>
+    <string name="setting_temp_range">체온 측정 범위</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">최저</string><!--minimum-->
+    <string name="setting_range_highest">최고</string><!--Highest-->
+    <string name="setting_speech_delay">연속 방송 간격</string>
+    <string name="setting_screen_saver">광고화면</string>
+    <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">QR 코드 표시</string>
+    <string name="setting_enable_ic_card">IC 카드 리더</string>
+    <string name="setting_relay_delay_time">개관 시간</string>
+    <string name="setting_cpu_temp">CPU 온도:</string>
+    <string name="setting_camera_angle">카메라 각도</string>
+    <string name="setting_curr_net">현재 네트워크:</string>
+    <string name="setting_net_name">【WIFI，네트워크 이름：XXXXX】</string>
+    <string name="setting_reboot_device">장치를 다시 시작</string>
+    <string name="setting_check_update">탐지 업그레이드</string>
+    <string name="setting_manage_password">비밀번호 변경 관리</string>
+    <string name="setting_system_password">시스템 비밀번호</string>
+    <string name="setting_please_input_password">6-12 자리 비밀번호 (숫자, 문자)를 입력하십시오</string>
+    <string name="setting_please_input_again">비밀번호를 다시 입력하십시오</string>
+    <string name="setting_cloud_service">클라우드 서비스</string>
+    <string name="setting_local_service">로컬 서비스</string>
+    <string name="setting_ip_address">IP 주소</string>
+    <string name="setting_xmpp_port">메시지 포트</string>
+    <string name="setting_resource_port">서버 포트</string>
+    <string name="setting_project_name">프로젝트 명</string>
+    <string name="setting_save_service_info">저장</string>
+    <string name="setting_total_one">합계 1</string>
+    <string name="setting_current_used">【현재 사용 중：】</string>
+    <string name="setting_cam_angle">각도</string>
+    <string name="setting_net_prefix">【이더넷，IP 주소:</string>
+    <string name="setting_ip_info">，IP 주소:</string>
+    <string name="setting_best_camera_size">Best</string>
+    <string name="setting_max_camera_size">Max</string>
+    <string name="setting_wifi_name">이름:</string>
+    <string name="setting_wifi_rssi">，신호 강도:</string>
+    <string name="setting_device_will_reboot">기기가 다시 시작됩니다. 계속 하시겠습니까?</string>
+    <string name="setting_device_reboot">장치 재시작</string>
+    <string name="setting_3_scond_reboot">기기가 3 초 안에 다시 시작됩니다</string>
+    <string name="setting_password_not_null">비밀번호는 비워 둘 수 없습니다</string>
+    <string name="setting_password_min_6">비밀번호는 6 자 이상이어야합니다</string>
+    <string name="setting_please_input_password_agian">비밀번호를 다시 입력하십시오</string>
+    <string name="setting_password_disaccord">두 번 입력 한 비밀번호가 일치하지 않습니다</string>
+    <string name="setting_edit_password_failed">편집 실패</string>
+    <string name="setting_edit_password_success">성공적으로 수정되었습니다</string>
+
+    <string name="setting_current_correct_value">당면교정 하 다:</string>
+    <string name="setting_normal_speech_content">체온 이 정상 적 으로 방송 되다:</string>
+    <string name="setting_warning_speech_content">체온 이상 보도:</string>
+
+
+    <!--通用的  -->
+    <string name="base_tip">힌트</string>
+    <string name="base_ensure">확정 하 다</string>
+    <string name="base_cancel">취소</string>
+    <string name="base_male">말레</string>
+    <string name="base_female">여성</string>
+    <string name="base_people">사람</string>
+    <string name="base_year">년</string>
+    <string name="base_month">월</string>
+    <string name="base_day">일</string>
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">권한 신청 실패</string>
+    <string name="splash_active_failed">활성화 실패</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">YB Intelligent attendance</string>
+    <string name="act_wel_bottomTitle">YB Intelligent attendance</string>
+    <string name="act_wel_error_bywjsrmmo">비밀번호를 입력하는 것을 잊지 마십시오</string>
+    <string name="act_wel_error_mmclqcxsrb">비밀번호가 잘못되었습니다. 다시 입력하십시오</string>
+    <string name="act_wel_glmm">비밀번호 관리</string>
+    <string name="act_wel_qsrglmm">관리 비밀번호를 입력하십시오</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">마음의 평화를 위해 스마트 한 얼굴 로그인 ~</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">체크인</string>
+    <string name="fment_sign_bl">보충</string>
+    <string name="fment_sign_jrqd">오늘 로그인:</string>
+    <string name="fment_sign_visitor_name">방문객</string><!--訪客-->
+
+    <string name="fment_sign_company">단위：</string>
+    <string name="fment_sign_device_no">No：</string>
+    <string name="fment_sign_version">Ver：</string>
+    <string name="fment_sign_bind_code">Bind Code：</string>
+    <!--WebFragment-->
+    <string name="fment_Web_back">다시</string>
+    <string name="fment_Web_refresh">새로 고침</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">시스템 설정</string>
+    <string name="act_set_xtmm">시스템 비밀번호</string>
+    <string name="act_set_qchc">캐시 지우기</string>
+    <string name="act_set_qcsj">데이터 지우기</string>
+    <string name="act_set_jcsxt">검사 카메라</string>
+    <string name="act_set_sfjx">미러링 여부</string>
+    <string name="act_set_wlzt">네트워크 상태</string>
+    <string name="act_set_gb">닫기</string>
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">부서명을 입력하십시오</string>
+    <string name="act_departList_tip_qdscm">삭제 하시겠습니까?</string>
+    <string name="act_departList_bmlb">부서리스트</string>
+    <string name="act_departList_add">증가</string>
+    <string name="act_departList_xh">번호</string>
+    <string name="act_departList_bmmc">부서명</string>
+    <string name="act_departList_cz">담당</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">부서명을 입력하십시오</string>
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">동기화</string>
+    <string name="lay_loadPop_zlxsxx">여기에 정보 표시</string>
+    <string name="uiUtils_tip_notice">공지 사항</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">관련 응용 프로그램을 설치 중입니다!</string>
+    <string name="dialog_sync_tbjs">동기화 종료</string>
+    <string name="sync_company_1">회사 정보 얻기</string>
+    <string name="sync_staff_2">개인 정보 얻기</string>
+    <string name="sync_database_3">데이터베이스 동기화</string>
+    <string name="sync_head_4">이미지 다운로드</string>
+    <string name="sync_face_5">페이스 라이브러리 동기화</string>
+    <string name="sync_get_failed">다시 시도하지 못했습니다</string>
+    <string name="sync_not_bind">장치가 바인딩되지 않았습니다</string>
+    <string name="sync_not_depart">회사에 부서가 없습니다</string>
+    <string name="sync_params_error">파라미터 에러</string>
+    <string name="edit_not_edit">변경 사항 없음</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">응용 프로그램을 종료 하시겠습니까?</string>
+    <string name="restartAPPTool_ycdht">배경으로 숨기기</string>
+    <string name="restartAPPTool_exit">출구</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">현재 버전은 최신 버전입니다</string>
+    <string name="updateManager_wlljsbqjcwl">네트워크 연결 실패, 네트워크를 확인하십시오</string>
+    <string name="updateManager_xzsb">다운로드 실패</string>
+
+    <!--其他-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
+    <string name="System_Setting_save_threshold">보존 하 다.</string>
+</resources>

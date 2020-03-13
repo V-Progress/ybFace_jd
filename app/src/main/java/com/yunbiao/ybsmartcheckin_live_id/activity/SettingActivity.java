@@ -45,6 +45,7 @@ import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -224,9 +225,6 @@ public class SettingActivity extends BaseActivity {
 
                 if (v.getId() == R.id.btn_body_min_t_sub_setting) {
                     value -= 0.1;
-                    if (value <= 25.0f) {
-                        value = 25.0f;
-                    }
                 } else {
                     value += 0.1;
                 }
@@ -308,7 +306,7 @@ public class SettingActivity extends BaseActivity {
             public void onClick(View v) {
                 final int currModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-                builder.setTitle(getResources().getString(R.string.select_model_setting));
+                builder.setTitle(getResources().getString(R.string.setting_select_model));
                 builder.setSingleChoiceItems(items, currModel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, final int whichModel) {
@@ -596,7 +594,7 @@ public class SettingActivity extends BaseActivity {
         btnWarnAdd.setOnClickListener(warnClickListener);
 
         //体温播报设置==========================================================================================
-        String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.temperature_tips_normal_main));
+        String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.main_temp_normal_tips));
         EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
         edtNormalTips.setText(normalTips);
         edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
@@ -606,7 +604,7 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveStr(SpUtils.NORMAL_TIPS, TextUtils.isEmpty(input) ? "" : input);
             }
         });
-        String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.temperature_tips_warning_main));
+        String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.main_temp_warning_tips));
         EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
         edtWarningTips.setText(warningTips);
         edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
@@ -616,6 +614,33 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveStr(SpUtils.WARNING_TIPS, TextUtils.isEmpty(input) ? "" : input);
             }
         });
+
+        //体温播报延时
+        Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
+        Button btnSpeechDelayAdd = findViewById(R.id.btn_speech_delay_add_setting);
+        final EditText edtSpeechDelay = findViewById(R.id.edt_speech_delay_setting);
+        long speechDelayTime = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
+        edtSpeechDelay.setText(speechDelayTime + "");
+        View.OnClickListener speechDelayOnClickLitsener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = edtSpeechDelay.getText().toString();
+                long l = Long.parseLong(s);
+                if(v.getId() == R.id.btn_speech_delay_add_setting){
+                    l += 100;
+                } else {
+                    l -= 100;
+                    if(l < 1500){
+                        l = 1500;
+                    }
+                }
+
+                edtSpeechDelay.setText(l + "");
+                SpUtils.saveLong(SpUtils.SPEECH_DELAY,l);
+            }
+        };
+        btnSpeechDelayAdd.setOnClickListener(speechDelayOnClickLitsener);
+        btnSpeechDelaySub.setOnClickListener(speechDelayOnClickLitsener);
     }
 
     class TextWatcherImpl implements TextWatcher {
@@ -796,7 +821,7 @@ public class SettingActivity extends BaseActivity {
         //摄像头角度
         Button btnAngle = findViewById(R.id.btn_setAngle);
         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-        btnAngle.setText(getString(R.string.act_set_tip_angle) + ":" + angle);
+        btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
     }
 
     //初始化人脸框镜像设置
@@ -855,7 +880,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 int delay = Integer.parseInt(s1);
                 SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
-                UIUtils.showShort(SettingActivity.this, getString(R.string.act_set_error_modify_success));
+                UIUtils.showShort(SettingActivity.this, getString(R.string.setting_edit_password_success));
             }
         });
     }
@@ -933,6 +958,8 @@ public class SettingActivity extends BaseActivity {
                         ((PassageDeviceActivity) activity).setFaceViewSimilar();
                     } else if (activity instanceof CertificatesActivity) {
                         ((CertificatesActivity) activity).setFaceViewSimilar();
+                    } else if(activity instanceof ThermalImageActivity){
+                        ((ThermalImageActivity) activity).setFaceViewSimilar();
                     }
                 }
             }
@@ -945,9 +972,9 @@ public class SettingActivity extends BaseActivity {
         String net = "";
         boolean intenetConnected = isInternetConnected(this);
         if (intenetConnected) {
-            net = getString(R.string.act_set_tip_ytwlipdz) + getHostIp() + "】";
+            net = getString(R.string.setting_net_prefix) + getHostIp() + "】";
         } else {
-            net = "【WIFI，" + getWifiInfo(0) + getString(R.string.act_set_tip_IPAddress) + getWifiInfo(1) + "】";
+            net = "【WIFI，" + getWifiInfo(0) + getString(R.string.setting_ip_info) + getWifiInfo(1) + "】";
         }
         tvNetState.setText(net);
     }
@@ -994,9 +1021,9 @@ public class SettingActivity extends BaseActivity {
             }
 
             if (sizeBean.width == 1280 && sizeBean.height == 720) {
-                sizeBean.desc += getString(R.string.act_set_tip_zj);
+                sizeBean.desc += getString(R.string.setting_best_camera_size);
             } else if (sizeBean.width == 1920 && sizeBean.height == 1080) {
-                sizeBean.desc += getString(R.string.act_set_tip_zd);
+                sizeBean.desc += getString(R.string.setting_max_camera_size);
             }
             sizeBeanList.add(sizeBean);
         }
@@ -1053,18 +1080,18 @@ public class SettingActivity extends BaseActivity {
         } else {
             anInt = CameraSettings.ROTATION_0;
         }
-        ((Button) view).setText(getString(R.string.act_set_tip_angle) + ":" + anInt);
+        ((Button) view).setText(getString(R.string.setting_cam_angle) + ":" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
         EventBus.getDefault().post(new DisplayOrientationEvent());
     }
 
     public void rebootDevice(View view) {
-        showAlert(getString(R.string.act_set_tip_sbjcqsfjx), new DialogInterface.OnClickListener() {
+        showAlert(getString(R.string.setting_device_will_reboot), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ProgressDialog progressDialog = UIUtils.coreInfoShow3sDialog(SettingActivity.this);
-                progressDialog.setTitle(getString(R.string.act_set_tip_reStart));
-                progressDialog.setMessage(getString(R.string.act_set_tip_3shjcqsb));
+                progressDialog.setTitle(getString(R.string.setting_device_reboot));
+                progressDialog.setMessage(getString(R.string.setting_3_scond_reboot));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 UIUtils.restart.start();
@@ -1125,7 +1152,7 @@ public class SettingActivity extends BaseActivity {
             return null;
         }
         if (type == 0) {
-            return APP.getContext().getResources().getString(R.string.act_set_tip_mc) + wi.getSSID() + APP.getContext().getResources().getString(R.string.act_set_tip_xhqd) + wi.getRssi();
+            return APP.getContext().getResources().getString(R.string.setting_wifi_name) + wi.getSSID() + APP.getContext().getResources().getString(R.string.setting_wifi_rssi) + wi.getRssi();
         }
 
         //获取32位整型IP地址
@@ -1317,21 +1344,21 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(edtPwd.getText())) {
-                    edtPwd.setError(getString(R.string.act_set_error_mmbkwk));
+                    edtPwd.setError(getString(R.string.setting_password_not_null));
                     return;
                 }
                 if (edtPwd.getText().length() < 6) {
-                    edtPwd.setError(getString(R.string.act_set_error_mmzssr6w));
+                    edtPwd.setError(getString(R.string.setting_password_min_6));
                     return;
                 }
                 if (TextUtils.isEmpty(edtPwd2.getText())) {
-                    edtPwd2.setError(getString(R.string.act_set_error_qzcsrmm));
+                    edtPwd2.setError(getString(R.string.setting_please_input_password_agian));
                     return;
                 }
                 String pwd = edtPwd.getText().toString();
                 final String pwd2 = edtPwd2.getText().toString();
                 if (!TextUtils.equals(pwd, pwd2)) {
-                    edtPwd2.setError(getString(R.string.act_set_error_lcsrdmmbyz));
+                    edtPwd2.setError(getString(R.string.setting_password_disaccord));
                     return;
                 }
 
@@ -1352,7 +1379,7 @@ public class SettingActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail) + ":" + e != null ? e.getMessage() : "NULL");
+                                UIUtils.showTitleTip(SettingActivity.this, getString(R.string.setting_edit_password_failed) + ":" + e != null ? e.getMessage() : "NULL");
                             }
                         });
                     }
@@ -1365,11 +1392,11 @@ public class SettingActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (status == 1) {
-                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_success));
+                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.setting_edit_password_success));
                                     SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
                                     dialog.dismiss();
                                 } else {
-                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.act_set_error_modify_fail));
+                                    UIUtils.showTitleTip(SettingActivity.this, getString(R.string.setting_edit_password_failed));
                                 }
                             }
                         });

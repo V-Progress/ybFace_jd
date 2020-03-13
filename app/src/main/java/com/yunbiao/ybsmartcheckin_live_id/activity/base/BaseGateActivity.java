@@ -66,8 +66,6 @@ public abstract class BaseGateActivity extends BaseActivity {
                     //默认门禁控制板正常
                     mGateIsAlive = true;
                     checkHeartbeat();
-                } else {
-                    showToast(getString(R.string.act_baseGate_mkmkjzsb));
                 }
                 return null;
             }

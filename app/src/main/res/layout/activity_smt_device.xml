@@ -64,6 +64,7 @@
             android:background="@drawable/shape_dot_area_background">
 
             <TextView
+                android:visibility="invisible"
                 android:layout_marginLeft="30dp"
                 android:layout_centerVertical="true"
                 android:id="@+id/tv_temperature_main"
@@ -84,14 +85,17 @@
         </RelativeLayout>
 
         <TextView
+            android:gravity="center"
+            android:layout_marginBottom="136dp"
+            android:layout_alignParentBottom="true"
             android:id="@+id/tv_temp_tips_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="80dp"
             android:padding="16dp"
             android:textColor="@color/white"
-            android:textSize="28dp"
+            android:textSize="50dp"
             android:textStyle="bold"
             android:visibility="invisible" />
 

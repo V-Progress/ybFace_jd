@@ -10,13 +10,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.arcsoft.face.util.ImageUtils;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.yunbiao.faceview.CompareResult;
-import com.yunbiao.ybsmartcheckin_live_id.Config;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.IdCardMsg;
+import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -31,7 +29,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
 
 import org.greenrobot.eventbus.EventBus;
-import org.xbill.DNS.SIG0;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -217,7 +214,7 @@ public class SignManager {
             }
 
             OkHttpUtils.post()
-                    .url(ResourceUpdate.VISITARRAY)
+                    .url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY)
                     .addParams("witJson", jsonStr)
                     .addParams("deviceNo", HeartBeatClient.getDeviceNo())
                     .addParams("comId", comid + "")
@@ -492,7 +489,19 @@ public class SignManager {
     public void uploadTemperatureSign(final Sign sign) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
-        File file = saveBitmap(sign.getTime(), sign.getImgBitmap());
+        File file;
+        if (sign.getImgBitmap() != null) {
+            file = saveBitmap(sign.getTime(), sign.getImgBitmap());
+        } else {
+            file = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         sign.setHeadPath(file.getPath());
 
         File hotFile = null;
@@ -510,9 +519,9 @@ public class SignManager {
             }
         }
         sign.setHotImgPath(hotFile.getPath());
+
         sign.setUpload(false);
-        long l = DaoManager.get().addOrUpdate(sign);
-        Log.e(TAG, "uploadTemperatureSign: 存储结果：" + l);
+        DaoManager.get().addOrUpdate(sign);
 
         final long time = sign.getTime();
 
@@ -545,8 +554,7 @@ public class SignManager {
                 Sign sign = DaoManager.get().querySignByTime(time);
                 if (sign != null) {
                     sign.setUpload(true);
-                    long l = DaoManager.get().addOrUpdate(sign);
-                    Log.e(TAG, "onResponse: 更新结果：" + l);
+                    DaoManager.get().addOrUpdate(sign);
                 }
             }
 
@@ -673,6 +681,65 @@ public class SignManager {
             passageMap.put(faceId, currTime);
         }
         return isCanPass;
+    }
+
+    public void uploadNoIdCardResult(int isPass, Bitmap currCameraFrame, Float max, Bitmap mCacheHotImage){
+        String url = ResourceUpdate.UPLOAD_NO_IDCARD;
+        Log.e(TAG, "uploadNoIdCardResult: 地址：" + url);
+
+        Map<String,String> params = new HashMap<>();
+        params.put("isPass",isPass +"");
+        params.put("deviceNo",HeartBeatClient.getDeviceNo());
+        params.put("temper",max + "");
+        Log.e(TAG, "uploadNoIdCardResult: params：" + params.toString());
+
+        PostFormBuilder builder = OkHttpUtils.post().url(url).params(params);
+
+        File file;
+        if(currCameraFrame != null){
+            file = saveBitmap(System.currentTimeMillis(),currCameraFrame);
+        } else {
+            file = new File(Constants.LOCAL_ROOT_PATH,"0.txt");
+            if(!file.exists()){
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        builder.addFile("newHeads",file.getName(),file);
+        Log.e(TAG, "uploadNoIdCardResult: 头像：" + file.getPath());
+
+        File reFile;
+        if(mCacheHotImage != null){
+            reFile = saveBitmap(System.currentTimeMillis(),mCacheHotImage);
+        } else {
+            reFile = new File(Constants.LOCAL_ROOT_PATH,"0.txt");
+            if(!reFile.exists()){
+                try {
+                    reFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        builder.addFile("reHead",reFile.getName(),reFile);
+        Log.e(TAG, "uploadNoIdCardResult: 热量图：" + reFile.getPath());
+
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: " + response);
+            }
+        });
+
+
     }
 
     public void uploadCodeVerifyResult(String entryId, boolean isPass, Bitmap newHead, float temper, Bitmap reHead) {
@@ -918,7 +985,7 @@ public class SignManager {
                 filePic.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(filePic);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, Config.getCompressRatio(), fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, fos);
             fos.flush();
             fos.close();
 

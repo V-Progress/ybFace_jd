@@ -95,6 +95,17 @@
             android:text="请取下眼镜.帽子.正视镜头"
             android:textColor="#BBDAFF"
             android:textSize="28dp" />
+
+        <Button
+            android:id="@+id/btn_no_id_card"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:layout_margin="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="无证测温"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <RelativeLayout

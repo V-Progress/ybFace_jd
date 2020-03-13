@@ -67,7 +67,7 @@
             android:id="@+id/tv_export_sign_data"
             android:gravity="center"
             android:textColor="#64DCFE"
-            android:text="@string/act_sign_dcsj"
+            android:text="@string/sign_list_export"
             android:background="@drawable/selector_btn_take_photo"
             android:layout_alignParentRight="true"
             android:layout_width="108dp"
@@ -78,7 +78,7 @@
             android:id="@+id/tv_export_sign_data"
             android:gravity="center"
             android:textColor="#64DCFE"
-            android:text="@string/act_sign_dcsj"
+            android:text="@string/sign_list_export"
             android:background="@drawable/selector_btn_take_photo"
             android:layout_alignParentRight="true"
             android:layout_width="108dp"
@@ -93,7 +93,7 @@
             android:background="@drawable/shape_bg_btnsync"
             android:drawableLeft="@mipmap/icon_sync"
             android:paddingLeft="10dp"
-            android:text="@string/act_sign_scsj"
+            android:text="@string/sign_list_upload"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:visibility="visible"/>
@@ -189,7 +189,7 @@
                 android:textSize="26dp"
                 android:textColor="@color/white"
                 android:layout_centerInParent="true"
-                android:text="@string/act_sign_sjyqbsc"
+                android:text="@string/sign_list_all_data_sent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -334,10 +333,11 @@ public class FaceManager {
             return null;
         }
 
-        FaceFeature tempFaceFeature = new FaceFeature();
-        FaceSimilar faceSimilar = new FaceSimilar();
         float maxSimilar = 0;
         int maxSimilarIndex = -1;
+
+        FaceFeature tempFaceFeature = new FaceFeature();
+        FaceSimilar faceSimilar = new FaceSimilar();
         int faceSize = faceRegisterInfos.size();
         for (int i = 0; i < faceSize; i++) {
             tempFaceFeature.setFeatureData(faceRegisterInfos.get(i).getFeatureData());
@@ -346,9 +346,9 @@ public class FaceManager {
                 maxSimilar = faceSimilar.getScore();
                 maxSimilarIndex = i;
             }
-            /*if(maxSimilar >= 70f){
+            if(maxSimilar >= 70f){
                 break;
-            }*/
+            }
         }
 
         CompareResult compareResult = null;

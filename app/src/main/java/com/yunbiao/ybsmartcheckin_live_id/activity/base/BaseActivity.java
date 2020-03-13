@@ -58,14 +58,12 @@ public abstract class BaseActivity extends FragmentActivity {
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             if (portraitLayout == 0) {
-                UIUtils.showShort(this, getString(R.string.act_base_zwspqqhhp));
                 APP.exit();
                 return;
             }
             setContentView(portraitLayout);
         } else {
             if (landscapeLayout == 0) {
-                UIUtils.showShort(this, getString(R.string.act_base_zwhpqqhhp));
                 APP.exit();
                 return;
             }

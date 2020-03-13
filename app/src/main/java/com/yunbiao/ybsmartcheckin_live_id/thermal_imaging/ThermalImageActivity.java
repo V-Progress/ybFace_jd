@@ -76,8 +76,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
     //摄像头分辨率
     public static FaceView faceView;
     private AdsFragment adsFragment;
-    private SignFragment signListFragment;
-    private TextView tvRangeTips;
+    private ThermalSignFragment signListFragment;
     private TextView tvAmbient;
     private TextView tvTempTips;
 
@@ -88,6 +87,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
     private View llThermalArea;
     private View faceDistanceView;
     private Float mThermalTempCorr;
+    private TextView tvMaxT;
+    private TextView tvCacheT;
 
     @Override
     protected int getPortraitLayout() {
@@ -113,14 +114,16 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
         tempDetectionDot = findViewById(R.id.iv_temp_detection_dot_main);
         tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
-        tvRangeTips = findViewById(R.id.tv_range_tips_main);//人脸距离提示
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
         ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);
         tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);
         llThermalArea = findViewById(R.id.ll_thermal_area_main);
 
+        tvCacheT = findViewById(R.id.tv_thermal_cacheT_main);
+        tvMaxT = findViewById(R.id.tv_thermal_maxT_main);
+
         //加载签到列表Fragment
-        signListFragment = new SignFragment();
+        signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
 //        只有竖屏情况下加载信息展示Fragment
@@ -143,6 +146,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
         initAds();
     }
 
+    // TODO: 2020/3/13 10.1下面增加编号公司名称版本网络
     @Override
     protected void onModeChanged(int mode) {
         if (signListFragment != null) {
@@ -156,14 +160,15 @@ public class ThermalImageActivity extends BaseThermalActivity {
             Log.e(TAG, "onResume: 仅人脸模式");
             tempDetectionDot.setVisibility(View.GONE);
             tvAmbient.setVisibility(View.GONE);
-            tvRangeTips.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
-        } else {//热成像模式
+        } else if (mode == ThermalConst.THERMAL_TEMP_ONLY || mode == ThermalConst.THERMAL_FACE_TEMP) {//热成像模式
             tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.GONE);
-            tvRangeTips.setText("");
             llThermalArea.setVisibility(View.VISIBLE);
+        } else {
+            llThermalArea.setVisibility(View.GONE);
+            tempDetectionDot.setVisibility(View.VISIBLE);
         }
     }
 
@@ -173,9 +178,12 @@ public class ThermalImageActivity extends BaseThermalActivity {
     }
 
     @Override
-    protected void updateHotImageAndTemper(Bitmap bitmap, float temper) {
+    protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1) {
         ivThermalImaging.setImageBitmap(bitmap);
         tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
+        tvMaxT.setText("maxT：" + v);
+        tvCacheT.setText("cacheT：" + v1);
+
     }
 
     @Override
@@ -191,19 +199,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
     @Override
     protected Bitmap getCurrCameraFrame() {
         return faceView.getCurrCameraFrame();
-    }
-
-    @Override
-    protected void setUIResult(String tip, int id, Sign sign) {
-        if (!tvTempTips.isShown()) {
-            tvTempTips.setVisibility(View.VISIBLE);
-        }
-        tvTempTips.setBackgroundResource(id);
-        tvTempTips.setText(tip);
-
-        if (signListFragment != null) {
-            signListFragment.addSignData(sign);
-        }
     }
 
     @Override
@@ -237,12 +232,10 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
-            if (!hasFace) {//如果没有人脸
-                onNoFace();
-                return false;
-            }
+            updateHasFace(hasFace);
 
-            if (isOnlyTemp()) {
+            if (!hasFace) {//如果没有人脸
+                isBroaded = false;
                 return false;
             }
 
@@ -253,32 +246,45 @@ public class ThermalImageActivity extends BaseThermalActivity {
                 adsFragment.detectFace();
             }
 
-            Rect rect = facePreviewInfo.getFaceInfo().getRect();
-
-            if (faceView.checkFaceToFar(rect, faceDistanceView.getMeasuredWidth())) {
-                sendTempLowMessage("请靠近");
-                return false;
-            }
-
-            //人脸+热成像模式
-            if (isFaceAndThermal()) {
-                return onFaceDetect();
-            }
-
-            //仅热成像
+            //仅人脸
             if (isOnlyFace()) {
                 return true;
             }
 
+            //检测人脸是否太远
+            Rect rect = facePreviewInfo.getFaceInfo().getRect();
+            int distance = faceDistanceView.getMeasuredWidth();
+            boolean isSoFar = faceView.checkFaceToFar(rect, distance / 2);
+            updateSoFar(isSoFar);
+
+            //人脸较远
+            boolean isFar = faceView.checkFaceToFar(rect, distance);
+            updateFaceState(isFar);
+            if (isFar) {
+                return false;
+            }
+            //仅测温
+            if (isOnlyTemp()) {
+                return false;
+            }
+
+            //没有最终温度
+            if (!hasFinalTemp()) {
+                return false;
+            }
+
+            if (isBroaded) {
+                return false;
+            }
+            isBroaded = true;
             return true;
         }
 
+        private boolean isBroaded = false;
+
         @Override
         public void onFaceVerify(CompareResult compareResult) {
-            if (isFaceAndThermal()) {
-                Bitmap facePicture = faceView.takePicture();
-                onFaceResult(facePicture, compareResult);
-            } else {
+            if (isOnlyFace()) {
                 //======以下是普通识别流程====================================
                 if (compareResult == null || compareResult.getSimilar() == -1) {
                     return;
@@ -302,10 +308,35 @@ public class ThermalImageActivity extends BaseThermalActivity {
                 }
 
                 openDoor();
+            } else {
+                Bitmap facePicture = faceView.takePicture();
+                if (facePicture == null) {
+                    facePicture = faceView.getCurrCameraFrame();
+                }
+                sendFaceTempMessage(facePicture, compareResult);
             }
         }
     };
 
+    @Override
+    protected boolean isTempTipsShown() {
+        return tvTempTips.isShown();
+    }
+
+    @Override
+    protected void clearTempTips() {
+        tvTempTips.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void updateSignList(Sign sign) {
+        if (signListFragment != null) {
+            signListFragment.addSignData(sign);
+        }
+        if (sign.getType() != -9) {
+            KDXFSpeechManager.instance().playNormal(sign.getName());
+        }
+    }
 
     /**
      *

@@ -17,9 +17,7 @@ import android.widget.TextView;
 
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EditEmployActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -157,7 +155,7 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
         departs = DaoManager.get().queryDepartByCompId(comid);
         mDepartList.clear();
         mDepartIdList.clear();
-        mDepartList.add(getString(R.string.act_employList_tip_qbbm));
+        mDepartList.add(getString(R.string.employ_list_all_depart));
         mDepartIdList.add(0l);
         if (departs != null) {
             for (int i = 0; i < departs.size(); i++) {
@@ -224,7 +222,7 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
     public void itemDeleteClick(View v, final int postion) {
         final User user = employList.get(postion);
 
-        showDialog(getString(R.string.act_employList_tip_qdscm), new DialogInterface.OnClickListener() {
+        showDialog(getString(R.string.employ_list_confirm_delete), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final Map<String, String> map = new HashMap<>();
@@ -232,7 +230,7 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.act_employList_tip_scsb) + e != null ? e.getMessage() : "NULL");
+                        UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.employ_list_delete_failed) + e != null ? e.getMessage() : "NULL");
                     }
 
                     @Override
@@ -251,7 +249,7 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
                             DaoManager.get().delete(user);
                             employList.remove(postion);
                             employAdapter.notifyDataSetChanged();
-                            UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.act_employList_tip_sccg));
+                            UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.employ_list_delete_success));
                             FaceManager.getInstance().reloadRegisterList();
                         }
                     }
@@ -262,7 +260,7 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
 
     @Override
     public void itemEditClick(View v, final int postion) {
-        showDialog(getString(R.string.act_employList_tip_qdxgm), new DialogInterface.OnClickListener() {
+        showDialog(getString(R.string.employ_list_confirm_edit), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(SMTEmployListActivity.this, SMTEditEmployActivity.class);
