@@ -236,6 +236,8 @@
                         android:textSize="32dp" />
 
                     <Button
+                        android:clickable="false"
+                        android:visibility="invisible"
                         android:id="@+id/btn_skin_system"
                         android:onClick="selectSkin"
                         android:nextFocusDown="@+id/btn_setting_system"

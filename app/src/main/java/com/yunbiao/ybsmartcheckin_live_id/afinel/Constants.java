@@ -102,13 +102,6 @@ public class Constants {
         String DEV_SUFFIX = "/";
     }
 
-    public interface DeviceType {
-        int CHECK_IN = 1;//考勤机
-        int TEMPERATURE_CHECK_IN = 7;//测温考勤机
-        int TEMPERATURE_PASSAGE = 8;//测温通行机（视美泰考勤版）
-        int TEMPERATURE_PASSAGE_SMT = 9;
-    }
-
     public static class Model {
         public static int MODEL_FACE_ONLY = 0;
         public static int MODEL_FACE_TEMPERATURE = 1;
@@ -128,34 +121,24 @@ public class Constants {
         int JU = 1;//局域网
     }
 
-    public final static int JUMP_TAG = Tag.FACE_THERMAL;
-
-    public static class Tag {
-        public static int FACE_ONLY = 0;//人脸机
-        public static int FACE_THERMAL = 1;//人脸热成像
-        public static int FACE_INFARED = 2;//人脸红外
-        public static int CERTIFICATES = 3;//人证
+    public interface DeviceType {
+        int CHECK_IN = 1;//考勤机
+        int TEMPERATURE_CHECK_IN = 7;//测温考勤机
+        int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
+        int TEMPERATURE_CERTIFICATES = 9;
     }
 
-    //屏幕类型
-    public final static int SCREEN_TYPE = ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080;
-
     //修改设备类型
-    public static final int DEVICE_TYPE =
-            SCREEN_TYPE == ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080
-                    ? DeviceType.TEMPERATURE_CHECK_IN
-                    : SCREEN_TYPE == ScreenType.TYPE_SMT_PORTRAIT_8_800_1280
-                    ? DeviceType.TEMPERATURE_PASSAGE
-                    : DeviceType.TEMPERATURE_PASSAGE;
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
     //默认波特率
     public static final int DEFAULT_BAUD_RATE = BaudRate.THERMAL_IMAGING_BAUD_RATE;
     //屏幕角度默认值
-    public static final int DEFAULT_CAMERA_ANGLE = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 || SCREEN_TYPE == ScreenType.TYPE_SMT_PORTRAIT_8_800_1280 ? 270 : 0;
+    public static int DEFAULT_CAMERA_ANGLE;
     //端口号
-    public static final String DEFAULT_PORT_PATH = SCREEN_TYPE == ScreenType.TYPE_PORTRAIT_8_800_1280 ? "/dev/ttyS1" : "/dev/ttyS4";
+    public static final String DEFAULT_PORT_PATH = "/dev/ttyS4";
     //大屏海报开启状态
     public static final boolean DEFAULT_POSTER_ENABLED = false;
     //默认热成像镜像
@@ -189,19 +172,9 @@ public class Constants {
     //播报延时默认值
     public static final long DEFAULT_SPEECH_DELAY = 5000;
 
-    public static final boolean DEFAULT_LOW_TEMP = false;
-
-    public static final float DEFAULT_AMBIENT = 27.0F;
-
     public interface BaudRate {
         int INFARED_TEMP_BAUD_RATE = 9600;
         int THERMAL_IMAGING_BAUD_RATE = 115200;
-    }
-
-    public interface ScreenType {
-        int TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080 = 1;//横板21寸和10寸
-        int TYPE_PORTRAIT_8_800_1280 = 2;//竖屏闸机
-        int TYPE_SMT_PORTRAIT_8_800_1280 = 3;
     }
 
 }

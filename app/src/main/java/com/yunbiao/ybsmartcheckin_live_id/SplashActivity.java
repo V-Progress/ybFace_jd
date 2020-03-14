@@ -3,16 +3,14 @@ package com.yunbiao.ybsmartcheckin_live_id;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
-import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
-import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.CertificatesActivity;
-import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalConst;
-import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalImageActivity;
-import com.yunbiao.ybsmartcheckin_live_id.smdt_portrait.SMTMainActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
@@ -84,19 +82,28 @@ public class SplashActivity extends BaseActivity {
     private void jump() {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
+        //考勤机
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {
 
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_SMT_PORTRAIT_8_800_1280) {//视美泰8寸
-            startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {//竖屏八寸
-            startActivity(new Intent(SplashActivity.this, PassageDeviceActivity.class));
-        } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080) {//横屏21、10寸
-            //热成像
-            int mode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
-            if(mode == ThermalConst.CERTIFICATES){
-                startActivity(new Intent(this, CertificatesActivity.class));
+        } else
+            //测温考勤机
+            if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN) {
+            //调整摄像头默认角度
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                Constants.DEFAULT_CAMERA_ANGLE = 270;
             } else {
-                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+                Constants.DEFAULT_CAMERA_ANGLE = 0;
             }
+            startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+        } else
+            Constants.DEFAULT_CAMERA_ANGLE = 270;
+            //测温考勤机视美泰版
+            if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT) {
+            startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
+        } else
+            //人证机
+            if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES) {
+            startActivity(new Intent(this, CertificatesActivity.class));
         }
     }
 

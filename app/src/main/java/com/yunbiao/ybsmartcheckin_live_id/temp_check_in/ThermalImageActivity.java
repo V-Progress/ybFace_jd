@@ -1,9 +1,8 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -33,7 +32,6 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
-import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
@@ -63,8 +61,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
     private static final String TAG = "WelComeActivity";
     private ImageView ivMainLogo;//公司logo
     private TextView tvMainAbbName;//公司名
-    private TextView tvMainTopTitle;//标题
-    private TextView tvMainBottomTitle;//底部标题
 
     // xmpp推送服务
     private ServiceManager serviceManager;
@@ -76,16 +72,13 @@ public class ThermalImageActivity extends BaseThermalActivity {
     public static FaceView faceView;
     private AdsFragment adsFragment;
     private ThermalSignFragment signListFragment;
-    private TextView tvAmbient;
     private TextView tvTempTips;
 
     //判断是否开启测温
-    private View tempDetectionDot;
     private ImageView ivThermalImaging;
     private TextView tvThermalPercent;
     private View llThermalArea;
     private View faceDistanceView;
-    private Float mThermalTempCorr;
     private TextView tvMaxT;
     private TextView tvCacheT;
     private View flDotFrame;
@@ -106,22 +99,19 @@ public class ThermalImageActivity extends BaseThermalActivity {
     protected void initView() {
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
-        faceView = findViewById(R.id.face_view);
+        faceView = findViewById(R.id.face_view);//人脸识别
         faceView.setCallback(faceCallback);
-        ivMainLogo = findViewById(R.id.iv_main_logo);
-        tvMainAbbName = findViewById(R.id.tv_main_abbname);
-        tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
-        tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
-        faceDistanceView = findViewById(R.id.view_face_distance);
-        flDotFrame = findViewById(R.id.fl_dot_frame);
-        tempDetectionDot = findViewById(R.id.iv_temp_detection_dot_main);
-        tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
+        ivMainLogo = findViewById(R.id.iv_main_logo);//LOGO
+        tvMainAbbName = findViewById(R.id.tv_main_abbname);//公司名
+        faceDistanceView = findViewById(R.id.view_face_distance);//人脸距离框
+        flDotFrame = findViewById(R.id.fl_dot_frame);//红点测温框
+        ivBigHead = findViewById(R.id.iv_big_head);//人像测温框
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
-        ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);
-        tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);
-        llThermalArea = findViewById(R.id.ll_thermal_area_main);
-        ivBigHead = findViewById(R.id.iv_big_head);
+        ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);//热成像图像显示
+        tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);//热成像温度显示
+        llThermalArea = findViewById(R.id.ll_thermal_area_main);//热成像数据区域
 
+        /*测试数据*/
         tvCacheT = findViewById(R.id.tv_thermal_cacheT_main);
         tvMaxT = findViewById(R.id.tv_thermal_maxT_main);
 
@@ -136,12 +126,20 @@ public class ThermalImageActivity extends BaseThermalActivity {
         faceView.resume();
 
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
-        mThermalTempCorr = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
         faceView.setLiveness(livenessEnabled);
 
-        ivBigHead.setVisibility(personFrameEnable ? View.VISIBLE : View.GONE);
+        //切换头像框
+        if (mCurrMode != ThermalConst.THERMAL_FACE_ONLY) {
+            if (personFrameEnable) {
+                ivBigHead.setVisibility(View.VISIBLE);
+                flDotFrame.setVisibility(View.GONE);
+            } else {
+                ivBigHead.setVisibility(View.GONE);
+                flDotFrame.setVisibility(View.VISIBLE);
+            }
+        }
 
         initAds();
     }
@@ -159,15 +157,11 @@ public class ThermalImageActivity extends BaseThermalActivity {
         if (mode == Constants.Model.MODEL_FACE_ONLY) {
             Log.e(TAG, "onResume: 仅人脸模式");
             flDotFrame.setVisibility(View.GONE);
-            tvAmbient.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
         } else if (mode == ThermalConst.THERMAL_TEMP_ONLY || mode == ThermalConst.THERMAL_FACE_TEMP) {//热成像模式
-            tvAmbient.setVisibility(View.GONE);
-            flDotFrame.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.VISIBLE);
         } else {
-            flDotFrame.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
         }
     }
@@ -198,7 +192,11 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
     @Override
     protected Bitmap getCurrCameraFrame() {
-        return faceView.getCurrCameraFrame();
+        Bitmap bitmap = faceView.takePicture();
+        if(bitmap == null){
+            bitmap = faceView.getCurrCameraFrame();
+        }
+        return bitmap;
     }
 
     @Override
@@ -299,7 +297,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
             if (isBroaded) {
                 return false;
             }
-            isBroaded = true;
             return true;
         }
 
@@ -307,6 +304,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
         @Override
         public void onFaceVerify(CompareResult compareResult) {
+            isBroaded = true;
             if (isOnlyFace()) {
                 //======以下是普通识别流程====================================
                 if (compareResult == null || compareResult.getSimilar() == -1) {
@@ -392,7 +390,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "run: ------- ");
                 UpdateVersionControl.getInstance().checkUpdate(ThermalImageActivity.this);
             }
         }, 5 * 1000);
@@ -402,8 +399,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
     public void update(UpdateInfoEvent event) {
         Company company = SpUtils.getCompany();
         if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
-        if (tvMainTopTitle != null) tvMainTopTitle.setText(company.getToptitle());
-        if (tvMainBottomTitle != null) tvMainBottomTitle.setText(company.getBottomtitle());
 
         EventBus.getDefault().post(new UpdateMediaEvent());
 

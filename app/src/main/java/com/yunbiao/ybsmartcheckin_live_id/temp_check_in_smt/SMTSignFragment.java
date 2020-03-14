@@ -1,44 +1,26 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
-import android.content.Context;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.business.NoticeManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.ResourceCleanManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -53,7 +35,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -100,10 +81,10 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(netWorkChangReceiver, filter);
 
-        tvBindCompany.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
+        tvBindCompany.setText(APP.getContext().getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
 
         String deviceNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        tvDeviceNo.setText(getResources().getString(R.string.smt_main_device_no) + deviceNum);
+        tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.smt_main_device_no) + deviceNum);
 
         int comid = SpUtils.getCompany().getComid();
         List<User> users = DaoManager.get().queryUserByCompId(comid);
@@ -127,20 +108,20 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         already = signs.size();
         tvAlready.setText(already + "");
 
-        appVersion.setText(getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(getActivity()));
+        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(getActivity()));
     }
 
     @Override
     public void connect() {
         Log.e(TAG, "connect: 网络已连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_normal2));
+        tvNetState.setText(APP.getContext().getResources().getString(R.string.smt_main_net_normal2));
         tvNetState.setTextColor(Color.GREEN);
     }
 
     @Override
     public void disConnect() {
         Log.e(TAG, "connect: 网络未连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_no));
+        tvNetState.setText(APP.getContext().getResources().getString(R.string.smt_main_net_no));
         tvNetState.setTextColor(Color.RED);
     }
 
@@ -149,7 +130,7 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
             return;
         }
         already++;
-        tvAlready.setText(getResources().getString(R.string.smt_main_already) + already);
+        tvAlready.setText(APP.getContext().getResources().getString(R.string.smt_main_already) + already);
     }
 
     @Override
@@ -179,14 +160,14 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
 
         if(tvBindCompany != null){
             if(TextUtils.isEmpty(company.getAbbname())){
-                tvBindCompany.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
+                tvBindCompany.setText(APP.getContext().getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
             } else {
-                tvBindCompany.setText(getResources().getString(R.string.smt_main_company) + company.getAbbname());
+                tvBindCompany.setText(APP.getContext().getResources().getString(R.string.smt_main_company) + company.getAbbname());
             }
         }
 
         String deviceNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        tvDeviceNo.setText(getResources().getString(R.string.smt_main_device_no) + deviceNum);
+        tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.smt_main_device_no) + deviceNum);
 
 
     }

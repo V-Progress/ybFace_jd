@@ -70,15 +70,12 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected int getPortraitLayout() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            return R.layout.activity_system_fake_landscape;
-        }
         return R.layout.activity_system;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_system_h;
+        return R.layout.activity_thermal_system_h;
     }
 
     @Override

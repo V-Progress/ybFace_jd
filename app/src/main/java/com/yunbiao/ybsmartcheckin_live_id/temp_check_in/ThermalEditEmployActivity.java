@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -62,7 +62,7 @@ import timber.log.Timber;
  * Created by Administrator on 2018/8/7.
  */
 
-public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnClickListener {
+public class ThermalEditEmployActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "EditEmployActivity";
     public static final String KEY_ID = "entryId";
@@ -91,13 +91,23 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
     private List<String> departNames = new ArrayList<>();
     private List<Long> departIds = new ArrayList<>();
 
+    private User mCurrUser = null;
+    private User mTempUser = null;
+
     private int type;
     private TextView tvTitle;
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_smt_editemploy_fake_landscape;
+    protected int getPortraitLayout() {
+        return R.layout.activity_thermal_editemploy;
     }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_thermal_editemploy_h;
+    }
+
+    private Animation animation;
 
     @Override
     protected void initView() {
@@ -133,6 +143,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         @Override
         public void onReady() {
         }
+
 
         @Override
         public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
@@ -183,6 +194,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
 
         //如果是修改，则只初始化部门
         if (type == TYPE_ADD) {
+
             tvTitle.setText(getResources().getString(R.string.act_editEmploy_zjyg));
             d("类型：新增");
             initAddLogic();
@@ -291,13 +303,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                 .execute(new StringCallback() {
                     @Override
                     public void onBefore(Request request, int id) {
-                        UIUtils.showNetLoading(SMTEditEmployActivity.this);
+                        UIUtils.showNetLoading(ThermalEditEmployActivity.this);
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                        UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                        UIUtils.showTitleTip(ThermalEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -327,7 +339,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                                     errMsg = getString(R.string.act_editEmploy_tip_cscw);
                                     break;
                             }
-                            UIUtils.showTitleTip(SMTEditEmployActivity.this, "" + errMsg);
+                            UIUtils.showTitleTip(ThermalEditEmployActivity.this, "" + errMsg);
                             UIUtils.dismissNetLoading();
                             return;
                         }
@@ -338,7 +350,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
                         long add = DaoManager.get().add(addUser);
                         if (!b) {
-                            UIUtils.showShort(SMTEditEmployActivity.this, "添加人脸库失败");
+                            UIUtils.showShort(ThermalEditEmployActivity.this, "添加人脸库失败");
                         }
 
                         faceView.postDelayed(new Runnable() {
@@ -361,7 +373,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
-            UIUtils.showShort(SMTEditEmployActivity.this, "请先设置部门");
+            UIUtils.showShort(ThermalEditEmployActivity.this, "请先设置部门");
         }
 
         for (Depart depart : departs) {
@@ -433,7 +445,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
     private String mUpdateDepartName;
 
     private void initEditLogic() {
-        long userId = getIntent().getLongExtra(SMTEditEmployActivity.KEY_ID, -1);
+        long userId = getIntent().getLongExtra(ThermalEditEmployActivity.KEY_ID, -1);
         if (userId == -1) {
             UIUtils.showShort(this, "未知错误");
             finish();
@@ -534,13 +546,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             @Override
             public void onBefore(Request request, int id) {
                 d("开始提交");
-                UIUtils.showNetLoading(SMTEditEmployActivity.this);
+                UIUtils.showNetLoading(ThermalEditEmployActivity.this);
             }
 
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
@@ -570,7 +582,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                             errMsg = getString(R.string.act_editEmploy_tip_cscw);
                             break;
                     }
-                    UIUtils.showTitleTip(SMTEditEmployActivity.this, "" + errMsg);
+                    UIUtils.showTitleTip(ThermalEditEmployActivity.this, "" + errMsg);
                     UIUtils.dismissNetLoading();
                     return;
                 }
@@ -591,7 +603,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
-                        UIUtils.showShort(SMTEditEmployActivity.this, "更新人脸库失败");
+                        UIUtils.showShort(ThermalEditEmployActivity.this, "更新人脸库失败");
                     }
                 }
 
@@ -612,12 +624,12 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         @Override
         public void handleMessage(Message msg) {
             if (mHasFace == -1) {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "未检测到人脸");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "未检测到人脸");
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             } else if (mHasFace == -2) {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "请保持屏幕中只有一张人脸");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "请保持屏幕中只有一张人脸");
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
@@ -627,9 +639,9 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             if (bitmap != null) {
                 mCurrPhotoPath = saveBitmap(bitmap);
                 mUpdatePhotoPath = mCurrPhotoPath;
-                Glide.with(SMTEditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
+                Glide.with(ThermalEditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
             } else {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "失败，请重试");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "失败，请重试");
             }
 
             pbTakePhoto.setVisibility(View.GONE);

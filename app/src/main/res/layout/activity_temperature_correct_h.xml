@@ -37,42 +37,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="20dp">
 
-            <FrameLayout
-                android:layout_centerInParent="true"
-                android:layout_width="560dp"
-                android:layout_height="560dp">
+            <com.yunbiao.faceview.FaceView
+                android:id="@+id/face_view"
+                android:layout_width="match_parent"
+                android:layout_height="560dp"
+                android:background="@mipmap/bg_camera"
+                android:padding="5dp" />
 
-                <com.yunbiao.faceview.FaceView
-                    android:id="@+id/face_view"
-                    android:layout_width="560dp"
-                    android:layout_height="560dp"
-                    android:background="@mipmap/bg_camera"
-                    android:padding="5dp" />
-
-                <ImageView
-                    android:id="@+id/iv_thermal_corr"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_margin="5dp" />
-            </FrameLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="50dp">
+            <ImageView
+                android:id="@+id/iv_thermal_corr"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_margin="5dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -83,6 +68,16 @@
                 android:text="请根据体温枪实测温度填写"
                 android:textColor="@color/white"
                 android:textSize="30dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="50dp">
+
             <TextView
                 android:id="@+id/tv_current_corr"
                 android:layout_width="match_parent"

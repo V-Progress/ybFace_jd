@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -30,6 +30,10 @@ public class ThermalConst {
         String WARNING_BROADCAST = "warningBroadcast";
         String PERSON_FRAME = "personFrame";
         String DISTANCE_TIP = "distanceTip";
+        String SPEECH_DELAY = "speechDelay";
+        String TEMP_MIN_THRESHOLD = "tempMinThreshold";
+        String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";
+        String THERMAL_IMAGE_MIRROR = "thermalImageMirror";
     }
 
     interface Default {
@@ -41,6 +45,10 @@ public class ThermalConst {
         String WARNING_BROADCAST = "";
         boolean PERSON_FRAME = true;
         boolean DISTANCE_TIP = true;
+        long SPEECH_DELAY = 5000;
+        float TEMP_MIN_THRESHOLD = 35.5f;
+        float TEMP_WARNING_THRESHOLD = 37.3f;
+        boolean THERMAL_IMAGE_MIRROR = true;
     }
 
 }

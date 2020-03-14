@@ -643,15 +643,17 @@ public class SyncManager {
     }
 
     private void saveCompanyInfo(Company company) {
-        //存公司ID
-        SpUtils.saveInt(SpUtils.COMPANYID, company.getComid());
         SpUtils.setCompany(company);
-        d("缓存公司信息");
-
-        SpUtils.saveStr(SpUtils.MENU_PWD, company.getDevicePwd());
-
-        //2019.10.21 添加  获取是否显示职称，默认显示displayPosition，1是显示
-        SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
+        if (company != null) {
+            //存公司ID
+            SpUtils.saveInt(SpUtils.COMPANYID, company.getComid());
+            d("缓存公司信息");
+            SpUtils.saveStr(SpUtils.MENU_PWD, company.getDevicePwd());
+            //2019.10.21 添加  获取是否显示职称，默认显示displayPosition，1是显示
+            SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
+        } else {
+            SpUtils.saveInt(SpUtils.COMPANYID, 0);
+        }
     }
 
     private void d(String log) {

@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,11 +23,8 @@ import com.tencent.bugly.beta.upgrade.UpgradeListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.EditEmployActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SignActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.VisitorActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -75,15 +72,12 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected int getPortraitLayout() {
-        if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-            return R.layout.activity_system_fake_landscape;
-        }
-        return R.layout.activity_system;
+        return R.layout.activity_thermal_system;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_system_h;
+        return R.layout.activity_thermal_system_h;
     }
 
     @Override
@@ -191,15 +185,15 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_depart_system:
-                startActivity(new Intent(this, EmployListActivity.class));
+                startActivity(new Intent(this, ThermalEmployListActivity.class));
                 break;
             case R.id.btn_add_system:
-                Intent intent = new Intent(this, EditEmployActivity.class);
-                intent.putExtra(EditEmployActivity.KEY_TYPE, EditEmployActivity.TYPE_ADD);
+                Intent intent = new Intent(this, ThermalEditEmployActivity.class);
+                intent.putExtra(EditEmployActivity.KEY_TYPE, ThermalEditEmployActivity.TYPE_ADD);
                 startActivity(intent);
                 break;
             case R.id.btn_data_system:
-                startActivity(new Intent(this, SignActivity.class));
+                startActivity(new Intent(this, ThermalSignActivity.class));
                 break;
             case R.id.btn_setting_system:
                 startActivity(new Intent(this, ThermalSettingActivity.class));

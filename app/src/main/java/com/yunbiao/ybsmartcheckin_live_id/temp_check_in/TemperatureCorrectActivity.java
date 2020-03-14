@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.graphics.Bitmap;
 import android.text.Editable;
@@ -48,7 +48,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_temperature_correct;
+        return R.layout.activity_temperature_correct_h;
     }
 
     @Override

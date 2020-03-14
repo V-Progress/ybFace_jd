@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.content.Context;
 import android.content.IntentFilter;
@@ -9,13 +9,11 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,7 +61,6 @@ import java.util.TreeSet;
 public class ThermalSignFragment extends Fragment implements NetWorkChangReceiver.NetWorkChangeListener/* implements SignManager.SignEventListener*/ {
 
     private TextView tvTotal;
-    private TextView tvTotal1;
     private RecyclerView rlv;
     private List<Sign> mSignList = new ArrayList<>();
     private SignAdapter signAdapter;
@@ -75,9 +72,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvSignMale;
     private TextView tvSignFemale;
     private LinearLayoutManager linearLayoutManager;
-    private TextView tvTotalSex;
-    private TextView tvMale1;
-    private TextView tvFemale1;
     private TextView tvModel;
     private int mCurrModel = -1;
     private float mCurrWarningThreshold = 0.0f;
@@ -85,6 +79,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvDeviceNo;
     private TextView tvNetState;
     private TextView tvVer;
+    private TextView tvAlready;
 
     @Nullable
     @Override
@@ -92,48 +87,37 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         EventBus.getDefault().register(this);
         mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
 
-        int orientation;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            rootView = inflater.inflate(R.layout.fragment_sign_list_thermal,container,false);
+            rootView = inflater.inflate(R.layout.fragment_sign_list_thermal, container, false);
         } else {
             rootView = inflater.inflate(R.layout.fragment_sign_list_thermal_h, container, false);
-            orientation = LinearLayoutManager.VERTICAL;
-            /*只在横屏初始化公告*/
-            NoticeManager.getInstance().init(rootView);
-
-            tvCompanyName = rootView.findViewById(R.id.tv_company_name_sign_fragment);
-            tvDeviceNo = rootView.findViewById(R.id.tv_device_no_sign_fragment);
-            tvNetState = rootView.findViewById(R.id.tv_net_state_sign_fragment);
-            tvVer = rootView.findViewById(R.id.tv_ver_sign_fragment);
-
-            linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
-            initPieChart();
         }
 
-        tvTotal1 = rootView.findViewById(R.id.tv_total_number);
-        tvMale1 = rootView.findViewById(R.id.tv_male_number);
-        tvFemale1 = rootView.findViewById(R.id.tv_female_number);
+        /*公用*/
+        tvCompanyName = rootView.findViewById(R.id.tv_company_name_sign_fragment);//公司名称
+        tvDeviceNo = rootView.findViewById(R.id.tv_device_no_sign_fragment);//设备编号
+        tvNetState = rootView.findViewById(R.id.tv_net_state_sign_fragment);//网路状态
+        tvVer = rootView.findViewById(R.id.tv_ver_sign_fragment);//版本号
+        tvModel = rootView.findViewById(R.id.tv_model_sign);//模式
+        ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);//二维码
+        tvTotal = rootView.findViewById(R.id.tv_total_sign_list);//签到总人数
 
-        rlv = rootView.findViewById(R.id.rlv_sign_list);
-        ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);
-        tvTotal = rootView.findViewById(R.id.tv_total_sign_list);
-        tvTotalSex = rootView.findViewById(R.id.tv_total_sex);
-
-        tvModel = rootView.findViewById(R.id.tv_model_sign);
         setModelText(mModel);
 
+        //竖屏砖用
+        tvAlready = rootView.findViewById(R.id.tv_already_sign_list);
+
         //横屏专用
-        pieChart = rootView.findViewById(R.id.pie_chart);
-        tvSignMale = rootView.findViewById(R.id.tv_sign_number_male);
-        tvSignFemale = rootView.findViewById(R.id.tv_sign_number_female);
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                    outRect.right = 5;
-                }
-            });
-        }
+        tvSignMale = rootView.findViewById(R.id.tv_sign_number_male);//男数
+        tvSignFemale = rootView.findViewById(R.id.tv_sign_number_female);//女数
+        pieChart = rootView.findViewById(R.id.pie_chart);//统计图表
+        linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+        rlv = rootView.findViewById(R.id.rlv_sign_list);//签到列表
+
+        initPieChart();
+
+        /*只在横屏初始化公告*/
+        NoticeManager.getInstance().init(rootView);
         return rootView;
     }
 
@@ -146,26 +130,28 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(netWorkChangReceiver, filter);
 
-        signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
-        rlv.setLayoutManager(linearLayoutManager);
-        rlv.setAdapter(signAdapter);
-        rlv.setItemAnimator(new DefaultItemAnimator());
-        rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.left = 10;
-                outRect.right = 10;
-            }
-        });
+        if(rlv != null){
+            signAdapter = new SignAdapter(getActivity(), mSignList, mCurrentOrientation);
+            rlv.setLayoutManager(linearLayoutManager);
+            rlv.setAdapter(signAdapter);
+            rlv.setItemAnimator(new DefaultItemAnimator());
+            rlv.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                    outRect.left = 10;
+                    outRect.right = 10;
+                }
+            });
+        }
 
         //版本号
-        if(tvVer != null){
+        if (tvVer != null) {
             tvVer.setText(getResources().getString(R.string.fment_sign_version) + CommonUtils.getAppVersion(getActivity()));
         }
-        if(tvDeviceNo != null){
+        if (tvDeviceNo != null) {
             tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         }
-        if(tvCompanyName != null){
+        if (tvCompanyName != null) {
             tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
         }
 
@@ -176,26 +162,12 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     }
 
     @Override
-    public void connect() {
-        Log.e(TAG, "connect: 网络已连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_normal));
-        tvNetState.setTextColor(Color.GREEN);
-    }
-
-    @Override
-    public void disConnect() {
-        Log.e(TAG, "connect: 网络未连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_no));
-        tvNetState.setTextColor(Color.RED);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
         Log.e(TAG, "onResume: 重加载数据");
         float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
-        int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
+        int newModel = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
         if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
             mCurrWarningThreshold = warningThreshold;
             mCurrModel = newModel;
@@ -206,17 +178,38 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void connect() {
+        Log.e(TAG, "connect: 网络已连接");
+        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+            tvNetState.setText(getResources().getString(R.string.smt_main_net_normal2));
+        } else {
+            tvNetState.setText(getResources().getString(R.string.smt_main_net_normal));
+        }
+        tvNetState.setTextColor(Color.GREEN);
+    }
+
+    @Override
+    public void disConnect() {
+        Log.e(TAG, "connect: 网络未连接");
+        tvNetState.setText(getResources().getString(R.string.smt_main_net_no));
+        tvNetState.setTextColor(Color.RED);
+    }
+
     private void loadSignData() {
         mSignList.clear();
-        signAdapter.notifyDataSetChanged();
+        if(rlv != null){
+            signAdapter.notifyDataSetChanged();
+        }
         //加载已存在的记录
         List<Sign> todaySignData = SignManager.instance().getTodaySignData();
         if (todaySignData != null) {
             mSignList.addAll(todaySignData);
         }
-
         Log.e(TAG, "loadSignData: " + mSignList.size());
-        signAdapter.notifyDataSetChanged();
+        if(rlv != null){
+            signAdapter.notifyDataSetChanged();
+        }
         updateNumber();
     }
 
@@ -254,14 +247,14 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         Company company = SpUtils.getCompany();
         ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
 
-        if(tvCompanyName != null){
-            if(TextUtils.isEmpty(company.getComname())){
+        if (tvCompanyName != null) {
+            if (TextUtils.isEmpty(company.getComname())) {
                 tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
             } else {
                 tvCompanyName.setText(getResources().getString(R.string.fment_sign_company) + company.getComname());
             }
         }
-        if(tvDeviceNo != null){
+        if (tvDeviceNo != null) {
             tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         }
 
@@ -290,8 +283,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
     public void addSignData(Sign sign) {
         mSignList.add(0, sign);
-        signAdapter.notifyItemInserted(0);
-        rlv.scrollToPosition(0);
+        if(rlv != null){
+            signAdapter.notifyItemInserted(0);
+            rlv.scrollToPosition(0);
+        }
         updateNumber();
     }
 
@@ -333,21 +328,8 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
         int totalUserNum = users == null ? 0 : users.size();
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            String signTips = "已到   <font color='#fff600'>" + total + "</font>   " + getString(R.string.base_people);
-            String totalSex = "应到   <font color='#fff600'>" + totalUserNum + "</font>   " + getString(R.string.base_people);
-//          String totalSex = "（" + getString(R.string.base_male) + " <font color='#fff600'>" + maleNum + "</font>   " + getString(R.string.base_female) + "  <font color='#fff600'>" + female + "</font> ）";
-            tvTotal.setText(Html.fromHtml(signTips));
-            tvTotalSex.setText(Html.fromHtml(totalSex));
-
-            if (tvTotal1 != null) {
-                tvTotal1.setText(total + "");
-            }
-            if (tvMale1 != null) {
-                tvMale1.setText(male + "");
-            }
-            if (tvFemale1 != null) {
-                tvFemale1.setText(female + "");
-            }
+            tvTotal.setText(totalUserNum + "");
+            tvAlready.setText(total + "");
         } else {
             tvTotal.setText("" + total);
             tvSignMale.setText(getString(R.string.base_male) + ": " + male + getString(R.string.base_people));

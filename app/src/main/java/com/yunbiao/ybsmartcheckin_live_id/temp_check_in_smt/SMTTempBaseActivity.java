@@ -1,10 +1,9 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
@@ -15,13 +14,11 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private int smtModel;
@@ -187,6 +184,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     protected void updateHasFace(boolean has){
         isHasFace = has;
         if(!has){
+            mCacheSign = null;
             isFaceToFar = false;
         }
     }
@@ -249,6 +247,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         uiHandler.sendMessage(message);
     }
 
+    private Sign mCacheSign;
     protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult){
         if(mFinalTemp > mHighestTemp){
             return;
@@ -263,6 +262,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                 return;
             }
         }
+        mCacheSign = sign;
         mFinalTemp = 0.0f;
         sign.setImgBitmap(facePicture);
         sign.setHotImageBitmap(mLastHotBitmap);
@@ -346,8 +346,19 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                     showUIResult(resultTip, bgId);
 
                     KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
+
+                    //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
+                    if(smtModel == SMTModelConst.SMT_FACE_TEMP){
+                        if(mCacheSign != null){
+                            mCacheSign.setTemperature(resultTemper);
+                            mCacheSign.setHotImageBitmap(mLastHotBitmap);
+                            mCacheSign.setImgBitmap(getCurrCameraFrame());
+                            mCacheSign.setTime(System.currentTimeMillis());
+                            sendUploadMessage(mCacheSign);
+                        }
+                    }
                     break;
-                case 2://上传仅测温温度
+                case 2://上传测温数据
                     Sign sign = (Sign) msg.obj;
                     if(smtModel == SMTModelConst.SMT_TEMP_ONLY){
                         if(sign.getTemperature() < mTempWarningThreshold){

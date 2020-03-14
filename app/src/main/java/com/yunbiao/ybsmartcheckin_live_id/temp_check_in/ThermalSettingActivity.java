@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +40,6 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -48,7 +47,6 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
-import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -274,51 +272,6 @@ public class ThermalSettingActivity extends BaseActivity {
                             dialog.dismiss();
                             return;
                         }
-                        //如果是切换到人证模式则提示重启
-                        if (whichModel == ThermalConst.CERTIFICATES) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ThermalSettingActivity.this);
-                            builder.setMessage("切换当前模式需要重启，是否继续");
-                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.setPositiveButton("重启", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    SpUtils.saveInt(SpUtils.THERMAL_MODEL_SETTING, whichModel);
-                                    dialog.dismiss();
-                                    APP.exit();
-                                }
-                            });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                            return;
-                        }
-
-                        if (currModel == ThermalConst.CERTIFICATES) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ThermalSettingActivity.this);
-                            builder.setMessage("切出当前模式需要重启，是否继续");
-                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.setPositiveButton("重启", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    SpUtils.saveInt(SpUtils.THERMAL_MODEL_SETTING, whichModel);
-                                    dialog.dismiss();
-                                    APP.exit();
-                                }
-                            });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                            return;
-                        }
-
 
                         SpUtils.saveInt(SpUtils.THERMAL_MODEL_SETTING, whichModel);
 
@@ -344,13 +297,13 @@ public class ThermalSettingActivity extends BaseActivity {
         });
 
         //热成像镜像==========================================================================================
-        boolean thermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);
+        boolean thermalImgMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
         Switch swThermalMirror = findViewById(R.id.sw_thermal_imag_mirror_setting);
         swThermalMirror.setChecked(thermalImgMirror);
         swThermalMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.THERMAL_IMAGE_MIRROR, isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, isChecked);
             }
         });
 
@@ -358,8 +311,8 @@ public class ThermalSettingActivity extends BaseActivity {
         Button btnMinSub = findViewById(R.id.btn_temp_min_threshold_sub_setting);
         Button btnMinAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
         final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
-        //温度最低阈值、温度报警阈值
-        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
+        //温度最低阈值
+        final float minValue = SpUtils.getFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, ThermalConst.Default.TEMP_MIN_THRESHOLD);
         edtMinThreshold.setText(minValue + "");
         View.OnClickListener minClickListener = new View.OnClickListener() {
             @Override
@@ -376,7 +329,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
                 v1 = formatF(v1);
                 edtMinThreshold.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, v1);
+                SpUtils.saveFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, v1);
             }
         };
         btnMinSub.setOnClickListener(minClickListener);
@@ -386,7 +339,7 @@ public class ThermalSettingActivity extends BaseActivity {
         Button btnWarnSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
         Button btnWarnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
         final EditText edtWarnThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
-        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
+        final float warningValue = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
         edtWarnThreshold.setText(warningValue + "");
         View.OnClickListener warnClickListener = new View.OnClickListener() {
             @Override
@@ -401,7 +354,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 v1 = formatF(v1);
                 edtWarnThreshold.setText(v1 + "");
 
-                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, v1);
+                SpUtils.saveFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, v1);
             }
         };
         btnWarnSub.setOnClickListener(warnClickListener);
@@ -433,7 +386,7 @@ public class ThermalSettingActivity extends BaseActivity {
         Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
         Button btnSpeechDelayAdd = findViewById(R.id.btn_speech_delay_add_setting);
         final EditText edtSpeechDelay = findViewById(R.id.edt_speech_delay_setting);
-        long speechDelayTime = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
+        long speechDelayTime = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY,ThermalConst.Default.SPEECH_DELAY);
         edtSpeechDelay.setText(speechDelayTime + "");
         View.OnClickListener speechDelayOnClickLitsener = new View.OnClickListener() {
             @Override
@@ -450,7 +403,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
 
                 edtSpeechDelay.setText(l + "");
-                SpUtils.saveLong(SpUtils.SPEECH_DELAY, l);
+                SpUtils.saveLong(ThermalConst.Key.SPEECH_DELAY, l);
             }
         };
         btnSpeechDelayAdd.setOnClickListener(speechDelayOnClickLitsener);
@@ -458,12 +411,12 @@ public class ThermalSettingActivity extends BaseActivity {
 
         //===低温模式=========================================================
         Switch swLowTempModel = findViewById(R.id.sw_low_temp_model_setting);
-        boolean aBoolean = SpUtils.getBoolean(SpUtils.LOW_TEMP_MODEL, Constants.DEFAULT_LOW_TEMP);
+        boolean aBoolean = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
         swLowTempModel.setChecked(aBoolean);
         swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.LOW_TEMP_MODEL, isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, isChecked);
             }
         });
 

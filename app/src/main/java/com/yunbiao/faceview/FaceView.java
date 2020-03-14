@@ -807,11 +807,11 @@ public class FaceView extends FrameLayout {
                     @Override
                     public void onError(Throwable e) {
                         //回调识别失败的结果，说明是陌生人
-                       /* if (callback != null) {
+                        if (callback != null) {
                             CompareResult cr = new CompareResult("", -1);
                             cr.setTrackId(requestId);
                             callback.onFaceVerify(cr);
-                        }*/
+                        }
                         faceHelper.setName(requestId, "未注册");
                         retryRecognizeDelayed(requestId);
                     }

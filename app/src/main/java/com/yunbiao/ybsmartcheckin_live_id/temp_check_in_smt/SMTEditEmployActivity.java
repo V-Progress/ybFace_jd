@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.activity;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -11,7 +11,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -28,7 +27,6 @@ import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -62,7 +60,7 @@ import timber.log.Timber;
  * Created by Administrator on 2018/8/7.
  */
 
-public class EditEmployActivity extends BaseActivity implements View.OnClickListener {
+public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnClickListener {
 
     private static final String TAG = "EditEmployActivity";
     public static final String KEY_ID = "entryId";
@@ -91,23 +89,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private List<String> departNames = new ArrayList<>();
     private List<Long> departIds = new ArrayList<>();
 
-    private User mCurrUser = null;
-    private User mTempUser = null;
-
     private int type;
     private TextView tvTitle;
 
     @Override
-    protected int getPortraitLayout() {
-        return R.layout.activity_editemploy;
+    protected int getLayout() {
+        return R.layout.activity_smt_editemploy_fake_landscape;
     }
-
-    @Override
-    protected int getLandscapeLayout() {
-        return R.layout.activity_editemploy_h;
-    }
-
-    private Animation animation;
 
     @Override
     protected void initView() {
@@ -143,7 +131,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         @Override
         public void onReady() {
         }
-
 
         @Override
         public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
@@ -194,7 +181,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         //如果是修改，则只初始化部门
         if (type == TYPE_ADD) {
-
             tvTitle.setText(getResources().getString(R.string.act_editEmploy_zjyg));
             d("类型：新增");
             initAddLogic();
@@ -303,13 +289,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 .execute(new StringCallback() {
                     @Override
                     public void onBefore(Request request, int id) {
-                        UIUtils.showNetLoading(EditEmployActivity.this);
+                        UIUtils.showNetLoading(SMTEditEmployActivity.this);
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                        UIUtils.showTitleTip(EditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                        UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -339,7 +325,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                                     errMsg = getString(R.string.act_editEmploy_tip_cscw);
                                     break;
                             }
-                            UIUtils.showTitleTip(EditEmployActivity.this, "" + errMsg);
+                            UIUtils.showTitleTip(SMTEditEmployActivity.this, "" + errMsg);
                             UIUtils.dismissNetLoading();
                             return;
                         }
@@ -350,7 +336,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
                         long add = DaoManager.get().add(addUser);
                         if (!b) {
-                            UIUtils.showShort(EditEmployActivity.this, "添加人脸库失败");
+                            UIUtils.showShort(SMTEditEmployActivity.this, "添加人脸库失败");
                         }
 
                         faceView.postDelayed(new Runnable() {
@@ -373,7 +359,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
-            UIUtils.showShort(EditEmployActivity.this, "请先设置部门");
+            UIUtils.showShort(SMTEditEmployActivity.this, "请先设置部门");
         }
 
         for (Depart depart : departs) {
@@ -445,7 +431,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private String mUpdateDepartName;
 
     private void initEditLogic() {
-        long userId = getIntent().getLongExtra(EditEmployActivity.KEY_ID, -1);
+        long userId = getIntent().getLongExtra(SMTEditEmployActivity.KEY_ID, -1);
         if (userId == -1) {
             UIUtils.showShort(this, "未知错误");
             finish();
@@ -546,13 +532,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onBefore(Request request, int id) {
                 d("开始提交");
-                UIUtils.showNetLoading(EditEmployActivity.this);
+                UIUtils.showNetLoading(SMTEditEmployActivity.this);
             }
 
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showTitleTip(EditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
@@ -582,7 +568,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                             errMsg = getString(R.string.act_editEmploy_tip_cscw);
                             break;
                     }
-                    UIUtils.showTitleTip(EditEmployActivity.this, "" + errMsg);
+                    UIUtils.showTitleTip(SMTEditEmployActivity.this, "" + errMsg);
                     UIUtils.dismissNetLoading();
                     return;
                 }
@@ -603,7 +589,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
-                        UIUtils.showShort(EditEmployActivity.this, "更新人脸库失败");
+                        UIUtils.showShort(SMTEditEmployActivity.this, "更新人脸库失败");
                     }
                 }
 
@@ -624,12 +610,12 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         @Override
         public void handleMessage(Message msg) {
             if (mHasFace == -1) {
-                UIUtils.showTitleTip(EditEmployActivity.this, "未检测到人脸");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, "未检测到人脸");
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             } else if (mHasFace == -2) {
-                UIUtils.showTitleTip(EditEmployActivity.this, "请保持屏幕中只有一张人脸");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, "请保持屏幕中只有一张人脸");
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
@@ -639,9 +625,9 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             if (bitmap != null) {
                 mCurrPhotoPath = saveBitmap(bitmap);
                 mUpdatePhotoPath = mCurrPhotoPath;
-                Glide.with(EditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
+                Glide.with(SMTEditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
             } else {
-                UIUtils.showTitleTip(EditEmployActivity.this, "失败，请重试");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, "失败，请重试");
             }
 
             pbTakePhoto.setVisibility(View.GONE);

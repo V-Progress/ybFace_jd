@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -48,7 +49,7 @@ import io.reactivex.functions.Consumer;
  */
 
 
-public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickListener {
+public class ThermalSignActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "SignActivity";
 
@@ -77,8 +78,13 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
     private SignAdapter adapter;
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_smt_record;
+    protected int getPortraitLayout() {
+        return R.layout.activity_thermal_sign;
+    }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_thermal_sign;
     }
 
     @Override
@@ -110,7 +116,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
         queryDate = today;
         initSpinner();
 
-        adapter = new SignAdapter(SMTRecordActivity.this, mShowList);
+        adapter = new SignAdapter(ThermalSignActivity.this, mShowList);
         lv_sign_List.setAdapter(adapter);
     }
 
@@ -236,7 +242,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                             EventBus.getDefault().post(new UpdateSignDataEvent());
                         }
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SMTRecordActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
+                        UIUtils.showShort(ThermalSignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
                     }
                 });
                 break;
@@ -246,7 +252,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
             case R.id.tv_date:
                 Calendar now = Calendar.getInstance();
                 new DatePickerDialog(
-                        SMTRecordActivity.this,
+                        ThermalSignActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -286,16 +292,16 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
         File file = new File(usbDiskPath);
         if (!file.exists()) {
             isExporting = false;
-            UIUtils.showTitleTip(SMTRecordActivity.this, getString(R.string.sign_list_usb_disk));
+            UIUtils.showTitleTip(ThermalSignActivity.this, getString(R.string.sign_list_usb_disk));
             return;
         }
-        String[] list = file.list();
+        /*String[] list = file.list();
         for (String s : list) {
             File usbFile = new File(file, s);
             if (usbFile.isDirectory()) {
                 file = usbFile;
             }
-        }
+        }*/
         //创建记录最外层目录
         final File dirFile = new File(file, dateFormat.format(new Date()) + "_导出记录");
         if (!dirFile.exists()) {
@@ -360,7 +366,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                     public void run() {
                         view.setEnabled(true);
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SMTRecordActivity.this, result ? ("导出成功\n目录：" + dirFile.getPath()) : "导出失败");
+                        UIUtils.showShort(ThermalSignActivity.this, result ? ("导出成功\n目录：" + dirFile.getPath()) : "导出失败");
                     }
                 });
             }

@@ -1,17 +1,12 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -46,7 +41,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -156,7 +151,11 @@ public class SMTMainActivity extends SMTTempBaseActivity {
 
     @Override
     protected Bitmap getCurrCameraFrame() {
-        return faceView.getCurrCameraFrame();
+        Bitmap bitmap = faceView.takePicture();
+        if(bitmap == null){
+            bitmap = faceView.getCurrCameraFrame();
+        }
+        return bitmap;
     }
 
     @Override
@@ -252,20 +251,42 @@ public class SMTMainActivity extends SMTTempBaseActivity {
             if (isBroaded) {
                 return false;
             }
-            isBroaded = true;
             return true;
         }
 
         @Override
-        public void onFaceVerify(CompareResult faceAuth) {
+        public void onFaceVerify(CompareResult compareResult) {
+            isBroaded = true;
             if (isOnlyFace()) {
+                //======以下是普通识别流程====================================
+                if (compareResult == null || compareResult.getSimilar() == -1) {
+                    return;
+                }
+                Sign sign = SignManager.instance().checkSignData(compareResult, 0f);
+                if (sign == null) {
+                    return;
+                }
+//                if (signListFragment != null) {
+//                    smtSignFragment.addSignData(sign);
+//                }
 
+                if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
+                    VipDialogManager.showVipDialog(SMTMainActivity.this, sign);
+                }
+
+                KDXFSpeechManager.instance().playText(sign.getName());
+
+                if (sign.getType() == -2) {
+                    return;
+                }
+
+                openDoor();
             } else {
                 Bitmap bitmap = faceView.takePicture();
                 if (bitmap == null) {
                     bitmap = faceView.getCurrCameraFrame();
                 }
-                sendFaceTempMessage(bitmap, faceAuth);
+                sendFaceTempMessage(bitmap, compareResult);
             }
         }
     };

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/skin_main_screen_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_ads_addname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="@string/sign_list_title"
+        android:textColor="@color/white"
+        android:textSize="32dp" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="36dp"
+        android:src="@mipmap/icon_back" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_ads_addname"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_employ_list"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="170dp"
+            android:layout_height="44dp"
+            android:layout_toRightOf="@+id/btn_date"
+            android:background="@drawable/selector_btn_take_photo"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#64DCFE"
+            android:textSize="20dp" />
+
+        <Spinner
+            android:paddingLeft="5dp"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:id="@+id/spn_data_mode"
+            android:layout_width="108dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/tv_date"
+            android:background="@drawable/selector_btn_take_photo"
+            android:gravity="center"
+            android:textColor="#64DCFE"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:onClick="exportToUD"
+            android:id="@+id/tv_export_sign_data"
+            android:gravity="center"
+            android:textColor="#64DCFE"
+            android:text="@string/sign_list_export"
+            android:background="@drawable/selector_btn_take_photo"
+            android:layout_alignParentRight="true"
+            android:layout_width="108dp"
+            android:layout_height="44dp" />
+
+        <Button
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/tv_export_sign_data"
+            android:id="@+id/btn_upload"
+            android:layout_width="130dp"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_bg_btnsync"
+            android:drawableLeft="@mipmap/icon_sync"
+            android:paddingLeft="10dp"
+            android:text="@string/sign_list_upload"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_below="@+id/tv_date"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_employ_list"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_index"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_time"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_name"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_depart"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_job"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/sign_list_filed_head"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_title">
+
+            <ListView
+                android:visibility="gone"
+                android:id="@+id/lv_sign_List"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"></ListView>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                match:indicator="LineScalePulseOutRapid"
+                android:id="@+id/pb_load_list"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/tv_load_tips"
+                android:visibility="gone"
+                android:textSize="26dp"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:text="@string/sign_list_all_data_sent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

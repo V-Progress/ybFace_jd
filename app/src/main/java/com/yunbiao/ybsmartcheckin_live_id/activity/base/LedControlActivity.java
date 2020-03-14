@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity.base;
 
 import android.app.smdt.SmdtManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,7 +36,7 @@ public abstract class LedControlActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280 || Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_SMT_PORTRAIT_8_800_1280){
+        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
             try {
                 mSmdtManager = SmdtManager.create(this);
             } catch (Exception e) {

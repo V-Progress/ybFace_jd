@@ -639,7 +639,7 @@ public class SignManager {
         map.put("deviceId", HeartBeatClient.getDeviceNo());
         map.put("temper", signBean.getTemperature() + "");
         d("上传考勤记录");
-        d("地址：" + ResourceUpdate.VISITOLOG);
+        d("地址：" + ResourceUpdate.SIGNLOG);
         d("参数：" + map.toString());
 
         DaoManager.get().addOrUpdate(signBean);

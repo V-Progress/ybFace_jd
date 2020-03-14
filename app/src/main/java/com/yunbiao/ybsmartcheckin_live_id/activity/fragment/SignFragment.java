@@ -88,15 +88,8 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
 
         int orientation;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-                rootView = inflater.inflate(R.layout.fragment_sign_list_fake_landscape, container, false);
-                orientation = LinearLayoutManager.HORIZONTAL;
-                /*只在横屏初始化公告*/
-                NoticeManager.getInstance().init(rootView);
-            } else {
-                rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
-                orientation = LinearLayoutManager.HORIZONTAL;
-            }
+            rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
+            orientation = LinearLayoutManager.HORIZONTAL;
         } else {
             rootView = inflater.inflate(R.layout.fragment_sign_list_h, container, false);
             orientation = LinearLayoutManager.VERTICAL;

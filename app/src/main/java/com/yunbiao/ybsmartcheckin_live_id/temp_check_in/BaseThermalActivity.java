@@ -1,5 +1,6 @@
-package com.yunbiao.ybsmartcheckin_live_id.thermal_imaging;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,29 +18,36 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTModelConst;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/***
+ * 1.数据上传逻辑
+ * 如果是仅测温模式，播报后上传
+ * 如果是人脸+测温模式，则人脸等待最终播报数值后上传数据，重复播报时检查Sign缓存，如果不为空，更新温度，时间，头像和热图后上传
+ * 显示提示均采用handler发送的方式
+ * 人脸识别与温度检测，数据拆分上传，
+ *
+ *
+ *
+ */
+
 public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     private long mSpeechDelay;
-    private int mCurrMode = -99;
+    protected int mCurrMode = -99;
     private Float mTempMinThreshold;
     private Float mTempWarningThreshold;
     private Float mAmbCorrValue;
     private Float mTempCorrValue;
-    private int mCurrBodyMinT;
-    private int mCurrBodyMaxT;
-    private int mCurrBodyPercent;
     private boolean mThermalImgMirror;
 
-    private float mLowestTemp = 0.0f;
     private float mHighestTemp = 45.0f;
     private boolean lowTempModel;
-    private float ambient;
     private float mThermalCorrect;
     private boolean distanceTipEnable;
 
@@ -51,30 +59,36 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSpeechDelay = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);//播报延时
-        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
-        mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);//热成像图像镜像
-        mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);//最低体温值
-        mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);//最高体温值
-        mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);//人体百分比
-        int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
-        lowTempModel = SpUtils.getBoolean(SpUtils.LOW_TEMP_MODEL, Constants.DEFAULT_LOW_TEMP);
-//        mLowestTemp = ((float) mCurrBodyMinT / 10);
-//        mHighestTemp = ((float) mCurrBodyMaxT / 10);
-        ambient = SpUtils.getFloat(SpUtils.AMBIENT, Constants.DEFAULT_AMBIENT);
-
+        //播报延时
+        mSpeechDelay = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY, ThermalConst.Default.SPEECH_DELAY);
+        //测温最小阈值
+        mTempMinThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, ThermalConst.Default.TEMP_MIN_THRESHOLD);
+        //测温报警阈值
+        mTempWarningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
+        //热成像图像镜像
+        mThermalImgMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
+        //低温模式
+        lowTempModel = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
+        //距离提示
         distanceTipEnable = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
-
+        //温度补偿
         mThermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
-
+        //模式切换
+        int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
         if (mCurrMode != currMode) {
             mCurrMode = currMode;
             onModeChanged(currMode);
         }
 
+        //初始化串口号
         if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.THERMAL_FACE_TEMP) {
-            TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS4", 115200);
+            String portPath;
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                portPath = "/dev/ttyS1";
+            } else {
+                portPath = "/dev/ttyS4";
+            }
+            TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
             updateUIHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -86,6 +100,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         }
 
+        //温度补正
         mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
         mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
         TemperatureModule.getIns().setmCorrectionValue(mTempCorrValue);
@@ -95,8 +110,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        TemperatureModule.getIns().setInfraredTempCallBack(null);
         TemperatureModule.getIns().closeHotImageK3232();
+        TemperatureModule.getIns().setInfraredTempCallBack(null);
     }
 
     protected boolean updateFaceState(boolean isFar) {
@@ -107,12 +122,9 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private List<Float> tempCacheList = new ArrayList<>();
     private float mCacheMeasureF = 0.0f;
     private static final String TAG = "BaseThermalActivity";
-    private float mFinalTemp_F = 0.0f;
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
-            Log.e(TAG, "newestInfraredTemp: " + measureF + " --- " + afterF + " --- " + ambientF + " ---缓存值： " + mCacheMeasureF);
-
             if (isOnlyFace()) {
                 return;
             }
@@ -149,14 +161,16 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
                 mCacheTime = System.currentTimeMillis();
 
-                mFinalTemp_F = afterF;
-                mFinalTemp_F += mThermalCorrect;
-                mFinalTemp = formatF(mFinalTemp_F);
-                sendTempTipsMessage(mFinalTemp_F);
+                mFinalTemp = afterF;
+                mFinalTemp += mThermalCorrect;
+                mFinalTemp = formatF(mFinalTemp);
+                sendTempTipsMessage(mFinalTemp);
 
-                if (mFinalTemp_F < mHighestTemp) {
+                if (mFinalTemp < mHighestTemp) {
+                    //仅测温模式下发送陌生人记录
                     if (mCurrMode == ThermalConst.INFARED_ONLY) {
-                        Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp_F);
+                        Log.e(TAG, "newestInfraredTemp: 为仅测温模式" );
+                        Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp);
                         temperatureSign.setImgBitmap(getCurrCameraFrame());
                         sendUploadMessage(temperatureSign);
                     }
@@ -226,7 +240,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 mFinalTemp += mThermalCorrect;
                 mFinalTemp = formatF(mFinalTemp);
                 sendTempTipsMessage(mFinalTemp);
-                if (mFinalTemp_F < mHighestTemp) {
+                if (mFinalTemp < mHighestTemp) {
                     if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY) {
                         Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp);
                         temperatureSign.setImgBitmap(getCurrCameraFrame());
@@ -243,6 +257,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     protected void updateHasFace(boolean hasFace) {
         isHasFace = hasFace;
         if (!hasFace) {
+            mCacheSign = null;
             isFaceToFar = false;
         }
     }
@@ -277,7 +292,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     //距离提示
     protected void sendTempLowMessage(String tips) {
-        if(!distanceTipEnable || isResultShown){
+        if (!distanceTipEnable || isResultShown) {
             return;
         }
         Message message = Message.obtain();
@@ -317,22 +332,29 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     //发送人脸测温消息
     protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult) {
+        Log.e(TAG, "sendFaceTempMessage: 人脸识别数据上传" );
         if (mFinalTemp > mHighestTemp) {
+            Log.e(TAG, "sendFaceTempMessage: 温度过高，不发送记录");
             return;
         }
         Sign sign = null;
         if (compareResult.getSimilar() == -1) {
+            Log.e(TAG, "sendFaceTempMessage: 是陌生人" );
             //直接上报温度
             sign = SignManager.instance().getTemperatureSign(mFinalTemp);
         } else {
+            Log.e(TAG, "sendFaceTempMessage: 不是陌生人" );
             sign = SignManager.instance().checkSignData(compareResult, mFinalTemp);
             if (sign == null) {
                 return;
             }
         }
+        mCacheSign = sign;
         mFinalTemp = 0.0f;
         sign.setImgBitmap(facePicture);
         sign.setHotImageBitmap(mLastHotBitmap);
+
+        Log.e(TAG, "sendFaceTempMessage: 发送访客记录：");
         sendUploadMessage(sign);
     }
 
@@ -353,8 +375,15 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     clearTempTips();
                     break;
                 case -2:
-                    showStableTips("请靠近点", R.drawable.shape_main_frame_temperature_warning);
-                    KDXFSpeechManager.instance().playNormal("请靠近点");
+                    int id;
+                    if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                        id = R.mipmap.bg_verify_nopass;
+                    } else {
+                        id = R.drawable.shape_main_frame_temperature_warning;
+                    }
+                    showStableTips(getResources().getString(R.string.main_temp_tips_please_close), id);
+                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
+                    sendEmptyMessageDelayed(-3,2000);
                     break;
                 case 0://更新图像和温度
                     Bitmap bitmap = (Bitmap) msg.obj;
@@ -376,7 +405,11 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     float resultTemper = (float) msg.obj;
                     if (resultTemper < mTempWarningThreshold) {
                         ledGreen();
-                        bgId = R.drawable.shape_main_frame_temperature_normal;
+                        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                            bgId = R.mipmap.bg_verify_pass;
+                        } else {
+                            bgId = R.drawable.shape_main_frame_temperature_normal;
+                        }
                         //检查正常播报内容
                         String normalBroad = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
                         if (TextUtils.isEmpty(normalBroad)) {
@@ -392,7 +425,11 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                         };
                     } else {
                         ledRed();
-                        bgId = R.drawable.shape_main_frame_temperature_warning;
+                        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                            bgId = R.mipmap.bg_verify_nopass;
+                        } else {
+                            bgId = R.drawable.shape_main_frame_temperature_warning;
+                        }
                         if (resultTemper > mHighestTemp) {
                             resultTip = getResources().getString(R.string.main_temp_error_tips);
                         } else {
@@ -417,8 +454,23 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     }
                     showUIResult(resultTip, bgId);
                     KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
+
+                    Log.e(TAG, "handleMessage: 发送上传记录");
+                    //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
+                    if (mCurrMode == ThermalConst.THERMAL_FACE_TEMP || mCurrMode == ThermalConst.INFARED_FACE) {
+                        Log.e(TAG, "handleMessage: 是人脸+测温模式");
+                        if (mCacheSign != null) {
+                            Log.e(TAG, "handleMessage:Sign不为空，发送记录");
+                            mCacheSign.setTemperature(resultTemper);
+                            mCacheSign.setHotImageBitmap(mLastHotBitmap);
+                            mCacheSign.setImgBitmap(getCurrCameraFrame());
+                            mCacheSign.setTime(System.currentTimeMillis());
+                            sendUploadMessage(mCacheSign);
+                        }
+                    }
                     break;
                 case 2://上传数据更新记录
+                    Log.e(TAG, "handleMessage: 上传数据更新记录");
                     Sign sign = (Sign) msg.obj;
                     if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY) {
                         if (sign.getTemperature() < mTempWarningThreshold) {
@@ -445,6 +497,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         }
     };
 
+    private Sign mCacheSign;
     private boolean isFaceToFar = true;//人脸是否太远
 
     protected void updateSignList(Sign sign) {

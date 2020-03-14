@@ -1,4 +1,4 @@
-package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
+package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
 public class SMTModelConst {
 
