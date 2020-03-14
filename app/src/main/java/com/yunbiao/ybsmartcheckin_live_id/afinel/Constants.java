@@ -121,15 +121,15 @@ public class Constants {
         int JU = 1;//局域网
     }
 
+    //修改设备类型
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN_SMT;
+
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
         int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
-        int TEMPERATURE_CERTIFICATES = 9;
+        int TEMPERATURE_CERTIFICATES = 9;//人证测温机
     }
-
-    //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;

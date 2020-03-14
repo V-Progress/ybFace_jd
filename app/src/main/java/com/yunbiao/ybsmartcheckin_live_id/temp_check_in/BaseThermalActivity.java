@@ -169,7 +169,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 if (mFinalTemp < mHighestTemp) {
                     //仅测温模式下发送陌生人记录
                     if (mCurrMode == ThermalConst.INFARED_ONLY) {
-                        Log.e(TAG, "newestInfraredTemp: 为仅测温模式" );
                         Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp);
                         temperatureSign.setImgBitmap(getCurrCameraFrame());
                         sendUploadMessage(temperatureSign);
@@ -332,18 +331,14 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     //发送人脸测温消息
     protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult) {
-        Log.e(TAG, "sendFaceTempMessage: 人脸识别数据上传" );
         if (mFinalTemp > mHighestTemp) {
-            Log.e(TAG, "sendFaceTempMessage: 温度过高，不发送记录");
             return;
         }
         Sign sign = null;
         if (compareResult.getSimilar() == -1) {
-            Log.e(TAG, "sendFaceTempMessage: 是陌生人" );
             //直接上报温度
             sign = SignManager.instance().getTemperatureSign(mFinalTemp);
         } else {
-            Log.e(TAG, "sendFaceTempMessage: 不是陌生人" );
             sign = SignManager.instance().checkSignData(compareResult, mFinalTemp);
             if (sign == null) {
                 return;
@@ -354,7 +349,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         sign.setImgBitmap(facePicture);
         sign.setHotImageBitmap(mLastHotBitmap);
 
-        Log.e(TAG, "sendFaceTempMessage: 发送访客记录：");
         sendUploadMessage(sign);
     }
 
@@ -455,12 +449,9 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     showUIResult(resultTip, bgId);
                     KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
 
-                    Log.e(TAG, "handleMessage: 发送上传记录");
                     //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
                     if (mCurrMode == ThermalConst.THERMAL_FACE_TEMP || mCurrMode == ThermalConst.INFARED_FACE) {
-                        Log.e(TAG, "handleMessage: 是人脸+测温模式");
                         if (mCacheSign != null) {
-                            Log.e(TAG, "handleMessage:Sign不为空，发送记录");
                             mCacheSign.setTemperature(resultTemper);
                             mCacheSign.setHotImageBitmap(mLastHotBitmap);
                             mCacheSign.setImgBitmap(getCurrCameraFrame());
@@ -470,7 +461,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     }
                     break;
                 case 2://上传数据更新记录
-                    Log.e(TAG, "handleMessage: 上传数据更新记录");
                     Sign sign = (Sign) msg.obj;
                     if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY) {
                         if (sign.getTemperature() < mTempWarningThreshold) {

@@ -16,6 +16,8 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
+import org.apache.harmony.javax.security.auth.login.LoginException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,13 +58,12 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
             onModeChanged(smtModel);
         }
 
-        if(smtModel == SMTModelConst.SMT_TEMP_ONLY || smtModel == SMTModelConst.SMT_FACE_TEMP){
-            Log.e(TAG, "onResume: 测温模式" );
-            TemperatureModule.getIns().initSerialPort(this,"/dev/ttyS3",115200);
+        if (smtModel == SMTModelConst.SMT_TEMP_ONLY || smtModel == SMTModelConst.SMT_FACE_TEMP) {
+            TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 115200);
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    TemperatureModule.getIns().startSmt3232Temp(mLowTemp,smt3232TempCallBack);
+                    TemperatureModule.getIns().startSmt3232Temp(mLowTemp, smt3232TempCallBack);
                 }
             }, 2000);
         }
@@ -79,16 +80,16 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         TemperatureModule.getIns().closeSmt3232Temp();
     }
 
-    protected boolean updateFaceState(boolean isFar){
+    protected boolean updateFaceState(boolean isFar) {
         isFaceToFar = isFar;
         return isFaceToFar;
     }
 
     private float mCacheBeforeTemper = 0.0f;
     private float mFinalTemp = 0.0f;
-//    private long mCacheTime = 0;
+    //    private long mCacheTime = 0;
     private boolean isHasFace = false;
-//    private boolean isSoFar = false;
+    //    private boolean isSoFar = false;
     private boolean isFaceToFar = false;
     private boolean isResultShown = false;
     private Bitmap mLastHotBitmap = null;
@@ -98,67 +99,34 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         @Override
         public void newestSmt3232Temp(float measureF, float afterF) {
 
-            if(isOnlyFace()){
+            if (isOnlyFace()) {
                 return;
             }
-
-            if(!isHasFace){
+            //如果没有人脸，清除时间，清除提示，清除list，清除最终值
+            if (!isHasFace) {
                 mCacheTime = 0;
                 sendClearTempTipsMessage();
                 tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
-
-//            if(isSoFar){
-//                mFinalTemp = 0.0f;
-//                return;
-//            }
-
-            if(isFaceToFar){
+            //如果人脸太远，提示靠近点，清除最终值
+            if (isFaceToFar) {
                 sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
                 mFinalTemp = 0.0f;
                 return;
             }
-
-            /*if(!isHasFace){
-                mCacheTime = 0;
-                sendClearTempTipsMessage();
-                if(mCacheBeforeTemper == 0.0f || measureF < mCacheBeforeTemper){
-                    mCacheBeforeTemper = measureF;
-                }
-                tempCacheList.clear();
-                mFinalTemp = 0.0f;
-                return;
-            }*/
-
-            /*if(isSoFar){
+            //如果处理后的数值小于播报阈值，清除最终值
+            if (afterF < mTempMinThreshold) {
                 mFinalTemp = 0.0f;
                 return;
             }
-
-            if(isFaceToFar){
-                sendTempLowMessage("请靠近点");
-                mFinalTemp = 0.0f;
-                return;
-            }*/
-
-            /*if(measureF - mCacheBeforeTemper < 2.0f){
-                return;
-            }*/
-
-            if(afterF < mTempMinThreshold){
-                mFinalTemp = 0.0f;
-                return;
-            }
-
-            if(mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay){
+            //判断时间并缓存
+            if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
                 tempCacheList.add(afterF);
-                if(tempCacheList.size() < 3){
+                if (tempCacheList.size() < 3) {
                     return;
                 }
-
-                Log.e(TAG, "newestSmt3232Temp: " + tempCacheList.size());
 
                 mCacheTime = System.currentTimeMillis();
 
@@ -175,53 +143,58 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                         temperatureSign.setImgBitmap(getCurrCameraFrame());
                         temperatureSign.setHotImageBitmap(mLastHotBitmap);
                         sendUploadMessage(temperatureSign);
+                    } else if (smtModel == SMTModelConst.SMT_FACE_TEMP) {
+                        //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
+                        if (mCacheSign != null) {
+                            mCacheSign.setTemperature(mFinalTemp);
+                            mCacheSign.setHotImageBitmap(mLastHotBitmap);
+                            mCacheSign.setImgBitmap(getCurrCameraFrame());
+                            mCacheSign.setTime(System.currentTimeMillis());
+                            sendUploadMessage(mCacheSign);
+                        }
                     }
                 }
             }
         }
     };
 
-    protected void updateHasFace(boolean has){
+    protected void updateHasFace(boolean has) {
         isHasFace = has;
-        if(!has){
+        if (!has) {
             mCacheSign = null;
             isFaceToFar = false;
         }
     }
 
-//    protected void updateSoFar(boolean soFar){
-//        isSoFar = soFar;
-//    }
-
-    protected boolean isTempTipsShown(){
+    protected boolean isTempTipsShown() {
         return false;
     }
 
-    private void sendClearTempTipsMessage(){
-        if(isTempTipsShown()){
+    private void sendClearTempTipsMessage() {
+        if (isTempTipsShown()) {
             uiHandler.sendEmptyMessage(-3);
         }
     }
 
-    protected void clearTempTips(){
+    protected void clearTempTips() {
 
     }
 
-    protected boolean hasFinalTemp(){
+    protected boolean hasFinalTemp() {
         return mFinalTemp != 0.0f;
     }
 
-    protected void sendTempLowMessage(String tips){
-        if(!mDistanceTipEnable || isResultShown){
+    protected void sendTempLowMessage(String tips) {
+        if (!mDistanceTipEnable || isResultShown) {
             return;
         }
         Message message = Message.obtain();
         message.what = -2;
         message.obj = tips;
-        uiHandler.sendMessageDelayed(message,100);
+        uiHandler.sendMessageDelayed(message, 100);
     }
 
-    private void sendUpdateMessage(Bitmap bitmap,float temper,float maxT,float cacheTemper){
+    private void sendUpdateMessage(Bitmap bitmap, float temper, float maxT, float cacheTemper) {
         Message message = Message.obtain();
         message.what = 0;
         message.obj = bitmap;
@@ -233,14 +206,14 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         uiHandler.sendMessage(message);
     }
 
-    private void sendTempTipsMessage(float temper){
+    private void sendTempTipsMessage(float temper) {
         Message message = Message.obtain();
         message.what = 1;
         message.obj = temper;
         uiHandler.sendMessage(message);
     }
 
-    private void sendUploadMessage(Sign sign){
+    private void sendUploadMessage(Sign sign) {
         Message message = Message.obtain();
         message.what = 2;
         message.obj = sign;
@@ -248,15 +221,16 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     }
 
     private Sign mCacheSign;
-    protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult){
-        if(mFinalTemp > mHighestTemp){
-            return;
-        }
+
+    protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult) {
+        Log.e(TAG, "sendFaceTempMessage: 发送人脸识别数据");
         Sign sign = null;
         if (compareResult.getSimilar() == -1) {
+            Log.e(TAG, "sendFaceTempMessage: 是陌生人");
             //直接上报温度
             sign = SignManager.instance().getTemperatureSign(mFinalTemp);
         } else {
+            Log.e(TAG, "sendFaceTempMessage: 是熟人");
             sign = SignManager.instance().checkSignData(compareResult, mFinalTemp);
             if (sign == null) {
                 return;
@@ -268,31 +242,33 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         sign.setHotImageBitmap(mLastHotBitmap);
         sendUploadMessage(sign);
     }
+
     //发送清除界面的消息
     private void sendClearMessage() {
         uiHandler.removeMessages(-1);
         uiHandler.sendEmptyMessageDelayed(-1, 3000);
     }
 
-    protected void clearStableTips(){}
+    protected void clearStableTips() {
+    }
 
     private float mHighestTemp = 45.0f;
-    private Handler uiHandler = new Handler(){
+    private Handler uiHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case -4://清除距离提示
                     clearStableTips();
-                break;
+                    break;
                 case -3://人脸离开后立即清除温度提示
                     isResultShown = false;
                     clearTempTips();
                     break;
                 case -2://显示距离提示
                     removeMessages(-4);
-                    showStableTips(getResources().getString(R.string.main_temp_tips_please_close),R.mipmap.bg_verify_nopass);
+                    showStableTips(getResources().getString(R.string.main_temp_tips_please_close), R.mipmap.bg_verify_nopass);
                     KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
-                    sendEmptyMessageDelayed(-4,2000);
+                    sendEmptyMessageDelayed(-4, 2000);
                     break;
                 case 0://更新热量图
                     Bitmap bitmap = (Bitmap) msg.obj;
@@ -303,6 +279,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                     updateHotImageAndTemper(bitmap, temper, maxTemper, cacheTemper);
                     break;
                 case 1://显示温度提示
+                    Log.e(TAG, "handleMessage: 提示温度");
                     isResultShown = true;
                     removeMessages(-2);//清除距离提示
                     removeMessages(-1);//清除温度提示
@@ -346,26 +323,16 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                     showUIResult(resultTip, bgId);
 
                     KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
-
-                    //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
-                    if(smtModel == SMTModelConst.SMT_FACE_TEMP){
-                        if(mCacheSign != null){
-                            mCacheSign.setTemperature(resultTemper);
-                            mCacheSign.setHotImageBitmap(mLastHotBitmap);
-                            mCacheSign.setImgBitmap(getCurrCameraFrame());
-                            mCacheSign.setTime(System.currentTimeMillis());
-                            sendUploadMessage(mCacheSign);
-                        }
-                    }
                     break;
                 case 2://上传测温数据
+                    Log.e(TAG, "handleMessage: 上传数据" );
                     Sign sign = (Sign) msg.obj;
-                    if(smtModel == SMTModelConst.SMT_TEMP_ONLY){
-                        if(sign.getTemperature() < mTempWarningThreshold){
+                    if (smtModel == SMTModelConst.SMT_TEMP_ONLY) {
+                        if (sign.getTemperature() < mTempWarningThreshold) {
                             openDoor();
                         }
-                    } else if(smtModel == SMTModelConst.SMT_FACE_TEMP){
-                        if(sign.getType() != -2 && sign.getType() != -9 && sign.getTemperature() < mTempWarningThreshold){
+                    } else if (smtModel == SMTModelConst.SMT_FACE_TEMP) {
+                        if (sign.getType() != -2 && sign.getType() != -9 && sign.getTemperature() < mTempWarningThreshold) {
                             openDoor();
                         }
                     }
@@ -382,27 +349,27 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         }
     };
 
-    protected void updateSignList(Sign sign){
+    protected void updateSignList(Sign sign) {
 
     }
 
-    protected abstract boolean showStableTips(String tip,int stableTipsId);
+    protected abstract boolean showStableTips(String tip, int stableTipsId);
 
-    protected boolean isOnlyTemp(){
+    protected boolean isOnlyTemp() {
         return smtModel == SMTModelConst.SMT_TEMP_ONLY;
     }
 
-    protected boolean isOnlyFace(){
+    protected boolean isOnlyFace() {
         return smtModel == SMTModelConst.SMT_FACE_ONLY;
     }
 
     protected abstract void onModeChanged(int mode);
 
-    protected abstract void updateHotImageAndTemper(Bitmap bitmap,float temper,float maxT,float cacheT);
+    protected abstract void updateHotImageAndTemper(Bitmap bitmap, float temper, float maxT, float cacheT);
 
     protected abstract Bitmap getCurrCameraFrame();
 
-    protected abstract void showUIResult(String tip,int id);
+    protected abstract void showUIResult(String tip, int id);
 
     protected abstract void clearUI();
 
