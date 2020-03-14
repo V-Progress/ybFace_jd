@@ -28,6 +28,8 @@ public class ThermalConst {
         String THERMAL_CORRECT = "thermalCorrect";
         String NORMAL_BROADCAST = "normalBroadcast";
         String WARNING_BROADCAST = "warningBroadcast";
+        String PERSON_FRAME = "personFrame";
+        String DISTANCE_TIP = "distanceTip";
     }
 
     interface Default {
@@ -37,6 +39,8 @@ public class ThermalConst {
         float THERMAL_CORRECT = 0.0f;
         String NORMAL_BROADCAST = "";
         String WARNING_BROADCAST = "";
+        boolean PERSON_FRAME = true;
+        boolean DISTANCE_TIP = true;
     }
 
 }

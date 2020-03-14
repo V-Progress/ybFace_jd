@@ -240,6 +240,18 @@ public class ThermalSettingActivity extends BaseActivity {
 
     private void initModelSetting() {
         setCorrectUI();
+        //人相框========================
+        boolean aBoolean1 = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
+        Switch swPersonFrame = findViewById(R.id.sw_person_frame_setting);
+        swPersonFrame.setChecked(aBoolean1);
+        swPersonFrame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalConst.Key.PERSON_FRAME, isChecked);
+            }
+        });
+
+
         //模式==================================================================================
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
@@ -321,13 +333,13 @@ public class ThermalSettingActivity extends BaseActivity {
         });
 
         //距离提示==========================================================================================
-        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);
+        boolean distanceEnabled = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
         Switch swDistance = findViewById(R.id.sw_distance_setting);
         swDistance.setChecked(distanceEnabled);
         swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.DISTANCE_TIPS_ENABLED, isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.DISTANCE_TIP, isChecked);
             }
         });
 

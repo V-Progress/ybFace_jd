@@ -4,7 +4,8 @@
     <string name="no_used">/可用:</string>
 
     <!--视美泰-->
-    <string name="smt_main_net_normal">网络正常</string>
+    <string name="smt_main_net_normal">正常</string>
+    <string name="smt_main_net_normal2">网络正常</string>
     <string name="smt_main_net_no">无网络</string>
     <string name="smt_main_all">应到</string>
     <string name="smt_main_already">已到</string>
@@ -24,6 +25,7 @@
     <string name="main_thermal_temp">热成像 体温：</string>
     <string name="main_please_waiting">请等待</string>
     <string name="main_temp_tips_please_in_range">请将面部对准识别区域</string>
+    <string name="main_tips_please_close">请靠近点</string>
 
     <!--设置-->
     <string name="temp_measuring_setting">正在测温</string>
@@ -208,6 +210,7 @@
     <string name="setting_current_correct_value">当前矫正值：</string>
     <string name="setting_normal_speech_content">体温正常播报内容</string>
     <string name="setting_warning_speech_content">体温异常播报内容</string>
+    <string name="setting_low_temp_model">低温模式</string>
 
     <!--通用的  -->
     <string name="base_tip">提示</string>

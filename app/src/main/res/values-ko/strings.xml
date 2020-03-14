@@ -5,6 +5,7 @@
 
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
+    <string name="smt_main_net_normal2">ON-LINE</string>
     <string name="smt_main_net_no">OFF-LINE</string>
     <string name="smt_main_all">받다</string>
     <string name="smt_main_already">이미</string>
@@ -25,6 +26,7 @@
     <string name="main_thermal_temp">열 화상 체온：</string>
     <string name="main_please_waiting">기다려주세요</string>
     <string name="main_temp_tips_please_in_range">인식 영역을 향한 얼굴</string>
+    <string name="main_tips_please_close">가까이 오 세 요</string>
 
     <!--设置-->
     <string name="temp_measuring_setting">측정중</string>

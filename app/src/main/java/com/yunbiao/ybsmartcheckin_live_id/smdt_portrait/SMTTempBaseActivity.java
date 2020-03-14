@@ -1,17 +1,21 @@
 package com.yunbiao.ybsmartcheckin_live_id.smdt_portrait;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
+import com.intelligence.hardware.temperature.callback.Smt3232TempCallBack;
+import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.thermal_imaging.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.ArrayList;
@@ -27,22 +31,25 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private float mCurrentTemp = 0.0f;
     private boolean isRunning = false;
     private long mCacheTime = 0;
+    private boolean mLowTemp;
+    private Float mAmbCorrValue;
+    private Float mTempCorrValue;
+    private boolean mDistanceTipEnable;
 
     @Override
     protected void initData() {
         /*红外模块是9600，热成像模块是115200*/
-        TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 115200);
-        TemperatureModule.getIns().startSmt3232Temp(300);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mDistanceTipEnable = SpUtils.getBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, SMTModelConst.Default.DISTANCE_TIP_ENABLE);
 
         mSpeechDelay = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
         mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
         mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
-
+        mLowTemp = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP, SMTModelConst.Default.LOW_TEMP);
         float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
         TemperatureModule.getIns().setmCorrectionValue(tempCorr);
 
@@ -52,18 +59,361 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
             onModeChanged(smtModel);
         }
 
-        if (smtModel == SMTModelConst.SMT_FACE_ONLY) {
-            closeTemperatureThread();
-        } else {
-            startTemperatureThread();
+        if(smtModel == SMTModelConst.SMT_TEMP_ONLY || smtModel == SMTModelConst.SMT_FACE_TEMP){
+            Log.e(TAG, "onResume: 测温模式" );
+            TemperatureModule.getIns().initSerialPort(this,"/dev/ttyS3",115200);
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    TemperatureModule.getIns().startSmt3232Temp(mLowTemp,smt3232TempCallBack);
+                }
+            }, 2000);
+        }
+
+        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
+        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
+        TemperatureModule.getIns().setmCorrectionValue(mTempCorrValue);
+        TemperatureModule.getIns().setaCorrectionValue(mAmbCorrValue);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        TemperatureModule.getIns().closeSmt3232Temp();
+    }
+
+    protected boolean updateFaceState(boolean isFar){
+        isFaceToFar = isFar;
+        return isFaceToFar;
+    }
+
+    private float mCacheBeforeTemper = 0.0f;
+    private float mFinalTemp = 0.0f;
+//    private long mCacheTime = 0;
+    private boolean isHasFace = false;
+//    private boolean isSoFar = false;
+    private boolean isFaceToFar = false;
+    private boolean isResultShown = false;
+    private Bitmap mLastHotBitmap = null;
+    private List<Float> tempCacheList = new ArrayList<>();
+    private static final String TAG = "SMTTempBaseActivity";
+    private Smt3232TempCallBack smt3232TempCallBack = new Smt3232TempCallBack() {
+        @Override
+        public void newestSmt3232Temp(float measureF, float afterF) {
+
+            if(isOnlyFace()){
+                return;
+            }
+
+            if(!isHasFace){
+                mCacheTime = 0;
+                sendClearTempTipsMessage();
+                tempCacheList.clear();
+                mFinalTemp = 0.0f;
+                return;
+            }
+
+//            if(isSoFar){
+//                mFinalTemp = 0.0f;
+//                return;
+//            }
+
+            if(isFaceToFar){
+                sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
+                mFinalTemp = 0.0f;
+                return;
+            }
+
+            /*if(!isHasFace){
+                mCacheTime = 0;
+                sendClearTempTipsMessage();
+                if(mCacheBeforeTemper == 0.0f || measureF < mCacheBeforeTemper){
+                    mCacheBeforeTemper = measureF;
+                }
+                tempCacheList.clear();
+                mFinalTemp = 0.0f;
+                return;
+            }*/
+
+            /*if(isSoFar){
+                mFinalTemp = 0.0f;
+                return;
+            }
+
+            if(isFaceToFar){
+                sendTempLowMessage("请靠近点");
+                mFinalTemp = 0.0f;
+                return;
+            }*/
+
+            /*if(measureF - mCacheBeforeTemper < 2.0f){
+                return;
+            }*/
+
+            if(afterF < mTempMinThreshold){
+                mFinalTemp = 0.0f;
+                return;
+            }
+
+            if(mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay){
+                tempCacheList.add(afterF);
+                if(tempCacheList.size() < 3){
+                    return;
+                }
+
+                Log.e(TAG, "newestSmt3232Temp: " + tempCacheList.size());
+
+                mCacheTime = System.currentTimeMillis();
+
+                Float max = Collections.max(tempCacheList);
+                tempCacheList.clear();
+
+                mFinalTemp = max;
+//                mFinalTemp += mThermalCorrect;
+                mFinalTemp = formatF(mFinalTemp);
+                sendTempTipsMessage(mFinalTemp);
+                if (mFinalTemp < mHighestTemp) {
+                    if (smtModel == SMTModelConst.SMT_TEMP_ONLY) {
+                        Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp);
+                        temperatureSign.setImgBitmap(getCurrCameraFrame());
+                        temperatureSign.setHotImageBitmap(mLastHotBitmap);
+                        sendUploadMessage(temperatureSign);
+                    }
+                }
+            }
+        }
+    };
+
+    protected void updateHasFace(boolean has){
+        isHasFace = has;
+        if(!has){
+            isFaceToFar = false;
         }
     }
 
-    private void closeTemperatureThread() {
-        isRunning = false;
+//    protected void updateSoFar(boolean soFar){
+//        isSoFar = soFar;
+//    }
+
+    protected boolean isTempTipsShown(){
+        return false;
     }
 
-    List<Float> cacheLits = new ArrayList<>();
+    private void sendClearTempTipsMessage(){
+        if(isTempTipsShown()){
+            uiHandler.sendEmptyMessage(-3);
+        }
+    }
+
+    protected void clearTempTips(){
+
+    }
+
+    protected boolean hasFinalTemp(){
+        return mFinalTemp != 0.0f;
+    }
+
+    protected void sendTempLowMessage(String tips){
+        if(!mDistanceTipEnable || isResultShown){
+            return;
+        }
+        Message message = Message.obtain();
+        message.what = -2;
+        message.obj = tips;
+        uiHandler.sendMessageDelayed(message,100);
+    }
+
+    private void sendUpdateMessage(Bitmap bitmap,float temper,float maxT,float cacheTemper){
+        Message message = Message.obtain();
+        message.what = 0;
+        message.obj = bitmap;
+        Bundle bundle = new Bundle();
+        bundle.putFloat("temper", temper);
+        bundle.putFloat("maxTemper", maxT);
+        bundle.putFloat("cacheTemper", cacheTemper);
+        message.setData(bundle);
+        uiHandler.sendMessage(message);
+    }
+
+    private void sendTempTipsMessage(float temper){
+        Message message = Message.obtain();
+        message.what = 1;
+        message.obj = temper;
+        uiHandler.sendMessage(message);
+    }
+
+    private void sendUploadMessage(Sign sign){
+        Message message = Message.obtain();
+        message.what = 2;
+        message.obj = sign;
+        uiHandler.sendMessage(message);
+    }
+
+    protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult){
+        if(mFinalTemp > mHighestTemp){
+            return;
+        }
+        Sign sign = null;
+        if (compareResult.getSimilar() == -1) {
+            //直接上报温度
+            sign = SignManager.instance().getTemperatureSign(mFinalTemp);
+        } else {
+            sign = SignManager.instance().checkSignData(compareResult, mFinalTemp);
+            if (sign == null) {
+                return;
+            }
+        }
+        mFinalTemp = 0.0f;
+        sign.setImgBitmap(facePicture);
+        sign.setHotImageBitmap(mLastHotBitmap);
+        sendUploadMessage(sign);
+    }
+    //发送清除界面的消息
+    private void sendClearMessage() {
+        uiHandler.removeMessages(-1);
+        uiHandler.sendEmptyMessageDelayed(-1, 3000);
+    }
+
+    protected void clearStableTips(){}
+
+    private float mHighestTemp = 45.0f;
+    private Handler uiHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case -4://清除距离提示
+                    clearStableTips();
+                break;
+                case -3://人脸离开后立即清除温度提示
+                    isResultShown = false;
+                    clearTempTips();
+                    break;
+                case -2://显示距离提示
+                    removeMessages(-4);
+                    showStableTips(getResources().getString(R.string.main_temp_tips_please_close),R.mipmap.bg_verify_nopass);
+                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
+                    sendEmptyMessageDelayed(-4,2000);
+                    break;
+                case 0://更新热量图
+                    Bitmap bitmap = (Bitmap) msg.obj;
+                    Bundle data = msg.getData();
+                    float temper = data.getFloat("temper", 0.0f);
+                    float maxTemper = data.getFloat("maxTemper");
+                    float cacheTemper = data.getFloat("cacheTemper");
+                    updateHotImageAndTemper(bitmap, temper, maxTemper, cacheTemper);
+                    break;
+                case 1://显示温度提示
+                    isResultShown = true;
+                    removeMessages(-2);//清除距离提示
+                    removeMessages(-1);//清除温度提示
+                    KDXFSpeechManager.instance().stopNormal();
+                    KDXFSpeechManager.instance().stopWarningRing();
+
+                    int bgId;
+                    String resultTip;
+                    Runnable resultRunnable;
+                    float resultTemper = (float) msg.obj;
+                    if (resultTemper < mTempWarningThreshold) {
+                        ledGreen();
+                        bgId = R.mipmap.bg_verify_pass;
+                        //检查正常播报内容
+                        resultTip = getResources().getString(R.string.main_temp_normal_tips);
+                        resultRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                sendClearMessage();
+                            }
+                        };
+                    } else {
+                        ledRed();
+                        bgId = R.mipmap.bg_verify_nopass;
+                        if (resultTemper > mHighestTemp) {
+                            resultTip = getResources().getString(R.string.main_temp_error_tips);
+                        } else {
+                            resultTip = getResources().getString(R.string.main_temp_warning_tips);
+                        }
+                        resultRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                KDXFSpeechManager.instance().playWaningRing();
+                                sendClearMessage();
+                            }
+                        };
+                    }
+                    if (resultTemper <= mHighestTemp) {
+                        resultTip += resultTemper + "℃";
+                    }
+                    showUIResult(resultTip, bgId);
+
+                    KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
+                    break;
+                case 2://上传仅测温温度
+                    Sign sign = (Sign) msg.obj;
+                    if(smtModel == SMTModelConst.SMT_TEMP_ONLY){
+                        if(sign.getTemperature() < mTempWarningThreshold){
+                            openDoor();
+                        }
+                    } else if(smtModel == SMTModelConst.SMT_FACE_TEMP){
+                        if(sign.getType() != -2 && sign.getType() != -9 && sign.getTemperature() < mTempWarningThreshold){
+                            openDoor();
+                        }
+                    }
+                    updateSignList(sign);
+                    SignManager.instance().uploadTemperatureSign(sign);
+                    break;
+                case -1://清除温度提示
+                    isResultShown = false;
+                    clearUI();
+                    KDXFSpeechManager.instance().stopWarningRing();
+                    resetLedDelay(0);
+                    break;
+            }
+        }
+    };
+
+    protected void updateSignList(Sign sign){
+
+    }
+
+    protected abstract boolean showStableTips(String tip,int stableTipsId);
+
+    protected boolean isOnlyTemp(){
+        return smtModel == SMTModelConst.SMT_TEMP_ONLY;
+    }
+
+    protected boolean isOnlyFace(){
+        return smtModel == SMTModelConst.SMT_FACE_ONLY;
+    }
+
+    protected abstract void onModeChanged(int mode);
+
+    protected abstract void updateHotImageAndTemper(Bitmap bitmap,float temper,float maxT,float cacheT);
+
+    protected abstract Bitmap getCurrCameraFrame();
+
+    protected abstract void showUIResult(String tip,int id);
+
+    protected abstract void clearUI();
+
+    private float getMean(List<Float> array) {
+        float result = 0.0f;
+        if (array.size() == 0) {
+            return result;
+        }
+        for (float anArray : array) {
+            result += anArray;
+        }
+        result = result / array.size();
+        result = formatF(result);
+        return result;
+    }
+
+    private float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
+    }
+
+
+    /*List<Float> cacheLits = new ArrayList<>();
     private static final String TAG = "SMTTempBaseActivity";
     //开始红外测温逻辑
     private void startTemperatureThread() {
@@ -129,10 +479,10 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                             float finalTemp = Collections.max(cacheLits);
                             cacheLits.clear();
 
-                            /*if(measuringTemperatureF < 36.0f){
+                            *//*if(measuringTemperatureF < 36.0f){
                                 measuringTemperatureF += 0.3f;
                             }
-                            float finalTemp = measuringTemperatureF;*/
+                            float finalTemp = measuringTemperatureF;*//*
                             boolean isWarning = finalTemp >= mTempWarningThreshold;
 
                             //截取摄像头画面并提示
@@ -288,5 +638,5 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
 
     protected float getWarningThread() {
         return mTempWarningThreshold;
-    }
+    }*/
 }

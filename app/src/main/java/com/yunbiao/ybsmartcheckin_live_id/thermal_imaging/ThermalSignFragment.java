@@ -75,8 +75,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvSignMale;
     private TextView tvSignFemale;
     private LinearLayoutManager linearLayoutManager;
-    private View aivBulu;
-    private Button btnBulu;
     private TextView tvTotalSex;
     private TextView tvMale1;
     private TextView tvFemale1;
@@ -96,17 +94,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
         int orientation;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_PORTRAIT_8_800_1280) {
-                rootView = inflater.inflate(R.layout.fragment_sign_list_fake_landscape, container, false);
-                orientation = LinearLayoutManager.HORIZONTAL;
-                /*只在横屏初始化公告*/
-                NoticeManager.getInstance().init(rootView);
-            } else {
-                rootView = inflater.inflate(R.layout.fragment_sign_list, container, false);
-                orientation = LinearLayoutManager.HORIZONTAL;
-            }
+            rootView = inflater.inflate(R.layout.fragment_sign_list_thermal,container,false);
         } else {
-            rootView = inflater.inflate(R.layout.fragment_sign_list_h, container, false);
+            rootView = inflater.inflate(R.layout.fragment_sign_list_thermal_h, container, false);
             orientation = LinearLayoutManager.VERTICAL;
             /*只在横屏初始化公告*/
             NoticeManager.getInstance().init(rootView);
@@ -115,29 +105,14 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             tvDeviceNo = rootView.findViewById(R.id.tv_device_no_sign_fragment);
             tvNetState = rootView.findViewById(R.id.tv_net_state_sign_fragment);
             tvVer = rootView.findViewById(R.id.tv_ver_sign_fragment);
-        }
 
-        //版本号
-        if(tvVer != null){
-            tvVer.setText(getResources().getString(R.string.fment_sign_version) + CommonUtils.getAppVersion(getActivity()));
+            linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
+            initPieChart();
         }
-        if(tvDeviceNo != null){
-            tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
-        }
-        if(tvCompanyName != null){
-            tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
-        }
-
-        linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
 
         tvTotal1 = rootView.findViewById(R.id.tv_total_number);
         tvMale1 = rootView.findViewById(R.id.tv_male_number);
         tvFemale1 = rootView.findViewById(R.id.tv_female_number);
-
-        //公用
-        btnBulu = rootView.findViewById(R.id.btn_bulu_sign_list);
-        aivBulu = rootView.findViewById(R.id.aiv_bulu_sign_list);
-        btnBulu.setOnClickListener(onClickListener);
 
         rlv = rootView.findViewById(R.id.rlv_sign_list);
         ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);
@@ -183,7 +158,16 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             }
         });
 
-        initPieChart();
+        //版本号
+        if(tvVer != null){
+            tvVer.setText(getResources().getString(R.string.fment_sign_version) + CommonUtils.getAppVersion(getActivity()));
+        }
+        if(tvDeviceNo != null){
+            tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+        }
+        if(tvCompanyName != null){
+            tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
+        }
 
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             //公告
@@ -236,7 +220,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         updateNumber();
     }
 
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
+    /*private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (btnBulu != null) {
@@ -247,7 +231,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             SignManager.instance().startBulu();
         }
     };
-
+*/
     private String mModel = "";
 
     public void setModelText(String model) {
@@ -271,10 +255,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
 
         if(tvCompanyName != null){
-            if(TextUtils.isEmpty(company.getAbbname())){
+            if(TextUtils.isEmpty(company.getComname())){
                 tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
             } else {
-                tvCompanyName.setText(getResources().getString(R.string.fment_sign_company) + company.getAbbname());
+                tvCompanyName.setText(getResources().getString(R.string.fment_sign_company) + company.getComname());
             }
         }
         if(tvDeviceNo != null){

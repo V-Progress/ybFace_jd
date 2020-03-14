@@ -9,30 +9,6 @@
     android:paddingBottom="10dp"
     tools:ignore="MissingDefaultResource">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
-
-        <Button
-            android:id="@+id/btn_bulu_sign_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/bg_btn_bulu"
-            android:text="@string/fment_sign_bl"
-            android:textColor="@color/blue_all_title_bg"
-            android:textSize="20dp"
-            android:visibility="gone" />
-
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/aiv_bulu_sign_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-    </FrameLayout>
-
     <LinearLayout
         android:layout_alignParentBottom="true"
         android:id="@+id/ll_qr_code"

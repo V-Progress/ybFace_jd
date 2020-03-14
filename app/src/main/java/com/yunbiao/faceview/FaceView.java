@@ -604,15 +604,15 @@ public class FaceView extends FrameLayout {
     private void initEngine() {
         ftEngine = new FaceEngine();
         ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
+                7, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
 
         frEngine = new FaceEngine();
         frInitCode = frEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
+                7, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
 
         flEngine = new FaceEngine();
         flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                16, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
+                7, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);

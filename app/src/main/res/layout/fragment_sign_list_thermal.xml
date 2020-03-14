@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:gravity="right|center"
+    android:background="@mipmap/bg_warn"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_marginRight="10dp"
+        android:id="@+id/iv_qrcode_sign_list"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:background="@drawable/skin_main_qrcode_frame_background"
+        android:padding="5dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginRight="10dp"
+        android:background="@mipmap/frame_sign_total"
+        android:padding="5dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="108dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:maxLength="20"
+                android:text="公司："
+                android:id="@+id/tv_bind_company"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:letterSpacing="0.1"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:gravity="center_vertical"
+                android:text="编号："
+                android:id="@+id/tv_device_no"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18dp" />
+
+            <TextView
+                android:gravity="center"
+                android:textSize="18dp"
+                android:layout_weight="1"
+                android:id="@+id/tv_net_state"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="18dp"
+                android:layout_weight="1"
+                android:id="@+id/tv_app_version"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="180dp"
+        android:layout_height="108dp"
+        android:background="@drawable/skin_main_total_frame_background"
+        android:orientation="vertical"
+        android:padding="5dp">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <TextView
+                android:text="应到"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+            <TextView
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="22dp"
+                android:id="@+id/tv_total"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <TextView
+                android:text="已到"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:letterSpacing="0.1"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+            <TextView
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="22dp"
+                android:id="@+id/tv_already"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

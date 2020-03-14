@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 public class SMTMainActivity extends SMTTempBaseActivity {
@@ -69,6 +71,8 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     private TextView tvTemperature;
     private TextView tvTempTips;
     private View flTempArea;
+    private View distanceFaceView;
+    private TextView tvDistanceTip;
 
     @Override
     protected int getLayout() {
@@ -82,6 +86,8 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
         ivMainLogo = findViewById(R.id.iv_main_logo);
+        distanceFaceView = findViewById(R.id.view_face_distance);
+        tvDistanceTip = findViewById(R.id.tv_distance_tips_main);
 
         //测温点
         flTempArea = findViewById(R.id.fl_temp_area);
@@ -125,6 +131,10 @@ public class SMTMainActivity extends SMTTempBaseActivity {
 
     @Override
     protected void onModeChanged(int mode) {
+        if (smtSignFragment != null) {
+            smtSignFragment.setModelText(SMTModelConst.models[mode]);
+        }
+
         if (mode == SMTModelConst.SMT_FACE_ONLY) {
             flTempArea.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
@@ -132,11 +142,153 @@ public class SMTMainActivity extends SMTTempBaseActivity {
             flTempArea.setVisibility(View.VISIBLE);
             tvTemperature.setVisibility(View.VISIBLE);
         }
+    }
 
-        if (smtSignFragment != null) {
-            smtSignFragment.setModelText(SMTModelConst.models[mode]);
+//    @Override
+//    protected boolean isStableTipsShown() {
+//        return tvTempTips.isShown() && TextUtils.equals(tvTempTips.getText().toString(), "请靠近点");
+//    }
+
+    @Override
+    protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float maxT, float cacheT) {
+
+    }
+
+    @Override
+    protected Bitmap getCurrCameraFrame() {
+        return faceView.getCurrCameraFrame();
+    }
+
+    @Override
+    protected boolean showStableTips(String tip, int stableTipsId) {
+        if (!tvDistanceTip.isShown()) {
+            tvDistanceTip.setVisibility(View.VISIBLE);
+        }
+        tvDistanceTip.setText(tip);
+        tvDistanceTip.setBackgroundResource(stableTipsId);
+        return true;
+    }
+
+    @Override
+    protected void clearStableTips(){
+        if (tvDistanceTip.isShown()) {
+            tvDistanceTip.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    protected void showUIResult(String tip, int id) {
+        if (!tvTempTips.isShown()) {
+            tvTempTips.setVisibility(View.VISIBLE);
+        }
+        tvDistanceTip.setVisibility(View.GONE);
+        tvTempTips.setBackgroundResource(id);
+        tvTempTips.setText(tip);
+    }
+
+    @Override
+    protected void clearUI() {
+        if (tvTempTips.isShown()) {
+            tvTempTips.setVisibility(View.GONE);
+        }
+    }
+
+    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
+        @Override
+        public void onReady() {
+            SyncManager.instance().requestCompany();
+        }
+
+        @Override
+        public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
+
+        }
+
+        private boolean isBroaded = false;
+
+        @Override
+        public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
+            updateHasFace(hasFace);
+
+            if (!hasFace) {
+                isBroaded = false;
+                return false;
+            }
+
+            onLight();
+
+            //收起海报界面
+//            if (adsFragment != null) {
+//                adsFragment.detectFace();
+//            }
+
+            if (isOnlyFace()) {
+                return true;
+            }
+
+            Rect rect = facePreviewInfo.getFaceInfo().getRect();
+            int distance = distanceFaceView.getMeasuredWidth();
+
+//            boolean isSoFar = faceView.checkFaceToFar(rect, distance / 2);
+//            updateSoFar(isSoFar);
+
+            //人脸较远
+            boolean isFar = faceView.checkFaceToFar(rect, distance);
+            updateFaceState(isFar);
+            if (isFar) {
+                return false;
+            }
+
+            //仅测温
+            if (isOnlyTemp()) {
+                return false;
+            }
+
+            //没有最终温度
+            if (!hasFinalTemp()) {
+                return false;
+            }
+
+            if (isBroaded) {
+                return false;
+            }
+            isBroaded = true;
+            return true;
+        }
+
+        @Override
+        public void onFaceVerify(CompareResult faceAuth) {
+            if (isOnlyFace()) {
+
+            } else {
+                Bitmap bitmap = faceView.takePicture();
+                if (bitmap == null) {
+                    bitmap = faceView.getCurrCameraFrame();
+                }
+                sendFaceTempMessage(bitmap, faceAuth);
+            }
+        }
+    };
+
+    @Override
+    protected boolean isTempTipsShown(){
+        return tvTempTips.isShown();
+    }
+
+    @Override
+    protected void clearTempTips(){
+        tvTempTips.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void updateSignList(Sign sign) {
+        if (sign.getType() != -9) {
+            KDXFSpeechManager.instance().playNormal(sign.getName());
+        }
+    }
+
+
+/*
 
     @Override
     protected void updateTemp(float f) {
@@ -167,7 +319,9 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         }
     }
 
-    /*****识别相关回调******************************************************************************************/
+    */
+    /*****识别相关回调******************************************************************************************//*
+
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
@@ -266,6 +420,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         }
     };
     //========================================================
+*/
 
     private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
         @Override

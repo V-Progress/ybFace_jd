@@ -133,7 +133,7 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
     @Override
     public void connect() {
         Log.e(TAG, "connect: 网络已连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_normal));
+        tvNetState.setText(getResources().getString(R.string.smt_main_net_normal2));
         tvNetState.setTextColor(Color.GREEN);
     }
 

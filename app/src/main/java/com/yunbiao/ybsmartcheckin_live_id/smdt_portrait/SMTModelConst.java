@@ -9,4 +9,14 @@ public class SMTModelConst {
     public static final int DEFAULT_SMT_MODEL = SMT_TEMP_ONLY;
 
     public static final String[] models = {"人脸识别模式", "人脸识别+测温模式", "测温模式"};
+
+    interface key{
+        String LOW_TEMP = "lowTemp";
+        String DISTANCE_TIP_ENABLE = "distanceTipEnable";
+    }
+
+    interface Default{
+        boolean LOW_TEMP = true;
+        boolean DISTANCE_TIP_ENABLE = true;
+    }
 }

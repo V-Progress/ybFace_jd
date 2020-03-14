@@ -92,7 +92,6 @@ public class SplashActivity extends BaseActivity {
         } else if (Constants.SCREEN_TYPE == Constants.ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080) {//横屏21、10寸
             //热成像
             int mode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
-
             if(mode == ThermalConst.CERTIFICATES){
                 startActivity(new Intent(this, CertificatesActivity.class));
             } else {

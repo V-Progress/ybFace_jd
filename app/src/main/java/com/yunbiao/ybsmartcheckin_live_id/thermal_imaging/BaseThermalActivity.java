@@ -41,16 +41,11 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private boolean lowTempModel;
     private float ambient;
     private float mThermalCorrect;
+    private boolean distanceTipEnable;
 
     @Override
     protected void initData() {
         super.initData();
-
-        /*if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.THERMAL_FACE_TEMP) {
-            TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS4", 115200);
-        } else {
-            TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 9600);
-        }*/
     }
 
     @Override
@@ -68,6 +63,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 //        mLowestTemp = ((float) mCurrBodyMinT / 10);
 //        mHighestTemp = ((float) mCurrBodyMaxT / 10);
         ambient = SpUtils.getFloat(SpUtils.AMBIENT, Constants.DEFAULT_AMBIENT);
+
+        distanceTipEnable = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
 
         mThermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
 
@@ -135,7 +132,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
 
             if (isFaceToFar) {
-                sendTempLowMessage("请靠近点");
+                sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
                 mFinalTemp = 0.0f;
                 return;
             }
@@ -167,10 +164,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
         }
     };
-
-    protected void updateSensorTemper(float sensorTemper, float cacheTemper) {
-    }
-
 
     private float mCacheBeforTemper = 0.0f;
     private float mFinalTemp = 0.0f;
@@ -204,7 +197,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
 
             if (isFaceToFar) {
-                sendTempLowMessage("请靠近点");
+                sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
                 mFinalTemp = 0.0f;
                 return;
             }
@@ -220,7 +213,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
             if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
                 tempCacheList.add(maxT);
-                if (tempCacheList.size() < 5) {
+                if (tempCacheList.size() < 4) {
                     return;
                 }
 
@@ -284,6 +277,9 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     //距离提示
     protected void sendTempLowMessage(String tips) {
+        if(!distanceTipEnable || isResultShown){
+            return;
+        }
         Message message = Message.obtain();
         message.what = -2;
         message.obj = tips;
@@ -353,6 +349,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case -3:
+                    isResultShown = false;
                     clearTempTips();
                     break;
                 case -2:
@@ -434,6 +431,9 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     }
                     updateSignList(sign);
                     SignManager.instance().uploadTemperatureSign(sign);
+                    break;
+                case 3:
+
                     break;
                 case -1:
                     isResultShown = false;

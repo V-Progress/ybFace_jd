@@ -6,6 +6,7 @@
 
     <!--视美泰-->
     <string name="smt_main_net_normal">網絡正常</string>
+    <string name="smt_main_net_normal2">網絡正常</string>
     <string name="smt_main_net_no">無網絡</string>
     <string name="smt_main_all">應到</string>
     <string name="smt_main_already">已到</string>
@@ -26,6 +27,7 @@
     <string name="main_thermal_temp">熱成像 體溫：</string>
     <string name="main_please_waiting">請等待</string>
     <string name="main_temp_tips_please_in_range">請將面部對準識別區域</string>
+    <string name="main_tips_please_close">請靠近點</string>
 
     <!--設置-->
     <string name="temp_measuring_setting">正在測溫</string>

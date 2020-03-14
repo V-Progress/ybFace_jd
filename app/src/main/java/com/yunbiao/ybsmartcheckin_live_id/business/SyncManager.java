@@ -622,9 +622,11 @@ public class SyncManager {
     }
 
     private void retryRequestUser(int tag) {
+        Log.e(TAG, "retryRequestUser: ------------------ " + tag);
+
         switch (tag) {
             case 4:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
                 break;
             default:
                 SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));

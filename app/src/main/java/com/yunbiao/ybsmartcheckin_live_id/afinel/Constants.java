@@ -145,7 +145,7 @@ public class Constants {
             SCREEN_TYPE == ScreenType.TYPE_LANDSCAPE_21_10_1280_800_or_1920_1080
                     ? DeviceType.TEMPERATURE_CHECK_IN
                     : SCREEN_TYPE == ScreenType.TYPE_SMT_PORTRAIT_8_800_1280
-                    ? DeviceType.TEMPERATURE_PASSAGE_SMT
+                    ? DeviceType.TEMPERATURE_PASSAGE
                     : DeviceType.TEMPERATURE_PASSAGE;
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）

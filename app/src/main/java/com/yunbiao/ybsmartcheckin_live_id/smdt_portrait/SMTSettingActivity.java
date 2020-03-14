@@ -157,6 +157,26 @@ public class SMTSettingActivity extends SMTBaseActivity {
     }
 
     private void initModelSetting() {
+        boolean aBoolean = SpUtils.getBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, SMTModelConst.Default.DISTANCE_TIP_ENABLE);
+        Switch swDistanceTip = findViewById(R.id.sw_distance_tip_smt_setting);
+        swDistanceTip.setChecked(aBoolean);
+        swDistanceTip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, isChecked);
+            }
+        });
+
+        boolean lowTempMode = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP,SMTModelConst.Default.LOW_TEMP);
+        Switch swLowTempMode = findViewById(R.id.sw_low_temp_mode_smt_setting);
+        swLowTempMode.setChecked(lowTempMode);
+        swLowTempMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SMTModelConst.key.LOW_TEMP,isChecked);
+            }
+        });
+
         final View llTempSetting = findViewById(R.id.ll_temp_setting);
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         final int model = SpUtils.getIntOrDef(SpUtils.SMT_MODEL_SETTING, SMTModelConst.DEFAULT_SMT_MODEL);

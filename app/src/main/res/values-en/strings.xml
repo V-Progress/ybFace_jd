@@ -5,6 +5,7 @@
 
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
+    <string name="smt_main_net_normal2">ON-LINE</string>
     <string name="smt_main_net_no">OFF-LINE</string>
     <string name="smt_main_all">All</string>
     <string name="smt_main_already">Arr</string>
@@ -25,6 +26,7 @@
     <string name="main_thermal_temp">Temperature：</string><!--热成像 体温：-->
     <string name="main_please_waiting">Please waiting</string><!--请等待-->
     <string name="main_temp_tips_please_in_range">Please aim your face at the recognition area</string><!--请将面部对准识别区域-->
+    <string name="main_tips_please_close">Please approach</string>
 
     <!--设置-->
     <string name="temp_measuring_setting">Measuring</string><!--正在测温-->

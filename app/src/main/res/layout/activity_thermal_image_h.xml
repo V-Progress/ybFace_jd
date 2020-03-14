@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--android:background="@mipmap/welcome_bg_h"-->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -111,46 +109,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:layout_marginLeft="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv_sensorT_test"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_maxT_test"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_minT_test"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_bodyMaxT_test"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_callback_time_test"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/ll_clock_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -166,14 +124,6 @@
                 android:layout_toLeftOf="@+id/tv_ambient_temperature_main"
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
-                android:textColor="@color/text_clock_color_main"
-                android:textSize="28dp" />
-
-            <TextView
-                android:id="@+id/tv_ambient_temperature_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/temperature_icon"
                 android:textColor="@color/text_clock_color_main"
                 android:textSize="28dp" />
         </LinearLayout>

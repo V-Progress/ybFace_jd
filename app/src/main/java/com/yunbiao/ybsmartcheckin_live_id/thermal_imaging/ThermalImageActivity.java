@@ -34,7 +34,6 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
-import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.SignFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
@@ -89,15 +88,18 @@ public class ThermalImageActivity extends BaseThermalActivity {
     private Float mThermalTempCorr;
     private TextView tvMaxT;
     private TextView tvCacheT;
+    private View flDotFrame;
+    private ImageView ivBigHead;
+    private boolean personFrameEnable;
 
     @Override
     protected int getPortraitLayout() {
-        return R.layout.activity_welcome;
+        return R.layout.activity_thermal_image;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_welcome_h;
+        return R.layout.activity_thermal_image_h;
     }
 
     @Override
@@ -111,13 +113,14 @@ public class ThermalImageActivity extends BaseThermalActivity {
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
         tvMainBottomTitle = findViewById(R.id.tv_main_bottomTitle);
         faceDistanceView = findViewById(R.id.view_face_distance);
-
+        flDotFrame = findViewById(R.id.fl_dot_frame);
         tempDetectionDot = findViewById(R.id.iv_temp_detection_dot_main);
         tvAmbient = findViewById(R.id.tv_ambient_temperature_main);//实时环境温度
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
         ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);
         tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);
         llThermalArea = findViewById(R.id.ll_thermal_area_main);
+        ivBigHead = findViewById(R.id.iv_big_head);
 
         tvCacheT = findViewById(R.id.tv_thermal_cacheT_main);
         tvMaxT = findViewById(R.id.tv_thermal_maxT_main);
@@ -125,12 +128,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
-
-//        只有竖屏情况下加载信息展示Fragment
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            InformationFragment informationFragment = new InformationFragment();
-            replaceFragment(R.id.layout_h, informationFragment);
-        }
     }
 
     @Override
@@ -138,10 +135,13 @@ public class ThermalImageActivity extends BaseThermalActivity {
         super.onResume();
         faceView.resume();
 
+        personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         mThermalTempCorr = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
         faceView.setLiveness(livenessEnabled);
+
+        ivBigHead.setVisibility(personFrameEnable ? View.VISIBLE : View.GONE);
 
         initAds();
     }
@@ -158,17 +158,17 @@ public class ThermalImageActivity extends BaseThermalActivity {
         //根据模式选择启动逻辑
         if (mode == Constants.Model.MODEL_FACE_ONLY) {
             Log.e(TAG, "onResume: 仅人脸模式");
-            tempDetectionDot.setVisibility(View.GONE);
+            flDotFrame.setVisibility(View.GONE);
             tvAmbient.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
         } else if (mode == ThermalConst.THERMAL_TEMP_ONLY || mode == ThermalConst.THERMAL_FACE_TEMP) {//热成像模式
-            tempDetectionDot.setVisibility(View.VISIBLE);
             tvAmbient.setVisibility(View.GONE);
+            flDotFrame.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.VISIBLE);
         } else {
+            flDotFrame.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
-            tempDetectionDot.setVisibility(View.VISIBLE);
         }
     }
 
@@ -206,9 +206,9 @@ public class ThermalImageActivity extends BaseThermalActivity {
         if (!tvTempTips.isShown()) {
             tvTempTips.setVisibility(View.VISIBLE);
         }
+        setBigHeadRealLine();
         tvTempTips.setBackgroundResource(id);
         tvTempTips.setText(tip);
-
     }
 
     @Override
@@ -216,6 +216,27 @@ public class ThermalImageActivity extends BaseThermalActivity {
         if (tvTempTips.isShown()) {
             tvTempTips.setVisibility(View.GONE);
         }
+        setBigHead();
+    }
+
+    private boolean isRealLine = false;
+
+    private void setBigHead() {
+        if (!personFrameEnable) {
+            return;
+        }
+        if (isRealLine) {
+            isRealLine = false;
+            ivBigHead.setImageResource(R.mipmap.big_head);
+        }
+    }
+
+    private void setBigHeadRealLine() {
+        if (!personFrameEnable) {
+            return;
+        }
+        isRealLine = true;
+        ivBigHead.setImageResource(R.mipmap.big_head_real_line);
     }
 
     /*****识别相关回调******************************************************************************************/
@@ -235,6 +256,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
             updateHasFace(hasFace);
 
             if (!hasFace) {//如果没有人脸
+                setBigHead();
                 isBroaded = false;
                 return false;
             }
@@ -254,7 +276,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
             //检测人脸是否太远
             Rect rect = facePreviewInfo.getFaceInfo().getRect();
             int distance = faceDistanceView.getMeasuredWidth();
-            boolean isSoFar = faceView.checkFaceToFar(rect, distance / 2);
+            int farest = (int) (distance * 0.7);
+            boolean isSoFar = faceView.checkFaceToFar(rect, farest);
             updateSoFar(isSoFar);
 
             //人脸较远
