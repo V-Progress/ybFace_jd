@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="温度矫正"
+            android:text="@string/act_correct_title"
             android:textColor="@color/white"
             android:textSize="30dp" />
 
@@ -65,7 +65,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="45dp"
                 android:gravity="center"
-                android:text="请根据体温枪实测温度填写"
+                android:text="@string/act_correct_tips"
                 android:textColor="@color/white"
                 android:textSize="30dp" />
         </RelativeLayout>
@@ -82,7 +82,7 @@
                 android:id="@+id/tv_current_corr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="当前补偿值："
+                android:text="@string/act_correct_current_value"
                 android:textColor="@color/white"
                 android:textSize="32dp" />
 
@@ -96,7 +96,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="热成像温度："
+                    android:text="@string/act_correct_thermal_temp"
                     android:textColor="@color/white"
                     android:textSize="32dp" />
 
@@ -113,7 +113,7 @@
                     android:textColor="@color/white"
                     android:background="@drawable/shape_thermal_image_main"
                     android:id="@+id/btn_click_temp_corr"
-                    android:text="点击测温"
+                    android:text="@string/act_correct_click_get_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -128,7 +128,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="体温枪温度："
+                    android:text="@string/act_correct_thermometer_gun"
                     android:textColor="@color/white"
                     android:textSize="32dp" />
 
@@ -178,7 +178,7 @@
                 android:layout_marginTop="50dp"
                 android:textSize="30dp"
                 android:textColor="@color/white"
-                android:text="保存"
+                android:text="@string/act_correct_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

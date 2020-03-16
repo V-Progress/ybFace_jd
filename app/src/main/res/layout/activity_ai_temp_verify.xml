@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="AI人证测温校验系统"
+            android:text="@string/act_certificates_title"
             android:textColor="@color/white"
             android:textSize="32dp" />
 
@@ -92,7 +92,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="23dp"
-            android:text="请取下眼镜.帽子.正视镜头"
+            android:text="@string/act_certificates_please_get_hat"
             android:textColor="#BBDAFF"
             android:textSize="28dp" />
 
@@ -103,7 +103,7 @@
             android:layout_margin="20dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:text="无证测温"
+            android:text="@string/act_certificates_no_idcard_temper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
@@ -156,7 +156,7 @@
             android:layout_marginTop="25dp"
             android:background="@drawable/shape_bg_face_yellow"
             android:gravity="center"
-            android:text="人脸照片"
+            android:text="@string/act_certificates_face_picture"
             android:textColor="#F0DC00"
             android:textSize="24dp" />
 
@@ -170,7 +170,7 @@
             android:layout_marginRight="53dp"
             android:background="@drawable/shape_bg_face_green"
             android:gravity="center"
-            android:text="证件照片"
+            android:text="@string/act_certificates_card_picture"
             android:textColor="#16E5FF"
             android:textSize="24dp" />
 
@@ -229,7 +229,7 @@
                 android:id="@+id/tv_name_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="姓 名:"
+                android:text="@string/act_certificates_name"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
@@ -248,7 +248,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="305dp"
                 android:layout_toRightOf="@+id/tv_name_t"
-                android:text="籍 贯:"
+                android:text="@string/act_certificates_native_place"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
@@ -274,7 +274,7 @@
                 android:id="@+id/tv_tem_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="体 温:"
+                android:text="@string/act_certificates_temperature"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
@@ -293,7 +293,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="305dp"
                 android:layout_toRightOf="@+id/tv_tem_t"
-                android:text="状 态:"
+                android:text="@string/act_certificates_status"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 

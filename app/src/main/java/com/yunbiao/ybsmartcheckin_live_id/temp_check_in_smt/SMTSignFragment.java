@@ -108,7 +108,7 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         already = signs.size();
         tvAlready.setText(already + "");
 
-        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(getActivity()));
+        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(APP.getContext()));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         String deviceNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.smt_main_device_no) + deviceNum);
 
-
+        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(APP.getContext()));
     }
 
 

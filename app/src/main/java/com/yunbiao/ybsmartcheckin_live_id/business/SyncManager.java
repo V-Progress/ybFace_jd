@@ -90,6 +90,78 @@ public class SyncManager {
     /*================================================================*/
 
     /***
+     * 仅获取公司信息
+     */
+    public void requestOnlyCompany(){
+        show();
+        SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_company_1));
+        d("获取公司信息");
+        d("地址：" + ResourceUpdate.COMPANYINFO);
+        d("参数：" + HeartBeatClient.getDeviceNo());
+        OkHttpUtils.post()
+                .url(ResourceUpdate.COMPANYINFO)
+                .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                d(e);
+                if (isFirst) {//如果是第一次则加载缓存
+                    EventBus.getDefault().post(new UpdateInfoEvent());
+                    isFirst = false;
+                }
+                retryGetCompany(0);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                d(response);
+                if (TextUtils.isEmpty(response)) {
+                    retryGetCompany(0);
+                    return;
+                }
+                CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
+                if (companyResponse == null) {
+                    retryGetCompany(0);
+                    return;
+                }
+
+                if (companyResponse.getStatus() != 1) {
+                    retryGetCompany(companyResponse.getStatus());
+                    return;
+                }
+
+                //同步部门数据
+                Company company = companyResponse.getCompany();
+
+                long currTime = System.currentTimeMillis();
+                long lastTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);
+                int comid = SpUtils.getCompany().getComid();
+                boolean canSync = currTime - lastTime > SYNC_OFFSET || comid != company.getComid();
+
+                Log.e("canSync", "currTime-----------> " + currTime);
+                Log.e("canSync", "lastTime-----------> " + lastTime);
+                Log.e("canSync", "SYNC_OFFSET-----------> " + SYNC_OFFSET);
+                Log.e("canSync", "comid-----------> " + comid);
+                Log.e("canSync", "company.getComid()-----------> " + company.getComid());
+
+                //保存部门数据
+                saveCompanyInfo(company);
+                d("保存部门数据");
+
+                //初始化存储路径
+                Constants.initStorage();
+                d("初始化存储路径");
+
+                //发送系统信息更新事件
+                EventBus.getDefault().post(new UpdateInfoEvent());
+                d("发送系统信息更新事件");
+
+                dissmissDialog();
+            }
+        });
+    }
+
+    /***
      * 1.获取公司数据
      */
     public void requestCompany() {

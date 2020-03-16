@@ -326,7 +326,7 @@
 
                         <TextView
                             style="@style/setting_text"
-                            android:text="体温正常播报内容" />
+                            android:text="@string/setting_normal_speech_content" />
 
                         <EditText
                             android:padding="5dp"
@@ -348,7 +348,7 @@
 
                         <TextView
                             style="@style/setting_text"
-                            android:text="体温异常播报内容" />
+                            android:text="@string/setting_warning_speech_content" />
 
                         <EditText
                             android:padding="5dp"
@@ -372,7 +372,7 @@
                         <TextView
                             style="@style/setting_text"
                             android:layout_height="wrap_content"
-                            android:text="连续播报间隔" />
+                            android:text="@string/setting_speech_delay" />
 
                         <Button
                             android:layout_marginLeft="20dp"
@@ -397,7 +397,7 @@
 
                             <TextView
                                 style="@style/setting_text"
-                                android:text="毫秒" />
+                                android:text="@string/setting_ms" />
                         </LinearLayout>
 
                         <Button

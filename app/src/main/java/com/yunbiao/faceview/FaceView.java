@@ -218,7 +218,7 @@ public class FaceView extends FrameLayout {
 
     public Rect getRealRect(Rect faceRect) {
         if (drawHelper == null) {
-            return null;
+            return faceRect;
         }
         return drawHelper.adjustRect(faceRect);
     }
@@ -234,14 +234,21 @@ public class FaceView extends FrameLayout {
         return mAreaRect.contains(rect);
     }
 
+    private final int faceRangeCorrectValue = 50;
     public boolean checkFaceInFrame(Rect faceRect, View areaView) {
         areaView.getGlobalVisibleRect(mAreaRect);
-        mAreaRect.left -= 20;
-        mAreaRect.right += 20;
-        mAreaRect.top -= 20;
-        mAreaRect.bottom += 20;
-        Rect rect = drawHelper.adjustRect(faceRect);
-        return mAreaRect.contains(rect);
+        mAreaRect.left += faceRangeCorrectValue;
+        mAreaRect.right -= faceRangeCorrectValue;
+        mAreaRect.top += faceRangeCorrectValue;
+        mAreaRect.bottom -= faceRangeCorrectValue;
+        Rect realRect = getRealRect(faceRect);
+
+        double widthP = ((double) (realRect.right - realRect.left) / 1280);
+        double heightP = ((double) (realRect.bottom - realRect.top) / 800);
+
+        Log.e(TAG, "checkFaceInFrame: 人脸宽比例：" + widthP + "-----人脸高比例：" + heightP);
+
+        return realRect.contains(mAreaRect);
     }
 
     public boolean checkFaceInFrame2(Rect faceRect, View areaView) {
@@ -604,15 +611,15 @@ public class FaceView extends FrameLayout {
     private void initEngine() {
         ftEngine = new FaceEngine();
         ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                7, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
+                5, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
 
         frEngine = new FaceEngine();
         frInitCode = frEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                7, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
+                5, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
 
         flEngine = new FaceEngine();
         flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                7, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
+                5, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);

@@ -211,7 +211,19 @@
     <string name="setting_normal_speech_content">体温正常播报内容</string>
     <string name="setting_warning_speech_content">体温异常播报内容</string>
     <string name="setting_low_temp_model">低温模式</string>
+    <string name="setting_portrait_outline">人像轮廓</string>
+    <string name="setting_default_welcome_tip">欢迎使用云标智能考勤系统</string>
+    <string name="setting_correct_temperature">矫正温度</string>
 
+    <!--温度矫正页面-->
+    <string name="act_correct_title">温度矫正</string>
+    <string name="act_correct_tips">请根据体温枪实测温度填写</string>
+    <string name="act_correct_current_value">当前补偿值</string>
+    <string name="act_correct_thermal_temp">热成像温度：</string>
+    <string name="act_correct_click_get_temperature">点击测温</string>
+    <string name="act_correct_thermometer_gun">测温枪温度：</string>
+    <string name="act_correct_save">保存</string>
+    
     <!--通用的  -->
     <string name="base_tip">提示</string>
     <string name="base_ensure">确定</string>
@@ -245,6 +257,9 @@
     <string name="fment_sign_device_no">编号：</string>
     <string name="fment_sign_version">版本：</string>
     <string name="fment_sign_bind_code">绑定码：</string>
+    <string name="fment_sign_net">网络：</string>
+    <string name="fment_sign_total">应到</string>
+    <string name="fment_sign_already">已到</string>
 
     <!--WebFragment-->
     <string name="fment_Web_back">后退</string>
@@ -308,4 +323,44 @@
     <string name="low_confidence_level">face low confidence level</string>
     <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
     <string name="System_Setting_save_threshold">保存</string>
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">人证比对模式</string>
+    <string name="act_certificates_idcard_thermal">人证比对+热成像测温模式</string>
+    <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
+    <string name="act_certificates_title">AI人证测温校验系统</string>
+    <string name="act_certificates_please_get_hat">请取下眼睛、帽子、正视镜头</string>
+    <string name="act_certificates_no_idcard_temper">无证测温</string>
+    <string name="act_certificates_face_picture">人脸照片</string>
+    <string name="act_certificates_card_picture">证件照片</string>
+    <string name="act_certificates_name">姓名：</string>
+    <string name="act_certificates_depart">部门：</string>
+    <string name="act_certificates_native_place">籍贯：</string>
+    <string name="act_certificates_temperature">体温：</string>
+    <string name="act_certificates_status">状态：</string>
+    <string name="act_certificates_health_code">健康码</string>
+    <string name="act_certificates_can_go">可以通行</string>
+    <string name="act_certificates_not_pass">禁止通行</string>
+    <string name="act_certificates_ensure_pass">确认通行</string>
+    <string name="act_certificates_please_set_id_card">请将身份证置于刷卡区</string>
+    <string name="act_certificates_testing">正在测温，请稍等</string>
+    <string name="act_certificates_please_wait">请等待</string>
+    <string name="act_certificates_idcard_failed">证件读取失败，请重试</string>
+    <string name="act_certificates_please_look_camera">请正视摄像头</string>
+    <string name="act_certificates_verify_ing">正在验证</string>
+    <string name="act_certificates_verify_pass">验证通过，</string>
+    <string name="act_certificates_verify_not_pass">人证不匹配，</string>
+    <string name="act_certificates_temper_normal">体温正常</string>
+    <string name="act_certificates_temper_warning">体温异常</string>
+    <string name="act_certificates_normal">正常</string>
+    <string name="act_certificates_warning">异常</string>
+    <string name="act_certificates_similar">相似度</string>
+    <string name="act_certificates_please_pass">，请通行</string>
+    <string name="act_certificates_please_can_pass">可以通行</string>
+    <string name="act_certificates_please_not_pass">，禁止通行</string>
+    <string name="act_certificates_visitor">访客</string>
+    <string name="act_certificates_temper">温度：</string>
+    <string name="act_certificates_temper_failed">测温失败</string>
+    <string name="act_certificates_green">绿色</string>
+    <string name="act_certificates_yellow">黄色</string>
 </resources>

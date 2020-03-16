@@ -32,23 +32,23 @@ public class ResourceUpdate {
     public static String VISITOLOG = WEB_BASE_URL + "api/visitor/signUpload.html";//访客记录
     public static String BULUSIGN = WEB_BASE_URL + "api/entry/entryecord.html";//补录接口
     public static String SIGNARRAY = WEB_BASE_URL + "api/sign/signlogByarray.html";//定时发送签到列表
-    public static String VISITARRAY = WEB_BASE_URL + "api/visitor/signUploadByarray.html";//定时发送签到列表
+    public static String VISITARRAY = WEB_BASE_URL + "api/visitor/signUploadByarray.html";//定时发送访客列表
     public static String ADDDEPART = WEB_BASE_URL + "api/department/departmentadd.html";//创建部门
     public static String DELETEDEPART = WEB_BASE_URL + "api/department/departmentdelete.html";//删除部门
     public static String GETAD = WEB_BASE_URL + "api/company/getadvert.html";//获取广告
     public static String getCompInfo = WEB_BASE_URL + "api/propa/getAll.html";//公司介绍信息
     public static String getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
-    public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";
+    public static String UPDATE_DEVICE_TYPE = WEB_BASE_URL + "api/device/updateDeviceType.html";//更新设备类型
 
-    public static String GETUSERINFO_BY_CODE = WEB_BASE_URL + "/api/witness/checkcode.html";
+    public static String GETUSERINFO_BY_CODE = WEB_BASE_URL + "/api/witness/checkcode.html";//获取扫码人信息
 
-    public static String UPLOAD_CODE_VERIFY_RESULT = WEB_BASE_URL + "/api/witness/checkCodeUpload.html";
+    public static String UPLOAD_CODE_VERIFY_RESULT = WEB_BASE_URL + "/api/witness/checkCodeUpload.html";//扫码上传
 
-    public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";
-    public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = WEB_BASE_URL + "api/facewitness/checkByarrayTemper.html";
+    public static String UPLOAD_TEMPERETURE_EXCEPTION = WEB_BASE_URL + "api/facewitness/checkTemper.html";//单条测温记录
+    public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = WEB_BASE_URL + "api/facewitness/checkByarrayTemper.html";//多条测温记录
 
-    public static String UPLOAD_IDCARD = WEB_BASE_URL + "/api/witness/checktemper.html";
-    public static String UPLOAD_NO_IDCARD = WEB_BASE_URL + "/api/witness/nocardUpload.html";
+    public static String UPLOAD_IDCARD = WEB_BASE_URL + "/api/witness/checktemper.html";//人证测温记录
+    public static String UPLOAD_NO_IDCARD = WEB_BASE_URL + "/api/witness/nocardUpload.html";//无证测温
 
     /**
      * 判断服务器中的设备是否在线

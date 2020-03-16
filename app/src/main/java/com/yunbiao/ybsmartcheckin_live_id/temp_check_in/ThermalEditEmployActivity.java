@@ -524,7 +524,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
         final File currFile = new File(mUpdatePhotoPath);
         File oldFile = new File(user.getHeadPath());
-        final boolean isHeadUpdated = TextUtils.equals(currFile.getName(), oldFile.getName());
+        final boolean isHeadUpdated = !TextUtils.equals(currFile.getName(), oldFile.getName());
 
         PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.UPDATSTAFF).params(params);
         if (isHeadUpdated) {

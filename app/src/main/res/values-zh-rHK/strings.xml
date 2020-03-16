@@ -209,10 +209,23 @@
     <string name="setting_password_disaccord">兩次輸入的密碼不壹致</string>
     <string name="setting_edit_password_failed">修改失敗</string>
     <string name="setting_edit_password_success">修改成功</string>
-
     <string name="setting_current_correct_value">當前矯正值：</string>
     <string name="setting_normal_speech_content">體溫正常播報內容</string>
     <string name="setting_warning_speech_content">體溫异常播報內容</string>
+    <string name="setting_low_temp_model">低溫模式</string>
+    <string name="setting_portrait_outline">人像輪廓</string>
+    <string name="setting_default_welcome_tip">歡迎使用雲標智慧考勤系統</string>
+    <string name="setting_correct_temperature">矯正溫度</string>
+
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">溫度矯正</string>
+    <string name="act_correct_tips">請根據體溫槍實測溫度填寫</string>
+    <string name="act_correct_current_value">當前補償值</string>
+    <string name="act_correct_thermal_temp">熱成像溫度：</string>
+    <string name="act_correct_click_get_temperature">點擊測溫</string>
+    <string name="act_correct_thermometer_gun">測溫槍溫度：</string>
+    <string name="act_correct_save">保存</string>
 
 
     <!--通用的  -->
@@ -250,6 +263,9 @@
     <string name="fment_sign_bind_code">綁定碼：</string>
 
     <string name="fment_sign_visitor_name">訪客</string><!--訪客-->
+    <string name="fment_sign_net">網絡：</string>
+    <string name="fment_sign_total">應到</string>
+    <string name="fment_sign_already">已到</string>
     <!--WebFragment-->
     <string name="fment_Web_back">後退</string>
     <string name="fment_Web_refresh">刷新</string>

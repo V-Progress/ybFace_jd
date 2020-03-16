@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
             <TextView
-                android:text="应到"
+                android:text="@string/fment_sign_total"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
             <TextView
-                android:text="已到"
+                android:text="@string/smt_main_already"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

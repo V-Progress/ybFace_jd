@@ -95,9 +95,9 @@ public class SMTSettingActivity extends SMTBaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        edtWelComeTips.setText(welcomeTips);
+        edtWelComeTips.setHint(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

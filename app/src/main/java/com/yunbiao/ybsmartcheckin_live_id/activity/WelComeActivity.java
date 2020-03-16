@@ -1218,14 +1218,6 @@ public class WelComeActivity extends BaseGpioActivity {
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: ------- ");
-                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
-            }
-        }, 5 * 1000);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

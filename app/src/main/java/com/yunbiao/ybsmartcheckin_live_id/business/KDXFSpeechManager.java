@@ -94,7 +94,10 @@ public class KDXFSpeechManager {
                                 if (status == TextToSpeech.SUCCESS) {
                                     isInited = true;
                                     // 设置朗读语言
-                                    int supported = mTextToSpeech.setLanguage(Locale.CHINA);
+                                    Locale locale = APP.getContext().getResources().getConfiguration().locale;
+                                    Log.e(TAG, "onInit: " + locale.getCountry());
+                                    int supported = mTextToSpeech.setLanguage(locale);
+                                    Log.e(TAG, "onInit: ------- " + supported);
                                     mTTSSupport = supported;
 
                                     checkQueue();
@@ -170,7 +173,7 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         if (TextUtils.isEmpty(welcomeTips)) {
             return;
         }

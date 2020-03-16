@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EditEmployActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
@@ -270,9 +269,9 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         showDialog(getString(R.string.employ_list_confirm_edit), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ThermalEmployListActivity.this, EditEmployActivity.class);
-                intent.putExtra(EditEmployActivity.KEY_ID, employList.get(postion).getId());
-                intent.putExtra(EditEmployActivity.KEY_TYPE, EditEmployActivity.TYPE_EDIT);
+                Intent intent = new Intent(ThermalEmployListActivity.this, ThermalEditEmployActivity.class);
+                intent.putExtra(ThermalEditEmployActivity.KEY_ID, employList.get(postion).getId());
+                intent.putExtra(ThermalEditEmployActivity.KEY_TYPE, ThermalEditEmployActivity.TYPE_EDIT);
                 startActivity(intent);
             }
         });
@@ -296,8 +295,8 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_addEmploy:
-                Intent intent = new Intent(this, EditEmployActivity.class);
-                intent.putExtra(EditEmployActivity.KEY_TYPE, EditEmployActivity.TYPE_ADD);
+                Intent intent = new Intent(this, ThermalEditEmployActivity.class);
+                intent.putExtra(ThermalEditEmployActivity.KEY_TYPE, ThermalEditEmployActivity.TYPE_ADD);
                 startActivity(intent);
                 break;
             case R.id.btn_addDepart:

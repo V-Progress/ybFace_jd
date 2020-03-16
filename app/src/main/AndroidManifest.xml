@@ -57,27 +57,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".temp_check_in.TemperatureCorrectActivity"></activity>
         <activity android:name=".activity.TestActivity" />
-        <activity android:name=".temp_cetificates.CertificatesActivity">
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
-        </activity>
-        <activity android:name=".temp_check_in.ThermalImageActivity" />
-        <activity android:name=".temp_check_in.ThermalSettingActivity" />
-        <activity android:name=".temp_check_in.ThermalSystemActivity" />
-        <activity android:name=".temp_check_in.ThermalEmployListActivity" />
-        <activity android:name=".temp_check_in.ThermalEditEmployActivity" />
-        <activity android:name=".temp_check_in.ThermalSignActivity" />
-
 
         <activity android:name=".activity.PassageDeviceActivity" />
-        <activity android:name=".temp_check_in_smt.SMTMainActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
@@ -115,13 +97,41 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" /> <!-- 视美泰竖屏闸机 -->
+            android:label="Notification Settings" />
+
+        <!--测温考勤机-->
+        <activity android:name=".temp_check_in.ThermalImageActivity" />
+        <activity android:name=".temp_check_in.ThermalSettingActivity" />
+        <activity android:name=".temp_check_in.ThermalSystemActivity" />
+        <activity android:name=".temp_check_in.ThermalEmployListActivity" />
+        <activity android:name=".temp_check_in.ThermalEditEmployActivity" />
+        <activity android:name=".temp_check_in.ThermalSignActivity" />
+        <activity android:name=".temp_check_in.ThermalVisitorActivity" />
+        <activity android:name=".temp_check_in.TemperatureCorrectActivity" />
+
+        <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".temp_check_in_smt.SMTMainActivity" />
         <activity android:name=".temp_check_in_smt.SMTSystemActivity" />
         <activity android:name=".temp_check_in_smt.SMTEmployListActivity" />
         <activity android:name=".temp_check_in_smt.SMTEditEmployActivity" />
         <activity android:name=".temp_check_in_smt.SMTRecordActivity" />
         <activity android:name=".temp_check_in_smt.SMTSettingActivity" />
-        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" /> <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" />
+
+        <!--人证对比-->
+        <activity android:name=".temp_cetificates.CertificatesActivity">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+        <activity android:name=".temp_cetificates.CertificatesSystemActivity" />
+        <activity android:name=".temp_cetificates.CertificatesSettingActivity" />
+
+
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service
             android:name=".ReadCardService"
@@ -131,11 +141,18 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
         </service>
+        <service android:name=".utils.killSelfService" />
+        <service android:name=".xmpp.NotificationService" />
+        <service android:name=".receiver.MyProtectService" /> <!-- 百度定位 -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:permission="android.permission.BAIDU_LOCATION_SERVICE"
+            android:process=":remote" />
 
         <receiver android:name=".receiver.USBBroadcastReceiver">
             <intent-filter android:priority="800">
@@ -155,14 +172,14 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".utils.killSelfService" />
-        <service android:name=".xmpp.NotificationService" />
-        <service android:name=".receiver.MyProtectService" /> <!-- 百度定位 -->
-        <service
-            android:name="com.baidu.location.f"
+        <receiver
+            android:name=".business.AlarmManagerUtil$AlarmBroadcast"
             android:enabled="true"
-            android:permission="android.permission.BAIDU_LOCATION_SERVICE"
-            android:process=":remote" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="alarm_action" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -173,15 +190,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <receiver
-            android:name=".business.AlarmManagerUtil$AlarmBroadcast"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="alarm_action" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

@@ -105,14 +105,6 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: ------- ");
-                UpdateVersionControl.getInstance().checkUpdate(SMTMainActivity.this);
-            }
-        }, 5 * 1000);
     }
 
     @Override

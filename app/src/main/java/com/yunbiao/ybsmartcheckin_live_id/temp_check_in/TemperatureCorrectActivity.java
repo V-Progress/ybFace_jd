@@ -41,6 +41,9 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
     private ImageButton ibBack;
     private TextView tvCurrentCorr;
 
+    private List<Float> tempList = new ArrayList<>();//温度缓存list
+    private boolean isDetecting = false;//
+    private float mMeanValue = 0.0f;
     @Override
     protected int getPortraitLayout() {
         return R.layout.activity_temperature_correct;
@@ -106,10 +109,58 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         }
     }
 
-    InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
+    private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ivThermalCorr.setImageBitmap(imageBmp);
+                }
+            });
+
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(sensorT);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
+
+                }
+            }
+        }
+    };
+
+    private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float v2) {
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(measureF);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
 
+                }
+            }
         }
     };
 
@@ -167,6 +218,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         public void onClick(View v) {
             if (v.getId() == R.id.btn_click_temp_corr) {
                 v.setEnabled(false);
+                UIUtils.showNetLoading(TemperatureCorrectActivity.this);
                 isDetecting = true;
                 return;
             }
@@ -189,39 +241,6 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
     private float formatF(float fValue) {
         return (float) (Math.round(fValue * 10)) / 10;
     }
-
-    private List<Float> tempList = new ArrayList<>();
-    private boolean isDetecting = false;
-    private float mMeanValue = 0.0f;
-    private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ivThermalCorr.setImageBitmap(imageBmp);
-                }
-            });
-
-            if (isDetecting) {
-                if (tempList.size() < 5) {
-                    tempList.add(sensorT);
-                } else {
-                    mMeanValue = getMean(tempList);
-                    tempList.clear();
-                    isDetecting = false;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvThermalTemp.setText(mMeanValue + "℃");
-                            btnClickTemp.setEnabled(true);
-                        }
-                    });
-
-                }
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {

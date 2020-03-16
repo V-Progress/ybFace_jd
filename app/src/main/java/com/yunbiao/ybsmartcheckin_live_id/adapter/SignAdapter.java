@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 
@@ -66,7 +67,7 @@ public class SignAdapter extends BaseAdapter {
         }
 
         if (vip.getType() == -9) {
-            viewHolder.tv_employName.setText("访客");
+            viewHolder.tv_employName.setText(APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));
         } else if (!TextUtils.isEmpty(vip.getName())) {
             viewHolder.tv_employName.setText(vip.getName());
         }

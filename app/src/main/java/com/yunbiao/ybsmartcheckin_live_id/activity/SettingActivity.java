@@ -46,6 +46,7 @@ import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -103,7 +104,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
@@ -952,14 +953,14 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
-                    if (activity instanceof WelComeActivity) {
+                    if (activity instanceof WelComeActivity) {//普通主页
                         ((WelComeActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof PassageDeviceActivity) {
-                        ((PassageDeviceActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof CertificatesActivity) {
+                    } else if (activity instanceof CertificatesActivity) {//人证主页
                         ((CertificatesActivity) activity).setFaceViewSimilar();
-                    } else if(activity instanceof ThermalImageActivity){
+                    } else if(activity instanceof ThermalImageActivity){//考勤测温主页
                         ((ThermalImageActivity) activity).setFaceViewSimilar();
+                    } else if(activity instanceof SMTMainActivity){
+                        ((SMTMainActivity) activity).setFaceViewSimilar();
                     }
                 }
             }

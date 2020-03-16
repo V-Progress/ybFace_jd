@@ -122,7 +122,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN_SMT;
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
@@ -165,8 +165,6 @@ public class Constants {
     public static final float DEFAULT_TEMP_CORRECT_VALUE = 0.0f;
     //默认读卡器
     public static final boolean DEFAULT_READ_CARD_ENABLED = false;
-    //默认欢迎语
-    public static final String DEFAULT_WELCOME_TIPS = "欢迎使用云标智能考勤系统";
     //默认二维码
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
     //播报延时默认值

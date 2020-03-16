@@ -510,7 +510,8 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
 
         final File currFile = new File(mUpdatePhotoPath);
         File oldFile = new File(user.getHeadPath());
-        final boolean isHeadUpdated = TextUtils.equals(currFile.getName(), oldFile.getName());
+        final boolean isHeadUpdated = !TextUtils.equals(currFile.getName(), oldFile.getName());
+        Log.e(TAG, "submitUpdateUser: " + currFile.getPath() + " --- " + oldFile.getPath());
 
         PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.UPDATSTAFF).params(params);
         if (isHeadUpdated) {
@@ -528,23 +529,26 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             builder.addFile("head", file.getName(), file);
         }
 
+        Log.e(TAG, "submitUpdateUser: 地址：" + ResourceUpdate.UPDATSTAFF);
+        Log.e(TAG, "submitUpdateUser: 参数：" + params.toString());
+
         builder.build().execute(new StringCallback() {
             @Override
             public void onBefore(Request request, int id) {
-                d("开始提交");
+                Log.e(TAG, "开始提交");
                 UIUtils.showNetLoading(SMTEditEmployActivity.this);
             }
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
+                Log.e(TAG, "提交失败：" + (e == null ? "NULL" : e.getMessage()));
                 UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                d(response);
+                Log.e(TAG, response);
                 AddStaffResponse addStaffResponse = new Gson().fromJson(response, AddStaffResponse.class);
                 if (addStaffResponse.getStatus() != 1) {
                     String errMsg;

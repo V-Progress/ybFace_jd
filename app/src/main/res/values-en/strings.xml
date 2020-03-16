@@ -208,11 +208,22 @@
     <string name="setting_password_disaccord">Passwords entered twice are inconsistent</string><!-- 两次输入的密码不一致 -->
     <string name="setting_edit_password_failed">Modified failed</string><!-- 修改失败 -->
     <string name="setting_edit_password_success">Modified success</string><!-- 修改成功 -->
+    <string name="setting_current_correct_value">Current correction value:</string><!--当前补正值-->
+    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
+    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
+    <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
+    <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
+    <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
+    <string name="setting_correct_temperature">Correct Temperature</string>
 
-    <string name="setting_current_correct_value">Current correction value:</string>
-    <string name="setting_normal_speech_content">Normal temperature broadcast:</string>
-    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string>
-
+    <!--温度矫正页面-->
+    <string name="act_correct_title">Temperature correction</string>
+    <string name="act_correct_tips">Please fill in according to the temperature gun</string>
+    <string name="act_correct_current_value">Current correction value:</string>
+    <string name="act_correct_thermal_temp">Thermal imaging temperature：</string>
+    <string name="act_correct_click_get_temperature">get temperature</string>
+    <string name="act_correct_thermometer_gun">Thermometer gun temperature：</string>
+    <string name="act_correct_save">save</string>
 
     <!--通用的  -->
     <string name="base_tip">Tips</string><!-- 提示 -->
@@ -247,6 +258,9 @@
     <string name="fment_sign_device_no">No：</string>
     <string name="fment_sign_version">Ver：</string>
     <string name="fment_sign_bind_code">Bind Code：</string>
+    <string name="fment_sign_net">Network：</string>
+    <string name="fment_sign_total">Total</string>
+    <string name="fment_sign_already">Arr</string>
     <!--WebFragment-->
     <string name="fment_Web_back">Back</string><!--  后退-->
     <string name="fment_Web_refresh">Refresh</string><!-- 刷新 -->

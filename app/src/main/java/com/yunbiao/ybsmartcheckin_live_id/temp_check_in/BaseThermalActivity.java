@@ -42,8 +42,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     protected int mCurrMode = -99;
     private Float mTempMinThreshold;
     private Float mTempWarningThreshold;
-    private Float mAmbCorrValue;
-    private Float mTempCorrValue;
+    //    private Float mAmbCorrValue;
+//    private Float mTempCorrValue;
     private boolean mThermalImgMirror;
 
     private float mHighestTemp = 45.0f;
@@ -73,6 +73,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         distanceTipEnable = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
         //温度补偿
         mThermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
+        TemperatureModule.getIns().setmCorrectionValue(mThermalCorrect);
+
         //模式切换
         int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
         if (mCurrMode != currMode) {
@@ -96,15 +98,20 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 }
             }, 2000);
         } else if (mCurrMode == ThermalConst.INFARED_ONLY || mCurrMode == ThermalConst.INFARED_FACE) {
-            TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS4", 9600);
+            String portPath;
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                portPath = "/dev/ttyS1";
+            } else {
+                portPath = "/dev/ttyS4";
+            }
+            TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         }
 
         //温度补正
-        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
-        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
-        TemperatureModule.getIns().setmCorrectionValue(mTempCorrValue);
-        TemperatureModule.getIns().setaCorrectionValue(mAmbCorrValue);
+//        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
+//        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
+//        TemperatureModule.getIns().setaCorrectionValue(mAmbCorrValue);
     }
 
     @Override
@@ -125,11 +132,14 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
+            Log.e(TAG, "newestInfraredTemp: 原始值：" + measureF + " --- 处理值：" + afterF);
+
             if (isOnlyFace()) {
                 return;
             }
 
             if (!isHasFace) {
+                tempCacheList.clear();
                 sendClearTempTipsMessage();
                 if (mCacheMeasureF == 0.0f || measureF < mCacheMeasureF) {
                     mCacheMeasureF = measureF;
@@ -138,31 +148,51 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 return;
             }
 
-            if (isSoFar) {
-                mFinalTemp = 0.0f;
-                return;
-            }
-
             if (isFaceToFar) {
+                tempCacheList.clear();
                 sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
                 mFinalTemp = 0.0f;
                 return;
             }
 
+            if (!isInsideRange) {
+                tempCacheList.clear();
+                sendTempLowMessage("请对准人脸框");
+                mFinalTemp = 0.0f;
+                return;
+            }
+
             if (measureF - mCacheMeasureF < 2.0f) {
+                tempCacheList.clear();
                 return;
             }
 
             if (afterF < mTempMinThreshold) {
                 mFinalTemp = 0.0f;
+                tempCacheList.clear();
                 return;
             }
 
             if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
+                tempCacheList.add(afterF);
+                if (tempCacheList.size() < 3) {
+                    return;
+                }
+
+                for (int i = 0; i < tempCacheList.size(); i++) {
+                    Float aFloat = tempCacheList.get(i);
+                    Log.e(TAG, "newestInfraredTemp: " + aFloat);
+                }
+
                 mCacheTime = System.currentTimeMillis();
 
-                mFinalTemp = afterF;
-                mFinalTemp += mThermalCorrect;
+                Float max = Collections.max(tempCacheList);
+                mFinalTemp = max;
+
+                if (mFinalTemp < mTempWarningThreshold) {
+                    mFinalTemp += mThermalCorrect;
+                }
+
                 mFinalTemp = formatF(mFinalTemp);
                 sendTempTipsMessage(mFinalTemp);
 
@@ -177,6 +207,12 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
         }
     };
+
+    private boolean isInsideRange = false;
+
+    protected void checkFaceRange(boolean isInside) {
+        isInsideRange = isInside;
+    }
 
     private float mCacheBeforTemper = 0.0f;
     private float mFinalTemp = 0.0f;
@@ -200,11 +236,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 }
 
                 tempCacheList.clear();
-                mFinalTemp = 0.0f;
-                return;
-            }
-
-            if (isSoFar) {
                 mFinalTemp = 0.0f;
                 return;
             }
@@ -234,9 +265,12 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
                 Float max = Collections.max(tempCacheList);
                 tempCacheList.clear();
-
                 mFinalTemp = max;
-                mFinalTemp += mThermalCorrect;
+
+                if (mFinalTemp < mTempWarningThreshold) {
+                    mFinalTemp += mThermalCorrect;
+                }
+
                 mFinalTemp = formatF(mFinalTemp);
                 sendTempTipsMessage(mFinalTemp);
                 if (mFinalTemp < mHighestTemp) {
@@ -259,12 +293,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             mCacheSign = null;
             isFaceToFar = false;
         }
-    }
-
-    private boolean isSoFar = false;
-
-    protected void updateSoFar(boolean soFar) {
-        isSoFar = soFar;
     }
 
     //如果提示框正在显示
@@ -291,6 +319,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
     //距离提示
     protected void sendTempLowMessage(String tips) {
+        updateUIHandler.removeMessages(-2);
         if (!distanceTipEnable || isResultShown) {
             return;
         }
@@ -364,20 +393,22 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case -3:
+                case -3://清除提示
                     isResultShown = false;
                     clearTempTips();
                     break;
-                case -2:
+                case -2://显示提示
+                    removeMessages(-3);
                     int id;
                     if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                         id = R.mipmap.bg_verify_nopass;
                     } else {
                         id = R.drawable.shape_main_frame_temperature_warning;
                     }
-                    showStableTips(getResources().getString(R.string.main_temp_tips_please_close), id);
-                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.main_temp_tips_please_close));
-                    sendEmptyMessageDelayed(-3,2000);
+                    String tip = (String) msg.obj;
+                    showStableTips(tip, id);
+                    KDXFSpeechManager.instance().playNormal(tip);
+                    sendEmptyMessageDelayed(-3, 2000);
                     break;
                 case 0://更新图像和温度
                     Bitmap bitmap = (Bitmap) msg.obj;
@@ -390,6 +421,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 case 1://仅提示温度
                     isResultShown = true;
                     removeMessages(-1);
+                    removeMessages(-3);
                     KDXFSpeechManager.instance().stopNormal();
                     KDXFSpeechManager.instance().stopWarningRing();
 
@@ -442,9 +474,10 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                                 sendClearMessage();
                             }
                         };
+
                     }
                     if (resultTemper <= mHighestTemp) {
-                        resultTip += resultTemper + "℃";
+                        resultTip += " " + resultTemper + " ℃";
                     }
                     showUIResult(resultTip, bgId);
                     KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:text="健康码:"
+        android:text="@string/act_certificates_health_code"
         android:textColor="@color/white"
         android:textSize="30dp" />
 
@@ -26,7 +26,7 @@
         android:background="@null"
         android:drawableTop="@mipmap/icon_pass_qrcode"
         android:gravity="center"
-        android:text="可以通行"
+        android:text="@string/act_certificates_can_go"
         android:textColor="@color/tv_canpass"
         android:textSize="20dp" />
 
@@ -41,7 +41,7 @@
         android:background="@null"
         android:drawableTop="@mipmap/icon_nopass_qrcode"
         android:gravity="center"
-        android:text="禁止通行"
+        android:text="@string/act_certificates_not_pass"
         android:textColor="@color/tv_canpass"
         android:textSize="20dp" />
 
@@ -56,7 +56,7 @@
         android:background="@null"
         android:drawableTop="@mipmap/icon_what_qrcode"
         android:gravity="center"
-        android:text="确认通行"
+        android:text="@string/act_certificates_ensure_pass"
         android:textColor="@color/tv_canpass"
         android:textSize="20dp" />
 </RelativeLayout>

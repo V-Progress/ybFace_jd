@@ -82,6 +82,7 @@
         </RelativeLayout>
 
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_ReTakePhoto"
             android:layout_width="108dp"
             android:layout_height="44dp"

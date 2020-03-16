@@ -289,7 +289,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     }
 
     public void seeVisitor(View view) {
-        startActivity(new Intent(this, VisitorActivity.class));
+        startActivity(new Intent(this, ThermalVisitorActivity.class));
     }
 
     public void selectSkin(View view) {

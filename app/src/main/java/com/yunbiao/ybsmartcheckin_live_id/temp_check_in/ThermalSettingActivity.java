@@ -37,10 +37,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.PassageDeviceActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -106,7 +103,7 @@ public class ThermalSettingActivity extends BaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.DEFAULT_WELCOME_TIPS);
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
@@ -257,6 +254,13 @@ public class ThermalSettingActivity extends BaseActivity {
 
         final int model = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
 
+        //如果是红外模式则隐藏矫正按钮
+        if(model == ThermalConst.INFARED_FACE || model == ThermalConst.INFARED_ONLY || model == ThermalConst.THERMAL_FACE_ONLY){
+            findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
+        }
+
         tvModelSetting.setText(items[model]);
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,12 +276,17 @@ public class ThermalSettingActivity extends BaseActivity {
                             dialog.dismiss();
                             return;
                         }
+                        //如果是红外模式则隐藏矫正按钮
+                        if(whichModel == ThermalConst.INFARED_FACE || whichModel == ThermalConst.INFARED_ONLY || whichModel == ThermalConst.THERMAL_FACE_ONLY){
+                            findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
+                        } else {
+                            findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
+                        }
 
                         SpUtils.saveInt(SpUtils.THERMAL_MODEL_SETTING, whichModel);
+                        tvModelSetting.setText(items[whichModel]);
 
                         dialog.dismiss();
-
-                        tvModelSetting.setText(items[whichModel]);
                     }
                 });
                 AlertDialog alertDialog = builder.create();
@@ -769,13 +778,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
-                    if (activity instanceof WelComeActivity) {
-                        ((WelComeActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof PassageDeviceActivity) {
-                        ((PassageDeviceActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof CertificatesActivity) {
-                        ((CertificatesActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof ThermalImageActivity) {
+                    if (activity instanceof ThermalImageActivity) {
                         ((ThermalImageActivity) activity).setFaceViewSimilar();
                     }
                 }

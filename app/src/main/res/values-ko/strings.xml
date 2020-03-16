@@ -208,10 +208,23 @@
     <string name="setting_password_disaccord">두 번 입력 한 비밀번호가 일치하지 않습니다</string>
     <string name="setting_edit_password_failed">편집 실패</string>
     <string name="setting_edit_password_success">성공적으로 수정되었습니다</string>
-
     <string name="setting_current_correct_value">당면교정 하 다:</string>
     <string name="setting_normal_speech_content">체온 이 정상 적 으로 방송 되다:</string>
     <string name="setting_warning_speech_content">체온 이상 보도:</string>
+    <string name="setting_low_temp_model">저온 모드</string>
+    <string name="setting_portrait_outline">실루엣</string>
+    <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
+    <string name="setting_correct_temperature">온 도 를 바로잡다</string>
+
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">온도 교정</string>
+    <string name="act_correct_tips">체온창 의 실측 온도 에 따라 작성 하 십시오</string>
+    <string name="act_correct_current_value">현재 보상 치</string>
+    <string name="act_correct_thermal_temp">열 이미지 온도：</string>
+    <string name="act_correct_click_get_temperature">클릭 하여 온도 측정</string>
+    <string name="act_correct_thermometer_gun">따뜻 한 총 온도 측정：</string>
+    <string name="act_correct_save">보존 하 다</string>
 
 
     <!--通用的  -->
@@ -248,6 +261,9 @@
     <string name="fment_sign_device_no">No：</string>
     <string name="fment_sign_version">Ver：</string>
     <string name="fment_sign_bind_code">Bind Code：</string>
+    <string name="fment_sign_net">인터넷：</string>
+    <string name="fment_sign_total">받다</string>
+    <string name="fment_sign_already">도착</string>
     <!--WebFragment-->
     <string name="fment_Web_back">다시</string>
     <string name="fment_Web_refresh">새로 고침</string>

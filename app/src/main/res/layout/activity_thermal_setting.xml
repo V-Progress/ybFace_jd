@@ -168,7 +168,7 @@
                     android:layout_marginLeft="50dp"
                     android:id="@+id/btn_thermal_corr"
                     style="@style/style_setting_input_save_button"
-                    android:text="矫正温度" />
+                    android:text="@string/setting_correct_temperature" />
 
             </LinearLayout>
 
@@ -250,7 +250,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="低温模式" />
+                        android:text="@string/setting_low_temp_model" />
 
                     <Switch
                         android:id="@+id/sw_low_temp_model_setting"
@@ -271,7 +271,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="人像轮廓" />
+                        android:text="@string/setting_portrait_outline" />
 
                     <Switch
                         android:id="@+id/sw_person_frame_setting"
@@ -282,7 +282,6 @@
                         android:paddingRight="10dp"
                         android:textColor="@color/white" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -440,7 +439,7 @@
 
                         <TextView
                             style="@style/setting_text"
-                            android:text="毫秒" />
+                            android:text="@string/setting_ms" />
                     </LinearLayout>
 
                     <Button
@@ -582,11 +581,11 @@
                 <EditText
                     android:id="@+id/edt_welcome_tips"
                     style="@style/style_setting_input_number_edt"
-                    android:layout_width="400dp"
+                    android:minWidth="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_system_name"
-                    android:inputType="text"
-                    android:maxLength="20" />
+                    android:inputType="text" />
 
             </LinearLayout>
 

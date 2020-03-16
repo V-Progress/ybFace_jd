@@ -67,7 +67,6 @@ public class SignManager {
     private long verifyOffsetTime = 0;//验证间隔时间
 
     private SimpleDateFormat visitSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private SimpleDateFormat typeSdf = new SimpleDateFormat("HH:mm");
     private boolean isDebug = true;
     private boolean isBulu = false;
     private boolean isBuluing = false;
@@ -152,20 +151,20 @@ public class SignManager {
         List<VisitDataBean> visitDataBeans = new ArrayList<>();
         List<StrangerDataBean> strangerDataBeanList = new ArrayList<>();
         for (Sign signBean : signs) {
-            if (signBean.getType() == 0) {
+            if (signBean.getType() == 0) {//正常考勤记录
                 SignDataBean signDataBean = new SignDataBean();
                 signDataBean.entryid = signBean.getEmpId() + "";
                 signDataBean.signTime = signBean.getTime();
                 signDataBean.sign = signBean;
                 signDataBeans.add(signDataBean);
-            } else if (signBean.getType() == -9) {
+            } else if (signBean.getType() == -9) {//陌生人测温记录
                 StrangerDataBean bean = new StrangerDataBean();
                 bean.createTime = signBean.getTime();
                 bean.temper = signBean.getTemperature();
                 bean.headPath = signBean.getHeadPath();
                 bean.sign = signBean;
                 strangerDataBeanList.add(bean);
-            } else {
+            } else {//访客
                 VisitDataBean bean = new VisitDataBean();
                 bean.visitorId = signBean.getEmpId() + "";
                 bean.createTime = signBean.getTime();

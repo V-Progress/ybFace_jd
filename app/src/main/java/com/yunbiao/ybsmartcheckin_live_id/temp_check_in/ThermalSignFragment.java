@@ -32,6 +32,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -85,7 +86,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
-        mCurrentOrientation = getActivity().getResources().getConfiguration().orientation;
+        mCurrentOrientation = APP.getContext().getResources().getConfiguration().orientation;
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             rootView = inflater.inflate(R.layout.fragment_sign_list_thermal, container, false);
@@ -146,13 +147,13 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
         //版本号
         if (tvVer != null) {
-            tvVer.setText(getResources().getString(R.string.fment_sign_version) + CommonUtils.getAppVersion(getActivity()));
+            tvVer.setText(APP.getContext().getResources().getString(R.string.fment_sign_version) + CommonUtils.getAppVersion(getActivity()));
         }
         if (tvDeviceNo != null) {
-            tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+            tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         }
         if (tvCompanyName != null) {
-            tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
+            tvCompanyName.setText(APP.getContext().getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
         }
 
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -182,9 +183,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     public void connect() {
         Log.e(TAG, "connect: 网络已连接");
         if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
-            tvNetState.setText(getResources().getString(R.string.smt_main_net_normal2));
+            tvNetState.setText(APP.getContext().getResources().getString(R.string.smt_main_net_normal2));
         } else {
-            tvNetState.setText(getResources().getString(R.string.smt_main_net_normal));
+            tvNetState.setText(APP.getContext().getResources().getString(R.string.smt_main_net_normal));
         }
         tvNetState.setTextColor(Color.GREEN);
     }
@@ -192,7 +193,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     @Override
     public void disConnect() {
         Log.e(TAG, "connect: 网络未连接");
-        tvNetState.setText(getResources().getString(R.string.smt_main_net_no));
+        tvNetState.setText(APP.getContext().getResources().getString(R.string.smt_main_net_no));
         tvNetState.setTextColor(Color.RED);
     }
 
@@ -249,13 +250,13 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
         if (tvCompanyName != null) {
             if (TextUtils.isEmpty(company.getComname())) {
-                tvCompanyName.setText(getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
+                tvCompanyName.setText(APP.getContext().getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
             } else {
-                tvCompanyName.setText(getResources().getString(R.string.fment_sign_company) + company.getComname());
+                tvCompanyName.setText(APP.getContext().getResources().getString(R.string.fment_sign_company) + company.getComname());
             }
         }
         if (tvDeviceNo != null) {
-            tvDeviceNo.setText(getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+            tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.fment_sign_device_no) + SpUtils.getStr(SpUtils.DEVICE_NUMBER));
         }
 
         loadSignData();
@@ -341,12 +342,12 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
             if (male == 0 && female == 0) {
                 dataEntry.add(new PieEntry(100, ""));
-                dataColors.add(getResources().getColor(R.color.white));
+                dataColors.add(APP.getContext().getResources().getColor(R.color.white));
             } else {
                 dataEntry.add(new PieEntry(male, getString(R.string.base_male)));
                 dataEntry.add(new PieEntry(female, getString(R.string.base_female)));
-                dataColors.add(getResources().getColor(R.color.horizontal_chart_male));
-                dataColors.add(getResources().getColor(R.color.horizontal_chart_female));
+                dataColors.add(APP.getContext().getResources().getColor(R.color.horizontal_chart_male));
+                dataColors.add(APP.getContext().getResources().getColor(R.color.horizontal_chart_female));
             }
 
             pieChart.clear();
@@ -449,7 +450,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
                     ivHead.setImageBitmap(imgBitmap);
                 }
 
-                tvName.setText(signBean.getType() != -9 ? signBean.getName() : getResources().getString(R.string.fment_sign_visitor_name));
+                tvName.setText(signBean.getType() != -9 ? signBean.getName() : APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));
                 tvTime.setText(df.format(signBean.getTime()));
 
                 tvTemp.setText(signBean.getTemperature() + "℃");
@@ -461,14 +462,14 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
                 if (signBean.getTemperature() >= mCurrWarningThreshold) {
                     ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_warning);
-                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
-                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
-                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                    tvName.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                    tvTime.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_warning));
+                    tvTemp.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_warning));
                 } else {
                     ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_normal);
-                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
-                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
-                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
+                    tvName.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
+                    tvTime.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
+                    tvTemp.setTextColor(APP.getContext().getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
                 }
             }
         }

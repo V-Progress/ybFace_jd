@@ -11,4 +11,15 @@
     <string-array name="models2">
         <item>@string/certificates_model</item>
     </string-array>
+
+    <string-array name="smt_models">
+        <item>@string/face_only_model</item>
+        <item>@string/face_thermal_model</item>
+        <item>@string/thermal_only_model</item>
+    </string-array>
+
+    <string-array name="certificates_mode">
+        <item>@string/act_certificates_idcard_thermal</item>
+        <item>@string/act_certificates_idcard_infared</item>
+    </string-array>
 </resources>

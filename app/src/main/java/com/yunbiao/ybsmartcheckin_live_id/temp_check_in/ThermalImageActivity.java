@@ -271,12 +271,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
                 return true;
             }
 
-            //检测人脸是否太远
             Rect rect = facePreviewInfo.getFaceInfo().getRect();
             int distance = faceDistanceView.getMeasuredWidth();
-            int farest = (int) (distance * 0.7);
-            boolean isSoFar = faceView.checkFaceToFar(rect, farest);
-            updateSoFar(isSoFar);
 
             //人脸较远
             boolean isFar = faceView.checkFaceToFar(rect, distance);
@@ -284,6 +280,16 @@ public class ThermalImageActivity extends BaseThermalActivity {
             if (isFar) {
                 return false;
             }
+
+            //检测人脸是否符合范围
+            if(mCurrMode == ThermalConst.INFARED_FACE || mCurrMode == ThermalConst.INFARED_ONLY){
+                boolean b = faceView.checkFaceInFrame(rect, faceDistanceView);
+                checkFaceRange(b);
+                if(!b){
+                    return false;
+                }
+            }
+
             //仅测温
             if (isOnlyTemp()) {
                 return false;
@@ -386,13 +392,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                UpdateVersionControl.getInstance().checkUpdate(ThermalImageActivity.this);
-            }
-        }, 5 * 1000);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
