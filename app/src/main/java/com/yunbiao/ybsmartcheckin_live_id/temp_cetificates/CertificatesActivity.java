@@ -146,13 +146,15 @@ public class CertificatesActivity extends BaseGpioActivity {
                 goSetting();
             }
         });
+
+        TIP_READ_ID_CARD = getResources().getString(R.string.act_certificates_please_set_id_card);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             v.setEnabled(false);
-            tvTip.setText("正在测温，请稍等");
+            tvTip.setText(getResources().getString(R.string.act_certificates_testing));
             getTempHandler.sendEmptyMessageDelayed(0, 100);
         }
     };
@@ -202,23 +204,25 @@ public class CertificatesActivity extends BaseGpioActivity {
         InfraredTemperatureUtils.getIns().setaCorrectionValue(mAmbCorrValue);
         InfraredTemperatureUtils.getIns().setmCorrectionValue(mTempCorrValue);
 
-        certificatesView.resume();
-
         startThermalImaging();
 
         certificatesView.resume();
+
+
+//        SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP,CertificatesConst.)
     }
 
     private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
         @Override
         public void getCardInfo(IdCardMsg msg) {
             if (isCode) {
-                tvTip.setText("请等待");
+                tvTip.setText(getResources().getString(R.string.act_certificates_please_wait));
                 return;
             }
             if (msg.name == null || msg.ptoto == null) {
-                tvTip.setText("证件读取失败,请重试");
-                KDXFSpeechManager.instance().playNormal("证件读取失败,请重试");
+                String tips = getResources().getString(R.string.act_certificates_idcard_failed);
+                tvTip.setText(tips);
+                KDXFSpeechManager.instance().playNormal(tips);
                 return;
             }
             setIdCardImage(msg);
@@ -229,7 +233,7 @@ public class CertificatesActivity extends BaseGpioActivity {
 
         @Override
         public void onReady() {
-            SyncManager.instance().requestCompany();
+            SyncManager.instance().requestOnlyCompany();
         }
 
         @Override
@@ -308,7 +312,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         String nativeplace = IDCardReader.getNativeplace(idCardMsg.id_num);
         //由此判断是先刷脸还是先刷卡
         if (!certificatesView.hasFace()) {
-            sendSpeechTip("请正视摄像头");
+            sendSpeechTip(getResources().getString(R.string.act_certificates_please_look_camera));
             clearUITips();
             mCacheFaceId = -1;
             resultHandler.removeMessages(-1);
@@ -320,7 +324,7 @@ public class CertificatesActivity extends BaseGpioActivity {
 
         ivIdCard.setImageBitmap(mIdCardBitmap);
         tvName.setText(idCardMsg.name);
-        tvOriginT.setText("籍贯:");
+        tvOriginT.setText(getResources().getString(R.string.act_certificates_native_place));
         tvOrigin.setText(nativeplace);
     }
 
@@ -328,7 +332,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private boolean isRunning = false;
     private Thread compareThread = null;
 
-    private String TIP_READ_ID_CARD = "请将身份证置于刷卡区";
+    private String TIP_READ_ID_CARD;
 
     private void startCompareThread() {
         if (compareThread != null && compareThread.isAlive()) {
@@ -349,7 +353,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                         continue;
                     }
 
-                    sendSpeechTip("正在验证");
+                    sendSpeechTip(getResources().getString(R.string.act_certificates_verify_ing));
 
                     Log.e(TAG, "run: 正在验证");
                     //人脸进来后添加人脸特征
@@ -511,27 +515,27 @@ public class CertificatesActivity extends BaseGpioActivity {
     private void setUITips(boolean isVerify, boolean isNormal, final boolean isPass, float maxTemp, int intSimilar) {
         String message;
         if (isVerify) {
-            message = "验证通过,";
+            message = getResources().getString(R.string.act_certificates_verify_pass);
         } else {
-            message = "人证不匹配,";
+            message = getResources().getString(R.string.act_certificates_verify_not_pass);
         }
 
         if (isNormal) {
-            message += "体温正常";
-            tvOStatus.setText("正常");
+            message += getResources().getString(R.string.act_certificates_temper_normal);
+            tvOStatus.setText(getResources().getString(R.string.act_certificates_normal));
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
-            message += "体温异常";
-            tvOStatus.setText("异常");
+            message += getResources().getString(R.string.act_certificates_temper_warning);
+            tvOStatus.setText(getResources().getString(R.string.act_certificates_warning));
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
         }
 
         if (intSimilar != -1) {
-            tvSimilar.setText("相似度" + intSimilar + "%");
+            tvSimilar.setText(getResources().getString(R.string.act_certificates_similar) + intSimilar + "%");
         }
         tvTemp.setText(maxTemp + "℃");
         tvTip.setText(message);
@@ -541,16 +545,16 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
 
         if (isPass) {
-            message += ",请通行";
+            message += getResources().getString(R.string.act_certificates_please_pass);
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-            tvVerifyInfo.setText("可以通行");
+            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_can_pass));
             ledGreen();
         } else {
-            message += ",禁止通行";
+            message += getResources().getString(R.string.act_certificates_please_not_pass);
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
-            tvVerifyInfo.setText("禁止通行");
+            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_not_pass));
             ledRed();
         }
 
@@ -568,17 +572,17 @@ public class CertificatesActivity extends BaseGpioActivity {
     }
 
     private void setUITips2(boolean isNormal, final boolean isPass, float maxTemp) {
-        tvName.setText("访客");
+        tvName.setText(getResources().getString(R.string.act_certificates_visitor));
         String message = "";
         if (isNormal) {
-            message += "体温正常";
-            tvOStatus.setText("正常");
+            message += getResources().getString(R.string.act_certificates_temper_normal);
+            tvOStatus.setText(getResources().getString(R.string.act_certificates_normal));
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
-            message += "体温异常";
-            tvOStatus.setText("异常");
+            message += getResources().getString(R.string.act_certificates_temper_warning);
+            tvOStatus.setText(getResources().getString(R.string.act_certificates_warning));
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
@@ -592,16 +596,16 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
 
         if (isPass) {
-            message += ",请通行";
+            message += getResources().getString(R.string.act_certificates_please_pass);
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-            tvVerifyInfo.setText("可以通行");
+            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_can_pass));
             ledGreen();
         } else {
-            message += ",禁止通行";
+            message += getResources().getString(R.string.act_certificates_please_not_pass);
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
-            tvVerifyInfo.setText("禁止通行");
+            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_not_pass));
             ledRed();
         }
 
@@ -642,7 +646,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                     @Override
                     public void run() {
                         ivHotImage.setImageBitmap(imageBmp);
-                        tvLeftTopTemp.setText("温度：" + bodyMaxT + "℃");
+                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + bodyMaxT + "℃");
                     }
                 });
             }
@@ -685,9 +689,9 @@ public class CertificatesActivity extends BaseGpioActivity {
             } else if (msg.what == 1) {
 
                 if (mCodeTempList.size() <= 0) {
-                    tvTip.setText("测温失败，请重试");
+                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
                     isCode = false;
-                    KDXFSpeechManager.instance().playNormal("测温失败，请重试");
+                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
                     btnNoIdCard.setEnabled(true);
                     getTempHandler.removeMessages(2);
                     getTempHandler.sendEmptyMessageDelayed(2, 3000);
@@ -698,8 +702,8 @@ public class CertificatesActivity extends BaseGpioActivity {
                 Float mean = getMean(mCodeTempList);
                 if (mean < mTempMinThreshold) {
                     isCode = false;
-                    tvTip.setText("测温失败，请重试");
-                    KDXFSpeechManager.instance().playNormal("测温失败，请重试");
+                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
+                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
                     btnNoIdCard.setEnabled(true);
                     getTempHandler.removeMessages(2);
                     getTempHandler.sendEmptyMessageDelayed(2, 3000);
@@ -834,12 +838,12 @@ public class CertificatesActivity extends BaseGpioActivity {
             inputPwd(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(CertificatesActivity.this, ThermalSystemActivity.class));
+                    startActivity(new Intent(CertificatesActivity.this, CertificatesSystemActivity.class));
                 }
             });
             return;
         }
-        startActivity(new Intent(CertificatesActivity.this, ThermalSystemActivity.class));
+        startActivity(new Intent(CertificatesActivity.this, CertificatesSystemActivity.class));
     }
 
     private void onBackKeyPressed(Runnable runnable) {
@@ -959,13 +963,13 @@ public class CertificatesActivity extends BaseGpioActivity {
                 resultHandler.removeMessages(2);
                 clearUITips();
 
-                tvOriginT.setText("部门:");
+                tvOriginT.setText(getResources().getString(R.string.act_certificates_depart));
 
                 String dept = getUserInfo.dept;
                 tvOrigin.setText(TextUtils.isEmpty(dept) ? "" : dept);
                 tvName.setText(getUserInfo.name);
 
-                tvTip.setText("正在测温 ");
+                tvTip.setText(getResources().getString(R.string.act_certificates_testing));
 
                 Glide.with(CertificatesActivity.this).load(getUserInfo.head).asBitmap().into(ivIdCard);
                 resultHandler.removeMessages(3);
@@ -1025,194 +1029,5 @@ public class CertificatesActivity extends BaseGpioActivity {
         });
     }
 
-
-    class Verifier extends Thread {
-        private static final String TAG = "Verifier";
-        private IdCardMsg idCardMsg;
-        private Bitmap idCardBitmap;
-        private static final int MAX_FACE_FEATURE_NUM = 5;
-        private List<FaceFeature> faceFeatureList = new ArrayList<>();
-        private Thread compareThread = null;
-        private boolean isComparing = true;
-        private Thread collectThread = null;
-        private boolean isCollecting = false;
-        private long NO_FACE_CLEAR_DELAY = 5000;
-        private OnCompareCallback compareCallback;
-        private long mCacheTime = 0;
-        private int mFaceId = -1;
-
-        /***
-         * 输入身份证的时候开启对比线程，并将时间重置为0
-         * @param msg
-         * @param bitmap
-         * @param compareCallback
-         */
-        public void inputIDcard(IdCardMsg msg, Bitmap bitmap, OnCompareCallback compareCallback) {
-            idCardMsg = msg;
-            idCardBitmap = bitmap;
-            mCacheTime = 0;
-            if (compareCallback != null) {
-                compareCallback.getIdCardMsg(idCardMsg, idCardBitmap);
-            }
-            startCompareThread();
-        }
-
-        public void startCollectFaceFeature(int faceId) {
-            if (mFaceId != faceId) {
-                mFaceId = faceId;
-                faceFeatureList.clear();
-                closeCollectThread();
-            }
-            if (faceFeatureList.size() > MAX_FACE_FEATURE_NUM) {
-                return;
-            }
-            if (collectThread != null && collectThread.isAlive()) {
-                return;
-            }
-            Log.e(TAG, "startCollectFaceFeature: 开启收集线程");
-            isCollecting = true;
-            collectThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (isCollecting) {
-                        if (faceFeatureList.size() <= MAX_FACE_FEATURE_NUM) {
-                            if (!certificatesView.hasFace()) {
-                                closeCollectThread();
-                                break;
-                            }
-                            Log.e(TAG, "run:当前特征数：" + faceFeatureList.size());
-                            FaceFeature faceFeature = certificatesView.getFaceFeature();
-                            if (faceFeature != null) {
-                                faceFeatureList.add(faceFeature);
-                            }
-                        } else {
-                            closeCollectThread();
-                            break;
-                        }
-                    }
-                }
-            });
-            collectThread.start();
-        }
-
-        public void closeCollectThread() {
-            if (isCollecting) {
-                Log.e(TAG, "closeCollectThread: 结束收集线程");
-                isCollecting = false;
-                collectThread = null;
-            }
-        }
-
-        private void reset() {
-            Log.e(TAG, "reset: 重置状态");
-            closeCollectThread();
-            closeCompareThread();
-            mCacheTime = 0;
-            idCardMsg = null;
-            idCardBitmap = null;
-            compareCallback = null;
-            faceFeatureList.clear();
-            if (compareCallback != null) {
-                compareCallback.onShutdown();
-            }
-        }
-
-        public void startCompareThread() {
-            Log.e(TAG, "startCompareThread: 欲开启对比线程");
-            if (compareThread != null && compareThread.isAlive()) {
-                Log.e(TAG, "startCompareThread: 对比线程正在运行");
-                return;
-            }
-            Log.e(TAG, "startCompareThread: 开启对比线程");
-            isComparing = true;
-            compareThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (isComparing) {
-                        if (!certificatesView.hasFace()) {
-                            if (mCacheTime == 0) {
-                                mCacheTime = System.currentTimeMillis();
-                            } else if (System.currentTimeMillis() - mCacheTime >= NO_FACE_CLEAR_DELAY) {
-                                Log.e(TAG, "run: " + NO_FACE_CLEAR_DELAY + "毫秒内没有人脸进入，清除身份信息");
-                                reset();
-                                closeCompareThread();
-                                break;
-                            }
-                            continue;
-                        }
-
-                        if (faceFeatureList.size() <= MAX_FACE_FEATURE_NUM) {
-                            continue;
-                        }
-
-                        Log.e(TAG, "run: 开始对比");
-                        FaceFeature idCardFeature = certificatesView.inputIdCard(idCardBitmap);
-
-                        float finalSimilar = 0;
-                        for (FaceFeature faceFeature : faceFeatureList) {
-                            FaceSimilar compare = certificatesView.compare(faceFeature, idCardFeature);
-                            float comapareSimilar = compare.getScore();
-                            Log.e(TAG, "run: 对比:" + comapareSimilar);
-                            if (comapareSimilar > finalSimilar) {
-                                finalSimilar = comapareSimilar;
-                            }
-                        }
-
-                        Log.e(TAG, "run: 结果回调：" + finalSimilar);
-
-                        if (compareCallback != null) {
-                            compareCallback.compareFinish(finalSimilar);
-                        }
-
-                        reset();
-                        break;
-                    }
-                }
-            });
-            compareThread.start();
-        }
-
-        public void closeCompareThread() {
-            if (isComparing) {
-                Log.e(TAG, "startCompareThread: 结束对比线程");
-                isComparing = false;
-                compareThread = null;
-            }
-        }
-
-    }
-
-    public interface OnCompareCallback {
-        void getIdCardMsg(IdCardMsg msg, Bitmap bitmap);
-
-        void onShutdown();
-
-        void compareFinish(float similar);
-    }
-    /*
-     * 由身份证开启验证线程
-     * 验证线程中循环检测人脸，如果没有人脸，则几秒后清除身份证缓存和信息
-     * 有人脸以后跳过清除判断，并且开启另一个线程判断人脸特征采集情况
-     * 人脸特征采集完毕，开始对比，结果返回
-     *
-     *
-     * */
-
-    private OnCompareCallback onCompareCallback = new OnCompareCallback() {
-        @Override
-        public void getIdCardMsg(IdCardMsg msg, Bitmap bitmap) {
-            Log.e(TAG, "getIdCardMsg: 收到卡号：" + msg.name);
-        }
-
-        @Override
-        public void onShutdown() {
-            Log.e(TAG, "onShutdown: 线程被中断，清除身份证信息");
-        }
-
-        @Override
-        public void compareFinish(float similar) {
-            Log.e(TAG, "compareFinish: 对比结果：" + similar);
-        }
-    };
 
 }

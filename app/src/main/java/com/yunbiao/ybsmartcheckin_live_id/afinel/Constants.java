@@ -122,7 +122,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CERTIFICATES;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机

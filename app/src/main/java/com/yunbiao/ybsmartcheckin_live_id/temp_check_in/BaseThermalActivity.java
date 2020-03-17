@@ -132,8 +132,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
-            Log.e(TAG, "newestInfraredTemp: 原始值：" + measureF + " --- 处理值：" + afterF);
-
             if (isOnlyFace()) {
                 return;
             }
