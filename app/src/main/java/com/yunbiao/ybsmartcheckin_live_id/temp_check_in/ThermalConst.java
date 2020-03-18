@@ -34,6 +34,7 @@ public class ThermalConst {
         String TEMP_MIN_THRESHOLD = "tempMinThreshold";
         String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";
         String THERMAL_IMAGE_MIRROR = "thermalImageMirror";
+        String THERMAL_F_ENABLED = "fEnabled";
     }
 
     interface Default {
@@ -49,6 +50,7 @@ public class ThermalConst {
         float TEMP_MIN_THRESHOLD = 35.5f;
         float TEMP_WARNING_THRESHOLD = 37.3f;
         boolean THERMAL_IMAGE_MIRROR = true;
+        boolean THERMAL_F_ENABLED = false;
     }
 
 }

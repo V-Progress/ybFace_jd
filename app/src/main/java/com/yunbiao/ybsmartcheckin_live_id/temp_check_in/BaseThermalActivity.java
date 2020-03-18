@@ -12,6 +12,7 @@ import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.intelligence.hardware.temperature.callback.InfraredTempCallBack;
 import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -24,6 +25,9 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
+import timber.log.Timber;
 
 /***
  * 1.数据上传逻辑
@@ -50,6 +54,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private boolean lowTempModel;
     private float mThermalCorrect;
     private boolean distanceTipEnable;
+    private boolean mFEnabled;
 
     @Override
     protected void initData() {
@@ -74,6 +79,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         //温度补偿
         mThermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         TemperatureModule.getIns().setmCorrectionValue(mThermalCorrect);
+
+        mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
 
         //模式切换
         int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
@@ -215,6 +222,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private float mCacheBeforTemper = 0.0f;
     private float mFinalTemp = 0.0f;
     private long mCacheTime = 0;
+    private float mCacheDiffValue = 2.0f;
     private Bitmap mLastHotBitmap = null;
     private HotImageK3232CallBack imageK3232CallBack = new HotImageK3232CallBack() {
         @Override
@@ -232,7 +240,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 if (mCacheBeforTemper == 0.0f || sensorT < mCacheBeforTemper) {
                     mCacheBeforTemper = sensorT;
                 }
-
                 tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
@@ -244,7 +251,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 return;
             }
 
-            if (sensorT - mCacheBeforTemper < 2.0f) {
+            Timber.e("newestHotImageData: 缓存温差值：%s", mCacheDiffValue);
+            if (sensorT - mCacheBeforTemper < mCacheDiffValue) {
                 return;
             }
 
@@ -258,7 +266,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 if (tempCacheList.size() < 4) {
                     return;
                 }
-
                 mCacheTime = System.currentTimeMillis();
 
                 Float max = Collections.max(tempCacheList);
@@ -267,6 +274,15 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
                 if (mFinalTemp < mTempWarningThreshold) {
                     mFinalTemp += mThermalCorrect;
+
+
+                    float currDiffValue = sensorT - mCacheBeforTemper - 3.0f;
+                    Timber.e("newestHotImageData: ------------------------------当前温差值：%s", currDiffValue);
+                    mCacheDiffValue = mCacheDiffValue == 2.0f
+                            //判断当前差值是否大于2.0f，如果是则存值
+                            ? Math.max(currDiffValue, mCacheDiffValue)
+                            //判断当前差值是否大于2并且小于缓存差值，如果是则存值
+                            : (currDiffValue > 2.0f && currDiffValue < mCacheDiffValue ? currDiffValue : mCacheDiffValue);
                 }
 
                 mFinalTemp = formatF(mFinalTemp);
@@ -472,13 +488,39 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                                 sendClearMessage();
                             }
                         };
+                    }
 
-                    }
+                    //换算华氏度
                     if (resultTemper <= mHighestTemp) {
-                        resultTip += " " + resultTemper + " ℃";
+                        //华氏度
+                        if (mFEnabled) {
+                            resultTemper = (float) (resultTemper * 1.8 + 32);
+                            resultTemper = formatF(resultTemper);
+                            resultTip += " " + resultTemper;
+                        } else {
+                            resultTip += " " + resultTemper;
+                        }
                     }
-                    showUIResult(resultTip, bgId);
-                    KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
+
+                    //设置文字提示
+                    String textTip;
+                    if (mFEnabled) {
+                        textTip = resultTip + " ℉";
+                    } else {
+                        textTip = resultTip + " ℃";
+                    }
+                    showUIResult(textTip, bgId);
+
+                    //设置语音播报
+                    Locale locale = APP.getContext().getResources().getConfiguration().locale;
+                    boolean isChina = TextUtils.equals(locale.getCountry(), Locale.CHINA.getCountry());
+                    String speechTip;
+                    if (mFEnabled) {
+                        speechTip = resultTip + (isChina ? "华氏度" : "Fahrenheit degree");
+                    } else {
+                        speechTip = resultTip + (isChina ? "摄氏度" : "Centigrade");
+                    }
+                    KDXFSpeechManager.instance().playNormal(speechTip, resultRunnable);
 
                     //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
                     if (mCurrMode == ThermalConst.THERMAL_FACE_TEMP || mCurrMode == ThermalConst.INFARED_FACE) {

@@ -1,6 +1,7 @@
 package com.yunbiao.faceview;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -19,6 +20,8 @@ public class DrawHelper {
     private int previewWidth, previewHeight, canvasWidth, canvasHeight, cameraDisplayOrientation, cameraId;
     private boolean isMirror;
     private boolean mirrorHorizontal = false, mirrorVertical = false;
+
+    private static boolean livnessEnable;
 
     /**
      * 创建一个绘制辅助类对象，并且设置绘制相关的参数
@@ -60,6 +63,10 @@ public class DrawHelper {
 
     public void draw(FaceRectView faceRectView, DrawInfo drawInfo) {
         faceRectView.addFaceInfo(drawInfo);
+    }
+
+    public void setLivnessEnable(boolean livnessEnable) {
+        this.livnessEnable = livnessEnable;
     }
 
     /**
@@ -209,10 +216,9 @@ public class DrawHelper {
         mPath.lineTo(rect.left, rect.bottom - rect.height() / 4);
         canvas.drawPath(mPath, paint);
 
-        // 绘制文字，用最细的即可，避免在某些低像素设备上文字模糊
-        paint.setStrokeWidth(1);
+        drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(),rect.left, rect.top - 10);
 
-        if (drawInfo.getName() == null) {
+        /*if (drawInfo.getName() == null) {
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setTextSize(rect.width() / 8);
 
@@ -223,10 +229,33 @@ public class DrawHelper {
                     + (drawInfo.getLiveness() == LivenessInfo.ALIVE ? "ALIVE" : (drawInfo.getLiveness() == LivenessInfo.NOT_ALIVE ? "NOT_ALIVE" : "UNKNOWN"));
             canvas.drawText(str, rect.left, rect.top - 10, paint);
         } else {
-//            paint.setStyle(Paint.Style.FILL_AND_STROKE);
-//            paint.setTextSize(rect.width() / 8);
-//            canvas.drawText(drawInfo.getName(), rect.left, rect.top - 10, paint);
+            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setTextSize(rect.width() / 8);
+            canvas.drawText(drawInfo.getName(), rect.left, rect.top - 10, paint);
+        }*/
+    }
+
+    private static void drawTemper(Canvas canvas, Paint paint, int isLiveness, float drawInfoTemper, float temper, int left, int top) {
+        if (livnessEnable && isLiveness != LivenessInfo.ALIVE) {
+            return;
         }
+        // 绘制文字，用最细的即可，避免在某些低像素设备上文字模糊
+        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        if (temper >= 37.3f) {
+            paint.setColor(Color.RED);
+        } else {
+            paint.setColor(Color.GREEN);
+        }
+        paint.setTextSize(26);
+        String text = "";
+        if(drawInfoTemper != 0.0f){
+            text += drawInfoTemper + "℃，";
+        }
+        if(temper != 0.0f){
+            text += temper + "℃";
+        }
+        canvas.drawText(text, left, top, paint);
     }
 
     public void setPreviewWidth(int previewWidth) {

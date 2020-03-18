@@ -31,6 +31,7 @@ import com.arcsoft.face.VersionInfo;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
 import com.arcsoft.face.util.ImageUtils;
+import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -39,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +57,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FaceView extends FrameLayout {
     private static final String TAG = "FaceView";
+
+    private static boolean isSignleDetect = true;
 
     private static final int MAX_DETECT_NUM = 10;
     /**
@@ -235,6 +239,7 @@ public class FaceView extends FrameLayout {
     }
 
     private final int faceRangeCorrectValue = 50;
+
     public boolean checkFaceInFrame(Rect faceRect, View areaView) {
         areaView.getGlobalVisibleRect(mAreaRect);
         mAreaRect.left += faceRangeCorrectValue;
@@ -260,8 +265,28 @@ public class FaceView extends FrameLayout {
         return faceRect.contains(mAreaRect);
     }
 
+    public static void enableMutiple(boolean isEnable) {
+        isSignleDetect = !isEnable;
+    }
+
     public interface RectCallback {
         void onAreaRect(Rect mAreaRect, Rect mFaceRect);
+    }
+
+    private Map<Integer, FaceIndexInfo> temperHashMap = new HashMap<>();
+    public void setTemperList(ArrayList<FaceIndexInfo> arrayList) {
+        if (arrayList == null) {
+            if (temperHashMap.isEmpty()) {
+                return;
+            }
+            temperHashMap.clear();
+        } else {
+            temperHashMap.clear();
+            for (FaceIndexInfo faceIndexInfo : arrayList) {
+                Log.e(TAG, "setTemperList: " + faceIndexInfo.getFaceId() + " --- " + faceIndexInfo.getAfterTreatmentF());
+                temperHashMap.put(faceIndexInfo.getFaceId(),faceIndexInfo);
+            }
+        }
     }
 
     private CameraListener cameraListener = new CameraListener() {
@@ -306,18 +331,41 @@ public class FaceView extends FrameLayout {
             if (faceRectView != null) {
                 faceRectView.clearFaceInfo();
             }
-            List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21);
+            List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21, isSignleDetect);
             infoList = facePreviewInfoList;
+            boolean hasFace = facePreviewInfoList != null && facePreviewInfoList.size() > 0;
+
+            // TODO: 2020/3/17 这里最好还是先回调检测人脸再画框
+            if(!temperHashMap.isEmpty()){
+                for (int i = 0; i < facePreviewInfoList.size(); i++) {
+                    FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
+                    int trackId = facePreviewInfo.getTrackId();
+                    FaceIndexInfo faceIndexInfo = temperHashMap.get(trackId);
+                    if(faceIndexInfo != null){
+                        float originalTempF = faceIndexInfo.getOriginalTempF();
+                        float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                        facePreviewInfo.setTemper(afterTreatmentF);
+                        facePreviewInfo.setOringinTemper(originalTempF);
+                    }
+                }
+            }
+            //绘制人脸框
             if (facePreviewInfoList != null && faceRectView != null && drawHelper != null) {
                 drawPreviewInfo(facePreviewInfoList);
             }
             clearLeftFace(facePreviewInfoList);
 
-            if (callback != null) {
-                boolean hasFace = facePreviewInfoList != null && facePreviewInfoList.size() > 0;
-                boolean canNext = callback.onFaceDetection(hasFace, hasFace ? facePreviewInfoList.get(0) : null);
-                if (!canNext) {
-                    return;
+            //判断单人回调和多人回调
+            if (isSignleDetect) {
+                if (callback != null) {
+                    boolean canNext = callback.onFaceDetection(hasFace, hasFace ? facePreviewInfoList.get(0) : null);
+                    if (!canNext) {
+                        return;
+                    }
+                }
+            } else {
+                if (callback != null) {
+                    callback.onFaceDetection(hasFace, facePreviewInfoList);
                 }
             }
 
@@ -589,6 +637,9 @@ public class FaceView extends FrameLayout {
 
     public void setLiveness(boolean isChecked) {
         livenessDetect = isChecked;
+        if(drawHelper != null){
+            drawHelper.setLivnessEnable(isChecked);
+        }
     }
 
     public boolean getLiveness() {
@@ -660,9 +711,11 @@ public class FaceView extends FrameLayout {
     private void drawPreviewInfo(List<FacePreviewInfo> facePreviewInfoList) {
         List<DrawInfo> drawInfoList = new ArrayList<>();
         for (int i = 0; i < facePreviewInfoList.size(); i++) {
-            String name = faceHelper.getName(facePreviewInfoList.get(i).getTrackId());
-            Integer liveness = livenessMap.get(facePreviewInfoList.get(i).getTrackId());
-            Integer recognizeStatus = requestFeatureStatusMap.get(facePreviewInfoList.get(i).getTrackId());
+
+            FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
+            String name = faceHelper.getName(facePreviewInfo.getTrackId());
+            Integer liveness = livenessMap.get(facePreviewInfo.getTrackId());
+            Integer recognizeStatus = requestFeatureStatusMap.get(facePreviewInfo.getTrackId());
 
             // 根据识别结果和活体结果设置颜色
             int color = RecognizeColor.COLOR_UNKNOWN;
@@ -678,9 +731,10 @@ public class FaceView extends FrameLayout {
                 color = RecognizeColor.COLOR_FAILED;
             }
 
-            drawInfoList.add(new DrawInfo(drawHelper.adjustRect(facePreviewInfoList.get(i).getFaceInfo().getRect()),
+            drawInfoList.add(new DrawInfo(drawHelper.adjustRect(facePreviewInfo.getFaceInfo().getRect()),
                     GenderInfo.UNKNOWN, AgeInfo.UNKNOWN_AGE, liveness == null ? LivenessInfo.UNKNOWN : liveness, color,
-                    name == null ? String.valueOf(facePreviewInfoList.get(i).getTrackId()) : name));
+                    name == null ? String.valueOf(facePreviewInfoList.get(i).getTrackId()) : name
+                    , facePreviewInfo.getTemper(),facePreviewInfo.getOringinTemper()));
         }
         drawHelper.draw(faceRectView, drawInfoList);
     }
@@ -727,7 +781,6 @@ public class FaceView extends FrameLayout {
             }
         }
     }
-
 
 
     private void searchFace(final FaceFeature frFace, final Integer requestId) {

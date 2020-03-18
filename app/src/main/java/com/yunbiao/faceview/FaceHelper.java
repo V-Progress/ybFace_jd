@@ -125,7 +125,7 @@ public class FaceHelper {
         flExecutor = new ThreadPoolExecutor(1, flQueueSize, 0, TimeUnit.MILLISECONDS, flThreadQueue);
 
         int imgQueueSize = 5;
-        if(builder.imgQueueSize > 0){
+        if (builder.imgQueueSize > 0) {
             imgQueueSize = builder.imgQueueSize;
             imgThreadQueue = new LinkedBlockingQueue<>(imgQueueSize);
         } else {
@@ -136,7 +136,7 @@ public class FaceHelper {
     }
 
 
-    private  LinkedBlockingQueue<Runnable> imgThreadQueue;
+    private LinkedBlockingQueue<Runnable> imgThreadQueue;
     private ExecutorService imgExecutor;
 
     /**
@@ -214,10 +214,11 @@ public class FaceHelper {
     /**
      * 处理帧数据
      *
-     * @param nv21 相机预览回传的NV21数据
+     * @param nv21       相机预览回传的NV21数据
+     * @param isSingle
      * @return 实时人脸处理结果，封装添加了一个trackId，trackId的获取依赖于faceId，用于记录人脸序号并保存
      */
-    public List<FacePreviewInfo> onPreviewFrame(byte[] nv21) {
+    public List<FacePreviewInfo> onPreviewFrame(byte[] nv21, boolean isSingle) {
         if (faceListener != null) {
             if (ftEngine != null) {
                 faceInfoList.clear();
@@ -231,7 +232,9 @@ public class FaceHelper {
                 /*
                  * 若需要多人脸搜索，删除此行代码
                  */
-                TrackUtil.keepMaxFace(faceInfoList);
+                if (isSingle) {
+                    TrackUtil.keepMaxFace(faceInfoList);
+                }
                 refreshTrackId(faceInfoList);
             }
             facePreviewInfoList.clear();

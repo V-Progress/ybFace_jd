@@ -1188,12 +1188,10 @@ public class PassageDeviceActivity extends BaseGpioActivity {
             inputPwd(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(PassageDeviceActivity.this, SystemActivity.class));
                 }
             });
             return;
         }
-        startActivity(new Intent(PassageDeviceActivity.this, SystemActivity.class));
     }
 
     @Override

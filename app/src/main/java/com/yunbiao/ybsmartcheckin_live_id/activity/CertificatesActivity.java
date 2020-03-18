@@ -833,12 +833,10 @@ public class CertificatesActivity extends BaseGpioActivity {
             inputPwd(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(CertificatesActivity.this, SystemActivity.class));
                 }
             });
             return;
         }
-        startActivity(new Intent(CertificatesActivity.this, SystemActivity.class));
     }
 
     private void onBackKeyPressed(Runnable runnable) {

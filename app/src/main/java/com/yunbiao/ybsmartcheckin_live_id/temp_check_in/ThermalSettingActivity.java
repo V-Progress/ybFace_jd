@@ -429,6 +429,17 @@ public class ThermalSettingActivity extends BaseActivity {
             }
         });
 
+        //====华氏度开关==============================================================
+        boolean fEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
+        Switch swFEnabled = findViewById(R.id.sw_f_enabled_setting);
+        swFEnabled.setChecked(fEnabled);
+        swFEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalConst.Key.THERMAL_F_ENABLED, isChecked);
+            }
+        });
+
 /*        //====环境温度================================================================
         Button btnAmbientSub = findViewById(R.id.btn_ambient_sub_setting);
         Button btnAmbientAdd = findViewById(R.id.btn_ambient_add_setting);

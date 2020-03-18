@@ -57,8 +57,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
+        <activity android:name=".temp_check_in.Thermal6080Activity"></activity>
         <activity android:name=".activity.TestActivity" />
-
         <activity android:name=".activity.PassageDeviceActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
@@ -97,9 +97,7 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" />
-
-        <!--测温考勤机-->
+            android:label="Notification Settings" /> <!-- 测温考勤机 -->
         <activity android:name=".temp_check_in.ThermalImageActivity" />
         <activity android:name=".temp_check_in.ThermalSettingActivity" />
         <activity android:name=".temp_check_in.ThermalSystemActivity" />
@@ -107,18 +105,14 @@
         <activity android:name=".temp_check_in.ThermalEditEmployActivity" />
         <activity android:name=".temp_check_in.ThermalSignActivity" />
         <activity android:name=".temp_check_in.ThermalVisitorActivity" />
-        <activity android:name=".temp_check_in.TemperatureCorrectActivity" />
-
-        <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".temp_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
         <activity android:name=".temp_check_in_smt.SMTMainActivity" />
         <activity android:name=".temp_check_in_smt.SMTSystemActivity" />
         <activity android:name=".temp_check_in_smt.SMTEmployListActivity" />
         <activity android:name=".temp_check_in_smt.SMTEditEmployActivity" />
         <activity android:name=".temp_check_in_smt.SMTRecordActivity" />
         <activity android:name=".temp_check_in_smt.SMTSettingActivity" />
-        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" />
-
-        <!--人证对比-->
+        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" /> <!-- 人证对比 -->
         <activity android:name=".temp_cetificates.CertificatesActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -131,7 +125,6 @@
         <activity android:name=".temp_cetificates.CertificatesSystemActivity" />
         <activity android:name=".temp_cetificates.CertificatesSettingActivity" />
 
-
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service
             android:name=".ReadCardService"
@@ -141,6 +134,7 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
@@ -171,7 +165,6 @@
                 <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".business.AlarmManagerUtil$AlarmBroadcast"
             android:enabled="true"

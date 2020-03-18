@@ -955,8 +955,6 @@ public class SettingActivity extends BaseActivity {
                 if (activity != null) {
                     if (activity instanceof WelComeActivity) {//普通主页
                         ((WelComeActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof CertificatesActivity) {//人证主页
-                        ((CertificatesActivity) activity).setFaceViewSimilar();
                     } else if(activity instanceof ThermalImageActivity){//考勤测温主页
                         ((ThermalImageActivity) activity).setFaceViewSimilar();
                     } else if(activity instanceof SMTMainActivity){

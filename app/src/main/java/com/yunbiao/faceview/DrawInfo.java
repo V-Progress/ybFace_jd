@@ -9,6 +9,8 @@ public class DrawInfo {
     private int liveness;
     private int color;
     private String name = null;
+    private float temper;
+    private float oringinTemper;
 
     public DrawInfo(Rect rect, int sex, int age, int liveness, int color, String name) {
         this.rect = rect;
@@ -17,6 +19,33 @@ public class DrawInfo {
         this.liveness = liveness;
         this.color = color;
         this.name = name;
+    }
+
+    public DrawInfo(Rect rect, int sex, int age, int liveness, int color, String name,float temp,float oringinTemper) {
+        this.rect = rect;
+        this.sex = sex;
+        this.age = age;
+        this.liveness = liveness;
+        this.color = color;
+        this.name = name;
+        this.temper = temp;
+        this.oringinTemper = oringinTemper;
+    }
+
+    public float getOringinTemper() {
+        return oringinTemper;
+    }
+
+    public void setOringinTemper(float oringinTemper) {
+        this.oringinTemper = oringinTemper;
+    }
+
+    public float getTemper() {
+        return temper;
+    }
+
+    public void setTemper(float temp) {
+        this.temper = temp;
     }
 
     public String getName() {

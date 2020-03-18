@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 
 import io.reactivex.Observable;
@@ -132,7 +133,7 @@ public class SpUtils {
             }
             if (mCacheCompany == null) {
                 mCacheCompany = new Company();
-                mCacheCompany.setComid(0);
+                mCacheCompany.setComid(Constants.NOT_BIND_COMPANY_ID);
             }
         }
         return mCacheCompany;

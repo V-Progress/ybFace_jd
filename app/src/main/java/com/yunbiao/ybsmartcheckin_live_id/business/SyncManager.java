@@ -130,13 +130,14 @@ public class SyncManager {
                     return;
                 }
 
+                show();
+
                 //同步部门数据
                 Company company = companyResponse.getCompany();
 
                 long currTime = System.currentTimeMillis();
                 long lastTime = SpUtils.getLong(SpUtils.LAST_INIT_TIME);
                 int comid = SpUtils.getCompany().getComid();
-                boolean canSync = currTime - lastTime > SYNC_OFFSET || comid != company.getComid();
 
                 Log.e("canSync", "currTime-----------> " + currTime);
                 Log.e("canSync", "lastTime-----------> " + lastTime);
@@ -200,6 +201,10 @@ public class SyncManager {
                 }
 
                 if (companyResponse.getStatus() != 1) {
+                    if (companyResponse.getStatus() == 4) {
+                        saveCompanyInfo(null);
+                        dissmissDialog();
+                    }
                     retryGetCompany(companyResponse.getStatus());
                     return;
                 }
@@ -655,6 +660,11 @@ public class SyncManager {
     }
 
     private void show() {
+        int comid = SpUtils.getCompany().getComid();
+        if(comid == Constants.NOT_BIND_COMPANY_ID){
+            return;
+        }
+
         if (!SyncDialog.instance().isShown()) {
             SyncDialog.instance().show();
         }
@@ -668,9 +678,6 @@ public class SyncManager {
     /*===========判断方法=====================================================================================*/
     private void retryGetCompany(int tag) {
         switch (tag) {
-            case 0:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
-                break;
             case 1:
                 SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
                 break;
@@ -725,6 +732,7 @@ public class SyncManager {
             SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
         } else {
             SpUtils.saveInt(SpUtils.COMPANYID, 0);
+            SpUtils.saveStr(SpUtils.MENU_PWD, "");
         }
     }
 

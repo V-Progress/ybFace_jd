@@ -153,6 +153,13 @@ public class DaoManager {
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.FaceId.eq(faceId)).unique();
     }
 
+    public User queryUserByComIdAndFaceId(int comId, String faceId) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(comId), UserDao.Properties.FaceId.eq(faceId)).unique();
+    }
+
     /***
      * 通过ID查询员工
      * @param id
@@ -214,6 +221,12 @@ public class DaoManager {
             return null;
         }
         return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.FaceId.eq(userId)).unique();
+    }
+    public Visitor queryVisitorByComIdAndFaceId(int comId,String userId) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.ComId.eq(comId),VisitorDao.Properties.FaceId.eq(userId)).unique();
     }
 
     public List<Visitor> queryVisitorsByCompId(int compId) {

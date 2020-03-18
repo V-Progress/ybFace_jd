@@ -63,6 +63,7 @@
                 android:layout_height="match_parent" />
 
             <LinearLayout
+                android:id="@+id/ll_hot_image_area"
                 android:padding="5dp"
                 android:background="@mipmap/bg_warn"
                 android:layout_width="160dp"

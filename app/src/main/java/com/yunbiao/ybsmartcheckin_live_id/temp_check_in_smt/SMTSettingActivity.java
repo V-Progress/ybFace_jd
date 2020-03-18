@@ -317,7 +317,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
         final EditText edtTempCorr = findViewById(R.id.edt_temp_corr_setting);
         Float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
-        edtTempCorr.setText(tempCorr + "℃");
+        edtTempCorr.setText(tempCorr  + "");
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -332,12 +332,23 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 }
 
                 v1 = formatF(v1);
-                edtTempCorr.setText(v1 + "℃");
+                edtTempCorr.setText(v1 + "");
                 SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, v1);
             }
         };
         btnTempCorrSub.setOnClickListener(onClickListener);
         btnTempCorrAdd.setOnClickListener(onClickListener);
+
+        //华氏度开关
+        boolean fEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED,SMTModelConst.Default.F_ENABLED);
+        Switch swFEnabled = findViewById(R.id.sw_f_enable_smt_setting);
+        swFEnabled.setChecked(fEnabled);
+        swFEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(SMTModelConst.key.F_ENABLED,isChecked);
+            }
+        });
     }
 
     class TextWatcherImpl implements TextWatcher {

@@ -20,11 +20,13 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.EmployAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalEmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -225,6 +227,21 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
         showDialog(getString(R.string.employ_list_confirm_delete), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // TODO: 2020/3/18 离线功能
+                if(user.getCompanyId() == Constants.NOT_BIND_COMPANY_ID){
+                    DaoManager.get().delete(user);
+                    employList.remove(postion);
+                    employAdapter.notifyDataSetChanged();
+                    boolean b = FaceManager.getInstance().removeUser(user.getFaceId());
+                    FaceManager.getInstance().reloadRegisterList();
+                    if(b){
+                        UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.employ_list_delete_success));
+                    } else {
+                        UIUtils.showTitleTip(SMTEmployListActivity.this, getString(R.string.employ_list_delete_failed));
+                    }
+                    return;
+                }
+
                 final Map<String, String> map = new HashMap<>();
                 map.put("entryId", user.getId() + "");
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {

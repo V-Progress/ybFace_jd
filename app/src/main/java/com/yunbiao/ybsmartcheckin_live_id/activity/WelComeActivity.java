@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -568,135 +569,6 @@ public class WelComeActivity extends BaseGpioActivity {
     private boolean mBroadCastFlag = false;
     private long mCacheTime_TI = 0;
 
-    HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
-        @Override
-        public void newestHotImageData(Bitmap bitmap, float v, float v1, float v2, float v3, boolean b, int i) {
-
-        }
-    };
-
-    private InfraredTemperatureUtils.HotImageDataCallBack hotImageDataCallBack = new InfraredTemperatureUtils.HotImageDataCallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
-            mCacheHotImage = imageBmp;
-
-            if (ivThermalImaging != null) {
-                ivThermalImaging.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivThermalImaging.setImageBitmap(imageBmp);
-                        if (tvThermalPercent != null) {
-//                            tvThermalPercent.setText(getResources().getString(R.string.thermal_update_main) + bodyMaxT + "℃");
-                        }
-                    }
-                });
-            }
-
-            //仅热成像模式
-            if (mCurrModel == Constants.Model.MODEL_THERMAL_IMAGING_ONLY) {
-                //如果有人
-                if (isBody) {
-                    if (bodyMaxT <= 0) {
-                        return;
-                    }
-
-                    //如果缓存集合种包含这个温度则不再添加
-                    if (!mTemperatureCacheList.contains(bodyMaxT)) {
-                        if (mTemperatureCacheList.size() > 0) {
-                            Float maxValue = Collections.max(mTemperatureCacheList);
-                            if (bodyMaxT > maxValue) {
-                                mTemperatureCacheList.add(bodyMaxT);
-                            }
-                        } else {
-                            mTemperatureCacheList.add(bodyMaxT);
-                        }
-                    }
-
-                    if (getTempDelayEnabled) {
-                        if (mCacheTime_TI == 0) {
-                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
-                            mCacheTime_TI = System.currentTimeMillis();
-                            return;
-                        } else if (System.currentTimeMillis() - mCacheTime_TI < mGetTempDelayTime) {
-                            showTemperatureTips(getResources().getString(R.string.temp_measuring_setting), R.drawable.shape_main_frame_temperature_ing, 3000);
-                            return;
-                        }
-                    }
-
-                    Float maxValue = Collections.max(mTemperatureCacheList);
-
-                    if (maxValue < mTempMinThreshold) {
-                        /*showTemperatureTips(getResources().getString(R.string.please_waiting_main), R.drawable.shape_main_frame_temperature_ing, 3000);
-                        mTemperatureCacheList.clear();
-                        mBroadCastFlag = false;
-                        mCacheTime_TI = 0;*/
-                        return;
-                    }
-
-                    //判断缓存标记
-                    if (mBroadCastFlag) {
-                        return;
-                    }
-                    mBroadCastFlag = true;
-
-                    //截取摄像头画面并提示
-                    Bitmap currCameraFrame = faceView.getCurrCameraFrame();
-                    if (currCameraFrame == null) {
-                        return;
-                    }
-
-                    boolean isWarning = maxValue >= mTempWarningThreshold;
-                    final Sign temperatureSign = SignManager.instance().getTemperatureSign(maxValue);
-                    temperatureSign.setImgBitmap(currCameraFrame);
-                    temperatureSign.setHotImageBitmap(imageBmp);
-
-                    //提示
-                    playTipsAddOpenDoor(isWarning, "", temperatureSign.getTemperature());
-                    //更新记录
-                    if (signListFragment != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                signListFragment.addSignData(temperatureSign);
-                            }
-                        });
-                    }
-                    //上传记录
-                    SignManager.instance().uploadTemperatureSign(temperatureSign);
-                } else {
-                    mBroadCastFlag = false;
-                    mTemperatureCacheList.clear();
-                    mCacheTime_TI = 0;
-                }
-            }
-
-            //人脸+热成像模式
-            else if (mCurrModel == Constants.Model.MODEL_FACE_THERMAL_IMAGING) {
-                if (isBody) {
-                    if (bodyMaxT <= 0) {
-                        return;
-                    }
-
-                    //如果缓存集合中包含这个温度则不再添加
-                    if (!mTemperatureCacheList.contains(bodyMaxT)) {
-                        if (mTemperatureCacheList.size() > 0) {
-                            Float maxValue = Collections.max(mTemperatureCacheList);
-                            if (bodyMaxT > maxValue) {
-                                mTemperatureCacheList.add(bodyMaxT);
-                            }
-                        } else {
-                            mTemperatureCacheList.add(bodyMaxT);
-                        }
-                    }
-                } else {
-                    mBroadCastFlag = false;
-                    mTemperatureCacheList.clear();
-                    mCacheTime_TI = 0;
-                }
-            }
-        }
-    };
-
     private Bitmap mCacheHotImage = null;
 
     private void closeThermalImaging() {
@@ -1198,6 +1070,7 @@ public class WelComeActivity extends BaseGpioActivity {
         readCardUtils.setReadSuccessListener(readCardListener);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         /*if (ReadCardUtils.isInputFromReader(this, event)) {

@@ -56,9 +56,10 @@ public class FaceManager {
     public void init(Context context) {
         FEATURES_PATH = Constants.FEATURE_PATH;
 
-        compareEngin = new FaceEngine();
-        int compareInitCode = compareEngin.init(context, DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_0_ONLY, 16, 1, FaceEngine.ASF_FACE_RECOGNITION | FaceEngine.ASF_FACE_DETECT);
-//        isInited = compareInitCode == ErrorInfo.MOK;
+        if(compareEngin == null){
+            compareEngin = new FaceEngine();
+            int compareInitCode = compareEngin.init(context, DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_0_ONLY, 16, 1, FaceEngine.ASF_FACE_RECOGNITION | FaceEngine.ASF_FACE_DETECT);
+        }
         reloadRegisterList();
     }
 

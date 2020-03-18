@@ -214,6 +214,7 @@
     <string name="setting_portrait_outline">人像轮廓</string>
     <string name="setting_default_welcome_tip">欢迎使用云标智能考勤系统</string>
     <string name="setting_correct_temperature">矫正温度</string>
+    <string name="setting_broadcast_f">播报华氏度</string>
 
     <!--温度矫正页面-->
     <string name="act_correct_title">温度矫正</string>
@@ -223,7 +224,7 @@
     <string name="act_correct_click_get_temperature">点击测温</string>
     <string name="act_correct_thermometer_gun">测温枪温度：</string>
     <string name="act_correct_save">保存</string>
-    
+
     <!--通用的  -->
     <string name="base_tip">提示</string>
     <string name="base_ensure">确定</string>

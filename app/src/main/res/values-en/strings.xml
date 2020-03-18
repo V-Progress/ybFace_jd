@@ -215,6 +215,7 @@
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
     <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
     <string name="setting_correct_temperature">Correct Temperature</string>
+    <string name="setting_broadcast_f">Enable Fahrenheit</string>
 
     <!--温度矫正页面-->
     <string name="act_correct_title">Temperature correction</string>

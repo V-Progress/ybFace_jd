@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -241,6 +242,10 @@ public class ThermalImageActivity extends BaseThermalActivity {
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
+            // TODO: 2020/3/18 离线功能
+            //初始化人脸库
+            FaceManager.getInstance().init(APP.getContext());
+
             SyncManager.instance().requestCompany();
         }
 

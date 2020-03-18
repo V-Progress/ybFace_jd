@@ -311,7 +311,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
         //创建xls文件
         final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_导出记录.xls");
         //获取源数据
-        final List<Sign> signs = DaoManager.get().queryAll(Sign.class);
+        final List<Sign> signs = DaoManager.get().querySignByComId(SpUtils.getCompany().getComid());
         Log.e(TAG, "export: 源数据：" + (signs == null ? 0 : signs.size()));
         if (signs == null || signs.size() <= 0) {
             UIUtils.showShort(this, "没有数据");
@@ -365,97 +365,6 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                 });
             }
         });
-
-
-
-
-
-
-        /*if (isExporting) {
-            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_zzdcqsd));
-            return;
-        }
-        isExporting = true;
-        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        File file = new File(usbDiskPath);
-        if (!file.exists()) {
-            isExporting = false;
-            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_qcrup));
-            return;
-        }
-
-        String[] list = file.list();
-        for (String s : list) {
-            File usbFile = new File(file, s);
-            if (usbFile.isDirectory()) {
-                file = usbFile;
-            }
-        }
-
-        final String fileName = "faceRecord_" + dateFormat.format(new Date()) + ".txt";
-        final File jsonFile = new File(file, fileName);
-
-        ThreadUitls.runInThread(new Runnable() {
-            @Override
-            public void run() {
-                List<ExportSignBean> exportList = new ArrayList<>();
-                List<Sign> signs = DaoManager.get().queryAll(Sign.class);
-                for (Sign sign : signs) {
-                    if (sign.isUpload()) {
-                        continue;
-                    }
-                    ExportSignBean exportSignBean = new ExportSignBean();
-                    exportSignBean.setEntryid(sign.getEmpId());
-                    exportSignBean.setSignTime(sign.getTime());
-                    exportList.add(exportSignBean);
-                }
-
-                if (exportList.size() <= 0) {
-                    isExporting = false;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_sjyqbsc) + "\n" + getString(R.string.act_sign_tip_mykdcdsj));
-                        }
-                    });
-                    return;
-                }
-
-                String jsonStr = new Gson().toJson(exportList);
-
-                OutputStream outputStream = null;
-                try {
-                    outputStream = new FileOutputStream(jsonFile);
-                    outputStream.write(jsonStr.getBytes());
-                    outputStream.flush();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (outputStream != null) {
-                        try {
-                            outputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (jsonFile.exists()) {
-                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dccgwjlj) + ":\n" + jsonFile.getPath());
-                        } else {
-                            UIUtils.showTitleTip(SignActivity.this, getString(R.string.act_sign_tip_dcsb));
-                        }
-                    }
-                });
-
-                isExporting = false;
-            }
-        });*/
     }
 
     private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};

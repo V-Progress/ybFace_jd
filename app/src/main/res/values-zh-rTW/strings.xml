@@ -214,6 +214,7 @@
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用雲標智慧考勤系統</string>
     <string name="setting_correct_temperature">矯正溫度</string>
+    <string name="setting_broadcast_f">播報華氏度</string>
 
     <!--温度矫正页面-->
     <string name="act_correct_title">溫度矯正</string>

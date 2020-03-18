@@ -20,10 +20,12 @@ public class SMTModelConst {
     interface key{
         String LOW_TEMP = "lowTemp";
         String DISTANCE_TIP_ENABLE = "distanceTipEnable";
+        String F_ENABLED = "smtFEnabled";
     }
 
     interface Default{
         boolean LOW_TEMP = true;
         boolean DISTANCE_TIP_ENABLE = true;
+        boolean F_ENABLED = false;
     }
 }

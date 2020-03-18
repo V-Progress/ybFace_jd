@@ -215,6 +215,7 @@
     <string name="setting_portrait_outline">실루엣</string>
     <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
+    <string name="setting_broadcast_f">화 씨 사용 하기</string>
 
 
     <!--温度矫正页面-->

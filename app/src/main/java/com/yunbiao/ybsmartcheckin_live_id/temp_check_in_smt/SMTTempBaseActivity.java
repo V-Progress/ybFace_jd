@@ -34,6 +34,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private Float mAmbCorrValue;
     private Float mTempCorrValue;
     private boolean mDistanceTipEnable;
+    private boolean mFEnabled;
 
     @Override
     protected void initData() {
@@ -50,6 +51,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
         mLowTemp = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP, SMTModelConst.Default.LOW_TEMP);
         float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
+        mFEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED,SMTModelConst.Default.F_ENABLED);
         TemperatureModule.getIns().setmCorrectionValue(tempCorr);
 
         int currMode = SpUtils.getIntOrDef(SpUtils.SMT_MODEL_SETTING, SMTModelConst.DEFAULT_SMT_MODEL);
@@ -318,7 +320,13 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                         };
                     }
                     if (resultTemper <= mHighestTemp) {
-                        resultTip += resultTemper + "℃";
+                        if(mFEnabled){
+                            resultTemper = (float) (resultTemper * 1.8 + 32);
+                            resultTemper = formatF(resultTemper);
+                            resultTip += resultTemper + "℃";
+                        } else {
+                            resultTip += resultTemper + "℃";
+                        }
                     }
                     showUIResult(resultTip, bgId);
 

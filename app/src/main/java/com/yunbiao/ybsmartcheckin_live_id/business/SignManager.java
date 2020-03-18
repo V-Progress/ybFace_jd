@@ -151,6 +151,10 @@ public class SignManager {
         List<VisitDataBean> visitDataBeans = new ArrayList<>();
         List<StrangerDataBean> strangerDataBeanList = new ArrayList<>();
         for (Sign signBean : signs) {
+            // TODO: 2020/3/18 离线功能
+            if(signBean.getComid() == Constants.NOT_BIND_COMPANY_ID){
+                continue;
+            }
             if (signBean.getType() == 0) {//正常考勤记录
                 SignDataBean signDataBean = new SignDataBean();
                 signDataBean.entryid = signBean.getEmpId() + "";
@@ -400,6 +404,7 @@ public class SignManager {
 
     //人脸打卡和访客打卡
     public Sign checkSignData(CompareResult compareResult, float temperature) {
+        int comid = SpUtils.getCompany().getComid();
         String userId = compareResult.getUserName();
         final Date currDate = new Date();
         final Sign sign = new Sign();
@@ -412,7 +417,8 @@ public class SignManager {
             sign.setDate(dateFormat.format(currDate.getTime()));
 
             if (userId.startsWith("vi")) {
-                Visitor visitor = DaoManager.get().queryVisitorByFaceId(userId);
+                // TODO: 2020/3/18 离线功能
+                Visitor visitor = DaoManager.get().queryVisitorByComIdAndFaceId(comid, userId);
                 if (visitor != null) {
                     sign.setEmpId(visitor.getId());
                     sign.setComid(visitor.getComId());
@@ -448,7 +454,8 @@ public class SignManager {
                     return sign;
                 }
             } else {
-                User userBean = DaoManager.get().queryUserByFaceId(userId);
+                // TODO: 2020/3/18 离线功能
+                User userBean = DaoManager.get().queryUserByComIdAndFaceId(comid, userId);
                 //如果在员工库中未查到
                 if (userBean == null) {
                     return null;
@@ -521,6 +528,11 @@ public class SignManager {
 
         sign.setUpload(false);
         DaoManager.get().addOrUpdate(sign);
+
+        // TODO: 2020/3/18 离线功能
+        if(sign.getComid() == Constants.NOT_BIND_COMPANY_ID){
+            return;
+        }
 
         final long time = sign.getTime();
 
@@ -601,9 +613,8 @@ public class SignManager {
         d("上传访客记录");
         d("地址：" + ResourceUpdate.VISITOLOG);
         d("参数：" + map.toString());
+        DaoManager.get().addOrUpdate(signBean);
 
-//        File file = saveBitmap(signBean.getTime(), signBean.getImgBytes());
-//        signBean.setHeadPath(file.getPath());
         File file = new File(signBean.getHeadPath());
         OkHttpUtils.post()
                 .url(ResourceUpdate.VISITOLOG).params(map)
@@ -620,12 +631,14 @@ public class SignManager {
                     public void onResponse(String response, int id) {
                         d("上传结果：" + response);
                         JSONObject jsonObject = JSONObject.parseObject(response);
+                        Sign sign = DaoManager.get().querySignByTime(signBean.getTime());
                         signBean.setUpload(jsonObject.getInteger("status") == 1);
+                        DaoManager.get().addOrUpdate(sign);
                     }
 
                     @Override
                     public void onAfter(int id) {
-                        DaoManager.get().addOrUpdate(signBean);
+
                     }
                 });
     }
@@ -644,6 +657,10 @@ public class SignManager {
         DaoManager.get().addOrUpdate(signBean);
         final long time = signBean.getTime();
 
+        // TODO: 2020/3/18 离线功能
+        if(signBean.getComid() == Constants.NOT_BIND_COMPANY_ID){
+            return;
+        }
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -682,24 +699,24 @@ public class SignManager {
         return isCanPass;
     }
 
-    public void uploadNoIdCardResult(int isPass, Bitmap currCameraFrame, Float max, Bitmap mCacheHotImage){
+    public void uploadNoIdCardResult(int isPass, Bitmap currCameraFrame, Float max, Bitmap mCacheHotImage) {
         String url = ResourceUpdate.UPLOAD_NO_IDCARD;
         Log.e(TAG, "uploadNoIdCardResult: 地址：" + url);
 
-        Map<String,String> params = new HashMap<>();
-        params.put("isPass",isPass +"");
-        params.put("deviceNo",HeartBeatClient.getDeviceNo());
-        params.put("temper",max + "");
+        Map<String, String> params = new HashMap<>();
+        params.put("isPass", isPass + "");
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("temper", max + "");
         Log.e(TAG, "uploadNoIdCardResult: params：" + params.toString());
 
         PostFormBuilder builder = OkHttpUtils.post().url(url).params(params);
 
         File file;
-        if(currCameraFrame != null){
-            file = saveBitmap(System.currentTimeMillis(),currCameraFrame);
+        if (currCameraFrame != null) {
+            file = saveBitmap(System.currentTimeMillis(), currCameraFrame);
         } else {
-            file = new File(Constants.LOCAL_ROOT_PATH,"0.txt");
-            if(!file.exists()){
+            file = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!file.exists()) {
                 try {
                     file.createNewFile();
                 } catch (IOException e) {
@@ -707,15 +724,15 @@ public class SignManager {
                 }
             }
         }
-        builder.addFile("newHeads",file.getName(),file);
+        builder.addFile("newHeads", file.getName(), file);
         Log.e(TAG, "uploadNoIdCardResult: 头像：" + file.getPath());
 
         File reFile;
-        if(mCacheHotImage != null){
-            reFile = saveBitmap(System.currentTimeMillis(),mCacheHotImage);
+        if (mCacheHotImage != null) {
+            reFile = saveBitmap(System.currentTimeMillis(), mCacheHotImage);
         } else {
-            reFile = new File(Constants.LOCAL_ROOT_PATH,"0.txt");
-            if(!reFile.exists()){
+            reFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
+            if (!reFile.exists()) {
                 try {
                     reFile.createNewFile();
                 } catch (IOException e) {
@@ -723,7 +740,7 @@ public class SignManager {
                 }
             }
         }
-        builder.addFile("reHead",reFile.getName(),reFile);
+        builder.addFile("reHead", reFile.getName(), reFile);
         Log.e(TAG, "uploadNoIdCardResult: 热量图：" + reFile.getPath());
 
         builder.build().execute(new StringCallback() {

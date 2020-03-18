@@ -81,6 +81,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvNetState;
     private TextView tvVer;
     private TextView tvAlready;
+    private boolean mFEnabled;
 
     @Nullable
     @Override
@@ -169,9 +170,11 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         Log.e(TAG, "onResume: 重加载数据");
         float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
         int newModel = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
-        if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
+        boolean fEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED,ThermalConst.Default.THERMAL_F_ENABLED);
+        if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold || mFEnabled != fEnabled) {
             mCurrWarningThreshold = warningThreshold;
             mCurrModel = newModel;
+            mFEnabled = fEnabled;
             loadSignData();
         }
 
@@ -453,7 +456,14 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));
                 tvTime.setText(df.format(signBean.getTime()));
 
-                tvTemp.setText(signBean.getTemperature() + "℃");
+                String temper;
+                if(mFEnabled){
+                    temper = formatF((float) (signBean.getTemperature() * 1.8 + 32)) + "℉";
+                } else {
+                    temper = signBean.getTemperature() + "℃";
+                }
+                tvTemp.setText(temper);
+
                 if (mCurrModel == Constants.Model.MODEL_FACE_ONLY || signBean.getTemperature() == 0.0f) {
                     tvTemp.setVisibility(View.INVISIBLE);
                 } else {
@@ -473,6 +483,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
                 }
             }
         }
+    }
+
+    private float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
     }
 
     @Override

@@ -167,6 +167,24 @@
 
                         <TextView
                             style="@style/setting_text"
+                            android:text="播报华氏度" />
+
+                        <Switch
+                            android:id="@+id/sw_f_enable_smt_setting"
+                            android:layout_marginLeft="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/setting_text"
                             android:text="@string/setting_low_temp_model" />
 
                         <Switch

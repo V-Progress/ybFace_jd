@@ -35,6 +35,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalEditEmployActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -217,9 +218,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             return;
         }
 
-        if (departId == -1) {
-            UIUtils.showShort(this, "请选择部门");
-            return;
+        // TODO: 2020/3/18 离线功能
+        int comid = SpUtils.getCompany().getComid();
+        if(comid != Constants.NOT_BIND_COMPANY_ID){
+            if (departId == -1) {
+                UIUtils.showShort(this, "请选择部门");
+                return;
+            }
         }
 
         int sex;
@@ -237,12 +242,9 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         }
 
         String birthday = tv_birth.getText().toString();
-
         String position = et_job.getText().toString();
+        String signature = et_sign.getText().toString();
 
-        String sign = et_sign.getText().toString();
-
-        int comid = SpUtils.getCompany().getComid();
         final User addUser = new User();
         addUser.setDepartId(departId);
         addUser.setNumber(number);
@@ -253,12 +255,50 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         addUser.setCompanyId(comid);
         addUser.setBirthday(birthday);
         addUser.setPosition(position);
-        addUser.setAutograph(sign);
-
-        String job = et_job.getText().toString();
-        addUser.setPosition(job);
-        String signature = et_sign.getText().toString();
         addUser.setAutograph(signature);
+
+        // TODO: 2020/3/18 离线功能
+        if (comid == Constants.NOT_BIND_COMPANY_ID) {
+            UIUtils.showNetLoading(this);
+            List<User> users = DaoManager.get().queryAll(User.class);
+            //第一次进入没有绑定过公司的情况
+            if (users == null || users.size() <= 0) {
+                addUser.setId(1);
+                addUser.setFaceId("1");
+            } else {
+                long id = 1;
+                long faceId = 1;
+                for (int i = 0; i < users.size(); i++) {
+                    User user = users.get(i);
+                    //先取出最大的Id
+                    if (user.getId() > id) {
+                        id = user.getId();
+                    }
+                    //再取出最大的FaceId
+                    String face = user.getFaceId();
+                    int i1 = Integer.parseInt(face);
+                    if (i1 > faceId) {
+                        faceId = i1;
+                    }
+                }
+                id += 1;
+                faceId += 1;
+                addUser.setId(id);
+                addUser.setFaceId(faceId + "");
+            }
+
+            Log.e(TAG, "submitAddUser: " + addUser.getHeadPath());
+
+            boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
+            long add = DaoManager.get().add(addUser);
+            if (b) {
+                UIUtils.showShort(SMTEditEmployActivity.this, "添加成功");
+            } else {
+                UIUtils.showShort(SMTEditEmployActivity.this, "添加人脸库失败");
+            }
+            UIUtils.dismissNetLoading();
+            return;
+        }
 
         Map<String, String> params = new HashMap<>();
         params.put("depId", addUser.getDepartId() + "");
@@ -469,10 +509,14 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         int checkedRadioButtonId = rgSex.getCheckedRadioButtonId();
         final int sex = checkedRadioButtonId == R.id.rb_male ? 1 : 0;
 
-        if (departId == -1) {
-            UIUtils.showShort(this, "请选择部门");
-            return;
+        // TODO: 2020/3/18 离线功能
+        if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
+            if (departId == -1) {
+                UIUtils.showShort(this, "请选择部门");
+                return;
+            }
         }
+
         final String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
             UIUtils.showShort(this, "请输入编号");
@@ -484,6 +528,42 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         final String position = et_job.getText().toString();
 
         final String sign = et_sign.getText().toString();
+
+        final File currFile = new File(mUpdatePhotoPath);
+        File oldFile = new File(user.getHeadPath());
+        final boolean isHeadUpdated = !TextUtils.equals(currFile.getName(), oldFile.getName());
+        Log.e(TAG, "submitUpdateUser: " + currFile.getPath() + " --- " + oldFile.getPath());
+
+        // TODO: 2020/3/18 离线功能
+        if(user.getCompanyId() == Constants.NOT_BIND_COMPANY_ID){
+            UIUtils.showNetLoading(this);
+            user.setName(name);
+            user.setSex(sex);
+            user.setDepartId(mUpdateDepartId);
+            user.setDepartName(mUpdateDepartName);
+            user.setNumber(number);
+            user.setPosition(position);
+            user.setBirthday(birthday);
+            user.setAutograph(sign);
+            DaoManager.get().addOrUpdate(user);
+
+            if(isHeadUpdated){
+                user.setHeadPath(currFile.getPath());
+                boolean b1 = FaceManager.getInstance().removeUser(user.getFaceId());
+                Log.e(TAG, "submitUpdateUser: 删除旧特征：" + b1);
+                boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
+                if(b){
+                    UIUtils.showShort(this,"更新成功");
+                } else {
+                    UIUtils.showShort(this,"更新头像失败");
+                }
+            } else {
+                UIUtils.showShort(this,"更新信息成功");
+            }
+
+            UIUtils.dismissNetLoading();
+            return;
+        }
 
         Map<String, String> params = new HashMap<>();
         params.put("id", user.getId() + "");
@@ -507,11 +587,6 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         if (!TextUtils.equals(number, user.getNumber())) {
             params.put("number", number);
         }
-
-        final File currFile = new File(mUpdatePhotoPath);
-        File oldFile = new File(user.getHeadPath());
-        final boolean isHeadUpdated = !TextUtils.equals(currFile.getName(), oldFile.getName());
-        Log.e(TAG, "submitUpdateUser: " + currFile.getPath() + " --- " + oldFile.getPath());
 
         PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.UPDATSTAFF).params(params);
         if (isHeadUpdated) {
