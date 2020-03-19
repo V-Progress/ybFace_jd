@@ -152,7 +152,7 @@ public class SignManager {
         List<StrangerDataBean> strangerDataBeanList = new ArrayList<>();
         for (Sign signBean : signs) {
             // TODO: 2020/3/18 离线功能
-            if(signBean.getComid() == Constants.NOT_BIND_COMPANY_ID){
+            if (signBean.getComid() == Constants.NOT_BIND_COMPANY_ID) {
                 continue;
             }
             if (signBean.getType() == 0) {//正常考勤记录
@@ -402,8 +402,7 @@ public class SignManager {
         return sign;
     }
 
-    //人脸打卡和访客打卡
-    public Sign checkSignData(CompareResult compareResult, float temperature) {
+    public Sign checkSignData(CompareResult compareResult, float temperature, boolean isUpload) {
         int comid = SpUtils.getCompany().getComid();
         String userId = compareResult.getUserName();
         final Date currDate = new Date();
@@ -448,8 +447,10 @@ public class SignManager {
                         e.printStackTrace();
                     }
 
-                    notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
-                    sendVisitRecord(sign);
+                    if (isUpload) {
+                        notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
+                        sendVisitRecord(sign);
+                    }
 
                     return sign;
                 }
@@ -472,12 +473,19 @@ public class SignManager {
                 sign.setType(0);
                 sign.setHeadPath(userBean.getHeadPath());
 
-                sendSignRecord(sign);
+                if (isUpload) {
+                    sendSignRecord(sign);
+                }
 
                 return sign;
             }
         }
         return null;
+    }
+
+    //人脸打卡和访客打卡
+    public Sign checkSignData(CompareResult compareResult, float temperature) {
+        return checkSignData(compareResult, temperature, true);
     }
 
     public Sign getTemperatureSign(float temperatureValue) {
@@ -530,7 +538,7 @@ public class SignManager {
         DaoManager.get().addOrUpdate(sign);
 
         // TODO: 2020/3/18 离线功能
-        if(sign.getComid() == Constants.NOT_BIND_COMPANY_ID){
+        if (sign.getComid() == Constants.NOT_BIND_COMPANY_ID) {
             return;
         }
 
@@ -658,7 +666,7 @@ public class SignManager {
         final long time = signBean.getTime();
 
         // TODO: 2020/3/18 离线功能
-        if(signBean.getComid() == Constants.NOT_BIND_COMPANY_ID){
+        if (signBean.getComid() == Constants.NOT_BIND_COMPANY_ID) {
             return;
         }
         OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(map).build().execute(new StringCallback() {

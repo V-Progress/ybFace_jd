@@ -114,11 +114,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         }
-
-        //温度补正
-//        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
-//        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
-//        TemperatureModule.getIns().setaCorrectionValue(mAmbCorrValue);
     }
 
     @Override
@@ -199,7 +194,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 }
 
                 mFinalTemp = formatF(mFinalTemp);
-                sendTempTipsMessage(mFinalTemp);
+                sendTempTipsMessage(mFinalTemp, null);
 
                 if (mFinalTemp < mHighestTemp) {
                     //仅测温模式下发送陌生人记录
@@ -227,12 +222,12 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private HotImageK3232CallBack imageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
-            sendUpdateMessage(imageBmp, sensorT, maxT, mCacheBeforTemper);
-            mLastHotBitmap = imageBmp;
-
             if (isOnlyFace()) {
                 return;
             }
+
+            sendUpdateMessage(imageBmp, sensorT, maxT, mCacheBeforTemper);
+            mLastHotBitmap = imageBmp;
 
             if (!isHasFace) {
                 mCacheTime = 0;
@@ -284,7 +279,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 }
 
                 mFinalTemp = formatF(mFinalTemp);
-                sendTempTipsMessage(mFinalTemp);
+                sendTempTipsMessage(mFinalTemp,imageBmp);
                 if (mFinalTemp < mHighestTemp) {
                     if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY) {
                         Sign temperatureSign = SignManager.instance().getTemperatureSign(mFinalTemp);
@@ -355,10 +350,14 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     }
 
     //发送温度提示
-    private void sendTempTipsMessage(float temper) {
+    private void sendTempTipsMessage(float temper, Bitmap hotImage) {
         Message message = Message.obtain();
         message.what = 1;
         message.obj = temper;
+        /*message.obj = hotImage;
+        Bundle bundle = new Bundle();
+        bundle.putFloat("temper", temper);
+        message.setData(bundle);*/
         updateUIHandler.sendMessage(message);
     }
 

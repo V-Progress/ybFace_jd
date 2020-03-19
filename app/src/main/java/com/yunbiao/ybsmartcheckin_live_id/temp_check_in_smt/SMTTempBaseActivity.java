@@ -101,7 +101,6 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private Smt3232TempCallBack smt3232TempCallBack = new Smt3232TempCallBack() {
         @Override
         public void newestSmt3232Temp(float measureF, float afterF) {
-
             if (isOnlyFace()) {
                 return;
             }
