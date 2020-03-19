@@ -697,7 +697,7 @@ public class SyncManager {
             public void run() {
                 requestCompany();
             }
-        }, 10 * 1000);
+        }, 30 * 1000);
     }
 
     private void retryRequestUser(int tag) {

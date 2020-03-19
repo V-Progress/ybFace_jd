@@ -59,15 +59,6 @@ public class FaceView extends FrameLayout {
             CameraSettings.setCameraPreviewHeight(height);
         }
 
-//        float w = CameraSettings.getCameraPreviewWidth();
-//        float h = CameraSettings.getCameraPreviewHeight();
-//
-//        if(w > h){
-//            float ratio = w / h;
-//            h = w;
-//            w = h * ratio;
-//        }
-
         rgbView = new SurfaceView(getContext());
         rgbView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
         addView(rgbView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,Gravity.CENTER));

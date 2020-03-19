@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
@@ -227,12 +228,10 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult) {
         Log.e(TAG, "sendFaceTempMessage: 发送人脸识别数据");
         Sign sign = null;
-        if (compareResult.getSimilar() == -1) {
-            Log.e(TAG, "sendFaceTempMessage: 是陌生人");
+        if (TextUtils.equals(compareResult.getUserName(),"-1")) {
             //直接上报温度
             sign = SignManager.instance().getTemperatureSign(mFinalTemp);
         } else {
-            Log.e(TAG, "sendFaceTempMessage: 是熟人");
             sign = SignManager.instance().checkSignData(compareResult, mFinalTemp);
             if (sign == null) {
                 return;
@@ -254,6 +253,10 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     protected void clearStableTips() {
     }
 
+    private Runnable resultRunnable;
+    protected Runnable getResultRunnable(){
+        return resultRunnable;
+    }
     private float mHighestTemp = 45.0f;
     private Handler uiHandler = new Handler() {
         @Override
@@ -290,7 +293,6 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
 
                     int bgId;
                     String resultTip;
-                    Runnable resultRunnable;
                     float resultTemper = (float) msg.obj;
                     if (resultTemper < mTempWarningThreshold) {
                         ledGreen();

@@ -201,14 +201,11 @@ public class SMTMainActivity extends SMTTempBaseActivity {
 
         }
 
-        private boolean isBroaded = false;
-
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
             updateHasFace(hasFace);
 
             if (!hasFace) {
-                isBroaded = false;
                 return false;
             }
 
@@ -246,15 +243,11 @@ public class SMTMainActivity extends SMTTempBaseActivity {
                 return false;
             }
 
-            if (isBroaded) {
-                return false;
-            }
             return true;
         }
 
         @Override
         public void onFaceVerify(CompareResult compareResult) {
-            isBroaded = true;
             if (isOnlyFace()) {
                 //======以下是普通识别流程====================================
                 if (compareResult == null || compareResult.getSimilar() == -1) {
@@ -302,144 +295,9 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     @Override
     protected void updateSignList(Sign sign) {
         if (sign.getType() != -9) {
-            KDXFSpeechManager.instance().playNormal(sign.getName());
+            KDXFSpeechManager.instance().playNormal(sign.getName(),getResultRunnable());
         }
     }
-
-
-/*
-
-    @Override
-    protected void updateTemp(float f) {
-        tvTemperature.setText(f + "℃");
-    }
-
-    @Override
-    protected Bitmap getFaceViewBitmap() {
-        return faceView.getCurrCameraFrame();
-    }
-
-    @Override
-    protected void clearUI() {
-        if (tvTempTips.isShown()) {
-            tvTempTips.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    protected void setResult(String tip, int id, Sign sign) {
-        if (!tvTempTips.isShown()) {
-            tvTempTips.setVisibility(View.VISIBLE);
-        }
-        tvTempTips.setText(tip);
-        tvTempTips.setBackgroundResource(id);
-        if (smtSignFragment != null) {
-            smtSignFragment.updateNum(sign);
-        }
-    }
-
-    */
-    /*****识别相关回调******************************************************************************************//*
-
-    private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
-        @Override
-        public void onReady() {
-            SyncManager.instance().requestCompany();
-        }
-
-        @Override
-        public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
-
-        }
-
-        private float mLastTemp = 0.0f;
-        private boolean isBroaded = false;
-
-        @Override
-        public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
-            if (!hasFace) {//如果没有人脸
-                isBroaded = false;
-                return false;
-            }
-
-            if (isOnlyTemp()) {
-                return false;
-            }
-
-            //检测到人后开灯
-            onLight();
-
-            if (isFaceAndTemp()) {
-                if (getCurrTemp() < getMinThread()) {
-                    return false;
-                }
-
-                if (isBroaded) {
-                    return false;
-                }
-                isBroaded = true;
-                mLastTemp = getCurrTemp();
-            }
-            return true;
-        }
-
-        @Override
-        public void onFaceVerify(CompareResult compareResult) {
-            if (isFaceAndTemp()) {
-
-                float finalTemp = mLastTemp;
-                boolean isWarning = finalTemp > getWarningThread();
-                Sign sign = null;
-                if (compareResult.getSimilar() == -1) {
-                    //直接上报温度
-                    sign = SignManager.instance().getTemperatureSign(finalTemp);
-                } else {
-                    sign = SignManager.instance().checkSignData(compareResult, finalTemp);
-                    if (sign == null) {
-                        return;
-                    }
-                }
-                sign.setImgBitmap(faceView.takePicture());
-                sign.setHotImageBitmap(null);
-
-                sendTempResultMessage(isWarning,sign);
-
-                SignManager.instance().uploadTemperatureSign(sign);
-                //如果是过期则结束，陌生人则判断是否体温正常
-                if (sign.getType() == -2 || sign.getType() == -9 || isWarning) {
-                    return;
-                }
-                openDoor();
-                return;
-            }
-
-            //======以下是普通识别流程====================================
-            if (compareResult == null || compareResult.getSimilar() == -1) {
-                return;
-            }
-            Sign sign = SignManager.instance().checkSignData(compareResult, 0f);
-            if (sign == null) {
-                return;
-            }
-            if (smtSignFragment != null) {
-                smtSignFragment.updateNum(sign);
-            }
-
-            if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
-                VipDialogManager.showVipDialog(SMTMainActivity.this, sign);
-            }
-
-            KDXFSpeechManager.instance().playText(sign.getName());
-
-            if (sign.getType() == -2) {
-                return;
-            }
-
-            openDoor();
-        }
-    };
-    //========================================================
-*/
 
     private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
         @Override

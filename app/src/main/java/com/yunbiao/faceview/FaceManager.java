@@ -347,15 +347,14 @@ public class FaceManager {
                 maxSimilar = faceSimilar.getScore();
                 maxSimilarIndex = i;
             }
-            if(maxSimilar >= 70f){
-                break;
-            }
         }
 
         CompareResult compareResult = null;
         if (maxSimilarIndex != -1) {
             String name = faceRegisterInfos.get(maxSimilarIndex).getName();
             compareResult = new CompareResult(name.split("~")[0], maxSimilar);
+        } else {
+            compareResult = new CompareResult(String.valueOf(maxSimilarIndex), 0.0f);
         }
         return compareResult;
     }

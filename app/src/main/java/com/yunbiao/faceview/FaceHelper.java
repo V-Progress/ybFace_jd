@@ -371,7 +371,7 @@ public class FaceHelper {
      *
      * @param ftFaceList 传入的人脸列表
      */
-    private void refreshTrackId(List<FaceInfo> ftFaceList) {
+    /*private void refreshTrackId(List<FaceInfo> ftFaceList) {
         currentTrackIdList.clear();
 
         for (FaceInfo faceInfo : ftFaceList) {
@@ -383,8 +383,57 @@ public class FaceHelper {
 
         //刷新nameMap
         clearLeftName(currentTrackIdList);
+    }*/
+    //当前trackID
+    private int currentTrackId = 0;
+    //前一帧的trackID列表
+    private List<Integer> formerTrackIdList = new ArrayList<>();
+    //前一帧的人脸框列表
+    private List<Rect> formerFaceRectList = new ArrayList<>();
+    private void refreshTrackId(List<FaceInfo> ftFaceList) {
+        currentTrackIdList.clear();
+        //每项预先填充-1
+        for (int i = 0; i < ftFaceList.size(); i++) {
+            currentTrackIdList.add(-1);
+        }
+        //前一次无人脸现在有人脸，填充新增TrackId
+        if (formerTrackIdList.size() == 0) {
+            for (int i = 0; i < ftFaceList.size(); i++) {
+                currentTrackIdList.set(i, ++currentTrackId);
+            }
+        } else {
+            //前后都有人脸,对于每一个人脸框
+            for (int i = 0; i < ftFaceList.size(); i++) {
+                //遍历上一次人脸框
+                int minDistance = Integer.MAX_VALUE;
+                int minDistanceIndex = -1;
+                for (int j = 0; j < formerFaceRectList.size(); j++) {
+                    //获取最近的人脸框距离以及人脸框下标
+                    int distance = TrackUtil.getDistance(formerFaceRectList.get(j), ftFaceList.get(i).getRect());
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        minDistanceIndex = j;
+                    }
+                }
+                //若这两个Rect距离小于两者最大人脸框宽度的1/4，认为是同一个人脸
+                if (minDistanceIndex != -1 && minDistance < (Math.max(ftFaceList.get(i).getRect().width(), formerFaceRectList.get(minDistanceIndex).width()) >> 2)) {
+                    currentTrackIdList.set(i, formerTrackIdList.get(minDistanceIndex));
+                }
+            }
+        }
+        //上一次人脸框不存在此人脸，增加trackID并分配
+        for (int i = 0; i < currentTrackIdList.size(); i++) {
+            if (currentTrackIdList.get(i) == -1) {
+                currentTrackIdList.set(i, ++currentTrackId);
+            }
+        }
+        formerTrackIdList.clear();
+        formerFaceRectList.clear();
+        for (int i = 0; i < ftFaceList.size(); i++) {
+            formerFaceRectList.add(new Rect(ftFaceList.get(i).getRect()));
+            formerTrackIdList.add(currentTrackIdList.get(i));
+        }
     }
-
     /**
      * 获取当前的最大trackID,可用于退出时保存
      *

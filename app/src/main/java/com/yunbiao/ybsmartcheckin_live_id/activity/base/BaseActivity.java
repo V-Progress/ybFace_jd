@@ -141,11 +141,6 @@ public abstract class BaseActivity extends FragmentActivity {
         finish();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     /***
      * 选择布局
      * @return

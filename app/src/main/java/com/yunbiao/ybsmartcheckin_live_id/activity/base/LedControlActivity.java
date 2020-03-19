@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.elcapi.jnielc;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -52,9 +53,11 @@ public abstract class LedControlActivity extends BaseActivity {
         handler.sendEmptyMessageDelayed(0, delay);
     }
 
+    private static final String TAG = "LedControlActivity";
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.e(TAG, "handleMessage: --------- 已重置灯光");
             ledInit();
         }
     };

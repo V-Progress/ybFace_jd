@@ -3,51 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yunbiao.ybsmartcheckin_live_id">
 
-    <uses-permission android:name="android.permission.GET_TASKS" />
-
-    <uses-feature android:name="android.hardware.usb.host" />
-
-    <uses-permission android:name="android.hardware.usb.accessory" />
-
-    <permission android:name="android.permission.REBOOT" />
-    <permission android:name="android.permission.SHUTDOWN" />
-    <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <permission android:name="android.permission.UPDATE_DEVICE_STATS" />
-    <permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
-    <permission android:name="android.permission.READ_LOGS" />
-    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <permission android:name="android.permission.SET_TIME" />
-    <permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <permission android:name="android.permission.WRITE_SETTINGS" />
-
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-    <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.RESTART_PACKAGES" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" /> <!-- 这个权限用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
     <application
         android:name=".APP"
         android:allowBackup="true"
@@ -57,16 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".temp_check_in.Thermal6080Activity"></activity>
+        <activity android:name=".temp_check_in.FaceViewTestActivity"></activity>
+        <activity android:name=".temp_check_in.Thermal6080Activity" />
         <activity android:name=".activity.TestActivity" />
         <activity android:name=".activity.PassageDeviceActivity" />
         <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
 
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" /> <!-- com.yunbiao.yb_smart_attendance. -->
         <activity
             android:name=".SplashActivity"
             android:launchMode="singleInstance">
@@ -77,7 +30,7 @@
                 <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- com.yunbiao.yb_smart_attendance. -->
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
@@ -86,8 +39,8 @@
         <activity
             android:name=".activity.EditEmployActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
-        <activity android:name=".activity.SystemActivity" />
+        <activity android:name=".activity.SignActivity" />
+        <activity android:name=".activity.SystemActivity" /> <!-- 开机自动重启 -->
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
@@ -97,22 +50,22 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" /> <!-- 测温考勤机 -->
-        <activity android:name=".temp_check_in.ThermalImageActivity" />
+            android:label="Notification Settings" />
+        <activity android:name=".temp_check_in.ThermalImageActivity" /> <!-- 测温考勤机 -->
         <activity android:name=".temp_check_in.ThermalSettingActivity" />
         <activity android:name=".temp_check_in.ThermalSystemActivity" />
         <activity android:name=".temp_check_in.ThermalEmployListActivity" />
         <activity android:name=".temp_check_in.ThermalEditEmployActivity" />
         <activity android:name=".temp_check_in.ThermalSignActivity" />
         <activity android:name=".temp_check_in.ThermalVisitorActivity" />
-        <activity android:name=".temp_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
-        <activity android:name=".temp_check_in_smt.SMTMainActivity" />
+        <activity android:name=".temp_check_in.TemperatureCorrectActivity" />
+        <activity android:name=".temp_check_in_smt.SMTMainActivity" /> <!-- 视美泰竖屏闸机 -->
         <activity android:name=".temp_check_in_smt.SMTSystemActivity" />
         <activity android:name=".temp_check_in_smt.SMTEmployListActivity" />
         <activity android:name=".temp_check_in_smt.SMTEditEmployActivity" />
         <activity android:name=".temp_check_in_smt.SMTRecordActivity" />
         <activity android:name=".temp_check_in_smt.SMTSettingActivity" />
-        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" /> <!-- 人证对比 -->
+        <activity android:name=".temp_check_in_smt.SMTVisitorActivity" />
         <activity android:name=".temp_cetificates.CertificatesActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -121,33 +74,22 @@
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
-        </activity>
+        </activity> <!-- 人证对比 -->
         <activity android:name=".temp_cetificates.CertificatesSystemActivity" />
         <activity android:name=".temp_cetificates.CertificatesSettingActivity" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />
 
-        <service android:name="com.huashi.otg.sdk.HsOtgService" />
-        <service
-            android:name=".ReadCardService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility" />
-        </service>
-        <service android:name=".utils.killSelfService" />
-        <service android:name=".xmpp.NotificationService" />
-        <service android:name=".receiver.MyProtectService" /> <!-- 百度定位 -->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:permission="android.permission.BAIDU_LOCATION_SERVICE"
-            android:process=":remote" />
-
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
         <receiver android:name=".receiver.USBBroadcastReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />
@@ -172,17 +114,76 @@
             <intent-filter>
                 <action android:name="alarm_action" />
             </intent-filter>
-        </receiver>
+        </receiver> <!-- 百度定位 -->
+        <service android:name="com.huashi.otg.sdk.HsOtgService" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
+        <service
+            android:name=".ReadCardService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+        <service android:name=".utils.killSelfService" />
+        <service android:name=".xmpp.NotificationService" />
+        <service android:name=".receiver.MyProtectService" />
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:permission="android.permission.BAIDU_LOCATION_SERVICE"
+            android:process=":remote" />
     </application>
+
+    <permission android:name="android.permission.REBOOT" />
+
+    <permission android:name="android.permission.SHUTDOWN" />
+
+    <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <permission android:name="android.permission.UPDATE_DEVICE_STATS" />
+    <permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
+    <permission android:name="android.permission.READ_LOGS" />
+    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <permission android:name="android.permission.SET_TIME" />
+    <permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.hardware.usb.accessory" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 </manifest>

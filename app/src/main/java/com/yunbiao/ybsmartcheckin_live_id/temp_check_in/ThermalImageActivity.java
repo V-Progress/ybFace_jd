@@ -260,7 +260,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
             if (!hasFace) {//如果没有人脸
                 setBigHead();
-                isBroaded = false;
                 return false;
             }
 
@@ -304,18 +303,11 @@ public class ThermalImageActivity extends BaseThermalActivity {
             if (!hasFinalTemp()) {
                 return false;
             }
-
-            if (isBroaded) {
-                return false;
-            }
             return true;
         }
 
-        private boolean isBroaded = false;
-
         @Override
         public void onFaceVerify(CompareResult compareResult) {
-            isBroaded = true;
             if (isOnlyFace()) {
                 //======以下是普通识别流程====================================
                 if (compareResult == null || compareResult.getSimilar() == -1) {
@@ -366,7 +358,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
             signListFragment.addSignData(sign);
         }
         if (sign.getType() != -9) {
-            KDXFSpeechManager.instance().playNormal(sign.getName());
+            KDXFSpeechManager.instance().playNormal(sign.getName(),getResultRunnable());
         }
     }
 

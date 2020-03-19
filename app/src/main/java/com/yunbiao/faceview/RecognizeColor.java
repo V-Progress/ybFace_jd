@@ -18,5 +18,9 @@ public class RecognizeColor {
      * 失败的颜色
      */
     public static final int COLOR_FAILED = Color.RED;
+    /***
+     * 陌生人的颜色
+     */
+    public static final int COLOR_STRANGER = Color.BLUE;
 
 }

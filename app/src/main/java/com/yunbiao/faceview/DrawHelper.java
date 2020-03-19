@@ -218,6 +218,9 @@ public class DrawHelper {
 
         drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(),rect.left, rect.top - 10);
 
+        /*String str = drawInfo.getName();
+        canvas.drawText(str, rect.left, rect.top - 10, paint);
+*/
         /*if (drawInfo.getName() == null) {
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setTextSize(rect.width() / 8);

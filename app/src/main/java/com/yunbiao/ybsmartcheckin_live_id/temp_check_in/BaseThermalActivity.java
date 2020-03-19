@@ -251,7 +251,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 return;
             }
 
-            Timber.e("newestHotImageData: 缓存温差值：%s", mCacheDiffValue);
             if (sensorT - mCacheBeforTemper < mCacheDiffValue) {
                 return;
             }
@@ -277,7 +276,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
 
                     float currDiffValue = sensorT - mCacheBeforTemper - 3.0f;
-                    Timber.e("newestHotImageData: ------------------------------当前温差值：%s", currDiffValue);
                     mCacheDiffValue = mCacheDiffValue == 2.0f
                             //判断当前差值是否大于2.0f，如果是则存值
                             ? Math.max(currDiffValue, mCacheDiffValue)
@@ -378,7 +376,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             return;
         }
         Sign sign = null;
-        if (compareResult.getSimilar() == -1) {
+        if(TextUtils.equals(compareResult.getUserName(),"-1")){
             //直接上报温度
             sign = SignManager.instance().getTemperatureSign(mFinalTemp);
         } else {
@@ -401,6 +399,10 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         updateUIHandler.sendEmptyMessageDelayed(-1, 3000);
     }
 
+    private Runnable resultRunnable;
+    protected Runnable getResultRunnable(){
+        return resultRunnable;
+    }
     private Handler updateUIHandler = new Handler() {
         private static final String TAG = "BaseThermalActivity";
 
@@ -441,7 +443,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
                     int bgId;
                     String resultTip;
-                    Runnable resultRunnable;
                     float resultTemper = (float) msg.obj;
                     if (resultTemper < mTempWarningThreshold) {
                         ledGreen();
@@ -460,6 +461,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                         resultRunnable = new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, "run: 语音播报完毕" );
                                 sendClearMessage();
                             }
                         };
@@ -484,6 +486,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                         resultRunnable = new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, "run: 语音播报完毕" );
                                 KDXFSpeechManager.instance().playWaningRing();
                                 sendClearMessage();
                             }
@@ -504,22 +507,33 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
                     //设置文字提示
                     String textTip;
-                    if (mFEnabled) {
-                        textTip = resultTip + " ℉";
+                    if(resultTemper < mHighestTemp){
+                        if (mFEnabled) {
+                            textTip = resultTip + " ℉";
+                        } else {
+                            textTip = resultTip + " ℃";
+                        }
                     } else {
-                        textTip = resultTip + " ℃";
+                        textTip = resultTip;
                     }
+
                     showUIResult(textTip, bgId);
 
                     //设置语音播报
                     Locale locale = APP.getContext().getResources().getConfiguration().locale;
                     boolean isChina = TextUtils.equals(locale.getCountry(), Locale.CHINA.getCountry());
                     String speechTip;
-                    if (mFEnabled) {
-                        speechTip = resultTip + (isChina ? "华氏度" : "Fahrenheit degree");
+                    if(resultTemper < mHighestTemp){
+                        if (mFEnabled) {
+                            speechTip = resultTip + (isChina ? "华氏度" : "Fahrenheit degree");
+                        } else {
+                            speechTip = resultTip + (isChina ? "摄氏度" : "Centigrade");
+                        }
                     } else {
-                        speechTip = resultTip + (isChina ? "摄氏度" : "Centigrade");
+                        speechTip = resultTip;
                     }
+
+                    Log.e(TAG, "handleMessage: 执行语音播报" );
                     KDXFSpeechManager.instance().playNormal(speechTip, resultRunnable);
 
                     //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
@@ -551,6 +565,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
                     break;
                 case -1:
+                    Log.e(TAG, "handleMessage: 重置灯光");
                     isResultShown = false;
                     clearUI();
                     KDXFSpeechManager.instance().stopWarningRing();

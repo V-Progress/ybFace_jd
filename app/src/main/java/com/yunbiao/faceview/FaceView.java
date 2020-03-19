@@ -376,7 +376,8 @@ public class FaceView extends FrameLayout {
                      * 在活体检测开启，在人脸识别状态不为成功或人脸活体状态不为处理中（ANALYZING）且不为处理完成（ALIVE、NOT_ALIVE）时重新进行活体检测
                      */
 
-                    if (livenessDetect && (status == null || status != RequestFeatureStatus.SUCCEED)) {
+                    // TODO: 2020/3/19 陌生人
+                    if (livenessDetect && (status == null || status != RequestFeatureStatus.SUCCEED || status != RequestFeatureStatus.SUCCEED_STRANGER)) {
                         Integer liveness = livenessMap.get(facePreviewInfoList.get(i).getTrackId());
                         if (liveness == null
                                 || (liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING)) {
@@ -637,7 +638,7 @@ public class FaceView extends FrameLayout {
 
     public void setLiveness(boolean isChecked) {
         livenessDetect = isChecked;
-        if(drawHelper != null){
+        if (drawHelper != null) {
             drawHelper.setLivnessEnable(isChecked);
         }
     }
@@ -726,6 +727,10 @@ public class FaceView extends FrameLayout {
                 if (recognizeStatus == RequestFeatureStatus.SUCCEED) {
                     color = RecognizeColor.COLOR_SUCCESS;
                 }
+                // TODO: 2020/3/19 增加陌生人识别
+                if (recognizeStatus == RequestFeatureStatus.SUCCEED_STRANGER) {
+                    color = RecognizeColor.COLOR_STRANGER;
+                }
             }
             if (liveness != null && liveness == LivenessInfo.NOT_ALIVE) {
                 color = RecognizeColor.COLOR_FAILED;
@@ -733,8 +738,8 @@ public class FaceView extends FrameLayout {
 
             drawInfoList.add(new DrawInfo(drawHelper.adjustRect(facePreviewInfo.getFaceInfo().getRect()),
                     GenderInfo.UNKNOWN, AgeInfo.UNKNOWN_AGE, liveness == null ? LivenessInfo.UNKNOWN : liveness, color,
-                    name == null ? String.valueOf(facePreviewInfoList.get(i).getTrackId()) : name
-                    , facePreviewInfo.getTemper(),facePreviewInfo.getOringinTemper()));
+                    String.valueOf(facePreviewInfoList.get(i).getTrackId())
+                    , facePreviewInfo.getTemper(), facePreviewInfo.getOringinTemper()));
         }
         drawHelper.draw(faceRectView, drawInfoList);
     }
@@ -804,15 +809,8 @@ public class FaceView extends FrameLayout {
                         if (compareResult == null || compareResult.getUserName() == null) {
                             requestFeatureStatusMap.put(requestId, RequestFeatureStatus.FAILED);
                             faceHelper.setName(requestId, "VISITOR " + requestId);
-                            //回调识别失败的结果，说明是陌生人
-                            if (callback != null) {
-                                CompareResult cr = new CompareResult("", -1);
-                                cr.setTrackId(requestId);
-                                callback.onFaceVerify(cr);
-                            }
                             return;
                         }
-                        Log.e(TAG, "人脸对比：" + requestId + " --- " + compareResult.getTrackId() + " --- " + compareResult.getUserName() + " --- " + compareResult.getSimilar());
 
                         if (compareResult.getSimilar() > SIMILAR_THRESHOLD) {
                             boolean isAdded = false;
@@ -839,40 +837,40 @@ public class FaceView extends FrameLayout {
                             requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SUCCEED);
 
                             String userName = compareResult.getUserName();
-                            /*if(userName.startsWith("v")){
-                                Visitor visitor = DaoManager.get().queryVisitorByFaceId(userName);
-                                userName = visitor.getName();
-                            } else {
-                                User user = DaoManager.get().queryUserByFaceId(userName);
-                                userName = user.getName();
-                            }*/
                             if (callback != null) {
                                 callback.onFaceVerify(compareResult);
                             }
-                            faceHelper.setName(requestId, /*compareResult.getUserName()*/"ID: " + userName);
+                            faceHelper.setName(requestId, "ID: " + userName);
                         } else {
-                            //回调识别失败的结果，说明是陌生人
-                            if (callback != null) {
-                                CompareResult cr = new CompareResult("", -1);
-                                cr.setTrackId(requestId);
-                                callback.onFaceVerify(cr);
-                            }
+                            // TODO: 2020/3/19 增加陌生人检测逻辑
+                            if (strangerRetryMap.containsKey(requestId)) {
+                                int retryNum = strangerRetryMap.get(requestId);
+                                if (retryNum >= 1) {
+                                    faceHelper.setName(requestId, "未注册");
+                                    requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SUCCEED_STRANGER);
 
-                            Log.e(TAG, "onNext: 111111111111111111111111111");
-                            faceHelper.setName(requestId, "未注册");
+                                    //回调识别失败的结果，说明是陌生人
+                                    if (callback != null) {
+                                        CompareResult cr = new CompareResult("-1", 0.0f);
+                                        cr.setTrackId(requestId);
+                                        callback.onFaceVerify(cr);
+                                    }
+
+                                    return;
+                                } else {
+                                    retryNum += 1;
+                                    strangerRetryMap.put(requestId, retryNum);
+                                }
+                            } else {
+                                strangerRetryMap.put(requestId, 0);
+                            }
                             retryRecognizeDelayed(requestId);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        //回调识别失败的结果，说明是陌生人
-                        if (callback != null) {
-                            CompareResult cr = new CompareResult("", -1);
-                            cr.setTrackId(requestId);
-                            callback.onFaceVerify(cr);
-                        }
-                        faceHelper.setName(requestId, "未注册");
+                        faceHelper.setName(requestId, "检测失败：" + (e == null ? "NULL" : e.getMessage()));
                         retryRecognizeDelayed(requestId);
                     }
 
@@ -882,6 +880,8 @@ public class FaceView extends FrameLayout {
                     }
                 });
     }
+
+    Map<Integer, Integer> strangerRetryMap = new HashMap<>();
 
     /**
      * 将map中key对应的value增1回传

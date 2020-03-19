@@ -138,7 +138,7 @@ public class Constants {
     //默认波特率
     public static final int DEFAULT_BAUD_RATE = BaudRate.THERMAL_IMAGING_BAUD_RATE;
     //屏幕角度默认值
-    public static int DEFAULT_CAMERA_ANGLE;
+    public static int DEFAULT_CAMERA_ANGLE = 0;
     //端口号
     public static final String DEFAULT_PORT_PATH = "/dev/ttyS4";
     //大屏海报开启状态

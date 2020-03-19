@@ -9,7 +9,6 @@ import android.os.Build;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesActivity;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.Thermal6080Activity;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -84,9 +83,10 @@ public class SplashActivity extends BaseActivity {
         // TODO: 2019/12/21 设置IP地址
         Constants.checkSetIp();
 
-//        SpUtils.setMirror(false);
-//        Constants.DEFAULT_CAMERA_ANGLE = 180;
 //        startActivity(new Intent(SplashActivity.this, Thermal6080Activity.class));
+
+//        startActivity(new Intent(SplashActivity.this,FaceViewTestActivity.class));
+
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
 
