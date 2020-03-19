@@ -15,19 +15,15 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTModelConst;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import timber.log.Timber;
 
 /***
  * 1.数据上传逻辑
@@ -42,19 +38,27 @@ import timber.log.Timber;
 
 public abstract class BaseThermalActivity extends BaseGpioActivity {
 
-    private long mSpeechDelay;
-    protected int mCurrMode = -99;
-    private Float mTempMinThreshold;
-    private Float mTempWarningThreshold;
-    //    private Float mAmbCorrValue;
-//    private Float mTempCorrValue;
-    private boolean mThermalImgMirror;
+    private long mSpeechDelay;//播报延迟
+    protected int mCurrMode = -99;//当前模式
+    private Float mTempMinThreshold;//温度播报阈值
+    private Float mTempWarningThreshold;//温度报警阈值
+    private float mTempCorrect;//温度补正
+    private float mHighestTemp = 45.0f;//最高提示温度值
+    private boolean mThermalImgMirror;//热成像镜像
+    private boolean lowTempModel;//低温模式
+    private boolean distanceTipEnable;//距离提示
+    private boolean mFEnabled;//华氏度开关
 
-    private float mHighestTemp = 45.0f;
-    private boolean lowTempModel;
-    private float mThermalCorrect;
-    private boolean distanceTipEnable;
-    private boolean mFEnabled;
+    //最终温度结果集
+    private List<Float> tempCacheList = new ArrayList<>();
+    //缓存之前的温度
+    private float mCacheBeforTemper = 0.0f;
+    //缓存时间
+    private long mCacheTime = 0;
+    //缓存温差值
+    private float mCacheDiffValue = 2.0f;
+    //热成像画面
+    private Bitmap mLastHotBitmap = null;
 
     @Override
     protected void initData() {
@@ -77,8 +81,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         //距离提示
         distanceTipEnable = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
         //温度补偿
-        mThermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
-        TemperatureModule.getIns().setmCorrectionValue(mThermalCorrect);
+        mTempCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
+        TemperatureModule.getIns().setmCorrectionValue(mTempCorrect);
 
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
 
@@ -123,14 +127,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         TemperatureModule.getIns().setInfraredTempCallBack(null);
     }
 
-    protected boolean updateFaceState(boolean isFar) {
-        isFaceToFar = isFar;
-        return isFaceToFar;
-    }
-
-    private List<Float> tempCacheList = new ArrayList<>();
-    private float mCacheMeasureF = 0.0f;
-    private static final String TAG = "BaseThermalActivity";
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
@@ -139,58 +135,59 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
 
             if (!isHasFace) {
-                tempCacheList.clear();
-                sendClearTempTipsMessage();
-                if (mCacheMeasureF == 0.0f || measureF < mCacheMeasureF) {
-                    mCacheMeasureF = measureF;
+                if (mCacheBeforTemper == 0.0f || measureF < mCacheBeforTemper) {
+                    mCacheBeforTemper = measureF;
                 }
+                sendClearTempTipsMessage();
+                mCacheTime = 0;
+                tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
 
             if (isFaceToFar) {
-                tempCacheList.clear();
                 sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
+                mCacheTime = 0;
+                tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
 
             if (!isInsideRange) {
-                tempCacheList.clear();
                 sendTempLowMessage("请对准人脸框");
+                mCacheTime = 0;
+                tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
 
-            if (measureF - mCacheMeasureF < 2.0f) {
+            if (measureF - mCacheBeforTemper < 2.0f) {
+                mCacheTime = 0;
                 tempCacheList.clear();
+                mFinalTemp = 0.0f;
                 return;
             }
 
             if (afterF < mTempMinThreshold) {
-                mFinalTemp = 0.0f;
+                mCacheTime = 0;
                 tempCacheList.clear();
+                mFinalTemp = 0.0f;
                 return;
             }
 
             if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
                 tempCacheList.add(afterF);
-                if (tempCacheList.size() < 3) {
+                if (tempCacheList.size() < 2) {
                     return;
                 }
-
-                for (int i = 0; i < tempCacheList.size(); i++) {
-                    Float aFloat = tempCacheList.get(i);
-                    Log.e(TAG, "newestInfraredTemp: " + aFloat);
-                }
-
                 mCacheTime = System.currentTimeMillis();
 
                 Float max = Collections.max(tempCacheList);
+                tempCacheList.clear();
                 mFinalTemp = max;
 
                 if (mFinalTemp < mTempWarningThreshold) {
-                    mFinalTemp += mThermalCorrect;
+                    mFinalTemp += mTempCorrect;
                 }
 
                 mFinalTemp = formatF(mFinalTemp);
@@ -208,17 +205,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         }
     };
 
-    private boolean isInsideRange = false;
-
-    protected void checkFaceRange(boolean isInside) {
-        isInsideRange = isInside;
-    }
-
-    private float mCacheBeforTemper = 0.0f;
-    private float mFinalTemp = 0.0f;
-    private long mCacheTime = 0;
-    private float mCacheDiffValue = 2.0f;
-    private Bitmap mLastHotBitmap = null;
     private HotImageK3232CallBack imageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
@@ -230,18 +216,20 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             mLastHotBitmap = imageBmp;
 
             if (!isHasFace) {
-                mCacheTime = 0;
-                sendClearTempTipsMessage();
                 if (mCacheBeforTemper == 0.0f || sensorT < mCacheBeforTemper) {
                     mCacheBeforTemper = sensorT;
                 }
+                mCacheTime = 0;
+                sendClearTempTipsMessage();
                 tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
 
             if (isFaceToFar) {
+                mCacheTime = 0;
                 sendTempLowMessage(getResources().getString(R.string.main_tips_please_close));
+                tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
@@ -251,6 +239,8 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
 
             if (maxT < mTempMinThreshold) {
+                mCacheTime = 0;
+                tempCacheList.clear();
                 mFinalTemp = 0.0f;
                 return;
             }
@@ -267,7 +257,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                 mFinalTemp = max;
 
                 if (mFinalTemp < mTempWarningThreshold) {
-                    mFinalTemp += mThermalCorrect;
+                    mFinalTemp += mTempCorrect;
 
 
                     float currDiffValue = sensorT - mCacheBeforTemper - 3.0f;
@@ -291,8 +281,10 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
         }
     };
-    private boolean isHasFace = false;
 
+    //人脸逻辑判断======================================================
+    private boolean isHasFace = false;
+    private Sign mCacheSign;
     //更新是否有人脸的标签
     protected void updateHasFace(boolean hasFace) {
         isHasFace = hasFace;
@@ -301,31 +293,74 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             isFaceToFar = false;
         }
     }
+    //更新trackId
+    private int mCacheTrackId = -1;
+    protected void updateCacheSign(int trackId){
+        if(mCacheTrackId != trackId){
+            mCacheTrackId = trackId;
+            mCacheSign = null;
+        }
+    }
+    //更新人脸距离
+    private boolean isFaceToFar = true;//人脸是否太远
+    protected boolean updateFaceState(boolean isFar) {
+        isFaceToFar = isFar;
+        return isFaceToFar;
+    }
+    //更新人脸范围
+    private boolean isInsideRange = false;
+    protected void checkFaceRange(boolean isInside) {
+        isInsideRange = isInside;
+    }
+    //是否有最终值
+    private float mFinalTemp = 0.0f;
+    protected boolean hasFinalTemp() {
+        return mFinalTemp != 0.0f;
+    }
 
+    //模式判断=================================================
+    protected boolean isOnlyFace() {
+        return mCurrMode == ThermalConst.THERMAL_FACE_ONLY;
+    }
+    protected boolean isOnlyTemp() {
+        return mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.INFARED_ONLY;
+    }
+    protected boolean isInfared(){
+        return mCurrMode == ThermalConst.INFARED_FACE || mCurrMode == ThermalConst.INFARED_ONLY;
+    }
+
+    //UI显示============================================================================
+    //模式发生改变
+    protected abstract void onModeChanged(int mode);
+    //更新热成像图像
+    protected abstract void updateHotImageAndTemper(Bitmap bitmap, float temper, float maxT, float cacheT);
+    //显示距离提示
+    protected abstract boolean showStableTips(String tip, int stableTipsId);
     //如果提示框正在显示
     protected boolean isTempTipsShown() {
         return false;
     }
+    //仅清除提示框
+    protected void clearTempTips() { }
+    //显示测温结果
+    protected abstract void showUIResult(String tip, int id);
+    //获取当前截图
+    protected abstract Bitmap getCurrCameraFrame();
+    //更新列表
+    protected void updateSignList(Sign sign) { }
+    //清除所有提示UI
+    protected abstract void clearUI();
 
+    //发送更新UI的消息===================================================================
     //发送清除提示框的消息
     private void sendClearTempTipsMessage() {
         if (isTempTipsShown()) {
             updateUIHandler.sendEmptyMessage(-3);
         }
     }
-
-    //清除提示框
-    protected void clearTempTips() {
-
-    }
-
-    //是否有最终值
-    protected boolean hasFinalTemp() {
-        return mFinalTemp != 0.0f;
-    }
-
     //距离提示
-    protected void sendTempLowMessage(String tips) {
+    private boolean isResultShown = false;
+    private void sendTempLowMessage(String tips) {
         updateUIHandler.removeMessages(-2);
         if (!distanceTipEnable || isResultShown) {
             return;
@@ -335,7 +370,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         message.obj = tips;
         updateUIHandler.sendMessageDelayed(message, 100);
     }
-
     //发送界面更新消息
     private void sendUpdateMessage(Bitmap bitmap, float temper, float maxT, float cacheTemper) {
         Message message = Message.obtain();
@@ -348,7 +382,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         message.setData(bundle);
         updateUIHandler.sendMessage(message);
     }
-
     //发送温度提示
     private void sendTempTipsMessage(float temper, Bitmap hotImage) {
         Message message = Message.obtain();
@@ -360,7 +393,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         message.setData(bundle);*/
         updateUIHandler.sendMessage(message);
     }
-
     //发送上传消息
     private void sendUploadMessage(Sign sign) {
         Message message = Message.obtain();
@@ -368,8 +400,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         message.obj = sign;
         updateUIHandler.sendMessage(message);
     }
-
-    //发送人脸测温消息
+    //发送人脸识别结果
     protected void sendFaceTempMessage(Bitmap facePicture, CompareResult compareResult) {
         if (mFinalTemp > mHighestTemp) {
             return;
@@ -391,13 +422,12 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
 
         sendUploadMessage(sign);
     }
-
     //发送清除界面的消息
     private void sendClearMessage() {
         updateUIHandler.removeMessages(-1);
         updateUIHandler.sendEmptyMessageDelayed(-1, 3000);
     }
-
+    //获取结束时的执行事件
     private Runnable resultRunnable;
     protected Runnable getResultRunnable(){
         return resultRunnable;
@@ -573,48 +603,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
             }
         }
     };
-
-    private Sign mCacheSign;
-    private boolean isFaceToFar = true;//人脸是否太远
-
-    protected void updateSignList(Sign sign) {
-
-    }
-
-    private boolean isResultShown = false;
-    public static String STABLE_TIP = "请稳定体温后重新测试";
-    private int stableTipsId = R.drawable.shape_main_frame_temperature_warning;
-
-
-    protected abstract boolean isStableTipsShown();
-
-    protected abstract boolean showStableTips(String tip, int stableTipsId);
-
-    protected boolean isOnlyTemp() {
-        return mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.INFARED_ONLY;
-    }
-
-    protected boolean isFaceAndThermal() {
-        return mCurrMode == ThermalConst.THERMAL_FACE_TEMP;
-    }
-
-    protected boolean isOnlyFace() {
-        return mCurrMode == ThermalConst.THERMAL_FACE_ONLY;
-    }
-
-    protected int getCurrMode() {
-        return mCurrMode;
-    }
-
-    protected abstract void onModeChanged(int mode);
-
-    protected abstract void updateHotImageAndTemper(Bitmap bitmap, float temper, float maxT, float cacheT);
-
-    protected abstract Bitmap getCurrCameraFrame();
-
-    protected abstract void showUIResult(String tip, int id);
-
-    protected abstract void clearUI();
 
     private float getMean(List<Float> array) {
         float result = 0.0f;

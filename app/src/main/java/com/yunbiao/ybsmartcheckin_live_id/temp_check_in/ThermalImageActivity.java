@@ -168,11 +168,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
     }
 
     @Override
-    protected boolean isStableTipsShown() {
-        return tvTempTips.isShown() && TextUtils.equals(tvTempTips.getText().toString(), STABLE_TIP);
-    }
-
-    @Override
     protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1) {
         ivThermalImaging.setImageBitmap(bitmap);
         tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
@@ -194,7 +189,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
     @Override
     protected Bitmap getCurrCameraFrame() {
         Bitmap bitmap = faceView.takePicture();
-        if(bitmap == null){
+        if (bitmap == null) {
             bitmap = faceView.getCurrCameraFrame();
         }
         return bitmap;
@@ -218,8 +213,28 @@ public class ThermalImageActivity extends BaseThermalActivity {
         setBigHead();
     }
 
-    private boolean isRealLine = false;
+    @Override
+    protected boolean isTempTipsShown() {
+        return tvTempTips.isShown();
+    }
 
+    @Override
+    protected void clearTempTips() {
+        tvTempTips.setVisibility(View.GONE);
+        setBigHead();
+    }
+
+    @Override
+    protected void updateSignList(Sign sign) {
+        if (signListFragment != null) {
+            signListFragment.addSignData(sign);
+        }
+        if (sign.getType() != -9) {
+            KDXFSpeechManager.instance().playNormal(sign.getName(), getResultRunnable());
+        }
+    }
+
+    private boolean isRealLine = false;
     private void setBigHead() {
         if (!personFrameEnable) {
             return;
@@ -259,9 +274,11 @@ public class ThermalImageActivity extends BaseThermalActivity {
             updateHasFace(hasFace);
 
             if (!hasFace) {//如果没有人脸
-                setBigHead();
+//                setBigHead();
                 return false;
             }
+
+            updateCacheSign(facePreviewInfo.getTrackId());
 
             //检测到人后开灯
             onLight();
@@ -286,10 +303,10 @@ public class ThermalImageActivity extends BaseThermalActivity {
             }
 
             //检测人脸是否符合范围
-            if(mCurrMode == ThermalConst.INFARED_FACE || mCurrMode == ThermalConst.INFARED_ONLY){
+            if (isInfared()) {
                 boolean b = faceView.checkFaceInFrame(rect, faceDistanceView);
                 checkFaceRange(b);
-                if(!b){
+                if (!b) {
                     return false;
                 }
             }
@@ -341,26 +358,6 @@ public class ThermalImageActivity extends BaseThermalActivity {
             }
         }
     };
-
-    @Override
-    protected boolean isTempTipsShown() {
-        return tvTempTips.isShown();
-    }
-
-    @Override
-    protected void clearTempTips() {
-        tvTempTips.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void updateSignList(Sign sign) {
-        if (signListFragment != null) {
-            signListFragment.addSignData(sign);
-        }
-        if (sign.getType() != -9) {
-            KDXFSpeechManager.instance().playNormal(sign.getName(),getResultRunnable());
-        }
-    }
 
     /**
      *
