@@ -118,16 +118,24 @@
         android:layout_toRightOf="@+id/rl_left"
         android:background="@mipmap/bg_right_top">
 
-        <ImageView
-            android:id="@+id/iv_face"
-            android:layout_width="175dp"
-            android:layout_height="209dp"
+        <FrameLayout
+            android:id="@+id/fl_face"
+            android:padding="3dp"
+            android:background="@mipmap/bg_face_recg"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
-            android:background="@mipmap/bg_face_recg"
-            android:padding="3dp"
-            android:scaleType="fitXY"
-            android:src="@mipmap/icon_face_moren" />
+            android:layout_width="175dp"
+            android:layout_height="209dp">
+            <View
+                android:background="@mipmap/icon_face_moren"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/iv_face"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/iv_ratio"
@@ -137,22 +145,31 @@
             android:layout_marginTop="108dp"
             android:src="@mipmap/icon_compare" />
 
-        <ImageView
-            android:id="@+id/iv_idCard"
-            android:layout_width="175dp"
-            android:layout_height="209dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@mipmap/bg_idcard_recg"
+        <FrameLayout
+            android:id="@+id/fl_card"
             android:padding="3dp"
-            android:src="@mipmap/icon_idcard_moren" />
+            android:layout_alignParentRight="true"
+            android:background="@mipmap/bg_idcard_recg"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="175dp"
+            android:layout_height="209dp">
+            <View
+                android:src="@mipmap/icon_idcard_moren"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/iv_idCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tv_rlzp"
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/iv_face"
+            android:layout_below="@+id/fl_face"
             android:layout_marginLeft="53dp"
             android:layout_marginTop="25dp"
             android:background="@drawable/shape_bg_face_yellow"
@@ -165,7 +182,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/iv_idCard"
+            android:layout_below="@+id/fl_card"
             android:layout_alignParentRight="true"
             android:layout_marginTop="25dp"
             android:layout_marginRight="53dp"
@@ -179,7 +196,7 @@
             android:id="@+id/tv_alike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_face"
+            android:layout_below="@+id/fl_face"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
@@ -190,7 +207,7 @@
             android:id="@+id/iv_xsd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_face"
+            android:layout_below="@+id/fl_face"
             android:layout_marginTop="38dp"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/tv_alike"

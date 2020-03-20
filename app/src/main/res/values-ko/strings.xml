@@ -24,6 +24,8 @@
     <string name="main_temp_tips_please_far">멀리있어</string>
     <string name="main_temp_tips_so_close_text">너무 가까이</string>
     <string name="main_thermal_temp">열 화상 체온：</string>
+    <string name="main_thermal_has_person">어떤 사람</string>
+    <string name="main_thermal_no_person">아무 도 없어 요</string>
     <string name="main_please_waiting">기다려주세요</string>
     <string name="main_temp_tips_please_in_range">인식 영역을 향한 얼굴</string>
     <string name="main_tips_please_close">가까이 오 세 요</string>

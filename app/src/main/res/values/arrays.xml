@@ -18,8 +18,55 @@
         <item>@string/thermal_only_model</item>
     </string-array>
 
+    <!--
+        <item>@string/act_certificates_idcard_infared</item>-->
     <string-array name="certificates_mode">
         <item>@string/act_certificates_idcard_thermal</item>
-        <item>@string/act_certificates_idcard_infared</item>
     </string-array>
+
+    <integer-array name="hasFaceArray">
+        <item>@mipmap/h_1</item>
+        <item>@mipmap/h_2</item>
+        <item>@mipmap/h_3</item>
+        <item>@mipmap/h_4</item>
+        <item>@mipmap/h_5</item>
+        <item>@mipmap/h_6</item>
+        <item>@mipmap/h_7</item>
+        <item>@mipmap/h_8</item>
+        <item>@mipmap/h_9</item>
+        <item>@mipmap/h_10</item>
+        <item>@mipmap/h_11</item>
+        <item>@mipmap/h_12</item>
+        <item>@mipmap/h_13</item>
+        <item>@mipmap/h_14</item>
+        <item>@mipmap/h_15</item>
+        <item>@mipmap/h_16</item>
+        <item>@mipmap/h_17</item>
+        <item>@mipmap/h_18</item>
+        <item>@mipmap/h_19</item>
+        <item>@mipmap/h_20</item>
+    </integer-array>
+
+    <array name="noFaceArray">
+        <item>@mipmap/n_1</item>
+        <item>@mipmap/n_2</item>
+        <item>@mipmap/n_3</item>
+        <item>@mipmap/n_4</item>
+        <item>@mipmap/n_5</item>
+        <item>@mipmap/n_6</item>
+        <item>@mipmap/n_7</item>
+        <item>@mipmap/n_8</item>
+        <item>@mipmap/n_9</item>
+        <item>@mipmap/n_10</item>
+        <item>@mipmap/n_11</item>
+        <item>@mipmap/n_12</item>
+        <item>@mipmap/n_13</item>
+        <item>@mipmap/n_14</item>
+        <item>@mipmap/n_15</item>
+        <item>@mipmap/n_16</item>
+        <item>@mipmap/n_17</item>
+        <item>@mipmap/n_18</item>
+        <item>@mipmap/n_19</item>
+        <item>@mipmap/n_20</item>
+    </array>
 </resources>

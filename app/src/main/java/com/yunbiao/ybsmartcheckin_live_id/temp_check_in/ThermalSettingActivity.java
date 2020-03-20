@@ -666,11 +666,11 @@ public class ThermalSettingActivity extends BaseActivity {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(!mirror);
+        cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(!isChecked);
+                SpUtils.setMirror(isChecked);
             }
         });
 

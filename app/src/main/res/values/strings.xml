@@ -23,6 +23,8 @@
     <string name="main_temp_tips_please_far">请远一点</string>
     <string name="main_temp_tips_so_close_text">距离太近，请远一点</string>
     <string name="main_thermal_temp">热成像 体温：</string>
+    <string name="main_thermal_has_person">有人</string>
+    <string name="main_thermal_no_person">无人</string>
     <string name="main_please_waiting">请等待</string>
     <string name="main_temp_tips_please_in_range">请将面部对准识别区域</string>
     <string name="main_tips_please_close">请靠近点</string>

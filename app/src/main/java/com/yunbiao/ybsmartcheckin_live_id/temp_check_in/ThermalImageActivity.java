@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -39,7 +38,6 @@ import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
-import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
@@ -85,6 +83,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
     private View flDotFrame;
     private ImageView ivBigHead;
     private boolean personFrameEnable;
+    private ImageView ivInfaredImaging;
 
     @Override
     protected int getPortraitLayout() {
@@ -108,6 +107,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
         flDotFrame = findViewById(R.id.fl_dot_frame);//红点测温框
         ivBigHead = findViewById(R.id.iv_big_head);//人像测温框
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
+        ivInfaredImaging = findViewById(R.id.iv_infared_imaging_main);
         ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);//热成像图像显示
         tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);//热成像温度显示
         llThermalArea = findViewById(R.id.ll_thermal_area_main);//热成像数据区域
@@ -162,18 +162,27 @@ public class ThermalImageActivity extends BaseThermalActivity {
             llThermalArea.setVisibility(View.GONE);
         } else if (mode == ThermalConst.THERMAL_TEMP_ONLY || mode == ThermalConst.THERMAL_FACE_TEMP) {//热成像模式
             llThermalArea.setVisibility(View.VISIBLE);
+            ivInfaredImaging.setVisibility(View.GONE);
+            ivThermalImaging.setVisibility(View.VISIBLE);
         } else {
-            llThermalArea.setVisibility(View.GONE);
+            llThermalArea.setVisibility(View.VISIBLE);
+            ivThermalImaging.setVisibility(View.GONE);
+            ivInfaredImaging.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1) {
-        ivThermalImaging.setImageBitmap(bitmap);
-        tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
+    protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1, boolean hasPerson) {
+
+        if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.THERMAL_FACE_TEMP) {
+            ivThermalImaging.setImageBitmap(bitmap);
+            tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
+        } else if (mCurrMode == ThermalConst.INFARED_ONLY || mCurrMode == ThermalConst.INFARED_FACE) {
+            ivInfaredImaging.setImageBitmap(bitmap);
+            tvThermalPercent.setText(hasPerson ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
+        }
         tvMaxT.setText("maxT：" + v);
         tvCacheT.setText("cacheT：" + v1);
-
     }
 
     @Override
@@ -235,6 +244,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
     }
 
     private boolean isRealLine = false;
+
     private void setBigHead() {
         if (!personFrameEnable) {
             return;
