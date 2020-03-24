@@ -10,7 +10,7 @@
     <RelativeLayout
         android:background="@mipmap/multi_thermal_top"
         android:layout_width="match_parent"
-        android:layout_height="160dp">
+        android:layout_height="140dp">
 
         <ImageView
             android:id="@+id/iv_logo_multi_thermal"
@@ -26,24 +26,24 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="AI人脸高通量测温数据平台"
-            android:textSize="60sp" />
+            android:textSize="56sp" />
 
-        <!--<TextClock
+        <TextClock
             android:textColor="@color/white"
             android:format24Hour="yyyy-MM-dd  HH:mm"
             android:format12Hour="yyyy-MM-dd  HH:mm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
-            android:textSize="36sp" />-->
+            android:textSize="34sp" />
     </RelativeLayout>
 
 
     <LinearLayout
         android:gravity="center_vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
        android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_weight="3"
@@ -77,7 +77,7 @@
 
         <LinearLayout
             android:background="@mipmap/multi_thermal_warning_bg"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
@@ -112,7 +112,7 @@
 
     <LinearLayout
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_weight="1"
@@ -125,7 +125,7 @@
             android:padding="10dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_weight="3"
+            android:layout_weight="2.5"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
@@ -143,13 +143,13 @@
                 <ImageView
                     android:layout_centerVertical="true"
                     android:src="@mipmap/multi_thermal_record_icon"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"/>
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"/>
                 <TextView
-                    android:layout_marginLeft="80dp"
+                    android:layout_marginLeft="60dp"
                     android:textColor="@color/white"
                     android:text="通过人数"
-                    android:textSize="22dp"
+                    android:textSize="20dp"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -180,7 +180,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
                         android:text="正常体温"
@@ -209,7 +209,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:textColor="#00FFFF"
@@ -231,6 +231,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:gravity="center"
@@ -269,7 +270,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
                         android:text="到访人员"
@@ -297,7 +298,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="@mipmap/multi_thermal_normal_bg"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="7"
             android:layout_width="0dp"
             android:layout_height="match_parent">

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".temp_check_in.Thermal6080Activity">
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.yunbiao.faceview.FaceView
+            android:id="@+id/face_view"
+            android:layout_width="960dp"
+            android:layout_height="540dp"/>
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:id="@+id/iv_hot_image"
+            android:layout_width="960dp"
+            android:layout_height="540dp" />
+    </LinearLayout>
+
+    <Switch
+        android:textColor="@color/white"
+        android:background="#000"
+        android:layout_marginTop="30dp"
+        android:text="多人识别"
+        android:id="@+id/switch_enable_multiple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Switch
+        android:textColor="@color/white"
+        android:background="#000"
+        android:layout_marginTop="60dp"
+        android:text="活体检测"
+        android:id="@+id/switch_enable_liveness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_marginTop="90dp"
+        android:onClick="setAngle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Switch
+        android:layout_marginTop="160dp"
+        android:id="@+id/sw_mirror"
+        android:text="人脸框镜像"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
