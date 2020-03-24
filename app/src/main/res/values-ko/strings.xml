@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">YBFace</string>
+    <string name="app_name2">HTFace</string>
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
 
@@ -24,8 +25,8 @@
     <string name="main_temp_tips_please_far">멀리있어</string>
     <string name="main_temp_tips_so_close_text">너무 가까이</string>
     <string name="main_thermal_temp">열 화상 체온：</string>
-    <string name="main_thermal_has_person">어떤 사람</string>
-    <string name="main_thermal_no_person">아무 도 없어 요</string>
+    <string name="main_thermal_has_person">열이미지:어떤사람</string>
+    <string name="main_thermal_no_person">열이미지:아무도없어요</string>
     <string name="main_please_waiting">기다려주세요</string>
     <string name="main_temp_tips_please_in_range">인식 영역을 향한 얼굴</string>
     <string name="main_tips_please_close">가까이 오 세 요</string>
@@ -39,7 +40,7 @@
     <string name="current_model_setting">현재 모드</string>
 
     <!--系统信息-->
-    <string name="System_title">YBFace</string>
+    <string name="System_title">시스템정보</string>
     <string name="System_deviceNo">설비번호:</string>
     <string name="System_bindCode">바인딩 코드:</string>
     <string name="System_Company">회사:</string>
@@ -216,6 +217,7 @@
     <string name="setting_low_temp_model">저온 모드</string>
     <string name="setting_portrait_outline">실루엣</string>
     <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
+    <string name="setting_default_welcome_tip2">헨리 출퇴근 시스템 사용 을 환영 합 니 다.</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
     <string name="setting_broadcast_f">화 씨 사용 하기</string>
 

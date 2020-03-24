@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -36,19 +37,16 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
-import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesConst;
+import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesTestActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -82,14 +80,15 @@ import okhttp3.Request;
 public class CertificatesSettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
 
+
     @Override
     protected int getPortraitLayout() {
-        return R.layout.activity_setting;
+        return R.layout.activity_certificates_setting_h;
     }
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_setting;
+        return R.layout.activity_certificates_setting_h;
     }
 
     @Override
@@ -105,42 +104,8 @@ public class CertificatesSettingActivity extends BaseActivity {
         });
     }
 
-    private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
-        EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        edtWelComeTips.setText(welcomeTips);
-        edtWelComeTips.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String inputWelcome = s.toString();
-                SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
-            }
-        });
-
-        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
-        Switch swQrCode = findViewById(R.id.sw_qrcode_setting);
-        swQrCode.setChecked(qrCodeEnabled);
-        swQrCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.QRCODE_ENABLED, isChecked);
-            }
-        });
-    }
-
     @Override
     protected void initData() {
-        initUISetting();
         //当前模式
         initModelSetting();
         //设置IP
@@ -157,329 +122,69 @@ public class CertificatesSettingActivity extends BaseActivity {
         initCameraSizeSetting();
         //相似度阈值
         initSimilarSetting();
-        //测温模块设置
-        initTemperatureSetting();
-        //人脸弹窗设置
-        initFaceVipDialogSetting();
         //摄像头设置
         initCameraSetting();
-        //活体开关
-        initLivenessSetting();
-        //大屏海报开关
-        initPosterSetting();
-        //设置热成像身体检测相关的参数
-        initBodySetting();
-        //读卡器模块
-        initReadCardSetting();
     }
 
-    private void initReadCardSetting() {
-        boolean readCardEnabled = SpUtils.getBoolean(SpUtils.READ_CARD_ENABLED, Constants.DEFAULT_READ_CARD_ENABLED);
-        Switch swReadCard = findViewById(R.id.sw_readcard_setting);
-        swReadCard.setChecked(readCardEnabled);
-        swReadCard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setCorrectUI();
+    }
+
+    private void setCorrectUI() {
+        //进入矫正
+        float thermalCorrect = SpUtils.getFloat(CertificatesConst.Key.CORRECT_VALUE, CertificatesConst.Default.CORRECT_VALUE);
+        Button btnCorrectSub = findViewById(R.id.btn_correct_sub_setting);
+        Button btnCorrectAdd = findViewById(R.id.btn_correct_add_setting);
+        final EditText edtCorrect = findViewById(R.id.edt_correct_setting);
+        edtCorrect.setText(thermalCorrect + "");
+
+        View.OnClickListener correctOnclickListener = new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.READ_CARD_ENABLED, isChecked);
+            public void onClick(View v) {
+                String s = edtCorrect.getText().toString();
+                float corrValue = Float.parseFloat(s);
+                if (v.getId() == R.id.btn_correct_sub_setting) {
+                    corrValue -= 0.1f;
+                } else {
+                    corrValue += 0.1f;
+                }
+                corrValue = formatF(corrValue);
+                SpUtils.saveFloat(CertificatesConst.Key.CORRECT_VALUE, corrValue);
+                edtCorrect.setText(corrValue + "");
+            }
+        };
+        btnCorrectSub.setOnClickListener(correctOnclickListener);
+        btnCorrectAdd.setOnClickListener(correctOnclickListener);
+        findViewById(R.id.btn_thermal_corr).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CertificatesSettingActivity.this, CertificatesCorrectActivity.class));
             }
         });
-    }
-
-    private void initBodySetting() {
-        Button btnBodyPercentSub = findViewById(R.id.btn_body_percent_sub_setting);
-        Button btnBodyPercentAdd = findViewById(R.id.btn_body_percent_add_setting);
-        final EditText edtBodyPercent = findViewById(R.id.edt_body_percent_setting);
-        final int bodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);
-        edtBodyPercent.setText(bodyPercent + "");
-
-        View.OnClickListener bodyPercentOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String percentValue = edtBodyPercent.getText().toString();
-                int value = Integer.parseInt(percentValue);
-                if (v.getId() == R.id.btn_body_percent_sub_setting) {
-                    value -= 1;
-                    if (value <= 1) {
-                        value = 1;
-                    }
-                } else {
-                    value += 1;
-                }
-                edtBodyPercent.setText(value + "");
-                SpUtils.saveInt(SpUtils.BODY_PERCENT, value);
-            }
-        };
-        btnBodyPercentSub.setOnClickListener(bodyPercentOnClickListener);
-        btnBodyPercentAdd.setOnClickListener(bodyPercentOnClickListener);
-
-        Button btnMinTSub = findViewById(R.id.btn_body_min_t_sub_setting);
-        Button btnMinTAdd = findViewById(R.id.btn_body_min_t_add_setting);
-        final EditText edtMinT = findViewById(R.id.edt_body_min_t_setting);
-        final int minT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);
-
-        float textValue = minT;
-        edtMinT.setText((textValue / 10) + "");
-        View.OnClickListener minTClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String minT = edtMinT.getText().toString();
-                float value = Float.parseFloat(minT);
-                value = formatF(value);
-
-                if (v.getId() == R.id.btn_body_min_t_sub_setting) {
-                    value -= 0.1;
-                } else {
-                    value += 0.1;
-                }
-                value = formatF(value);
-                edtMinT.setText(value + "");
-
-                SpUtils.saveInt(SpUtils.BODY_MIN_T, (int) (value * 10));
-            }
-        };
-        btnMinTSub.setOnClickListener(minTClickListener);
-        btnMinTAdd.setOnClickListener(minTClickListener);
-
-        Button btnMaxTSub = findViewById(R.id.btn_body_max_t_sub_setting);
-        Button btnMaxTAdd = findViewById(R.id.btn_body_max_t_add_setting);
-        final EditText edtMaxT = findViewById(R.id.edt_body_max_t_setting);
-        final int maxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);
-        float tValue = maxT;
-        edtMaxT.setText((tValue / 10) + "");
-
-        View.OnClickListener maxTClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String maxT = edtMaxT.getText().toString();
-                float value = Float.parseFloat(maxT);
-                value = formatF(value);
-
-                if (v.getId() == R.id.btn_body_max_t_sub_setting) {
-                    value -= 0.1;
-                    if (value <= 40.0f) {
-                        value = 40.0f;
-                    }
-                } else {
-                    value += 0.1;
-                }
-                value = formatF(value);
-                edtMaxT.setText(value + "");
-
-                SpUtils.saveInt(SpUtils.BODY_MAX_T, (int) (value * 10));
-            }
-        };
-        btnMaxTSub.setOnClickListener(maxTClickListener);
-        btnMaxTAdd.setOnClickListener(maxTClickListener);
-    }
-
-    private void initPosterSetting() {
-        boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);
-        Switch swPoster = findViewById(R.id.sw_poster_setting);
-        swPoster.setChecked(isEnabled);
-        swPoster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.POSTER_ENABLED, isChecked);
-            }
-        });
+//        findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
     }
 
     private void initModelSetting() {
-        final View llTempRangeArea = findViewById(R.id.ll_temp_range_area);
-        final View llThermalMirrorArea = findViewById(R.id.ll_thermal_mirror_area);
-        //模式==================================================================================
-        final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
-        final TextView tvBaudRate = findViewById(R.id.tv_baud_rate_setting);
-        final String[] items = CertificatesConst.models;
-        final int certificatesMode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.CERTIFICATES_DEFAULT_MODE);
-        tvModelSetting.setText(items[certificatesMode]);
-
-        tvModelSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final int certificatesMode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.CERTIFICATES_DEFAULT_MODE);
-                AlertDialog.Builder builder = new AlertDialog.Builder(CertificatesSettingActivity.this);
-                builder.setTitle(getResources().getString(R.string.setting_select_model));
-                builder.setSingleChoiceItems(items, certificatesMode, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, final int whichModel) {
-                        SpUtils.saveInt(CertificatesConst.Key.MODE, whichModel);
-
-                        tvModelSetting.setText(items[whichModel]);
-
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-
-        //串口号========================================================================
-        final String[] allPortPath = InfraredTemperatureUtils.getAllPortPath();
-        if (allPortPath == null || allPortPath.length <= 0) {
-            return;
-        }
-        final List<String> portList = Arrays.asList(allPortPath);
-        Collections.sort(portList);
-        final String[] portNames = new String[portList.size()];
-        for (int i = 0; i < portList.size(); i++) {
-            String portPath = portList.get(i);
-            portNames[i] = getResources().getString(R.string.port_setting) + portPath.substring(portPath.length() - 1) + "（" + portPath + "）";
-        }
-        String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        final int index = portList.indexOf(cachePort);
-        final TextView tvPortPath = findViewById(R.id.tv_port_path_setting);
-        tvPortPath.setText("" + portNames[index]);
-        tvPortPath.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String cachePort = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-                int selectedIndex = portList.indexOf(cachePort);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(CertificatesSettingActivity.this);
-                builder.setTitle(getResources().getString(R.string.select_port_setting));
-                builder.setSingleChoiceItems(portNames, selectedIndex, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //获取真实端口号并缓存
-                        String selectedPort = portList.get(which);
-                        Log.e(TAG, "onClick: " + selectedPort);
-                        SpUtils.saveStr(SpUtils.PORT_PATH, selectedPort);
-                        //获取端口名并显示
-                        String portName = portNames[which];
-                        tvPortPath.setText("" + portName);
-                        UIUtils.showShort(CertificatesSettingActivity.this, portName);
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-
-        //距离提示==========================================================================================
-        boolean distanceEnabled = SpUtils.getBoolean(SpUtils.DISTANCE_TIPS_ENABLED, Constants.DEFAULT_DISTANCE_TIPS_ENABLED_VALUE);
-        Switch swDistance = findViewById(R.id.sw_distance_setting);
-        swDistance.setChecked(distanceEnabled);
-        swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.DISTANCE_TIPS_ENABLED, isChecked);
-            }
-        });
+        setCorrectUI();
 
         //热成像镜像==========================================================================================
-        boolean thermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);
+        boolean thermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
         Switch swThermalMirror = findViewById(R.id.sw_thermal_imag_mirror_setting);
         swThermalMirror.setChecked(thermalImgMirror);
         swThermalMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.THERMAL_IMAGE_MIRROR, isChecked);
+                SpUtils.saveBoolean(CertificatesConst.Key.THERMAL_MIRROR, isChecked);
             }
         });
-
-        //测温延时开关==========================================================================================
-        Switch swGetTempDelay = findViewById(R.id.sw_get_temp_delay_setting);
-        boolean delayEnabled = SpUtils.getBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, true);
-        swGetTempDelay.setChecked(delayEnabled);
-        swGetTempDelay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.GET_TEMP_DELAY_ENABLED, isChecked);
-            }
-        });
-        Button btnGetTempDelaySub = findViewById(R.id.btn_get_temp_delay_sub_setting);
-        Button btnGetTempDelayAdd = findViewById(R.id.btn_get_temp_delay_add_setting);
-        final EditText edtGetTempDelay = findViewById(R.id.edt_get_temp_delay_setting);
-
-        //取温延时==========================================================================================
-        final int delayTime = SpUtils.getIntOrDef(SpUtils.GET_TEMP_DELAY_TIME, Constants.DEFAULT_GET_TEMP_DELAY_TIME_VALUE);
-        edtGetTempDelay.setText(delayTime + "");
-        View.OnClickListener getTempDelayClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String inputValue = edtGetTempDelay.getText().toString();
-                int value = Integer.parseInt(inputValue);
-                if (v.getId() == R.id.btn_get_temp_delay_sub_setting) {
-                    value -= 100;
-                    if (value <= 0) {
-                        value = 0;
-                    }
-                } else {
-                    value += 100;
-                }
-                edtGetTempDelay.setText(value + "");
-
-                SpUtils.saveInt(SpUtils.GET_TEMP_DELAY_TIME, value);
-            }
-        };
-        btnGetTempDelaySub.setOnClickListener(getTempDelayClickListener);
-        btnGetTempDelayAdd.setOnClickListener(getTempDelayClickListener);
-
-        //修改测温校正值==========================================================================================
-        final Float tempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
-        Button btnTempCorrSub = findViewById(R.id.btn_temp_corr_sub_setting);
-        final EditText edtTempCorr = findViewById(R.id.edt_temp_correct_setting);
-        Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
-        edtTempCorr.setText(tempCorrValue + "");
-        View.OnClickListener tempCorrClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String value = edtTempCorr.getText().toString();
-                float v1 = formatF(Float.parseFloat(value));
-                switch (v.getId()) {
-                    case R.id.btn_temp_corr_sub_setting:
-                        v1 -= 0.1;
-                        break;
-                    case R.id.btn_temp_corr_add_setting:
-                        v1 += 0.1;
-                        break;
-                }
-                v1 = formatF(v1);
-                edtTempCorr.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, v1);
-            }
-        };
-        btnTempCorrSub.setOnClickListener(tempCorrClickListener);
-        btnTempCorrAdd.setOnClickListener(tempCorrClickListener);
-
-        //环境温度补正==========================================================================================
-        Button btnAmbCorrSub = findViewById(R.id.btn_amb_corr_sub_setting);
-        Button btnAmbCorrAdd = findViewById(R.id.btn_amb_corr_add_setting);
-        final EditText edtAmbCorr = findViewById(R.id.edt_ambient_correct_setting);
-        final Float ambCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);
-        edtAmbCorr.setText(ambCorrValue + "");
-        View.OnClickListener ambCorrClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String value = edtAmbCorr.getText().toString();
-                float v1 = formatF(Float.parseFloat(value));
-                switch (v.getId()) {
-                    case R.id.btn_amb_corr_sub_setting:
-                        v1 -= 0.1;
-                        break;
-                    case R.id.btn_amb_corr_add_setting:
-                        v1 += 0.1;
-                        break;
-                }
-                v1 = formatF(v1);
-                edtAmbCorr.setText(v1 + "");
-
-                SpUtils.saveFloat(SpUtils.AMB_CORRECT_VALUE, v1);
-            }
-        };
-        btnAmbCorrSub.setOnClickListener(ambCorrClickListener);
-        btnAmbCorrAdd.setOnClickListener(ambCorrClickListener);
 
         //修改测温阈值==========================================================================================
         Button btnMinSub = findViewById(R.id.btn_temp_min_threshold_sub_setting);
         Button btnMinAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
         final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
-        //温度最低阈值、温度报警阈值
-        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
+        final float minValue = SpUtils.getFloat(CertificatesConst.Key.MIN_THRESHOLD, CertificatesConst.Default.MIN_THRESHOLD);
         edtMinThreshold.setText(minValue + "");
         View.OnClickListener minClickListener = new View.OnClickListener() {
             @Override
@@ -496,7 +201,7 @@ public class CertificatesSettingActivity extends BaseActivity {
                 }
                 v1 = formatF(v1);
                 edtMinThreshold.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, v1);
+                SpUtils.saveFloat(CertificatesConst.Key.MIN_THRESHOLD, v1);
             }
         };
         btnMinSub.setOnClickListener(minClickListener);
@@ -506,7 +211,7 @@ public class CertificatesSettingActivity extends BaseActivity {
         Button btnWarnSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
         Button btnWarnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
         final EditText edtWarnThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
-        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
+        final float warningValue = SpUtils.getFloat(CertificatesConst.Key.WARNING_THRESHOLD, CertificatesConst.Default.WARNING_THRESHOLD);
         edtWarnThreshold.setText(warningValue + "");
         View.OnClickListener warnClickListener = new View.OnClickListener() {
             @Override
@@ -521,60 +226,22 @@ public class CertificatesSettingActivity extends BaseActivity {
                 v1 = formatF(v1);
                 edtWarnThreshold.setText(v1 + "");
 
-                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, v1);
+                SpUtils.saveFloat(CertificatesConst.Key.WARNING_THRESHOLD, v1);
             }
         };
         btnWarnSub.setOnClickListener(warnClickListener);
         btnWarnAdd.setOnClickListener(warnClickListener);
 
-        //体温播报设置==========================================================================================
-        String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.main_temp_normal_tips));
-        EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
-        edtNormalTips.setText(normalTips);
-        edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
+        //===低温模式=========================================================
+        Switch swLowTempModel = findViewById(R.id.sw_low_temp_model_setting);
+        boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
+        swLowTempModel.setChecked(aBoolean);
+        swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                SpUtils.saveStr(SpUtils.NORMAL_TIPS, TextUtils.isEmpty(input) ? "" : input);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(CertificatesConst.Key.LOW_TEMP, isChecked);
             }
         });
-        String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.main_temp_warning_tips));
-        EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
-        edtWarningTips.setText(warningTips);
-        edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                SpUtils.saveStr(SpUtils.WARNING_TIPS, TextUtils.isEmpty(input) ? "" : input);
-            }
-        });
-
-        //体温播报延时
-        Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
-        Button btnSpeechDelayAdd = findViewById(R.id.btn_speech_delay_add_setting);
-        final EditText edtSpeechDelay = findViewById(R.id.edt_speech_delay_setting);
-        long speechDelayTime = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
-        edtSpeechDelay.setText(speechDelayTime + "");
-        View.OnClickListener speechDelayOnClickLitsener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtSpeechDelay.getText().toString();
-                long l = Long.parseLong(s);
-                if(v.getId() == R.id.btn_speech_delay_add_setting){
-                    l += 100;
-                } else {
-                    l -= 100;
-                    if(l < 1500){
-                        l = 1500;
-                    }
-                }
-
-                edtSpeechDelay.setText(l + "");
-                SpUtils.saveLong(SpUtils.SPEECH_DELAY,l);
-            }
-        };
-        btnSpeechDelayAdd.setOnClickListener(speechDelayOnClickLitsener);
-        btnSpeechDelaySub.setOnClickListener(speechDelayOnClickLitsener);
     }
 
     class TextWatcherImpl implements TextWatcher {
@@ -598,18 +265,6 @@ public class CertificatesSettingActivity extends BaseActivity {
 
     private float formatF(float fValue) {
         return (float) (Math.round(fValue * 10)) / 10;
-    }
-
-    private void initLivenessSetting() {
-        Switch swLiveness = findViewById(R.id.sw_liveness_setting);
-        boolean liveness = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
-        swLiveness.setChecked(liveness);
-        swLiveness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, isChecked);
-            }
-        });
     }
 
     private EditText edtIp;
@@ -733,20 +388,6 @@ public class CertificatesSettingActivity extends BaseActivity {
         }
     }
 
-    //初始化人脸弹窗开关
-    private void initFaceVipDialogSetting() {
-        Switch switchFaceDialog = findViewById(R.id.sw_face_dialog);
-        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
-        switchFaceDialog.setChecked(faceDialog);
-        switchFaceDialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.FACE_DIALOG, isChecked);
-            }
-        });
-
-    }
-
     //初始化摄像头设置
     private void initCameraSetting() {
 //        TextView tvCamera = findViewById(R.id.tv_camera);
@@ -763,11 +404,11 @@ public class CertificatesSettingActivity extends BaseActivity {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(!mirror);
+        cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(!isChecked);
+                SpUtils.setMirror(isChecked);
             }
         });
 
@@ -819,49 +460,10 @@ public class CertificatesSettingActivity extends BaseActivity {
         });
     }
 
-    //初始化温度检测模块的设置
-    private void initTemperatureSetting() {
-        //提示时间
-        final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
-        Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
-        final int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
-        edtTipsTime.setText(time + "");
-        btnSaveTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int saveTime = time;
-                String s = edtTipsTime.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    saveTime = Integer.parseInt(s);
-                }
-                edtTipsTime.setText(saveTime + "");
-                SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(CertificatesSettingActivity.this, "保存成功");
-            }
-        });
-
-        Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
-        final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
-        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);
-        edtTempDValue.setText(dValue + "");
-        btnSaveDValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtTempDValue.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    edtTempDValue.setText(dValue + "");
-                }
-                s = edtTempDValue.getText().toString();
-                SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(CertificatesSettingActivity.this, "保存成功");
-            }
-        });
-    }
-
     //初始化相似度阈值设置
     private void initSimilarSetting() {
         final EditText edtSimilar = findViewById(R.id.edt_similar_threshold);
-        int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        int similar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
         edtSimilar.setText(similar + "");
 
         findViewById(R.id.btn_set_similar_threshold).setOnClickListener(new View.OnClickListener() {
@@ -883,17 +485,11 @@ public class CertificatesSettingActivity extends BaseActivity {
                     UIUtils.showTitleTip(CertificatesSettingActivity.this, "设置成功");
                 }
 
-                SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
+                SpUtils.saveInt(CertificatesConst.Key.SIMILAR, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
-                    if (activity instanceof WelComeActivity) {//普通主页
-                        ((WelComeActivity) activity).setFaceViewSimilar();
-                    } else if (activity instanceof CertificatesActivity) {//人证主页
+                    if (activity instanceof CertificatesActivity) {
                         ((CertificatesActivity) activity).setFaceViewSimilar();
-                    } else if(activity instanceof ThermalImageActivity){//考勤测温主页
-                        ((ThermalImageActivity) activity).setFaceViewSimilar();
-                    } else if(activity instanceof SMTMainActivity){
-                        ((SMTMainActivity) activity).setFaceViewSimilar();
                     }
                 }
             }

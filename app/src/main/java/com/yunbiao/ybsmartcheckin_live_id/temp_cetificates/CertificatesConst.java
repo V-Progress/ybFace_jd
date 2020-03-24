@@ -19,14 +19,23 @@ public class CertificatesConst {
         //        int CERTIFICATES_ONLY = 2;//仅人证
     }
 
-    interface Key{
-        String MODE = "certificates_mode";
-        String LOW_TEMP = "certificatesLowTemp";
+    public interface Key{
+        String MODE = "certificates_mode";//模式
+        String LOW_TEMP = "certificatesLowTemp";//低温模式
         String MIN_THRESHOLD = "certificatesMinThreshold";//最低播报
         String WARNING_THRESHOLD = "certificatesWarningThreshold";//体温报警值
+        String CORRECT_VALUE = "certificatesCorrectValue";//矫正
+        String THERMAL_MIRROR = "certificatesThermalMirror";//热成像镜像
+        String SIMILAR = "certificatesSimilar";
     }
 
-    interface Default{
+    public interface Default{
+        int MODE = Mode.CERTIFICATES_THERMAL;
         boolean LOW_TEMP = true;
+        float MIN_THRESHOLD = 35.5f;
+        float WARNING_THRESHOLD = 37.3f;
+        float CORRECT_VALUE = 0.0f;
+        boolean THERMAL_MIRROR = true;
+        int SIMILAR = 75;
     }
 }

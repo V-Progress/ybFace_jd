@@ -29,7 +29,11 @@ public class ImageFileLoader {
     private final String TAG = "ImageFileLoader";
     private ScheduledExecutorService executor;
     private static ImageFileLoader loader = new ImageFileLoader();
-    private int defaultLogoId = R.mipmap.yb_logo;
+    private static int defaultLogoId = R.mipmap.yb_logo;
+
+    public static void setDefaultLogoId(int logoId){
+        defaultLogoId = logoId;
+    }
 
     private ImageFileLoader() {
         executor = Executors.newSingleThreadScheduledExecutor();

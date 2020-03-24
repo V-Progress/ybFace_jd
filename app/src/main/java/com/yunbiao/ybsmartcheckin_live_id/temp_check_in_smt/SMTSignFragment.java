@@ -86,6 +86,8 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         String deviceNum = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tvDeviceNo.setText(APP.getContext().getResources().getString(R.string.smt_main_device_no) + deviceNum);
 
+        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(APP.getContext()));
+
         int comid = SpUtils.getCompany().getComid();
         List<User> users = DaoManager.get().queryUserByCompId(comid);
         if (users != null) {
@@ -107,8 +109,6 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         }
         already = signs.size();
         tvAlready.setText(already + "");
-
-        appVersion.setText(APP.getContext().getResources().getString(R.string.smt_main_ver) + CommonUtils.getAppVersion(APP.getContext()));
     }
 
     @Override
@@ -136,8 +136,12 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
     @Override
     public void onResume() {
         super.onResume();
-        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
-        ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
+        if(Constants.isHT){
+            ivQRCode.setVisibility(View.GONE);
+        } else {
+            boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+            ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
+        }
     }
 
     private String mModel = "";

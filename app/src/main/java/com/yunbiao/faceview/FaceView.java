@@ -34,6 +34,7 @@ import com.arcsoft.face.util.ImageUtils;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NV21ToBitmap;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -137,6 +138,7 @@ public class FaceView extends FrameLayout {
      * 绘制人脸框的控件
      */
     private FaceRectView faceRectView;
+    private NV21ToBitmap nv21ToBitmap;
 
     public FaceView(Context context) {
         super(context);
@@ -161,7 +163,7 @@ public class FaceView extends FrameLayout {
 
     private void initView() {
         setSimilarThreshold();
-
+        nv21ToBitmap = new NV21ToBitmap(getContext());
         compareResultList = new ArrayList<>();
 
         previewView = new SurfaceView(getContext());
@@ -221,6 +223,9 @@ public class FaceView extends FrameLayout {
     private Rect mAreaRect = new Rect();
 
     public Rect getRealRect(Rect faceRect) {
+        if (faceRect == null) {
+            return null;
+        }
         if (drawHelper == null) {
             return faceRect;
         }
@@ -274,6 +279,7 @@ public class FaceView extends FrameLayout {
     }
 
     private Map<Integer, FaceIndexInfo> temperHashMap = new HashMap<>();
+
     public void setTemperList(ArrayList<FaceIndexInfo> arrayList) {
         if (arrayList == null) {
             if (temperHashMap.isEmpty()) {
@@ -283,10 +289,17 @@ public class FaceView extends FrameLayout {
         } else {
             temperHashMap.clear();
             for (FaceIndexInfo faceIndexInfo : arrayList) {
-                Log.e(TAG, "setTemperList: " + faceIndexInfo.getFaceId() + " --- " + faceIndexInfo.getAfterTreatmentF());
-                temperHashMap.put(faceIndexInfo.getFaceId(),faceIndexInfo);
+                temperHashMap.put(faceIndexInfo.getFaceId(), faceIndexInfo);
             }
         }
+    }
+
+    public float getTemperByTrackId(int trackId) {
+        FaceIndexInfo faceIndexInfo = temperHashMap.get(trackId);
+        if (faceIndexInfo == null) {
+            return 0.0f;
+        }
+        return faceIndexInfo.getAfterTreatmentF();
     }
 
     private CameraListener cameraListener = new CameraListener() {
@@ -336,12 +349,12 @@ public class FaceView extends FrameLayout {
             boolean hasFace = facePreviewInfoList != null && facePreviewInfoList.size() > 0;
 
             // TODO: 2020/3/17 这里最好还是先回调检测人脸再画框
-            if(!temperHashMap.isEmpty()){
+            if (!temperHashMap.isEmpty()) {
                 for (int i = 0; i < facePreviewInfoList.size(); i++) {
                     FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
                     int trackId = facePreviewInfo.getTrackId();
                     FaceIndexInfo faceIndexInfo = temperHashMap.get(trackId);
-                    if(faceIndexInfo != null){
+                    if (faceIndexInfo != null) {
                         float originalTempF = faceIndexInfo.getOriginalTempF();
                         float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
                         facePreviewInfo.setTemper(afterTreatmentF);
@@ -597,6 +610,56 @@ public class FaceView extends FrameLayout {
         return null;
     }
 
+    public FaceInfo getFaceInfo(int trackId) {
+        FaceInfo faceInfo = null;
+        if (infoList != null && infoList.size() > 0) {
+            for (int i = 0; i < infoList.size(); i++) {
+                FacePreviewInfo facePreviewInfo = infoList.get(i);
+                if (facePreviewInfo.getTrackId() == trackId) {
+                    faceInfo = facePreviewInfo.getFaceInfo();
+                }
+            }
+        }
+        return faceInfo;
+    }
+
+    public Bitmap getPicture(int trackId) {
+        FacePreviewInfo facePreviewInfo = null;
+        if (infoList != null && infoList.size() > 0) {
+            for (int i = 0; i < infoList.size(); i++) {
+                FacePreviewInfo info = infoList.get(i);
+                if (trackId == info.getTrackId()) {
+                    facePreviewInfo = info;
+                    break;
+                }
+            }
+        }
+        Log.e(TAG, "getPicture: " + (facePreviewInfo == null ? "NULL" : facePreviewInfo.getTrackId()));
+
+        if (facePreviewInfo != null) {
+            //如果info不为null，则取出头像
+            FaceInfo faceInfo = facePreviewInfo.getFaceInfo();
+            Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
+            int width = bestRect.right - bestRect.left;
+            int height = bestRect.bottom - bestRect.top;
+            if (width <= 0 || height <= 0) {
+                return getCurrCameraFrame();
+            }
+
+            byte[] clone = mCurrBytes.clone();
+//            Bitmap bmp = NV21ToBitmap.nv21ToBitmap2(clone, cameraHelper.getWidth(), cameraHelper.getHeight());
+            Bitmap bmp = nv21ToBitmap.nv21ToBitmap(clone, cameraHelper.getWidth(), cameraHelper.getHeight());
+            Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
+            int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+            if (bmp != null && angle != 0) {
+                Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
+                return bitmap1;
+            }
+            return bitmap;
+        }
+        return null;
+    }
+
     public Bitmap takePicture() {
         if (mCurrBytes != null) {
             try {
@@ -661,17 +724,25 @@ public class FaceView extends FrameLayout {
      * 初始化引擎
      */
     private void initEngine() {
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        DetectFaceOrientPriority orientPriority;
+        if (angle == 0) {
+            orientPriority = DetectFaceOrientPriority.ASF_OP_0_ONLY;
+        } else {
+            orientPriority = DetectFaceOrientPriority.ASF_OP_ALL_OUT;
+        }
+
         ftEngine = new FaceEngine();
-        ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                5, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
+        ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, orientPriority,
+                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
 
         frEngine = new FaceEngine();
-        frInitCode = frEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                5, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
+        frInitCode = frEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,
+                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
 
         flEngine = new FaceEngine();
-        flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, DetectFaceOrientPriority.ASF_OP_ALL_OUT,
-                5, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
+        flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,/*ASF_OP_ALL_OUT*/
+                16, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);
@@ -787,6 +858,13 @@ public class FaceView extends FrameLayout {
         }
     }
 
+    private boolean isMultipleTimes = false;
+    private long retryDelayTime = 1000;
+
+    public void setMultipleRecognize(boolean isMulti, long delay) {
+        isMultipleTimes = isMulti;
+        retryDelayTime = delay;
+    }
 
     private void searchFace(final FaceFeature frFace, final Integer requestId) {
         Observable.create(new ObservableOnSubscribe<CompareResult>() {
@@ -841,11 +919,23 @@ public class FaceView extends FrameLayout {
                                 callback.onFaceVerify(compareResult);
                             }
                             faceHelper.setName(requestId, "ID: " + userName);
+
+                            if (isMultipleTimes) {
+                                retryRecognizeDelayed(requestId, retryDelayTime);
+                            }
                         } else {
+
+                            //回调识别失败的结果，说明是陌生人
+                            if (callback != null) {
+                                CompareResult cr = new CompareResult("-1", 0.0f);
+                                cr.setTrackId(requestId);
+                                callback.onFaceVerify(cr);
+                            }
+
                             // TODO: 2020/3/19 增加陌生人检测逻辑
-                            if (strangerRetryMap.containsKey(requestId)) {
+                            /*if (strangerRetryMap.containsKey(requestId)) {
                                 int retryNum = strangerRetryMap.get(requestId);
-                                if (retryNum >= 1) {
+                                if (retryNum >= 0) {
                                     faceHelper.setName(requestId, "未注册");
                                     requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SUCCEED_STRANGER);
 
@@ -856,6 +946,11 @@ public class FaceView extends FrameLayout {
                                         callback.onFaceVerify(cr);
                                     }
 
+                                    if(isMultipleTimes){
+                                        strangerRetryMap.put(requestId, 0);
+                                        retryRecognizeDelayed(requestId, retryDelayTime);
+                                    }
+
                                     return;
                                 } else {
                                     retryNum += 1;
@@ -863,7 +958,8 @@ public class FaceView extends FrameLayout {
                                 }
                             } else {
                                 strangerRetryMap.put(requestId, 0);
-                            }
+                            }*/
+
                             retryRecognizeDelayed(requestId);
                         }
                     }
@@ -935,6 +1031,38 @@ public class FaceView extends FrameLayout {
                             faceHelper.setName(requestId, Integer.toString(requestId));
                         }
                         livenessMap.put(requestId, LivenessInfo.UNKNOWN);
+                        delayFaceTaskCompositeDisposable.remove(disposable);
+                    }
+                });
+    }
+
+    private void retryRecognizeDelayed(final Integer requestId, long delay) {
+        requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SEARCHING);
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
+                .subscribe(new Observer<Long>() {
+                    Disposable disposable;
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
+                        delayFaceTaskCompositeDisposable.add(disposable);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // 将该人脸特征提取状态置为FAILED，帧回调处理时会重新进行活体检测
+                        faceHelper.setName(requestId, Integer.toString(requestId));
+                        requestFeatureStatusMap.put(requestId, RequestFeatureStatus.TO_RETRY);
                         delayFaceTaskCompositeDisposable.remove(disposable);
                     }
                 });

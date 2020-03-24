@@ -114,6 +114,8 @@ public class CameraHelper implements Camera.PreviewCallback {
                     Log.e(TAG, "start: 最佳：" + previewSize.width + " --- " + previewSize.height);
                 }
                 Log.e(TAG, "run: 最佳宽高：" + previewSize.width + " --- " + previewSize.height);
+//                previewSize.width = 1280;
+//                previewSize.height = 960;
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
 
                 //对焦模式设置

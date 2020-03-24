@@ -32,17 +32,23 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_main_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:maxWidth="200dp"
-                android:maxHeight="100dp"
-                android:onClick="goSetting"
-                android:scaleType="centerInside"
-                android:src="@mipmap/yb_logo" />
-
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="100dp">
+                <ImageView
+                    android:id="@+id/iv_main_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="200dp"
+                    android:maxHeight="100dp"
+                    android:scaleType="centerInside" />
+                <View
+                    android:onClick="goSetting"
+                    android:id="@+id/view_go_setting_smt_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/ll_clock_area"

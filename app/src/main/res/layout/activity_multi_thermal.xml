@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/multi_thermal_bg"
+    tools:context=".temp_multi.MultiThermalActivity">
+
+    <RelativeLayout
+        android:background="@mipmap/multi_thermal_top"
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+
+        <ImageView
+            android:id="@+id/iv_logo_multi_thermal"
+            android:layout_marginLeft="30dp"
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/logo_hushida" />
+
+        <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
+            android:id="@+id/gtv_title_multi_thermal"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="AI人脸高通量测温数据平台"
+            android:textSize="60sp" />
+
+        <!--<TextClock
+            android:textColor="@color/white"
+            android:format24Hour="yyyy-MM-dd  HH:mm"
+            android:format12Hour="yyyy-MM-dd  HH:mm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
+            android:textSize="36sp" />-->
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+       android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="3"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_weight="5"
+            android:background="@mipmap/multi_thermal_camera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <com.yunbiao.faceview.FaceView
+                android:layout_marginTop="30dp"
+                android:background="#000"
+                android:id="@+id/face_view"
+                android:layout_width="1000dp"
+                android:layout_height="750dp"/>
+
+            <ImageView
+                android:layout_toRightOf="@+id/face_view"
+                android:background="#000"
+                android:layout_marginTop="30dp"
+                android:id="@+id/iv_hot_image"
+                android:layout_width="1000dp"
+                android:layout_height="750dp"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:background="@mipmap/multi_thermal_warning_bg"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="异常人员记录（12345）"
+                android:id="@+id/tv_warning_total_multi_thermal"
+                android:layout_marginTop="12dp"
+                android:textSize="16dp"
+                android:textColor="#00FFFF"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_centerInParent="true"
+                android:numColumns="1"
+                android:verticalSpacing="14dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:id="@+id/rlv_warning_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:background="@mipmap/multi_thermal_record_num"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_weight="1"
+                android:textSize="30dp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+            <RelativeLayout
+                android:paddingLeft="40dp"
+                android:layout_weight="1.5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/multi_thermal_record_icon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"/>
+                <TextView
+                    android:layout_marginLeft="80dp"
+                    android:textColor="@color/white"
+                    android:text="通过人数"
+                    android:textSize="22dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_total_num_multi_thermal"
+                    android:layout_centerInParent="true"
+                    android:text="0"
+                    android:textSize="60dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <LinearLayout
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textSize="22dp"
+                        android:gravity="center"
+                        android:textColor="#00FFFF"
+                        android:text="正常体温"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"/>
+                    <TextView
+                        android:paddingBottom="10dp"
+                        android:background="@mipmap/multi_thermal_record_num_bg"
+                        android:id="@+id/tv_normal_num_multi_thermal"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="22dp"
+                        android:layout_weight="2"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textSize="22dp"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="#00FFFF"
+                        android:text="异常体温"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"/>
+                    <TextView
+                        android:paddingBottom="10dp"
+                        android:background="@mipmap/multi_thermal_record_num_bg"
+                        android:id="@+id/tv_warning_num_multi_normal"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="22dp"
+                        android:textColor="#F51856"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textSize="22dp"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="#00FFFF"
+                        android:text="公司员工"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"/>
+                    <TextView
+                        android:paddingBottom="10dp"
+                        android:background="@mipmap/multi_thermal_record_num_bg"
+                        android:id="@+id/tv_company_num_multi_thermal"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="22dp"
+                        android:layout_weight="2"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="40dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textSize="22dp"
+                        android:gravity="center"
+                        android:textColor="#00FFFF"
+                        android:text="到访人员"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"/>
+                    <TextView
+                        android:paddingBottom="10dp"
+                        android:background="@mipmap/multi_thermal_record_num_bg"
+                        android:id="@+id/tv_visitor_num_multi_thermal"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="22dp"
+                        android:layout_weight="2"
+                        android:textColor="#F51856"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:padding="24dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@mipmap/multi_thermal_normal_bg"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_normal_total_multi_thermal"
+                android:textColor="#00FFFF"
+                android:gravity="center"
+                android:textSize="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@+id/tv_normal_total_multi_thermal"
+                android:layout_marginTop="30dp"
+                android:id="@+id/rlv_normal_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

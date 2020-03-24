@@ -20,8 +20,6 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         xhApi = APP.getXHApi();
-        if (mSmdtManager == null && xhApi == null) {
-        }
 
         if (mSmdtManager != null) {
             //设置继电器为非自动模式

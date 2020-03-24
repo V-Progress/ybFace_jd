@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">雲標智能考勤</string>
+    <string name="app_name2">亨通考勤</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
 
@@ -23,8 +24,8 @@
     <string name="main_temp_tips_please_far">請遠壹點</string>
     <string name="main_temp_tips_so_close_text">距離太近，請遠壹點</string>
     <string name="main_thermal_temp">熱成像 體溫：</string>
-    <string name="main_thermal_has_person">有人</string>
-    <string name="main_thermal_no_person">無人</string>
+    <string name="main_thermal_has_person">熱成像 有人</string>
+    <string name="main_thermal_no_person">熱成像 無人</string>
     <string name="main_please_waiting">請等待</string>
     <string name="main_temp_tips_please_in_range">請將面部對準識別區域</string>
     <string name="main_tips_please_close">請靠近點</string>
@@ -38,7 +39,7 @@
     <string name="current_model_setting">當前模式</string>
 
     <!--系統信息-->
-    <string name="System_title">雲標智能考勤系統</string>
+    <string name="System_title">系統資訊</string>
     <string name="System_deviceNo">設備編號:</string>
     <string name="System_bindCode">綁&#8194;定&#8194;碼:</string>
     <string name="System_Company">所屬公司:</string>
@@ -215,6 +216,7 @@
     <string name="setting_low_temp_model">低溫模式</string>
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用雲標智慧考勤系統</string>
+    <string name="setting_default_welcome_tip2">歡迎使用亨通智慧考勤系統</string>
     <string name="setting_correct_temperature">矯正溫度</string>
     <string name="setting_broadcast_f">播報華氏度</string>
 

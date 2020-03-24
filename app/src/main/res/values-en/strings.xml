@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">YBFace</string>
+    <string name="app_name2">HTFace</string>
+
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
 
@@ -23,8 +25,8 @@
     <string name="main_temp_tips_so_far_text">Please come closer</string><!--Please approach--><!--距离太远，请靠近-->
     <string name="main_temp_tips_please_far">Please stay away</string><!--请远一点-->
     <string name="main_temp_tips_so_close_text">Please stay away</string><!--距离太近，请远一点-->
-    <string name="main_thermal_has_person">Someone</string>
-    <string name="main_thermal_no_person">No one</string>
+    <string name="main_thermal_has_person">Thermal imaging:Someone</string>
+    <string name="main_thermal_no_person">Thermal imaging:No one</string>
     <string name="main_thermal_temp">Temperature：</string><!--热成像 体温：-->
     <string name="main_please_waiting">Please waiting</string><!--请等待-->
     <string name="main_temp_tips_please_in_range">Please aim your face at the recognition area</string><!--请将面部对准识别区域-->
@@ -39,7 +41,7 @@
     <string name="current_model_setting">Current mode</string><!--当前模式-->
 
     <!--系统信息-->
-    <string name="System_title">YBFace</string><!--云标智能考勤系统-->
+    <string name="System_title">Information</string><!--云标智能考勤系统-->
     <string name="System_deviceNo">Device No:</string><!--设备编号:-->
     <string name="System_bindCode">Bind Code:</string><!--绑定码:-->
     <string name="System_Company">Bind Company:</string><!--所属公司:-->
@@ -216,6 +218,7 @@
     <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
     <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
+    <string name="setting_default_welcome_tip2">Welcome to HT intelligent attendance system</string>
     <string name="setting_correct_temperature">Correct Temperature</string>
     <string name="setting_broadcast_f">Enable Fahrenheit</string>
 

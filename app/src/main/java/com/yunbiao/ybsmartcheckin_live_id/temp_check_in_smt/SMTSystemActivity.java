@@ -65,6 +65,7 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private Button btnVisitorSystem;
     private Button btnSkinSystem;
+    private TextView tvCopyRight;
 
     @Override
     protected int getLayout() {
@@ -76,6 +77,7 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
         EventBus.getDefault().register(this);
         ivLogo = (ImageView) findViewById(R.id.iv_system_logo);
 
+        tvCopyRight = findViewById(R.id.tv_copyright_smt_system);
         ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,11 +107,19 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
-    }
 
+        //亨通隐藏版权
+        if(Constants.isHT){
+            tvCopyRight.setVisibility(View.GONE);
+            appName = getResources().getString(R.string.app_name2);
+        } else {
+            tvCopyRight.setVisibility(View.VISIBLE);
+            appName = getResources().getString(R.string.app_name);
+        }
+    }
+    private String appName;
     @Override
     protected void initData() {
-        String appName = getResources().getString(R.string.app_name);
         try {
             PackageInfo packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             appName += " V" + packageInfo.versionName;

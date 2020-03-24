@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/multi_thermal_camera"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/multi_thermal_bg"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_hidden_info_multi_thermal"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/hidden_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+            <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="系统信息"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tv_time_info_multi_thermal"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="60"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+
+        </RelativeLayout>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/System_deviceNo"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+
+            <TextView
+                android:id="@+id/tv_device_no_info_multi_thermal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:text="YB0000345"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/System_bindCode"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+
+            <TextView
+                android:id="@+id/tv_bindcode_info_multi_thermal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:text="YB0000345"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/System_Company"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+
+            <TextView
+                android:id="@+id/tv_company_info_multi_thermal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:text="互视达云标"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/System_net_status"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+
+            <TextView
+                android:id="@+id/tv_net_state_info_multi_thermal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:text="正常"
+                android:textColor="@color/font_green"
+                android:textSize="26dp" />
+        </TableRow>
+    </TableLayout>
+
+    <ImageView
+        android:id="@+id/iv_setting_info_multi_thermal"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/setting_icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"/>
+</RelativeLayout>

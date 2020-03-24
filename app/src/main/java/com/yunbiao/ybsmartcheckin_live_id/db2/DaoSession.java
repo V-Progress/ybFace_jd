@@ -10,12 +10,14 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
+import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 
 import com.yunbiao.ybsmartcheckin_live_id.db2.CompanyDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DepartDao;
+import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotalDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.SignDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.UserDao;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VisitorDao;
@@ -31,12 +33,14 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig companyDaoConfig;
     private final DaoConfig departDaoConfig;
+    private final DaoConfig multiTotalDaoConfig;
     private final DaoConfig signDaoConfig;
     private final DaoConfig userDaoConfig;
     private final DaoConfig visitorDaoConfig;
 
     private final CompanyDao companyDao;
     private final DepartDao departDao;
+    private final MultiTotalDao multiTotalDao;
     private final SignDao signDao;
     private final UserDao userDao;
     private final VisitorDao visitorDao;
@@ -51,6 +55,9 @@ public class DaoSession extends AbstractDaoSession {
         departDaoConfig = daoConfigMap.get(DepartDao.class).clone();
         departDaoConfig.initIdentityScope(type);
 
+        multiTotalDaoConfig = daoConfigMap.get(MultiTotalDao.class).clone();
+        multiTotalDaoConfig.initIdentityScope(type);
+
         signDaoConfig = daoConfigMap.get(SignDao.class).clone();
         signDaoConfig.initIdentityScope(type);
 
@@ -62,12 +69,14 @@ public class DaoSession extends AbstractDaoSession {
 
         companyDao = new CompanyDao(companyDaoConfig, this);
         departDao = new DepartDao(departDaoConfig, this);
+        multiTotalDao = new MultiTotalDao(multiTotalDaoConfig, this);
         signDao = new SignDao(signDaoConfig, this);
         userDao = new UserDao(userDaoConfig, this);
         visitorDao = new VisitorDao(visitorDaoConfig, this);
 
         registerDao(Company.class, companyDao);
         registerDao(Depart.class, departDao);
+        registerDao(MultiTotal.class, multiTotalDao);
         registerDao(Sign.class, signDao);
         registerDao(User.class, userDao);
         registerDao(Visitor.class, visitorDao);
@@ -76,6 +85,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         companyDaoConfig.clearIdentityScope();
         departDaoConfig.clearIdentityScope();
+        multiTotalDaoConfig.clearIdentityScope();
         signDaoConfig.clearIdentityScope();
         userDaoConfig.clearIdentityScope();
         visitorDaoConfig.clearIdentityScope();
@@ -87,6 +97,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public DepartDao getDepartDao() {
         return departDao;
+    }
+
+    public MultiTotalDao getMultiTotalDao() {
+        return multiTotalDao;
     }
 
     public SignDao getSignDao() {

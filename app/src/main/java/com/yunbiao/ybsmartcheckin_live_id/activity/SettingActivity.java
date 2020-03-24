@@ -104,7 +104,9 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
+                ?APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
+                :APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {

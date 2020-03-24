@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.smdt.SmdtManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -41,8 +42,10 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -95,6 +98,13 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         //加载签到列表Fragment
         smtSignFragment = new SMTSignFragment();
         replaceFragment(R.id.ll_list_container, smtSignFragment);
+
+        if(Constants.isHT){
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+            ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+        } else {
+            ivMainLogo.setImageResource(R.mipmap.logo);
+        }
     }
 
     @Override
@@ -107,6 +117,10 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
+
+        PowerOffTool.getPowerOffTool().getPowerOffTime(HeartBeatClient.getDeviceNo());
+
+
     }
 
     @Override

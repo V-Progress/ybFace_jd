@@ -50,6 +50,7 @@ public class DaoManager {
         daoSession.getSignDao().detachAll();
         daoSession.getCompanyDao().detachAll();
         daoSession.getVisitorDao().detachAll();
+        daoSession.getMultiTotalDao().detachAll();
     }
 
     public DaoSession getDaoSession() {
@@ -97,6 +98,13 @@ public class DaoManager {
         return SUCCESS;
     }
 
+    public void deleteSign(Sign sign){
+        if(daoSession == null){
+            return;
+        }
+        daoSession.getSignDao().delete(sign);
+    }
+
     /***
      * 查询某公司下某天的所有打卡记录
      * @param comId
@@ -120,6 +128,13 @@ public class DaoManager {
             return null;
         }
         return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId)).list();
+    }
+
+    public List<Sign> querySignByComIdAndUpload(int comId,boolean isUpload){
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).list();
     }
 
     /***
@@ -158,6 +173,16 @@ public class DaoManager {
             return null;
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(comId), UserDao.Properties.FaceId.eq(faceId)).unique();
+    }
+
+    /***
+     * 通过公司Id和日期查数据统计
+     */
+    public MultiTotal queryTotalByCompIfAndDate(long compId, String date) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getMultiTotalDao().queryBuilder().where(MultiTotalDao.Properties.CompId.eq(compId), MultiTotalDao.Properties.Date.eq(date)).unique();
     }
 
     /***
@@ -222,11 +247,12 @@ public class DaoManager {
         }
         return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.FaceId.eq(userId)).unique();
     }
-    public Visitor queryVisitorByComIdAndFaceId(int comId,String userId) {
+
+    public Visitor queryVisitorByComIdAndFaceId(int comId, String userId) {
         if (daoSession == null) {
             return null;
         }
-        return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.ComId.eq(comId),VisitorDao.Properties.FaceId.eq(userId)).unique();
+        return daoSession.getVisitorDao().queryBuilder().where(VisitorDao.Properties.ComId.eq(comId), VisitorDao.Properties.FaceId.eq(userId)).unique();
     }
 
     public List<Visitor> queryVisitorsByCompId(int compId) {

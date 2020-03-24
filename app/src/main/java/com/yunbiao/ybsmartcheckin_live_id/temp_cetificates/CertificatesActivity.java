@@ -1,8 +1,10 @@
 package com.yunbiao.ybsmartcheckin_live_id.temp_cetificates;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,6 +31,8 @@ import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.FaceSimilar;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.intelligence.hardware.temperature.TemperatureModule;
+import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -76,16 +80,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private ImageView ivFace;
     private ImageView ivIdCard;
     private CertificatesView certificatesView;
-    private String mCurrPortPath;
-    private int mCurrBaudRate;
-    private Float mAmbCorrValue;
-    private Float mTempCorrValue;
     private ImageView ivHotImage;
-    private Float mTempWarningThreshold;
-    private int mCurrBodyMinT;
-    private int mCurrBodyMaxT;
-    private int mCurrBodyPercent;
-    private boolean mThermalImgMirror;
     private TextView tvName;
     private TextView tvOrigin;
     private TextView tvTip;
@@ -104,7 +99,13 @@ public class CertificatesActivity extends BaseGpioActivity {
     private TextView tvOriginT;
     private TextView tvLeftTopTemp;
     private Button btnNoIdCard;
-    private float mTempMinThreshold;
+    private boolean mThermalMirror;
+    private Float mWarningThreshold;
+    private Float mCorrectValue;
+    private boolean mLowTemp;
+    private int mMode;
+    private int mSimilar;
+    private float mMinThreshold;
 
     @Override
     protected int getPortraitLayout() {
@@ -173,44 +174,84 @@ public class CertificatesActivity extends BaseGpioActivity {
 
         certificatesView.setCallback(faceCallback);
         IDCardReader.getInstance().startReaderThread(this, readListener);
-        /*红外模块是9600，热成像模块是115200*/
-        mCurrPortPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        mCurrBaudRate = SpUtils.getIntOrDef(SpUtils.BAUD_RATE, Constants.BaudRate.THERMAL_IMAGING_BAUD_RATE);
-        InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
-
         featureCacheList = new ConcurrentLinkedQueue();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
-        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
-        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
-        mCurrBodyMinT = SpUtils.getIntOrDef(SpUtils.BODY_MIN_T, Constants.DEFAULT_BODY_MIN_T_VALUE);//最低体温值
-        mCurrBodyMaxT = SpUtils.getIntOrDef(SpUtils.BODY_MAX_T, Constants.DEFAULT_BODY_MAX_T_VALUE);//最高体温值
-        mCurrBodyPercent = SpUtils.getIntOrDef(SpUtils.BODY_PERCENT, Constants.DEFAULT_BODY_PERCENT_VALUE);//身体占比
-        mThermalImgMirror = SpUtils.getBoolean(SpUtils.THERMAL_IMAGE_MIRROR, Constants.DEFAULT_THERMAL_IMAGE_MIRROR);//热成像图像镜像
-
-        //初始化测温模块
-        String portPath = SpUtils.getStr(SpUtils.PORT_PATH, Constants.DEFAULT_PORT_PATH);
-        if (!TextUtils.equals(portPath, mCurrPortPath)) {
-            mCurrPortPath = portPath;
-            InfraredTemperatureUtils.getIns().initSerialPort(mCurrPortPath, mCurrBaudRate);
-        }
-
-        //设置测温补正值
-        InfraredTemperatureUtils.getIns().setaCorrectionValue(mAmbCorrValue);
-        InfraredTemperatureUtils.getIns().setmCorrectionValue(mTempCorrValue);
-
-        startThermalImaging();
 
         certificatesView.resume();
+        //热成像镜像
+        mThermalMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
+        //报警值
+        mWarningThreshold = SpUtils.getFloat(CertificatesConst.Key.WARNING_THRESHOLD, CertificatesConst.Default.WARNING_THRESHOLD);
+        //最小值
+        mMinThreshold = SpUtils.getFloat(CertificatesConst.Key.MIN_THRESHOLD,CertificatesConst.Default.MIN_THRESHOLD);
+        //温度补偿
+        mCorrectValue = SpUtils.getFloat(CertificatesConst.Key.CORRECT_VALUE, CertificatesConst.Default.CORRECT_VALUE);
+        //低温模式
+        mLowTemp = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
+        mMode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
+        //相似度
+        mSimilar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
 
+        String port;
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            port = "/dev/ttyS1";
+        } else {
+            port = "/dev/ttyS4";
+        }
 
-//        SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP,CertificatesConst.)
+        TemperatureModule.getIns().initSerialPort(this, port, 115200);
+        resultHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack);
+            }
+        }, 2000);
+        TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        TemperatureModule.getIns().closeHotImageK3232();
+    }
+
+    private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap bitmap, float measureF, final float afterF, float v2, float v3, boolean b, int i) {
+            mCacheHotImage = bitmap;
+
+            if (ivHotImage != null) {
+                ivHotImage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ivHotImage.setImageBitmap(bitmap);
+                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + afterF + "℃");
+                    }
+                });
+            }
+
+            if (isCode) {
+                Log.e(TAG, "newestHotImageData: 正在取温");
+                mCodeTempList.add(afterF);
+                return;
+            }
+            mCodeTempList.clear();
+
+            if (certificatesView.hasFace()) {
+                //如果缓存集合中包含这个温度则不再添加
+                if (mTemperatureCacheList.size() > 10) {
+                    mTemperatureCacheList.remove(0);
+                }
+                mTemperatureCacheList.add(afterF);
+            } else {
+                mTemperatureCacheList.clear();
+            }
+        }
+    };
 
     private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
         @Override
@@ -335,7 +376,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private String TIP_READ_ID_CARD;
 
     private void startCompareThread() {
-        if (compareThread != null && compareThread.isAlive()) {
+        if (compareThread != null && compareThread.isAlive()  && isRunning) {
             return;
         }
         resultHandler.removeMessages(-1);
@@ -382,7 +423,8 @@ public class CertificatesActivity extends BaseGpioActivity {
                         }
                     }
 
-                    sendResult(finalSimilar);
+                    int similar = (int) (finalSimilar * 100);
+                    sendResult(similar);
 
                     featureCacheList.clear();
                     closeCompareThread();
@@ -408,7 +450,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         resultHandler.sendMessage(message);
     }
 
-    private void sendResult(float similar) {
+    private void sendResult(int similar) {
         Message message = Message.obtain();
         message.what = 1;
         message.obj = similar;
@@ -432,7 +474,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                     break;
                 case -1://自动清除身份信息
                     mIdCardBitmap = null;
-                    ivIdCard.setImageResource(DEFAULT_IDCARD_IMAGE);
+                    ivIdCard.setImageBitmap(null);
                     tvName.setText("");
                     tvOrigin.setText("");
                     break;
@@ -443,23 +485,25 @@ public class CertificatesActivity extends BaseGpioActivity {
                     KDXFSpeechManager.instance().playNormal(tip);
                     break;
                 case 1://人证结果提示
-                    float similar = (float) msg.obj;
+                    int similar = (int) msg.obj;
 
-                    int intSimilar = (int) (similar * 100);//取出相似度
                     Float maxTemp = 0f;
                     if (mTemperatureCacheList != null && mTemperatureCacheList.size() > 0) {
                         maxTemp = Collections.max(mTemperatureCacheList);//取出最大温度
                     }
-                    boolean isVerify = similar >= CertificatesView.SIMILAR_THRESHOLD;
-                    boolean isNormal = maxTemp != 0f && maxTemp < mTempWarningThreshold;//是否正常
+                    if (maxTemp != 0f) {
+                        maxTemp += mCorrectValue;
+                    }
+                    boolean isVerify = similar >= mSimilar;
+                    boolean isNormal = maxTemp != 0f && maxTemp < mWarningThreshold;//是否正常
 
                     final boolean isPass = isVerify && isNormal;
 
-                    setUITips(isVerify, isNormal, isPass, maxTemp, intSimilar);
+                    setUITips(isVerify, isNormal, isPass, maxTemp, similar);
 
                     Bitmap faceBitmap = ((BitmapDrawable) ivFace.getDrawable()).getBitmap();
                     Bitmap idCardBitmap = ((BitmapDrawable) ivIdCard.getDrawable()).getBitmap();
-                    SignManager.instance().uploadIdCardAndReImage(maxTemp, mIdCardMsg, intSimilar, (isPass ? 0 : 1), idCardBitmap, faceBitmap, mCacheHotImage);
+                    SignManager.instance().uploadIdCardAndReImage(maxTemp, mIdCardMsg, similar, (isPass ? 0 : 1), idCardBitmap, faceBitmap, mCacheHotImage);
 
                     resultHandler.removeMessages(2);
                     resultHandler.sendEmptyMessageDelayed(2, 10000);
@@ -469,8 +513,11 @@ public class CertificatesActivity extends BaseGpioActivity {
                     int color = msg.arg1;
 
                     float temp = mCodeTempList.size() <= 0 ? 0.0f : Collections.max(mCodeTempList);
+                    if(temp != 0.0f){
+                        temp += mCorrectValue;
+                    }
 
-                    boolean isOk = temp != 0f && temp >= 36.0f && temp < mTempWarningThreshold;//是否正常
+                    boolean isOk = temp != 0f && temp >= 36.0f && temp < mWarningThreshold;//是否正常
 
                     setUITips(true, isOk, isOk, temp, -1);
 
@@ -503,10 +550,10 @@ public class CertificatesActivity extends BaseGpioActivity {
         tvTemp.setText("");
         verifyStatusTip.setVisibility(View.GONE);
         tvTip.setText("");
-        ivIdCard.setImageResource(DEFAULT_IDCARD_IMAGE);
         tvName.setText("");
         tvOrigin.setText("");
-        ivFace.setImageResource(DEFAULT_FACE_IMAGE);
+        ivIdCard.setImageBitmap(null);
+        ivFace.setImageBitmap(null);
         KDXFSpeechManager.instance().stopNormal();
         KDXFSpeechManager.instance().stopWarningRing();
         resetLedDelay(0);
@@ -623,72 +670,21 @@ public class CertificatesActivity extends BaseGpioActivity {
     }
 
     //=热成像测温逻辑==================================================
-    private void startThermalImaging() {
-        Log.e(TAG, "startThermalImaging: 开始执行热成像逻辑");
-        InfraredTemperatureUtils.getIns().closeHotImage3232();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InfraredTemperatureUtils.getIns().startHotImage3232(mThermalImgMirror, mCurrBodyMinT, mCurrBodyMaxT, mCurrBodyPercent, hotImageDataCallBack);
-            }
-        }, 1000);
-    }
 
     private List<Float> mTemperatureCacheList = new ArrayList<>();
     private Bitmap mCacheHotImage = null;
-    private InfraredTemperatureUtils.HotImageDataCallBack hotImageDataCallBack = new InfraredTemperatureUtils.HotImageDataCallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
-            mCacheHotImage = imageBmp;
-
-            if (ivHotImage != null) {
-                ivHotImage.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivHotImage.setImageBitmap(imageBmp);
-                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + bodyMaxT + "℃");
-                    }
-                });
-            }
-
-            if (isCode) {
-                mCodeTempList.add(bodyMaxT);
-                return;
-            }
-            mCodeTempList.clear();
-
-            if (isBody) {
-                if (bodyMaxT <= 0) {
-                    return;
-                }
-
-                //如果缓存集合中包含这个温度则不再添加
-                if (!mTemperatureCacheList.contains(bodyMaxT)) {
-                    if (mTemperatureCacheList.size() > 0) {
-                        Float maxValue = Collections.max(mTemperatureCacheList);
-                        if (bodyMaxT > maxValue) {
-                            mTemperatureCacheList.add(bodyMaxT);
-                        }
-                    } else {
-                        mTemperatureCacheList.add(bodyMaxT);
-                    }
-                }
-            } else {
-                mTemperatureCacheList.clear();
-            }
-        }
-    };
 
     private Handler getTempHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 isCode = true;
-                sendEmptyMessageDelayed(1, 1000);
+                sendEmptyMessageDelayed(1, 2000);
                 return;
             } else if (msg.what == 1) {
 
                 if (mCodeTempList.size() <= 0) {
+                    Log.e(TAG, "handleMessage: 没有获取到温度" );
                     tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
                     isCode = false;
                     KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
@@ -696,22 +692,25 @@ public class CertificatesActivity extends BaseGpioActivity {
                     getTempHandler.removeMessages(2);
                     getTempHandler.sendEmptyMessageDelayed(2, 3000);
                     return;
+                }
+
+                Float mean = getMean(mCodeTempList);
+                if (mean < mMinThreshold) {
+                    isCode = false;
+                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
+                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
+                    btnNoIdCard.setEnabled(true);
+                    getTempHandler.removeMessages(2);
+                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
+                    return;
+                }
+                if(mean != 0f){
+                    mean = mCorrectValue;
                 }
 
                 isCode = false;
-                Float mean = getMean(mCodeTempList);
-                if (mean < mTempMinThreshold) {
-                    isCode = false;
-                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
-                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
-                    btnNoIdCard.setEnabled(true);
-                    getTempHandler.removeMessages(2);
-                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
-                    return;
-                }
-
                 tvTip.setText("");
-                boolean isWarning = mean >= mTempWarningThreshold;
+                boolean isWarning = mean >= mWarningThreshold;
 
                 setUITips2(!isWarning, !isWarning, mean);
                 btnNoIdCard.setEnabled(true);
@@ -1000,6 +999,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private void closeCardReader() {
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && !isInput) {

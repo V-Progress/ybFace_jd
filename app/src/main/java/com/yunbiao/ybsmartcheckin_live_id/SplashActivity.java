@@ -13,9 +13,11 @@ import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.temp_multi.MultiThermalActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +106,8 @@ public class SplashActivity extends BaseActivity {
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES) {//人证机
             Constants.DEFAULT_CAMERA_ANGLE = 0;
             startActivity(new Intent(this, CertificatesActivity.class));
+        } else if(Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL){
+            startActivity(new Intent(this, MultiThermalActivity.class));
         }
     }
 

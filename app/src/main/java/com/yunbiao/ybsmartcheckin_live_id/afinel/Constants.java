@@ -122,7 +122,10 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN;
+    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN_SMT ;
+
+    //是否亨通的版本
+    public static final boolean isHT = true;
 
     public static final int NOT_BIND_COMPANY_ID = 0;
 
@@ -131,6 +134,7 @@ public class Constants {
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
         int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
         int TEMPERATURE_CERTIFICATES = 9;//人证测温机
+        int MULTIPLE_THERMAL = 10;//多人测温
     }
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）

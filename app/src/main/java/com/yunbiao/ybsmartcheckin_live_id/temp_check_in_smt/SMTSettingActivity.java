@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -95,9 +96,11 @@ public class SMTSettingActivity extends SMTBaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
+                ?APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
+                :APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        edtWelComeTips.setHint(welcomeTips);
+        edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -537,11 +540,11 @@ public class SMTSettingActivity extends SMTBaseActivity {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
         final boolean mirror = SpUtils.isMirror();
-        cbMirror.setChecked(!mirror);
+        cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(!isChecked);
+                SpUtils.setMirror(isChecked);
             }
         });
 
@@ -761,6 +764,10 @@ public class SMTSettingActivity extends SMTBaseActivity {
             }
         });
         spnCameraSize.setSelection(index);
+    }
+
+    public void powerOnOff(View view){
+        startActivity(new Intent(this,SMTPowerOnOffActivity.class));
     }
 
     public void modifyPWD(View view) {

@@ -89,6 +89,30 @@ public class SyncManager {
 
     /*================================================================*/
 
+    public void retryOnluCompany(int tag){
+        switch (tag) {
+            case 1:
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
+                break;
+            case -1:
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_params_error));
+                break;
+            case 4:
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                break;
+            default:
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
+                break;
+        }
+        d("重新获取公司信息");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                requestOnlyCompany();
+            }
+        }, 30 * 1000);
+    }
+
     /***
      * 仅获取公司信息
      */
@@ -109,24 +133,24 @@ public class SyncManager {
                     EventBus.getDefault().post(new UpdateInfoEvent());
                     isFirst = false;
                 }
-                retryGetCompany(0);
+                retryOnluCompany(0);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 d(response);
                 if (TextUtils.isEmpty(response)) {
-                    retryGetCompany(0);
+                    retryOnluCompany(0);
                     return;
                 }
                 CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
                 if (companyResponse == null) {
-                    retryGetCompany(0);
+                    retryOnluCompany(0);
                     return;
                 }
 
                 if (companyResponse.getStatus() != 1) {
-                    retryGetCompany(companyResponse.getStatus());
+                    retryOnluCompany(companyResponse.getStatus());
                     return;
                 }
 

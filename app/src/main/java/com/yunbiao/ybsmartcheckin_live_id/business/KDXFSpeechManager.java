@@ -173,7 +173,9 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS,Constants.isHT
+                ?APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
+                :APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         if (TextUtils.isEmpty(welcomeTips)) {
             return;
         }
