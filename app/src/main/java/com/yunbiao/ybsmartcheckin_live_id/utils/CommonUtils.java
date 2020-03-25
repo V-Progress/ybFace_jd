@@ -412,7 +412,7 @@ public class CommonUtils {
     /**
      * 判断是不是板子的来源厂家
      *
-     * @return 0其他（国威）  1中恒  2深圳鸿世达科技  3亿晟科技  4小百合  5建益达
+     * @return 0其他（视美泰 默认）  5是 10寸人脸平板
      */
     public static Integer getBroadType() {
         String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
@@ -422,7 +422,9 @@ public class CommonUtils {
         }
         if (broad_info.contains("even@bnxd")) {
             return Config.DEVICE_SMALL_FACE;
-        } else {
+        } else if (broad_info.contains("lxr@ubuntu")){
+            return Config.DEVICE_SMALL_10_INCh;
+        }else {
             return Config.DEVICE_ONLY_FACE;
         }
     }

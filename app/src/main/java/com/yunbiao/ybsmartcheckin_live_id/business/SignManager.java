@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
@@ -1098,17 +1099,19 @@ public class SignManager {
         sign.setDate(dateFormat.format(multiTemperBean.getTime()));
         //上传标识
         sign.setUpload(false);
-        DaoManager.get().add(sign);
+        long add = DaoManager.get().add(sign);
+
+        Log.e(TAG, "addSignToDB: 当前是第：" + add);
 
         int comid = SpUtils.getCompany().getComid();
         if(comid == Constants.NOT_BIND_COMPANY_ID){
             return;
         }
-        if (sign.getType() == 0) {
+        /*if (sign.getType() == 0) {
             sendSignRecord(sign);
         } else if (sign.getType() == -1) {
             sendVisitRecord(sign);
-        }
+        }*/
     }
 
 
@@ -1123,10 +1126,11 @@ public class SignManager {
                     return;
                 }
 
-                final List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, false);
+                final List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, true);
                 if (signs == null || signs.size() <= 0) {
                     return;
                 }
+                Log.e(TAG, "run: 查询的数量：" + signs.size());
 
                 Map<String, File> hotMap = new HashMap<>();
                 Map<String, File> fileMap = new HashMap<>();
@@ -1227,7 +1231,6 @@ public class SignManager {
             public void run() {
                 int comid = SpUtils.getCompany().getComid();
                 List<Sign> signs = DaoManager.get().querySignByComId(comid);
-                Log.e(TAG, "run: 总记录数：" + (signs == null ? 0 : signs.size()));
                 if (signs == null) {
                     return;
                 }

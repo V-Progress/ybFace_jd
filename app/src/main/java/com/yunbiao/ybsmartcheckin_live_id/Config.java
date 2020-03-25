@@ -14,6 +14,7 @@ public class Config {
     public static final int NONE_SERVICE = -1;//无服务（单机版）
     public static final int LOCAL_SERVICE = 0;//本地服务
     public static final int CLOUD_SERVICE = 1;//云端服务
+    public static Integer DEVICE_SMALL_10_INCh = 5;
     private static int service = CLOUD_SERVICE;//服务状态
 
     private static final boolean isLiveness ;//是否检测活体

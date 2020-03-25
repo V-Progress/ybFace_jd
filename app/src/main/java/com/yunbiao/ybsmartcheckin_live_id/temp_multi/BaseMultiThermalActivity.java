@@ -11,11 +11,19 @@ import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+
+import java.util.List;
 
 public abstract class BaseMultiThermalActivity extends BaseGpioActivity implements NetWorkChangReceiver.NetWorkChangeListener {
 
@@ -79,11 +87,10 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         return newRect;
     }
 
-
+    //显示系统信息
     private PopupWindow systemInfoPopup;
     private CountDownTimer countDownTimer;
-
-    protected void showSystemInfoPopup(View parentView) {
+    protected void showSystemInfoPopup(final View parentView) {
         if (systemInfoPopup != null && systemInfoPopup.isShowing()) {
             dissmissSystemInfo();
             return;
@@ -115,7 +122,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         }
         //网络状态
         tvNetState = rootView.findViewById(R.id.tv_net_state_info_multi_thermal);
-        if(isNetConnected){
+        if (isNetConnected) {
             tvNetState.setText("正常");
             tvNetState.setTextColor(Color.GREEN);
         } else {
@@ -157,6 +164,15 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
                 dissmissSystemInfo();
             }
         });
+        //跳转
+        View btnSignList = rootView.findViewById(R.id.btn_sign_list_multi_thermal);
+        btnSignList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dissmissSystemInfo();
+                showSignListPopup(parentView);
+            }
+        });
 
         systemInfoPopup.showAsDropDown(parentView);
     }
@@ -176,7 +192,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     @Override
     public void connect() {
         isNetConnected = true;
-        if(tvNetState != null){
+        if (tvNetState != null) {
             tvNetState.setText("正常");
             tvNetState.setTextColor(Color.GREEN);
         }
@@ -185,9 +201,68 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     @Override
     public void disConnect() {
         isNetConnected = false;
-        if(tvNetState != null){
+        if (tvNetState != null) {
             tvNetState.setText("无网络");
             tvNetState.setTextColor(Color.RED);
+        }
+    }
+
+    //显示记录列表
+    private PopupWindow signListPopupWindow;
+    private CountDownTimer signListCountDownTimer;
+    private void showSignListPopup(View anchorView) {
+        if(signListPopupWindow != null && signListPopupWindow.isShowing()){
+            return;
+        }
+
+        if (signListPopupWindow == null) {
+            signListPopupWindow = new PopupWindow(this);
+            signListPopupWindow.setContentView(View.inflate(this, R.layout.popup_sign_multi_thermal, null));
+        }
+        View rootView = signListPopupWindow.getContentView();
+        View ivHiddenRecord = rootView.findViewById(R.id.iv_hidden_record_multi_thermal);
+        ivHiddenRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dissmissSignList();
+            }
+        });
+
+        final TextView tvCountTime = rootView.findViewById(R.id.tv_counttime_record_multi_thermal);
+        RecyclerView rlvRecord = rootView.findViewById(R.id.rlv_record_multi_thermal);
+        rlvRecord.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        rlvRecord.setItemAnimator(new DefaultItemAnimator());
+
+        int comid = SpUtils.getCompany().getComid();
+        List<Sign> signs = DaoManager.get().querySignByComId(comid);
+        if(signs != null){
+            rlvRecord.setAdapter(new MultiRecordAdapter(this, signs));
+        }
+
+        signListCountDownTimer = new CountDownTimer(120000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tvCountTime.setText((millisUntilFinished / 1000) + "");
+            }
+
+            @Override
+            public void onFinish() {
+                dissmissSignList();
+            }
+        };
+        signListCountDownTimer.start();
+
+        dissmissSystemInfo();
+        signListPopupWindow.showAsDropDown(anchorView);
+    }
+
+    private void dissmissSignList() {
+        if (signListCountDownTimer != null) {
+            signListCountDownTimer.cancel();
+            signListCountDownTimer = null;
+        }
+        if (signListPopupWindow != null && signListPopupWindow.isShowing()) {
+            signListPopupWindow.dismiss();
         }
     }
 }

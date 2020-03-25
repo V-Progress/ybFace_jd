@@ -6,6 +6,15 @@
     android:orientation="vertical"
     android:padding="5dp">
 
+    <ImageView
+        android:id="@+id/iv_setting_info_multi_thermal"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@mipmap/setting_icon" />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,10 +29,20 @@
 
             <ImageView
                 android:id="@+id/iv_hidden_info_multi_thermal"
-                android:layout_marginLeft="10dp"
-                android:src="@mipmap/hidden_icon"
                 android:layout_width="50dp"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/hidden_icon" />
+
+            <TextView
+                android:id="@+id/tv_time_info_multi_thermal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:text="60"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
 
             <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
                 android:layout_width="match_parent"
@@ -31,16 +50,6 @@
                 android:layout_centerInParent="true"
                 android:text="系统信息"
                 android:textSize="30dp" />
-
-            <TextView
-                android:id="@+id/tv_time_info_multi_thermal"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="60"
-                android:textColor="@color/white"
-                android:textSize="26dp" />
 
         </RelativeLayout>
 
@@ -147,14 +156,22 @@
                 android:textColor="@color/font_green"
                 android:textSize="26dp" />
         </TableRow>
-    </TableLayout>
 
-    <ImageView
-        android:id="@+id/iv_setting_info_multi_thermal"
-        android:layout_margin="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@mipmap/setting_icon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"/>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <Button
+                android:textSize="26dp"
+                android:textColor="@color/white"
+                android:background="@drawable/shape_bg_btnsync"
+                android:layout_margin="30dp"
+                android:text="测温记录"
+                android:layout_weight="1"
+                android:id="@+id/btn_sign_list_multi_thermal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </TableRow>
+    </TableLayout>
 </RelativeLayout>

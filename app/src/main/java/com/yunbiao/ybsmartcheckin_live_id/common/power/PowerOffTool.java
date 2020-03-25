@@ -64,12 +64,12 @@ public class PowerOffTool {
             case 0:
                 setPowerRunTime();
                 break;
-
-
-            case 3:
+            case 5:
+                PowerControllerTool.getPowerContrArray();
                 break;
         }
     }
+
 
     /**
      * 获取开关机时间
@@ -102,7 +102,7 @@ public class PowerOffTool {
         });
     }
 
-    private void putParam(String powerOffJson) {
+    public void putParam(String powerOffJson) {
         powerOffJson = powerOffJson.replaceAll("\\\\", "");
         if (powerOffJson.startsWith("\"")) {
             powerOffJson = powerOffJson.substring(1, powerOffJson.length() - 1);
@@ -156,7 +156,7 @@ public class PowerOffTool {
             String runTime = powerOnArray[1];
             String[] timeDateArray = runTime.split(":");
 
-            String currentTime = com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils.getStringDate();
+            String currentTime = CommonUtils.getStringDate();
             String[] timePice = currentTime.split(":");
             int currentHour = Integer.valueOf(timePice[0]);
             int currentMinute = Integer.valueOf(timePice[1]);
@@ -436,8 +436,8 @@ public class PowerOffTool {
      * 机器关机
      */
     public void powerShutdown() {
-        if (com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils.boardIsXBH()) {
-        } else if (com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils.boardIsJYD()) {
+        if (CommonUtils.boardIsXBH()) {
+        } else if (CommonUtils.boardIsJYD()) {
         } else {
             Process process = null;
             try {

@@ -60,6 +60,11 @@ public class ResourceUpdate {
      **/
     public static String VERSION_URL = WEB_BASE_URL + "device/service/getversion.html";
 
+    /***
+     * 设备异常上传
+     */
+    public static String DEVICE_EXCEPTION_UPLOAD = WEB_BASE_URL + "api/device/exceptionupload.html";
+
     /**
      * 开关机时间获取
      **/

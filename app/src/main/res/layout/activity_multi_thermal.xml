@@ -28,7 +28,7 @@
             android:text="AI人脸高通量测温数据平台"
             android:textSize="56sp" />
 
-        <TextClock
+        <!--<TextClock
             android:textColor="@color/white"
             android:format24Hour="yyyy-MM-dd  HH:mm"
             android:format12Hour="yyyy-MM-dd  HH:mm"
@@ -37,7 +37,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
-            android:textSize="34sp" />
+            android:textSize="34sp" />-->
     </RelativeLayout>
 
 
@@ -65,14 +65,23 @@
                 android:layout_width="1000dp"
                 android:layout_height="750dp"/>
 
-            <ImageView
-                android:layout_toRightOf="@+id/face_view"
+            <FrameLayout
                 android:background="#000"
                 android:layout_marginTop="30dp"
-                android:id="@+id/iv_hot_image"
+                android:layout_toRightOf="@+id/face_view"
                 android:layout_width="1000dp"
-                android:layout_height="750dp"
-                android:scaleType="fitXY" />
+                android:layout_height="750dp">
+                <ImageView
+                    android:id="@+id/iv_hot_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY" />
+                <com.yunbiao.faceview.SecondFaceRectView
+                    android:id="@+id/face_rect_view_hot_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+
         </RelativeLayout>
 
         <LinearLayout

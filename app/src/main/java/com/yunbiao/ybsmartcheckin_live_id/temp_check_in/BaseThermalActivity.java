@@ -679,10 +679,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         return result;
     }
 
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

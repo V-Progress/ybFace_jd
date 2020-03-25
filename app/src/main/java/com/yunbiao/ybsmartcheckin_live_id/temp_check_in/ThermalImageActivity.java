@@ -119,6 +119,13 @@ public class ThermalImageActivity extends BaseThermalActivity {
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
+
+        if(Constants.isHT){
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+            ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+        } else {
+            ivMainLogo.setImageResource(R.mipmap.logo);
+        }
     }
 
     @Override
@@ -140,6 +147,9 @@ public class ThermalImageActivity extends BaseThermalActivity {
                 ivBigHead.setVisibility(View.GONE);
                 flDotFrame.setVisibility(View.VISIBLE);
             }
+        } else {
+            ivBigHead.setVisibility(View.GONE);
+            flDotFrame.setVisibility(View.GONE);
         }
 
         initAds();

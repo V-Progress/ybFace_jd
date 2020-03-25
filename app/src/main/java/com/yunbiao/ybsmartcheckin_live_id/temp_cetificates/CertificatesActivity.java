@@ -726,10 +726,6 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
     };
 
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
     private float getMean(List<Float> array) {
         float result = 0.0f;
         if (array.size() == 0) {

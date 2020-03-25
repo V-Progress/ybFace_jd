@@ -262,11 +262,6 @@ public class CertificatesSettingActivity extends BaseActivity {
         }
     }
 
-
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
     private EditText edtIp;
     private EditText edtResPort;
     private EditText edtXmppPort;

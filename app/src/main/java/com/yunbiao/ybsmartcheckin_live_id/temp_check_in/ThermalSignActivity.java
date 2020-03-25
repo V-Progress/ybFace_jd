@@ -22,6 +22,7 @@ import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTRecordActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -107,8 +108,22 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         EventBus.getDefault().unregister(this);
     }
 
+
+    private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
+
     @Override
     protected void initData() {
+        title = new String[]{
+                getResources().getString(R.string.sign_list_name),
+                getResources().getString(R.string.sign_list_number),
+                getResources().getString(R.string.sign_list_depart),
+                getResources().getString(R.string.sign_list_position),
+                getResources().getString(R.string.sign_list_date),
+                getResources().getString(R.string.sign_list_time),
+                getResources().getString(R.string.sign_list_temper),
+                getResources().getString(R.string.sign_list_head),
+                getResources().getString(R.string.sign_list_hot)};
+
         String today = dateFormatter.format(new Date());
         tv_date.setText(today);
         queryDate = today;
@@ -293,7 +308,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
             UIUtils.showTitleTip(ThermalSignActivity.this, getString(R.string.sign_list_usb_disk));
             return;
         }
-        /*String[] list = file.list();
+       /* String[] list = file.list();
         for (String s : list) {
             File usbFile = new File(file, s);
             if (usbFile.isDirectory()) {
@@ -301,7 +316,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
             }
         }*/
         //创建记录最外层目录
-        final File dirFile = new File(file, dateFormat.format(new Date()) + "_导出记录");
+        final File dirFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record));
         if (!dirFile.exists()) {
             boolean mkdirs = dirFile.mkdirs();
             Log.e(TAG, "exportToUD: 创建外层目录：" + dirFile.getPath() + " --- " + mkdirs);
@@ -313,19 +328,19 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
             Log.e(TAG, "exportToUD: 创建图片目录：" + imgDir.getPath() + " --- " + mkdirs);
         }
         //创建xls文件
-        final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_导出记录.xls");
+        final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
         //获取源数据
         final List<Sign> signs = DaoManager.get().querySignByComId(SpUtils.getCompany().getComid());
         Log.e(TAG, "export: 源数据：" + (signs == null ? 0 : signs.size()));
         if (signs == null || signs.size() <= 0) {
-            UIUtils.showShort(this, "没有数据");
+            UIUtils.showShort(this, getResources().getString(R.string.sign_export_no_record));
             return;
         }
         //生成导出数据
         final List<List<String>> tableData = createTableData(signs);
         Log.e(TAG, "export: 导出数据：" + tableData.size());
         if (tableData == null || tableData.size() <= 0) {
-            UIUtils.showShort(this, "生成导出数据失败");
+            UIUtils.showShort(this, getResources().getString(R.string.sign_export_create_record_failed));
             return;
         }
         UIUtils.showNetLoading(this);
@@ -364,14 +379,16 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                     public void run() {
                         view.setEnabled(true);
                         UIUtils.dismissNetLoading();
-                        UIUtils.showShort(ThermalSignActivity.this, result ? ("导出成功\n目录：" + dirFile.getPath()) : "导出失败");
+                        UIUtils.showShort(ThermalSignActivity.this, result
+                                ? (getResources().getString(R.string.sign_export_record_success) +
+                                "\n" +
+                                getResources().getString(R.string.sign_export_record_path) + dirFile.getPath())
+                                : getResources().getString(R.string.sign_export_record_failed));
                     }
                 });
             }
         });
     }
-
-    private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
 
     public List<List<String>> createTableData(List<Sign> signs) {
         List<List<String>> tableDatas = new ArrayList<>();

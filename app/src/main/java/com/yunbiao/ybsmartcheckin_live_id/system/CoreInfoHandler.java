@@ -203,6 +203,9 @@ public class CoreInfoHandler {
 
     public static void updateDeviceType() {
         Log.e(TAG, "updateDeviceType: 更新设备类型");
+        Log.e(TAG, "updateDeviceType: 地址：" + ResourceUpdate.UPDATE_DEVICE_TYPE);
+        Log.e(TAG, "updateDeviceType: 参数：" + HeartBeatClient.getDeviceNo());
+        Log.e(TAG, "updateDeviceType: 参数：" + Constants.DEVICE_TYPE);
         OkHttpUtils.post()
                 .url(ResourceUpdate.UPDATE_DEVICE_TYPE)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())

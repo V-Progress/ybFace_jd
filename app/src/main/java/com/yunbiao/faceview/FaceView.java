@@ -61,7 +61,8 @@ public class FaceView extends FrameLayout {
 
     private static boolean isSignleDetect = true;
 
-    private static final int MAX_DETECT_NUM = 10;
+    private static int MAX_DETECT_NUM = 10;
+    private static int DETECT_FACE_SCALE_VAL = 16;
     /**
      * 当FR成功，活体未成功时，FR等待活体的时间
      */
@@ -162,6 +163,9 @@ public class FaceView extends FrameLayout {
     }
 
     private void initView() {
+        MAX_DETECT_NUM = Constants.MAX_DETECT_NUM;
+        DETECT_FACE_SCALE_VAL = Constants.DETECT_FACE_SCALE_VAL;
+
         setSimilarThreshold();
         nv21ToBitmap = new NV21ToBitmap(getContext());
         compareResultList = new ArrayList<>();
@@ -270,10 +274,6 @@ public class FaceView extends FrameLayout {
         return faceRect.contains(mAreaRect);
     }
 
-    public static void enableMutiple(boolean isEnable) {
-        isSignleDetect = !isEnable;
-    }
-
     public interface RectCallback {
         void onAreaRect(Rect mAreaRect, Rect mFaceRect);
     }
@@ -343,6 +343,9 @@ public class FaceView extends FrameLayout {
             mCurrBytes = nv21;
             if (faceRectView != null) {
                 faceRectView.clearFaceInfo();
+            }
+            if(sencondFaceRectView != null){
+                sencondFaceRectView.clearFaceInfo();
             }
             List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21, isSignleDetect);
             infoList = facePreviewInfoList;
@@ -634,7 +637,6 @@ public class FaceView extends FrameLayout {
                 }
             }
         }
-        Log.e(TAG, "getPicture: " + (facePreviewInfo == null ? "NULL" : facePreviewInfo.getTrackId()));
 
         if (facePreviewInfo != null) {
             //如果info不为null，则取出头像
@@ -699,17 +701,6 @@ public class FaceView extends FrameLayout {
         return null;
     }
 
-    public void setLiveness(boolean isChecked) {
-        livenessDetect = isChecked;
-        if (drawHelper != null) {
-            drawHelper.setLivnessEnable(isChecked);
-        }
-    }
-
-    public boolean getLiveness() {
-        return livenessDetect;
-    }
-
     public interface FaceCallback {
         void onReady();
 
@@ -734,15 +725,15 @@ public class FaceView extends FrameLayout {
 
         ftEngine = new FaceEngine();
         ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, orientPriority,
-                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
+                DETECT_FACE_SCALE_VAL, MAX_DETECT_NUM, FaceEngine.ASF_FACE_DETECT);
 
         frEngine = new FaceEngine();
         frInitCode = frEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,
-                16, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
+                DETECT_FACE_SCALE_VAL, MAX_DETECT_NUM, FaceEngine.ASF_FACE_RECOGNITION);
 
         flEngine = new FaceEngine();
         flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,/*ASF_OP_ALL_OUT*/
-                16, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
+                DETECT_FACE_SCALE_VAL, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);
@@ -813,6 +804,57 @@ public class FaceView extends FrameLayout {
                     , facePreviewInfo.getTemper(), facePreviewInfo.getOringinTemper()));
         }
         drawHelper.draw(faceRectView, drawInfoList);
+
+        if (sencondFaceRectView != null) {
+            drawHelper.draw2(sencondFaceRectView, drawInfoList);
+        }
+    }
+
+    public static void enableMutiple(boolean isEnable) {
+        isSignleDetect = !isEnable;
+    }
+
+    public void setLiveness(boolean isChecked) {
+        livenessDetect = isChecked;
+        if (drawHelper != null) {
+            drawHelper.setLivnessEnable(isChecked);
+        }
+    }
+
+    public boolean getLiveness() {
+        return livenessDetect;
+    }
+
+    private SecondFaceRectView sencondFaceRectView;
+
+    public void setSecondFaceRectView(SecondFaceRectView view) {
+        Log.e(TAG, "setSecondFaceRectView: 设置第二个人脸框");
+        sencondFaceRectView = view;
+    }
+
+    //是否执行多次重试，多次重试时不执行延时，默认100毫秒
+    private boolean isMultiRetry = true;
+    //是否多次回调
+    private boolean isMultiCallback = false;
+    //重试次数
+    private int retryTimes = 2;
+    //重试延迟，只在识别成功或不进行重试次数的情况下使用
+    private long retryDelayTime = 1000;
+
+    public void enableMultiRetry(boolean isRetry) {
+        isMultiRetry = isRetry;
+    }
+
+    public void enableMultiCallback(boolean multiCallback) {
+        isMultiCallback = multiCallback;
+    }
+
+    public void setRetryTime(int time) {
+        retryTimes = time;
+    }
+
+    public void setRetryDelayTime(long delay) {
+        retryDelayTime = delay;
     }
 
     /**
@@ -856,14 +898,6 @@ public class FaceView extends FrameLayout {
                 extractErrorRetryMap.remove(key);
             }
         }
-    }
-
-    private boolean isMultipleTimes = false;
-    private long retryDelayTime = 1000;
-
-    public void setMultipleRecognize(boolean isMulti, long delay) {
-        isMultipleTimes = isMulti;
-        retryDelayTime = delay;
     }
 
     private void searchFace(final FaceFeature frFace, final Integer requestId) {
@@ -920,47 +954,57 @@ public class FaceView extends FrameLayout {
                             }
                             faceHelper.setName(requestId, "ID: " + userName);
 
-                            if (isMultipleTimes) {
+                            //是否多次回调
+                            if (isMultiCallback) {
                                 retryRecognizeDelayed(requestId, retryDelayTime);
                             }
                         } else {
+                            faceHelper.setName(requestId, "未注册");
+                            requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SUCCEED_STRANGER);
 
-                            //回调识别失败的结果，说明是陌生人
+                            //不进行多次重试则直接回调结果
+                            if (!isMultiRetry) {
+                                //回调识别失败的结果，说明是陌生人
+                                if (callback != null) {
+                                    CompareResult cr = new CompareResult("-1", 0.0f);
+                                    cr.setTrackId(requestId);
+                                    callback.onFaceVerify(cr);
+                                }
+                                //是否多次回调
+                                if (isMultiCallback) {
+                                    retryRecognizeDelayed(requestId, retryDelayTime);
+                                }
+                                return;
+                            }
+
+                            //进行多次重试,判断重试map里是否包含这个人，如果不包含则添加，然后重试
+                            if (!strangerRetryMap.containsKey(requestId)) {
+                                strangerRetryMap.put(requestId, 0);
+                            }
+
+                            //进行多次重试，取出map中的数进行判断，如果小于次数则继续重试
+                            int retryNum = strangerRetryMap.get(requestId);
+                            if (retryNum < retryTimes) {
+                                retryNum += 1;
+                                strangerRetryMap.put(requestId, retryNum);
+                                retryRecognizeDelayed(requestId);
+                                return;
+                            }
+
+                            //重试次数足够，进行回调
                             if (callback != null) {
                                 CompareResult cr = new CompareResult("-1", 0.0f);
                                 cr.setTrackId(requestId);
                                 callback.onFaceVerify(cr);
                             }
 
-                            // TODO: 2020/3/19 增加陌生人检测逻辑
-                            /*if (strangerRetryMap.containsKey(requestId)) {
-                                int retryNum = strangerRetryMap.get(requestId);
-                                if (retryNum >= 0) {
-                                    faceHelper.setName(requestId, "未注册");
-                                    requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SUCCEED_STRANGER);
+                            //回调结束后删除这个人
+                            strangerRetryMap.remove(requestId);
 
-                                    //回调识别失败的结果，说明是陌生人
-                                    if (callback != null) {
-                                        CompareResult cr = new CompareResult("-1", 0.0f);
-                                        cr.setTrackId(requestId);
-                                        callback.onFaceVerify(cr);
-                                    }
-
-                                    if(isMultipleTimes){
-                                        strangerRetryMap.put(requestId, 0);
-                                        retryRecognizeDelayed(requestId, retryDelayTime);
-                                    }
-
-                                    return;
-                                } else {
-                                    retryNum += 1;
-                                    strangerRetryMap.put(requestId, retryNum);
-                                }
-                            } else {
-                                strangerRetryMap.put(requestId, 0);
-                            }*/
-
-                            retryRecognizeDelayed(requestId);
+                            //如果多次回调则删除map中的数并开启重试
+                            if (isMultiCallback) {
+                                retryRecognizeDelayed(requestId);
+                            }
                         }
                     }
 

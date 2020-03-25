@@ -15,6 +15,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -153,7 +155,7 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
         System.exit(1);
     }
 
-
+    private static final String TAG = "CrashHandler2";
     /**
      * 获取异常信息和设备参数信息
      */
@@ -166,11 +168,22 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
         mMemInfo = collectMemInfo();
 
         totalInfo.put(EXCEPTION_INFO, mExceptionInfo);
+        Log.e(TAG, "collectInfo: " + mExceptionInfo);
+
         totalInfo.put(PACKAGE_INFO, mPackageInfo);
+        Log.e(TAG, "collectInfo: " + mPackageInfo);
+
         totalInfo.put(DEVICE_INFO, mDeviceInfo);
+        Log.e(TAG, "collectInfo: " + mDeviceInfo);
+
         totalInfo.put(SYSTEM_INFO, mSecureInfo);
+        Log.e(TAG, "collectInfo: " + mSecureInfo);
+
         totalInfo.put(SECURE_INFO, mSecureInfo);
+        Log.e(TAG, "collectInfo: " + mSecureInfo);
+
         totalInfo.put(MEM_INFO, MEM_INFO);
+        Log.e(TAG, "collectInfo: " + MEM_INFO);
     }
 
     /**
@@ -344,6 +357,12 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
                 mStringBuffer.append("--------------"+time+"--------------------------------------------\n");
                 mStringBuffer.append(mExceptionInfo);
                 mStringBuffer.append("------------------------------------------------------------------\n");
+
+                Exception exception = new Exception();
+                exception.setCrashTime(time);
+                exception.setCrashExeption(mExceptionInfo);
+                DaoManager.get().addOrUpdate(exception);
+
                 mFileOutputStream.write(mStringBuffer.toString().getBytes());
                 mFileOutputStream.close();
                 return mFileName;

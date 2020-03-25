@@ -6,26 +6,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.arcsoft.face.FaceInfo;
-import com.arcsoft.face.util.ImageUtils;
-import com.arcsoft.imageutil.ArcSoftImageUtil;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
@@ -34,7 +28,9 @@ import com.intelligence.hardware.temperature.callback.UsbPermissionCallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
+import com.yunbiao.faceview.FaceRectView;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.faceview.SecondFaceRectView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
@@ -47,7 +43,9 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FaceCanvasView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -60,15 +58,20 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiThermalActivity extends BaseMultiThermalActivity implements View.OnClickListener {
 
+    private static final String TAG = "MultiThermalActivity";
     private ImageView ivHotImage;
     private FaceView faceView;
     private boolean mThermalMirror;
@@ -79,6 +82,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
     private List<MultiTemperBean> normalList = new ArrayList<>();
     private RecyclerView rlvNormalList;
     private MultiThermalRecordAdapter normalAdapter;
+
+    private float mWarningTemper = 37.3f;
+    private float mNormalTemper = 35.5f;
 
     private int totalNum = 0;
     private int normalNum = 0;
@@ -122,18 +128,23 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         setVerticalRlv();
         //开启多人识别模式
         faceView.enableMutiple(true);
-        //开启多次抓取
-        faceView.setMultipleRecognize(true, 500);
+        //关闭多次重试
+        faceView.enableMultiRetry(false);
+        //开启多次回调
+        faceView.enableMultiCallback(true);
+        //设置回调延时
+        faceView.setRetryDelayTime(500);
+        SecondFaceRectView secondFaceRectView = findViewById(R.id.face_rect_view_hot_image);
+        faceView.setSecondFaceRectView(secondFaceRectView);
         faceView.setCallback(faceCallback);
         startXmpp();
     }
 
     @Override
     protected void initData() {
+        addAllItemRecord();
         handleData();
     }
-
-    private static final String TAG = "MultiThermalActivity";
 
     private void setHorizontalRlv() {
         rlvNormalList = findViewById(R.id.rlv_normal_list);
@@ -170,6 +181,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
 
         faceView.resume();
 
+        mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
 
@@ -224,8 +236,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
+            SignManager.instance();
             FaceManager.getInstance().init(MultiThermalActivity.this);
-            SyncManager.instance().requestCompany();
+            SyncManager.instance().requestOnlyCompany();
         }
 
         @Override
@@ -233,22 +246,19 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
             mHasFace = hasFace;
             if (hasFace) {
                 setFaceIndex(facePreviewInfoList);
-
-                //判断集合中是否有这个人脸，如果没有则删除缓存
-                Iterator<Map.Entry<Integer, MultiTemperBean>> iterator = totalMap.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Integer, MultiTemperBean> next = iterator.next();
-                    int trackId = next.getKey();
-                    int index = -1;
-                    for (int i = 0; i < facePreviewInfoList.size(); i++) {
-                        FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
-                        if(trackId == facePreviewInfo.getTrackId()){
-                            index = i;
+                if (totalMap.size() > 30) {
+                    Iterator<Map.Entry<Integer, MultiTemperBean>> iterator = totalMap.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        iterator.remove();
+                        if (totalMap.size() <= 30) {
+                            break;
                         }
                     }
-                    if(index == -1){
-                        iterator.remove();
-                    }
+                }
+            } else {
+                if (totalMap.size() > 0) {
+                    totalMap.clear();
                 }
             }
         }
@@ -266,9 +276,11 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
                 return;
             }
             Bitmap picture = faceView.getPicture(trackId);
-            if(picture == null){
+            if (picture == null) {
                 return;
             }
+
+            temperByTrackId = formatF(temperByTrackId);
 
             MultiTemperBean multiTemperBean = new MultiTemperBean();
             //trackId
@@ -317,6 +329,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
 
         @Override
         public void newestHotImageData(final Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
+            setHotImage(bitmap);
             /*if (mHasFace) {
                 setHotImage(bitmap);
             }*/
@@ -353,13 +366,13 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         //设置热成像画面中人脸框的颜色，默认为黑色
         TemperatureModule.getIns().setFaceFrameColor(0xFFFFFFFF);
         //人脸框信息faceIndexInfoList，是否在热成像画面中绘制人脸框(true为绘制)
-        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfoList, true);
+        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfoList, false);
     }
 
     /*====数据刷新=======================================================================================*/
     /*====数据刷新=========================================================================================*/
     /*====数据刷新=========================================================================================*/
-    private Queue<MultiTemperBean> resultQueue = new LinkedList<>();
+    private ConcurrentLinkedQueue<MultiTemperBean> resultQueue = new ConcurrentLinkedQueue<>();
 
     private void addResultAndNotifyData(MultiTemperBean result) {
         if (result == null) {
@@ -374,8 +387,10 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
     //开启数据刷新线程
     private void startDataNotify() {
         if (dataNotifyThread != null && isDataNotifyRunning) {
+            Log.e(TAG, "startDataNotify: 刷新线程正在运行");
             return;
         }
+        Log.e(TAG, "startDataNotify: 开启刷新线程");
         isDataNotifyRunning = true;
         dataNotifyThread = new Thread(runnable);
         dataNotifyThread.start();
@@ -384,6 +399,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
     //关闭数据刷新线程
     private void stopDataNotify() {
         if (dataNotifyThread != null && isDataNotifyRunning) {
+            Log.e(TAG, "stopDataNotify: 刷新线程结束");
             isDataNotifyRunning = false;
             dataNotifyThread = null;
         }
@@ -395,17 +411,13 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         @Override
         public void run() {
             while (isDataNotifyRunning) {
-
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 if (resultQueue.size() > 0) {
                     int comid = SpUtils.getCompany().getComid();
                     //查用户信息，查不到的就是-1访客
                     final MultiTemperBean multiTemperBean = resultQueue.poll();
+                    if (multiTemperBean == null) {
+                        continue;
+                    }
                     multiTemperBean.setCompId(comid);
 
                     String faceId = multiTemperBean.getFaceId();
@@ -450,9 +462,126 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
                     stopDataNotify();
                 }
 
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     };
+
+    private DateFormat dateFormat2 = new SimpleDateFormat("yyyy年MM月dd日");
+
+    private void addAllItemRecord() {
+        int comid = SpUtils.getCompany().getComid();
+        List<Sign> signs = DaoManager.get().querySignByComIdAndDateWithLimit(comid, dateFormat2.format(new Date()), 100);
+        if (signs == null || signs.size() <= 0) {
+            return;
+        }
+        Collections.sort(signs, new Comparator<Sign>() {
+            @Override
+            public int compare(Sign o1, Sign o2) {
+                return (int) (o2.getTime() - o1.getTime());
+            }
+        });
+        for (int i = 0; i < signs.size(); i++) {
+            Sign sign = signs.get(i);
+            if (sign.getTemperature() < mWarningTemper) {
+                if (normalList.size() < 15) {
+                    MultiTemperBean multiTemperBean = signToMultiTemperBean(sign);
+                    normalList.add(multiTemperBean);
+                }
+            } else {
+                if (warningList.size() < 30) {
+                    MultiTemperBean multiTemperBean = signToMultiTemperBean(sign);
+                    warningList.add(multiTemperBean);
+                }
+            }
+        }
+        if (normalList.size() > 0) {
+            normalAdapter.notifyItemRangeInserted(0, normalList.size());
+        }
+        if (warningList.size() > 0) {
+            warningAdapter.notifyItemRangeInserted(0, warningList.size());
+        }
+    }
+
+    private MultiTemperBean signToMultiTemperBean(Sign sign) {
+        MultiTemperBean multiTemperBean = new MultiTemperBean();
+        multiTemperBean.setFaceId(sign.getFaceId());
+        multiTemperBean.setTime(sign.getTime());
+        multiTemperBean.setName(sign.getName());
+        multiTemperBean.setTemper(sign.getTemperature());
+        String headPath = sign.getHeadPath();
+        if (!TextUtils.isEmpty(headPath)) {
+            multiTemperBean.setHeadImage(BitmapFactory.decodeFile(headPath));
+        }
+        String hotImgPath = sign.getHotImgPath();
+        if (!TextUtils.isEmpty(hotImgPath)) {
+            multiTemperBean.setHotImage(BitmapFactory.decodeFile(hotImgPath));
+        }
+        return multiTemperBean;
+    }
+
+    //添加条目到记录中
+    private void updateItemRecord(List<MultiTemperBean> multiTemperBeanList) {
+        Log.e(TAG, "addItemRecord: 本次刷新的list的数量" + multiTemperBeanList.size());
+        int warningSize = 0;
+        int normalSize = 0;
+        for (MultiTemperBean multiTemperBean : multiTemperBeanList) {
+            float temper = multiTemperBean.getTemper();
+            if (temper <= 0f || temper >= 37.3f) {
+                warningSize += 1;
+                warningList.add(0, multiTemperBean);
+                warningAdapter.notifyItemInserted(0);
+                if (warningList.size() > 15) {
+                    int index = warningList.size() - 1;
+                    warningList.remove(warningList.get(index));
+                }
+            } else {
+                normalSize += 1;
+                normalList.add(0, multiTemperBean);
+                normalAdapter.notifyItemInserted(0);
+                if (normalList.size() > 15) {
+                    int index = normalList.size() - 1;
+                    normalList.remove(normalList.get(index));
+                }
+            }
+
+            handleData(multiTemperBean);
+        }
+
+        if (warningSize > 0) {
+            warningAdapter.notifyItemRangeInserted(0, warningSize);
+            rlvWarningList.scrollToPosition(0);
+        }
+        if (normalSize > 0) {
+            normalAdapter.notifyItemRangeInserted(0, normalSize);
+            rlvNormalList.scrollToPosition(0);
+        }
+    }
+
+    private void saveMultiTemperBeanToDB(MultiTemperBean multiTemperBean) {
+        int trackId = multiTemperBean.getTrackId();
+        //判断是缓存trackId里是否包含这个Id，如果包含代表已经计数过
+        if (totalMap.containsKey(trackId)) {
+            MultiTemperBean oldBean = totalMap.get(trackId);
+            float oldTemper = oldBean.getTemper();
+            float newTemper = multiTemperBean.getTemper();
+            //判断两次的差值是否超过0.3f，如果是代表波动大，则加入数据库等待上传
+            if (newTemper - oldTemper >= 0.3f || oldTemper - newTemper >= 0.3f) {
+                totalMap.put(trackId, multiTemperBean);
+                SignManager.instance().addSignToDB(multiTemperBean);
+            }
+            return;
+        }
+        totalMap.put(trackId, multiTemperBean);
+
+        //如果map里不包含这个id，则直接加入数据库
+        SignManager.instance().addSignToDB(multiTemperBean);
+    }
 
     //添加条目到记录中
     private void addItemRecord(MultiTemperBean multiTemperBean) {
@@ -479,29 +608,30 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
 
         int trackId = multiTemperBean.getTrackId();
         //判断是缓存trackId里是否包含这个Id，如果包含代表已经计数过
-        if(totalMap.containsKey(trackId)){
+        if (totalMap.containsKey(trackId)) {
             MultiTemperBean oldBean = totalMap.get(trackId);
             float oldTemper = oldBean.getTemper();
             float newTemper = multiTemperBean.getTemper();
             //判断两次的差值是否超过0.3f，如果是代表波动大，则加入数据库等待上传
-            if(newTemper - oldTemper >= 0.3f || oldTemper - newTemper >= 0.3f){
-                totalMap.put(trackId,multiTemperBean);
+            if (newTemper - oldTemper >= 0.3f || oldTemper - newTemper >= 0.3f) {
+                totalMap.put(trackId, multiTemperBean);
                 SignManager.instance().addSignToDB(multiTemperBean);
             }
             return;
         }
-        totalMap.put(trackId,multiTemperBean);
+        totalMap.put(trackId, multiTemperBean);
 
         //如果map里不包含这个id，则直接加入数据库
         SignManager.instance().addSignToDB(multiTemperBean);
         handleData(multiTemperBean);
     }
 
-    private Map<Integer,MultiTemperBean> totalMap = new HashMap<>();
+    private Map<Integer, MultiTemperBean> totalMap = new HashMap<>();
 
     //加载统计数据
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private MultiTotal multiTotal;
+
     //初始化统计数据
     private void handleData() {
         int comid = SpUtils.getCompany().getComid();

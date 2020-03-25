@@ -19,6 +19,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"/>
     <TextView
+        android:visibility="gone"
         android:textColor="#00FFFF"
         android:textSize="20sp"
         android:layout_marginStart="10dp"

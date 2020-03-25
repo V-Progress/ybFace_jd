@@ -134,9 +134,15 @@ public class DaoManager {
         if (daoSession == null) {
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).limit(100).list();
     }
 
+    public List<Sign> querySignByComIdAndDateWithLimit(int comid,String date,int limit){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comid),SignDao.Properties.Date.eq(date)).limit(limit).list();
+    }
     /***
      * 查询所有未上传的数据
      * @param isUp

@@ -395,11 +395,6 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
         return result;
     }
 
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
-
     /*List<Float> cacheLits = new ArrayList<>();
     private static final String TAG = "SMTTempBaseActivity";
     //开始红外测温逻辑

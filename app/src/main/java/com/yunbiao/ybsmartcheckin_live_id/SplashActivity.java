@@ -2,12 +2,21 @@ package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
+import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
@@ -16,11 +25,18 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.temp_multi.MultiThermalActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
@@ -47,8 +63,9 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
 //        APP.bindProtectService();
+        Constants.checkSetIp();
 
-        Config.deviceType = CommonUtils.getBroadType();
+        ThreadUitls.runInThread(machineRestartRun);
         ybPermission = new YBPermission(new YBPermission.PermissionListener() {
             @Override
             public void onPermissionFailed(String[] objects) {
@@ -59,40 +76,129 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFinish(boolean isComplete) {
-                if (isComplete) {
-                    Constants.initStorage();
-                    SpUtils.init();
-
-                    int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-                    if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                        jump();
-                    } else {
-                        UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
-                    }
-
-                    overridePendingTransition(0, 0);
-                    finish();
-                    return;
-                } else {
+                if(!isComplete){
                     UIUtils.showShort(SplashActivity.this, getString(R.string.splash_request_permission_failed));
+                    return;
                 }
+
+                uploadException(nextRunnable);
             }
         });
         ybPermission.checkPermission(this, PERMISSONS);
     }
 
+    public Runnable machineRestartRun = new Runnable() {
+        public void run() {
+            PowerOffTool.getPowerOffTool().machineStart();
+        }
+    };
+
+    private void uploadException(final Runnable runnable) {
+        UIUtils.showNetLoading(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
+                if (exceptions == null) {
+                    if (runnable != null) {
+                        runOnUiThread(runnable);
+                    }
+                    return;
+                }
+
+                String url = ResourceUpdate.DEVICE_EXCEPTION_UPLOAD;
+                Log.e(TAG, "异常上传：" + url);
+                Map<String, String> params = new HashMap<>();
+                params.put("deviceId", HeartBeatClient.getDeviceNo());
+                params.put("deviceType", Constants.DEVICE_TYPE + "");
+                String versionName = "x.x.x";
+                int versionCode = -1;
+                try {
+                    PackageManager mPackageManager = getPackageManager();
+                    PackageInfo packageInfo = mPackageManager.getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
+                    versionName = packageInfo.versionName;
+                    versionCode = packageInfo.versionCode;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Log.e(TAG, "uploadException: " + versionName + " --- " + versionCode);
+                params.put("versionName", versionName);
+                params.put("versionCode", versionCode + "");
+                params.put("boardType", CommonUtils.saveBroadInfo());
+                String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
+                if (TextUtils.isEmpty(str)) {
+                    str = "";
+                }
+                params.put("deviceNumber", str);
+
+                String crashArray = new Gson().toJson(exceptions);
+                params.put("crasharray", crashArray);
+
+                OkHttpUtils.post()
+                        .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
+                        .params(params)
+                        .build()
+                        .connTimeOut(5000)
+                        .readTimeOut(5000)
+                        .writeTimeOut(5000)
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, java.lang.Exception e, int id) {
+                                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                Log.e(TAG, "onResponse: 上传结果：" + response);
+                            }
+
+                            @Override
+                            public void onAfter(int id) {
+                                if (runnable != null) {
+                                    runnable.run();
+                                }
+                            }
+                        });
+            }
+        }).start();
+    }
+
+    private Runnable nextRunnable = new Runnable() {
+        @Override
+        public void run() {
+            UIUtils.dismissNetLoading();
+
+            Constants.initStorage();
+            SpUtils.init();
+
+            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                jump();
+            } else {
+                UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
+            }
+
+            overridePendingTransition(0, 0);
+            finish();
+        }
+    };
+
     private void jump() {
-        // TODO: 2019/12/21 设置IP地址
-        Constants.checkSetIp();
-
-//        startActivity(new Intent(SplashActivity.this, Thermal6080Activity.class));
-
-//        startActivity(new Intent(SplashActivity.this,FaceViewTestActivity.class));
+        //判断是否亨通的版本
+        switch (Constants.DEVICE_TYPE) {
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
+            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
+            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                Constants.isHT = true;
+                break;
+        }
 
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
 
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN) {//测温考勤机
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
+                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
             //调整摄像头默认角度
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
@@ -100,13 +206,16 @@ public class SplashActivity extends BaseActivity {
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
             }
             startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT
+                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
             Constants.DEFAULT_CAMERA_ANGLE = 270;
             startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES) {//人证机
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES
+                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
             Constants.DEFAULT_CAMERA_ANGLE = 0;
             startActivity(new Intent(this, CertificatesActivity.class));
-        } else if(Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL){
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL
+                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
             startActivity(new Intent(this, MultiThermalActivity.class));
         }
     }

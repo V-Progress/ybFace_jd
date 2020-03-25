@@ -39,6 +39,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:visibility="gone"
             android:text="刘德华"
             android:textSize="20sp"
             android:textColor="#00FFFF"

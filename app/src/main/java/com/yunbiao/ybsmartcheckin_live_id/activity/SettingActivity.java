@@ -664,11 +664,6 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
-
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
     private void initLivenessSetting() {
         Switch swLiveness = findViewById(R.id.sw_liveness_setting);
         boolean liveness = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);

@@ -38,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -157,6 +158,10 @@ public class SMTSettingActivity extends SMTBaseActivity {
         initCameraSetting();
         //活体开关
         initLivenessSetting();
+    }
+
+    public void powerOnOff(View view){
+        startActivity(new Intent(this, PowerOnOffActivity.class));
     }
 
     private void initModelSetting() {
@@ -370,11 +375,6 @@ public class SMTSettingActivity extends SMTBaseActivity {
         public void afterTextChanged(Editable s) {
 
         }
-    }
-
-
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
     }
 
     private void initLivenessSetting() {
@@ -764,10 +764,6 @@ public class SMTSettingActivity extends SMTBaseActivity {
             }
         });
         spnCameraSize.setSelection(index);
-    }
-
-    public void powerOnOff(View view){
-        startActivity(new Intent(this,SMTPowerOnOffActivity.class));
     }
 
     public void modifyPWD(View view) {

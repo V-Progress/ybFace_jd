@@ -149,7 +149,7 @@ public class SyncManager {
                     return;
                 }
 
-                if (companyResponse.getStatus() != 1) {
+                if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     retryOnluCompany(companyResponse.getStatus());
                     return;
                 }
@@ -224,7 +224,7 @@ public class SyncManager {
                     return;
                 }
 
-                if (companyResponse.getStatus() != 1) {
+                if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     if (companyResponse.getStatus() == 4) {
                         saveCompanyInfo(null);
                         dissmissDialog();

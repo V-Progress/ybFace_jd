@@ -209,4 +209,8 @@ public abstract class BaseActivity extends FragmentActivity {
             e.printStackTrace();
         }
     }
+
+    protected float formatF(float fValue) {
+        return (float) (Math.round(fValue * 10)) / 10;
+    }
 }

@@ -295,7 +295,7 @@ public class XmppManager {
                 // Create the configuration for this new connection
                 ConnectionConfiguration connConfig = new ConnectionConfiguration(xmppHost, xmppPort);
                 // connConfig.setSecurityMode(SecurityMode.disabled);
-                connConfig.setSecurityMode(ConnectionConfiguration.SecurityMode.required);
+                connConfig.setSecurityMode(ConnectionConfiguration.SecurityMode.required/*disabled*/);
                 connConfig.setSASLAuthenticationEnabled(false);
                 connConfig.setCompressionEnabled(false);
 
@@ -335,9 +335,18 @@ public class XmppManager {
         public void run() {
             Log.e(LOGTAG, "RegisterTask.run()...");
             if (!xmppManager.isRegistered()) {
-                final String newUsername = HeartBeatClient.getDeviceNo();
+                String newUsername = HeartBeatClient.getDeviceNo();
                 String android_model = android.os.Build.MODEL.replaceAll("_", "");
                 newPassword = newUsername + "_" + android_model;
+
+                switch (com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DEVICE_TYPE) {
+                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
+                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
+                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                        newPassword += "HT";
+                        break;
+                }
 
                 Registration registration = new Registration();
 
@@ -347,6 +356,7 @@ public class XmppManager {
 
                 Log.d(LOGTAG, "username=" + newUsername + " password=" + newPassword);
 
+                final String finalNewUsername = newUsername;
                 PacketListener packetListener = new PacketListener() {
 
                     public void processPacket(Packet packet) {
@@ -358,11 +368,11 @@ public class XmppManager {
                                 }
                             } else if (response.getType() == IQ.Type.RESULT) {
 
-                                xmppManager.setUsername(newUsername);
+                                xmppManager.setUsername(finalNewUsername);
                                 xmppManager.setPassword(newPassword);
 
                                 Editor editor = sharedPrefs.edit();
-                                editor.putString(Constants.XMPP_USERNAME, newUsername);
+                                editor.putString(Constants.XMPP_USERNAME, finalNewUsername);
                                 editor.putString(Constants.XMPP_PASSWORD, newPassword);
                                 editor.commit();
                                 Log.e(LOGTAG, "Account registered successfully");

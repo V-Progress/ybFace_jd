@@ -52,11 +52,16 @@ public class VisitorManager {
     private VisitorManager() {
         executor = Executors.newSingleThreadScheduledExecutor();
     }
+    private boolean isRunning = false;
 
     public void autoSyncVisitor() {
+        if(isRunning){
+            return;
+        }
         executor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                isRunning = true;
                 syncVisitor();
             }
         }, 5, 150, TimeUnit.SECONDS);

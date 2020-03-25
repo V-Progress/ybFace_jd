@@ -526,10 +526,6 @@ public class PassageDeviceActivity extends BaseGpioActivity {
         tvRangeTips.setText(tips);
     }
 
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
     //=热成像测温逻辑==================================================
     private void startThermalImaging() {
         Log.e(TAG, "startThermalImaging: 开始执行热成像逻辑");

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 
 import com.arcsoft.face.AgeInfo;
@@ -51,6 +52,17 @@ public class DrawHelper {
     }
 
     public void draw(FaceRectView faceRectView, List<DrawInfo> drawInfoList) {
+        if (faceRectView == null) {
+            return;
+        }
+        faceRectView.clearFaceInfo();
+        if (drawInfoList == null || drawInfoList.size() == 0) {
+            return;
+        }
+        faceRectView.addFaceInfo(drawInfoList);
+    }
+
+    public void draw2(SecondFaceRectView faceRectView,List<DrawInfo> drawInfoList){
         if (faceRectView == null) {
             return;
         }
@@ -191,6 +203,7 @@ public class DrawHelper {
         if (canvas == null || drawInfo == null) {
             return;
         }
+        paint.setTypeface(font);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(faceRectThickness);
         paint.setColor(drawInfo.getColor());
@@ -216,10 +229,10 @@ public class DrawHelper {
         mPath.lineTo(rect.left, rect.bottom - rect.height() / 4);
         canvas.drawPath(mPath, paint);
 
-        drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(),rect.left, rect.top - 10);
+        drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(), rect.left, rect.top - 10);
 
         /*String str = drawInfo.getName();
-        canvas.drawText(str, rect.left, rect.top - 10, paint);*/
+        canvas.drawText(str, rect.left, rect.top - 50, paint);*/
         /*if (drawInfo.getName() == null) {
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setTextSize(rect.width() / 8);
@@ -237,6 +250,36 @@ public class DrawHelper {
         }*/
     }
 
+    private static Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+    public static void drawFaceRect2(Canvas canvas, DrawInfo drawInfo, int faceRectThickness, Paint paint) {
+        if (canvas == null || drawInfo == null) {
+            return;
+        }
+
+        paint.setTypeface(font);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(faceRectThickness);
+        paint.setColor(Color.WHITE);
+        paint.setAntiAlias(true);
+        // 左上
+
+        Rect newRect = new Rect(drawInfo.getRect());
+
+        newRect.left -= newRect.width() / 3;
+        newRect.right -= newRect.width() / 3;
+        if (newRect.left <= 0) {
+            newRect.left = 1;
+        }
+        newRect.top -= newRect.height() / 3;
+        newRect.bottom -= newRect.height() / 3;
+        if(newRect.top <= 0){
+            newRect.top = 1;
+        }
+
+        canvas.drawRect(newRect, paint);
+        drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(), newRect.left, newRect.top - 10);
+    }
+
     private static void drawTemper(Canvas canvas, Paint paint, int isLiveness, float drawInfoTemper, float temper, int left, int top) {
         if (livnessEnable && isLiveness != LivenessInfo.ALIVE) {
             return;
@@ -249,12 +292,12 @@ public class DrawHelper {
         } else {
             paint.setColor(Color.GREEN);
         }
-        paint.setTextSize(26);
+        paint.setTextSize(20);
         String text = "";
-        if(drawInfoTemper != 0.0f){
+        /*if(drawInfoTemper != 0.0f){
             text += drawInfoTemper + "℃，";
-        }
-        if(temper != 0.0f){
+        }*/
+        if (temper != 0.0f) {
             text += temper + "℃";
         }
         canvas.drawText(text, left, top, paint);

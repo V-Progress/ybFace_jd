@@ -45,6 +45,7 @@ import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
 import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -103,9 +104,9 @@ public class ThermalSettingActivity extends BaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS,Constants.isHT
-                ?APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
-                :APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
+                ? APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
+                : APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
@@ -168,6 +169,10 @@ public class ThermalSettingActivity extends BaseActivity {
         initPosterSetting();
         //读卡器模块
         initReadCardSetting();
+    }
+
+    public void powerOnOff(View view) {
+        startActivity(new Intent(this, PowerOnOffActivity.class));
     }
 
     private void initReadCardSetting() {
@@ -257,7 +262,7 @@ public class ThermalSettingActivity extends BaseActivity {
         final int model = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
 
         //如果是红外模式则隐藏矫正按钮
-        if(model == ThermalConst.INFARED_FACE || model == ThermalConst.INFARED_ONLY || model == ThermalConst.THERMAL_FACE_ONLY){
+        if (model == ThermalConst.INFARED_FACE || model == ThermalConst.INFARED_ONLY || model == ThermalConst.THERMAL_FACE_ONLY) {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
         } else {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -279,7 +284,7 @@ public class ThermalSettingActivity extends BaseActivity {
                             return;
                         }
                         //如果是红外模式则隐藏矫正按钮
-                        if(whichModel == ThermalConst.INFARED_FACE || whichModel == ThermalConst.INFARED_ONLY || whichModel == ThermalConst.THERMAL_FACE_ONLY){
+                        if (whichModel == ThermalConst.INFARED_FACE || whichModel == ThermalConst.INFARED_ONLY || whichModel == ThermalConst.THERMAL_FACE_ONLY) {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
                         } else {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -397,7 +402,7 @@ public class ThermalSettingActivity extends BaseActivity {
         Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
         Button btnSpeechDelayAdd = findViewById(R.id.btn_speech_delay_add_setting);
         final EditText edtSpeechDelay = findViewById(R.id.edt_speech_delay_setting);
-        long speechDelayTime = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY,ThermalConst.Default.SPEECH_DELAY);
+        long speechDelayTime = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY, ThermalConst.Default.SPEECH_DELAY);
         edtSpeechDelay.setText(speechDelayTime + "");
         View.OnClickListener speechDelayOnClickLitsener = new View.OnClickListener() {
             @Override
@@ -498,11 +503,6 @@ public class ThermalSettingActivity extends BaseActivity {
         public void afterTextChanged(Editable s) {
 
         }
-    }
-
-
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
     }
 
     private void initLivenessSetting() {

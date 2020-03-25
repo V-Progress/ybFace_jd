@@ -167,6 +167,13 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     public void onResume() {
         super.onResume();
 
+        if(Constants.isHT){
+            ivQRCode.setVisibility(View.GONE);
+        } else {
+            boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+            ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
+        }
+
         Log.e(TAG, "onResume: 重加载数据");
         float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
         int newModel = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
@@ -177,9 +184,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             mFEnabled = fEnabled;
             loadSignData();
         }
-
-        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
-        ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
     }
 
     @Override

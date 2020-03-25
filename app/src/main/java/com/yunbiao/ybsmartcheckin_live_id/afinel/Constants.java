@@ -56,29 +56,26 @@ public class Constants {
     private static final String TAG = "Constants";
 
     public static void checkSetIp() {
-        String ip = SpUtils.getStr(SpUtils.IP_CACHE);
-        String resourcePort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-        String xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-        String suffix = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-        if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resourcePort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(suffix)) {
-            Log.e(TAG, "IP地址：" + Constants.XMPP_HOST);
-            Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
-            Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
-            Log.e(TAG, "项目名：" + Constants.RESOURCE_SUFFIX);
-            Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
-        } else {
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, serverModel.YUN) == serverModel.JU) {
+            String ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
+            String xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
+            String resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
+            String projectName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+
             Constants.XMPP_HOST = ip;
             Constants.XMPP_PORT = xmppPort;
             Constants.RESOURCE_HOST = ip;
-            Constants.RESOURCE_PORT = resourcePort;
-            Constants.RESOURCE_URL = Constants.NetConfig.PRE + Constants.RESOURCE_HOST + Constants.NetConfig.COLON + Constants.RESOURCE_PORT + suffix;
+            Constants.RESOURCE_PORT = resPort;
+            Constants.RESOURCE_URL = Constants.NetConfig.PRE + ip + Constants.NetConfig.COLON + resPort + "/" + (TextUtils.isEmpty(projectName) ? "" : (projectName  + "/"));
 
-            Log.e(TAG, "资源IP：" + Constants.RESOURCE_HOST);
-            Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
-            Log.e(TAG, "xmppIP：" + Constants.XMPP_HOST);
-            Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
-            Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
+            ResourceUpdate.WEB_BASE_URL = Constants.RESOURCE_URL;
         }
+
+        Log.e(TAG, "xmppIP：" + Constants.XMPP_HOST);
+        Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
+        Log.e(TAG, "资源IP：" + Constants.RESOURCE_HOST);
+        Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
+        Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
     }
 
     public interface NetConfig {
@@ -122,12 +119,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.TEMPERATURE_CHECK_IN_SMT ;
-
-    //是否亨通的版本
-    public static final boolean isHT = true;
-
-    public static final int NOT_BIND_COMPANY_ID = 0;
+    public static final int DEVICE_TYPE = DeviceType.HT_TEMPERATURE_CHECK_IN_SMT ;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
@@ -135,7 +127,26 @@ public class Constants {
         int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
         int TEMPERATURE_CERTIFICATES = 9;//人证测温机
         int MULTIPLE_THERMAL = 10;//多人测温
+
+        int HT_TEMPERATURE_CHECK_IN = 11;//亨通考勤
+        int HT_TEMPERATURE_CHECK_IN_SMT = 12;//亨通通行
+        int HT_TEMPERATURE_CERTIFICATES = 13;//亨通人证
+        int HT_MULTIPLE_THERMAL = 14;//亨通多人
     }
+
+    //是否亨通的版本
+    public static boolean isHT = false;
+    //设备未绑定时的公司Id
+    public static final int NOT_BIND_COMPANY_ID = 0;
+    //最大人脸线程数
+    public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10 ;
+    //最远人脸抓取距离
+    public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 32 : 16;
+
+
+
+
+
 
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
