@@ -27,7 +27,6 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -98,19 +97,18 @@ public class SplashActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
+                final List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
                 if (exceptions == null) {
+                    Log.e(TAG, "run: 没有异常");
                     if (runnable != null) {
                         runOnUiThread(runnable);
                     }
                     return;
                 }
-
+                Log.e(TAG, "run: 异常条数：" + exceptions.size());
+                //地址
                 String url = ResourceUpdate.DEVICE_EXCEPTION_UPLOAD;
-                Log.e(TAG, "异常上传：" + url);
-                Map<String, String> params = new HashMap<>();
-                params.put("deviceId", HeartBeatClient.getDeviceNo());
-                params.put("deviceType", Constants.DEVICE_TYPE + "");
+                //版本号
                 String versionName = "x.x.x";
                 int versionCode = -1;
                 try {
@@ -121,18 +119,26 @@ public class SplashActivity extends BaseActivity {
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                Log.e(TAG, "uploadException: " + versionName + " --- " + versionCode);
-                params.put("versionName", versionName);
-                params.put("versionCode", versionCode + "");
-                params.put("boardType", CommonUtils.saveBroadInfo());
+                //设备号
                 String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
                 if (TextUtils.isEmpty(str)) {
                     str = "";
                 }
-                params.put("deviceNumber", str);
-
+                //转jsonString
                 String crashArray = new Gson().toJson(exceptions);
-                params.put("crasharray", crashArray);
+                //参数
+                Map<String, String> params = new HashMap<>();
+                params.put("deviceId", HeartBeatClient.getDeviceNo() + "");
+                params.put("deviceType", Constants.DEVICE_TYPE + "");
+                params.put("versionName", versionName + "");
+                params.put("versionCode", versionCode + "");
+                params.put("cpuAbi", "");
+                params.put("boardType", CommonUtils.saveBroadInfo()+"");
+                params.put("deviceNumber", str+"");
+                params.put("crasharray", crashArray+"");
+
+                Log.e(TAG, "异常上传：" + url);
+                Log.e(TAG, "参数：" + params.toString());
 
                 OkHttpUtils.post()
                         .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
@@ -150,6 +156,9 @@ public class SplashActivity extends BaseActivity {
                             @Override
                             public void onResponse(String response, int id) {
                                 Log.e(TAG, "onResponse: 上传结果：" + response);
+                                for (Exception exception : exceptions) {
+                                    DaoManager.get().delete(exception);
+                                }
                             }
 
                             @Override

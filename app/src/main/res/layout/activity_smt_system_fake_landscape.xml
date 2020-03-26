@@ -287,6 +287,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
+            android:visibility="gone"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"
             android:layout_marginTop="30dp"
@@ -304,32 +305,33 @@
                 match:textColor="@color/white"
                 match:textSize="60dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="right|center">
-
-                <TextView
-                    android:id="@+id/tv_version_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
-
-                <Button
-                    android:id="@+id/btn_update_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:background="@drawable/selector_btn_take_photo"
-                    android:nextFocusUp="@+id/btn_setting_system"
-                    android:text="@string/System_update"
-                    android:textColor="@color/white"
-                    android:textSize="25dp" />
-            </LinearLayout>
-
         </FrameLayout>
+
+        <LinearLayout
+            android:layout_margin="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="right|center">
+
+            <TextView
+                android:id="@+id/tv_version_system"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/btn_update_system"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/selector_btn_take_photo"
+                android:nextFocusUp="@+id/btn_setting_system"
+                android:text="@string/System_update"
+                android:textColor="@color/white"
+                android:textSize="25dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_copyright_smt_system"

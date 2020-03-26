@@ -95,6 +95,8 @@ public class UIUtils {
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.setTitle(context.getString(R.string.uiUtils_tip_notice));
         pd.setMessage(context.getString(R.string.uiUtils_tip_zzazxgyyqnxdd));
+        pd.setCancelable(false);
+        pd.setCanceledOnTouchOutside(false);
         pd.show();
 
         Window window = pd.getWindow();

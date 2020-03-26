@@ -29,6 +29,7 @@ public class Constants {
 
 
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
+    public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
 
@@ -119,7 +120,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.HT_TEMPERATURE_CHECK_IN_SMT ;
+    public static final int DEVICE_TYPE = DeviceType.HT_TEMPERATURE_CHECK_IN ;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机

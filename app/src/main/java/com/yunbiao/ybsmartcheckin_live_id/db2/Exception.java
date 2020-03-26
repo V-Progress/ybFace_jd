@@ -1,18 +1,21 @@
 package com.yunbiao.ybsmartcheckin_live_id.db2;
 
+import com.google.gson.annotations.Expose;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class Exception {
-
     @org.greenrobot.greendao.annotation.Id(autoincrement = true)
     private Long Id;
 
+    @Expose
     @Unique
     private String crashTime;
 
+    @Expose
     private String crashExeption;
 
     @Generated(hash = 1867725288)

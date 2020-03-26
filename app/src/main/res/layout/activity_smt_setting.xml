@@ -534,6 +534,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_qr_code_enable_area"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

@@ -96,18 +96,17 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
         }
 
         List<Sign> todaySignData = SignManager.instance().getTodaySignData();
-        if (todaySignData == null) {
-            return;
-        }
-        List<Sign> signs = removeDuplicateCase(todaySignData);
-        Iterator<Sign> iterator = signs.iterator();
-        while (iterator.hasNext()) {
-            Sign next = iterator.next();
-            if (next.getType() == -9) {
-                iterator.remove();
+        if (todaySignData != null) {
+            List<Sign> signs = removeDuplicateCase(todaySignData);
+            Iterator<Sign> iterator = signs.iterator();
+            while (iterator.hasNext()) {
+                Sign next = iterator.next();
+                if (next.getType() == -9) {
+                    iterator.remove();
+                }
             }
+            already = signs.size();
         }
-        already = signs.size();
         tvAlready.setText(already + "");
     }
 

@@ -8,54 +8,52 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
-
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 
 public class UpdateManager {
     private static final String TAG = "UpdateManager";
     private Activity mContext;
 
-    //返回的安装包url
-    private static String apkUrl = "http://211.157.160.102/imgserver/hsd.apk";
-
-    /* 下载包安装路径 */
-    private static final String savePath = "/sdcard/mnt/sdcard/hsd/apk/";
-
-    private static final String saveFileName = savePath + "hsd.apk";
+    private static final int DOWN_SHOW = 0;
 
     private static final int DOWN_UPDATE = 1;
 
-    private static final int DOWN_OVER = 2;
+    private static final int DOWN_DISMISS = -1;
 
-    private int progress;
+    private static final int DOWN_TIP = 3;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case DOWN_UPDATE:
-                    if (onReceivedProgressRun != null) {
-                        onReceivedProgressRun.OnProgressRunReceived(progress);
+                case DOWN_SHOW://显示
+                    if (mContext != null) {
+                        UIUtils.updatePd(mContext);
                     }
                     break;
-                case DOWN_OVER:
-                    installApk();
+                case DOWN_UPDATE://更新
+                    if (UIUtils.pd != null) {
+                        int progress = (int) msg.obj;
+                        UIUtils.pd.setProgress(progress);//给进度条设置数值
+                    }
+                    break;
+                case DOWN_DISMISS://隐藏
+                    if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
+                        UIUtils.pd.dismiss();
+                    }
+                    break;
+                case DOWN_TIP://提示
+                    if (mContext != null) {
+                        String tips = (String) msg.obj;
+                        UIUtils.showShort(mContext, tips);
+                    }
                     break;
                 default:
                     break;
@@ -63,30 +61,23 @@ public class UpdateManager {
         }
     };
 
-    public static void setOnReceivedProgressRun(OnReceivedProgressRun run) {
-        onReceivedProgressRun = run;
-    }
-
-    public static OnReceivedProgressRun onReceivedProgressRun;
-
-    public interface OnReceivedProgressRun {
-        void OnProgressRunReceived(int progress);
-    }
-
     public UpdateManager(Activity context) {
         this.mContext = context;
     }
 
-    //	//外部接口让主Activity调用
+    //获取新版本
     public void checkUpdateInfo(String version) {
         //判断是否需要更新
         HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("clientVersion", version);
         paramMap.put("type", Constants.DEVICE_TYPE + "");
+
+        Log.e(TAG, "检查更新：" + ResourceUpdate.VERSION_URL);
+        Log.e(TAG, "参数：" + paramMap.toString());
         MyXutils.getInstance().post(ResourceUpdate.VERSION_URL, paramMap, new MyXutils.XCallBack() {
             @Override
             public void onSuccess(String result) {
-                Log.e("UpdateManager", "checkUpdateInfo------------->" + result);
+                Log.e(TAG, "onSuccess: " + result);
                 if (result.startsWith("\"")) {
                     result = result.substring(1, result.length() - 1);
                 }
@@ -95,117 +86,92 @@ public class UpdateManager {
 
             @Override
             public void onError(Throwable ex) {
-
+                Log.e(TAG, "onError: " + (ex == null ? "NULL" : ex.getMessage()));
+                Message message = Message.obtain();
+                message.what = DOWN_TIP;
+                message.obj = (ex == null ? "NULL" : ex.getMessage());
+                mHandler.sendMessage(message);
             }
 
             @Override
             public void onFinish() {
-
             }
         });
     }
 
+    //解析返回值
     private void judgeIsUpdate(String isUpdate) {
+        Message message = Message.obtain();
         //返回
         switch (isUpdate) {
             case "1": //不需要更新
-                if (mContext != null) {
-                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_dqbbwzxbb));
-                }
-                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
-                    UIUtils.pd.dismiss();
-                }
+                message.what = DOWN_TIP;
+                message.obj = mContext.getString(R.string.updateManager_dqbbwzxbb);
+                mHandler.sendMessage(message);
+                mHandler.sendEmptyMessage(DOWN_DISMISS);
                 break;
             case "faile":  //网络不通，或者解析出错
-                if (mContext != null) {
-                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_wlljsbqjcwl));
-                }
-                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
-                    UIUtils.pd.dismiss();
-                }
+                message.what = DOWN_TIP;
+                message.obj = mContext.getString(R.string.updateManager_wlljsbqjcwl);
+                mHandler.sendMessage(message);
+                mHandler.sendEmptyMessage(DOWN_DISMISS);
                 break;
             default:
-                if (mContext != null) {
-                    UIUtils.updatePd(mContext);
-                }
-                setOnReceivedProgressRun(new OnReceivedProgressRun() {
-                    @Override
-                    public void OnProgressRunReceived(int progress) {
-                        UIUtils.pd.setProgress(progress);//给进度条设置数值
-                        if (progress == 100) {
-                            UIUtils.pd.dismiss();
-                        }
-                    }
-                });
-                apkUrl = isUpdate;
+                mHandler.sendEmptyMessage(DOWN_SHOW);
                 //下载apk
-                downloadApk();
+                download2(isUpdate, Constants.APK_PATH);
                 break;
         }
     }
 
-    private Runnable mdownApkRunnable = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                URL url = new URL(apkUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                conn.setConnectTimeout(30000);
-                conn.setReadTimeout(360000);
-                conn.connect();
-                int length = conn.getContentLength();
-                InputStream is = conn.getInputStream();
-
-                File file = new File(savePath);
-                if (!file.exists()) {
-                    file.mkdir();
-                }
-
-                String apkFile = saveFileName;
-                File ApkFile = new File(apkFile);
-                FileOutputStream fos = new FileOutputStream(ApkFile);
-
-                int count = 0;
-                byte buf[] = new byte[1024];
-                boolean interceptFlag = false;
-                do {
-                    int numread = is.read(buf);
-                    count += numread;
-                    progress = (int) (((float) count / length) * 100);
-                    //更新进度
-                    mHandler.sendEmptyMessage(DOWN_UPDATE);
-                    if (numread <= 0) {
-                        //下载完成通知安装
-                        mHandler.sendEmptyMessage(DOWN_OVER);
-                        break;
-                    }
-                    fos.write(buf, 0, numread);
-                } while (!interceptFlag);//点击取消就停止下载.
-
-                fos.close();
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                if (mContext != null) {
-                    UIUtils.showShort(mContext, mContext.getString(R.string.updateManager_xzsb));
-                }
-                if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
-                    UIUtils.pd.dismiss();
-                }
-            }
+    //开始下载
+    private void download2(String url, String destDir) {
+        File destFile = new File(destDir);
+        if (!destFile.exists()) {
+            destFile.mkdirs();
         }
-    };
 
-    /**
-     * 下载apk
-     *
-     * @param
-     */
-    private void downloadApk() {
-        Thread downLoadThread = new Thread(mdownApkRunnable);
-        downLoadThread.start();
+        String filename = url.substring(url.lastIndexOf('/') + 1);
+        destFile = new File(destFile, filename);
+
+        Log.e(TAG, "开始下载：" + url);
+        Log.e(TAG, "存储目录：" + destFile.getPath());
+        MyXutils.getInstance().downLoadFile(url, destFile.getPath(), false, new MyXutils.XDownLoadCallBack() {
+            @Override
+            public void onLoading(long total, long current, boolean isDownloading) {
+                //更新进度
+                Message message = Message.obtain();
+                message.what = DOWN_UPDATE;
+                message.obj = (int) (((float) current / total) * 100);
+                mHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onSuccess(File result) {
+                if (!result.exists()) {
+                    Message message = Message.obtain();
+                    message.what = DOWN_TIP;
+                    message.obj = "文件不存在";
+                    mHandler.sendMessage(message);
+                    return;
+                }
+                //下载完成通知安装
+                installApk(result);
+            }
+
+            @Override
+            public void onError(final Throwable ex) {
+                Message message = Message.obtain();
+                message.what = DOWN_TIP;
+                message.obj = mContext.getString(R.string.updateManager_xzsb) + "（" + ex.getMessage() + "）";
+                mHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onFinished() {
+                mHandler.sendEmptyMessage(DOWN_DISMISS);
+            }
+        });
     }
 
     /**
@@ -213,19 +179,12 @@ public class UpdateManager {
      *
      * @param
      */
-    private void installApk() {
-        if (UIUtils.pd != null && UIUtils.pd.isShowing()) {
-            UIUtils.pd.dismiss();
-        }
-
-        File apkfile = new File(saveFileName);
-        if (!apkfile.exists()) {
-            return;
-        }
+    private void installApk(File file) {
+        Log.e(TAG, "installApk: 开始安装：" + file.getPath());
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(apkfile), "application/vnd.android.package-archive");
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         mContext.startActivity(intent);
     }
 }

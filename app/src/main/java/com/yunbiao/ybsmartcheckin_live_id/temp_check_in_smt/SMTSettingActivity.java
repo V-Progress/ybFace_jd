@@ -94,12 +94,21 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 return false;
             }
         });
+
+        switch (Constants.DEVICE_TYPE) {
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
+            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
+            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
+                break;
+        }
     }
 
     private void initUISetting() {
         String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
-                ?APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
-                :APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+                ? APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
+                : APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {
@@ -160,7 +169,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         initLivenessSetting();
     }
 
-    public void powerOnOff(View view){
+    public void powerOnOff(View view) {
         startActivity(new Intent(this, PowerOnOffActivity.class));
     }
 
@@ -175,13 +184,13 @@ public class SMTSettingActivity extends SMTBaseActivity {
             }
         });
 
-        boolean lowTempMode = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP,SMTModelConst.Default.LOW_TEMP);
+        boolean lowTempMode = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP, SMTModelConst.Default.LOW_TEMP);
         Switch swLowTempMode = findViewById(R.id.sw_low_temp_mode_smt_setting);
         swLowTempMode.setChecked(lowTempMode);
         swLowTempMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SMTModelConst.key.LOW_TEMP,isChecked);
+                SpUtils.saveBoolean(SMTModelConst.key.LOW_TEMP, isChecked);
             }
         });
 
@@ -325,7 +334,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
         final EditText edtTempCorr = findViewById(R.id.edt_temp_corr_setting);
         Float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
-        edtTempCorr.setText(tempCorr  + "");
+        edtTempCorr.setText(tempCorr + "");
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,13 +357,13 @@ public class SMTSettingActivity extends SMTBaseActivity {
         btnTempCorrAdd.setOnClickListener(onClickListener);
 
         //华氏度开关
-        boolean fEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED,SMTModelConst.Default.F_ENABLED);
+        boolean fEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED, SMTModelConst.Default.F_ENABLED);
         Switch swFEnabled = findViewById(R.id.sw_f_enable_smt_setting);
         swFEnabled.setChecked(fEnabled);
         swFEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SMTModelConst.key.F_ENABLED,isChecked);
+                SpUtils.saveBoolean(SMTModelConst.key.F_ENABLED, isChecked);
             }
         });
     }
