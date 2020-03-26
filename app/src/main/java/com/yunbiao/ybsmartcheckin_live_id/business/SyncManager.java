@@ -94,6 +94,9 @@ public class SyncManager {
             case 1:
                 SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
                 break;
+            case 2:
+                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                break;
             case -1:
                 SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_params_error));
                 break;
@@ -143,7 +146,14 @@ public class SyncManager {
                     retryOnluCompany(0);
                     return;
                 }
-                CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
+                CompanyResponse companyResponse = null;
+                try{
+                    companyResponse = new Gson().fromJson(response, CompanyResponse.class);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    retryOnluCompany(2);
+                    return;
+                }
                 if (companyResponse == null) {
                     retryOnluCompany(0);
                     return;
@@ -218,12 +228,14 @@ public class SyncManager {
                     retryGetCompany(0);
                     return;
                 }
-                CompanyResponse companyResponse = new Gson().fromJson(response, CompanyResponse.class);
-                if (companyResponse == null) {
-                    retryGetCompany(0);
+                CompanyResponse companyResponse = null;
+                try{
+                    companyResponse = new Gson().fromJson(response, CompanyResponse.class);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    retryOnluCompany(2);
                     return;
                 }
-
                 if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     if (companyResponse.getStatus() == 4) {
                         saveCompanyInfo(null);

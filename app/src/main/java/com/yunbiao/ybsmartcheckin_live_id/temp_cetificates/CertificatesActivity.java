@@ -106,6 +106,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private int mMode;
     private int mSimilar;
     private float mMinThreshold;
+    private View tvBottomTitle;
 
     @Override
     protected int getPortraitLayout() {
@@ -140,6 +141,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         ivFace = findViewById(R.id.iv_face);
         ivIdCard = findViewById(R.id.iv_idCard);
         btnNoIdCard = findViewById(R.id.btn_no_id_card);
+        tvBottomTitle = findViewById(R.id.tv_bottomTitle);
         btnNoIdCard.setOnClickListener(onClickListener);
         ivLogo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +151,16 @@ public class CertificatesActivity extends BaseGpioActivity {
         });
 
         TIP_READ_ID_CARD = getResources().getString(R.string.act_certificates_please_set_id_card);
+
+        if(Constants.isHT){
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+            ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+            tvBottomTitle.setVisibility(View.GONE);
+        } else {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
+            ivLogo.setImageResource(R.mipmap.logo);
+            tvBottomTitle.setVisibility(View.VISIBLE);
+        }
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -234,12 +246,14 @@ public class CertificatesActivity extends BaseGpioActivity {
                 });
             }
 
-            if (isCode) {
+            if (isCode && mHasFace) {
                 Log.e(TAG, "newestHotImageData: 正在取温");
                 mCodeTempList.add(afterF);
                 return;
             }
-            mCodeTempList.clear();
+            if(mCodeTempList.size() > 0){
+                mCodeTempList.clear();
+            }
 
             if (certificatesView.hasFace()) {
                 //如果缓存集合中包含这个温度则不再添加
@@ -270,6 +284,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
     };
 
+    private boolean mHasFace = false;
     private CertificatesView.FaceCallback faceCallback = new CertificatesView.FaceCallback() {
 
         @Override
@@ -279,6 +294,7 @@ public class CertificatesActivity extends BaseGpioActivity {
 
         @Override
         public void onFaceDetection(boolean hasFace, FaceInfo faceInfo) {
+            mHasFace = hasFace;
             if (isCode) {
                 return;
             }
@@ -682,7 +698,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                 sendEmptyMessageDelayed(1, 2000);
                 return;
             } else if (msg.what == 1) {
-
+                isCode = false;
                 if (mCodeTempList.size() <= 0) {
                     Log.e(TAG, "handleMessage: 没有获取到温度" );
                     tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
@@ -694,8 +710,13 @@ public class CertificatesActivity extends BaseGpioActivity {
                     return;
                 }
 
-                Float mean = getMean(mCodeTempList);
-                if (mean < mMinThreshold) {
+                for (Float aFloat : mCodeTempList) {
+                    Log.e(TAG, "handleMessage: 取到的温度：" + aFloat);
+                }
+
+                Float max = Collections.max(mCodeTempList);
+
+                if (max < mMinThreshold) {
                     isCode = false;
                     tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
                     KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
@@ -704,19 +725,20 @@ public class CertificatesActivity extends BaseGpioActivity {
                     getTempHandler.sendEmptyMessageDelayed(2, 3000);
                     return;
                 }
-                if(mean != 0f){
-                    mean = mCorrectValue;
+                if(max != 0f){
+                    max += mCorrectValue;
                 }
 
-                isCode = false;
                 tvTip.setText("");
-                boolean isWarning = mean >= mWarningThreshold;
+                boolean isWarning = max >= mWarningThreshold;
 
-                setUITips2(!isWarning, !isWarning, mean);
+                Log.e(TAG, "handleMessage: 最高温度：" + max);
+
+                setUITips2(!isWarning, !isWarning, max);
                 btnNoIdCard.setEnabled(true);
 
                 Bitmap currCameraFrame = certificatesView.getCurrCameraFrame();
-                SignManager.instance().uploadNoIdCardResult(isWarning ? 1 : 0, currCameraFrame, mean, mCacheHotImage);
+                SignManager.instance().uploadNoIdCardResult(isWarning ? 1 : 0, currCameraFrame, max, mCacheHotImage);
 
                 getTempHandler.removeMessages(2);
                 getTempHandler.sendEmptyMessageDelayed(2, 5000);

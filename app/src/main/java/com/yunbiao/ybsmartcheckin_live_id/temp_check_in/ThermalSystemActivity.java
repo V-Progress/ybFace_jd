@@ -125,13 +125,21 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
 
+        Company company = SpUtils.getCompany();
         //亨通隐藏版权
         if(Constants.isHT){
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name2);
+            ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
         } else {
             tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.app_name);
+            ivLogo.setImageResource(R.mipmap.yb_logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+        }
+        if(!TextUtils.isEmpty(company.getComlogo())){
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
         }
     }
     private String appName;

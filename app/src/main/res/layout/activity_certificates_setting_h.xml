@@ -489,6 +489,12 @@
                 android:onClick="modifyPWD"
                 android:text="@string/setting_manage_password" />
 
+            <TextView
+                style="@style/setting_text_child"
+                android:layout_marginTop="10dp"
+                android:onClick="powerOnOff"
+                android:text="@string/setting_power_on_off" />
+
             <LinearLayout
                 style="@style/setting_text_child"
                 android:layout_width="match_parent"

@@ -11,12 +11,14 @@
         android:background="#072345">
 
         <ImageView
+            android:src="@mipmap/logo_icon_horizontal"
+            android:maxWidth="160dp"
+            android:maxHeight="@dimen/margin_10dp"
             android:id="@+id/iv_logo"
-            android:layout_width="wrap_content"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:src="@mipmap/logo" />
+            android:layout_marginLeft="30dp" />
 
         <TextView
             android:id="@+id/tv_topTitle"
@@ -27,7 +29,7 @@
             android:textColor="@color/white"
             android:textSize="32dp" />
 
-        <TextClock
+        <!--<TextClock
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +39,7 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="32dp" />-->
     </RelativeLayout>
 
     <RelativeLayout

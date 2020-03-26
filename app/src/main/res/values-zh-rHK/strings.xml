@@ -352,6 +352,7 @@
     <string name="sync_face_5">同步人臉庫</string>
     <string name="sync_get_failed">獲取失敗，即將重試</string>
     <string name="sync_not_bind">設備未綁定</string>
+    <string name="sync_data_resolve_failed">解析失敗</string>
     <string name="sync_not_depart">公司未設置部門</string>
     <string name="sync_params_error">參數錯誤</string>
     <string name="edit_not_edit">未做任何修改</string>

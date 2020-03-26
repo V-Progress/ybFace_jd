@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -348,6 +350,8 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
                 boolean canAppend = file.exists() && file.isFile();
                 FileOutputStream mFileOutputStream = new FileOutputStream(mDirectory + File.separator + mFileName,canAppend);
                 if(!canAppend){//判断文件是否存在，如果不存在就把设备信息添加进去，然后写入
+                    mStringBuffer.append("deviceNumber=").append(SpUtils.getStr(SpUtils.DEVICE_NUMBER)).append("\n");
+                    mStringBuffer.append("deviceId=").append(HeartBeatClient.getDeviceNo()).append("\n");
                     mStringBuffer.append(getInfoStr(mPackageInfo));
                     mStringBuffer.append(getInfoStr(mDeviceInfo));
                     mFileOutputStream.write(mStringBuffer.toString().getBytes());

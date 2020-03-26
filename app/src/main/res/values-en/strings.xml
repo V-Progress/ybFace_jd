@@ -348,6 +348,7 @@
     <string name="sync_face_5">Syn face database</string><!--同步人脸库  -->
     <string name="sync_get_failed">Failed to get, retrying soon</string><!-- 获取失败，即将重试 -->
     <string name="sync_not_bind">Device not bound</string><!--  设备未绑定-->
+    <string name="sync_data_resolve_failed">Resolve Data Filed</string>
     <string name="sync_not_depart">No department set up in the company</string><!--  公司未设置部门-->
     <string name="sync_params_error">Parameter error</string><!--  参数错误-->
     <string name="edit_not_edit">No changes</string><!-- 未做任何修改 -->

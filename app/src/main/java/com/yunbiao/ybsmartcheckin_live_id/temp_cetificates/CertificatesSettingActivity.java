@@ -38,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -130,6 +131,10 @@ public class CertificatesSettingActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         setCorrectUI();
+    }
+
+    public void powerOnOff(View view){
+        startActivity(new Intent(this, PowerOnOffActivity.class));
     }
 
     private void setCorrectUI() {

@@ -347,6 +347,7 @@
     <string name="sync_face_5">페이스 라이브러리 동기화</string>
     <string name="sync_get_failed">다시 시도하지 못했습니다</string>
     <string name="sync_not_bind">장치가 바인딩되지 않았습니다</string>
+    <string name="sync_data_resolve_failed">분석 실패</string>
     <string name="sync_not_depart">회사에 부서가 없습니다</string>
     <string name="sync_params_error">파라미터 에러</string>
     <string name="edit_not_edit">변경 사항 없음</string>
