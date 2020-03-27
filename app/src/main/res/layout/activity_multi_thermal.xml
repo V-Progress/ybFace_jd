@@ -13,6 +13,7 @@
         android:layout_height="140dp">
 
         <ImageView
+            android:onClick="showSystemInfo"
             android:id="@+id/iv_logo_multi_thermal"
             android:layout_marginLeft="30dp"
             android:layout_width="140dp"
@@ -25,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="AI人脸高通量测温数据平台"
+            android:text="@string/main_title_multi_thermal"
             android:textSize="56sp" />
 
-        <!--<TextClock
+        <TextClock
             android:textColor="@color/white"
             android:format24Hour="yyyy-MM-dd  HH:mm"
             android:format12Hour="yyyy-MM-dd  HH:mm"
@@ -37,7 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
-            android:textSize="34sp" />-->
+            android:textSize="34sp" />
     </RelativeLayout>
 
 
@@ -96,7 +97,6 @@
             android:paddingBottom="10dp">
 
             <TextView
-                android:text="异常人员记录（12345）"
                 android:id="@+id/tv_warning_total_multi_thermal"
                 android:layout_marginTop="12dp"
                 android:textSize="16dp"
@@ -150,6 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
                 <ImageView
+                    android:onClick="showSystemInfo"
                     android:layout_centerVertical="true"
                     android:src="@mipmap/multi_thermal_record_icon"
                     android:layout_width="80dp"
@@ -157,7 +158,7 @@
                 <TextView
                     android:layout_marginLeft="60dp"
                     android:textColor="@color/white"
-                    android:text="通过人数"
+                    android:text="@string/main_total_passage_multi_thermal"
                     android:textSize="20dp"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
@@ -192,7 +193,7 @@
                         android:textSize="20dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
-                        android:text="正常体温"
+                        android:text="@string/main_normal_multi_thermal"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"/>
@@ -204,7 +205,7 @@
                         android:text="0"
                         android:textSize="22dp"
                         android:layout_weight="2"
-                        android:textColor="@color/white"
+                        android:textColor="#00ff00"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"/>
                 </LinearLayout>
@@ -222,7 +223,7 @@
                         android:gravity="center"
                         android:layout_weight="1"
                         android:textColor="#00FFFF"
-                        android:text="异常体温"
+                        android:text="@string/main_error_multi_thermal"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"/>
                     <TextView
@@ -253,7 +254,7 @@
                         android:gravity="center"
                         android:layout_weight="1"
                         android:textColor="#00FFFF"
-                        android:text="公司员工"
+                        android:text="@string/main_company_multi_thermal"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"/>
                     <TextView
@@ -282,7 +283,7 @@
                         android:textSize="20dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
-                        android:text="到访人员"
+                        android:text="@string/main_visitor_multi_thermal"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"/>
@@ -294,7 +295,7 @@
                         android:text="0"
                         android:textSize="22dp"
                         android:layout_weight="2"
-                        android:textColor="#F51856"
+                        android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"/>
 

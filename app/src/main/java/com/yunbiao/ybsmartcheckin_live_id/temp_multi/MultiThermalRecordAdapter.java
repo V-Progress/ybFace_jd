@@ -92,9 +92,9 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
             String temperStr = "";
             float temper = multiTemperBean.getTemper();
             if (temper <= 0f || temper >= warningThreshold) {
-                temperStr = "体温异常（" + temper + "）";
+                temperStr = mAct.getResources().getString(R.string.main_error_multi_thermal) + "（" + temper + "）";
             } else {
-                temperStr = "体温正常（" + temper + "）";
+                temperStr = mAct.getResources().getString(R.string.main_normal_multi_thermal) + "（" + temper + "）";
             }
             tvTemper.setText(temperStr);
 

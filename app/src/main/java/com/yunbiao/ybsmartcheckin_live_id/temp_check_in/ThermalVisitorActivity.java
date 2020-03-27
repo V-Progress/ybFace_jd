@@ -67,10 +67,6 @@ public class ThermalVisitorActivity extends BaseActivity {
         setData();
     }
 
-    public void exit(View view){
-        finish();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

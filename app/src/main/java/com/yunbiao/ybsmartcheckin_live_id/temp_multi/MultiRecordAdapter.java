@@ -1,8 +1,11 @@
 package com.yunbiao.ybsmartcheckin_live_id.temp_multi;
 
 import android.app.Activity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +19,9 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class MultiRecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MultiRecordAdapter extends BaseAdapter {
     private List<Sign> datas;
     private Activity mAct;
 
@@ -26,46 +30,74 @@ public class MultiRecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mAct = activity;
     }
 
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RecordViewHolder(View.inflate(parent.getContext(), R.layout.item_record_multi_thermal, null));
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        RecordViewHolder recordViewHolder = (RecordViewHolder) holder;
-        recordViewHolder.bindData(datas.get(position),position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
     private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-    class RecordViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView tvIndex;
-        private final TextView tvDate;
-        private final TextView tvTime;
-        private final TextView tvTemper;
-        private final ImageView ivHead;
-        private final ImageView ivHot;
+    @Override
+    public int getCount() {
+        return datas == null ? 0 : datas.size();
+    }
 
-        public RecordViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvIndex = itemView.findViewById(R.id.tv_index_record_multi_thermal);
-            tvDate = itemView.findViewById(R.id.tv_date_record_multi_thermal);
-            tvTime = itemView.findViewById(R.id.tv_time_record_multi_thermal);
-            tvTemper = itemView.findViewById(R.id.tv_temper_record_multi_thermal);
-            ivHead = itemView.findViewById(R.id.iv_head_record_multi_thermal);
-            ivHot = itemView.findViewById(R.id.iv_hot_record_multi_thermal);
+    @Override
+    public Object getItem(int position) {
+        return datas.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        RecordViewHolder recordViewHolder = null;
+        if (convertView == null) {
+            convertView = View.inflate(parent.getContext(), R.layout.item_record_multi_thermal, null);
+            recordViewHolder = new RecordViewHolder();
+            recordViewHolder.tvIndex = convertView.findViewById(R.id.tv_index_record_multi_thermal);
+            recordViewHolder.tvDate = convertView.findViewById(R.id.tv_date_record_multi_thermal);
+            recordViewHolder.tvTime = convertView.findViewById(R.id.tv_time_record_multi_thermal);
+            recordViewHolder.tvTemper = convertView.findViewById(R.id.tv_temper_record_multi_thermal);
+            recordViewHolder.ivHead = convertView.findViewById(R.id.iv_head_record_multi_thermal);
+            recordViewHolder.ivHot = convertView.findViewById(R.id.iv_hot_record_multi_thermal);
+            convertView.setTag(recordViewHolder);
+        } else {
+            recordViewHolder = (RecordViewHolder) convertView.getTag();
         }
+
+        recordViewHolder.bindData(datas.get(position), position);
+
+        return convertView;
+    }
+
+    private static final String TAG = "MultiRecordAdapter";
+    class RecordViewHolder {
+
+        public TextView tvIndex;
+        public TextView tvDate;
+        public TextView tvTime;
+        public TextView tvTemper;
+        public ImageView ivHead;
+        public ImageView ivHot;
 
         public void bindData(Sign sign, int position) {
             tvIndex.setText(position + "");
-            tvDate.setText(sign.getDate());
+
+            String date = sign.getDate();
+
+            Locale locale = mAct.getResources().getConfiguration().locale;
+            if(!TextUtils.equals(locale.getCountry(),Locale.CHINA.getCountry())){
+                if(date.contains("年")){
+                    date = date.replaceAll("年","-");
+                }
+                if(date.contains("月")){
+                    date = date.replaceAll("月","-");
+                }
+                if(date.contains("日")){
+                    date = date.replaceAll("日","");
+                }
+            }
+
+            tvDate.setText(date);
             tvTime.setText(dateFormat.format(sign.getTime()));
             tvTemper.setText(sign.getTemperature() + "℃");
             Glide.with(mAct).load(sign.getHeadPath()).asBitmap().into(ivHead);

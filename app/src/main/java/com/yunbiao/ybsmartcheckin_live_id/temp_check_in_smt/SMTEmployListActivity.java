@@ -59,7 +59,6 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
     private Button btn_addEmploy;
     private Button btn_addDepart;
     private Button btn_sync;
-    private ImageView iv_back;
 
     private TextView tv_deviceNo;
     private View rootView;
@@ -87,7 +86,6 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
         btn_addEmploy = findViewById(R.id.btn_addEmploy);
         btn_addDepart = findViewById(R.id.btn_addDepart);
         btn_sync = findViewById(R.id.btn_sync);
-        iv_back = findViewById(R.id.iv_back);
         tv_deviceNo = findViewById(R.id.tv_deviceNo);
         avlLoading = findViewById(R.id.avl_loading);
         edtQuery = findViewById(R.id.edt_query);
@@ -95,7 +93,6 @@ public class SMTEmployListActivity extends SMTBaseActivity implements EmployAdap
         btn_addEmploy.setOnClickListener(this);
         btn_addDepart.setOnClickListener(this);
         btn_sync.setOnClickListener(this);
-        iv_back.setOnClickListener(this);
     }
 
     @Override

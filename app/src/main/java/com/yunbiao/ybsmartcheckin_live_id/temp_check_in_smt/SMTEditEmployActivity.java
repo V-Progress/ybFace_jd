@@ -73,7 +73,6 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
     private Button btn_TakePhoto;
     private Button btn_ReTakePhoto;
     private Button btn_cancle;
-    private ImageView iv_back;
 
     private ImageView iv_capture;
     private EditText et_name;
@@ -113,7 +112,6 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         btn_TakePhoto = findViewById(R.id.btn_TakePhoto);
         btn_cancle = findViewById(R.id.btn_cancle);
         btn_ReTakePhoto = findViewById(R.id.btn_ReTakePhoto);
-        iv_back = findViewById(R.id.iv_back);
         pbTakePhoto = findViewById(R.id.alv_take_photo);
         rgSex = findViewById(R.id.rg_sex);
 
@@ -122,7 +120,6 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         tv_birth.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
         btn_cancle.setOnClickListener(this);
-        iv_back.setOnClickListener(this);
 
         faceView.setCallback(faceCallback);
     }

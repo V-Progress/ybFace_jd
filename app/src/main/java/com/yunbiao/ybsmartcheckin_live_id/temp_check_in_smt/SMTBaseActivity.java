@@ -1,5 +1,9 @@
 package com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt;
 
+import android.os.Bundle;
+import android.view.View;
+
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 
 public abstract class SMTBaseActivity extends BaseGpioActivity {
@@ -14,5 +18,4 @@ public abstract class SMTBaseActivity extends BaseGpioActivity {
     }
 
     protected abstract int getLayout();
-
 }

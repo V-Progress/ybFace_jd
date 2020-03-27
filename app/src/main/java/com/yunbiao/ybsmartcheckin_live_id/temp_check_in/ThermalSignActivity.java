@@ -56,7 +56,6 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
     private ListView lv_sign_List;
     private TextView tv_date;
-    private ImageView iv_back;
     private View pb_load_list;
     private TextView tv_load_tips;
 
@@ -93,12 +92,10 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         btnUpload = findViewById(R.id.btn_upload);
         lv_sign_List = (ListView) findViewById(R.id.lv_sign_List);
         tv_date = (TextView) findViewById(R.id.tv_date);
-        iv_back = (ImageView) findViewById(R.id.iv_back);
         pb_load_list = findViewById(R.id.pb_load_list);
         tv_load_tips = (TextView) findViewById(R.id.tv_load_tips);
         spnDataMode = (Spinner) findViewById(R.id.spn_data_mode);
         tv_date.setOnClickListener(this);
-        iv_back.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
     }
 
@@ -301,12 +298,12 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
     public void exportToUD(final View view) {
         //获取U盘地址
         String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        usbDiskPath = Environment.getExternalStorageDirectory().getPath();
         File file = new File(usbDiskPath);
         if (!file.exists()) {
             isExporting = false;
-            UIUtils.showTitleTip(ThermalSignActivity.this, getString(R.string.sign_list_usb_disk));
-            return;
+            UIUtils.showTitleTip(ThermalSignActivity.this, getString(R.string.sign_list_tip_usb_disk));
+            usbDiskPath = Environment.getExternalStorageDirectory().getPath();
+            file = new File(usbDiskPath);
         }
        /* String[] list = file.list();
         for (String s : list) {

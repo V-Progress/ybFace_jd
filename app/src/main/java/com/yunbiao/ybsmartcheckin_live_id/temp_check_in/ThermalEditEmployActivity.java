@@ -74,7 +74,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private Button btn_TakePhoto;
     private Button btn_ReTakePhoto;
     private Button btn_cancle;
-    private ImageView iv_back;
 
     private ImageView iv_capture;
     private EditText et_name;
@@ -91,9 +90,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private List<String> departNames = new ArrayList<>();
     private List<Long> departIds = new ArrayList<>();
 
-    private User mCurrUser = null;
-    private User mTempUser = null;
-
     private int type;
     private TextView tvTitle;
 
@@ -106,8 +102,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     protected int getLandscapeLayout() {
         return R.layout.activity_thermal_editemploy_h;
     }
-
-    private Animation animation;
 
     @Override
     protected void initView() {
@@ -124,7 +118,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         btn_TakePhoto = findViewById(R.id.btn_TakePhoto);
         btn_cancle = findViewById(R.id.btn_cancle);
         btn_ReTakePhoto = findViewById(R.id.btn_ReTakePhoto);
-        iv_back = findViewById(R.id.iv_back);
         pbTakePhoto = findViewById(R.id.alv_take_photo);
         rgSex = findViewById(R.id.rg_sex);
 
@@ -133,7 +126,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         tv_birth.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
         btn_cancle.setOnClickListener(this);
-        iv_back.setOnClickListener(this);
 
         faceView.setCallback(faceCallback);
     }

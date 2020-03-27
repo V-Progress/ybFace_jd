@@ -70,6 +70,16 @@ public abstract class BaseActivity extends FragmentActivity {
             setContentView(landscapeLayout);
         }
 
+        View backView = findViewById(R.id.iv_back);
+        if(backView != null){
+            backView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+
         initView();
 
         initData();

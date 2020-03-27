@@ -1222,7 +1222,7 @@ public class SignManager {
                             }
                         });
             }
-        }, 10, 60, TimeUnit.SECONDS);
+        }, 3, 5, TimeUnit.MINUTES);
     }
 
     private void checkDaoData(final int mostNum) {

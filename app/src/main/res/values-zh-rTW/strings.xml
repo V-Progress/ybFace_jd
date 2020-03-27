@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">雲標智能考勤</string>
     <string name="app_name2">亨通考勤</string>
+    <string name="app_name3">思庫考勤</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
+    <string name="back">返回</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">網絡正常</string>
@@ -128,6 +130,7 @@
     <string name="sign_list_upload_success">上傳成功</string>
     <string name="sign_list_upload_failed">上傳失敗，請檢查網絡</string>
     <string name="sign_list_usb_disk">請插入U盤</string>
+    <string name="sign_list_tip_usb_disk">未檢測到USB設備，將匯出到本地</string>
     <string name="sign_list_all_data_sent">數據已全部上傳</string>
 
     <string name="sign_list_name">姓名</string>
@@ -369,4 +372,32 @@
     <string name="low_confidence_level">face low confidence level</string>
     <string name="accessibility_description">xxx按鍵監聽的無障礙輔助服務</string>
     <string name="System_Setting_save_threshold">保存</string>
+
+
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI人臉高通量測溫數據平臺</string>
+    <string name="main_permission_failed_multi_thermal">USB許可權獲取失敗</string>
+    <string name="main_not_found_usb_multi_thermal">沒有找到目標設備</string>
+    <string name="main_exception_record_multi_thermal">异常人員記錄</string>
+    <string name="main_normal_record_multi_thermal">人員流動記錄</string>
+    <string name="main_total_passage_multi_thermal">通過人數</string>
+    <string name="main_normal_multi_thermal">正常體溫</string>
+    <string name="main_error_multi_thermal">异常體溫</string>
+    <string name="main_company_multi_thermal">公司員工</string>
+    <string name="main_visitor_multi_thermal">到訪人員</string>
+    <string name="system_net_status_multi_thermal">網絡狀態:</string>
+    <string name="system_record_multi_thermal">測溫記錄</string>
+    <string name="record_index_multi_thermal">序列</string>
+    <string name="record_date_multi_thermal">日期</string>
+    <string name="record_pass_time_multi_thermal">通行時間</string>
+    <string name="record_temper_multi_thermal">體溫</string>
+    <string name="record_head_multi_thermal">头像</string>
+    <string name="record_hot_multi_thermal">熱成像</string>
+    <string name="setting_black_body_rect_multi_thermal">黑體檢測區域校準</string>
+    <string name="setting_save_failed_multi_thermal">保存失敗</string>
+    <string name="setting_save_success_multi_thermal">保存成功</string>
+    <string name="setting_save_multi_thermal">保存</string>
+    <string name="setting_please_correct_multi_thermal">（請結合體溫槍測溫和熱成像溫度填寫差值）</string>
+    <string name="record_export_multi_thermal">导出</string>
 </resources>

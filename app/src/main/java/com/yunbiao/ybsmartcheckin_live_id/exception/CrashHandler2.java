@@ -88,6 +88,11 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
         return INSTANCE;
     }
 
+    private StringBuffer testStringBuffer = new StringBuffer();
+    public void addTestText(String text){
+        testStringBuffer.append(text);
+    }
+
     public void init(Context context, CrashUploader crashUploader, PendingIntent pendingIntent) {
         mContext = context;
         this.crashUploader = crashUploader;
@@ -361,6 +366,14 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
                 mStringBuffer.append("--------------"+time+"--------------------------------------------\n");
                 mStringBuffer.append(mExceptionInfo);
                 mStringBuffer.append("------------------------------------------------------------------\n");
+                int length = testStringBuffer.length();
+                Log.e(TAG, "saveCrashInfo2File: " + testStringBuffer.toString());
+                if(length > 0){
+                    mStringBuffer.append("**************************************************************************\n");
+                    mStringBuffer.append(testStringBuffer.toString());
+                    testStringBuffer.delete(0,testStringBuffer.length());
+                    mStringBuffer.append("\n**************************************************************************\n");
+                }
 
                 Exception exception = new Exception();
                 exception.setCrashTime(time);

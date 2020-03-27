@@ -85,23 +85,12 @@ public class SMTSettingActivity extends SMTBaseActivity {
 
     @Override
     protected void initView() {
-        findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    finish();
-                }
-                return false;
-            }
-        });
-
-        switch (Constants.DEVICE_TYPE) {
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
-            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
-            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
-                findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
-                break;
+        if(Constants.isHT){
+            findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
+        } else if(Constants.isSK) {
+            findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.VISIBLE);
         }
     }
 

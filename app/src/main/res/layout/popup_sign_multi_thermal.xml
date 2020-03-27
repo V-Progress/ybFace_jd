@@ -2,19 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_camera">
+    android:padding="3dp"
+    android:background="@mipmap/multi_thermal_camera">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/multi_thermal_bg" />
-
-    <ImageView
-        android:id="@+id/iv_hidden_record_multi_thermal"
-        android:layout_margin="30dp"
-        android:src="@mipmap/hidden_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"/>
 
     <TextView
         android:id="@+id/tv_counttime_record_multi_thermal"
@@ -25,6 +19,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Spinner
+        android:visibility="gone"
+        android:paddingLeft="5dp"
+        android:drawableRight="@mipmap/icon_arrow_down"
+        android:id="@+id/spn_date"
+        android:layout_width="108dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="120dp"
+        android:layout_toRightOf="@+id/tv_date"
+        android:background="@drawable/selector_btn_take_photo"
+        android:gravity="center"
+        android:textColor="#64DCFE"
+        android:textSize="20dp"/>
+
     <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
@@ -32,7 +41,7 @@
         android:id="@+id/tv_title_sign_multi_thermal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测温记录"
+        android:text="@string/system_record_multi_thermal"
         android:textSize="50sp" />
 
     <LinearLayout
@@ -57,7 +66,7 @@
                 android:textSize="30sp"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:text="序列"
+                android:text="@string/record_index_multi_thermal"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
@@ -65,7 +74,7 @@
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:text="日期"
+                android:text="@string/record_date_multi_thermal"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
@@ -73,12 +82,12 @@
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:text="通行时间"
+                android:text="@string/record_pass_time_multi_thermal"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="体温"
+                android:text="@string/record_temper_multi_thermal"
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
@@ -86,7 +95,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="头像"
+                android:text="@string/record_head_multi_thermal"
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
@@ -94,7 +103,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="热成像"
+                android:text="@string/record_hot_multi_thermal"
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
@@ -103,10 +112,63 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rlv_record_multi_thermal"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/lv_record"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_marginBottom="10dp"
+                    android:background="@mipmap/circle_bg"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        android:id="@+id/iv_export"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:textSize="20dp"
+                        android:text="@string/record_export_multi_thermal"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"/>
+                </FrameLayout>
+
+                <ImageView
+                    android:rotation="-90"
+                    android:id="@+id/iv_hidden_record_multi_thermal"
+                    android:src="@mipmap/hidden_icon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_load_data_record"
+        android:layout_centerInParent="true"
+        android:layout_width="80dp"
+        android:layout_height="80dp"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_date_record"
+        android:textColor="@color/gray_low"
+        android:textSize="30dp"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

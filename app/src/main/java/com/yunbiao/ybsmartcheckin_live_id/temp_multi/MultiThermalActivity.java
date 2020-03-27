@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arcsoft.face.FaceInfo;
+import com.google.gson.Gson;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
@@ -28,7 +29,6 @@ import com.intelligence.hardware.temperature.callback.UsbPermissionCallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
-import com.yunbiao.faceview.FaceRectView;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.faceview.SecondFaceRectView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -45,7 +45,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.rect.FaceCanvasView;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -63,13 +62,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MultiThermalActivity extends BaseMultiThermalActivity implements View.OnClickListener {
+public class MultiThermalActivity extends BaseMultiThermalActivity {
 
     private static final String TAG = "MultiThermalActivity";
     private ImageView ivHotImage;
@@ -101,6 +98,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
     private ServiceManager serviceManager;
     private TextView tvTitle;
     private ImageView ivLogo;
+    private float mBodyCorrectTemper;
+    private Rect mBlackBodyAreaRect;
 
     @Override
     protected int getLayout() {
@@ -120,7 +119,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         tvWarningTotal = findViewById(R.id.tv_warning_total_multi_thermal);
         tvTitle = findViewById(R.id.gtv_title_multi_thermal);
         ivLogo = findViewById(R.id.iv_logo_multi_thermal);
-        ivLogo.setOnClickListener(this);
 
         faceView = findViewById(R.id.face_view);
         ivHotImage = findViewById(R.id.iv_hot_image);
@@ -138,6 +136,11 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         faceView.setSecondFaceRectView(secondFaceRectView);
         faceView.setCallback(faceCallback);
         startXmpp();
+
+        if (Constants.isHT) {
+            ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+        }
     }
 
     @Override
@@ -181,26 +184,28 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
 
         faceView.resume();
 
+        String rectStr = SpUtils.getStr(MultiThermalConst.Key.CORRECT_AREA_JSON, MultiThermalConst.Default.CORRECT_AREA_JSON);
+        mBlackBodyAreaRect = new Gson().fromJson(rectStr, Rect.class);
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
+        mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
 
+        startHotImage();
+    }
+
+    private void startHotImage() {
         int usbPermission = TemperatureModule.getIns().initUsbDevice(this, new UsbPermissionCallBack() {
             @Override
             public void usbPermissionNotice(boolean b) {
-                if (b) {
-                    //用户允许访问usb设备
-                    //开启热成像6080模块
-                    //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
-                    TemperatureModule.getIns().startHotImageK6080(true, true, hotImageK6080CallBack);
-                } else {
-                    UIUtils.showShort(MultiThermalActivity.this, "USB权限获取失败");
+                if (!b) {
+                    UIUtils.showShort(MultiThermalActivity.this, getResources().getString(R.string.main_permission_failed_multi_thermal));
                 }
             }
         });
 
         if (usbPermission == 0) {
-            UIUtils.showShort(MultiThermalActivity.this, "没有找到目标设别");
+            UIUtils.showShort(MultiThermalActivity.this, getResources().getString(R.string.main_not_found_usb_multi_thermal));
         } else if (usbPermission == 1) {
             //usb设备初始化成功
             new Handler().postDelayed(new Runnable() {
@@ -209,9 +214,10 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
                     //开启热成像6080模块
                     //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
                     TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, hotImageK6080CallBack);
-                    BlackBody blackBody = new BlackBody(11, 16, 11, 16);
+                    BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
                     blackBody.setFrameColor(Color.WHITE);
-                    blackBody.setTempPreValue(340);
+                    blackBody.setTempPreValue(345);
+                    TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
                 }
             }, 500);
@@ -440,13 +446,22 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
                     //裁剪热图
                     Rect hotRect = multiTemperBean.getHotRect();
                     if (hotRect != null) {
-                        Bitmap hotImage = multiTemperBean.getHotImage();
                         int x = hotRect.left;
                         int y = hotRect.top;
-                        int width = hotRect.right - hotRect.left;
-                        int height = hotRect.bottom - hotRect.top;
-                        Bitmap bitmap = Bitmap.createBitmap(hotImage, x, y, width, height);
-                        multiTemperBean.setHotImage(bitmap);
+                        int width = hotRect.width();
+                        int height = hotRect.height();
+
+                        Bitmap hotImage = multiTemperBean.getHotImage();
+                        if (x + width > hotImage.getWidth()) {
+                            width = hotImage.getWidth() - x;
+                        }
+                        if (y + height > hotImage.getHeight()) {
+                            height = hotImage.getHeight() - y;
+                        }
+                        if (width > 0 && height > 0) {
+                            Bitmap bitmap = Bitmap.createBitmap(hotImage, x, y, width, height);
+                            multiTemperBean.setHotImage(bitmap);
+                        }
                     }
                     //镜像人脸图
                     Bitmap bitmap = horverImage(multiTemperBean.getHeadImage(), true, false);
@@ -650,12 +665,12 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         //正常统计
         String wNum = String.valueOf(warningNum);
         tvWarningNum.setText(wNum);
-        String warningTotal = "<font color='#00FFFF'>异常人员记录</font><font color='#F01854'>（" + wNum + "）</font>";
+        String warningTotal = "<font color='#00FFFF'>" + getResources().getString(R.string.main_exception_record_multi_thermal) + "</font><font color='#F01854'>（" + wNum + "）</font>";
         tvWarningTotal.setText(Html.fromHtml(warningTotal));
         //异常统计
         String nNum = String.valueOf(normalNum);
         tvNormalNum.setText(nNum);
-        String normalTotal = "<font color='#00FFFF'>人员流动记录</font><font color='#ffffff'>（" + nNum + "）</font>";
+        String normalTotal = "<font color='#00FFFF'>" + getResources().getString(R.string.main_normal_record_multi_thermal) + "</font><font color='#ffffff'>（" + nNum + "）</font>";
         tvNormalTotal.setText(Html.fromHtml(normalTotal));
         //访客统计
         tvVisitorNum.setText(String.valueOf(visitorNum));
@@ -674,14 +689,14 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
             String s = String.valueOf(warningNum);
             tvWarningNum.setText(s);
 
-            String warningTotal = "<font color='#00FFFF'>异常人员记录</font><font color='#F01854'>（" + s + "）</font>";
+            String warningTotal = "<font color='#00FFFF'>" + getResources().getString(R.string.main_exception_record_multi_thermal) + "</font><font color='#F01854'>（" + s + "）</font>";
             tvWarningTotal.setText(Html.fromHtml(warningTotal));
         } else {
             normalNum += 1;
             String s = String.valueOf(normalNum);
             tvNormalNum.setText(s);
 
-            String normalTotal = "<font color='#00FFFF'>人员流动记录</font><font color='#ffffff'>（" + s + "）</font>";
+            String normalTotal = "<font color='#00FFFF'>" + getResources().getString(R.string.main_normal_record_multi_thermal) + "</font><font color='#ffffff'>（" + s + "）</font>";
             tvNormalTotal.setText(Html.fromHtml(normalTotal));
         }
         if (TextUtils.equals("-1", faceId)) {
@@ -752,13 +767,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity implements Vi
         return Bitmap.createBitmap(bitmap, 0, 0, bmpWidth, bmpHeight, matrix, true);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_logo_multi_thermal:
-                showSystemInfoPopup(ivLogo);
-                break;
-        }
+    public void showSystemInfo(View view) {
+        showSystemInfoPopup();
     }
-
 }

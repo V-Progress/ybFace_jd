@@ -52,16 +52,18 @@
             android:textColor="@color/white"
             android:textSize="20dp" />
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="30dp"
+        <TextView
             android:padding="20dp"
-            android:src="@mipmap/icon_back" />
-
+            android:gravity="center_vertical"
+            android:textSize="30dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
     <LinearLayout

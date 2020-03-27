@@ -30,14 +30,17 @@
             android:layout_centerInParent="true"
             android:text="@string/employ_list_title" />
 
-        <ImageView
-            android:layout_centerVertical="true"
+        <TextView
+            android:gravity="center_vertical"
+            android:textSize="30dp"
+            android:textColor="#1296DB"
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/icon_back"
-            android:layout_marginRight="40dp" />
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
     <RelativeLayout

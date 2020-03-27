@@ -20,6 +20,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.UserInfo;
+import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
@@ -89,7 +90,7 @@ public class SyncManager {
 
     /*================================================================*/
 
-    public void retryOnluCompany(int tag){
+    public void retryOnluCompany(int tag) {
         switch (tag) {
             case 1:
                 SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
@@ -119,18 +120,21 @@ public class SyncManager {
     /***
      * 仅获取公司信息
      */
-    public void requestOnlyCompany(){
+    public void requestOnlyCompany() {
         show();
         SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_company_1));
         d("获取公司信息");
         d("地址：" + ResourceUpdate.COMPANYINFO);
         d("参数：" + HeartBeatClient.getDeviceNo());
+        CrashHandler2.getInstance().addTestText("address：" + ResourceUpdate.COMPANYINFO + "\n");
+        CrashHandler2.getInstance().addTestText("params：" + HeartBeatClient.getDeviceNo() + "\n");
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                CrashHandler2.getInstance().addTestText("error：" + (e == null ? "NULL" : e.getMessage()) + "\n");
                 d(e);
                 if (isFirst) {//如果是第一次则加载缓存
                     EventBus.getDefault().post(new UpdateInfoEvent());
@@ -141,15 +145,16 @@ public class SyncManager {
 
             @Override
             public void onResponse(String response, int id) {
+                CrashHandler2.getInstance().addTestText(response);
                 d(response);
                 if (TextUtils.isEmpty(response)) {
                     retryOnluCompany(0);
                     return;
                 }
                 CompanyResponse companyResponse = null;
-                try{
+                try {
                     companyResponse = new Gson().fromJson(response, CompanyResponse.class);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     retryOnluCompany(2);
                     return;
@@ -206,6 +211,9 @@ public class SyncManager {
         d("获取公司信息");
         d("地址：" + ResourceUpdate.COMPANYINFO);
         d("参数：" + HeartBeatClient.getDeviceNo());
+        CrashHandler2.getInstance().addTestText("获取公司信息\n");
+        CrashHandler2.getInstance().addTestText("地址：" + ResourceUpdate.COMPANYINFO + "\n");
+        CrashHandler2.getInstance().addTestText("参数：" + HeartBeatClient.getDeviceNo() + "\n");
 
         OkHttpUtils.post()
                 .url(ResourceUpdate.COMPANYINFO)
@@ -213,6 +221,7 @@ public class SyncManager {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                CrashHandler2.getInstance().addTestText("异常：" + (e == null ? "NULL" : e.getMessage()) + "\n");
                 d(e);
                 if (isFirst) {//如果是第一次则加载缓存
                     EventBus.getDefault().post(new UpdateInfoEvent());
@@ -223,15 +232,16 @@ public class SyncManager {
 
             @Override
             public void onResponse(String response, int id) {
+                CrashHandler2.getInstance().addTestText(response);
                 d(response);
                 if (TextUtils.isEmpty(response)) {
                     retryGetCompany(0);
                     return;
                 }
                 CompanyResponse companyResponse = null;
-                try{
+                try {
                     companyResponse = new Gson().fromJson(response, CompanyResponse.class);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     retryOnluCompany(2);
                     return;
@@ -697,7 +707,7 @@ public class SyncManager {
 
     private void show() {
         int comid = SpUtils.getCompany().getComid();
-        if(comid == Constants.NOT_BIND_COMPANY_ID){
+        if (comid == Constants.NOT_BIND_COMPANY_ID) {
             return;
         }
 

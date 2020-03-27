@@ -99,12 +99,17 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         smtSignFragment = new SMTSignFragment();
         replaceFragment(R.id.ll_list_container, smtSignFragment);
 
-        if(Constants.isHT){
+        if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+        } else if (Constants.isSK) {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+            ivMainLogo.setImageResource(R.mipmap.icon_logo3);
         } else {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
             ivMainLogo.setImageResource(R.mipmap.logo);
         }
+
     }
 
     @Override
@@ -160,7 +165,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     @Override
     protected Bitmap getCurrCameraFrame() {
         Bitmap bitmap = faceView.takePicture();
-        if(bitmap == null){
+        if (bitmap == null) {
             bitmap = faceView.getCurrCameraFrame();
         }
         return bitmap;
@@ -177,7 +182,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     }
 
     @Override
-    protected void clearStableTips(){
+    protected void clearStableTips() {
         if (tvDistanceTip.isShown()) {
             tvDistanceTip.setVisibility(View.GONE);
         }
@@ -297,19 +302,19 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     };
 
     @Override
-    protected boolean isTempTipsShown(){
+    protected boolean isTempTipsShown() {
         return tvTempTips.isShown();
     }
 
     @Override
-    protected void clearTempTips(){
+    protected void clearTempTips() {
         tvTempTips.setVisibility(View.GONE);
     }
 
     @Override
     protected void updateSignList(Sign sign) {
         if (sign.getType() != -9) {
-            KDXFSpeechManager.instance().playNormal(sign.getName(),getResultRunnable());
+            KDXFSpeechManager.instance().playNormal(sign.getName(), getResultRunnable());
         }
     }
 

@@ -151,10 +151,11 @@ public class SpUtils {
         saveBoolean(IS_MIRROR, b);
     }
 
-    public static void saveStr(String key, String value) {
+    public static boolean saveStr(String key, String value) {
         if (sp != null) {
-            sp.edit().putString(key, value).commit();
+            return sp.edit().putString(key, value).commit();
         }
+        return false;
     }
 
     public static void saveInt(String key, int value) {

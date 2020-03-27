@@ -61,10 +61,6 @@ public class SMTVisitorActivity extends SMTBaseActivity {
         setData();
     }
 
-    public void exit(View view){
-        finish();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

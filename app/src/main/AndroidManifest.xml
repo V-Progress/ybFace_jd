@@ -3,38 +3,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yunbiao.ybsmartcheckin_live_id">
 
-    <!--
-        android:icon="@mipmap/logo_icon2"
-        android:label="@string/app_name2"
-        android:roundIcon="@mipmap/logo_icon2"-->
+    <!--亨通-->
     <application
-        android:name=".APP"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
+        android:name=".APP"
+        android:allowBackup="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.PowerOnOffActivity"></activity>
-        <activity android:name=".temp_multi.MultiThermalActivity" />
-        <activity android:name=".temp_cetificates.BaseCertificatesActivity" />
-        <activity android:name=".activity.TestActivity" />
-        <activity android:name=".activity.PassageDeviceActivity" />
-        <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
-        <activity android:name=".activity.VisitorActivity" />
-        <activity android:name=".activity.SettingActivity" />
+
         <activity
+            android:enabled="false"
             android:name=".SplashActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                <!-- <category android:name="android.intent.category.HOME" /> -->
-                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+                <!--
+                 <category android:name="android.intent.category.HOME" />
+                 <category android:name="android.intent.category.DEFAULT" />
+                -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--云标-->
+        <activity-alias
+            android:name="YB_SPLASH"
+            android:enabled="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:targetActivity=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--亨通-->
+        <activity-alias
+            android:name="HT_SPLASH"
+            android:enabled="false"
+            android:label="@string/app_name2"
+            android:icon="@mipmap/logo_icon2"
+            android:roundIcon="@mipmap/logo_icon2"
+            android:targetActivity=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--思库-->
+        <activity-alias
+            android:name="SK_SPLASH"
+            android:enabled="false"
+            android:label="@string/app_name3"
+            android:icon="@mipmap/icon_logo3"
+            android:roundIcon="@mipmap/icon_logo3"
+            android:targetActivity=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity android:name=".temp_multi.MultiThermalSettingActivity"/>
+        <activity android:name=".activity.PowerOnOffActivity" />
+        <activity android:name=".temp_multi.MultiThermalActivity" />
+        <activity android:name=".activity.PassageDeviceActivity" />
+        <activity android:name="com.yunbiao.yb_smart_attendance.MainActivity" />
+        <activity android:name=".activity.VisitorActivity" />
+        <activity android:name=".activity.SettingActivity" />
+
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
@@ -54,7 +101,8 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" /> <!-- 测温考勤机 -->
+            android:label="Notification Settings" />
+        <!-- 测温考勤机 -->
         <activity android:name=".temp_check_in.ThermalImageActivity" />
         <activity android:name=".temp_check_in.ThermalSettingActivity" />
         <activity android:name=".temp_check_in.ThermalSystemActivity" />
@@ -62,7 +110,8 @@
         <activity android:name=".temp_check_in.ThermalEditEmployActivity" />
         <activity android:name=".temp_check_in.ThermalSignActivity" />
         <activity android:name=".temp_check_in.ThermalVisitorActivity" />
-        <activity android:name=".temp_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".temp_check_in.TemperatureCorrectActivity" />
+        <!-- 视美泰竖屏闸机 -->
         <activity android:name=".temp_check_in_smt.SMTMainActivity" />
         <activity android:name=".temp_check_in_smt.SMTSystemActivity" />
         <activity android:name=".temp_check_in_smt.SMTEmployListActivity" />
@@ -70,6 +119,8 @@
         <activity android:name=".temp_check_in_smt.SMTRecordActivity" />
         <activity android:name=".temp_check_in_smt.SMTSettingActivity" />
         <activity android:name=".temp_check_in_smt.SMTVisitorActivity" />
+
+        <!--人证-->
         <activity android:name=".temp_cetificates.CertificatesActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -146,6 +197,7 @@
             android:permission="android.permission.BAIDU_LOCATION_SERVICE"
             android:process=":remote" />
     </application>
+
     <permission android:name="android.permission.REBOOT" />
     <permission android:name="android.permission.SHUTDOWN" />
     <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
@@ -172,14 +224,14 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.RECORD_VIDEO" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

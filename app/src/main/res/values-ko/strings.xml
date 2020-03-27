@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">YBFace</string>
     <string name="app_name2">HTFace</string>
+    <string name="app_name3">思库考勤</string>
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
+    <string name="back">물러나다</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
@@ -129,6 +131,7 @@
     <string name="sign_list_upload_success">성공적으로 업로드되었습니다</string>
     <string name="sign_list_upload_failed">업로드에 실패했습니다. 네트워크를 확인하십시오</string>
     <string name="sign_list_usb_disk">USB 플래시 드라이브를 삽입하십시오</string>
+    <string name="sign_list_tip_usb_disk">USB 장치 가 감지 되 지 않 았 습 니 다. 로 컬 로 내 보 냅 니 다</string>
     <string name="sign_list_all_data_sent">모든 데이터가 업로드되었습니다</string>
     <string name="sign_list_name">성명</string>
     <string name="sign_list_number">일련 번호</string>

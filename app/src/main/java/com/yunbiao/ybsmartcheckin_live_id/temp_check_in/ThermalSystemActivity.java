@@ -63,7 +63,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     private TextView tv_version_system;
     private TextView tv_online_system;
     private ImageView ivLogo;
-    private View ivBack;
     private TextView tv_bindcode_syetem;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -86,13 +85,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         EventBus.getDefault().register(this);
         ivLogo = (ImageView) findViewById(R.id.iv_system_logo);
 
-        ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         tvCopyRight = findViewById(R.id.tv_copyright_smt_system);
         btn_depart_system = findViewById(R.id.btn_depart_system);
         btn_add_system = findViewById(R.id.btn_add_system);

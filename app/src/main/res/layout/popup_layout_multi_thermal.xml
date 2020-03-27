@@ -6,15 +6,6 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <ImageView
-        android:id="@+id/iv_setting_info_multi_thermal"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:src="@mipmap/setting_icon" />
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,13 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center">
-
-            <ImageView
-                android:id="@+id/iv_hidden_info_multi_thermal"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:src="@mipmap/hidden_icon" />
 
             <TextView
                 android:id="@+id/tv_time_info_multi_thermal"
@@ -48,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="系统信息"
+                android:text="@string/System_title"
                 android:textSize="30dp" />
 
         </RelativeLayout>
@@ -126,7 +110,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
-                android:text="互视达云标"
                 android:textColor="@color/white"
                 android:textSize="26dp" />
         </TableRow>
@@ -141,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|right"
-                android:text="@string/System_net_status"
+                android:text="@string/system_net_status_multi_thermal"
                 android:textColor="@color/white"
                 android:textSize="26dp" />
 
@@ -152,7 +135,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
-                android:text="正常"
                 android:textColor="@color/font_green"
                 android:textSize="26dp" />
         </TableRow>
@@ -166,7 +148,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/shape_bg_btnsync"
                 android:layout_margin="30dp"
-                android:text="测温记录"
+                android:text="@string/system_record_multi_thermal"
                 android:layout_weight="1"
                 android:id="@+id/btn_sign_list_multi_thermal"
                 android:layout_width="0dp"
@@ -174,4 +156,22 @@
 
         </TableRow>
     </TableLayout>
+
+    <ImageView
+        android:rotation="-90"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:id="@+id/iv_hidden_info_multi_thermal"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/hidden_icon" />
+
+    <ImageView
+        android:id="@+id/iv_setting_info_multi_thermal"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@mipmap/setting_icon" />
 </RelativeLayout>

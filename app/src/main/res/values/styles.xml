@@ -210,6 +210,11 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
-
+    </style>
+    <style name="multi_thermal_system_info_anim_style" parent="android:Animation">
+        <!--//进入时的动画-->
+        <item name="android:windowEnterAnimation">@anim/left_in</item>
+        <!--//退出时的动画-->
+        <item name="android:windowExitAnimation">@anim/left_out</item>
     </style>
 </resources>

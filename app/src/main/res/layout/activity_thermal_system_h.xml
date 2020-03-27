@@ -51,15 +51,18 @@
             android:textColor="@color/white"
             android:textSize="30dp" />
 
-        <ImageView
-            android:padding="30dp"
+        <TextView
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="40dp"
-            android:src="@mipmap/icon_back" />
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"/>
     </RelativeLayout>
 
     <LinearLayout

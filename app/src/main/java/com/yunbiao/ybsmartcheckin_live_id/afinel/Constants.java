@@ -120,7 +120,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.HT_TEMPERATURE_CERTIFICATES ;
+    public static final int DEVICE_TYPE = DeviceType.MULTIPLE_THERMAL ;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
@@ -135,8 +135,10 @@ public class Constants {
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
     }
 
-    //是否亨通的版本
+    //是否亨通的版本（独立版本）
     public static boolean isHT = false;
+    //是否思库的版本(云标分支版本)
+    public static boolean isSK = true;
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
     //最大人脸线程数

@@ -16,15 +16,18 @@
         android:textColor="@color/white"
         android:textSize="32dp" />
 
-    <ImageView
+    <TextView
+        android:gravity="center_vertical"
+        android:textSize="30dp"
+        android:textColor="#1296DB"
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="40dp"
         android:layout_marginTop="36dp"
-        android:src="@mipmap/icon_back" />
-
+        android:text="@string/back"
+        android:drawableLeft="@mipmap/back"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
