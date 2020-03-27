@@ -200,11 +200,29 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             public void usbPermissionNotice(boolean b) {
                 if (!b) {
                     UIUtils.showShort(MultiThermalActivity.this, getResources().getString(R.string.main_permission_failed_multi_thermal));
+                    return;
                 }
+
+                //usb设备初始化成功
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //开启热成像6080模块
+                        //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
+                        TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, hotImageK6080CallBack);
+                        BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
+                        blackBody.setFrameColor(Color.WHITE);
+                        blackBody.setTempPreValue(345);
+                        TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
+                        TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                    }
+                }, 1000);
             }
         });
 
-        if (usbPermission == 0) {
+        if (usbPermission == -1) {
+            UIUtils.showShort(MultiThermalActivity.this, getResources().getString(R.string.main_permission_failed_multi_thermal));
+        } else if (usbPermission == 0) {
             UIUtils.showShort(MultiThermalActivity.this, getResources().getString(R.string.main_not_found_usb_multi_thermal));
         } else if (usbPermission == 1) {
             //usb设备初始化成功
@@ -220,7 +238,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                     TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
                 }
-            }, 500);
+            }, 1000);
         }
     }
 
@@ -281,8 +299,17 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             if (temperByTrackId <= 0.0f) {
                 return;
             }
+            //截取人脸图
             Bitmap picture = faceView.getPicture(trackId);
             if (picture == null) {
+                return;
+            }
+            //截取热图
+            if (ivHotImage != null) {
+                return;
+            }
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) ivHotImage.getDrawable();
+            if (bitmapDrawable == null) {
                 return;
             }
 
@@ -300,7 +327,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             //人脸图
             multiTemperBean.setHeadImage(picture);
             //热图
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) ivHotImage.getDrawable();
             multiTemperBean.setHotImage(bitmapDrawable.getBitmap());
             //截取热图
             FaceInfo faceInfo = faceView.getFaceInfo(faceAuth.getTrackId());

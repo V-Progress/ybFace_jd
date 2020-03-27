@@ -175,7 +175,6 @@ public class MultiThermalSettingActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         handler.removeCallbacks(runnable);
-        TemperatureModule.getIns().closeHotImageK6080();
     }
 
     public void saveRect(View view){
