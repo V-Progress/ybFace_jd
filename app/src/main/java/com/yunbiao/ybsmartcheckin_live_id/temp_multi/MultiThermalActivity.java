@@ -305,7 +305,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                 return;
             }
             //截取热图
-            if (ivHotImage != null) {
+            if (ivHotImage == null) {
                 return;
             }
             BitmapDrawable bitmapDrawable = (BitmapDrawable) ivHotImage.getDrawable();

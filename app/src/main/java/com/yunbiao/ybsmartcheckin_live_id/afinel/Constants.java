@@ -11,23 +11,19 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 public class Constants {
     public static final String API_KEY = "1234567890";
-    //局域网（军区）// TODO: 2019/6/27 ComById
-//    public static final String XMPP_HOST = "192.168.1.1";
-//    public static final String XMPP_PORT = "5222";
-//    public static final String RESOURCE_HOST = "http://192.168.1.1";
-//    public static final String RESOURCE_PORT = "80";
-//    public static String RESOURCE_URL = RESOURCE_HOST + ":" + RESOURCE_PORT + "/";
 
-    //天津港
-    public static String XMPP_HOST = BuildConfig.HOST;
-    public static String XMPP_PORT = BuildConfig.XMPP_PORT;
-    public static String RESOURCE_HOST = BuildConfig.HOST;
-    public static String RESOURCE_PORT = BuildConfig.RESOURCE_PORT;
-    public static String RESOURCE_SUFFIX = BuildConfig.SUFFIX;
+    private static String PRE = "http://";
+    private static String COLON = ":";
+    //地址
+    public static String XMPP_HOST = NetConfig.PRO_URL;
+    public static String XMPP_PORT = NetConfig.PRO_XMPP_PORT;
+    public static String RESOURCE_HOST = NetConfig.PRO_URL;
+    public static String RESOURCE_PORT = NetConfig.PRO_RES_PORT;
+    public static String RESOURCE_SUFFIX = NetConfig.PRO_SUFFIX;
     //生成主地址
-    public static String RESOURCE_URL = NetConfig.PRE + RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
+    public static String RESOURCE_URL = PRE + RESOURCE_HOST + COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
 
-
+    //资源路径
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
     public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
@@ -54,8 +50,6 @@ public class Constants {
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
     }
 
-    private static final String TAG = "Constants";
-
     public static void checkSetIp() {
         if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, serverModel.YUN) == serverModel.JU) {
             String ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
@@ -67,37 +61,17 @@ public class Constants {
             Constants.XMPP_PORT = xmppPort;
             Constants.RESOURCE_HOST = ip;
             Constants.RESOURCE_PORT = resPort;
-            Constants.RESOURCE_URL = Constants.NetConfig.PRE + ip + Constants.NetConfig.COLON + resPort + "/" + (TextUtils.isEmpty(projectName) ? "" : (projectName  + "/"));
+            Constants.RESOURCE_URL = PRE + ip + COLON + resPort + "/" + (TextUtils.isEmpty(projectName) ? "" : (projectName  + "/"));
 
             ResourceUpdate.WEB_BASE_URL = Constants.RESOURCE_URL;
         }
-
-        Log.e(TAG, "xmppIP：" + Constants.XMPP_HOST);
-        Log.e(TAG, "xmpp端口：" + Constants.XMPP_PORT);
-        Log.e(TAG, "资源IP：" + Constants.RESOURCE_HOST);
-        Log.e(TAG, "资源端口：" + Constants.RESOURCE_PORT);
-        Log.e(TAG, "资源地址：" + Constants.RESOURCE_URL);
     }
 
     public interface NetConfig {
-        String PRE = "http://";
-        String COLON = ":";
-
-        /***
-         * 正式环境
-         */
         String PRO_URL = "47.105.80.245";//主机地址
         String PRO_RES_PORT = "8080";//数据端口
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
-
-        /***
-         * 正式环境
-         */
-        String DEV_URL = "47.105.80.245";
-        String DEV_RES_PORT = "8080";
-        String DEV_XMPP_PORT = "5222";
-        String DEV_SUFFIX = "/";
     }
 
     public static class Model {
@@ -120,7 +94,11 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = DeviceType.MULTIPLE_THERMAL ;
+    public static final int DEVICE_TYPE = BuildConfig.APP_TYPE ;
+    //是否亨通的版本（独立版本）
+    public static boolean isHT = BuildConfig.IS_HT;
+    //是否思库的版本(云标分支版本)
+    public static boolean isSK = BuildConfig.IS_SK;
 
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
@@ -135,17 +113,12 @@ public class Constants {
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
     }
 
-    //是否亨通的版本（独立版本）
-    public static boolean isHT = false;
-    //是否思库的版本(云标分支版本)
-    public static boolean isSK = true;
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
     //最大人脸线程数
     public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10 ;
     //最远人脸抓取距离
     public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 32 : 16;
-
 
 
 

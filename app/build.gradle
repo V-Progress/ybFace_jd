@@ -17,63 +17,150 @@ android {
             abiFilters 'armeabi-v7a'//,'armeabi','arm64-v8a','x86','x86_64'
         }
     }
-    buildTypes {
+
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // 服务地址
-            buildConfigField "String", "HOST", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_URL"
-            // XMPP端口
-            buildConfigField "String", "XMPP_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_XMPP_PORT"
-            // 资源端口
-            buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_RES_PORT"
-            // 资源后缀
-            buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.PRO_SUFFIX"
-            aaptOptions.cruncherEnabled = false
-            aaptOptions.useNewCruncher = false
-        }
-        debug {
-            minifyEnabled false
-            debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // 服务地址
-            buildConfigField "String", "HOST", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_URL"
-            // XMPP端口
-            buildConfigField "String", "XMPP_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_XMPP_PORT"
-            // 资源端口
-            buildConfigField "String", "RESOURCE_PORT", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_RES_PORT"
-            // 资源后缀
-            buildConfigField "String", "SUFFIX", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.NetConfig.DEV_SUFFIX"
-            aaptOptions.cruncherEnabled = false
-            aaptOptions.useNewCruncher = false
+            keyAlias 'yunbiao'
+            keyPassword '123456'
+            storeFile file('yb_face.jks')
+            storePassword '123456'
         }
     }
 
+    buildTypes {
+        release {
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+            minifyEnabled = false
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".release"
+        }
+        debug {
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+            minifyEnabled = false
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".debug"
+        }
+    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
     productFlavors {
-        sourceSets {
-            main {
-                jniLibs.srcDirs = ['src/main/jniLibs']
-            }
+        /*==云标版本============================================================================================*/
+        YB_10{//云标10寸
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name",
+                    app_icon: "@mipmap/ic_launcher"
+            ]
+        }
+        YB_8 {//云标8寸
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name",
+                    app_icon: "@mipmap/ic_launcher"
+            ]
+        }
+        YB_RZ {//云标人证
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name",
+                    app_icon: "@mipmap/ic_launcher"
+            ]
+        }
+        YB_DR {//云标多人
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name",
+                    app_icon: "@mipmap/ic_launcher"
+            ]
+        }
+
+        /*==思库版本============================================================================================*/
+        SK_8 {
+            buildConfigField "boolean", "IS_SK", "true"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name3",
+                    app_icon: "@mipmap/icon_logo3"
+            ]
+        }
+
+        /*==亨通版本============================================================================================*/
+        HT_10 {//亨通10寸
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "true"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name2",
+                    app_icon: "@mipmap/logo_icon2"
+            ]
+        }
+
+        HT_8 {//亨通8寸
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "true"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name2",
+                    app_icon: "@mipmap/logo_icon2"
+            ]
+        }
+        HT_RZ {//亨通人证
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "true"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name2",
+                    app_icon: "@mipmap/logo_icon2"
+            ]
+        }
+        HT_DR {//亨通多人
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "true"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name2",
+                    app_icon: "@mipmap/logo_icon2"
+            ]
         }
     }
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "YBFace" + defaultConfig.versionName + "." + defaultConfig.versionCode + "_" + buildTime() + ".apk"
+            if (variant.buildType.name == "debug") {
+                outputFileName = "YBFace" + defaultConfig.versionName + "_" + buildTime() + "_" + productFlavors.name + "_debug" + ".apk"
+            } else {
+                outputFileName = "YBFace" + defaultConfig.versionName + "_" + buildTime() + "_" + productFlavors.name + ".apk"
+            }
         }
     }
     //greenDao配置信息
     greendao {
         schemaVersion 28//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
-//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
+        //这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
         targetGenDir 'src/main/java'
-//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
     }
 }
 

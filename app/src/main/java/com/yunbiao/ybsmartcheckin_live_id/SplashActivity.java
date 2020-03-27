@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -98,7 +99,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 final List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
-                if (exceptions == null) {
+                if (exceptions == null || exceptions.size() <= 0) {
                     Log.e(TAG, "run: 没有异常");
                     if (runnable != null) {
                         runOnUiThread(runnable);
@@ -193,16 +194,6 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void jump() {
-        //判断是否亨通的版本
-        switch (Constants.DEVICE_TYPE) {
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
-            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
-            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
-                Constants.isHT = true;
-                break;
-        }
-
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
 
