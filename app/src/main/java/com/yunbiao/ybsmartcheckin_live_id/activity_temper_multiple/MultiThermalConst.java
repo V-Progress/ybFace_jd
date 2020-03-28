@@ -7,7 +7,11 @@ public class MultiThermalConst {
         String LOW_TEMP = "multiThermalLowTemp";
         String WARNING_TEMP = "multiThermalWarningTemp";
         String BODY_CORRECT_TEMPER = "multiThermalBodyTemper";
-        String CORRECT_AREA_JSON = "multiThermalCorrectAreaJson";
+
+        String CORRECT_AREA_LEFT = "multiThermalCorrectAreaLeft";
+        String CORRECT_AREA_TOP = "multiThermalCorrectAreaTop";
+        String CORRECT_AREA_RIGHT = "multiThermalCorrectAreaRight";
+        String CORRECT_AREA_BOTTOM = "multiThermalCorrectAreaBottom";
     }
 
     public interface Default{
@@ -15,6 +19,10 @@ public class MultiThermalConst {
         boolean LOW_TEMP = true;
         float WARNING_TEMP = 37.3f;
         float BODY_CORRECT_TEMPER = 0.0f;
-        String CORRECT_AREA_JSON = "{\"bottom\":5,\"left\":0,\"right\":5,\"top\":0}";
+
+        int CORRECT_AREA_LEFT = 0;
+        int CORRECT_AREA_TOP = 0;
+        int CORRECT_AREA_RIGHT = 5;
+        int CORRECT_AREA_BOTTOM = 5;
     }
 }

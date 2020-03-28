@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arcsoft.face.FaceInfo;
-import com.google.gson.Gson;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
@@ -45,6 +44,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -184,14 +184,22 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         faceView.resume();
 
-        String rectStr = SpUtils.getStr(MultiThermalConst.Key.CORRECT_AREA_JSON, MultiThermalConst.Default.CORRECT_AREA_JSON);
-        mBlackBodyAreaRect = new Gson().fromJson(rectStr, Rect.class);
+        mBlackBodyAreaRect = getCacheRect();
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
         mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
 
         startHotImage();
+    }
+
+    private Rect getCacheRect(){
+        int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT, MultiThermalConst.Default.CORRECT_AREA_LEFT);
+        int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP, MultiThermalConst.Default.CORRECT_AREA_TOP);
+        int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT, MultiThermalConst.Default.CORRECT_AREA_RIGHT);
+        int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
+        L.e("MultiThermalActivity","onResume:取出的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
+        return new Rect(left,top,right,bottom);
     }
 
     private void startHotImage() {
@@ -419,10 +427,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     //开启数据刷新线程
     private void startDataNotify() {
         if (dataNotifyThread != null && isDataNotifyRunning) {
-            Log.e(TAG, "startDataNotify: 刷新线程正在运行");
             return;
         }
-        Log.e(TAG, "startDataNotify: 开启刷新线程");
         isDataNotifyRunning = true;
         dataNotifyThread = new Thread(runnable);
         dataNotifyThread.start();
@@ -431,7 +437,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     //关闭数据刷新线程
     private void stopDataNotify() {
         if (dataNotifyThread != null && isDataNotifyRunning) {
-            Log.e(TAG, "stopDataNotify: 刷新线程结束");
             isDataNotifyRunning = false;
             dataNotifyThread = null;
         }

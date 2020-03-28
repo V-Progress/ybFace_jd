@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -27,6 +26,7 @@ import com.intelligence.hardware.temperature.callback.HotImageK6080CallBack;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -182,14 +182,27 @@ public class MultiThermalSettingActivity extends BaseActivity {
             UIUtils.showShort(this,getResources().getString(R.string.setting_save_failed_multi_thermal));
             return;
         }
-        Log.e(TAG, "onDestroy: ---------保存的Rect:"+ mSaveRect.toString());
-        String rectJson = new Gson().toJson(mSaveRect);
-        boolean b = SpUtils.saveStr(MultiThermalConst.Key.CORRECT_AREA_JSON, rectJson);
-        if(b){
-            UIUtils.showShort(this,getResources().getString(R.string.setting_save_success_multi_thermal));
-        } else {
-            UIUtils.showShort(this,getResources().getString(R.string.setting_save_failed_multi_thermal));
-        }
+
+        int left = mSaveRect.left;
+        int top = mSaveRect.top;
+        int right = mSaveRect.right;
+        int bottom = mSaveRect.bottom;
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_LEFT,left);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_TOP,top);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_RIGHT,right);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_BOTTOM,bottom);
+
+        L.e("MultiThermalSettingActivity","saveRect:保存的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
+
+        UIUtils.showShort(this,getResources().getString(R.string.setting_save_success_multi_thermal));
+    }
+
+    private Rect getCacheRect(){
+        int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT,MultiThermalConst.Default.CORRECT_AREA_LEFT);
+        int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP,MultiThermalConst.Default.CORRECT_AREA_TOP);
+        int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT,MultiThermalConst.Default.CORRECT_AREA_RIGHT);
+        int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM,MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
+        return new Rect(left,top,right,bottom);
     }
 
     private Handler handler = new Handler();
@@ -199,8 +212,9 @@ public class MultiThermalSettingActivity extends BaseActivity {
             boolean mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
             boolean mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
             float mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
-            String str = SpUtils.getStr(MultiThermalConst.Key.CORRECT_AREA_JSON, MultiThermalConst.Default.CORRECT_AREA_JSON);
-            final Rect rect = new Gson().fromJson(str, Rect.class);
+
+            Rect cacheRect = getCacheRect();
+
             //开启热成像6080模块
             //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
             TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, new HotImageK6080CallBack() {
@@ -222,7 +236,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 }
             });
             TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
-            BlackBody blackBody = new BlackBody(rect.left, rect.right, rect.top, rect.bottom);
+            BlackBody blackBody = new BlackBody(cacheRect.left, cacheRect.right, cacheRect.top, cacheRect.bottom);
             blackBody.setFrameColor(Color.WHITE);
             blackBody.setTempPreValue(345);
             TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
@@ -236,8 +250,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
         ivExample.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                String str = SpUtils.getStr(MultiThermalConst.Key.CORRECT_AREA_JSON, MultiThermalConst.Default.CORRECT_AREA_JSON);
-                final Rect rect = new Gson().fromJson(str, Rect.class);
+
+                final Rect rect = getCacheRect();
 
                 ivExample.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 final Bitmap bitmap = getBitmap(ivExample.getMeasuredWidth(), ivExample.getMeasuredHeight());
