@@ -66,7 +66,19 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
+
     productFlavors {
+        /*普通考勤====================*/
+        YB{
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "false"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN"
+            manifestPlaceholders = [
+                    app_name: "@string/app_name",
+                    app_icon: "@mipmap/ic_launcher"
+            ]
+        }
+
         /*==云标版本============================================================================================*/
         YB_10{//云标10寸
             buildConfigField "boolean", "IS_SK", "false"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/bg_main"
     android:orientation="vertical"
-    tools:context=".temp_check_in.TemperatureCorrectActivity">
+    tools:context=".activity_temper_check_in.TemperatureCorrectActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

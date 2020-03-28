@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
-import com.yunbiao.ybsmartcheckin_live_id.temp_multi.MultiTemperBean;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -47,7 +47,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;

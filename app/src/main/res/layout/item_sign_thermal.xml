@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80px"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="60px"
+            android:layout_height="60px"
+            android:maxWidth="60px"
+            android:maxHeight="60px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/skin_sign_list_head_background" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_head_item"
+            android:layout_width="50px"
+            android:layout_height="50px"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="22dp"
+            android:maxWidth="50px"
+            android:maxHeight="50px"
+            android:src="@mipmap/ic_launcher" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_name_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:text="鲁智深"
+        android:textColor="@drawable/skin_main_title_text_color"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/tv_time_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="16 : 45"
+        android:textColor="@drawable/skin_main_title_text_color"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/tv_temp_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_userPhoto"
+        android:textColor="@color/horizontal_item_visitor_name_normal2"
+        android:textSize="12dp" />
+</LinearLayout>

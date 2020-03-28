@@ -6,7 +6,9 @@ import android.os.Handler;
 import com.android.xhapimanager.XHApiManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -21,9 +23,15 @@ public abstract class BaseGpioActivity extends LedControlActivity {
         super.onCreate(savedInstanceState);
         xhApi = APP.getXHApi();
 
-        if (mSmdtManager != null) {
-            //设置继电器为非自动模式
-            mSmdtManager.setRelayIoMode(0, 0);
+        if (!(this instanceof WelComeActivity)) {
+            if (mSmdtManager != null) {
+                try {
+                    //设置继电器为非自动模式
+                    mSmdtManager.setRelayIoMode(0, 0);
+                } catch (Exception e) {
+                    L.e("BaseGpioActivity", "onCreate:" + (e == null ? "NULL" : e.getMessage()));
+                }
+            }
         }
     }
 
@@ -41,9 +49,12 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     private void open() {
-        if (mSmdtManager != null) {
-            mSmdtManager.setRelayIoValue(1);
+        if (!(this instanceof WelComeActivity)) {
+            if (mSmdtManager != null) {
+                mSmdtManager.setRelayIoValue(1);
+            }
         }
+
         if (mSmdtManager != null) {
             for (int i = 0; i < 3; i++) {
                 int result = mSmdtManager.smdtSetExtrnalGpioValue(1, false);
@@ -55,8 +66,10 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     private void close() {
-        if (mSmdtManager != null) {
-            mSmdtManager.setRelayIoValue(0);
+        if (!(this instanceof WelComeActivity)) {
+            if (mSmdtManager != null) {
+                mSmdtManager.setRelayIoValue(0);
+            }
         }
         if (mSmdtManager != null) {
             for (int i = 0; i < 3; i++) {

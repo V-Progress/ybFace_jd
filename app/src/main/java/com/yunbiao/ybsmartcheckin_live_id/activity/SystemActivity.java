@@ -71,7 +71,7 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_thermal_system_h;
+        return R.layout.activity_system_h;
     }
 
     @Override
@@ -108,15 +108,6 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
-
-        int intOrDef = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
-        if(intOrDef == Constants.Model.MODEL_CERTIFICATES_THERMAL){
-            btn_depart_system.setVisibility(View.GONE);
-            btn_add_system.setVisibility(View.GONE);
-            btnVisitorSystem.setVisibility(View.GONE);
-            btn_data_system.setVisibility(View.GONE);
-            btnSkinSystem.setVisibility(View.GONE);
-        }
     }
 
     @Override

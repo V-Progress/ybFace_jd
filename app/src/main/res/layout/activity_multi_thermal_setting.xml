@@ -251,7 +251,7 @@
 
             </FrameLayout>
 
-            <com.yunbiao.ybsmartcheckin_live_id.temp_multi.VerticalSeekBar
+            <com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.VerticalSeekBar
                 android:id="@+id/sb_y_multi_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="480dp"

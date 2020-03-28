@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTBaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTBaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 
 import java.lang.reflect.Field;

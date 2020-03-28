@@ -2,7 +2,6 @@ package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,17 +12,18 @@ import android.util.Log;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
-import com.yunbiao.ybsmartcheckin_live_id.temp_cetificates.CertificatesActivity;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in.ThermalImageActivity;
-import com.yunbiao.ybsmartcheckin_live_id.temp_check_in_smt.SMTMainActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImageActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.temp_multi.MultiThermalActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
@@ -76,7 +76,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFinish(boolean isComplete) {
-                if(!isComplete){
+                if (!isComplete) {
                     UIUtils.showShort(SplashActivity.this, getString(R.string.splash_request_permission_failed));
                     return;
                 }
@@ -134,9 +134,9 @@ public class SplashActivity extends BaseActivity {
                 params.put("versionName", versionName + "");
                 params.put("versionCode", versionCode + "");
                 params.put("cpuAbi", "");
-                params.put("boardType", CommonUtils.saveBroadInfo()+"");
-                params.put("deviceNumber", str+"");
-                params.put("crasharray", crashArray+"");
+                params.put("boardType", CommonUtils.saveBroadInfo() + "");
+                params.put("deviceNumber", str + "");
+                params.put("crasharray", crashArray + "");
 
                 Log.e(TAG, "异常上传：" + url);
                 Log.e(TAG, "参数：" + params.toString());
@@ -196,7 +196,7 @@ public class SplashActivity extends BaseActivity {
     private void jump() {
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
-
+            startActivity(new Intent(this, WelComeActivity.class));
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
                 || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
             //调整摄像头默认角度

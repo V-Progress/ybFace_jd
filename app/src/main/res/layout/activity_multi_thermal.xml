@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@mipmap/multi_thermal_bg"
-    tools:context=".temp_multi.MultiThermalActivity">
+    tools:context=".activity_temper_multiple.MultiThermalActivity">
 
     <RelativeLayout
         android:background="@mipmap/multi_thermal_top"

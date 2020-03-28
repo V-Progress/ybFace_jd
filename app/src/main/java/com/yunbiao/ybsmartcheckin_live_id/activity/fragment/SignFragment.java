@@ -77,8 +77,6 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     private TextView tvMale1;
     private TextView tvFemale1;
     private TextView tvModel;
-    private int mCurrModel = -1;
-    private float mCurrWarningThreshold = 0.0f;
 
     @Nullable
     @Override
@@ -158,14 +156,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         super.onResume();
 
         Log.e(TAG, "onResume: 重加载数据");
-        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
-        int newModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);
-        if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold) {
-            mCurrWarningThreshold = warningThreshold;
-            mCurrModel = newModel;
-            loadSignData();
-        }
-
+        loadSignData();
         boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
         ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
     }
@@ -398,14 +389,12 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             ImageView ivHead;
             TextView tvName;
             TextView tvTime;
-            TextView tvTemp;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivHead = itemView.findViewById(R.id.iv_head_item);
                 tvName = itemView.findViewById(R.id.tv_name_item);
                 tvTime = itemView.findViewById(R.id.tv_time_item);
-                tvTemp = itemView.findViewById(R.id.tv_temp_item);
             }
 
             public void bindData(Context context, Sign signBean) {
@@ -422,25 +411,6 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
 
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : getResources().getString(R.string.fment_sign_visitor_name));
                 tvTime.setText(df.format(signBean.getTime()));
-
-                tvTemp.setText(signBean.getTemperature() + "℃");
-                if (mCurrModel == Constants.Model.MODEL_FACE_ONLY || signBean.getTemperature() == 0.0f) {
-                    tvTemp.setVisibility(View.INVISIBLE);
-                } else {
-                    tvTemp.setVisibility(View.VISIBLE);
-                }
-
-                if (signBean.getTemperature() >= mCurrWarningThreshold) {
-                    ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_warning);
-                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
-                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
-                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_warning));
-                } else {
-                    ivHead.setBackgroundResource(R.drawable.shape_record_img_bg_main_normal);
-                    tvName.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
-                    tvTime.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
-                    tvTemp.setTextColor(mContext.getResources().getColor(R.color.horizontal_item_visitor_name_normal2));
-                }
             }
         }
     }

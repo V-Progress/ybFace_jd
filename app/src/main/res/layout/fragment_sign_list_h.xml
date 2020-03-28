@@ -35,164 +35,83 @@
 
     <LinearLayout
         android:layout_alignParentBottom="true"
-        android:id="@+id/ll_qr_code"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:textSize="14dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="和水水水水模式"
-            android:id="@+id/tv_model_sign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_mode_background_sign_fragment"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="4dp"
-            android:textColor="#46C6F4" />
+        <ImageView
+            android:id="@+id/iv_qrcode_sign_list"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/qrcode_sign_list"
+            android:padding="6dp"
+            android:scaleType="centerInside" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical"
+            android:background="@mipmap/qrcode_sign_list"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="100dp">
 
-            <ImageView
-                android:id="@+id/iv_qrcode_sign_list"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:background="@mipmap/qrcode_sign_list"
-                android:padding="6dp"
-                android:scaleType="centerInside" />
+            <TextView
+                android:text="公司：北京互啊"
+                android:textSize="14dp"
+                android:id="@+id/tv_company_name_sign_fragment"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
+
+            <TextView
+                android:gravity="center"
+                android:text="编号：1213131121"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:id="@+id/tv_device_no_sign_fragment"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
 
             <LinearLayout
-                android:padding="6dp"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical"
-                android:background="@mipmap/qrcode_sign_list"
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp">
-
+                android:layout_height="0dp">
                 <TextView
-                    android:text="公司：北京互啊"
-                    android:textSize="14dp"
-                    android:id="@+id/tv_company_name_sign_fragment"
-                    android:textColor="@color/white"
+                    android:text="网络："
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp" />
-
-                <TextView
-                    android:gravity="center"
-                    android:text="编号：1213131121"
                     android:textColor="@color/white"
                     android:textSize="14dp"
-                    android:id="@+id/tv_device_no_sign_fragment"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp" />
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp">
-                    <TextView
-                        android:text="网络："
-                        android:gravity="center_vertical"
-                        android:textColor="@color/white"
-                        android:textSize="14dp"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:gravity="center_vertical"
-                        android:textColor="@color/white"
-                        android:textSize="14dp"
-                        android:id="@+id/tv_net_state_sign_fragment"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                    android:layout_height="wrap_content" />
 
                 <TextView
-                    android:text="版本：1.4.1"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:textColor="@color/white"
                     android:textSize="14dp"
-                    android:id="@+id/tv_ver_sign_fragment"
+                    android:id="@+id/tv_net_state_sign_fragment"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp" />
-
+                    android:layout_height="wrap_content" />
             </LinearLayout>
+
+            <TextView
+                android:text="版本：1.4.1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:id="@+id/tv_ver_sign_fragment"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
 
         </LinearLayout>
 
     </LinearLayout>
-
-    <!--
-        android:layout_toLeftOf="@+id/rl_record"-->
-    <!--<LinearLayout
-        android:id="@+id/ll_bottom_info"
-        android:layout_toLeftOf="@+id/rl_record"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:orientation="horizontal"
-        android:background="@drawable/shape_bottom_info_background_sign_fragment"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:text="公司：啊飒飒飒飒飒飒飒飒飒飒"
-            android:textSize="18dp"
-            android:id="@+id/tv_company_name_sign_fragment"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:gravity="center"
-            android:text="编号：1213131121"
-            android:textColor="@color/white"
-            android:textSize="18dp"
-            android:id="@+id/tv_device_no_sign_fragment"
-            android:layout_weight="0.8"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:text="网络正常"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="18dp"
-            android:id="@+id/tv_net_state_sign_fragment"
-            android:layout_weight="0.6"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:text="版本：1.4.1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="18dp"
-            android:id="@+id/tv_ver_sign_fragment"
-            android:layout_weight="0.6"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>-->
 
     <LinearLayout
         android:visibility="gone"

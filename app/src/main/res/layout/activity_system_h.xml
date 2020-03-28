@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/skin_main_screen_background"
+    android:orientation="vertical"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity">
+    <!--android:background="@mipmap/system_bg_h"-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:scaleType="centerInside"
+            android:maxWidth="160dp"
+            android:id="@+id/iv_system_logo"
+            android:layout_width="200dp"
+            android:layout_height="80dp" />
+
+        <TextView
+            android:maxLength="20"
+            android:maxLines="2"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:id="@+id/tv_system_compName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/System_title"
+            android:textColor="@color/white"
+            android:textSize="38dp" />
+
+        <TextView
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/iv_back"
+            android:id="@+id/tv_online_system"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_employ_button"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:text="@string/System_Service_offline"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:paddingTop="50dp"
+            android:paddingBottom="50dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_bg_btnrepicture"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/system_item_ll_h">
+
+                <TextView
+                    style="@style/system_item_lable_tv_h"
+                    android:text="@string/System_deviceNo" />
+
+                <TextView
+                    android:id="@+id/tv_deviceno_system"
+                    style="@style/sustem_item_info_shape" />
+            </LinearLayout>
+            <LinearLayout style="@style/system_item_ll_h">
+
+                <TextView
+                    style="@style/system_item_lable_tv_h"
+                    android:text="@string/System_bindCode" />
+
+                <TextView
+                    android:id="@+id/tv_bindcode_syetem"
+                    style="@style/sustem_item_info_shape" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/system_item_ll_h">
+
+                <TextView
+                    style="@style/system_item_lable_tv_h"
+                    android:text="@string/System_Company" />
+
+                <TextView
+                    android:id="@+id/tv_company_system"
+                    style="@style/system_item_info" />
+            </LinearLayout>
+
+
+            <LinearLayout style="@style/system_item_ll_h">
+
+                <TextView
+                    style="@style/system_item_lable_tv_h"
+                    android:text="@string/System_Service" />
+
+                <TextView
+                    android:id="@+id/tv_server_system"
+                    style="@style/system_item_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/system_item_ll_h"
+                android:layout_width="match_parent">
+
+                <TextView
+                    style="@style/system_item_lable_tv_h"
+                    android:text="@string/System_ValiDate" />
+
+                <TextView
+                    android:id="@+id/tv_exp_system"
+                    style="@style/system_item_info"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="bottom"
+            android:paddingBottom="10dp"
+            android:paddingTop="30dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp">
+
+                <TableRow
+                    android:layout_margin="26dp"
+                    android:gravity="center"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btn_depart_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Manage"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                    <Button
+                        android:id="@+id/btn_add_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Add"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_margin="26dp"
+                    android:weightSum="2"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_data_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Record"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                    <Button
+                        android:id="@+id/btn_setting_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Setting"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_margin="26dp"
+                    android:gravity="center"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btn_visitor_system"
+                        android:nextFocusDown="@+id/btn_data_system"
+                        android:nextFocusRight="@+id/btn_add_system"
+                        android:onClick="seeVisitor"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Visitor"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                    <Button
+                        android:clickable="false"
+                        android:visibility="invisible"
+                        android:id="@+id/btn_skin_system"
+                        android:onClick="selectSkin"
+                        android:nextFocusDown="@+id/btn_setting_system"
+                        android:nextFocusLeft="@+id/btn_depart_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="25dp"
+                        android:text="@string/System_skin_select"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                </TableRow>
+            </TableLayout>
+
+
+            <LinearLayout
+                android:padding="5dp"
+                android:background="@drawable/shape_employ_button"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:gravity="right|center">
+
+                <com.roger.match.library.MatchTextView
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    match:text="YUNBIAO WULIAN"
+                    match:textColor="@color/white"
+                    match:textSize="60dp" />
+
+                <LinearLayout
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/tv_version_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <Button
+                        android:id="@+id/btn_update_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:text="@string/System_update"
+                        android:textColor="@color/white"
+                        android:textSize="25dp" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_copyright_smt_system"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:text="@string/System_copyright"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
