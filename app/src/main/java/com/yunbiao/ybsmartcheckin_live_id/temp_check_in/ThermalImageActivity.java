@@ -120,11 +120,13 @@ public class ThermalImageActivity extends BaseThermalActivity {
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
-        if(Constants.isHT){
+        if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+            setImageByResId(ivMainLogo,R.mipmap.logo_icon_horizontal);
         } else {
-            ivMainLogo.setImageResource(R.mipmap.logo);
+//            ivMainLogo.setImageResource(R.mipmap.logo);
+            setImageByResId(ivMainLogo,R.mipmap.logo);
         }
     }
 
@@ -261,7 +263,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
         }
         if (isRealLine) {
             isRealLine = false;
-            ivBigHead.setImageResource(R.mipmap.big_head);
+            setImageByResId(ivBigHead,R.mipmap.big_head);
+//            ivBigHead.setImageResource(R.mipmap.big_head);
         }
     }
 
@@ -270,7 +273,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
             return;
         }
         isRealLine = true;
-        ivBigHead.setImageResource(R.mipmap.big_head_real_line);
+        setImageByResId(ivBigHead,R.mipmap.big_head_real_line);
+//        ivBigHead.setImageResource(R.mipmap.big_head_real_line);
     }
 
     /*****识别相关回调******************************************************************************************/

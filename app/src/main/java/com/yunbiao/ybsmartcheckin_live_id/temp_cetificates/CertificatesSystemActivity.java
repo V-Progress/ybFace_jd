@@ -17,17 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.UpgradeInfo;
-import com.tencent.bugly.beta.upgrade.UpgradeListener;
-import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EditEmployActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.EmployListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SettingActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.SignActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.VisitorActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -185,41 +177,6 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
                 break;
             case R.id.btn_update_system:
                 UpdateVersionControl.getInstance().checkUpdate(this);
-
-                Beta.upgradeListener = new UpgradeListener() {
-                    @Override
-                    public void onUpgrade(int i, UpgradeInfo upgradeInfo, boolean b, boolean b1) {
-
-                    }
-                };
-
-                Beta.upgradeStateListener = new UpgradeStateListener() {
-                    @Override
-                    public void onUpgradeFailed(boolean b) {
-                        Log.e("123", "onUpgradeNoVersion: 3333333333333333");
-                    }
-
-                    @Override
-                    public void onUpgradeSuccess(boolean b) {
-                        Log.e("123", "onUpgradeNoVersion: 2222222222222222");
-                    }
-
-                    @Override
-                    public void onUpgradeNoVersion(boolean b) {
-                        Log.e("123", "onUpgradeNoVersion: 11111111111111111");
-                    }
-
-                    @Override
-                    public void onUpgrading(boolean b) {
-                        Log.e("123", "onUpgradeNoVersion: 4444444444444444444");
-                    }
-
-                    @Override
-                    public void onDownloadCompleted(boolean b) {
-                        Log.e("123", "onUpgradeNoVersion: 55555555555555555555");
-                    }
-                };
-                Beta.checkUpgrade(true, false);
                 break;
             default:
                 break;

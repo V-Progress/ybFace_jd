@@ -1,7 +1,6 @@
-修改设备类型，需要在Constants中修改DEVICE_TYPE
-亨通为单独的版本，只是替换掉所有关于云标的东西
-替换亨通版本或思库版本需要在AndroidManifest中启用相关的Splash别名，其他的别名需要设置enabled为false
 
-亨通版本：在Constants中替换DEVICE_TYPE为HT开头的类型，在AndroidManifest中将HT_SPLASH置为true。此时Constants.isHT将自动置为true
-云标版本：在Constants中替换DEVICE_TYPE为无HT前缀的类型，在AndroidManifest中将YB_SPLASH置为true。
-思库版本：DEVICE_TYPE设置为TEMPERATURE_CHECK_IN_SMT类型，将Constants.isSK置为true，在AndroidManifest中将SK_SPLASH置为true(注意：此版本只在SMT8寸下有用)
+alias:yunbiao
+password:123456
+
+打包不同的版本需要再Build Variants中进行选择
+后缀含义：10即代表10寸、8即是8寸视美泰测温头、RZ代表人证、DR代表多人

@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.KeyboardStatusDetector;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -205,6 +208,21 @@ public abstract class BaseActivity extends FragmentActivity {
         if (isLog) {
             Log.d(this.getClass().getSimpleName(), log);
         }
+    }
+
+    public static Bitmap readBitMap(Context context, int resId) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
+
+    public void setImageByResId(ImageView imgView, int resourceID) {
+        Bitmap bitmap = readBitMap(this, resourceID);
+        imgView.setImageBitmap(bitmap);
     }
 
     /**
