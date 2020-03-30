@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 
+import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -243,6 +244,10 @@ public class SyncManager {
                     companyResponse = new Gson().fromJson(response, CompanyResponse.class);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    StringBuffer stringBuffer = new StringBuffer();
+                    stringBuffer.append(HeartBeatClient.getDeviceNo())
+                            .append("\n").append("" + response);
+                    MobclickAgent.reportError(APP.getContext(),stringBuffer.toString());
                     retryOnluCompany(2);
                     return;
                 }
@@ -641,7 +646,7 @@ public class SyncManager {
 
         final int totalSize = userQueue.size();
         if (totalSize != 0) {
-            SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_head_4));
+            SyncDialog.setStep(APP.getContext().getString(R.string.sync_head_4));
             SyncDialog.setProgress(1, totalSize);
         }
 

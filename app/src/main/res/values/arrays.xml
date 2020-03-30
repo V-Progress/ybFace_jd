@@ -6,10 +6,8 @@
         <item>@string/thermal_only_model</item>
         <item>@string/infared_only_model</item>
         <item>@string/face_infared_model</item>
-    </string-array>
-
-    <string-array name="models2">
-        <item>@string/certificates_model</item>
+        <item>@string/thermal_16_4_model</item>
+        <item>@string/face_thermal_16_4_model</item>
     </string-array>
 
     <string-array name="smt_models">

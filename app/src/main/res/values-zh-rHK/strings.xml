@@ -165,9 +165,11 @@
     <string name="face_only_model">人臉識別考勤</string>
     <string name="face_infared_model">人臉識別+熱成像模式（小）</string>
     <string name="infared_only_model">熱成像模式（小）（不考勤）</string>
-    <string name="thermal_only_model">熱成像模式（大）（不考勤）</string>
-    <string name="face_thermal_model">人臉識別+熱成像模式（大）</string>
-    <string name="certificates_model">人證比對+熱成像測溫模式</string>
+    <string name="thermal_only_model">熱成像模式（32*32）（不考勤）</string>
+    <string name="face_thermal_model">人臉識別+熱成像模式（32*32）</string>
+    <string name="thermal_16_4_model">熱成像模式（16*4）（不考勤）</string>
+    <string name="face_thermal_16_4_model">人臉識別+熱成像模式（16*4）</string>
+
     <!--標簽-->
     <string name="setting_face_similar_threshold">設置人臉相似度閾值</string>
     <string name="setting_enable_dialog">開啟人臉彈框</string>

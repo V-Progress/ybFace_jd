@@ -156,15 +156,16 @@
     <string name="visitor_list_filed_company">单位</string>
     <string name="visitor_list_filed_reason">事由</string>
 
-
     <!--系统设置-->
     <!--模式-->
     <string name="face_only_model">人脸识别考勤</string>
-    <string name="face_infared_model">人脸识别 + 热成像模式（小）</string>
-    <string name="infared_only_model">热成像模式（小）（不考勤）</string>
-    <string name="thermal_only_model">热成像模式（大）（不考勤）</string>
-    <string name="face_thermal_model">人脸识别 + 热成像模式（大）</string>
-    <string name="certificates_model">人证比对 + 热成像测温模式</string>
+    <string name="face_infared_model">人脸识别 + 热成像（小）</string>
+    <string name="infared_only_model">热成像（小）（不考勤）</string>
+    <string name="thermal_only_model">热成像模式（32*32）（不考勤）</string>
+    <string name="face_thermal_model">人脸识别 + 热成像模式（32*32）</string>
+    <string name="thermal_16_4_model">热成像模式（16*4）（不考勤）</string>
+    <string name="face_thermal_16_4_model">人脸识别 + 热成像模式（16*4）</string>
+
     <!--标签-->
     <string name="setting_face_similar_threshold">设置人脸相似度阈值</string>
     <string name="setting_enable_dialog">开启人脸弹框</string>

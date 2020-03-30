@@ -75,7 +75,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN"
             manifestPlaceholders = [
                     app_name: "@string/app_name",
-                    app_icon: "@mipmap/ic_launcher"
+                    app_icon: "@mipmap/ic_launcher",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybCheckIn"
             ]
         }
 
@@ -86,7 +88,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN"
             manifestPlaceholders = [
                     app_name: "@string/app_name",
-                    app_icon: "@mipmap/ic_launcher"
+                    app_icon: "@mipmap/ic_launcher",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybTemper10"
             ]
         }
         YB_8 {//云标8寸
@@ -95,7 +99,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
             manifestPlaceholders = [
                     app_name: "@string/app_name",
-                    app_icon: "@mipmap/ic_launcher"
+                    app_icon: "@mipmap/ic_launcher",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybTemper8"
             ]
         }
         YB_RZ {//云标人证
@@ -104,7 +110,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES"
             manifestPlaceholders = [
                     app_name: "@string/app_name",
-                    app_icon: "@mipmap/ic_launcher"
+                    app_icon: "@mipmap/ic_launcher",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybTemperRZ"
             ]
         }
         YB_DR {//云标多人
@@ -113,7 +121,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL"
             manifestPlaceholders = [
                     app_name: "@string/app_name",
-                    app_icon: "@mipmap/ic_launcher"
+                    app_icon: "@mipmap/ic_launcher",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybTemperDR"
             ]
         }
 
@@ -124,7 +134,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
             manifestPlaceholders = [
                     app_name: "@string/app_name3",
-                    app_icon: "@mipmap/icon_logo3"
+                    app_icon: "@mipmap/icon_logo3",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "SKTemper8"
             ]
         }
 
@@ -135,7 +147,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN"
             manifestPlaceholders = [
                     app_name: "@string/app_name2",
-                    app_icon: "@mipmap/logo_icon2"
+                    app_icon: "@mipmap/logo_icon2",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "HTTemper10"
             ]
         }
 
@@ -145,7 +159,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT"
             manifestPlaceholders = [
                     app_name: "@string/app_name2",
-                    app_icon: "@mipmap/logo_icon2"
+                    app_icon: "@mipmap/logo_icon2",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "HTTemper8"
             ]
         }
         HT_RZ {//亨通人证
@@ -154,7 +170,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES"
             manifestPlaceholders = [
                     app_name: "@string/app_name2",
-                    app_icon: "@mipmap/logo_icon2"
+                    app_icon: "@mipmap/logo_icon2",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "HTTemperRZ"
             ]
         }
         HT_DR {//亨通多人
@@ -163,7 +181,9 @@ android {
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL"
             manifestPlaceholders = [
                     app_name: "@string/app_name2",
-                    app_icon: "@mipmap/logo_icon2"
+                    app_icon: "@mipmap/logo_icon2",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "HTTemperDR"
             ]
         }
     }

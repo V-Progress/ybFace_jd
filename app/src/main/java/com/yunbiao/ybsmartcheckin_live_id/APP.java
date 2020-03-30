@@ -19,6 +19,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -186,6 +187,7 @@ public class APP extends Application {
             public void uploadCrashMessage(ConcurrentHashMap<String, Object> info, Throwable ex) {
                 Log.e("APP", "uploadCrashMessage: -------------------");
                 MobclickAgent.reportError(APP.getContext(), ex);
+                MobclickAgent.reportError(APP.getContext(), HeartBeatClient.getDeviceNo() + "/n" + (ex == null ? "NULL" : ex.getMessage()));
                 RestartAPPTool.restartAPP(APP.getContext());
             }
         };
@@ -193,14 +195,41 @@ public class APP extends Application {
     }
 
     private void initUM() {
-        UMConfigure.init(this, "5cbe87a60cafb210460006b3", "self", UMConfigure.DEVICE_TYPE_BOX, null);
-        UMConfigure.setLogEnabled(false);
+//        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_BOX, "");
+        String channel = "selft";
+        switch (Constants.DEVICE_TYPE) {
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+                channel = "ht_10";
+                break;
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
+                channel = "ht_8";
+                break;
+            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
+                channel = "ht_rz";
+                break;
+            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                channel = "ht_mt";
+                break;
+            case Constants.DeviceType.TEMPERATURE_CHECK_IN:
+                channel = "YB_10";
+                break;
+            case Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT:
+                channel = "YB_8";
+                break;
+            case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
+                channel = "YB_rz";
+                break;
+            case Constants.DeviceType.MULTIPLE_THERMAL:
+                channel = "YB_mt";
+                break;
+        }
+        UMConfigure.init(this, "5cbe87a60cafb210460006b3", channel, UMConfigure.DEVICE_TYPE_BOX, null);
+        UMConfigure.setLogEnabled(true);
         MobclickAgent.setCatchUncaughtExceptions(true);
     }
 
     private void initUtils() {
 //        Log2FileUtil.startLogcatManager(this);
-
         //初始化xutils 3.0
         x.Ext.init(this);
 

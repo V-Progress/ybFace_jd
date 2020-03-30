@@ -89,14 +89,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btnSkinSystem = findViewById(R.id.btn_skin_system);
 
         int intOrDef = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
-        if(intOrDef == ThermalConst.CERTIFICATES){
-            btn_depart_system.setVisibility(View.GONE);
-            btn_add_system.setVisibility(View.GONE);
-            btn_data_system.setVisibility(View.GONE);
-            btnVisitorSystem.setVisibility(View.GONE);
-            btnSkinSystem.setVisibility(View.GONE);
-        }
-
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
         tv_company_system = (TextView) findViewById(R.id.tv_company_system);
         tv_deviceno_system = (TextView) findViewById(R.id.tv_deviceno_system);

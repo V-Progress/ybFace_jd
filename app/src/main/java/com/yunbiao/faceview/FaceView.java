@@ -311,7 +311,7 @@ public class FaceView extends FrameLayout {
             Camera.Size lastPreviewSize = previewSize;
             previewSize = camera.getParameters().getPreviewSize();
             drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
-                    , cameraId, isMirror, isHMirror, false);
+                    , cameraId, isMirror, isHMirror, Constants.isVerticalMirror);
             Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
             Log.i(TAG, "CameraDisplayOrientation: " + drawHelper.getCameraDisplayOrientation());
             // 切换相机的时候可能会导致预览尺寸发生变化

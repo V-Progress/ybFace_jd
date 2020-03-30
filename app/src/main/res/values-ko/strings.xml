@@ -162,9 +162,11 @@
     <string name="face_only_model">얼굴인증</string>
     <string name="face_infared_model">얼굴 + 열이미지 (소)</string>
     <string name="infared_only_model">열이미지 (소)</string>
-    <string name="thermal_only_model">열이미지 (대)</string>
-    <string name="face_thermal_model">얼굴 + 열이미지 (대)</string>
-    <string name="certificates_model">신분증 및 열상이미지</string>
+    <string name="thermal_only_model">열이미지 (32*32)</string>
+    <string name="face_thermal_model">얼굴 + 열이미지 (32*32)</string>
+    <string name="thermal_16_4_model">열이미지 (16*4)</string>
+    <string name="face_thermal_16_4_model">얼굴 + 열이미지 (16*4)</string>
+
     <!--标签-->
     <string name="setting_face_similar_threshold">얼굴 유사도 설정</string>
     <string name="setting_enable_dialog">얼굴 정보</string>

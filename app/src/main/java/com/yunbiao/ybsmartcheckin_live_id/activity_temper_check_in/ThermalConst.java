@@ -6,16 +6,17 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 public class ThermalConst {
 
 
-    public static final int THERMAL_FACE_ONLY = 0;
-    public static final int THERMAL_FACE_TEMP = 1;
-    public static final int THERMAL_TEMP_ONLY = 2;
-    public static final int INFARED_ONLY = 3;
-    public static final int INFARED_FACE = 4;
-    public static final int CERTIFICATES = 5;
+    public static final int FACE_ONLY = 0;//仅人脸模式
+    public static final int FACE_THERMAL = 1;//人脸+热成像
+    public static final int THERMAL_ONLY = 2;//仅热成像
+    public static final int INFRARED_ONLY = 3;//仅红外
+    public static final int FACE_INFRARED = 4;//人脸+红外
+    public static final int THERMAL_16_4_ONLY = 5;//仅热成像16*4
+    public static final int FACE_THERMAL_16_4 = 6;//人脸+热成像16*4
 
-    public static final int DEFAULT_THERMAL_MODEL = THERMAL_TEMP_ONLY;
+    public static final int DEFAULT_THERMAL_MODEL = THERMAL_ONLY;
 
-    public static String[] models = {"人脸识别模式", "人脸识别+热成像测温模式", "热成像测温模式", "红外测温模式", "人脸+红外测温模式", "人证比对模式"};
+    public static String[] models;
 
     static {
         models = APP.getContext().getResources().getStringArray(R.array.models);

@@ -163,9 +163,10 @@
     <string name="face_only_model">Face recognition attendance</string><!--  人脸识别考勤-->
     <string name="face_infared_model">Face + Thermal imaging (small)</string><!-- 人脸识别+红外测温模式 -->
     <string name="infared_only_model">Only Thermal imaging (small)</string><!--  红外测温模式（不考勤）-->
-    <string name="thermal_only_model">Only Thermal imaging (large)</string><!-- 热成像测温模式（不考勤） -->
-    <string name="face_thermal_model">Face + Thermal imaging (large)</string><!-- 人脸识别+热成像测温模式 -->
-    <string name="certificates_model">ID Card + Thermal imaging</string><!-- 人证比对+热成像测温模式 -->
+    <string name="thermal_only_model">Only Thermal imaging (32*32)</string><!-- 热成像测温模式（不考勤） -->
+    <string name="face_thermal_model">Face + Thermal imaging (32*32)</string><!-- 人脸识别+热成像测温模式 -->
+    <string name="thermal_16_4_model">Only Thermal imaging (16*4)</string><!--16*4模块-->
+    <string name="face_thermal_16_4_model">Face + Thermal imaging (16*4)</string><!--16*4模块-->
     <!--标签-->
     <string name="setting_face_similar_threshold">Face similarity threshold</string><!-- 设置人脸相似度阈值 -->
     <string name="setting_enable_dialog">show face infomaction</string><!-- 开启人脸弹框 -->

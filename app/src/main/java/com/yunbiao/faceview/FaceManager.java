@@ -103,11 +103,14 @@ public class FaceManager {
     public void reloadRegisterList() {
         long start = System.currentTimeMillis();
 
-        faceRegisterInfos.clear();
+        if(faceRegisterInfos != null && faceRegisterInfos.size() > 0){
+            faceRegisterInfos.clear();
+        }
 
         File featuresDir = new File(FEATURES_PATH);
         if (featuresDir == null || !featuresDir.exists()) {
             featuresDir.mkdirs();
+            return;
         }
 
         File[] featureFiles = featuresDir.listFiles();
@@ -122,6 +125,7 @@ public class FaceManager {
             //如果特征文件数量大于最大数量
             Iterator<File> iterator = fileList.iterator();
             while (fileList.size() >= MAX_FACE_NUM) {
+                iterator.next();
                 iterator.remove();
             }
         }

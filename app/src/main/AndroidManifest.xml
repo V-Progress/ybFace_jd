@@ -47,10 +47,6 @@
         <activity android:name=".activity.SignActivity" />
         <activity android:name=".activity.SystemActivity" />
         <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:theme="@android:style/Theme.Translucent" />
-        <activity
             android:name=".xmpp.NotificationDetailsActivity"
             android:label="Notification Details" />
         <activity
@@ -92,7 +88,14 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />
-
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="${UMENG_APPKEY}"
+            />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL}"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

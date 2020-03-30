@@ -147,9 +147,17 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                         //如果是考勤测温且缓存Sign不为null则继续上传该人的信息
                         if (mCacheSign != null) {
                             mCacheSign.setTemperature(mFinalTemp);
+                        }
+                        if(mCacheSign != null){
                             mCacheSign.setHotImageBitmap(mLastHotBitmap);
+                        }
+                        if(mCacheSign != null){
                             mCacheSign.setImgBitmap(getCurrCameraFrame());
+                        }
+                        if(mCacheSign != null){
                             mCacheSign.setTime(System.currentTimeMillis());
+                        }
+                        if(mCacheSign != null){
                             sendUploadMessage(mCacheSign);
                         }
                     }

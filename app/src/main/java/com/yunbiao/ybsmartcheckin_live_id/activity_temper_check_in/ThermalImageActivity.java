@@ -141,7 +141,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
         faceView.setLiveness(livenessEnabled);
 
         //切换头像框
-        if (mCurrMode != ThermalConst.THERMAL_FACE_ONLY) {
+        if (mCurrMode != ThermalConst.FACE_ONLY) {
             if (personFrameEnable) {
                 ivBigHead.setVisibility(View.VISIBLE);
                 flDotFrame.setVisibility(View.GONE);
@@ -172,10 +172,14 @@ public class ThermalImageActivity extends BaseThermalActivity {
             flDotFrame.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);
             llThermalArea.setVisibility(View.GONE);
-        } else if (mode == ThermalConst.THERMAL_TEMP_ONLY || mode == ThermalConst.THERMAL_FACE_TEMP) {//热成像模式
+        } else if (mode == ThermalConst.THERMAL_ONLY || mode == ThermalConst.FACE_THERMAL) {//热成像模式
             llThermalArea.setVisibility(View.VISIBLE);
             ivInfaredImaging.setVisibility(View.GONE);
             ivThermalImaging.setVisibility(View.VISIBLE);
+        } else if(mode == ThermalConst.INFRARED_ONLY || mode == ThermalConst.FACE_INFRARED){
+            llThermalArea.setVisibility(View.VISIBLE);
+            ivThermalImaging.setVisibility(View.GONE);
+            ivInfaredImaging.setVisibility(View.VISIBLE);
         } else {
             llThermalArea.setVisibility(View.VISIBLE);
             ivThermalImaging.setVisibility(View.GONE);
@@ -185,11 +189,10 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
     @Override
     protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1, boolean hasPerson) {
-
-        if (mCurrMode == ThermalConst.THERMAL_TEMP_ONLY || mCurrMode == ThermalConst.THERMAL_FACE_TEMP) {
+        if (mCurrMode == ThermalConst.THERMAL_ONLY || mCurrMode == ThermalConst.FACE_THERMAL) {
             ivThermalImaging.setImageBitmap(bitmap);
             tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
-        } else if (mCurrMode == ThermalConst.INFARED_ONLY || mCurrMode == ThermalConst.INFARED_FACE) {
+        } else if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
             ivInfaredImaging.setImageBitmap(bitmap);
             tvThermalPercent.setText(hasPerson ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
         }

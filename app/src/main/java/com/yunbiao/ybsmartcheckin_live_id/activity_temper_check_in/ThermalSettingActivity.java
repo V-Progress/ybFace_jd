@@ -258,8 +258,8 @@ public class ThermalSettingActivity extends BaseActivity {
 
         final int model = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
 
-        //如果是红外模式则隐藏矫正按钮
-        if (model == ThermalConst.INFARED_FACE || model == ThermalConst.INFARED_ONLY || model == ThermalConst.THERMAL_FACE_ONLY) {
+        //如果是红外模式或人脸模式则隐藏矫正按钮
+        if (model == ThermalConst.FACE_INFRARED || model == ThermalConst.INFRARED_ONLY || model == ThermalConst.FACE_ONLY || model == ThermalConst.THERMAL_16_4_ONLY || model == ThermalConst.FACE_THERMAL_16_4) {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
         } else {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -281,7 +281,7 @@ public class ThermalSettingActivity extends BaseActivity {
                             return;
                         }
                         //如果是红外模式则隐藏矫正按钮
-                        if (whichModel == ThermalConst.INFARED_FACE || whichModel == ThermalConst.INFARED_ONLY || whichModel == ThermalConst.THERMAL_FACE_ONLY) {
+                        if (whichModel == ThermalConst.FACE_INFRARED || whichModel == ThermalConst.INFRARED_ONLY || whichModel == ThermalConst.FACE_ONLY) {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
                         } else {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -563,17 +563,29 @@ public class ThermalSettingActivity extends BaseActivity {
                     UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置IP地址");
                     return;
                 }
+
+
                 if (TextUtils.isEmpty(mResPort)) {
                     UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置接口端口");
                     return;
                 }
+                int intResPort = Integer.parseInt(mResPort);
+                if(intResPort > 65535){
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, "服务端口格式不正确，请检查");
+                    return;
+                }
+
                 if (TextUtils.isEmpty(mXmppPort)) {
                     UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置XMPP端口");
                     return;
                 }
-                if (TextUtils.isEmpty(mProName)) {
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置项目名");
+                int intXmppPort = Integer.parseInt(mXmppPort);
+                if(intXmppPort > 65535){
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, "通信端口格式不正确，请检查");
                     return;
+                }
+
+                if (TextUtils.isEmpty(mProName)) {
                 }
 
                 if (rbYun.isChecked()) {

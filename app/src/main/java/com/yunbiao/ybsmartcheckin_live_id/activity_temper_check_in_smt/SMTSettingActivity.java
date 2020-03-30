@@ -38,6 +38,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -435,17 +436,29 @@ public class SMTSettingActivity extends SMTBaseActivity {
                     UIUtils.showTitleTip(SMTSettingActivity.this, "请设置IP地址");
                     return;
                 }
+
+
                 if (TextUtils.isEmpty(mResPort)) {
                     UIUtils.showTitleTip(SMTSettingActivity.this, "请设置接口端口");
                     return;
                 }
+                int intResPort = Integer.parseInt(mResPort);
+                if(intResPort > 65535){
+                    UIUtils.showTitleTip(SMTSettingActivity.this, "服务端口格式不正确，请检查");
+                    return;
+                }
+
                 if (TextUtils.isEmpty(mXmppPort)) {
                     UIUtils.showTitleTip(SMTSettingActivity.this, "请设置XMPP端口");
                     return;
                 }
-                if (TextUtils.isEmpty(mProName)) {
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "请设置项目名");
+                int intXmppPort = Integer.parseInt(mXmppPort);
+                if(intXmppPort > 65535){
+                    UIUtils.showTitleTip(SMTSettingActivity.this, "通信端口格式不正确，请检查");
                     return;
+                }
+
+                if (TextUtils.isEmpty(mProName)) {
                 }
 
                 if (rbYun.isChecked()) {

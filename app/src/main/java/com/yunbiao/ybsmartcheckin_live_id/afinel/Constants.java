@@ -50,6 +50,7 @@ public class Constants {
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
     }
 
+    private static final String TAG = "Constants";
     public static void checkSetIp() {
         if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, serverModel.YUN) == serverModel.JU) {
             String ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
@@ -61,7 +62,7 @@ public class Constants {
             Constants.XMPP_PORT = xmppPort;
             Constants.RESOURCE_HOST = ip;
             Constants.RESOURCE_PORT = resPort;
-            Constants.RESOURCE_URL = PRE + ip + COLON + resPort + "/" + (TextUtils.isEmpty(projectName) ? "" : (projectName  + "/"));
+            Constants.RESOURCE_URL = PRE + ip + COLON + resPort + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
 
             ResourceUpdate.WEB_BASE_URL = Constants.RESOURCE_URL;
         }
@@ -94,7 +95,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = BuildConfig.APP_TYPE ;
+    public static final int DEVICE_TYPE = BuildConfig.APP_TYPE;
     //是否亨通的版本（独立版本）
     public static boolean isHT = BuildConfig.IS_HT;
     //是否思库的版本(云标分支版本)
@@ -116,14 +117,12 @@ public class Constants {
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
     //最大人脸线程数
-    public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10 ;
+    public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10;
     //最远人脸抓取距离
     public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 32 : 16;
 
 
-
-
-
+    public static boolean isVerticalMirror = false;
     //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
     public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
     //默认波特率

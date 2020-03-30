@@ -176,7 +176,7 @@ public class CoreInfoHandler {
                     JSONObject jsonObject=new JSONObject(message);
                     try {
                         final JSONObject jContent=jsonObject.getJSONObject("content");
-                        if (jContent.getString("type").equals("1")){
+                        if (jContent != null && jContent.getString("type").equals("1")){
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {

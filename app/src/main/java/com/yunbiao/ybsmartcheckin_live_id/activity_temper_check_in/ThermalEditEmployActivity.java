@@ -294,8 +294,8 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             Log.e(TAG, "submitAddUser: " + addUser.getHeadPath());
 
             boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
-            long add = DaoManager.get().add(addUser);
             if (b) {
+                DaoManager.get().add(addUser);
                 UIUtils.showShort(ThermalEditEmployActivity.this, "添加成功");
             } else {
                 UIUtils.showShort(ThermalEditEmployActivity.this, "添加人脸库失败");
@@ -479,11 +479,14 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         if (userId == -1) {
             UIUtils.showShort(this, "未知错误");
             finish();
+            return;
         }
+
         user = DaoManager.get().queryUserById(userId);
         if (user == null) {
             UIUtils.showShort(this, "用户不存在");
             finish();
+            return;
         }
 
         et_name.setText(user.getName());

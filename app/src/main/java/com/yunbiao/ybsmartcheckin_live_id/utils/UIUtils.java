@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 
@@ -94,7 +95,7 @@ public class UIUtils {
         pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.setTitle(context.getString(R.string.uiUtils_tip_notice));
-        pd.setMessage(context.getString(R.string.uiUtils_tip_zzazxgyyqnxdd));
+        pd.setMessage(APP.getContext().getString(R.string.uiUtils_tip_zzazxgyyqnxdd));
         pd.setCancelable(false);
         pd.setCanceledOnTouchOutside(false);
         pd.show();
