@@ -57,6 +57,7 @@ public class SyncManager {
     private static SyncManager instance;
     private boolean isLocalServ = false;
     private boolean isFirst = true;
+    private boolean isFirstNotBind = true;
 
     //    private long SYNC_OFFSET = 4 * 60 * 60 * 1000;//更新间隔时间4天
     private long SYNC_OFFSET = 20 * 60 * 1000;//更新间隔时间4天
@@ -94,19 +95,19 @@ public class SyncManager {
     public void retryOnluCompany(int tag) {
         switch (tag) {
             case 1:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_depart));
                 break;
             case 2:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_bind));
                 break;
             case -1:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_params_error));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_params_error));
                 break;
             case 4:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_bind));
                 break;
             default:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_get_failed));
                 break;
         }
         d("重新获取公司信息");
@@ -123,7 +124,7 @@ public class SyncManager {
      */
     public void requestOnlyCompany() {
         show();
-        SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_company_1));
+        SyncDialog.setStep(APP.getContext().getString(R.string.sync_company_1));
         d("获取公司信息");
         d("地址：" + ResourceUpdate.COMPANYINFO);
         d("参数：" + HeartBeatClient.getDeviceNo());
@@ -166,6 +167,14 @@ public class SyncManager {
                 }
 
                 if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
+                    if (companyResponse.getStatus() == 4) {
+                        if(isFirstNotBind){
+                            EventBus.getDefault().post(new UpdateInfoEvent());
+                            isFirst = false;
+                        }
+                        saveCompanyInfo(null);
+                        dissmissDialog();
+                    }
                     retryOnluCompany(companyResponse.getStatus());
                     return;
                 }
@@ -208,7 +217,7 @@ public class SyncManager {
     public void requestCompany() {
         show();
 
-        SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_company_1));
+        SyncDialog.setStep(APP.getContext().getString(R.string.sync_company_1));
         d("获取公司信息");
         d("地址：" + ResourceUpdate.COMPANYINFO);
         d("参数：" + HeartBeatClient.getDeviceNo());
@@ -253,6 +262,10 @@ public class SyncManager {
                 }
                 if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     if (companyResponse.getStatus() == 4) {
+                        if(isFirstNotBind){
+                            EventBus.getDefault().post(new UpdateInfoEvent());
+                            isFirst = false;
+                        }
                         saveCompanyInfo(null);
                         dissmissDialog();
                     }
@@ -304,7 +317,7 @@ public class SyncManager {
     public void requestUser() {
         show();
         d("请求员工信息");
-        SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_staff_2));
+        SyncDialog.setStep(APP.getContext().getString(R.string.sync_staff_2));
         final int comid = SpUtils.getInt(SpUtils.COMPANYID);
         Map<String, String> params = new HashMap<>();
         params.put("companyId", comid + "");
@@ -361,7 +374,7 @@ public class SyncManager {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_database_3));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_database_3));
                 Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
 
                 //生成统一的部门列表和员工列表（此为远程数据）
@@ -447,7 +460,7 @@ public class SyncManager {
 
                 final int totalSize = userQueue.size();
                 if (totalSize != 0) {
-                    SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_head_4));
+                    SyncDialog.setStep(APP.getContext().getString(R.string.sync_head_4));
                     SyncDialog.setProgress(1, totalSize);
                 }
 
@@ -525,7 +538,7 @@ public class SyncManager {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_face_5));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_face_5));
                 Log.e(TAG, "run: 开始同步人脸库");
                 Company company = SpUtils.getCompany();
                 List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
@@ -730,16 +743,16 @@ public class SyncManager {
     private void retryGetCompany(int tag) {
         switch (tag) {
             case 1:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_depart));
                 break;
             case -1:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_params_error));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_params_error));
                 break;
             case 4:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_bind));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_bind));
                 break;
             default:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_get_failed));
                 break;
         }
         d("重新获取公司信息");
@@ -756,14 +769,14 @@ public class SyncManager {
 
         switch (tag) {
             case 4:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_not_depart));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_not_depart));
                 break;
             default:
-                SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_get_failed));
                 break;
         }
         d("重新获取员工信息");
-        SyncDialog.setStep(APP.getMainActivity().getString(R.string.sync_get_failed));
+        SyncDialog.setStep(APP.getContext().getString(R.string.sync_get_failed));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

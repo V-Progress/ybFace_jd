@@ -140,6 +140,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         if (Constants.isHT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+        } else {
+            ivLogo.setImageResource(R.mipmap.logo_hushida);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_hushida);
         }
     }
 
@@ -342,14 +345,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                 Rect realRect = faceView.getRealRect(faceInfo.getRect());
                 if (realRect != null) {//如果真实rect不为null的时候再抓取
                     Rect hotRect = adjustRect(faceView.getWidth(), faceView.getHeight(), realRect);
-                    hotRect.left -= 3;
-                    if (hotRect.left <= 0) {
-                        hotRect.left = 1;
-                    }
-                    hotRect.top -= 5;
-                    if (hotRect.top <= 0) {
-                        hotRect.top = 1;
-                    }
+                    hotRect.left -= 2;
+                    hotRect.bottom += 3;
                     multiTemperBean.setHotRect(hotRect);
                 }
             }
@@ -398,7 +395,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             Rect hotRect = adjustRect(faceView.getWidth(), faceView.getHeight(), realRect);
             //6080热成像画面以左上角为原点，0 <= left <= right <= 80，0 <= top <= bottom <= 60
             //left, right, top, bottom
-            FaceIndexInfo faceIndexInfo = new FaceIndexInfo(facePreviewInfo.getTrackId(), hotRect.left - 3, hotRect.right, hotRect.top - 5, hotRect.bottom);
+            FaceIndexInfo faceIndexInfo = new FaceIndexInfo(facePreviewInfo.getTrackId(), hotRect.left - 2, hotRect.right, hotRect.top, hotRect.bottom + 3);
             //可以支持一次传入多个人脸框信息
             faceIndexInfoList.add(faceIndexInfo);
         }

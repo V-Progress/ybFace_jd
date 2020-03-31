@@ -1,10 +1,12 @@
 package com.yunbiao.ybsmartcheckin_live_id.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -43,8 +45,8 @@ public class ImageFileLoader {
         return loader;
     }
 
-    public void loadAndSave(Context context, String url, String localDir, final ImageView imageView) {
-        load(context, url, localDir, imageView, true);
+    public void loadAndSave(Activity activity, String url, String localDir, final ImageView imageView) {
+        load(activity, url, localDir, imageView, true);
     }
 
     /*
@@ -53,19 +55,19 @@ public class ImageFileLoader {
      * 如果不存在则加载，加载完成后保存到本地
      * 如果存在则设置并且不再缓存
      * */
-    public synchronized void load(final Context context, String url, String localDir, final ImageView imageView, final boolean needSave) {
-        executor.execute(new LoadRunnable(context, url, localDir, imageView, needSave,defaultLogoId));
+    public synchronized void load(final Activity activity, String url, String localDir, final ImageView imageView, final boolean needSave) {
+        executor.execute(new LoadRunnable(activity, url, localDir, imageView, needSave,defaultLogoId));
     }
 
     private class LoadRunnable implements Runnable {
-        private Context ctx;
+        private Activity ctx;
         private String imgUrl;
         private String savePath;
         private ImageView imgView;
         private boolean saveTag;
         private int defaultImgId;
 
-        public LoadRunnable(Context ctx, String imgUrl, String savePath, ImageView imgView, boolean saveTag,int defaultId) {
+        public LoadRunnable(Activity ctx, String imgUrl, String savePath, ImageView imgView, boolean saveTag,int defaultId) {
             this.ctx = ctx;
             this.imgUrl = imgUrl;
             this.savePath = savePath;
@@ -76,6 +78,9 @@ public class ImageFileLoader {
 
         @Override
         public void run() {
+            if(isDestroy(ctx)){
+                return;
+            }
             String name = getNameByUrl(imgUrl);
             if (TextUtils.isEmpty(name)) {
                 e("load failed, url error!");
@@ -161,5 +166,17 @@ public class ImageFileLoader {
 
     private void e(String log) {
         Log.e(TAG, log);
+    }
+
+    /**
+     * 判断Activity是否Destroy
+     * @return
+     */
+    public static boolean isDestroy(Activity mActivity) {
+        if (mActivity== null || mActivity.isFinishing() || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

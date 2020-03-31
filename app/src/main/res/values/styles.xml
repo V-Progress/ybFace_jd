@@ -217,4 +217,14 @@
         <!--//退出时的动画-->
         <item name="android:windowExitAnimation">@anim/left_out</item>
     </style>
+
+    <!--自定义seekbarstyle-->
+    <style name="CustomSeekbarStyle" >
+        <item name="android:maxHeight">10dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@color/colorAccent</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress_drawable</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:thumb">@mipmap/seekbar_thumb</item>
+    </style>
 </resources>

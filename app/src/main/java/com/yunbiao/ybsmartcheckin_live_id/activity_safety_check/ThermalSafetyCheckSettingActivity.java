@@ -1,0 +1,117 @@
+package com.yunbiao.ybsmartcheckin_live_id.activity_safety_check;
+
+import android.content.Intent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
+
+import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+
+public class ThermalSafetyCheckSettingActivity extends BaseActivity {
+
+    @Override
+    protected int getPortraitLayout() {
+        return R.layout.activity_thermal_safety_check_setting;
+    }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_thermal_safety_check_setting;
+    }
+
+    @Override
+    protected void initView() {
+        initLowTemp();
+
+        initThermalMirror();
+
+        initTemperThreshold();
+    }
+
+    private void initLowTemp(){
+        Switch swLowTemp = findViewById(R.id.sw_low_temp_model_setting);
+        boolean isLowTemp = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP,ThermalSafetyCheckConst.Default.LOW_TEMP);
+        swLowTemp.setChecked(isLowTemp);
+        swLowTemp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP,isChecked);
+            }
+        });
+    }
+
+    private void initThermalMirror(){
+        Switch swThermalMirror = findViewById(R.id.sw_thermal_imag_mirror_setting);
+        boolean isThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR,ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
+        swThermalMirror.setChecked(isThermalMirror);
+        swThermalMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR,isChecked);
+            }
+        });
+    }
+
+    private void initTemperThreshold(){
+        float normalTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, ThermalSafetyCheckConst.Default.NORMAL_TEMPER);
+        final EditText edtNormalTemp = findViewById(R.id.edt_temp_min_threshold_setting);
+        edtNormalTemp.setText(normalTemper+"");
+        Button btnNormalSub = findViewById(R.id.btn_temp_min_threshold_sub_setting);
+        Button btnNormalAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String normalTemp = edtNormalTemp.getText().toString();
+                float tempF = Float.parseFloat(normalTemp);
+                if (v.getId() == R.id.btn_temp_min_threshold_sub_setting) {
+                    tempF -= 0.1f;
+                } else {
+                    tempF += 0.1f;
+                }
+                tempF = formatF(tempF);
+                edtNormalTemp.setText(tempF + "");
+            }
+        };
+        btnNormalSub.setOnClickListener(onClickListener);
+        btnNormalAdd.setOnClickListener(onClickListener);
+
+        float warningTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER,ThermalSafetyCheckConst.Default.WARNING_TEMPER);
+        final EditText edtWarningTemp = findViewById(R.id.edt_temp_warning_threshold_setting);
+        edtWarningTemp.setText(warningTemper + "");
+        Button btnWarningAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
+        Button btnWarningSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
+        View.OnClickListener onClickListener1 = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String warningTemp = edtWarningTemp.getText().toString();
+                float tempF = Float.parseFloat(warningTemp);
+                if (v.getId() == R.id.btn_temp_warning_threshold_sub_setting) {
+                    tempF -= 0.1f;
+                } else {
+                    tempF += 0.1f;
+                }
+                tempF = formatF(tempF);
+                edtWarningTemp.setText(tempF + "");
+            }
+        };
+        btnWarningAdd.setOnClickListener(onClickListener1);
+        btnWarningSub.setOnClickListener(onClickListener1);
+    }
+
+    public void setBlackBody(View view){
+        startActivity(new Intent(this,BlackBodyAreaActivity.class));
+    }
+
+    public void setTemperArea(View view){
+
+    }
+
+    public void powerOnOff(View view){
+        startActivity(new Intent(this, PowerOnOffActivity.class));
+    }
+}

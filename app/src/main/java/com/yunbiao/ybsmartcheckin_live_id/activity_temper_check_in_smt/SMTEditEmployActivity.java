@@ -471,11 +471,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         if (userId == -1) {
             UIUtils.showShort(this, "未知错误");
             finish();
+            return;
         }
         user = DaoManager.get().queryUserById(userId);
         if (user == null) {
             UIUtils.showShort(this, "用户不存在");
             finish();
+            return;
         }
 
         et_name.setText(user.getName());

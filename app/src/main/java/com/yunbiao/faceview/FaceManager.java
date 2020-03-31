@@ -41,7 +41,7 @@ public class FaceManager {
     private static FaceManager faceManager = new FaceManager();
     private FaceEngine compareEngin;
     private List<FaceRegisterInfo> faceRegisterInfos = new ArrayList<>();
-    private int MAX_FACE_NUM = 1000;
+    private int MAX_FACE_NUM = 2000;
 
     private String FEATURES_PATH;
 

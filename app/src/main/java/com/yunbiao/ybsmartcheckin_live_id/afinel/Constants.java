@@ -112,6 +112,8 @@ public class Constants {
         int HT_TEMPERATURE_CHECK_IN_SMT = 12;//亨通通行
         int HT_TEMPERATURE_CERTIFICATES = 13;//亨通人证
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
+
+        int TEMPER_SAFETY_CHECK = 15;
     }
 
     //设备未绑定时的公司Id

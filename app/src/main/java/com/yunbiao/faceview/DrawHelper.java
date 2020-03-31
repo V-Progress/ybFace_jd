@@ -265,13 +265,13 @@ public class DrawHelper {
 
         Rect newRect = new Rect(drawInfo.getRect());
 
-        newRect.left -= newRect.width() / 3;
-        newRect.right -= newRect.width() / 3;
+        newRect.left -= newRect.width() / 10;
+        newRect.right += newRect.width() / 10;
         if (newRect.left <= 0) {
             newRect.left = 1;
         }
-        newRect.top -= newRect.height() / 3;
-        newRect.bottom -= newRect.height() / 3;
+        newRect.top -= newRect.height() / 4;
+        newRect.bottom += newRect.height() / 4;
         if(newRect.top <= 0){
             newRect.top = 1;
         }

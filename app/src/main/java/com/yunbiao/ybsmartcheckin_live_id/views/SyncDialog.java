@@ -40,9 +40,9 @@ public class SyncDialog {
     private Handler updateHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if (mStep.equals(APP.getMainActivity().getString(R.string.sync_get_failed)) ||
-                    mStep.equals(APP.getMainActivity().getString(R.string.sync_not_bind)) ||
-                    mStep.equals(APP.getMainActivity().getString(R.string.sync_not_depart))) {
+            if (mStep.equals(APP.getContext().getString(R.string.sync_get_failed)) ||
+                    mStep.equals(APP.getContext().getString(R.string.sync_not_bind)) ||
+                    mStep.equals(APP.getContext().getString(R.string.sync_not_depart))) {
                 tvInfo.setTextColor(Color.RED);
             } else {
                 tvInfo.setTextColor(Color.parseColor("#2d2a2a"));

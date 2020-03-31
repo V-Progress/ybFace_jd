@@ -254,6 +254,7 @@
             <com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.VerticalSeekBar
                 android:id="@+id/sb_y_multi_setting"
                 android:layout_width="wrap_content"
+                style="@style/CustomSeekbarStyle"
                 android:layout_height="480dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
@@ -267,6 +268,7 @@
             android:orientation="horizontal">
 
             <SeekBar
+                style="@style/CustomSeekbarStyle"
                 android:id="@+id/sb_x_multi_setting"
                 android:layout_width="640dp"
                 android:layout_height="wrap_content"

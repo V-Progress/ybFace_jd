@@ -20,9 +20,9 @@ public class DepartAdapter extends BaseAdapter {
     private List<String> mList;
     private Context mContext;
 
-    public DepartAdapter(Context pContext,List<String> pList) {
-        this.mContext=pContext;
-        this.mList=pList;
+    public DepartAdapter(Context pContext, List<String> pList) {
+        this.mContext = pContext;
+        this.mList = pList;
     }
 
     @Override
@@ -43,11 +43,10 @@ public class DepartAdapter extends BaseAdapter {
     //最主要代码
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater _LayoutInflater=LayoutInflater.from(mContext);
-        convertView=_LayoutInflater.inflate(R.layout.item_depart_spinner, null);
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.item_depart_spinner, parent, false);
 
-        if(convertView!=null){
-            TextView _TextView1=(TextView)convertView.findViewById(R.id.tv_depart);
+        if (convertView != null) {
+            TextView _TextView1 = (TextView) convertView.findViewById(R.id.tv_depart);
             _TextView1.setText(mList.get(position));
         }
         return convertView;

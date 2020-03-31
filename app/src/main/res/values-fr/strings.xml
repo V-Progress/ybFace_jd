@@ -1,0 +1,291 @@
+﻿<resources>
+    <string name="app_name">Présence intelligente standard dans le cloud</string>
+    <string name="used">Utilisé:</string>
+    <string name="no_used">/Disponible:</string>
+
+    <!--Conseils de mesure de la température domestique-->
+    <string name="main_temp_warning_tips">Température corporelle anormale</string>
+    <string name="main_temp_normal_tips">La température corporelle est normale</string>
+    <string name="main_temp_tips_please_close">Veuillez vous rapprocher</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">Trop loin, rapprochez-vous</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">Veuillez rester à l\'écart</string>
+    <string name="main_temp_tips_so_close_text">Trop proche</string>
+    <string name="main_thermal_temp">Imagerie thermique:</string>
+    <string name="main_please_waiting">Veuillez patienter</string>
+    <string name="main_temp_tips_please_in_range">Pointez votre visage vers la zone de reconnaissance</string>
+
+    <!--Mettre en place-->
+    <string name="temp_measuring_setting">Mesurer la température</string>
+    <string name="port_setting">Port série</string>
+    <string name="select_port_setting">Sélectionnez le port série</string>
+    <string name="auto_close_door_setting">（Fermer automatiquement après cette heure）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">Seuil recommandé：80</string>
+    <string name="current_model_setting">Mode actuel</string>
+
+    <!--Informations système-->
+    <string name="System_title">Système de présence intelligent Cloud Standard</string>
+    <string name="System_deviceNo">Numéro d\'appareil:</string>
+    <string name="System_bindCode">Code de liaison:</string>
+    <string name="System_Company">Affiliés:</string>
+    <string name="System_Service">Réseau de service:</string>
+    <string name="System_ValiDate">Date d\'expiration:</string>
+    <string name="System_Manage">Gestion du personnel</string>
+    <string name="System_Add">Nouvel employé</string>
+    <string name="System_Record">Dossier de présence</string>
+    <string name="System_Setting">Paramètres système</string>
+    <string name="System_Visitor">Visiteurs</string>
+    <string name="System_skin_select">Changer de peau</string>
+    <string name="System_update">Surclassement</string>
+    <string name="System_copyright">Droit d\'auteur: Beijing Yunbiao Technology Co., Ltd.</string>
+    <string name="System_Service_offline">Hors ligne</string>
+    <string name="System_online">En ligne</string>
+    <string name="System_offline">Hors ligne</string>
+    <string name="System_validityPeriod">Indéfiniment</string>
+    <string name="System_cloud_service">Service cloud</string>
+    <string name="System_local_service">Service local</string>
+
+    <!--Gestion du personnel-->
+    <string name="employ_list_title">Liste des employés</string>
+    <string name="employ_list_depart_sync">Synchroniser</string>
+    <string name="employ_List_add_user">Ajouter</string>
+    <string name="employ_List_query_button">Chercher</string>
+    <string name="employ_list_download_failed">Impossible de télécharger l\'avatar</string>
+    <string name="employ_list_add_face_failed">Échec de l\'ajout de la bibliothèque de visages</string>
+    <string name="employ_list_update_head_failed">Échec de la mise à jour de l\'avatar</string>
+    <string name="employ_list_field_index">Numéro de série</string>
+    <string name="employ_list_field_number">Numéro d\'employé</string>
+    <string name="employ_list_field_name">Nom de l\'employé</string>
+    <string name="employ_list_field_depart">Département</string>
+    <string name="employ_list_field_position">Poste</string>
+    <string name="employ_list_field_control">Fonctionnement</string>
+    <string name="employ_list_item_delete">Effacer</string>
+    <string name="employ_list_item_edit">Modifier</string>
+    <string name="employ_list_all_depart">Tous les départements</string>
+    <string name="employ_list_please_input_user_name">Veuillez saisir le nom de l\'employé</string>
+    <string name="employ_list_confirm_edit">Voulez-vous vraiment le modifier?</string>
+    <string name="employ_list_confirm_delete">Voulez-vous vraiment le supprimer?</string>
+    <string name="employ_list_delete_failed">Échec de la suppression</string>
+    <string name="employ_list_delete_success">Supprimé avec succès</string>
+    <string name="employ_list_depart">Département</string>
+    <string name="employ_list_add_depart">Ajouter un département</string>
+
+    <!--Modifier les informations-->
+    <string name="act_editEmploy_zjyg">Augmenter le personnel</string>
+    <string name="act_editEmploy_xgxx">Modifier les informations</string>
+    <string name="act_editEmploy_pz">Prenez une photo</string>
+    <string name="act_editEmploy_reset">Réinitialiser</string>
+    <string name="act_editEmploy_jbxx">Informations basiques</string>
+    <string name="act_editEmploy_name">Nom:</string>
+    <string name="act_editEmploy_sex">Le sexe:</string>
+    <string name="act_editEmploy_bm">Département:</string>
+    <string name="act_editEmploy_ygbh">Numéro d\'employé:</string>
+    <string name="act_editEmploy_zw">Poste:</string>
+    <string name="act_editEmploy_csrq">Date de naissance:</string>
+    <string name="act_editEmploy_gxqm">Signature personnelle:</string>
+    <string name="act_editEmploy_tip_qxpz">Veuillez d\'abord prendre une photo</string>
+    <string name="act_editEmploy_tip_qtxxm">Veuillez saisir le nom</string>
+    <string name="act_editEmploy_tip_qxzxb">Veuillez sélectionner un sexe</string>
+    <string name="act_editEmploy_tip_qtxbh">Veuillez saisir le numéro</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">Aucun fichier d\'avatar trouvé, veuillez réessayer après avoir pris une photo</string>
+    <string name="act_editEmploy_tip_wzrhxg">Aucun changement</string>
+    <string name="act_editEmploy_tip_tjsb">Échec de l\'ajout</string>
+    <string name="act_editEmploy_tip_gygbcz">L\'employé n\'existe pas</string>
+    <string name="act_editEmploy_tip_bczgbm">Le département n\'existe pas</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">L\'entreprise n\'a pas ce département</string>
+    <string name="act_editEmploy_tip_gsyzwyg">L\'entreprise n\'a pas cet employé</string>
+    <string name="act_editEmploy_tip_cscw">Erreur de paramètre</string>
+
+    <!--Données hors ligne-->
+    <string name="sign_list_title">Enregistrement hors ligne</string>
+    <string name="sign_list_all_type">Tous</string>
+    <string name="sign_list_sent">Envoyé</string>
+    <string name="sign_list_unsent">Non envoyé</string>
+    <string name="sign_list_export">Exporter des données</string>
+    <string name="sign_list_upload">Télécharger des données</string>
+    <string name="sign_list_filed_index">Numéro de série</string>
+    <string name="sign_list_filed_time">Le temps</string>
+    <string name="sign_list_filed_name">Nom de l\'employé</string>
+    <string name="sign_list_filed_depart">Département</string>
+    <string name="sign_list_filed_job">Poste</string>
+    <string name="sign_list_filed_head">Avatar</string>
+    <string name="sign_list_no_data">Pas de données</string>
+    <string name="sign_list_upload_success">Téléchargé avec succès</string>
+    <string name="sign_list_upload_failed">Échec du téléchargement, veuillez vérifier le réseau</string>
+    <string name="sign_list_usb_disk">Veuillez insérer une clé USB</string>
+    <string name="sign_list_all_data_sent">Toutes les données ont été téléchargées</string>
+
+
+    <!--Liste des visiteurs-->
+    <string name="visitor_list_title">Liste des visiteurs</string>
+    <string name="visitor_list_filed_name">Nom</string>
+    <string name="visitor_list_filed_time">Période d\'accès</string>
+    <string name="visitor_list_filed_company">Unité</string>
+    <string name="visitor_list_filed_reason">Cause</string>
+
+
+    <!--Paramètres système-->
+    <!--Le mode-->
+    <string name="face_only_model">Participation à la reconnaissance faciale</string>
+    <string name="face_infared_model">Reconnaissance faciale + mode de mesure de température infrarouge</string>
+    <string name="infared_only_model">Mode de mesure de température infrarouge (sans assistance)</string>
+    <string name="thermal_only_model">Mode de mesure de température d\'imagerie thermique (sans assistance)</string>
+    <string name="face_thermal_model">Reconnaissance faciale + mode de mesure de température par imagerie thermique</string>
+    <string name="certificates_model">Comparaison de témoins + mode de mesure de température d\'imagerie thermique</string>
+    <!--Balises-->
+    <string name="setting_face_similar_threshold">Définir le seuil de similitude des visages</string>
+    <string name="setting_enable_dialog">Fenêtre contextuelle ouverte</string>
+    <string name="setting_enable_liveness">Activer la détection en direct</string>
+    <string name="setting_camera_mirror">Activer la mise en miroir du cadre du visage</string>
+    <string name="setting_select_model">Sélectionnez le mode</string>
+    <string name="setting_current_port_path">Port série actuel</string>
+    <string name="setting_baud_rate">Débit en bauds</string>
+    <string name="setting_open">Ouverte</string>
+    <string name="setting_enable_distance_tips">Activer l\'invite de distance</string>
+    <string name="setting_thermal_imaging_mirror">Miroir d\'image thermique</string>
+    <string name="setting_open_temperature_delay">Délai de mesure de la température</string>
+    <string name="setting_temperature_delay_time">Délai de mesure de la température</string>
+    <string name="setting_ms">Milliseconde</string>
+    <string name="setting_s">Deuxième</string>
+    <string name="setting_temp_correct_value">Valeur de correction de la température</string>
+    <string name="setting_amb_correct_value">Valeur de correction de la température ambiante</string>
+    <string name="setting_temperature_threshold">Rapport de température la plus basse</string>
+    <string name="setting_temperature_warning">Valeur d\'alarme de mesure de température</string>
+    <string name="setting_temp_range">Plage de mesure de la température corporelle</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">Le plus bas</string><!--minimum-->
+    <string name="setting_range_highest">Le plus haut</string><!--Highest-->
+    <string name="setting_speech_delay">Intervalle de diffusion continue</string>
+    <string name="setting_screen_saver">Économiseur d\'écran</string>
+    <string name="setting_welcome_speech">Bienvenue</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">Afficher le code QR</string>
+    <string name="setting_enable_ic_card">Lecteur de carte à puce</string>
+    <string name="setting_relay_delay_time">Heures d\'ouverture</string>
+    <string name="setting_cpu_temp">Température du processeur:</string>
+    <string name="setting_camera_angle">Angle de caméra</string>
+    <string name="setting_curr_net">Réseau actuel:</string>
+    <string name="setting_net_name">【WIFI，Nom du réseau：XXXXX】</string>
+    <string name="setting_reboot_device">Redémarrez l\'appareil</string>
+    <string name="setting_check_update">Mise à niveau de détection</string>
+    <string name="setting_manage_password">Gérer les modifications de mot de passe</string>
+    <string name="setting_system_password">Mot de passe système</string>
+    <string name="setting_please_input_password">Veuillez saisir un mot de passe de 6 à 12 chiffres (chiffres, lettres)</string>
+    <string name="setting_please_input_again">Veuillez saisir à nouveau le mot de passe</string>
+    <string name="setting_cloud_service">Nuage</string>
+    <string name="setting_local_service">LAN</string>
+    <string name="setting_ip_address">Adresse IP</string>
+    <string name="setting_xmpp_port">Port de communication</string>
+    <string name="setting_resource_port">Port de service</string>
+    <string name="setting_project_name">Nom du projet</string>
+    <string name="setting_save_service_info">Enregistrer le service</string>
+    <string name="setting_total_one">Total 1</string>
+    <string name="setting_current_used">【Actuellement utilisé：】</string>
+    <string name="setting_cam_angle">Angle</string>
+    <string name="setting_net_prefix">【Réseau Ethernet, adresse IP:</string>
+    <string name="setting_ip_info">，Adresse IP:</string>
+    <string name="setting_best_camera_size">Meilleur</string>
+    <string name="setting_max_camera_size">Max</string>
+    <string name="setting_wifi_name">Nom:</string>
+    <string name="setting_wifi_rssi">，Force du signal:</string>
+    <string name="setting_device_will_reboot">L\'appareil va redémarrer. Voulez-vous continuer?</string>
+    <string name="setting_device_reboot">Redémarrage de l\'appareil</string>
+    <string name="setting_3_scond_reboot">L\'appareil redémarrera dans 3 secondes</string>
+    <string name="setting_password_not_null">Le mot de passe ne peut pas être vide</string>
+    <string name="setting_password_min_6">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="setting_please_input_password_agian">Veuillez saisir à nouveau le mot de passe</string>
+    <string name="setting_password_disaccord">Les mots de passe entrés deux fois sont incohérents</string>
+    <string name="setting_edit_password_failed">Échec de la modification</string>
+    <string name="setting_edit_password_success">Modifié avec succès</string>
+
+
+
+    <!--Universel  -->
+    <string name="base_tip">Indice</string>
+    <string name="base_ensure">Ok</string>
+    <string name="base_cancel">Annuler</string>
+    <string name="base_male">Masculin</string>
+    <string name="base_female">Femme</string>
+    <string name="base_people">Personne</string>
+    <string name="base_year">Année</string>
+    <string name="base_month">Mois</string>
+    <string name="base_day">Jour</string>
+
+    <!--Interface Splash  -->
+    <string name="splash_request_permission_failed">Échec de la demande d\'autorisation</string>
+    <string name="splash_active_failed">L\'activation a échoué</string>
+
+    <!--Interface principale  -->
+    <string name="act_wel_topTitle">Présence intelligente standard dans le cloud</string>
+    <string name="act_wel_bottomTitle">Présence intelligente standard dans le cloud</string>
+    <string name="act_wel_error_bywjsrmmo">N\'oubliez pas de saisir votre mot de passe</string>
+    <string name="act_wel_error_mmclqcxsrb">Mot de passe incorrect, saisissez-le à nouveau</string>
+    <string name="act_wel_glmm">Gérer le mot de passe</string>
+    <string name="act_wel_qsrglmm">Veuillez saisir le mot de passe administrateur</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">Connexion au visage intelligent pour plus de tranquillité d\'esprit~</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">Enregistré</string>
+    <string name="fment_sign_bl">Maquiller</string>
+    <string name="fment_sign_jrqd">Connectez-vous aujourd\'hui:</string>
+    <!--WebFragment-->
+    <string name="fment_Web_back">Retour</string>
+    <string name="fment_Web_refresh">Rafraîchir</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">Paramètres système</string>
+    <string name="act_set_xtmm">Mot de passe système</string>
+    <string name="act_set_qchc">Vider le cache</string>
+    <string name="act_set_qcsj">Effacer les données</string>
+    <string name="act_set_jcsxt">Caméra d\'inspection</string>
+    <string name="act_set_sfjx">Que ce soit pour refléter</string>
+    <string name="act_set_wlzt">État du réseau</string>
+    <string name="act_set_gb">Fermer</string>
+
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">Veuillez saisir un nom de département</string>
+    <string name="act_departList_tip_qdscm">Voulez-vous vraiment le supprimer?</string>
+    <string name="act_departList_bmlb">Liste des départements</string>
+    <string name="act_departList_add">Ajouter</string>
+    <string name="act_departList_xh">Numéro de série</string>
+    <string name="act_departList_bmmc">Nom du département</string>
+    <string name="act_departList_cz">Fonctionnement</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">Veuillez saisir un nom de département</string>
+
+    <!-- Synchroniser-->
+    <string name="lay_loadPop_sync">Synchroniser</string>
+    <string name="lay_loadPop_zlxsxx">Afficher les informations ici</string>
+    <string name="uiUtils_tip_notice">Remarquez</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">Installer des applications connexes, veuillez être patient!</string>
+    <string name="dialog_sync_tbjs">Fin de la synchronisation</string>
+    <string name="sync_company_1">Obtenir des informations sur l\'entreprise</string>
+    <string name="sync_staff_2">Obtenir des informations sur la personne</string>
+    <string name="sync_database_3">Synchroniser la base de données</string>
+    <string name="sync_head_4">Télécharger l\'avatar</string>
+    <string name="sync_face_5">Sync Face Library</string>
+    <string name="sync_get_failed">Impossible de réessayer</string>
+    <string name="sync_not_bind">L\'appareil n\'est pas lié</string>
+    <string name="sync_not_depart">L\'entreprise n\'a pas de département</string>
+    <string name="sync_params_error">Erreur de paramètre</string>
+    <string name="edit_not_edit">Aucun changement</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">Quitter l\'application?</string>
+    <string name="restartAPPTool_ycdht">Masquer à l\'arrière-plan</string>
+    <string name="restartAPPTool_exit">Quitter</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">La version actuelle est la dernière version</string>
+    <string name="updateManager_wlljsbqjcwl">La connexion réseau a échoué, veuillez vérifier le réseau</string>
+    <string name="updateManager_xzsb">Échec du téléchargement</string>
+
+    <!--Autre-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">xxxService d\'assistance à l\'accessibilité pour la surveillance des boutons</string>
+    <string name="System_Setting_save_threshold">Enregistrer</string>
+</resources>

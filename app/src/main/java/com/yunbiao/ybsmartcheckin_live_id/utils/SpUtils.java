@@ -121,6 +121,8 @@ public class SpUtils {
                     saveStr(COMPANY_INFO, json);
                 }
             }).subscribeOn(Schedulers.io()).subscribe();
+        } else {
+            saveStr(COMPANY_INFO, "");
         }
     }
 

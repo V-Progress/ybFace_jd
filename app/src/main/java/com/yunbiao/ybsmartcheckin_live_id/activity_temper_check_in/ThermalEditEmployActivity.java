@@ -378,11 +378,11 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                         addUser.setFaceId(addStaffResponse.getFaceId());
 
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
-                        long add = DaoManager.get().add(addUser);
                         if (!b) {
                             UIUtils.showShort(ThermalEditEmployActivity.this, "添加人脸库失败");
+                        } else {
+                            DaoManager.get().add(addUser);
                         }
-
                         faceView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -551,7 +551,6 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             user.setPosition(position);
             user.setBirthday(birthday);
             user.setAutograph(sign);
-            DaoManager.get().addOrUpdate(user);
 
             if(isHeadUpdated){
                 user.setHeadPath(currFile.getPath());
@@ -559,11 +558,13 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 Log.e(TAG, "submitUpdateUser: 删除旧特征：" + b1);
                 boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                 if(b){
+                    DaoManager.get().addOrUpdate(user);
                     UIUtils.showShort(this,"更新成功");
                 } else {
                     UIUtils.showShort(this,"更新头像失败");
                 }
             } else {
+                DaoManager.get().addOrUpdate(user);
                 UIUtils.showShort(this,"更新信息成功");
             }
 
@@ -665,14 +666,19 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 user.setBirthday(birthday);
                 user.setAutograph(sign);
 
-                long l = DaoManager.get().addOrUpdate(user);
-                Log.e(TAG, "onResponse: 更新用户库：" + l);
                 //判断是否需要更新头像
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
                         UIUtils.showShort(ThermalEditEmployActivity.this, "更新人脸库失败");
+                    } else {
+
+                        long l = DaoManager.get().addOrUpdate(user);
+                        Log.e(TAG, "onResponse: 更新用户库：" + l);
                     }
+                } else {
+                    long l = DaoManager.get().addOrUpdate(user);
+                    Log.e(TAG, "onResponse: 更新用户库：" + l);
                 }
 
                 faceView.postDelayed(new Runnable() {

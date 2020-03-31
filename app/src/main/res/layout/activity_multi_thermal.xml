@@ -17,8 +17,7 @@
             android:id="@+id/iv_logo_multi_thermal"
             android:layout_marginLeft="30dp"
             android:layout_width="140dp"
-            android:layout_height="80dp"
-            android:src="@mipmap/logo_hushida" />
+            android:layout_height="80dp" />
 
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
             android:id="@+id/gtv_title_multi_thermal"

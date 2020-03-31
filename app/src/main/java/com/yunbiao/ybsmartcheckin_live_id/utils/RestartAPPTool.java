@@ -37,10 +37,8 @@ public class RestartAPPTool {
         intent1.putExtra("PackageName",context.getPackageName());
         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent1.putExtra("Delayed",2000);
         context.startService(intent1);
-//        Intent outIntent = new Intent(HomeActivity.this,
-//                LoginActivity.class);
-//        startActivity(outIntent);
 
         /**杀死整个进程**/
         android.os.Process.killProcess(android.os.Process.myPid());

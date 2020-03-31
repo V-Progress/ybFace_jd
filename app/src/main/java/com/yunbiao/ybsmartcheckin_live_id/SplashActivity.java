@@ -13,6 +13,7 @@ import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -205,6 +206,7 @@ public class SplashActivity extends BaseActivity {
             } else {
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
             }
+            // TODO: 2020/3/30 在此加入判断版型然后将摄像头默认方向置为90的方法
             startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT
                 || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
@@ -217,6 +219,8 @@ public class SplashActivity extends BaseActivity {
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL
                 || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
             startActivity(new Intent(this, MultiThermalActivity.class));
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
+            startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
         }
     }
 
