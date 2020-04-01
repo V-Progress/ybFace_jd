@@ -63,28 +63,42 @@ public class MultiThermalSettingActivity extends BaseActivity {
         setThermalFaceFrame();
 
         setBlackBodyFrame();
+
+        initMultiTrack();
     }
 
-    private void setBlackBodyFrame(){
-        Switch swBlackBody = findViewById(R.id.sw_black_body_frame_setting);
-        boolean blackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,MultiThermalConst.Default.BLACK_BODY_FRAME);
-        swBlackBody.setChecked(blackBodyFrame);
-        swBlackBody.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void initMultiTrack() {
+        boolean multiTrack = SpUtils.getBoolean(MultiThermalConst.Key.MULTI_TRACK, MultiThermalConst.Default.MULTI_TRACK);
+        Switch swMultiTrack = findViewById(R.id.sw_multi_track_setting);
+        swMultiTrack.setChecked(multiTrack);
+        swMultiTrack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,isChecked);
+                SpUtils.saveBoolean(MultiThermalConst.Key.MULTI_TRACK, isChecked);
             }
         });
     }
 
-    private void setThermalFaceFrame(){
+    private void setBlackBodyFrame() {
+        Switch swBlackBody = findViewById(R.id.sw_black_body_frame_setting);
+        boolean blackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME, MultiThermalConst.Default.BLACK_BODY_FRAME);
+        swBlackBody.setChecked(blackBodyFrame);
+        swBlackBody.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME, isChecked);
+            }
+        });
+    }
+
+    private void setThermalFaceFrame() {
         Switch swFaceFrame = findViewById(R.id.sw_thermal_face_frame_setting);
-        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,MultiThermalConst.Default.THERMAL_FACE_FRAME);
+        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, MultiThermalConst.Default.THERMAL_FACE_FRAME);
         swFaceFrame.setChecked(isThermalFaceFrame);
         swFaceFrame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,isChecked);
+                SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, isChecked);
             }
         });
     }
@@ -205,9 +219,9 @@ public class MultiThermalSettingActivity extends BaseActivity {
         handler.removeCallbacks(runnable);
     }
 
-    public void saveRect(View view){
-        if(mSaveRect.width() == 0 || mSaveRect.height() == 0){
-            UIUtils.showShort(this,getResources().getString(R.string.setting_save_failed_multi_thermal));
+    public void saveRect(View view) {
+        if (mSaveRect.width() == 0 || mSaveRect.height() == 0) {
+            UIUtils.showShort(this, getResources().getString(R.string.setting_save_failed_multi_thermal));
             return;
         }
 
@@ -215,22 +229,22 @@ public class MultiThermalSettingActivity extends BaseActivity {
         int top = mSaveRect.top;
         int right = mSaveRect.right;
         int bottom = mSaveRect.bottom;
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_LEFT,left);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_TOP,top);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_RIGHT,right);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_BOTTOM,bottom);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_LEFT, left);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_TOP, top);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_RIGHT, right);
+        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, bottom);
 
-        L.e("MultiThermalSettingActivity","saveRect:保存的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
+        L.e("MultiThermalSettingActivity", "saveRect:保存的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
 
-        UIUtils.showShort(this,getResources().getString(R.string.setting_save_success_multi_thermal));
+        UIUtils.showShort(this, getResources().getString(R.string.setting_save_success_multi_thermal));
     }
 
-    private Rect getCacheRect(){
-        int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT,MultiThermalConst.Default.CORRECT_AREA_LEFT);
-        int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP,MultiThermalConst.Default.CORRECT_AREA_TOP);
-        int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT,MultiThermalConst.Default.CORRECT_AREA_RIGHT);
-        int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM,MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
-        return new Rect(left,top,right,bottom);
+    private Rect getCacheRect() {
+        int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT, MultiThermalConst.Default.CORRECT_AREA_LEFT);
+        int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP, MultiThermalConst.Default.CORRECT_AREA_TOP);
+        int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT, MultiThermalConst.Default.CORRECT_AREA_RIGHT);
+        int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
+        return new Rect(left, top, right, bottom);
     }
 
     private Handler handler = new Handler();

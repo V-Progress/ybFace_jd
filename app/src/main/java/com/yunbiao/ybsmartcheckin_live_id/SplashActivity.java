@@ -199,8 +199,7 @@ public class SplashActivity extends BaseActivity {
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
             startActivity(new Intent(this, WelComeActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
-                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
             //调整摄像头默认角度
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
@@ -209,16 +208,13 @@ public class SplashActivity extends BaseActivity {
             }
             // TODO: 2020/3/30 在此加入判断版型然后将摄像头默认方向置为90的方法
             startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT
-                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
             Constants.DEFAULT_CAMERA_ANGLE = 270;
             startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES
-                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
             Constants.DEFAULT_CAMERA_ANGLE = 0;
             startActivity(new Intent(this, CertificatesActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL
-                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
             startActivity(new Intent(this, MultiThermalActivity.class));
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
             startActivity(new Intent(this, ThermalSafetyCheckActivity.class));

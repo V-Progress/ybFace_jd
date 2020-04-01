@@ -16,6 +16,8 @@ public class MultiThermalConst {
         String THERMAL_FACE_FRAME = "multiThermalFaceFrame";
 
         String BLACK_BODY_FRAME = "multiThermalBlackBodyFrame";
+
+        String MULTI_TRACK = "multiThermalMultiTrack";
     }
 
     public interface Default{
@@ -31,5 +33,7 @@ public class MultiThermalConst {
 
         boolean THERMAL_FACE_FRAME = false;
         boolean BLACK_BODY_FRAME = false;
+
+        boolean MULTI_TRACK = false;
     }
 }

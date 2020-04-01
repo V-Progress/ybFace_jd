@@ -217,6 +217,7 @@ public class PowerOffTool {
             case 0:
             case 2:
             case 3:
+            case 5:
                 execSuCmd("reboot");
                 break;
         }

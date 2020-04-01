@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetWorkChangReceiver.NetWorkChangeListener {
 
@@ -231,8 +231,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         uiHandler.sendMessage(message);
     }
 
-    private int mCurrColor = 0;//0白色,1绿色,2红色
-
+    private static final String TAG = "ThermalSafetyCheckActiv";
+    private boolean playTag = false;
+    private List<Float> mTemperFloats = new ArrayList<>();
     private Handler uiHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -244,56 +245,85 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     Bundle data = msg.getData();
                     float originT = data.getFloat("originT", 0.0f);
                     float afterT = data.getFloat("afterT", 0.0f);
-                    if (originT < mNormalTemper) {
-                        afterT = 0.0f;
+                    //如果原始温度小于阈值则无视
+                    if(originT < mNormalTemper){
+                        playTag = false;
+                        if(mTemperFloats.size() > 0){
+                            mTemperFloats.clear();
+                        }
+                        break;
                     }
-                    tvTemper.setText(afterT + "");
-                    if (afterT == 0.0f && mCurrColor != 0) {
-                        mCurrColor = 0;
-                        tvTemper.setTextColor(Color.WHITE);
-                        tvSsdSafetyCheck.setTextColor(Color.WHITE);
-                        tvTemperState.setText("体温正常");
-                        tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
-                        KDXFSpeechManager.instance().stopWarningRing();
-                        ledInit();
-                    } else if (originT >= mNormalTemper && afterT < mWarningTemper && mCurrColor != 1) {
-                        mCurrColor = 1;
+
+                    if(mTemperFloats.size() < 5){
+                        playTag = false;
+                        mTemperFloats.add(afterT);
+                        break;
+                    }
+
+                    if(playTag){
+                        break;
+                    }
+                    playTag = true;
+
+                    float mean = getMean(mTemperFloats);
+                    tvTemper.setText(mean + "");
+                    //体温正常
+                    if(mean >= mNormalTemper && mean < mWarningTemper){
+                        ledGreen();
                         tvTemper.setTextColor(Color.GREEN);
                         tvSsdSafetyCheck.setTextColor(Color.GREEN);
                         tvTemperState.setText("体温正常");
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
                         KDXFSpeechManager.instance().stopWarningRing();
-                        ledGreen();
-                    } else if (afterT >= mWarningTemper && mCurrColor != 2) {
-                        mCurrColor = 2;
+                        KDXFSpeechManager.instance().playPassRing();
+                    } else if(mean >= mWarningTemper) {//体温异常
+                        ledRed();
                         tvTemper.setTextColor(Color.RED);
                         tvSsdSafetyCheck.setTextColor(Color.RED);
                         tvTemperState.setText("体温异常");
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_nopass);
-
-                        KDXFSpeechManager.instance().playWaningRing();
-                        ledRed();
-
-                        stringBuffer.setLength(0);
-                        mWarningNumber += 1;
-                        if (mWarningNumber < 10) {
-                            stringBuffer.append("000").append(mWarningNumber);
-                        } else if (mWarningNumber < 100) {
-                            stringBuffer.append("00").append(mWarningNumber);
-                        } else if (mWarningNumber < 1000) {
-                            stringBuffer.append("0").append(mWarningNumber);
-                        } else {
-                            stringBuffer.append(mWarningNumber);
-                        }
-                        tvWarningNumber.setText(stringBuffer.toString());
+                        KDXFSpeechManager.instance().stopPassRing();
+                        KDXFSpeechManager.instance().playNormal("体温异常", new Runnable() {
+                            @Override
+                            public void run() {
+                                KDXFSpeechManager.instance().playWaningRing();
+                            }
+                        });
+                        handleNumber();
                     }
-
                     break;
             }
             return false;
         }
     });
 
+    private void handleNumber(){
+        stringBuffer.setLength(0);
+        mWarningNumber += 1;
+        if (mWarningNumber < 10) {
+            stringBuffer.append("000").append(mWarningNumber);
+        } else if (mWarningNumber < 100) {
+            stringBuffer.append("00").append(mWarningNumber);
+        } else if (mWarningNumber < 1000) {
+            stringBuffer.append("0").append(mWarningNumber);
+        } else {
+            stringBuffer.append(mWarningNumber);
+        }
+        tvWarningNumber.setText(stringBuffer.toString());
+    }
+
+    private float getMean(List<Float> array) {
+        float result = 0.0f;
+        if (array.size() == 0) {
+            return result;
+        }
+        for (float anArray : array) {
+            result += anArray;
+        }
+        result = result / array.size();
+        result = formatF(result);
+        return result;
+    }
     //设置人脸框
     private void setFaceIndex() {
         if (faceIndexInfos != null && faceIndexInfos.size() > 0) {

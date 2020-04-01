@@ -6,6 +6,11 @@
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
 
+    <string name="yb_check_in">云标智能考勤</string>
+    <string name="yb_certificates">云标人证测温</string>
+    <string name="yb_multiple">云标大通量测温</string>
+    <string name="yb_safety_chceck">云标测温安检</string>
+
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
     <string name="smt_main_net_normal2">ON-LINE</string>

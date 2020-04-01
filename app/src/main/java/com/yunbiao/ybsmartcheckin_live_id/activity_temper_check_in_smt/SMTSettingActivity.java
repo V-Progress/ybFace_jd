@@ -433,28 +433,28 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 String mXmppPort = edtXmppPort.getText().toString();
                 String mProName = edtProName.getText().toString();
                 if (TextUtils.isEmpty(mIp)) {
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "请设置IP地址");
+                    UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_please_set_ip));
                     return;
                 }
 
 
                 if (TextUtils.isEmpty(mResPort)) {
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "请设置接口端口");
+                    UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_please_set_res));
                     return;
                 }
                 int intResPort = Integer.parseInt(mResPort);
                 if(intResPort > 65535){
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "服务端口格式不正确，请检查");
+                    UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_res_port_error));
                     return;
                 }
 
                 if (TextUtils.isEmpty(mXmppPort)) {
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "请设置XMPP端口");
+                    UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_please_set_xmpp));
                     return;
                 }
                 int intXmppPort = Integer.parseInt(mXmppPort);
                 if(intXmppPort > 65535){
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "通信端口格式不正确，请检查");
+                    UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_xmpp_port_error));
                     return;
                 }
 
@@ -470,7 +470,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                     SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
-                UIUtils.showTitleTip(SMTSettingActivity.this, "保存成功,重启APP后生效");
+                UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_save_succ_please_restart));
             }
         });
     }
@@ -623,7 +623,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 }
                 edtTipsTime.setText(saveTime + "");
                 SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(SMTSettingActivity.this, "保存成功");
+                UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_save_success));
             }
         });
 
@@ -640,7 +640,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 }
                 s = edtTempDValue.getText().toString();
                 SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(SMTSettingActivity.this, "保存成功");
+                UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_save_success));
             }
         });
     }

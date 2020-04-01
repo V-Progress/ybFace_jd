@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -283,28 +284,51 @@ public class FaceView extends FrameLayout {
         void onAreaRect(Rect mAreaRect, Rect mFaceRect);
     }
 
-    private Map<Integer, FaceIndexInfo> temperHashMap = new HashMap<>();
-
+    private Map<Integer, Float> temperHashMap = new HashMap<>();
+    private List<Integer> idList = new ArrayList<>();
     public void setTemperList(ArrayList<FaceIndexInfo> arrayList) {
         if (arrayList == null) {
+            Log.e(TAG, "setTemperList: list为空，清除Map");
             if (temperHashMap.isEmpty()) {
                 return;
             }
             temperHashMap.clear();
         } else {
-            temperHashMap.clear();
-            for (FaceIndexInfo faceIndexInfo : arrayList) {
-                temperHashMap.put(faceIndexInfo.getFaceId(), faceIndexInfo);
+            if(!isMultiCallback){
+
+                idList.clear();
+                for (FaceIndexInfo faceIndexInfo : arrayList) {
+                    int faceId = faceIndexInfo.getFaceId();
+                    float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                    idList.add(faceId);
+                    if(!temperHashMap.containsKey(faceId)){
+                        temperHashMap.put(faceId,afterTreatmentF);
+                    }
+                }
+
+                Iterator<Map.Entry<Integer, Float>> iterator = temperHashMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Integer, Float> next = iterator.next();
+                    Integer key = next.getKey();
+                    if(!idList.contains(key)){
+                        iterator.remove();
+                    }
+                }
+            } else {
+                temperHashMap.clear();
+                for (FaceIndexInfo faceIndexInfo : arrayList) {
+                    temperHashMap.put(faceIndexInfo.getFaceId(), faceIndexInfo.getAfterTreatmentF());
+                }
             }
         }
     }
 
     public float getTemperByTrackId(int trackId) {
-        FaceIndexInfo faceIndexInfo = temperHashMap.get(trackId);
-        if (faceIndexInfo == null) {
+        if(!temperHashMap.containsKey(trackId)){
             return 0.0f;
         }
-        return faceIndexInfo.getAfterTreatmentF();
+        Float temper = temperHashMap.get(trackId);
+        return temper;
     }
 
     private CameraListener cameraListener = new CameraListener() {
@@ -361,13 +385,16 @@ public class FaceView extends FrameLayout {
                 for (int i = 0; i < facePreviewInfoList.size(); i++) {
                     FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
                     int trackId = facePreviewInfo.getTrackId();
-                    FaceIndexInfo faceIndexInfo = temperHashMap.get(trackId);
-                    if (faceIndexInfo != null) {
+                    Float temper = temperHashMap.get(trackId);
+                    if(temper != null){
+                        facePreviewInfo.setTemper(temper);
+                    }
+                    /*if (faceIndexInfo != null) {
                         float originalTempF = faceIndexInfo.getOriginalTempF();
                         float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
-                        facePreviewInfo.setTemper(afterTreatmentF);
+                        facePreviewInfo.setTemper(aFloat);
                         facePreviewInfo.setOringinTemper(originalTempF);
-                    }
+                    }*/
                 }
             }
             //绘制人脸框

@@ -7,8 +7,8 @@
     <string name="back">返回</string>
 
     <string name="yb_check_in">云标智能考勤</string>
-    <string name="yb_certificates">云标人证</string>
-    <string name="yb_multiple">云标大通量</string>
+    <string name="yb_certificates">云标人证测温</string>
+    <string name="yb_multiple">云标大通量测温</string>
     <string name="yb_safety_chceck">云标测温安检</string>
 
     <!--视美泰-->
@@ -243,6 +243,14 @@
     <string name="setting_default_welcome_tip2">欢迎使用亨通考勤</string>
     <string name="setting_correct_temperature">矫正温度</string>
     <string name="setting_broadcast_f">播报华氏度</string>
+
+    <string name="setting_save_success">保存成功</string>
+    <string name="setting_save_succ_please_restart">保存成功,重启APP后生效</string>
+    <string name="setting_please_set_ip">请设置IP地址</string>
+    <string name="setting_please_set_res">请设置服务端口</string>
+    <string name="setting_please_set_xmpp">请设置通信端口</string>
+    <string name="setting_res_port_error">服务端口格式不正确，请检查</string>
+    <string name="setting_xmpp_port_error">通信端口格式不正确，请检查</string>
 
     <!--设置开关机-->
     <string name="setting_power_on_off">定时开关机</string>

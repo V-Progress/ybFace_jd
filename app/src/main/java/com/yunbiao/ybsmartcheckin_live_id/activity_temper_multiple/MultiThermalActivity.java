@@ -37,6 +37,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
@@ -101,6 +102,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private float mBodyCorrectTemper;
     private Rect mBlackBodyAreaRect;
     private boolean mBlackBodyFrame;
+    private boolean mMultiTrack;
 
     @Override
     protected int getLayout() {
@@ -129,8 +131,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         faceView.enableMutiple(true);
         //关闭多次重试
         faceView.enableMultiRetry(false);
-        //开启多次回调
-        faceView.enableMultiCallback(true);
         //设置回调延时
         faceView.setRetryDelayTime(500);
 
@@ -150,6 +150,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
     @Override
     protected void initData() {
+        KDXFSpeechManager.instance().init(this);
         addAllItemRecord();
         handleData();
     }
@@ -190,6 +191,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         faceView.resume();
 
         mBlackBodyAreaRect = getCacheRect();
+        mMultiTrack = SpUtils.getBoolean(MultiThermalConst.Key.MULTI_TRACK, MultiThermalConst.Default.MULTI_TRACK);
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
@@ -198,7 +200,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,MultiThermalConst.Default.THERMAL_FACE_FRAME);
         //是否显示热成像人脸框
         faceView.enableThermalFaceFrame(isThermalFaceFrame);
-
+        //开启多次回调
+        faceView.enableMultiCallback(mMultiTrack);
         startHotImage();
     }
 
@@ -362,28 +365,20 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         }
     };
 
-    private Bitmap mCurrHotImage = null;
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
         public void newestHotImageData(final Bitmap bitmap, float v, float v1, float v2) {
-            /*if (!mHasFace) {
-                setHotImage(bitmap);
-            }*/
             setHotImage(bitmap);
         }
 
         @Override
         public void newestHotImageData(final Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
             setHotImage(bitmap);
-            /*if (mHasFace) {
-                setHotImage(bitmap);
-            }*/
             faceView.setTemperList(arrayList);
         }
     };
 
     private void setHotImage(final Bitmap bitmap) {
-        mCurrHotImage = bitmap;
         ivHotImage.post(new Runnable() {
             @Override
             public void run() {
@@ -625,6 +620,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private void addItemRecord(MultiTemperBean multiTemperBean) {
         float temper = multiTemperBean.getTemper();
         if (temper <= 0f || temper >= 37.3f) {
+            KDXFSpeechManager.instance().playWaningRing();
             warningList.add(0, multiTemperBean);
             warningAdapter.notifyItemInserted(0);
             if (warningList.size() > 15) {

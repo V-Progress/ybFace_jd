@@ -62,13 +62,15 @@ public class KDXFSpeechManager {
     private SoundPool mSoundPool;
     private int mVoiceId = -1;
     private int mPlayId = -1;
-
+    private int mPassId = -1;
+    private int mPlayPassId = -1;
     private KDXFSpeechManager() {
         AudioAttributes.Builder ab = new AudioAttributes.Builder();
         ab.setLegacyStreamType(AudioManager.STREAM_ALARM);
         ab.setUsage(AudioAttributes.USAGE_ALARM);
         mSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(ab.build()).build();
         mVoiceId = mSoundPool.load(APP.getContext(), R.raw.warning_ring, 1);
+        mPassId = mSoundPool.load(APP.getContext(),R.raw.pass,1);
         mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int i, int i1) {
@@ -266,6 +268,19 @@ public class KDXFSpeechManager {
         }
     }
 
+    public void playPassRing(){
+        stopPassRing();
+        if(soundPoolLoadCompleted && mPassId != -1){
+            mPlayPassId = mSoundPool.play(mPassId,1,1,1,0,1);
+        }
+    }
+
+    public void stopPassRing(){
+        if(mPlayPassId != -1){
+            mSoundPool.stop(mPlayPassId);
+            mPlayPassId = -1;
+        }
+    }
 
     public void playNormal(final String message) {
         playNormalAddCallback(TextToSpeech.QUEUE_ADD, message, null);

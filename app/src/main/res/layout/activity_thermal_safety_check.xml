@@ -90,13 +90,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
                 <TextView
+                    android:text="无网络"
                     android:layout_marginLeft="15dp"
                     android:id="@+id/tv_net_state_safety_check"
                     android:layout_gravity="center"
                     android:textSize="26dp"
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
-                    android:textColor="#0f0"
+                    android:textColor="@color/red"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
@@ -123,7 +124,7 @@
                     android:textSize="22sp"
                     android:textColor="@color/font_green"
                     android:layout_marginTop="15dp"
-                    android:text="温度显示"
+                    android:text="体温测量"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -133,23 +134,28 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp">
-                    <TextView
-                        android:id="@+id/tv_temper_safety_check"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:text="0.0"
-                        android:textColor="#0f0"
-                        android:textSize="80dp"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/tv_ssd_safety_check"
-                        android:gravity="center"
-                        android:text="℃"
-                        android:textColor="#0f0"
-                        android:textSize="80dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tv_temper_safety_check"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:text="0.0"
+                            android:textColor="#0f0"
+                            android:textSize="120dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:layout_gravity="start"
+                            android:id="@+id/tv_ssd_safety_check"
+                            android:text="℃"
+                            android:textColor="#0f0"
+                            android:textSize="60dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView
@@ -189,6 +195,7 @@
 
 
                 <FrameLayout
+                    android:visibility="gone"
                     android:id="@+id/fl_icon"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
@@ -211,10 +218,11 @@
                 </FrameLayout>
 
                 <TextView
+                    android:layout_centerInParent="true"
                     android:id="@+id/tv_warning_number_safety_check"
                     android:textStyle="bold"
                     android:textColor="@color/red"
-                    android:textSize="65sp"
+                    android:textSize="120sp"
                     android:layout_marginLeft="15dp"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/fl_icon"
