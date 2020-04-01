@@ -134,7 +134,7 @@ public class DaoManager {
         if (daoSession == null) {
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).limit(100).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).list();
     }
 
     public List<Sign> querySignByComIdAndDateWithLimit(int comid,String date,int limit){

@@ -11,6 +11,7 @@ public class DrawInfo {
     private String name = null;
     private float temper;
     private float oringinTemper;
+    private boolean thermalFaceFrame;
 
     public DrawInfo(Rect rect, int sex, int age, int liveness, int color, String name) {
         this.rect = rect;
@@ -30,6 +31,14 @@ public class DrawInfo {
         this.name = name;
         this.temper = temp;
         this.oringinTemper = oringinTemper;
+    }
+
+    public boolean isThermalFaceFrame() {
+        return thermalFaceFrame;
+    }
+
+    public void setThermalFaceFrame(boolean thermalFaceFrame) {
+        this.thermalFaceFrame = thermalFaceFrame;
     }
 
     public float getOringinTemper() {

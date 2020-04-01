@@ -253,6 +253,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: 删除情况：" + response);
                         boolean delete = false;
                         Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
                         if (allFaceMap.containsKey(user.getFaceId())) {

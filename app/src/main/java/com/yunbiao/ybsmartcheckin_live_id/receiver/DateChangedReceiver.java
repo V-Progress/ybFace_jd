@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 
 public class DateChangedReceiver extends BroadcastReceiver {
     private static final String TAG = "DateChangedReceiver";
@@ -15,7 +16,8 @@ public class DateChangedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.e(TAG, "onReceive: 日期发生改变");
         if (TextUtils.equals(ACTION,intent.getAction())) {
-            APP.restart();
+            // 重启
+            PowerOffTool.getPowerOffTool().restart();
         }
     }
 }

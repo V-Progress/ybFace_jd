@@ -35,7 +35,7 @@
         <TextView
             android:gravity="center"
             android:textColor="#F51856"
-            android:textSize="18sp"
+            android:textSize="26sp"
             android:id="@+id/tv_temper_multi_thermal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

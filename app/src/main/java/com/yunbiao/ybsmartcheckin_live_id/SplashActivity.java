@@ -195,6 +195,7 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void jump() {
+        APP.bindProtectService();
         //考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
             startActivity(new Intent(this, WelComeActivity.class));
@@ -222,6 +223,7 @@ public class SplashActivity extends BaseActivity {
         } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
             startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
         }
+        finish();
     }
 
     @Override

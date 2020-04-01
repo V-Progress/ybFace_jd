@@ -270,13 +270,16 @@ public class DrawHelper {
         if (newRect.left <= 0) {
             newRect.left = 1;
         }
-        newRect.top -= newRect.height() / 4;
         newRect.bottom += newRect.height() / 4;
+        newRect.top -= newRect.height() / 8;
         if(newRect.top <= 0){
             newRect.top = 1;
         }
 
-        canvas.drawRect(newRect, paint);
+        boolean thermalFaceFrame = drawInfo.isThermalFaceFrame();
+        if(thermalFaceFrame){
+            canvas.drawRect(newRect, paint);
+        }
         drawTemper(canvas, paint, drawInfo.getLiveness(), drawInfo.getOringinTemper(), drawInfo.getTemper(), newRect.left, newRect.top - 10);
     }
 

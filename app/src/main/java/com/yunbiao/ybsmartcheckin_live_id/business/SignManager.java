@@ -29,8 +29,11 @@ import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
 
+import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
+import org.xutils.common.util.IOUtil;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -685,9 +688,12 @@ public class SignManager {
             public void onResponse(String response, int id) {
                 d("上传结果：" + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
+                Integer status = jsonObject.getInteger("status");
                 Sign sign = DaoManager.get().querySignByTime(time);
-                sign.setUpload(jsonObject.getInteger("status") == 1);
-                DaoManager.get().addOrUpdate(sign);
+                if(sign != null){
+                    sign.setUpload(status == 1 || status == 12);
+                    DaoManager.get().addOrUpdate(sign);
+                }
             }
 
             @Override
@@ -773,7 +779,6 @@ public class SignManager {
     }
 
     public void uploadCodeVerifyResult(String entryId, boolean isPass, Bitmap newHead, float temper, Bitmap reHead) {
-
         Map<String, String> params = new HashMap();
         params.put("entryId", entryId);
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
@@ -999,7 +1004,7 @@ public class SignManager {
     }
 
     public File saveBitmap(String preName, long time, Bitmap bitmap) {
-        File filePic;
+        BufferedOutputStream buffer = null;
         try {
             //格式化时间
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -1009,20 +1014,26 @@ public class SignManager {
 
             //添加附加名
             preName = TextUtils.isEmpty(preName) ? "" : (preName + "_");
-            filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + preName + sdfTime + ".jpg");
+            File filePic = new File(Constants.RECORD_PATH + "/" + today + "/" + preName + sdfTime + ".jpg");
             if (!filePic.exists()) {
                 filePic.getParentFile().mkdirs();
                 filePic.createNewFile();
             }
-            FileOutputStream fos = new FileOutputStream(filePic);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, fos);
-            fos.flush();
-            fos.close();
-
+            buffer = IOUtils.buffer(new FileOutputStream(filePic));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, buffer);
+            buffer.flush();
             return filePic;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        } finally {
+            if(buffer != null){
+                try {
+                    buffer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -1115,6 +1126,7 @@ public class SignManager {
 
 
     private void startMultiUploadThread() {
+        Log.e(TAG, "startMultiUploadThread: 开启多数据传输线程" );
         threadPool.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -1125,7 +1137,7 @@ public class SignManager {
                     return;
                 }
 
-                final List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, true);
+                final List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, false);
                 if (signs == null || signs.size() <= 0) {
                     return;
                 }
@@ -1136,6 +1148,21 @@ public class SignManager {
                 List<WitBean> witBeanList = new ArrayList<>();
                 for (int i = 0; i < signs.size(); i++) {
                     Sign sign = signs.get(i);
+                    String headPath1 = sign.getHeadPath();
+                    String hotImgPath1 = sign.getHotImgPath();
+                    if(TextUtils.isEmpty(headPath1) || TextUtils.isEmpty(hotImgPath1)){
+                        Log.e(TAG, "run: 头像为空：" + headPath1);
+                        Log.e(TAG, "run: 热图为空：" + hotImgPath1);
+                        DaoManager.get().delete(sign);
+                        continue;
+                    }
+                    if(!new File(headPath1).exists() || !new File(hotImgPath1).exists()){
+                        Log.e(TAG, "run: 头像不存在：" + headPath1);
+                        Log.e(TAG, "run: 热图不存在：" + hotImgPath1);
+                        DaoManager.get().delete(sign);
+                        continue;
+                    }
+
                     WitBean witBean = new WitBean();
                     witBean.createTime = sign.getTime();
                     witBean.temper = sign.getTemperature();
@@ -1144,11 +1171,13 @@ public class SignManager {
                     //添加头像
                     File file;
                     String headPath = sign.getHeadPath();
+                    Log.e(TAG, "run: 当前头像：" + headPath);
                     if (TextUtils.isEmpty(headPath)) {
                         file = createNullFile("", sign.getTime());
                     } else {
                         file = new File(sign.getHeadPath());
                         if (!file.exists()) {
+                            Log.e(TAG, "run: 不存在:" + headPath);
                             file = createNullFile("", sign.getTime());
                         }
                     }
@@ -1157,11 +1186,13 @@ public class SignManager {
                     //添加热图
                     File hotFile;
                     String hotImgPath = sign.getHotImgPath();
+                    Log.e(TAG, "run: 当前头像：" + hotImgPath);
                     if (TextUtils.isEmpty(hotImgPath)) {
                         hotFile = createNullFile("hot_", sign.getTime());
                     } else {
                         hotFile = new File(sign.getHotImgPath());
                         if (!hotFile.exists()) {
+                            Log.e(TAG, "run: 不存在:" + hotImgPath);
                             hotFile = createNullFile("hot_", sign.getTime());
                         }
                     }
@@ -1169,7 +1200,7 @@ public class SignManager {
                 }
                 Map<String, String> params = new HashMap<>();
                 String jsonStr = new Gson().toJson(witBeanList);
-                params.put("witJson", jsonStr.length() + "");
+                params.put("witJson", jsonStr + "");
                 params.put("deviceNo", HeartBeatClient.getDeviceNo());
                 params.put("comId", SpUtils.getCompany().getComid() + "");
 
@@ -1221,7 +1252,7 @@ public class SignManager {
                             }
                         });
             }
-        }, 3, 5, TimeUnit.MINUTES);
+        }, 1, 5, TimeUnit.MINUTES);
     }
 
     private void checkDaoData(final int mostNum) {
@@ -1266,7 +1297,7 @@ public class SignManager {
     }
 
     private File createNullFile(String name, long time) {
-        File file = new File(Constants.LOCAL_ROOT_PATH, name + time + ".txt");
+        File file = new File(Constants.LOCAL_ROOT_PATH, name + time + ".jpg");
         if (!file.exists()) {
             try {
                 file.createNewFile();

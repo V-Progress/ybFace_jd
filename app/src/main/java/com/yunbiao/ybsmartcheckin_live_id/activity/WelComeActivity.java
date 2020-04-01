@@ -94,6 +94,8 @@ public class WelComeActivity extends BaseGpioActivity {
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);
         faceView.setCallback(faceCallback);
+        faceView.enableMutiple(true);
+
         ivMainLogo = findViewById(R.id.iv_main_logo);
         tvMainAbbName = findViewById(R.id.tv_main_abbname);
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);
@@ -113,15 +115,11 @@ public class WelComeActivity extends BaseGpioActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int mCurrModel = SpUtils.getIntOrDef(SpUtils.MODEL_SETTING, Constants.DEFAULT_TEMP_MODEL);//当前模式
+        ivMainLogo.setClickable(true);
         isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
 
         //设置人脸间隔
-        SignManager.instance().setVerifyDelay(mCurrModel == Constants.Model.MODEL_FACE_ONLY ? 10000 : 0);
-
-        if (signListFragment != null) {
-            signListFragment.setModelText(Constants.Model.models[mCurrModel]);
-        }
+        SignManager.instance().setVerifyDelay(10000);
 
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
@@ -129,7 +127,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
         faceView.resume();
 
-        initAds(mCurrModel);
+        initAds();
     }
 
     /*****识别相关回调******************************************************************************************/
@@ -144,7 +142,6 @@ public class WelComeActivity extends BaseGpioActivity {
             if(!hasFace){
                 return;
             }
-
             //检测到人后开灯
             onLight();
             //收起海报界面
@@ -210,10 +207,8 @@ public class WelComeActivity extends BaseGpioActivity {
         }
     };
 
-    /**
-     * @param mCurrModel
-     **************************************************************************************************/
-    private void initAds(int mCurrModel) {
+    /****************************************************************************************************/
+    private void initAds() {
         if (isPosterEnabled) {
             if (adsFragment != null && adsFragment.isAdded()) {
                 return;
@@ -371,6 +366,7 @@ public class WelComeActivity extends BaseGpioActivity {
 
     //跳转设置界面
     public void goSetting(View view) {
+        view.setClickable(false);
         goSetting();
     }
 

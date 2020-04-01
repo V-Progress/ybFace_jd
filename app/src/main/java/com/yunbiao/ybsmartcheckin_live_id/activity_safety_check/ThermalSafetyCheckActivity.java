@@ -25,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -123,6 +124,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 startActivity(new Intent(ThermalSafetyCheckActivity.this, ThermalSafetyCheckSettingActivity.class));
             }
         });
+
+        KDXFSpeechManager.instance().init(this);
     }
 
     @Override
@@ -251,18 +254,25 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         tvSsdSafetyCheck.setTextColor(Color.WHITE);
                         tvTemperState.setText("体温正常");
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
+                        KDXFSpeechManager.instance().stopWarningRing();
+                        ledInit();
                     } else if (originT >= mNormalTemper && afterT < mWarningTemper && mCurrColor != 1) {
                         mCurrColor = 1;
                         tvTemper.setTextColor(Color.GREEN);
                         tvSsdSafetyCheck.setTextColor(Color.GREEN);
                         tvTemperState.setText("体温正常");
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
+                        KDXFSpeechManager.instance().stopWarningRing();
+                        ledGreen();
                     } else if (afterT >= mWarningTemper && mCurrColor != 2) {
                         mCurrColor = 2;
                         tvTemper.setTextColor(Color.RED);
                         tvSsdSafetyCheck.setTextColor(Color.RED);
                         tvTemperState.setText("体温异常");
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_nopass);
+
+                        KDXFSpeechManager.instance().playWaningRing();
+                        ledRed();
 
                         stringBuffer.setLength(0);
                         mWarningNumber += 1;

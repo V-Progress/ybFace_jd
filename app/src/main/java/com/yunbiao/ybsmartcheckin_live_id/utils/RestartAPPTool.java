@@ -37,7 +37,7 @@ public class RestartAPPTool {
         intent1.putExtra("PackageName",context.getPackageName());
         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent1.putExtra("Delayed",2000);
+        intent1.putExtra("Delayed",10000);
         context.startService(intent1);
 
         /**杀死整个进程**/

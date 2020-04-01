@@ -59,6 +59,34 @@ public class MultiThermalSettingActivity extends BaseActivity {
         setHotImageMirror();
 
         setBodyCorrect();
+
+        setThermalFaceFrame();
+
+        setBlackBodyFrame();
+    }
+
+    private void setBlackBodyFrame(){
+        Switch swBlackBody = findViewById(R.id.sw_black_body_frame_setting);
+        boolean blackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,MultiThermalConst.Default.BLACK_BODY_FRAME);
+        swBlackBody.setChecked(blackBodyFrame);
+        swBlackBody.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,isChecked);
+            }
+        });
+    }
+
+    private void setThermalFaceFrame(){
+        Switch swFaceFrame = findViewById(R.id.sw_thermal_face_frame_setting);
+        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,MultiThermalConst.Default.THERMAL_FACE_FRAME);
+        swFaceFrame.setChecked(isThermalFaceFrame);
+        swFaceFrame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,isChecked);
+            }
+        });
     }
 
     private void setBodyCorrect() {
@@ -93,7 +121,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
         swLowTemp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
+                SpUtils.saveBoolean(MultiThermalConst.Key.LOW_TEMP, isChecked);
             }
         });
     }

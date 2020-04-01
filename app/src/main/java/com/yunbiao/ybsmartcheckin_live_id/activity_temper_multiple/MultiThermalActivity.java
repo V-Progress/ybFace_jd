@@ -100,6 +100,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private ImageView ivLogo;
     private float mBodyCorrectTemper;
     private Rect mBlackBodyAreaRect;
+    private boolean mBlackBodyFrame;
 
     @Override
     protected int getLayout() {
@@ -132,6 +133,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         faceView.enableMultiCallback(true);
         //设置回调延时
         faceView.setRetryDelayTime(500);
+
         SecondFaceRectView secondFaceRectView = findViewById(R.id.face_rect_view_hot_image);
         faceView.setSecondFaceRectView(secondFaceRectView);
         faceView.setCallback(faceCallback);
@@ -192,6 +194,10 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
         mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
+        mBlackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,MultiThermalConst.Default.BLACK_BODY_FRAME);
+        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,MultiThermalConst.Default.THERMAL_FACE_FRAME);
+        //是否显示热成像人脸框
+        faceView.enableThermalFaceFrame(isThermalFaceFrame);
 
         startHotImage();
     }
@@ -223,6 +229,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                         TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, hotImageK6080CallBack);
                         BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
                         blackBody.setFrameColor(Color.WHITE);
+                        blackBody.setDrawFrame(mBlackBodyFrame);
                         blackBody.setTempPreValue(345);
                         TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                         TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
@@ -245,6 +252,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                     TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, hotImageK6080CallBack);
                     BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
                     blackBody.setFrameColor(Color.WHITE);
+                    blackBody.setDrawFrame(mBlackBodyFrame);
                     blackBody.setTempPreValue(345);
                     TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
@@ -486,6 +494,12 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                         if (y + height > hotImage.getHeight()) {
                             height = hotImage.getHeight() - y;
                         }
+                        if(x <= 0){
+                            x = 1;
+                        }
+                        if(y <= 0){
+                            y = 1;
+                        }
                         if (width > 0 && height > 0) {
                             Bitmap bitmap = Bitmap.createBitmap(hotImage, x, y, width, height);
                             multiTemperBean.setHotImage(bitmap);
@@ -494,6 +508,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                     //镜像人脸图
                     Bitmap bitmap = horverImage(multiTemperBean.getHeadImage(), true, false);
                     multiTemperBean.setHeadImage(bitmap);
+
                     //更新记录列表
                     runOnUiThread(new Runnable() {
                         @Override
@@ -604,26 +619,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             normalAdapter.notifyItemRangeInserted(0, normalSize);
             rlvNormalList.scrollToPosition(0);
         }
-    }
-
-    private void saveMultiTemperBeanToDB(MultiTemperBean multiTemperBean) {
-        int trackId = multiTemperBean.getTrackId();
-        //判断是缓存trackId里是否包含这个Id，如果包含代表已经计数过
-        if (totalMap.containsKey(trackId)) {
-            MultiTemperBean oldBean = totalMap.get(trackId);
-            float oldTemper = oldBean.getTemper();
-            float newTemper = multiTemperBean.getTemper();
-            //判断两次的差值是否超过0.3f，如果是代表波动大，则加入数据库等待上传
-            if (newTemper - oldTemper >= 0.3f || oldTemper - newTemper >= 0.3f) {
-                totalMap.put(trackId, multiTemperBean);
-                SignManager.instance().addSignToDB(multiTemperBean);
-            }
-            return;
-        }
-        totalMap.put(trackId, multiTemperBean);
-
-        //如果map里不包含这个id，则直接加入数据库
-        SignManager.instance().addSignToDB(multiTemperBean);
     }
 
     //添加条目到记录中

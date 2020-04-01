@@ -30,7 +30,7 @@ public class MultiTemperBean {
     public MultiTemperBean() {
     }
 
-    public MultiTemperBean(String faceId, Bitmap headImage, Bitmap hotImage, String name, float temper, long time, Rect hotRect) {
+    public MultiTemperBean(String faceId, Bitmap headImage, Bitmap hotImage, String name, float temper, long time, Rect hotRect, long entryId, int compId, String headPath, String hotPath, int trackId) {
         this.faceId = faceId;
         this.headImage = headImage;
         this.hotImage = hotImage;
@@ -38,6 +38,11 @@ public class MultiTemperBean {
         this.temper = temper;
         this.time = time;
         this.hotRect = hotRect;
+        this.entryId = entryId;
+        this.compId = compId;
+        this.headPath = headPath;
+        this.hotPath = hotPath;
+        this.trackId = trackId;
     }
 
     public String getHeadPath() {
@@ -139,5 +144,9 @@ public class MultiTemperBean {
                 ", time=" + time +
                 ", hotRect=" + hotRect +
                 '}';
+    }
+
+    public MultiTemperBean copy(){
+        return new MultiTemperBean(faceId,headImage,hotImage,name,temper,time,hotRect,entryId,compId,headPath,hotPath,trackId);
     }
 }

@@ -21,8 +21,6 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        xhApi = APP.getXHApi();
-
         if (!(this instanceof WelComeActivity)) {
             if (mSmdtManager != null) {
                 try {

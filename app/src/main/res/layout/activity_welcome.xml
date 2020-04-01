@@ -50,18 +50,8 @@
                 android:textColor="@drawable/skin_main_title_text_color"
                 android:textSize="30dp" />
 
-            <TextView
-                android:drawableLeft="@mipmap/temperature_white_icon"
+            <TextClock
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:id="@+id/tv_ambient_temperature_main"
-                android:layout_marginRight="10dp"
-                android:textSize="26dp"
-                android:textColor="@color/skin_color_main_clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <!--<TextClock
                 android:layout_toLeftOf="@+id/tv_ambient_temperature_main"
                 android:textColor="@color/skin_color_main_clock"
                 android:id="@+id/textClock"
@@ -70,7 +60,7 @@
                 android:layout_centerVertical="true"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
-                android:textSize="26dp" />-->
+                android:textSize="26dp" />
         </RelativeLayout>
 
         <RelativeLayout

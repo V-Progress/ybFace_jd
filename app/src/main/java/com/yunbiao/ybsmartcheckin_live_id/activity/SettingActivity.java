@@ -154,8 +154,6 @@ public class SettingActivity extends BaseActivity {
         initCameraSizeSetting();
         //相似度阈值
         initSimilarSetting();
-        //测温模块设置
-        initTemperatureSetting();
         //人脸弹窗设置
         initFaceVipDialogSetting();
         //摄像头设置
@@ -277,10 +275,6 @@ public class SettingActivity extends BaseActivity {
                 }
                 if (TextUtils.isEmpty(mXmppPort)) {
                     UIUtils.showTitleTip(SettingActivity.this, "请设置XMPP端口");
-                    return;
-                }
-                if (TextUtils.isEmpty(mProName)) {
-                    UIUtils.showTitleTip(SettingActivity.this, "请设置项目名");
                     return;
                 }
 
@@ -425,45 +419,6 @@ public class SettingActivity extends BaseActivity {
                 int delay = Integer.parseInt(s1);
                 SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
                 UIUtils.showShort(SettingActivity.this, getString(R.string.setting_edit_password_success));
-            }
-        });
-    }
-
-    //初始化温度检测模块的设置
-    private void initTemperatureSetting() {
-        //提示时间
-        final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
-        Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
-        final int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
-        edtTipsTime.setText(time + "");
-        btnSaveTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int saveTime = time;
-                String s = edtTipsTime.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    saveTime = Integer.parseInt(s);
-                }
-                edtTipsTime.setText(saveTime + "");
-                SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
-            }
-        });
-
-        Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
-        final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
-        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);
-        edtTempDValue.setText(dValue + "");
-        btnSaveDValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtTempDValue.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    edtTempDValue.setText(dValue + "");
-                }
-                s = edtTempDValue.getText().toString();
-                SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(SettingActivity.this, "保存成功");
             }
         });
     }

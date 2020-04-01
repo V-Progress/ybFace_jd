@@ -16,7 +16,7 @@
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
         android:layout_width="1000dp"
-        android:layout_height="600dp">
+        android:layout_height="wrap_content">
 
         <include layout="@layout/head_layout" />
 
@@ -50,6 +50,42 @@
 
             <Switch
                 android:id="@+id/sw_thermal_imag_mirror_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/setting_text"
+                android:text="显示热成像人脸框" />
+
+            <Switch
+                android:id="@+id/sw_thermal_face_frame_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/setting_text"
+                android:text="显示黑体校准框" />
+
+            <Switch
+                android:id="@+id/sw_black_body_frame_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"

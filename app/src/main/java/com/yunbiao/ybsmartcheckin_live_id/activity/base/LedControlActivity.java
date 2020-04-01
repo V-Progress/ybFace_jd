@@ -44,7 +44,6 @@ public abstract class LedControlActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-
         resetLedDelay(1000);
     }
 

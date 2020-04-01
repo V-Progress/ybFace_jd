@@ -21,6 +21,7 @@ import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.receiver.MyProtectService;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
+import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.xutils.x;
@@ -96,14 +97,8 @@ public class APP extends Application {
         return mainActivity;
     }
 
-    private static XHApiManager xhApiManager;
-
     public static void setMainActivity(Activity activity) {
         APP.mainActivity = activity;
-    }
-
-    public static XHApiManager getXHApi() {
-        return xhApiManager;
     }
 
     @Override
@@ -224,7 +219,7 @@ public class APP extends Application {
                 break;
         }
         UMConfigure.init(this, "5cbe87a60cafb210460006b3", channel, UMConfigure.DEVICE_TYPE_BOX, null);
-        UMConfigure.setLogEnabled(true);
+        UMConfigure.setLogEnabled(false);
         MobclickAgent.setCatchUncaughtExceptions(true);
     }
 
@@ -259,17 +254,54 @@ public class APP extends Application {
     }
 
     public static void restart() {
-        exit();
         RestartAPPTool.restartAPP(getContext());
     }
 
     public static void bindProtectService() {
+        Log.e(TAG, "bindProtectService: 绑定守护进程");
+        if (isServiceRunning(APP.getContext(), MyProtectService.class)) {
+            Log.e(TAG, "bindProtectService: 守护进程正在运行，不重复开启");
+            return;
+        }
         //开启看门狗,只会在开机是启动一次
         getContext().startService(new Intent(APP.getContext(), MyProtectService.class));
     }
 
     public static void unbindProtectService() {
         getContext().stopService(new Intent(APP.getContext(), MyProtectService.class));
+    }
+    /**
+     * 判断服务是否开启
+     *
+     * @return
+     */
+    public static boolean isServiceRunning(Context context, Class clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        ActivityManager myManager = (ActivityManager) context
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+        for (int i = 0; i < runningService.size(); i++) {
+            if(runningService.get(i).service.getClassName().contains(clazz.getSimpleName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static ServiceManager serviceManager;
+    public static void startXmpp() {//开启xmpp
+        serviceManager = new ServiceManager(getContext());
+        serviceManager.startService();
+    }
+
+    public static void destoryXmpp() {
+        if (serviceManager != null) {
+            serviceManager.stopService();
+            serviceManager = null;
+        }
     }
 
     public static void exit() {

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity_safety_check.BlackBodyAreaActivity"></activity>
+        <activity android:name=".activity_safety_check.BlackBodyAreaActivity"/>
         <activity android:name=".activity_safety_check.ThermalSafetyCheckSettingActivity" />
         <activity android:name=".activity_safety_check.ThermalSafetyCheckActivity" />
         <activity
@@ -101,11 +101,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".receiver.USBBroadcastReceiver">
-            <intent-filter android:priority="800">
-                <action android:name="android.hardware.usb.action.USB_STATE" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".receiver.BootRestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

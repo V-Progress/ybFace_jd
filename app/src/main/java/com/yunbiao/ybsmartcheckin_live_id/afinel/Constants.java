@@ -73,6 +73,11 @@ public class Constants {
         String PRO_RES_PORT = "8080";//数据端口
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
+
+        /*String PRO_URL = "192.168.255.108";//主机地址
+        String PRO_RES_PORT = "80";//数据端口
+        String PRO_XMPP_PORT = "5222";//XMPP端口
+        String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）*/
     }
 
     public static class Model {

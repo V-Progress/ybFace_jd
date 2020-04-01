@@ -274,6 +274,11 @@ public class FaceView extends FrameLayout {
         return faceRect.contains(mAreaRect);
     }
 
+    private boolean thermalFaceFrame = false;
+    public void enableThermalFaceFrame(boolean isThermalFaceFrame) {
+        thermalFaceFrame = isThermalFaceFrame;
+    }
+
     public interface RectCallback {
         void onAreaRect(Rect mAreaRect, Rect mFaceRect);
     }
@@ -798,10 +803,12 @@ public class FaceView extends FrameLayout {
                 color = RecognizeColor.COLOR_FAILED;
             }
 
-            drawInfoList.add(new DrawInfo(drawHelper.adjustRect(facePreviewInfo.getFaceInfo().getRect()),
+            DrawInfo drawInfo = new DrawInfo(drawHelper.adjustRect(facePreviewInfo.getFaceInfo().getRect()),
                     GenderInfo.UNKNOWN, AgeInfo.UNKNOWN_AGE, liveness == null ? LivenessInfo.UNKNOWN : liveness, color,
                     String.valueOf(facePreviewInfoList.get(i).getTrackId())
-                    , facePreviewInfo.getTemper(), facePreviewInfo.getOringinTemper()));
+                    , facePreviewInfo.getTemper(), facePreviewInfo.getOringinTemper());
+            drawInfo.setThermalFaceFrame(thermalFaceFrame);//设置是否显示人脸框（仅第二人脸框有效）
+            drawInfoList.add(drawInfo);
         }
         drawHelper.draw(faceRectView, drawInfoList);
 
@@ -810,7 +817,7 @@ public class FaceView extends FrameLayout {
         }
     }
 
-    public static void enableMutiple(boolean isEnable) {
+    public void enableMutiple(boolean isEnable) {
         isSignleDetect = !isEnable;
     }
 
