@@ -261,6 +261,12 @@ public class KDXFSpeechManager {
         }
     }
 
+    public void playWaningRingNoStop() {
+        if (soundPoolLoadCompleted && mVoiceId != -1) {
+            mPlayId = mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
+        }
+    }
+
     public void stopWarningRing() {
         if (mPlayId != -1) {
             mSoundPool.stop(mPlayId);

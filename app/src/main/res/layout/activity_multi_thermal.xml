@@ -58,6 +58,15 @@
             android:background="@mipmap/multi_thermal_camera"
             android:layout_width="0dp"
             android:layout_height="match_parent">
+            <TextView
+                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/main_real_detection"
+                android:textSize="20dp"
+                android:textColor="#00FFFF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <com.yunbiao.faceview.FaceView
                 android:layout_marginTop="30dp"
                 android:background="#000"
@@ -137,9 +146,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
+                android:textColor="#00FFFF"
+                android:text="@string/main_data_total"
                 android:layout_weight="1"
-                android:textSize="30dp"
-                android:textColor="@color/white"
+                android:textSize="26dp"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"/>

@@ -171,6 +171,8 @@ public class SyncManager {
                         if(isFirstNotBind){
                             EventBus.getDefault().post(new UpdateInfoEvent());
                             isFirst = false;
+
+                            deleteNotBindUser();
                         }
                         saveCompanyInfo(null);
                         dissmissDialog();
@@ -209,6 +211,19 @@ public class SyncManager {
                 dissmissDialog();
             }
         });
+    }
+
+    private void deleteNotBindUser(){
+        List<User> users = DaoManager.get().queryAll(User.class);
+        if(users == null || users.size() <= 0){
+            return;
+        }
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
+                DaoManager.get().delete(user);
+            }
+        }
     }
 
     /***

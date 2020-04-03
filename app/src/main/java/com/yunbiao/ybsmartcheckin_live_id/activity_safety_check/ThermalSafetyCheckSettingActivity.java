@@ -1,16 +1,21 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_safety_check;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 public class ThermalSafetyCheckSettingActivity extends BaseActivity {
 
@@ -31,6 +36,62 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initThermalMirror();
 
         initTemperThreshold();
+
+        initCorrectValue();
+
+        initBlackBodyPreValue();
+    }
+
+    private void initBlackBodyPreValue(){
+        final View llPreValue = findViewById(R.id.ll_black_body_pre_value);
+        View viewById = findViewById(R.id.setting_title);
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llPreValue.setVisibility(llPreValue.isShown() ? View.GONE : View.VISIBLE);
+            }
+        });
+        int preValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
+        final EditText edtPreValue = findViewById(R.id.edt_black_body_pre_value);
+        edtPreValue.setText(preValue + "");
+
+        Button btnSave = findViewById(R.id.btn_black_body_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtPreValue.getText().toString();
+                int finalValue = MultiThermalConst.Default.BLACK_BODY_PRE_VALUE;
+                if(!TextUtils.isEmpty(value)){
+                    finalValue = Integer.parseInt(value);
+                }
+                SpUtils.saveInt(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,finalValue);
+                UIUtils.showShort(ThermalSafetyCheckSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
+            }
+        });
+    }
+
+    private void initCorrectValue(){
+        Button btnSub = findViewById(R.id.btn_body_correct_sub_setting);
+        Button btnAdd = findViewById(R.id.btn_body_correct_add_setting);
+        float correctValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,ThermalSafetyCheckConst.Default.CORRECT_VALUE);
+        final EditText edtCorrect = findViewById(R.id.edt_body_correct__setting);
+        edtCorrect.setText(correctValue+"");
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float value = Float.parseFloat(edtCorrect.getText().toString());
+                if(v.getId() == R.id.btn_body_correct_sub_setting){
+                    value -= 0.1f;
+                } else {
+                    value += 0.1f;
+                }
+                value = formatF(value);
+                edtCorrect.setText(value + "");
+                SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,value);
+            }
+        };
+        btnSub.setOnClickListener(onClickListener);
+        btnAdd.setOnClickListener(onClickListener);
     }
 
     private void initLowTemp(){

@@ -266,6 +266,19 @@
     <string name="act_power_save">보존 하 다</string>
     <string name="act_power_set_success">설정 성공！</string>
 
+    <string name="setting_save_success">保存成功</string>
+    <string name="setting_save_succ_please_restart">保存成功,重启APP后生效</string>
+    <string name="setting_please_set_ip">请设置IP地址</string>
+    <string name="setting_please_set_res">请设置服务端口</string>
+    <string name="setting_please_set_xmpp">请设置通信端口</string>
+    <string name="setting_res_port_error">服务端口格式不正确，请检查</string>
+    <string name="setting_xmpp_port_error">通信端口格式不正确，请检查</string>
+
+    <string name="setting_show_thermal_face_frame">显示热成像人脸框</string>
+    <string name="setting_show_black_body">显示黑体校准框</string>
+    <string name="setting_multi_track">开启多次抓取</string>
+
+
 
     <!--温度矫正页面-->
     <string name="act_correct_title">온도 교정</string>
@@ -377,4 +390,82 @@
     <string name="low_confidence_level">face low confidence level</string>
     <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
     <string name="System_Setting_save_threshold">보존 하 다.</string>
+
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI人脸高通量测温数据平台</string>
+    <string name="main_permission_failed_multi_thermal">USB权限获取失败</string>
+    <string name="main_not_found_usb_multi_thermal">没有找到目标设备</string>
+    <string name="main_exception_record_multi_thermal">异常人员记录</string>
+    <string name="main_normal_record_multi_thermal">人员流动记录</string>
+    <string name="main_total_passage_multi_thermal">通过人数</string>
+    <string name="main_normal_multi_thermal">正常体温</string>
+    <string name="main_error_multi_thermal">异常体温</string>
+    <string name="main_company_multi_thermal">公司员工</string>
+    <string name="main_visitor_multi_thermal">到访人员</string>
+    <string name="system_net_status_multi_thermal">网络状态:</string>
+    <string name="system_record_multi_thermal">测温记录</string>
+    <string name="record_index_multi_thermal">序列</string>
+    <string name="record_date_multi_thermal">日期</string>
+    <string name="record_pass_time_multi_thermal">通行时间</string>
+    <string name="record_temper_multi_thermal">体温</string>
+    <string name="record_head_multi_thermal">头像</string>
+    <string name="record_hot_multi_thermal">热成像</string>
+    <string name="setting_black_body_rect_multi_thermal">黑体检测区域校准</string>
+    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_success_multi_thermal">保存成功</string>
+    <string name="setting_save_multi_thermal">保存</string>
+    <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>
+    <string name="record_export_multi_thermal">导出</string>
+    <string name="main_real_detection">实时监测</string>
+    <string name="main_data_total">数据统计</string>
+
+
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">人证比对模式</string>
+    <string name="act_certificates_idcard_thermal">人证比对+热成像测温模式</string>
+    <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
+    <string name="act_certificates_title">AI人证测温校验系统</string>
+    <string name="act_certificates_please_get_hat">请取下眼睛、帽子、正视镜头</string>
+    <string name="act_certificates_no_idcard_temper">无证测温</string>
+    <string name="act_certificates_face_picture">人脸照片</string>
+    <string name="act_certificates_card_picture">证件照片</string>
+    <string name="act_certificates_name">姓名：</string>
+    <string name="act_certificates_depart">部门：</string>
+    <string name="act_certificates_native_place">籍贯：</string>
+    <string name="act_certificates_temperature">体温：</string>
+    <string name="act_certificates_status">状态：</string>
+    <string name="act_certificates_health_code">健康码</string>
+    <string name="act_certificates_can_go">可以通行</string>
+    <string name="act_certificates_not_pass">禁止通行</string>
+    <string name="act_certificates_ensure_pass">确认通行</string>
+    <string name="act_certificates_please_set_id_card">请将身份证置于刷卡区</string>
+    <string name="act_certificates_testing">正在测温，请稍等</string>
+    <string name="act_certificates_please_wait">请等待</string>
+    <string name="act_certificates_idcard_failed">证件读取失败，请重试</string>
+    <string name="act_certificates_please_look_camera">请正视摄像头</string>
+    <string name="act_certificates_verify_ing">正在验证</string>
+    <string name="act_certificates_verify_pass">验证通过，</string>
+    <string name="act_certificates_verify_not_pass">人证不匹配，</string>
+    <string name="act_certificates_temper_normal">体温正常</string>
+    <string name="act_certificates_temper_warning">体温异常</string>
+    <string name="act_certificates_normal">正常</string>
+    <string name="act_certificates_warning">异常</string>
+    <string name="act_certificates_similar">相似度</string>
+    <string name="act_certificates_please_pass">，请通行</string>
+    <string name="act_certificates_please_can_pass">可以通行</string>
+    <string name="act_certificates_please_not_pass">禁止通行</string>
+    <string name="act_certificates_visitor">访客</string>
+    <string name="act_certificates_temper">温度：</string>
+    <string name="act_certificates_temper_failed">测温失败</string>
+    <string name="act_certificates_green">绿色</string>
+    <string name="act_certificates_yellow">黄色</string>
+
+
+    <string name="safety_main_title">AI大通量测温系统</string>
+    <string name="safety_main_real_detection">实时监测</string>
+    <string name="safety_main_temer_area">体温测量</string>
+    <string name="safety_main_warning_number">异常人数</string>
+    <string name="safety_main_device_no">设备编号:</string>
 </resources>

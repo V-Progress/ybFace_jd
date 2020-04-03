@@ -63,7 +63,6 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-//        APP.bindProtectService();
         Constants.checkSetIp();
 
         ThreadUitls.runInThread(machineRestartRun);

@@ -118,7 +118,7 @@ public class Constants {
         int HT_TEMPERATURE_CERTIFICATES = 13;//亨通人证
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
 
-        int TEMPER_SAFETY_CHECK = 15;
+        int TEMPER_SAFETY_CHECK = 15;//安检门
     }
 
     //设备未绑定时的公司Id
@@ -126,7 +126,7 @@ public class Constants {
     //最大人脸线程数
     public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10;
     //最远人脸抓取距离
-    public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 32 : 16;
+    public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.CHECK_IN ? 32 : 7;
 
 
     public static boolean isVerticalMirror = false;

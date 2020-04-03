@@ -1,0 +1,465 @@
+<resources>
+    <string name="app_name">Yunbiao Akıllı Katılım</string>
+    <string name="app_name2">Hengtong katılım</string>
+    <string name="app_name3">Siku Katılım</string>
+    <string name="used">kullanılmış:</string>
+    <string name="no_used">/mevcut:</string>
+    <string name="back">Geri</string>
+
+    <string name="yb_check_in">Yunbiao Akıllı Katılım</string>
+    <string name="yb_certificates">Yunbiao tanığı</string>
+    <string name="yb_multiple">Yunbiao büyük akı</string>
+    <string name="yb_safety_chceck">Yunbiao sıcaklık ölçümü ve güvenlik kontrolü</string>
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">normal</string>
+    <string name="smt_main_net_normal2">Ağ normal</string>
+    <string name="smt_main_net_no">Ağ yok</string>
+    <string name="smt_main_all">Gitmeli</string>
+    <string name="smt_main_already">geldi</string>
+    <string name="smt_main_ver">versiyon:</string>
+    <string name="smt_main_company">şirket:</string>
+    <string name="smt_main_device_no">numaralama:</string>
+    <string name="smt_main_not_bind">bağlı Değil</string>
+
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">Anormal vücut sıcaklığı</string>
+    <string name="main_temp_normal_tips">Vücut ısısı normal</string>
+    <string name="main_temp_error_tips">Anormal vücut sıcaklığı</string>
+    <string name="main_temp_tips_please_close">Lütfen yaklaşın</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">Çok uzak, lütfen yaklaşın</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">Lütfen uzak durun</string>
+    <string name="main_temp_tips_so_close_text">Çok yakınsınız lütfen uzaklaşın </string>
+    <string name="main_thermal_temp">Termal görüntüleme sıcaklığı：</string>
+    <string name="main_thermal_has_person">Kişiyle termal görüntüleme</string>
+    <string name="main_thermal_no_person">Kişisiz termal görüntüleme</string>
+    <string name="main_please_waiting">Lütfen bekleyiniz</string>
+    <string name="main_temp_tips_please_in_range">Yüzünüzü tanıma alanına doğrultun</string>
+    <string name="main_tips_please_close">Lütfen yaklaşın</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">Ölçüm sıcaklığı</string>
+    <string name="port_setting">Seri port</string>
+    <string name="select_port_setting">Seri bağlantı noktasını seç</string>
+    <string name="auto_close_door_setting">(Bu süreden sonra kapı otomatik olarak kapanacaktır)</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">Devrilme eşiği:80</string>
+    <string name="current_model_setting">Geçerli mod</string>
+
+    <!--系统信息-->
+    <string name="System_title">sistem mesajı</string>
+    <string name="System_deviceNo">Cihaz Kimliği:</string>
+    <string name="System_bindCode">Bağlama kodu:</string>
+    <string name="System_Company">Bağlı:</string>
+    <string name="System_Service">Servis Ağı:</string>
+    <string name="System_ValiDate">Geçerlilik süresi:</string>
+    <string name="System_Manage">Personel yönetimi</string>
+    <string name="System_Add">Yeni Personel</string>
+    <string name="System_Record">Katılım kaydı</string>
+    <string name="System_Setting">Sistem ayarları</string>
+    <string name="System_Visitor">Ziyaretçi</string>
+    <string name="System_skin_select">Cildi değiştirin</string>
+    <string name="System_update">Yükseltme</string>
+    <string name="System_copyright">Telif Hakkı: Beijing Yunbiao Technology Co., Ltd.</string>
+    <string name="System_Service_offline">Çevrim dışı</string>
+    <string name="System_online">Çevrim İçi</string>
+    <string name="System_offline">Çevrim dışı</string>
+    <string name="System_validityPeriod">süresiz olarak</string>
+    <string name="System_cloud_service">Bulut hizmeti</string>
+    <string name="System_local_service">Yerel servis</string>
+
+    <!--人员管理-->
+    <string name="employ_list_title">Personel listesi</string>
+    <string name="employ_list_depart_sync">Senkronize</string>
+    <string name="employ_List_add_user">Ekle</string>
+    <string name="employ_List_query_button">Arama</string>
+    <string name="employ_list_download_failed">Avatar indirilemedi</string>
+    <string name="employ_list_add_face_failed">Yüz kitaplığı eklenemedi</string>
+    <string name="employ_list_update_head_failed">Güncelleme avatarı başarısız oldu</string>
+    <string name="employ_list_field_index">Seri numarası</string>
+    <string name="employ_list_field_number">Personel Kimliği</string>
+    <string name="employ_list_field_name">İsim</string>
+    <string name="employ_list_field_depart">Bölüm</string>
+    <string name="employ_list_field_position">Durum</string>
+    <string name="employ_list_field_control">İşletme</string>
+    <string name="employ_list_item_delete">Sil</string>
+    <string name="employ_list_item_edit">Düzenle</string>
+    <string name="employ_list_all_depart">Bütün bölümler</string>
+    <string name="employ_list_please_input_user_name">Lütfen Personel adını giriniz</string>
+    <string name="employ_list_confirm_edit">Değiştirdiğinizden emin misiniz?</string>
+    <string name="employ_list_confirm_delete">Silmeyi onayla?</string>
+    <string name="employ_list_delete_failed">Silinemedi</string>
+    <string name="employ_list_delete_success">Başarıyla silindi</string>
+    <string name="employ_list_depart">Bölüm</string>
+    <string name="employ_list_add_depart">Departman ekle</string>
+
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">Personeli artırın</string>
+    <string name="act_editEmploy_xgxx">Bilgileri değiştirin</string>
+    <string name="act_editEmploy_pz">Bir fotoğraf çek</string>
+    <string name="act_editEmploy_reset">Sıfırla</string>
+    <string name="act_editEmploy_jbxx">Temel Bilgiler</string>
+    <string name="act_editEmploy_name">İsim:</string>
+    <string name="act_editEmploy_sex">Cinsiyet:</string>
+    <string name="act_editEmploy_bm">Bölüm:</string>
+    <string name="act_editEmploy_ygbh">Personel Kimliği:</string>
+    <string name="act_editEmploy_zw">Durum:</string>
+    <string name="act_editEmploy_csrq">Doğum tarihi:</string>
+    <string name="act_editEmploy_gxqm">İmza:</string>
+    <string name="act_editEmploy_tip_qxpz">Lütfen önce bir resim çekin</string>
+    <string name="act_editEmploy_tip_qtxxm">Lütfen ismi  yazınız</string>
+    <string name="act_editEmploy_tip_qxzxb">Lütfen cinsiyeti doldurun</string>
+    <string name="act_editEmploy_tip_qtxbh">Lütfen numarayı yazınız</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">Avatar dosyası bulunamadı, lütfen fotoğraf çektikten sonra tekrar deneyin</string>
+    <string name="act_editEmploy_tip_wzrhxg">Değişiklik yok</string>
+    <string name="act_editEmploy_tip_tjsb">Ekleme başarısız</string>
+    <string name="act_editEmploy_tip_gygbcz">Personel mevcut değil</string>
+    <string name="act_editEmploy_tip_bczgbm">Departman mevcut değil</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">Şirketin bu departmanı yok</string>
+    <string name="act_editEmploy_tip_gsyzwyg">Şirketin bu Personeli yok</string>
+    <string name="act_editEmploy_tip_cscw">Parametre hatası</string>
+
+    <!--离线数据-->
+    <string name="sign_list_title">Çevrimdışı kayıt</string>
+    <string name="sign_list_all_type">Hepsi</string>
+    <string name="sign_list_sent">Gönderildi</string>
+    <string name="sign_list_unsent">Henüz gönderilmedi</string>
+    <string name="sign_list_export">Verileri dışa aktarma</string>
+    <string name="sign_list_upload">Veri yükleme</string>
+    <string name="sign_list_filed_index">Seri numarası</string>
+    <string name="sign_list_filed_time">zaman</string>
+    <string name="sign_list_filed_name">İsim</string>
+    <string name="sign_list_filed_depart">Bölüm</string>
+    <string name="sign_list_filed_job">Durum</string>
+    <string name="sign_list_filed_head">Avatar</string>
+    <string name="sign_list_no_data">Veri yok</string>
+    <string name="sign_list_upload_success">Başarıyla yüklendi</string>
+    <string name="sign_list_upload_failed">Yükleme başarısız, lütfen ağı kontrol edin</string>
+    <string name="sign_list_usb_disk">Lütfen bir USB flash sürücü takın</string>
+    <string name="sign_list_tip_usb_disk">USB cihazı algılanmadı, yerel olarak dışa aktarın</string>
+    <string name="sign_list_all_data_sent">Tüm veriler yüklendi</string>
+    <string name="sign_list_name">İsim</string>
+    <string name="sign_list_number">Numaralama</string>
+    <string name="sign_list_depart">Bölüm</string>
+    <string name="sign_list_position">Durum</string>
+    <string name="sign_list_date">tarih</string>
+    <string name="sign_list_time">zaman</string>
+    <string name="sign_list_temper">Vücut ısısı</string>
+    <string name="sign_list_head">Avatar</string>
+    <string name="sign_list_hot">Termal görüntü</string>
+    <string name="sign_export_record">Kaydı dışa aktar</string>
+    <string name="sign_export_no_record">Veri yok</string>
+    <string name="sign_export_create_record_failed">Dışa aktarma verileri oluşturma başarısız</string>
+    <string name="sign_export_record_success">Dışa aktarma başarılı</string>
+    <string name="sign_export_record_path">İçindekiler：</string>
+    <string name="sign_export_record_failed">Dışa aktarma başarısız</string>
+
+
+    <!--访客列表-->
+    <string name="visitor_list_title">Ziyaretçi listesi</string>
+    <string name="visitor_list_filed_name">İsim</string>
+    <string name="visitor_list_filed_time">Erişim süresi</string>
+    <string name="visitor_list_filed_company">birim</string>
+    <string name="visitor_list_filed_reason">Sebep olmak</string>
+
+    <!--系统设置-->
+    <!--模式-->
+    <string name="face_only_model">Yüz tanıma katılımı</string>
+    <string name="face_infared_model">Yüz tanıma + termal görüntüleme (küçük)</string>
+    <string name="infared_only_model">Termal Görüntüleme (Küçük) (Seyirci Değil)</string>
+    <string name="thermal_only_model">Termal görüntüleme modu (32 * 32) (katılımsız)</string>
+    <string name="face_thermal_model">Yüz tanıma + termal görüntüleme modu (32 * 32)</string>
+    <string name="thermal_16_4_model">Termal görüntüleme modu (16 * 4) (katılımsız)</string>
+    <string name="face_thermal_16_4_model">Yüz tanıma + termal görüntüleme modu（16*4）</string>
+
+    <!--标签-->
+    <string name="setting_face_similar_threshold">Yüz benzerlik eşiğini ayarlama</string>
+    <string name="setting_enable_dialog">Yüz açılır penceresini aç</string>
+    <string name="setting_enable_liveness">Canlı algılamayı açma</string>
+    <string name="setting_camera_mirror">Yüz çerçevesi yansıtmayı etkinleştir</string>
+    <string name="setting_select_model">Mod seçiniz</string>
+    <string name="setting_current_port_path">Geçerli seri bağlantı noktası</string>
+    <string name="setting_baud_rate">Baud hızı</string>
+    <string name="setting_open">Açık</string>
+    <string name="setting_enable_distance_tips">Mesafe uyarısını aç</string>
+    <string name="setting_thermal_imaging_mirror">Termal görüntü yansıtma</string>
+    <string name="setting_open_temperature_delay">Sıcaklık ölçüm gecikmesi</string>
+    <string name="setting_temperature_delay_time">Sıcaklık ölçüm gecikmesi</string>
+    <string name="setting_ms">Milisaniye</string>
+    <string name="setting_s">Saniye</string>
+    <string name="setting_temp_correct_value">Sıcaklık düzeltme değeri</string>
+    <string name="setting_amb_correct_value">Ortam sıcaklığı düzeltme değeri</string>
+    <string name="setting_temperature_threshold">En düşük sıcaklık raporu</string>
+    <string name="setting_temperature_warning">Sıcaklık ölçümü alarm değeri</string>
+    <string name="setting_temp_range">Vücut sıcaklığı ölçüm aralığı</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">En düşük</string><!--minimum-->
+    <string name="setting_range_highest">En yüksek</string><!--Highest-->
+    <string name="setting_speech_delay">Sürekli yayın aralığı</string>
+    <string name="setting_screen_saver">Ekran koruyucusu</string>
+    <string name="setting_welcome_speech">Karşılama mesajı</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">QR kodunu göster</string>
+    <string name="setting_enable_ic_card">IC kart okuyucu</string>
+    <string name="setting_relay_delay_time">Açılış saatleri</string>
+    <string name="setting_cpu_temp">CPU sıcaklığı:</string>
+    <string name="setting_camera_angle">Kamera açısı</string>
+    <string name="setting_curr_net">Mevcut ağ:</string>
+    <string name="setting_net_name">[WIFI, ağ adı: XXXXX]</string>
+    <string name="setting_reboot_device">Cihazı yeniden başlatın</string>
+    <string name="setting_check_update">Algılama yükseltmesi</string>
+    <string name="setting_manage_password">Şifre değişikliklerini yönet</string>
+    <string name="setting_system_password">Sistem şifresi</string>
+    <string name="setting_please_input_password">Lütfen 6-12 haneli bir şifre girin (sayılar, harfler)</string>
+    <string name="setting_please_input_again">Lütfen şifreyi tekrar girin</string>
+    <string name="setting_cloud_service">Bulut</string>
+    <string name="setting_local_service">Yerel alan ağı</string>
+    <string name="setting_ip_address">IP adresi</string>
+    <string name="setting_xmpp_port">İletişim portu</string>
+    <string name="setting_resource_port">Servis bağlantı noktası</string>
+    <string name="setting_project_name">Başlık</string>
+    <string name="setting_save_service_info">Hizmeti kaydet</string>
+    <string name="setting_total_one">Toplam 1</string>
+    <string name="setting_current_used">[Geçerli kullanım:]</string>
+    <string name="setting_cam_angle">Açı</string>
+    <string name="setting_net_prefix">[Ethernet, IP adresi:</string>
+    <string name="setting_ip_info">IP adresi::</string>
+    <string name="setting_best_camera_size">En uygun</string>
+    <string name="setting_max_camera_size">Maksimum</string>
+    <string name="setting_wifi_name">İsim:</string>
+    <string name="setting_wifi_rssi">，Sinyal gücü:</string>
+    <string name="setting_device_will_reboot">Cihaz yeniden başlatılacak. Devam etmek istiyor musun?</string>
+    <string name="setting_device_reboot">Cihazın yeniden başlat</string>
+    <string name="setting_3_scond_reboot">Cihaz 3 saniye içinde yeniden başlatılacak</string>
+    <string name="setting_password_not_null">Şifre boş olamaz</string>
+    <string name="setting_password_min_6">şifre en az 6 karakterden oluşmalıdır</string>
+    <string name="setting_please_input_password_agian">Lütfen şifreyi tekrar girin</string>
+    <string name="setting_password_disaccord">İki kez girilen şifreler hatalı</string>
+    <string name="setting_edit_password_failed">Düzenleme başarısız</string>
+    <string name="setting_edit_password_success">Başarıyla değiştirildi</string>
+    <string name="setting_current_correct_value">Geçerli düzeltme değeri:</string>
+    <string name="setting_normal_speech_content">Vücut ısısı yayın içeriği</string>
+    <string name="setting_warning_speech_content">Vücut ısısı anormal yayın içeriği</string>
+    <string name="setting_low_temp_model">Düşük sıcaklık modu</string>
+    <string name="setting_portrait_outline">Portre Gölgesi</string>
+    <string name="setting_default_welcome_tip">Yunbiao Akıllı Katılım Sistemine Hoşgeldiniz</string>
+    <string name="setting_default_welcome_tip2">Hengtong Katılım hoş geldiniz</string>
+    <string name="setting_correct_temperature">Düzeltme sıcaklığı</string>
+    <string name="setting_broadcast_f">Yayın Fahrenheit</string>
+
+    <string name="setting_save_success">Başarıyla kaydedildi</string>
+    <string name="setting_save_succ_please_restart">Başarılı bir şekilde kaydedildi, uygulamayı yeniden başlattıktan sonra yürürlüğe girecek</string>
+    <string name="setting_please_set_ip">Lütfen IP adresini ayarlayın</string>
+    <string name="setting_please_set_res">Lütfen servis portunu ayarlayın</string>
+    <string name="setting_please_set_xmpp">Lütfen iletişim portunu ayarlayın</string>
+    <string name="setting_res_port_error">Hizmet bağlantı noktası biçimi yanlış, lütfen kontrol edin</string>
+    <string name="setting_xmpp_port_error">İletişim bağlantı noktası biçimi yanlış, lütfen kontrol edin</string>
+
+
+    <!--设置开关机-->
+    <string name="setting_power_on_off">Zamanlayıcı anahtarı</string>
+    <string name="act_power_title">Anahtar ayarları</string>
+    <string name="act_power_power_on_strategy">Başlangıç operasyon stratejisi</string>
+    <string name="act_power_power_off_strategy">Kapatma işlemi stratejisi</string>
+    <string name="act_power_power_on_strategy2">Önyükleme stratejisi</string>
+    <string name="act_power_power_off_strategy2">Kapatma stratejisi</string>
+    <string name="act_power_none">Hayır</string>
+    <string name="act_power_monday">Pazartesi</string>
+    <string name="act_power_tuesday">Salı</string>
+    <string name="act_power_wednesday">Çarşamba</string>
+    <string name="act_power_thursday">Perşembe</string>
+    <string name="act_power_friday">Cuma</string>
+    <string name="act_power_saturday">Cumartesi</string>
+    <string name="act_power_sunday">Pazar</string>
+    <string name="act_power_all_select">Hepsini seç</string>
+    <string name="act_power_turn_on_time">Önyükleme süresi</string>
+    <string name="act_power_turn_off_time">Kapanma süresi</string>
+    <string name="act_power_save">Kaydet</string>
+    <string name="act_power_set_success">Başarılı kurulum</string>
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">Sıcaklık düzeltmesi</string>
+    <string name="act_correct_tips">Lütfen sıcaklık tabancası tarafından ölçülen sıcaklığa göre doldurun</string>
+    <string name="act_correct_current_value">Geçerli tazminat değeri</string>
+    <string name="act_correct_thermal_temp">Termal görüntüleme sıcaklığı：</string>
+    <string name="act_correct_click_get_temperature">Sıcaklığı ölçmek için tıklayın</string>
+    <string name="act_correct_thermometer_gun">Termometre sıcaklığı:</string>
+    <string name="act_correct_save">Kaydet</string>
+
+    <!--通用的  -->
+    <string name="base_tip">Komut istemi</string>
+    <string name="base_ensure">belirlemek</string>
+    <string name="base_cancel">İptal</string>
+    <string name="base_male">Erkek</string>
+    <string name="base_female">Kadın</string>
+    <string name="base_people">İnsanlar</string>
+    <string name="base_year">Yıl</string>
+    <string name="base_month">Ay</string>
+    <string name="base_day">Gün</string>
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">İzin başvurusu başarısız oldu</string>
+    <string name="splash_active_failed">Aktivasyon başarısız</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">Yunbiao Akıllı Katılım</string>
+    <string name="act_wel_bottomTitle">Yunbiao Akıllı Katılım</string>
+    <string name="act_wel_error_bywjsrmmo">Şifrenizi girmeyi unutmayın</string>
+    <string name="act_wel_error_mmclqcxsrb">Yanlış şifre, tekrar girin</string>
+    <string name="act_wel_glmm">Şifreyi yönet</string>
+    <string name="act_wel_qsrglmm">Lütfen yönetici şifresini girin</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">Daha fazla gönül rahatlığı için akıllı yüz oturumu açma ~</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">Kontrol edilmiş</string>
+    <string name="fment_sign_bl">Makyaj</string>
+    <string name="fment_sign_jrqd">Bugün oturum açın:</string>
+    <string name="fment_sign_visitor_name">Ziyaretçi</string>
+    <string name="fment_sign_company">Şirket:</string>
+    <string name="fment_sign_device_no">Numaralama:</string>
+    <string name="fment_sign_version">Sürüm:</string>
+    <string name="fment_sign_bind_code">Bağlama kodu:</string>
+    <string name="fment_sign_net">İnternet:</string>
+    <string name="fment_sign_total">Gitmeli</string>
+    <string name="fment_sign_already">geldi</string>
+
+    <!--WebFragment-->
+    <string name="fment_Web_back">Geri</string>
+    <string name="fment_Web_refresh">Yenile</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">Sistem ayarları</string>
+    <string name="act_set_xtmm">Sistem şifresi</string>
+    <string name="act_set_qchc">Önbelleği temizle</string>
+    <string name="act_set_qcsj">Verileri Temizle</string>
+    <string name="act_set_jcsxt">Kontrol kamerası</string>
+    <string name="act_set_sfjx">Yansıtma olup olmadığı</string>
+    <string name="act_set_wlzt">Ağ durumu</string>
+    <string name="act_set_gb">Kapat</string>
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">Lütfen bir departman adı girin</string>
+    <string name="act_departList_tip_qdscm">Silmeyi onaylamak istiyor musunuz?</string>
+    <string name="act_departList_bmlb">Departman listesi</string>
+    <string name="act_departList_add">Ekle</string>
+    <string name="act_departList_xh">Seri numarası</string>
+    <string name="act_departList_bmmc">Bölüm Adı</string>
+    <string name="act_departList_cz">İşletme</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">Lütfen bir departman adı girin</string>
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">Senkronize</string>
+    <string name="lay_loadPop_zlxsxx">Bilgileri burada göster</string>
+    <string name="uiUtils_tip_notice">Uyarı</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">İlgili uygulamaları yükleme, lütfen sabırlı olun!</string>
+    <string name="dialog_sync_tbjs">Senkronizasyonun sonu</string>
+    <string name="sync_company_1">Şirket bilgilerini alın</string>
+    <string name="sync_staff_2">Kişi Bilgilerini Alın</string>
+    <string name="sync_database_3">Veritabanını senkronize et</string>
+    <string name="sync_head_4">Avatar indir</string>
+    <string name="sync_face_5">Senkronizasyon Yüz Kitaplığı</string>
+    <string name="sync_get_failed">Yeniden deneyiniz</string>
+    <string name="sync_not_bind">Cihaz bağlı değil</string>
+    <string name="sync_data_resolve_failed">Ayrıştırma başarısız</string>
+    <string name="sync_not_depart">Şirketin departmanı yok</string>
+    <string name="sync_params_error">Parametre hatası</string>
+    <string name="edit_not_edit">Değişiklik yok</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">Uygulamadan çıkılsın mı?</string>
+    <string name="restartAPPTool_ycdht">Arka plana gizle</string>
+    <string name="restartAPPTool_exit">Bırakmak</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">Mevcut sürüm en son sürüm</string>
+    <string name="updateManager_wlljsbqjcwl">Ağ bağlantısı başarısız, lütfen ağı kontrol edin</string>
+    <string name="updateManager_xzsb">Yükleme başarısız</string>
+
+    <!--其他-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">XXX düğmesinin izlenmesi için erişilebilirlik destek hizmetleri</string>
+    <string name="System_Setting_save_threshold">Kaydet</string>
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">人证比对模式</string>
+    <string name="act_certificates_idcard_thermal">人证比对+热成像测温模式</string>
+    <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
+    <string name="act_certificates_title">AI人证测温校验系统</string>
+    <string name="act_certificates_please_get_hat">请取下眼睛、帽子、正视镜头</string>
+    <string name="act_certificates_no_idcard_temper">无证测温</string>
+    <string name="act_certificates_face_picture">人脸照片</string>
+    <string name="act_certificates_card_picture">证件照片</string>
+    <string name="act_certificates_name">姓名：</string>
+    <string name="act_certificates_depart">部门：</string>
+    <string name="act_certificates_native_place">籍贯：</string>
+    <string name="act_certificates_temperature">体温：</string>
+    <string name="act_certificates_status">状态：</string>
+    <string name="act_certificates_health_code">健康码</string>
+    <string name="act_certificates_can_go">可以通行</string>
+    <string name="act_certificates_not_pass">禁止通行</string>
+    <string name="act_certificates_ensure_pass">确认通行</string>
+    <string name="act_certificates_please_set_id_card">请将身份证置于刷卡区</string>
+    <string name="act_certificates_testing">正在测温，请稍等</string>
+    <string name="act_certificates_please_wait">请等待</string>
+    <string name="act_certificates_idcard_failed">证件读取失败，请重试</string>
+    <string name="act_certificates_please_look_camera">请正视摄像头</string>
+    <string name="act_certificates_verify_ing">正在验证</string>
+    <string name="act_certificates_verify_pass">验证通过，</string>
+    <string name="act_certificates_verify_not_pass">人证不匹配，</string>
+    <string name="act_certificates_temper_normal">体温正常</string>
+    <string name="act_certificates_temper_warning">体温异常</string>
+    <string name="act_certificates_normal">正常</string>
+    <string name="act_certificates_warning">异常</string>
+    <string name="act_certificates_similar">相似度</string>
+    <string name="act_certificates_please_pass">，请通行</string>
+    <string name="act_certificates_please_can_pass">可以通行</string>
+    <string name="act_certificates_please_not_pass">禁止通行</string>
+    <string name="act_certificates_visitor">访客</string>
+    <string name="act_certificates_temper">温度：</string>
+    <string name="act_certificates_temper_failed">测温失败</string>
+    <string name="act_certificates_green">绿色</string>
+    <string name="act_certificates_yellow">黄色</string>
+
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI人脸高通量测温数据平台</string>
+    <string name="main_permission_failed_multi_thermal">USB权限获取失败</string>
+    <string name="main_not_found_usb_multi_thermal">没有找到目标设备</string>
+    <string name="main_exception_record_multi_thermal">异常人员记录</string>
+    <string name="main_normal_record_multi_thermal">人员流动记录</string>
+    <string name="main_total_passage_multi_thermal">通过人数</string>
+    <string name="main_normal_multi_thermal">正常体温</string>
+    <string name="main_error_multi_thermal">异常体温</string>
+    <string name="main_company_multi_thermal">公司员工</string>
+    <string name="main_visitor_multi_thermal">到访人员</string>
+    <string name="system_net_status_multi_thermal">网络状态:</string>
+    <string name="system_record_multi_thermal">测温记录</string>
+    <string name="record_index_multi_thermal">序列</string>
+    <string name="record_date_multi_thermal">日期</string>
+    <string name="record_pass_time_multi_thermal">通行时间</string>
+    <string name="record_temper_multi_thermal">体温</string>
+    <string name="record_head_multi_thermal">头像</string>
+    <string name="record_hot_multi_thermal">热成像</string>
+    <string name="setting_black_body_rect_multi_thermal">黑体检测区域校准</string>
+    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_success_multi_thermal">保存成功</string>
+    <string name="setting_save_multi_thermal">保存</string>
+    <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>
+    <string name="record_export_multi_thermal">导出</string>
+    
+    <string name="setting_show_thermal_face_frame">显示热成像人脸框</string>
+    <string name="setting_show_black_body">显示黑体校准框</string>
+    <string name="setting_multi_track">开启多次抓取</string>
+    <string name="main_real_detection">实时监测</string>
+    <string name="main_data_total">数据统计</string>
+
+    <string name="safety_main_title">AI大通量测温系统</string>
+    <string name="safety_main_real_detection">实时监测</string>
+    <string name="safety_main_temer_area">体温测量</string>
+    <string name="safety_main_warning_number">异常人数</string>
+    <string name="safety_main_device_no">设备编号:</string>
+</resources>

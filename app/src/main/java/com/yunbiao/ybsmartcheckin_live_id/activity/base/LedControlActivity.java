@@ -5,10 +5,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.elcapi.jnielc;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 
 public abstract class LedControlActivity extends BaseActivity {
 
@@ -36,8 +38,13 @@ public abstract class LedControlActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String broadType = CommonUtils.getBroadType2();
+        Log.e(TAG, "onCreate: 当前类型：" + broadType);
 
-        if(mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (TextUtils.equals("SMT", broadType)) {
+            /*if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            }*/
             try {
                 mSmdtManager = SmdtManager.create(this);
             } catch (Exception e) {

@@ -20,6 +20,7 @@ public class ThermalSafetyCheckConst {
         String NORMAL_TEMPER = "thermalSafetyCheckNormalTemper";
 
         String DATE_FOR_WARNGNING_NUMBER = "thermalSafetyCheckDateForWarningNumber";
+        String CORRECT_VALUE = "thermalSafetyCheckCorrectionValue";
     }
 
     public interface Default{
@@ -36,6 +37,7 @@ public class ThermalSafetyCheckConst {
 
         long WARNING_NUMBER = 0;
         float NORMAL_TEMPER = 35.5f;//
+        float CORRECT_VALUE = 0.0f;
     }
 
     public interface Size{

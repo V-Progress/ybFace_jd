@@ -251,6 +251,9 @@
     <string name="setting_res_port_error">服務端口格式不正確，請檢查</string>
     <string name="setting_xmpp_port_error">通信端口格式不正確，請檢查</string>
 
+    <string name="setting_show_thermal_face_frame">顯示熱成像人臉框</string>
+    <string name="setting_show_black_body">顯示黑體校準框</string>
+    <string name="setting_multi_track">開啟多次抓取</string>
     <!--設置開關機-->
     <string name="setting_power_on_off">定時開關機</string>
     <string name="act_power_title">開關機設置</string>
@@ -424,7 +427,6 @@
 
 
     <!--多人測溫-->
-    <string name="system_bind_company_multi_thermal">綁定公司</string>
     <string name="main_title_multi_thermal">AI人臉高通量測溫數據平臺</string>
     <string name="main_permission_failed_multi_thermal">USB權限獲取失敗</string>
     <string name="main_not_found_usb_multi_thermal">沒有找到目標設備</string>
@@ -449,4 +451,13 @@
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（請結合體溫槍測溫和熱成像溫度填寫差值）</string>
     <string name="record_export_multi_thermal">導出</string>
+    <string name="main_real_detection">实时监测</string>
+    <string name="main_data_total">数据统计</string>
+
+
+    <string name="safety_main_title">AI大通量测温系统</string>
+    <string name="safety_main_real_detection">实时监测</string>
+    <string name="safety_main_temer_area">体温测量</string>
+    <string name="safety_main_warning_number">异常人数</string>
+    <string name="safety_main_device_no">设备编号:</string>
 </resources>

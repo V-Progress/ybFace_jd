@@ -36,7 +36,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetWorkChangReceiver.NetWorkChangeListener {
@@ -132,6 +134,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     protected void onResume() {
         super.onResume();
 
+        mCorrectValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,ThermalSafetyCheckConst.Default.CORRECT_VALUE);
         mWarningTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER, ThermalSafetyCheckConst.Default.WARNING_TEMPER);
         mThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR, ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
         mLowTempMode = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP, ThermalSafetyCheckConst.Default.LOW_TEMP);
@@ -233,7 +236,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
     private static final String TAG = "ThermalSafetyCheckActiv";
     private boolean playTag = false;
+    private boolean numberTag = true;
     private List<Float> mTemperFloats = new ArrayList<>();
+
     private Handler uiHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -245,52 +250,80 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     Bundle data = msg.getData();
                     float originT = data.getFloat("originT", 0.0f);
                     float afterT = data.getFloat("afterT", 0.0f);
-                    //如果原始温度小于阈值则无视
+                    //如果原始温度小于阈值则判断无人
                     if(originT < mNormalTemper){
                         playTag = false;
+                        numberTag = true;
+                        uiHandler.removeMessages(1);
                         if(mTemperFloats.size() > 0){
                             mTemperFloats.clear();
                         }
                         break;
                     }
 
-                    if(mTemperFloats.size() < 5){
+                    if(playTag){
+                        break;
+                    }
+                    if(mTemperFloats.size() < 8){
                         playTag = false;
                         mTemperFloats.add(afterT);
                         break;
                     }
-
-                    if(playTag){
-                        break;
-                    }
                     playTag = true;
 
+                    mTemperFloats.remove(Collections.min(mTemperFloats));
+                    mTemperFloats.remove(Collections.max(mTemperFloats));
+
+                    //删除最大最小之后再取最大，并且删除与最大值相差过大的数值
+                    Float max1 = Collections.max(mTemperFloats);
+                    Iterator<Float> iterator = mTemperFloats.iterator();
+                    while (iterator.hasNext()) {
+                        Float next = iterator.next();
+                        if(max1 - next >= 0.5f){
+                            iterator.remove();
+                        }
+                    }
+
                     float mean = getMean(mTemperFloats);
+                    mTemperFloats.clear();
+
                     tvTemper.setText(mean + "");
+                    String tip;
                     //体温正常
                     if(mean >= mNormalTemper && mean < mWarningTemper){
+                        tip = APP.getContext().getResources().getString(R.string.main_temp_normal_tips);
                         ledGreen();
                         tvTemper.setTextColor(Color.GREEN);
                         tvSsdSafetyCheck.setTextColor(Color.GREEN);
-                        tvTemperState.setText("体温正常");
+                        tvTemperState.setText(tip);
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
                         KDXFSpeechManager.instance().stopWarningRing();
                         KDXFSpeechManager.instance().playPassRing();
                     } else if(mean >= mWarningTemper) {//体温异常
+                        tip = APP.getContext().getResources().getString(R.string.main_temp_warning_tips);
                         ledRed();
                         tvTemper.setTextColor(Color.RED);
                         tvSsdSafetyCheck.setTextColor(Color.RED);
-                        tvTemperState.setText("体温异常");
+                        tvTemperState.setText(tip);
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_nopass);
                         KDXFSpeechManager.instance().stopPassRing();
-                        KDXFSpeechManager.instance().playNormal("体温异常", new Runnable() {
+                        KDXFSpeechManager.instance().playNormal(tip, new Runnable() {
                             @Override
                             public void run() {
                                 KDXFSpeechManager.instance().playWaningRing();
                             }
                         });
-                        handleNumber();
+                        if(numberTag){
+                            handleNumber();
+                        }
                     }
+
+                    uiHandler.removeMessages(1);
+                    uiHandler.sendEmptyMessageDelayed(1,3000);
+                    break;
+                case 1:
+                    playTag = false;
+                    numberTag = false;
                     break;
             }
             return false;
@@ -369,7 +402,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
         String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-        tvDeviceNumber.setText("设备编号：" + str);
+        tvDeviceNumber.setText(APP.getContext().getResources().getString(R.string.safety_main_device_no) + str);
     }
 
     private void startXmpp() {//开启xmpp

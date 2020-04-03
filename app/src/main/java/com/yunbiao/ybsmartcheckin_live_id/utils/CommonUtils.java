@@ -420,13 +420,27 @@ public class CommonUtils {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if (broad_info.contains("even@bnxd")) {
-            return Config.DEVICE_SMALL_FACE;
-        } else if (broad_info.contains("lxr@ubuntu")){
-            return Config.DEVICE_SMALL_10_INCh;
+        if (broad_info.contains("lxr@ubuntu")){
+            return 5;
         }else {
-            return Config.DEVICE_ONLY_FACE;
+            return 0;
         }
+    }
+
+    public static String getBroadType2(){
+        String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
+        if (TextUtils.isEmpty(broad_info)) {
+            broad_info = saveBroadInfo();
+            SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
+        }
+        if(broad_info.contains("wxl")){
+            return "SMT";
+        } else if(broad_info.contains("harris")){
+            return "HARRIS";
+        } else if(broad_info.contains("lxr")){
+            return "LXR";
+        }
+        return broad_info;
     }
 
     /**

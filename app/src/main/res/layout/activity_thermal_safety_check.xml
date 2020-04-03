@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="AI大通量测温系统"
+            android:text="@string/safety_main_title"
             android:textSize="30sp" />
     </RelativeLayout>
     <LinearLayout
@@ -62,7 +62,7 @@
                 android:textColor="@color/font_green"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:text="实时监测"
+                android:text="@string/main_real_detection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -124,7 +124,7 @@
                     android:textSize="22sp"
                     android:textColor="@color/font_green"
                     android:layout_marginTop="15dp"
-                    android:text="体温测量"
+                    android:text="@string/safety_main_temer_area"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -142,7 +142,7 @@
                             android:textStyle="bold"
                             android:gravity="center"
                             android:text="0.0"
-                            android:textColor="#0f0"
+                            android:textColor="@color/white"
                             android:textSize="120dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -150,7 +150,7 @@
                             android:layout_gravity="start"
                             android:id="@+id/tv_ssd_safety_check"
                             android:text="℃"
-                            android:textColor="#0f0"
+                            android:textColor="@color/white"
                             android:textSize="60dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -159,6 +159,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:textStyle="bold"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.5"
                     android:layout_marginLeft="6dp"
@@ -173,7 +174,7 @@
                     android:layout_height="0dp" />
             </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_marginTop="15dp"
@@ -184,6 +185,7 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:layout_centerHorizontal="true"
@@ -193,43 +195,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-
-                <FrameLayout
-                    android:visibility="gone"
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="#01112E"
                     android:id="@+id/fl_icon"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp">
                     <ImageView
-                        android:layout_gravity="center_vertical"
                         android:scaleType="fitCenter"
                         android:src="@mipmap/safety_check_warning_icon"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
                     <TextView
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="80dp"
+                        android:textStyle="bold"
                         android:gravity="center_vertical"
-                        android:text="异常人数"
-                        android:textColor="@color/white"
-                        android:textSize="20dp"
+                        android:text="@string/safety_main_warning_number"
+                        android:textColor="@color/red"
+                        android:textSize="40dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                </FrameLayout>
+                </LinearLayout>
 
                 <TextView
+                    android:gravity="center"
                     android:layout_centerInParent="true"
                     android:id="@+id/tv_warning_number_safety_check"
                     android:textStyle="bold"
                     android:textColor="@color/red"
                     android:textSize="120sp"
-                    android:layout_marginLeft="15dp"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/fl_icon"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

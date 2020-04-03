@@ -103,6 +103,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private Rect mBlackBodyAreaRect;
     private boolean mBlackBodyFrame;
     private boolean mMultiTrack;
+    private int mPreValue;
 
     @Override
     protected int getLayout() {
@@ -190,6 +191,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         faceView.resume();
 
+        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
         mBlackBodyAreaRect = getCacheRect();
         mMultiTrack = SpUtils.getBoolean(MultiThermalConst.Key.MULTI_TRACK, MultiThermalConst.Default.MULTI_TRACK);
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
@@ -233,7 +235,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                         BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
                         blackBody.setFrameColor(Color.WHITE);
                         blackBody.setDrawFrame(mBlackBodyFrame);
-                        blackBody.setTempPreValue(345);
+                        blackBody.setTempPreValue(mPreValue);
                         TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                         TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
                     }
@@ -256,7 +258,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                     BlackBody blackBody = new BlackBody(mBlackBodyAreaRect.left, mBlackBodyAreaRect.right, mBlackBodyAreaRect.top, mBlackBodyAreaRect.bottom);
                     blackBody.setFrameColor(Color.WHITE);
                     blackBody.setDrawFrame(mBlackBodyFrame);
-                    blackBody.setTempPreValue(345);
+                    blackBody.setTempPreValue(mPreValue);
                     TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
                 }
@@ -620,7 +622,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private void addItemRecord(MultiTemperBean multiTemperBean) {
         float temper = multiTemperBean.getTemper();
         if (temper <= 0f || temper >= 37.3f) {
-            KDXFSpeechManager.instance().playWaningRing();
+            KDXFSpeechManager.instance().playWaningRingNoStop();
             warningList.add(0, multiTemperBean);
             warningAdapter.notifyItemInserted(0);
             if (warningList.size() > 15) {

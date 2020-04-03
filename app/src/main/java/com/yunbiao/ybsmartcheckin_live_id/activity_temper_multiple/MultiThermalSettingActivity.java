@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
 import com.intelligence.hardware.temperature.callback.HotImageK6080CallBack;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -65,6 +67,36 @@ public class MultiThermalSettingActivity extends BaseActivity {
         setBlackBodyFrame();
 
         initMultiTrack();
+
+        initBlackBodyPreValue();
+    }
+
+    private void initBlackBodyPreValue(){
+        final View llPreValue = findViewById(R.id.ll_black_body_pre_value);
+        View viewById = findViewById(R.id.setting_title);
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llPreValue.setVisibility(llPreValue.isShown() ? View.GONE : View.VISIBLE);
+            }
+        });
+        int preValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
+        final EditText edtPreValue = findViewById(R.id.edt_black_body_pre_value);
+        edtPreValue.setText(preValue + "");
+
+        Button btnSave = findViewById(R.id.btn_black_body_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = edtPreValue.getText().toString();
+                int finalValue = MultiThermalConst.Default.BLACK_BODY_PRE_VALUE;
+                if(!TextUtils.isEmpty(value)){
+                    finalValue = Integer.parseInt(value);
+                }
+                SpUtils.saveInt(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,finalValue);
+                UIUtils.showShort(MultiThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
+            }
+        });
     }
 
     private void initMultiTrack() {

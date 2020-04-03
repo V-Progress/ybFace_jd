@@ -385,9 +385,11 @@ public class FaceView extends FrameLayout {
                 for (int i = 0; i < facePreviewInfoList.size(); i++) {
                     FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
                     int trackId = facePreviewInfo.getTrackId();
-                    Float temper = temperHashMap.get(trackId);
-                    if(temper != null){
-                        facePreviewInfo.setTemper(temper);
+                    if(temperHashMap.containsKey(trackId)){
+                        Float temper = temperHashMap.get(trackId);
+                        if(temper != null){
+                            facePreviewInfo.setTemper(temper);
+                        }
                     }
                     /*if (faceIndexInfo != null) {
                         float originalTempF = faceIndexInfo.getOriginalTempF();
