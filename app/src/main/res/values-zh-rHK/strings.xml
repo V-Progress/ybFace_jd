@@ -255,6 +255,16 @@
     <string name="setting_show_thermal_face_frame">顯示熱成像人臉框</string>
     <string name="setting_show_black_body">顯示黑體校準框</string>
     <string name="setting_multi_track">開啟多次抓取</string>
+    <string name="setting_switch_to_certificates">切换到人证测温</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">切换到测温考勤</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">功能切换</string><!--Function switch-->
+    <string name="setting_switch_tip1">确定切换到人证测温吗？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">确定切换到测温考勤吗？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">确定</string>
+    <string name="setting_switch_cancel">取消</string>
+
+
+
     <!--設置開關機-->
     <string name="setting_power_on_off">定時開關機</string>
     <string name="act_power_title">開關機設置</string>

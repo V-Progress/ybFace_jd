@@ -257,6 +257,16 @@
     <string name="setting_res_port_error">Service port format is incorrect, please check</string>
     <string name="setting_xmpp_port_error">Communication port format is incorrect, please check</string>
 
+    <string name="setting_switch_to_certificates">Switch to certificate temperature measurement</string><!---->
+    <string name="setting_switch_to_temperature_check_in">Switch to temperature measurement attendance</string><!---->
+    <string name="setting_switch_function">Function switch</string><!---->
+    <string name="setting_switch_tip1">Are you sure to switch to certificate temperature measurement？</string><!---->
+    <string name="setting_switch_tip2">Are you sure to switch to temperature measurement attendance？</string><!---->
+    <string name="setting_switch_confirm">YES</string>
+    <string name="setting_switch_cancel">NO</string>
+
+
+
     <!--开关机设置-->
     <string name="setting_power_on_off">Timing switch</string>
     <string name="act_power_title">Timing switch</string>

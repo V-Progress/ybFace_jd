@@ -195,30 +195,83 @@ public class SplashActivity extends BaseActivity {
 
     private void jump() {
         APP.bindProtectService();
-        //考勤机
+        //普通考勤机
         if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
             startActivity(new Intent(this, WelComeActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
+            finish();
+            return;
+        }
+
+        //测温考勤
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
             //调整摄像头默认角度
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
             } else {
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
             }
-            // TODO: 2020/3/30 在此加入判断版型然后将摄像头默认方向置为90的方法
-            startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
+//            startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+
+            // TODO: 2020/4/3功能切换
+            boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
+            if(!jumpTag){
+                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+            } else {
+                if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
+                    Constants.DEVICE_TYPE = Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES;
+                } else if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN){
+                    Constants.DEVICE_TYPE = Constants.DeviceType.TEMPERATURE_CERTIFICATES;
+                }
+                startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
+            }
+            finish();
+            return;
+        }
+
+        //视美泰测温考勤
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
             Constants.DEFAULT_CAMERA_ANGLE = 270;
             startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
-            Constants.DEFAULT_CAMERA_ANGLE = 0;
-            startActivity(new Intent(this, CertificatesActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
-            startActivity(new Intent(this, MultiThermalActivity.class));
-        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
-            startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
+            finish();
+            return;
         }
-        finish();
+
+        //人证测温
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
+            Constants.DEFAULT_CAMERA_ANGLE = 0;
+//            startActivity(new Intent(this, CertificatesActivity.class));
+
+            // TODO: 2020/4/3功能切换
+            boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
+            //判断，如果不跳转则默认进入人证
+            if (!jumpTag) {
+                startActivity(new Intent(this, CertificatesActivity.class));
+            } else {
+                //如果跳转则判断当前类型，如果是亨通考勤版本则把相应的类型改成对应的亨通人证版本
+                if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){//如果是亨通人证则修改为亨通考勤
+                    Constants.DEVICE_TYPE = Constants.DeviceType.HT_TEMPERATURE_CHECK_IN;
+                } else if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES){//如果是云标人证则修改为云标考勤
+                    Constants.DEVICE_TYPE = Constants.DeviceType.TEMPERATURE_CHECK_IN;
+                }
+                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+            }
+            finish();
+            return;
+        }
+
+        //高通量
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
+            startActivity(new Intent(this, MultiThermalActivity.class));
+            finish();
+            return;
+        }
+
+        //安检门
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
+            startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
+            finish();
+            return;
+        }
     }
 
     @Override

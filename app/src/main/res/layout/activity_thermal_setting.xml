@@ -10,8 +10,7 @@
     android:paddingRight="20dp"
     android:paddingBottom="10dp"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".activity.SettingActivity">
+    android:focusableInTouchMode="true">
 
     <include layout="@layout/head_layout" />
 
@@ -44,6 +43,11 @@
                     android:paddingRight="10dp"
                     android:textColor="@color/white" />
             </LinearLayout>
+
+            <TextView
+                style="@style/setting_text_child"
+                android:onClick="jumpTag"
+                android:text="@string/setting_switch_to_certificates" />
 
             <LinearLayout
                 style="@style/setting_text_child"

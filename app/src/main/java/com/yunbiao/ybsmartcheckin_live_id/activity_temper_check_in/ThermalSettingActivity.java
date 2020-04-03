@@ -136,6 +136,30 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
+    public void jumpTag(View view){
+        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG,Constants.DEFAULT_JUMP_TAG);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
+        builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip1));
+        builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                SpUtils.saveBoolean(Constants.JUMP_TAG,!jumpTag);
+
+                APP.exit2();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     @Override
     protected void initData() {
         initUISetting();

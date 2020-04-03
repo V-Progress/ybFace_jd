@@ -244,6 +244,13 @@
     <string name="setting_default_welcome_tip2">헨리 출퇴근 시스템 사용 을 환영 합 니 다.</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
     <string name="setting_broadcast_f">화 씨 사용 하기</string>
+    <string name="setting_switch_to_certificates">切换到人证测温</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">切换到测温考勤</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">功能切换</string><!--Function switch-->
+    <string name="setting_switch_tip1">确定切换到人证测温吗？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">确定切换到测温考勤吗？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">确定</string>
+    <string name="setting_switch_cancel">取消</string>
 
     <!--设置开关机-->
     <string name="setting_power_on_off">절전장치</string>

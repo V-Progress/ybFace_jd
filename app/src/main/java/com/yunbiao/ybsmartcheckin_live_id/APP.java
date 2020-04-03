@@ -310,4 +310,9 @@ public class APP extends Application {
         //关闭整个应用
         System.exit(0);
     }
+    public static void exit2() {
+        finishAllActivity();
+        //关闭整个应用
+        System.exit(0);
+    }
 }

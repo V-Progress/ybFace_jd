@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,7 +61,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private float mCorrectValue = 0.0f;
     private TextView tvSsdSafetyCheck;
 
-    private long mWarningNumber;
     private TextView tvWarningNumber;
 
     private StringBuffer stringBuffer = new StringBuffer();
@@ -85,7 +85,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     @Override
     protected void initView() {
         APP.setMainActivity(this);
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         startXmpp();
@@ -111,8 +111,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, ThermalSafetyCheckConst.Default.WARNING_NUMBER);
         }
 
-        mWarningNumber = SpUtils.getLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, ThermalSafetyCheckConst.Default.WARNING_NUMBER);
-
         NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -134,16 +132,16 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     protected void onResume() {
         super.onResume();
 
-        mCorrectValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,ThermalSafetyCheckConst.Default.CORRECT_VALUE);
+        mCorrectValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, ThermalSafetyCheckConst.Default.CORRECT_VALUE);
         mWarningTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER, ThermalSafetyCheckConst.Default.WARNING_TEMPER);
         mThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR, ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
         mLowTempMode = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP, ThermalSafetyCheckConst.Default.LOW_TEMP);
         mNormalTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, ThermalSafetyCheckConst.Default.NORMAL_TEMPER);
 
-        int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE,ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
-        if(temperAreaSize == ThermalSafetyCheckConst.Size.SMALL){
+        int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
+        if (temperAreaSize == ThermalSafetyCheckConst.Size.SMALL) {
             mTemperRect.set(TemperRect.getSmall());
-        } else if(temperAreaSize == ThermalSafetyCheckConst.Size.MIDDLE){
+        } else if (temperAreaSize == ThermalSafetyCheckConst.Size.MIDDLE) {
             mTemperRect.set(TemperRect.getMiddle());
         } else {
             mTemperRect.set(TemperRect.getLarge());
@@ -203,6 +201,11 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         }
     }
 
+    //缓存温差值
+    private float mCacheDiffValue = 1.0f;
+    private float mCacheBeforeTemper = 0.0f;
+    private float mLastTemper = 0.0f;
+    private List<Float> mTemperFloats = new ArrayList<>();
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, float v, float v1, float v2) {
@@ -211,33 +214,61 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
         @Override
         public void newestHotImageData(Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
+            sendUpdateHotImageMessage(bitmap);
+
             if (arrayList == null || arrayList.size() <= 0) {
-                sendUpdateHotImageMessage(bitmap, 0.0f, 0.0f);
                 return;
             }
 
             FaceIndexInfo faceIndexInfo = arrayList.get(0);
             float originalTempF = faceIndexInfo.getOriginalTempF();
+            if (mCacheBeforeTemper == 0.0f) {
+                mCacheBeforeTemper = originalTempF;
+            }
+
+            //判断原始温度和缓存温度差2度以内则表示没有人，缓存
+            if (originalTempF - mCacheBeforeTemper < mCacheDiffValue) {
+                mCacheBeforeTemper = originalTempF;
+                if (mTemperFloats.size() > 0) {
+                    Float max = Collections.max(mTemperFloats);
+                    Log.e(TAG, "newestHotImageData: List大小：" + mTemperFloats.size() + "最终值：" + max);
+                    mTemperFloats.clear();
+                    sendTipsMessage(max);
+                }
+                return;
+            }
+
+            if(originalTempF < mNormalTemper){
+                mCacheBeforeTemper = originalTempF;
+                return;
+            }
+
+            Log.e(TAG, "newestHotImageData: ----" + originalTempF + " ----- " + mCacheBeforeTemper);
+
             float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
-            sendUpdateHotImageMessage(bitmap, originalTempF, afterTreatmentF);
+            mTemperFloats.add(afterTreatmentF);
+            if(mTemperFloats.size() > 30){
+                mTemperFloats.remove(0);
+            }
+
         }
     };
 
-    private void sendUpdateHotImageMessage(Bitmap bitmap, float originT, float afterT) {
+    private void sendUpdateHotImageMessage(Bitmap bitmap) {
         Message message = Message.obtain();
         message.what = 0;
         message.obj = bitmap;
-        Bundle bundle = new Bundle();
-        bundle.putFloat("originT", originT);
-        bundle.putFloat("afterT", afterT);
-        message.setData(bundle);
+        uiHandler.sendMessage(message);
+    }
+
+    private void sendTipsMessage(float finalTemper) {
+        Message message = Message.obtain();
+        message.what = 1;
+        message.obj = finalTemper;
         uiHandler.sendMessage(message);
     }
 
     private static final String TAG = "ThermalSafetyCheckActiv";
-    private boolean playTag = false;
-    private boolean numberTag = true;
-    private List<Float> mTemperFloats = new ArrayList<>();
 
     private Handler uiHandler = new Handler(new Handler.Callback() {
         @Override
@@ -246,51 +277,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 case 0:
                     Bitmap bitmap = (Bitmap) msg.obj;
                     ivHot.setImageBitmap(bitmap);
+                    break;
+                case 1:
+                    float finalTemper = (float) msg.obj;
 
-                    Bundle data = msg.getData();
-                    float originT = data.getFloat("originT", 0.0f);
-                    float afterT = data.getFloat("afterT", 0.0f);
-                    //如果原始温度小于阈值则判断无人
-                    if(originT < mNormalTemper){
-                        playTag = false;
-                        numberTag = true;
-                        uiHandler.removeMessages(1);
-                        if(mTemperFloats.size() > 0){
-                            mTemperFloats.clear();
-                        }
-                        break;
-                    }
-
-                    if(playTag){
-                        break;
-                    }
-                    if(mTemperFloats.size() < 8){
-                        playTag = false;
-                        mTemperFloats.add(afterT);
-                        break;
-                    }
-                    playTag = true;
-
-                    mTemperFloats.remove(Collections.min(mTemperFloats));
-                    mTemperFloats.remove(Collections.max(mTemperFloats));
-
-                    //删除最大最小之后再取最大，并且删除与最大值相差过大的数值
-                    Float max1 = Collections.max(mTemperFloats);
-                    Iterator<Float> iterator = mTemperFloats.iterator();
-                    while (iterator.hasNext()) {
-                        Float next = iterator.next();
-                        if(max1 - next >= 0.5f){
-                            iterator.remove();
-                        }
-                    }
-
-                    float mean = getMean(mTemperFloats);
-                    mTemperFloats.clear();
-
-                    tvTemper.setText(mean + "");
+                    tvTemper.setText(finalTemper + "");
                     String tip;
                     //体温正常
-                    if(mean >= mNormalTemper && mean < mWarningTemper){
+                    if (finalTemper >= mNormalTemper && finalTemper < mWarningTemper) {
                         tip = APP.getContext().getResources().getString(R.string.main_temp_normal_tips);
                         ledGreen();
                         tvTemper.setTextColor(Color.GREEN);
@@ -299,7 +293,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
                         KDXFSpeechManager.instance().stopWarningRing();
                         KDXFSpeechManager.instance().playPassRing();
-                    } else if(mean >= mWarningTemper) {//体温异常
+                    } else if (finalTemper >= mWarningTemper) {//体温异常
                         tip = APP.getContext().getResources().getString(R.string.main_temp_warning_tips);
                         ledRed();
                         tvTemper.setTextColor(Color.RED);
@@ -313,36 +307,29 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                                 KDXFSpeechManager.instance().playWaningRing();
                             }
                         });
-                        if(numberTag){
-                            handleNumber();
-                        }
+                        handleNumber();
                     }
-
-                    uiHandler.removeMessages(1);
-                    uiHandler.sendEmptyMessageDelayed(1,3000);
-                    break;
-                case 1:
-                    playTag = false;
-                    numberTag = false;
                     break;
             }
             return false;
         }
     });
 
-    private void handleNumber(){
+    private void handleNumber() {
+        long number = SpUtils.getLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER,ThermalSafetyCheckConst.Default.WARNING_NUMBER);
         stringBuffer.setLength(0);
-        mWarningNumber += 1;
-        if (mWarningNumber < 10) {
-            stringBuffer.append("000").append(mWarningNumber);
-        } else if (mWarningNumber < 100) {
-            stringBuffer.append("00").append(mWarningNumber);
-        } else if (mWarningNumber < 1000) {
-            stringBuffer.append("0").append(mWarningNumber);
+        number += 1;
+        if (number < 10) {
+            stringBuffer.append("000").append(number);
+        } else if (number < 100) {
+            stringBuffer.append("00").append(number);
+        } else if (number < 1000) {
+            stringBuffer.append("0").append(number);
         } else {
-            stringBuffer.append(mWarningNumber);
+            stringBuffer.append(number);
         }
         tvWarningNumber.setText(stringBuffer.toString());
+        SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, number);
     }
 
     private float getMean(List<Float> array) {
@@ -374,7 +361,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     @Override
     protected void onStop() {
         super.onStop();
-        SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, mWarningNumber);
         TemperatureModule.getIns().closeHotImageK6080();
     }
 

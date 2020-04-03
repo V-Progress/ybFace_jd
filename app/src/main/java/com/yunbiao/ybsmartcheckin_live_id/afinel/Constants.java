@@ -100,7 +100,7 @@ public class Constants {
     }
 
     //修改设备类型
-    public static final int DEVICE_TYPE = BuildConfig.APP_TYPE;
+    public static int DEVICE_TYPE = BuildConfig.APP_TYPE;
     //是否亨通的版本（独立版本）
     public static boolean isHT = BuildConfig.IS_HT;
     //是否思库的版本(云标分支版本)
@@ -120,6 +120,10 @@ public class Constants {
 
         int TEMPER_SAFETY_CHECK = 15;//安检门
     }
+
+    public static final String JUMP_TAG = "jumpTag";
+    public static final boolean DEFAULT_JUMP_TAG = false;
+
 
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
