@@ -126,7 +126,7 @@ android {
                     UMENG_CHANNEL: "ybTemperDR"
             ]
         }
-        YB_SC {//云标多人
+        YB_SC {//云标安检
             buildConfigField "boolean", "IS_SK", "false"
             buildConfigField "boolean", "IS_HT", "false"
             buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK"
@@ -195,6 +195,17 @@ android {
                     app_icon     : "@mipmap/logo_icon2",
                     UMENG_APPKEY : "5cbe87a60cafb210460006b3",
                     UMENG_CHANNEL: "HTTemperDR"
+            ]
+        }
+        HT_SC {//云标安检
+            buildConfigField "boolean", "IS_SK", "false"
+            buildConfigField "boolean", "IS_HT", "true"
+            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK"
+            manifestPlaceholders = [
+                    app_name     : "@string/app_name2",
+                    app_icon     : "@mipmap/logo_icon2",
+                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+                    UMENG_CHANNEL: "ybTemperDR"
             ]
         }
     }

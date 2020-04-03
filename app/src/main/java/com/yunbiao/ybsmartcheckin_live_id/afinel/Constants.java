@@ -119,6 +119,7 @@ public class Constants {
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
 
         int TEMPER_SAFETY_CHECK = 15;//安检门
+        int HT_TEMPER_SAFETY_CHECK = 16;//亨通安检
     }
 
     public static final String JUMP_TAG = "jumpTag";

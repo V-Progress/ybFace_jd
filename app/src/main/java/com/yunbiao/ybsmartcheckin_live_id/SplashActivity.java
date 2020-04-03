@@ -267,7 +267,7 @@ public class SplashActivity extends BaseActivity {
         }
 
         //安检门
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK) {
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPER_SAFETY_CHECK) {
             startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
             finish();
             return;

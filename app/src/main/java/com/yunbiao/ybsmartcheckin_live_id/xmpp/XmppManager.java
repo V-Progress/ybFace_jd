@@ -344,6 +344,7 @@ public class XmppManager {
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK:
                         newPassword += "HT";
                         break;
                 }

@@ -26,10 +26,12 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -74,6 +76,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private ServiceManager serviceManager;
     private boolean mBlackBodyEnabled;
     private int mPreValue;
+    private ImageView ivLogo;
 
     @Override
     protected int getPortraitLayout() {
@@ -92,7 +95,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             EventBus.getDefault().register(this);
         }
         startXmpp();
-        ImageView ivLogo = findViewById(R.id.iv_logo_safety_check);
+        ivLogo = findViewById(R.id.iv_logo_safety_check);
         tvDeviceNumber = findViewById(R.id.tv_device_number_safety_check);
         tvNetState = findViewById(R.id.tv_net_state_safety_check);
         tvWarningNumber = findViewById(R.id.tv_warning_number_safety_check);
@@ -129,6 +132,16 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         });
 
         KDXFSpeechManager.instance().init(this);
+
+        if (Constants.isHT) {
+            ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+        } else {
+            ivLogo.setImageResource(R.mipmap.yb_logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+        }
+
+        handleNumber();
     }
 
     @Override

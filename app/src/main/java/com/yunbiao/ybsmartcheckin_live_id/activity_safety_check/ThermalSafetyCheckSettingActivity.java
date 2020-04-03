@@ -46,12 +46,15 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
 
     private void initBlackBodyEnabled(){
         boolean blackBodyEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.BLACK_BODY_ENABLED,ThermalSafetyCheckConst.Default.BLACK_BODY_ENABLED);
+        findViewById(R.id.tv_black_body_correction_area).setVisibility(blackBodyEnabled ? View.VISIBLE : View.GONE);
+
         Switch swBlackBodyEnabled = findViewById(R.id.sw_black_body_enable_setting);
         swBlackBodyEnabled.setChecked(blackBodyEnabled);
         swBlackBodyEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.BLACK_BODY_ENABLED,isChecked);
+                findViewById(R.id.tv_black_body_correction_area).setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
     }

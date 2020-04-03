@@ -22,13 +22,13 @@
             android:layout_height="60dp"
             android:src="@mipmap/yb_logo" />
 
-        <!--<TextClock
+        <TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:format12Hour="yyyy-MM-dd HH:mm"
-            android:format24Hour="yyyy-MM-dd HH:mm" />-->
+            android:format24Hour="yyyy-MM-dd HH:mm" />
 
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
             android:letterSpacing="0.1"
@@ -76,6 +76,7 @@
                 android:layout_height="0dp" />
 
             <LinearLayout
+                android:visibility="invisible"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
