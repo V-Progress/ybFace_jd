@@ -50,6 +50,25 @@
 
             <TextView
                 style="@style/setting_text"
+                android:text="@string/safety_black_body_enable" />
+
+            <Switch
+                android:id="@+id/sw_black_body_enable_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
                 android:text="@string/setting_low_temp_model" />
 
             <Switch
@@ -134,7 +153,7 @@
 
             <TextView
                 style="@style/setting_text"
-                android:text="@string/setting_temperature_threshold" />
+                android:text="@string/safety_temperature_threshold" />
 
             <Button
                 android:id="@+id/btn_temp_min_threshold_sub_setting"

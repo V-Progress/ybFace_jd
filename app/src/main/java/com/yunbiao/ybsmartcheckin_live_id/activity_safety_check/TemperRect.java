@@ -4,6 +4,9 @@ import android.graphics.Rect;
 
 public class TemperRect {
 
+    public static Rect getTooSmall() {
+        return new Rect(25,25,55,35);//30 * 10
+    }
     public static Rect getSmall(){
         return new Rect(20,20,60,40);//40 * 20
     }

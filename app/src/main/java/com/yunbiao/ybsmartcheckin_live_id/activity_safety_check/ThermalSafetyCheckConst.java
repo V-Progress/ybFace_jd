@@ -21,6 +21,7 @@ public class ThermalSafetyCheckConst {
 
         String DATE_FOR_WARNGNING_NUMBER = "thermalSafetyCheckDateForWarningNumber";
         String CORRECT_VALUE = "thermalSafetyCheckCorrectionValue";
+        String BLACK_BODY_ENABLED = "thermalSafetyCheckBlackBodyEnabled";
     }
 
     public interface Default{
@@ -36,13 +37,15 @@ public class ThermalSafetyCheckConst {
         int TEMPER_AREA_SIZE = Size.SMALL;
 
         long WARNING_NUMBER = 0;
-        float NORMAL_TEMPER = 35.5f;//
+        float NORMAL_TEMPER = 33.0f;//
         float CORRECT_VALUE = 0.0f;
+        boolean BLACK_BODY_ENABLED = false;
     }
 
     public interface Size{
         int SMALL = 0;
         int MIDDLE = 1;
         int LARGE = 2;
+        int TOO_SMALL = -1;
     }
 }

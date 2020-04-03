@@ -44,10 +44,21 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
-                android:onClick="jumpTag"
-                android:text="@string/setting_switch_to_certificates" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_switch_function" />
+
+                <Button
+                    android:onClick="jumpTag"
+                    style="@style/style_setting_input_save_button"
+                    android:text="@string/setting_switch_to_temperature_check_in" />
+            </LinearLayout>
 
             <LinearLayout
                 style="@style/setting_text_child"

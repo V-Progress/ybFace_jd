@@ -475,4 +475,12 @@
     <string name="safety_main_temer_area">体温测量</string>
     <string name="safety_main_warning_number">异常人数</string>
     <string name="safety_main_device_no">设备编号:</string>
+
+    <string name="safety_black_body_size_large">大</string>
+    <string name="safety_black_body_size_Middle">中</string>
+    <string name="safety_black_body_size_Small">小</string>
+    <string name="safety_black_body_size_Smaller">更小</string>
+    <string name="safety_balck_body_size">检测区域尺寸</string>
+    <string name="safety_black_body_enable">开启黑体矫正</string>
+    <string name="safety_temperature_threshold">取温阈值</string>
 </resources>

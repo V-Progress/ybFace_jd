@@ -25,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -49,7 +50,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private TextView tvTemper;
 
     private float mWarningTemper = 37.3f;
-    private float mNormalTemper = 35.5f;
+    private float mNormalTemper = 33.0f;
     private boolean mThermalMirror = false;
     private boolean mLowTempMode = true;
 
@@ -71,6 +72,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
     private Rect mTemperRect = new Rect();
     private ServiceManager serviceManager;
+    private boolean mBlackBodyEnabled;
+    private int mPreValue;
 
     @Override
     protected int getPortraitLayout() {
@@ -131,7 +134,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     @Override
     protected void onResume() {
         super.onResume();
-
+        mBlackBodyEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.BLACK_BODY_ENABLED,ThermalSafetyCheckConst.Default.BLACK_BODY_ENABLED);
+        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
         mCorrectValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, ThermalSafetyCheckConst.Default.CORRECT_VALUE);
         mWarningTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER, ThermalSafetyCheckConst.Default.WARNING_TEMPER);
         mThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR, ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
@@ -139,11 +143,13 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         mNormalTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, ThermalSafetyCheckConst.Default.NORMAL_TEMPER);
 
         int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
-        if (temperAreaSize == ThermalSafetyCheckConst.Size.SMALL) {
+        if(temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL){
+            mTemperRect.set(TemperRect.getTooSmall());
+        } else if (temperAreaSize == ThermalSafetyCheckConst.Size.SMALL) {
             mTemperRect.set(TemperRect.getSmall());
         } else if (temperAreaSize == ThermalSafetyCheckConst.Size.MIDDLE) {
             mTemperRect.set(TemperRect.getMiddle());
-        } else {
+        } else if(temperAreaSize == ThermalSafetyCheckConst.Size.LARGE){
             mTemperRect.set(TemperRect.getLarge());
         }
 
@@ -173,9 +179,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTempMode, hotImageK6080CallBack);
                         BlackBody blackBody = new BlackBody(mBlackBodyLeft, mBlackBodyRight, mBlackBodyTop, mBlackBodyBottom);
                         blackBody.setFrameColor(Color.WHITE);
-                        blackBody.setTempPreValue(345);
+                        blackBody.setTempPreValue(mPreValue);
                         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
                         TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                        if(!mBlackBodyEnabled){
+                            TemperatureModule.getIns().closeK6080BlackBodyMode();
+                        }
                     }
                 }, 1000);
             }
@@ -193,9 +202,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTempMode, hotImageK6080CallBack);
                     BlackBody blackBody = new BlackBody(mBlackBodyLeft, mBlackBodyRight, mBlackBodyTop, mBlackBodyBottom);
                     blackBody.setFrameColor(Color.WHITE);
-                    blackBody.setTempPreValue(345);
+                    blackBody.setTempPreValue(mPreValue);
                     TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                    if(!mBlackBodyEnabled){
+                        TemperatureModule.getIns().closeK6080BlackBodyMode();
+                    }
                 }
             }, 1000);
         }
@@ -204,7 +216,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     //缓存温差值
     private float mCacheDiffValue = 1.0f;
     private float mCacheBeforeTemper = 0.0f;
-    private float mLastTemper = 0.0f;
     private List<Float> mTemperFloats = new ArrayList<>();
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
@@ -222,13 +233,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
             FaceIndexInfo faceIndexInfo = arrayList.get(0);
             float originalTempF = faceIndexInfo.getOriginalTempF();
-            if (mCacheBeforeTemper == 0.0f) {
-                mCacheBeforeTemper = originalTempF;
-            }
+            Log.e(TAG, "newestHotImageData: " + originalTempF);
 
-            //判断原始温度和缓存温度差2度以内则表示没有人，缓存
-            if (originalTempF - mCacheBeforeTemper < mCacheDiffValue) {
-                mCacheBeforeTemper = originalTempF;
+            if(originalTempF < mNormalTemper){
                 if (mTemperFloats.size() > 0) {
                     Float max = Collections.max(mTemperFloats);
                     Log.e(TAG, "newestHotImageData: List大小：" + mTemperFloats.size() + "最终值：" + max);
@@ -238,19 +245,11 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 return;
             }
 
-            if(originalTempF < mNormalTemper){
-                mCacheBeforeTemper = originalTempF;
-                return;
-            }
-
-            Log.e(TAG, "newestHotImageData: ----" + originalTempF + " ----- " + mCacheBeforeTemper);
-
             float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
             mTemperFloats.add(afterTreatmentF);
             if(mTemperFloats.size() > 30){
                 mTemperFloats.remove(0);
             }
-
         }
     };
 
@@ -304,7 +303,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         KDXFSpeechManager.instance().playNormal(tip, new Runnable() {
                             @Override
                             public void run() {
-                                KDXFSpeechManager.instance().playWaningRing();
+                                KDXFSpeechManager.instance().playWaningRingNoStop();
                             }
                         });
                         handleNumber();

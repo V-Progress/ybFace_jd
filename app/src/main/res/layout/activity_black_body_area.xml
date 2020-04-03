@@ -59,7 +59,6 @@
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/fl_image"
         android:id="@+id/rg_temper_area_rect"
-        android:gravity="center_horizontal"
         android:padding="6dp"
         android:background="@drawable/shape_bg_btnrepicture"
         android:layout_centerVertical="true"
@@ -68,9 +67,21 @@
         android:layout_height="wrap_content">
         <TextView
             android:textColor="@color/white"
-            android:text="检测区域尺寸"
+            android:text="@string/safety_balck_body_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <RadioButton
+            android:textSize="22dp"
+            android:gravity="center_vertical"
+            android:button="@drawable/temper_radio_button"
+            android:id="@+id/rb_too_small"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:text="@string/safety_black_body_size_Smaller"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"/>
+
         <RadioButton
             android:textSize="22dp"
             android:gravity="center_vertical"
@@ -78,7 +89,7 @@
             android:id="@+id/rb_small"
             android:layout_marginTop="20dp"
             android:textColor="@color/white"
-            android:text="小"
+            android:text="@string/safety_black_body_size_Small"
             android:layout_width="wrap_content"
             android:layout_height="30dp"/>
 
@@ -89,7 +100,7 @@
             android:id="@+id/rb_middle"
             android:layout_marginTop="20dp"
             android:textColor="@color/white"
-            android:text="中"
+            android:text="@string/safety_black_body_size_Middle"
             android:layout_width="wrap_content"
             android:layout_height="30dp"/>
 
@@ -100,7 +111,7 @@
             android:id="@+id/rb_large"
             android:layout_marginTop="20dp"
             android:textColor="@color/white"
-            android:text="大"
+            android:text="@string/safety_black_body_size_large"
             android:layout_width="wrap_content"
             android:layout_height="30dp"/>
 
@@ -111,7 +122,7 @@
         android:layout_below="@+id/fl_image"
         android:textColor="@color/white"
         android:background="@drawable/shape_bg_btnsync"
-        android:text="保存"
+        android:text="@string/act_correct_save"
         android:onClick="saveRect"
         android:layout_centerHorizontal="true"
         android:layout_width="800dp"

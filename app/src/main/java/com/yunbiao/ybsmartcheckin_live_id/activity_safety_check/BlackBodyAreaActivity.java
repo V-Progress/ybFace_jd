@@ -56,22 +56,25 @@ public class BlackBodyAreaActivity extends BaseActivity {
         rgTemper.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.rb_small) {
+                if (checkedId == R.id.rb_too_small) {
+                    mTempRect.set(TemperRect.getTooSmall());
+                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Size.TOO_SMALL);
+                } else if (checkedId == R.id.rb_small) {
                     mTempRect.set(TemperRect.getSmall());
-                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE,ThermalSafetyCheckConst.Size.SMALL);
-                } else if(checkedId == R.id.rb_middle){
+                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Size.SMALL);
+                } else if (checkedId == R.id.rb_middle) {
                     mTempRect.set(TemperRect.getMiddle());
-                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE,ThermalSafetyCheckConst.Size.MIDDLE);
+                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Size.MIDDLE);
                 } else {
                     mTempRect.set(TemperRect.getLarge());
-                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE,ThermalSafetyCheckConst.Size.LARGE);
+                    SpUtils.saveInt(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Size.LARGE);
                 }
             }
         });
         int mCacheSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
-        if(mCacheSize == ThermalSafetyCheckConst.Size.SMALL){
+        if (mCacheSize == ThermalSafetyCheckConst.Size.SMALL) {
             rgTemper.check(R.id.rb_small);
-        } else if(mCacheSize == ThermalSafetyCheckConst.Size.MIDDLE){
+        } else if (mCacheSize == ThermalSafetyCheckConst.Size.MIDDLE) {
             rgTemper.check(R.id.rb_middle);
         } else {
             rgTemper.check(R.id.rb_large);
@@ -88,8 +91,8 @@ public class BlackBodyAreaActivity extends BaseActivity {
                 final int mBlackBodyTop = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_TOP, ThermalSafetyCheckConst.Default.BLACK_BODY_TOP);
                 final int mBlackBodyRight = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_RIGHT, ThermalSafetyCheckConst.Default.BLACK_BODY_RIGHT);
                 final int mBlackBodyBottom = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_BOTTOM, ThermalSafetyCheckConst.Default.BLACK_BODY_BOTTOM);
-                final Rect rect = new Rect(mBlackBodyLeft,mBlackBodyTop,mBlackBodyRight,mBlackBodyBottom);
-                startHotImage(mThermalMirror,mLowTempMode,rect);
+                final Rect rect = new Rect(mBlackBodyLeft, mBlackBodyTop, mBlackBodyRight, mBlackBodyBottom);
+                startHotImage(mThermalMirror, mLowTempMode, rect);
 
                 int maxWidth = 80;
                 int maxHeight = 60;
@@ -144,7 +147,7 @@ public class BlackBodyAreaActivity extends BaseActivity {
         });
     }
 
-    private void startHotImage(final boolean isMirror, final boolean isLowTemp, final Rect rect){
+    private void startHotImage(final boolean isMirror, final boolean isLowTemp, final Rect rect) {
         //usb设备初始化成功
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -179,6 +182,7 @@ public class BlackBodyAreaActivity extends BaseActivity {
     };
 
     private ArrayList<FaceIndexInfo> faceIndexInfos = new ArrayList<>();
+
     //设置人脸框
     private void setFaceIndex() {
         if (faceIndexInfos != null && faceIndexInfos.size() > 0) {
@@ -222,12 +226,12 @@ public class BlackBodyAreaActivity extends BaseActivity {
         return mutableBitmap;
     }
 
-    public void saveRect(View view){
-        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_LEFT,mSaveRect.left);
-        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_TOP,mSaveRect.top);
-        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_RIGHT,mSaveRect.right);
-        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_BOTTOM,mSaveRect.bottom);
+    public void saveRect(View view) {
+        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_LEFT, mSaveRect.left);
+        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_TOP, mSaveRect.top);
+        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_RIGHT, mSaveRect.right);
+        SpUtils.saveInt(ThermalSafetyCheckConst.Key.BLACK_BODY_BOTTOM, mSaveRect.bottom);
 
-        UIUtils.showShort(this,"保存成功");
+        UIUtils.showShort(this, "保存成功");
     }
 }
