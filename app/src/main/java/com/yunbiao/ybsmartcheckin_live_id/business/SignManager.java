@@ -343,7 +343,7 @@ public class SignManager {
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            d("上送失败--->" + e != null ? e.getMessage() : "NULL");
+                            d("上送失败--->" + (e != null ? e.getMessage() : "NULL"));
                             e.printStackTrace();
                             try {
                                 callback.accept(false);
