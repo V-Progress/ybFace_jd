@@ -41,8 +41,6 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.CameraSettings;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.camera.ExtCameraManager;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMainActivity;
@@ -478,7 +476,7 @@ public class SettingActivity extends BaseActivity {
 
     //初始化摄像头尺寸设置
     private void initCameraSizeSetting() {
-        List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
+        /*List<Camera.Size> supportSizeList = ExtCameraManager.instance().getSupportSizeList();
         if (supportSizeList == null) {
             return;
         }
@@ -555,7 +553,7 @@ public class SettingActivity extends BaseActivity {
 
             }
         });
-        spnCameraSize.setSelection(index);
+        spnCameraSize.setSelection(index);*/
     }
 
     public void modifyPWD(View view) {
@@ -568,14 +566,14 @@ public class SettingActivity extends BaseActivity {
 
     public void setAngle(final View view) {
         int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-        if (anInt == CameraSettings.ROTATION_0) {
-            anInt = CameraSettings.ROTATION_90;
-        } else if (anInt == CameraSettings.ROTATION_90) {
-            anInt = CameraSettings.ROTATION_180;
-        } else if (anInt == CameraSettings.ROTATION_180) {
-            anInt = CameraSettings.ROTATION_270;
+        if (anInt == 0) {
+            anInt = 90;
+        } else if (anInt == 90) {
+            anInt = 180;
+        } else if (anInt == 180) {
+            anInt = 270;
         } else {
-            anInt = CameraSettings.ROTATION_0;
+            anInt = 0;
         }
         ((Button) view).setText(getString(R.string.setting_cam_angle) + ":" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);

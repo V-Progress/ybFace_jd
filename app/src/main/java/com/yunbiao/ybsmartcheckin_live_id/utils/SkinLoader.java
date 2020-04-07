@@ -3,7 +3,6 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.yunbiao.yb_smart_attendance.PathManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.CustomSDCardLoader;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;

@@ -77,6 +77,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private boolean mBlackBodyEnabled;
     private int mPreValue;
     private ImageView ivLogo;
+    private boolean mThermalFrameEnabled;
 
     @Override
     protected int getPortraitLayout() {
@@ -154,6 +155,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         mThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR, ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
         mLowTempMode = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP, ThermalSafetyCheckConst.Default.LOW_TEMP);
         mNormalTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, ThermalSafetyCheckConst.Default.NORMAL_TEMPER);
+        mThermalFrameEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME,ThermalSafetyCheckConst.Default.TEMPER_FRAME);
 
         int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
         if(temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL){
@@ -367,7 +369,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         //设置热成像画面中人脸框的颜色，默认为黑色
         TemperatureModule.getIns().setFaceFrameColor(0xFFFFFFFF);
         //人脸框信息faceIndexInfoList，是否在热成像画面中绘制人脸框(true为绘制)
-        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfos, true);
+        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfos, mThermalFrameEnabled);
     }
 
     @Override

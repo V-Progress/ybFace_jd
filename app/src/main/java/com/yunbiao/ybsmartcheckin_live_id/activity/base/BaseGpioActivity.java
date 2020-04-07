@@ -96,6 +96,7 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     protected void onLight() {
         xhapiLedOpen();
         smdtLedWhite();
+        ysLedWhite();
         startAutoLight();
     }
 
@@ -103,6 +104,7 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     private void offLight() {
         xhapiLedClose();
         closeSmdtLedWhite();
+        ysLedOff();
     }
 
     /***

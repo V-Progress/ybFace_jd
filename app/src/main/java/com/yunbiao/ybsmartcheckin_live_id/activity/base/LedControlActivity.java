@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.elcapi.jnielc;
+import com.example.yfaceapi.GPIOManager;
+import com.example.yfaceapi.GpioUtils;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 
@@ -34,6 +36,7 @@ public abstract class LedControlActivity extends BaseActivity {
 
     private int brightness = 15;//亮度：范围0-15
     protected SmdtManager mSmdtManager;
+    private GPIOManager gpioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +45,9 @@ public abstract class LedControlActivity extends BaseActivity {
         Log.e(TAG, "onCreate: 当前类型：" + broadType);
 
         if (TextUtils.equals("SMT", broadType)) {
-            /*if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-
-            }*/
-            try {
-                mSmdtManager = SmdtManager.create(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mSmdtManager = SmdtManager.create(this);
+        } else if(TextUtils.equals("HARRIS",broadType)){
+            gpioManager = GPIOManager.getInstance(this);
         }
         resetLedDelay(1000);
     }
@@ -60,32 +58,37 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     private static final String TAG = "LedControlActivity";
-    private Handler handler = new Handler() {
+    private Handler handler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             Log.e(TAG, "handleMessage: --------- 已重置灯光");
             ledInit();
+            return false;
         }
-    };
+    });
 
     protected void ledGreen() {
         smdtLedGreen();
         jniLedGreen();
+        ysLedGreen();
     }
 
     protected void ledRed() {
         smdtLedRed();
         jniLedRed();
+        ysLedRed();
     }
 
     protected void ledInit() {
         smdtCloseAll();
         jniLedBlue();
+        ysLedOff();
     }
 
     protected void ledOff() {
         smdtCloseAll();
         jniLedOff();
+        ysLedOff();
     }
 
     /*================================================================================*/
@@ -197,5 +200,66 @@ public abstract class LedControlActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ledOff();
+    }
+
+    //亿舜============================================================
+    protected void ysLedWhite(){
+        if(gpioManager == null){
+            return;
+        }
+        String greenLightStatus = gpioManager.getGreenLightStatus();
+        String redLightStatus = gpioManager.getRedLightStatus();
+        String whiteLightStatus = gpioManager.getWhiteLightStatus();
+        if(TextUtils.equals("1",greenLightStatus) || TextUtils.equals("1",redLightStatus)){
+            return;
+        }
+        if(!TextUtils.equals("1",whiteLightStatus)){
+            gpioManager.pullUpWhiteLight();
+        }
+    }
+
+    protected void ysLedGreen(){
+        if(gpioManager == null){
+            return;
+        }
+        String redLightStatus = gpioManager.getRedLightStatus();
+        String whiteLightStatus = gpioManager.getWhiteLightStatus();
+        String greenLightStatus = gpioManager.getGreenLightStatus();
+        if(TextUtils.equals("1",redLightStatus)){
+            gpioManager.pullDownRedLight();
+        }
+        if(TextUtils.equals("1",whiteLightStatus)){
+            gpioManager.pullDownWhiteLight();
+        }
+        if(!TextUtils.equals("1",greenLightStatus)){
+            gpioManager.pullUpGreenLight();
+        }
+    }
+
+    protected void ysLedRed(){
+        if(gpioManager == null){
+            return;
+        }
+        String whiteLightStatus = gpioManager.getWhiteLightStatus();
+        String redLightStatus = gpioManager.getRedLightStatus();
+        String greenLightStatus = gpioManager.getGreenLightStatus();
+        if(TextUtils.equals("1",whiteLightStatus)){
+            gpioManager.pullDownWhiteLight();
+        }
+        if(TextUtils.equals("1",greenLightStatus)){
+            gpioManager.pullDownGreenLight();
+        }
+        if(!TextUtils.equals("1",redLightStatus)){
+            gpioManager.pullUpRedLight();
+        }
+    }
+
+    protected void ysLedOff(){
+        if(gpioManager == null){
+            return;
+        }
+        gpioManager.pullDownRedLight();
+        gpioManager.pullDownWhiteLight();
+        gpioManager.pullDownGreenLight();
     }
 }

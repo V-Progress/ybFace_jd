@@ -940,6 +940,7 @@ public class FaceView extends FrameLayout {
         Observable.create(new ObservableOnSubscribe<CompareResult>() {
             @Override
             public void subscribe(final ObservableEmitter<CompareResult> emitter) {
+                requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SEARCHING);
                 CompareResult compareResult = FaceManager.getInstance().compare(frFace);
                 emitter.onNext(compareResult);
             }
@@ -1117,7 +1118,6 @@ public class FaceView extends FrameLayout {
     }
 
     private void retryRecognizeDelayed(final Integer requestId, long delay) {
-        requestFeatureStatusMap.put(requestId, RequestFeatureStatus.SEARCHING);
         Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .subscribe(new Observer<Long>() {
                     Disposable disposable;

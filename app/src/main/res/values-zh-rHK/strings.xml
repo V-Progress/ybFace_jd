@@ -6,10 +6,20 @@
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
 
+    <!--應用名稱-->
     <string name="yb_check_in">雲標智能考勤</string>
-    <string name="yb_certificates">雲標人證</string>
-    <string name="yb_multiple">雲標大通量</string>
+    <string name="yb_temper_check_in">雲標測溫考勤</string>
+    <string name="yb_certificates">雲標人證測溫</string>
+    <string name="yb_multiple">雲標大通量測溫</string>
     <string name="yb_safety_chceck">雲標測溫安檢</string>
+
+    <string name="ht_temper_check_in">亨通測溫考勤</string>
+    <string name="ht_certificates">亨通人證測溫</string>
+    <string name="ht_multiple">亨通大通量測溫</string>
+    <string name="ht_safety_chceck">亨通測溫安檢</string>
+
+    <string name="sk_temper_check_in">思庫測溫考勤</string>
+    <string name="sk_multiple">思庫大通量測溫</string>
 
     <!--視美泰-->
     <string name="smt_main_net_normal">正常</string>
@@ -255,12 +265,12 @@
     <string name="setting_show_thermal_face_frame">顯示熱成像人臉框</string>
     <string name="setting_show_black_body">顯示黑體校準框</string>
     <string name="setting_multi_track">開啟多次抓取</string>
-    <string name="setting_switch_to_certificates">切换到人证测温</string><!--Switch to certificate temperature measurement-->
-    <string name="setting_switch_to_temperature_check_in">切换到测温考勤</string><!--Switch to temperature measurement attendance-->
-    <string name="setting_switch_function">功能切换</string><!--Function switch-->
-    <string name="setting_switch_tip1">确定切换到人证测温吗？</string><!--Are you sure to switch to certificate temperature measurement-->
-    <string name="setting_switch_tip2">确定切换到测温考勤吗？</string><!--Are you sure to switch to certificate temperature measurement-->
-    <string name="setting_switch_confirm">确定</string>
+    <string name="setting_switch_to_certificates">切換到人證測溫</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">切換到測溫考勤</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">功能切換</string><!--Function switch-->
+    <string name="setting_switch_tip1">確定切換到人證測溫嗎？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">確定切換到測溫考勤嗎？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">確定</string>
     <string name="setting_switch_cancel">取消</string>
 
 
@@ -462,21 +472,22 @@
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（請結合體溫槍測溫和熱成像溫度填寫差值）</string>
     <string name="record_export_multi_thermal">導出</string>
-    <string name="main_real_detection">实时监测</string>
-    <string name="main_data_total">数据统计</string>
+    <string name="main_real_detection">實時監測</string>
+    <string name="main_data_total">數據統計</string>
 
 
-    <string name="safety_main_title">AI大通量测温系统</string>
-    <string name="safety_main_real_detection">实时监测</string>
-    <string name="safety_main_temer_area">体温测量</string>
-    <string name="safety_main_warning_number">异常人数</string>
-    <string name="safety_main_device_no">设备编号:</string>
+    <string name="safety_main_title">AI大通量測溫系統</string>
+    <string name="safety_main_real_detection">實時監測</string>
+    <string name="safety_main_temer_area">體溫測量</string>
+    <string name="safety_main_warning_number">異常人數</string>
+    <string name="safety_main_device_no">設備編號:</string>
 
     <string name="safety_black_body_size_large">大</string>
     <string name="safety_black_body_size_Middle">中</string>
     <string name="safety_black_body_size_Small">小</string>
     <string name="safety_black_body_size_Smaller">更小</string>
-    <string name="safety_balck_body_size">检测区域尺寸</string>
-    <string name="safety_black_body_enable">开启黑体矫正</string>
-    <string name="safety_temperature_threshold">取温阈值</string>
+    <string name="safety_balck_body_size">檢測區域尺寸</string>
+    <string name="safety_black_body_enable">開啟黑體矯正</string>
+    <string name="safety_temperature_threshold">取溫閾值</string>
+    <string name="safety_temperature_frame_enable">開啟測溫框</string><!--開啟測溫框-->
 </resources>

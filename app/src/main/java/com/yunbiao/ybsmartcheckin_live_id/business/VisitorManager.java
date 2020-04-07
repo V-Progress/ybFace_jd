@@ -4,24 +4,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.jdjr.risk.face.local.user.FaceUser;
-import com.jdjr.risk.face.local.user.FaceUserManager;
 import com.yunbiao.faceview.FaceManager;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.VisitorUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
-import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.UserInfo;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.bean.VisitorResponse;
-import com.yunbiao.ybsmartcheckin_live_id.faceview.face_new.FaceSDK;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
-import com.yunbiao.ybsmartcheckin_live_id.views.SyncDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

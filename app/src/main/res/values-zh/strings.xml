@@ -6,10 +6,20 @@
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
 
+    <!--应用名称-->
     <string name="yb_check_in">云标智能考勤</string>
+    <string name="yb_temper_check_in">云标测温考勤</string>
     <string name="yb_certificates">云标人证测温</string>
     <string name="yb_multiple">云标大通量测温</string>
     <string name="yb_safety_chceck">云标测温安检</string>
+
+    <string name="ht_temper_check_in">亨通测温考勤</string>
+    <string name="ht_certificates">亨通人证测温</string>
+    <string name="ht_multiple">亨通大通量测温</string>
+    <string name="ht_safety_chceck">亨通测温安检</string>
+
+    <string name="sk_temper_check_in">思库测温考勤</string>
+    <string name="sk_multiple">思库大通量测温</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">正常</string>
@@ -476,4 +486,5 @@
     <string name="safety_balck_body_size">检测区域尺寸</string>
     <string name="safety_black_body_enable">开启黑体矫正</string>
     <string name="safety_temperature_threshold">取温阈值</string>
+    <string name="safety_temperature_frame_enable">开启测温框</string><!--开启测温框-->
 </resources>

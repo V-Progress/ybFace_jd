@@ -171,7 +171,6 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
-            Log.e(TAG, "newestHotImageData:" + originalMaxT + " --- " + maxT);
             if (isOnlyFace()) {
                 return;
             }

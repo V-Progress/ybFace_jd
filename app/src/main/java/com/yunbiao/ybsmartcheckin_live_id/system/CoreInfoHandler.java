@@ -6,11 +6,9 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.yunbiao.yb_smart_attendance.CommonData;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.AdsUpdateEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -80,8 +78,6 @@ public class CoreInfoHandler {
                         SpUtils.saveStr(SpUtils.RUN_KEY,content.getRunKey());
                         SpUtils.saveInt(SpUtils.DEVICE_TYPE,content.getDtype());
                     }
-
-                    CommonData.updateDeviceInfo(content.getSerNum(),content.getPwd(),content.getExpireDate());
 
                     updateDeviceType();
 

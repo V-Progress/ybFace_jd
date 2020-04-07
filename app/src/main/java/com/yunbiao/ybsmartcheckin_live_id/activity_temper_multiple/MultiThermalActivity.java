@@ -143,6 +143,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         if (Constants.isHT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
+        } else if (Constants.isSK) {
+            ivLogo.setImageResource(R.mipmap.icon_logo3);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
         } else {
             ivLogo.setImageResource(R.mipmap.logo_hushida);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_hushida);
@@ -191,15 +194,15 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         faceView.resume();
 
-        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
+        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE, MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
         mBlackBodyAreaRect = getCacheRect();
         mMultiTrack = SpUtils.getBoolean(MultiThermalConst.Key.MULTI_TRACK, MultiThermalConst.Default.MULTI_TRACK);
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
         mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
-        mBlackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME,MultiThermalConst.Default.BLACK_BODY_FRAME);
-        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME,MultiThermalConst.Default.THERMAL_FACE_FRAME);
+        mBlackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME, MultiThermalConst.Default.BLACK_BODY_FRAME);
+        boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, MultiThermalConst.Default.THERMAL_FACE_FRAME);
         //是否显示热成像人脸框
         faceView.enableThermalFaceFrame(isThermalFaceFrame);
         //开启多次回调
@@ -207,13 +210,13 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         startHotImage();
     }
 
-    private Rect getCacheRect(){
+    private Rect getCacheRect() {
         int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT, MultiThermalConst.Default.CORRECT_AREA_LEFT);
         int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP, MultiThermalConst.Default.CORRECT_AREA_TOP);
         int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT, MultiThermalConst.Default.CORRECT_AREA_RIGHT);
         int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
-        L.e("MultiThermalActivity","onResume:取出的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
-        return new Rect(left,top,right,bottom);
+        L.e("MultiThermalActivity", "onResume:取出的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
+        return new Rect(left, top, right, bottom);
     }
 
     private void startHotImage() {
@@ -491,10 +494,10 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                         if (y + height > hotImage.getHeight()) {
                             height = hotImage.getHeight() - y;
                         }
-                        if(x <= 0){
+                        if (x <= 0) {
                             x = 1;
                         }
-                        if(y <= 0){
+                        if (y <= 0) {
                             y = 1;
                         }
                         if (width > 0 && height > 0) {

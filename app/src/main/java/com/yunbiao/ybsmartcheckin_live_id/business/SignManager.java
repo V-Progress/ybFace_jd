@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
@@ -919,7 +918,7 @@ public class SignManager {
         isBulu = true;
     }
 
-    public void makeUpSign(final byte[] faceImage) {
+   /* public void makeUpSign(final byte[] faceImage) {
         FaceProperty faceProperty = new FaceProperty(0, 0, 0, null);
         makeUpSign(faceImage, faceProperty);
     }
@@ -950,14 +949,14 @@ public class SignManager {
                 signBean.setComid(SpUtils.getInt(SpUtils.COMPANYID));
                 Log.e(TAG, "run: -------------- " + signBean.toString());
 
-                /*if (listener != null) {
+                *//*if (listener != null) {
                     mAct.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             listener.onMakeUped(signBean, true);
                         }
                     });
-                }*/
+                }*//*
 
                 int companyid = SpUtils.getInt(SpUtils.COMPANYID);
                 final Map<String, String> map = new HashMap<>();
@@ -997,7 +996,7 @@ public class SignManager {
                         });
             }
         });
-    }
+    }*/
 
     public File saveBitmap(long time, Bitmap bitmap) {
         return saveBitmap("", time, bitmap);

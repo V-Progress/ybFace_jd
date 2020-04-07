@@ -53,7 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 /**
- * Created by Administrator on 2018/11/26.
+ * 此处只进行UI界面的更新以及人脸部分的初始化工作
  */
 
 public class ThermalImageActivity extends BaseThermalActivity {
@@ -75,11 +75,9 @@ public class ThermalImageActivity extends BaseThermalActivity {
 
     //判断是否开启测温
     private ImageView ivThermalImaging;
-    private TextView tvThermalPercent;
+    private TextView tvThermalTemper;
     private View llThermalArea;
     private View faceDistanceView;
-    private TextView tvMaxT;
-    private TextView tvCacheT;
     private View flDotFrame;
     private ImageView ivBigHead;
     private boolean personFrameEnable;
@@ -109,12 +107,8 @@ public class ThermalImageActivity extends BaseThermalActivity {
         tvTempTips = findViewById(R.id.tv_temp_tips_main);//温度提示
         ivInfaredImaging = findViewById(R.id.iv_infared_imaging_main);
         ivThermalImaging = findViewById(R.id.iv_thermal_imaging_main);//热成像图像显示
-        tvThermalPercent = findViewById(R.id.tv_thermal_percent_main);//热成像温度显示
+        tvThermalTemper = findViewById(R.id.tv_thermal_temper_main);//热成像温度显示
         llThermalArea = findViewById(R.id.ll_thermal_area_main);//热成像数据区域
-
-        /*测试数据*/
-        tvCacheT = findViewById(R.id.tv_thermal_cacheT_main);
-        tvMaxT = findViewById(R.id.tv_thermal_maxT_main);
 
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
@@ -191,13 +185,11 @@ public class ThermalImageActivity extends BaseThermalActivity {
     protected void updateHotImageAndTemper(Bitmap bitmap, float temper, float v, float v1, boolean hasPerson) {
         if (mCurrMode == ThermalConst.THERMAL_ONLY || mCurrMode == ThermalConst.FACE_THERMAL) {
             ivThermalImaging.setImageBitmap(bitmap);
-            tvThermalPercent.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
+            tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
         } else if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
             ivInfaredImaging.setImageBitmap(bitmap);
-            tvThermalPercent.setText(hasPerson ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
+            tvThermalTemper.setText(hasPerson ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
         }
-        tvMaxT.setText("maxT：" + v);
-        tvCacheT.setText("cacheT：" + v1);
     }
 
     @Override

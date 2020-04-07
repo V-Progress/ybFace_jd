@@ -14,6 +14,7 @@ import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -215,7 +216,7 @@ public class SplashActivity extends BaseActivity {
             // TODO: 2020/4/3功能切换
             boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
             if(!jumpTag){
-                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+                startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
             } else {
                 if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
                     Constants.DEVICE_TYPE = Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES;

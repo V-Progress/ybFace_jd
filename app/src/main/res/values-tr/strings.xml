@@ -6,10 +6,20 @@
     <string name="no_used">/mevcut:</string>
     <string name="back">Geri</string>
 
-    <string name="yb_check_in">Yunbiao Akıllı Katılım</string>
-    <string name="yb_certificates">Yunbiao tanığı</string>
-    <string name="yb_multiple">Yunbiao büyük akı</string>
-    <string name="yb_safety_chceck">Yunbiao sıcaklık ölçümü ve güvenlik kontrolü</string>
+    <!--应用名称-->
+    <string name="yb_check_in">YBCheckIn</string>
+    <string name="yb_temper_check_in">YBTemperatureCheckIn</string>
+    <string name="yb_certificates">YBCertificates</string>
+    <string name="yb_multiple">YBHighThroughput</string>
+    <string name="yb_safety_chceck">YBTemperatureSecurityCheck</string>
+
+    <string name="ht_temper_check_in">HTTemperatureCheckIn</string>
+    <string name="ht_certificates">HTCertificates</string>
+    <string name="ht_multiple">HTHighThroughput</string>
+    <string name="ht_safety_chceck">HTTemperatureSecurityCheck</string>
+
+    <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
+    <string name="sk_multiple">SKHighThroughput</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">normal</string>
@@ -476,4 +486,5 @@
     <string name="safety_balck_body_size">检测区域尺寸</string>
     <string name="safety_black_body_enable">开启黑体矫正</string>
     <string name="safety_temperature_threshold">取温阈值</string>
+    <string name="safety_temperature_frame_enable">temperature measuring frame</string><!--开启测温框-->
 </resources>

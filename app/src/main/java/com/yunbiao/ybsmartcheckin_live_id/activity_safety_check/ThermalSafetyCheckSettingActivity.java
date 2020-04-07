@@ -42,6 +42,20 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initBlackBodyPreValue();
 
         initBlackBodyEnabled();
+
+        initTemperFrame();
+    }
+
+    private void initTemperFrame(){
+        boolean isTemperEnable = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME,ThermalSafetyCheckConst.Default.TEMPER_FRAME);
+        Switch swTemperFrame = findViewById(R.id.sw_temper_frame_enable_setting);
+        swTemperFrame.setChecked(isTemperEnable);
+        swTemperFrame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME,isChecked);
+            }
+        });
     }
 
     private void initBlackBodyEnabled(){

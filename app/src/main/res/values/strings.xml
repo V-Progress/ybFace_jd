@@ -6,10 +6,20 @@
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
 
-    <string name="yb_check_in">云标智能考勤</string>
-    <string name="yb_certificates">云标人证测温</string>
-    <string name="yb_multiple">云标大通量测温</string>
-    <string name="yb_safety_chceck">云标测温安检</string>
+    <!--应用名称-->
+    <string name="yb_check_in">YBCheckIn</string>
+    <string name="yb_temper_check_in">YBTemperatureCheckIn</string>
+    <string name="yb_certificates">YBCertificates</string>
+    <string name="yb_multiple">YBHighThroughput</string>
+    <string name="yb_safety_chceck">YBTemperatureSecurityCheck</string>
+
+    <string name="ht_temper_check_in">HTTemperatureCheckIn</string>
+    <string name="ht_certificates">HTCertificates</string>
+    <string name="ht_multiple">HTHighThroughput</string>
+    <string name="ht_safety_chceck">HTTemperatureSecurityCheck</string>
+
+    <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
+    <string name="sk_multiple">SKHighThroughput</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
@@ -482,4 +492,5 @@
     <string name="safety_balck_body_size">Temperature area size</string>
     <string name="safety_black_body_enable">Turn on blackbody correction</string><!--开启黑体矫正-->
     <string name="safety_temperature_threshold">Temperature threshold</string><!--取温阈值-->
+    <string name="safety_temperature_frame_enable">temperature measuring frame</string><!--开启测温框-->
 </resources>
