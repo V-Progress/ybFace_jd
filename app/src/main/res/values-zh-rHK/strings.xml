@@ -408,7 +408,8 @@
 
     <!--人證測溫系統-->
     <string name="act_certificates_idcard_only">人證比對模式</string>
-    <string name="act_certificates_idcard_thermal">人證比對+熱成像測溫模式</string>
+    <string name="act_certificates_idcard_thermal">人证比对+热成像(32*32)</string>
+    <string name="act_certificates_idcard_thermal_16_4">人证比对+热成像(16*4)</string>
     <string name="act_certificates_idcard_infared">人證比對+紅外測溫模式</string>
     <string name="act_certificates_title">AI人證測溫校驗系統</string>
     <string name="act_certificates_please_get_hat">請取下眼睛、帽子、正視鏡頭</string>

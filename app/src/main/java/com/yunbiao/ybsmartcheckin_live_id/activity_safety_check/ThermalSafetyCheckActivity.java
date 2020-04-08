@@ -14,7 +14,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
@@ -49,7 +51,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
     private ImageView ivHot;
     private TextView tvTemperState;
-    private TextView tvTemper;
+    private TextSwitcher tsTemper;
 
     private float mWarningTemper = 37.3f;
     private float mNormalTemper = 33.0f;
@@ -103,7 +105,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         tvSsdSafetyCheck = findViewById(R.id.tv_ssd_safety_check);
         ivHot = findViewById(R.id.iv_hot_image_safety_check);
         tvTemperState = findViewById(R.id.tv_temper_state_safety_check);
-        tvTemper = findViewById(R.id.tv_temper_safety_check);
+        tsTemper = findViewById(R.id.ts_temper_safety_check);
+        tsTemper.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView textView = (TextView) View.inflate(tsTemper.getContext(), R.layout.layout_safety_check_temper_textview, null);
+                return textView;
+            }
+        });
 
         String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
         tvDeviceNumber.setText(str);
@@ -248,7 +257,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
             FaceIndexInfo faceIndexInfo = arrayList.get(0);
             float originalTempF = faceIndexInfo.getOriginalTempF();
-            Log.e(TAG, "newestHotImageData: " + originalTempF);
 
             if(originalTempF < mNormalTemper){
                 if (mTemperFloats.size() > 0) {
@@ -295,13 +303,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 case 1:
                     float finalTemper = (float) msg.obj;
 
-                    tvTemper.setText(finalTemper + "");
+                    tsTemper.setText(finalTemper + "");
+                    TextView currTextView = (TextView) tsTemper.getCurrentView();
                     String tip;
                     //体温正常
                     if (finalTemper >= mNormalTemper && finalTemper < mWarningTemper) {
                         tip = APP.getContext().getResources().getString(R.string.main_temp_normal_tips);
                         ledGreen();
-                        tvTemper.setTextColor(Color.GREEN);
+                        currTextView.setTextColor(Color.GREEN);
                         tvSsdSafetyCheck.setTextColor(Color.GREEN);
                         tvTemperState.setText(tip);
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_pass);
@@ -310,7 +319,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     } else if (finalTemper >= mWarningTemper) {//体温异常
                         tip = APP.getContext().getResources().getString(R.string.main_temp_warning_tips);
                         ledRed();
-                        tvTemper.setTextColor(Color.RED);
+                        currTextView.setTextColor(Color.RED);
                         tvSsdSafetyCheck.setTextColor(Color.RED);
                         tvTemperState.setText(tip);
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_nopass);

@@ -138,15 +138,17 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/tv_temper_safety_check"
+                        <TextSwitcher
+                            android:inAnimation="@anim/up_in"
+                            android:outAnimation="@anim/down_out"
+                            android:id="@+id/ts_temper_safety_check"
                             android:textStyle="bold"
                             android:gravity="center"
                             android:text="0.0"
                             android:textColor="@color/white"
                             android:textSize="120dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"/>
                         <TextView
                             android:layout_gravity="start"
                             android:id="@+id/tv_ssd_safety_check"

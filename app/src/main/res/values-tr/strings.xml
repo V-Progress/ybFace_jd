@@ -403,7 +403,8 @@
 
     <!--人证测温系统-->
     <string name="act_certificates_idcard_only">人证比对模式</string>
-    <string name="act_certificates_idcard_thermal">人证比对+热成像测温模式</string>
+    <string name="act_certificates_idcard_thermal">人证比对+热成像(32*32)</string>
+    <string name="act_certificates_idcard_thermal_16_4">人证比对+热成像(16*4)</string>
     <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
     <string name="act_certificates_title">AI人证测温校验系统</string>
     <string name="act_certificates_please_get_hat">请取下眼睛、帽子、正视镜头</string>
