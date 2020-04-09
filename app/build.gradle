@@ -17,7 +17,7 @@ android {
             abiFilters 'armeabi-v7a'//,'armeabi','arm64-v8a','x86','x86_64'
         }
     }
-
+    //签名配置
     signingConfigs {
         release {
             keyAlias 'yunbiao'
@@ -28,7 +28,7 @@ android {
             v2SigningEnabled true
         }
     }
-
+    //编译类型
     buildTypes {
         release {
             debuggable false
@@ -39,9 +39,6 @@ android {
             shrinkResources false//开启此配置必须打开混淆
             signingConfig signingConfigs.release
             applicationIdSuffix ".release"
-
-            buildConfigField "String", "FACE_APP_ID", "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
-            buildConfigField "String", "FACE_SDK_KEY", "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
         }
         debug {
             debuggable false
@@ -52,9 +49,6 @@ android {
             shrinkResources false
             signingConfig signingConfigs.release
             applicationIdSuffix ".debug"
-
-            buildConfigField "String", "FACE_APP_ID", "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
-            buildConfigField "String", "FACE_SDK_KEY", "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
         }
     }
     lintOptions {
@@ -66,161 +60,91 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
-
+    //多渠道
     productFlavors {
-        /*普通考勤====================*/
-        YB {
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_check_in",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybCheckIn"
-            ]
+        ext.flavor = {
+            _flavor, _isHT, _isSK, _appType, _appName, _appIcon, _umKey, _umChannel, _faceAppId, _faceSdkKey
+                ->
+                _flavor.buildConfigField("boolean", "IS_HT", _isHT)
+                _flavor.buildConfigField("boolean", "IS_SK", _isSK)
+                _flavor.buildConfigField("int", "APP_TYPE", _appType)
+                _flavor.buildConfigField("String","FACE_APP_ID",_faceAppId)
+                _flavor.buildConfigField("String","FACE_SDK_KEY",_faceSdkKey)
+                _flavor.manifestPlaceholders.put("app_name", _appName)
+                _flavor.manifestPlaceholders.put("app_icon", _appIcon)
+                _flavor.manifestPlaceholders.put("UMENG_APPKEY", _umKey)
+                _flavor.manifestPlaceholders.put("UMENG_CHANNEL", _umChannel)
         }
+
+        /*普通考勤============================================================================================*/
+        flavor(YB,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN",
+                "@string/yb_check_in","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
 
         /*==云标版本============================================================================================*/
-        YB_10 {//云标10寸
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_temper_check_in",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemper10"
-            ]
-        }
-
-        YB_8 {//云标8寸
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_temper_check_in",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemper8"
-            ]
-        }
-        YB_RZ {//云标人证
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_certificates",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemperRZ"
-            ]
-        }
-        YB_DR {//云标多人
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_multiple",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemperDR"
-            ]
-        }
-        YB_SC {//云标安检
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK"
-            manifestPlaceholders = [
-                    app_name     : "@string/yb_safety_chceck",
-                    app_icon     : "@mipmap/ic_launcher",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemperDR"
-            ]
-        }
-
+        //云标10寸
+        flavor(YB_10,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/yb_temper_check_in","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB_10",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
+        //云标8寸
+        flavor(YB_8,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
+                "@string/yb_temper_check_in","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB_10",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
+        //云标人证
+        flavor(YB_RZ,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES",
+                "@string/yb_certificates","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB_RZ",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
+        //云标多人
+        flavor(YB_DR,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
+                "@string/yb_multiple","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB_DR",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
+        //云标安检
+        flavor(YB_SC,
+                "false","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
+                "@string/yb_safety_chceck","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","YB_SC",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
         /*==思库版本============================================================================================*/
-        SK_8 {
-            buildConfigField "boolean", "IS_SK", "true"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT"
-            manifestPlaceholders = [
-                    app_name     : "@string/sk_temper_check_in",
-                    app_icon     : "@mipmap/icon_logo3",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "SKTemper8"
-            ]
-        }
-
-        SK_DR {//云标多人
-            buildConfigField "boolean", "IS_SK", "true"
-            buildConfigField "boolean", "IS_HT", "false"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL"
-            manifestPlaceholders = [
-                    app_name     : "@string/sk_multiple",
-                    app_icon     : "@mipmap/icon_logo3",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "SKMultiple"
-            ]
-        }
+        flavor(SK_8,
+                "false","true", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
+                "@string/sk_temper_check_in","@mipmap/icon_logo3","5cbe87a60cafb210460006b3","SK_8",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
+        flavor(SK_DR,
+                "false","true", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
+                "@string/sk_multiple","@mipmap/icon_logo3","5cbe87a60cafb210460006b3","SK_DR",
+                getYBFace_APP_ID(),getYBFace_SDK_KEY())
         /*==亨通版本============================================================================================*/
-        HT_10 {//亨通10寸
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "true"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN"
-            manifestPlaceholders = [
-                    app_name     : "@string/ht_temper_check_in",
-                    app_icon     : "@mipmap/logo_icon2",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "HTTemper10"
-            ]
-        }
-
-        HT_8 {//亨通8寸
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "true"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT"
-            manifestPlaceholders = [
-                    app_name     : "@string/ht_temper_check_in",
-                    app_icon     : "@mipmap/logo_icon2",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "HTTemper8"
-            ]
-        }
-        HT_RZ {//亨通人证
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "true"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES"
-            manifestPlaceholders = [
-                    app_name     : "@string/ht_certificates",
-                    app_icon     : "@mipmap/logo_icon2",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "HTTemperRZ"
-            ]
-        }
-        HT_DR {//亨通多人
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "true"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL"
-            manifestPlaceholders = [
-                    app_name     : "@string/ht_multiple",
-                    app_icon     : "@mipmap/logo_icon2",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "HTTemperDR"
-            ]
-        }
-        HT_SC {//云标安检
-            buildConfigField "boolean", "IS_SK", "false"
-            buildConfigField "boolean", "IS_HT", "true"
-            buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK"
-            manifestPlaceholders = [
-                    app_name     : "@string/ht_safety_chceck",
-                    app_icon     : "@mipmap/logo_icon2",
-                    UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-                    UMENG_CHANNEL: "ybTemperDR"
-            ]
-        }
+        //亨通10寸
+        flavor(HT_10,
+                "true","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN",
+                "@string/ht_temper_check_in","@mipmap/logo_icon2","5cbe87a60cafb210460006b3","HT_10",
+                getHTFace_APP_ID(),getHTFace_SDK_KEY())
+        //亨通8寸
+        flavor(HT_8,
+                "true","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT",
+                "@string/ht_temper_check_in","@mipmap/logo_icon2","5cbe87a60cafb210460006b3","HT_8",
+                getHTFace_APP_ID(),getHTFace_SDK_KEY())
+        //亨通人证
+        flavor(HT_RZ,
+                "true","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES",
+                "@string/ht_certificates","@mipmap/logo_icon2","5cbe87a60cafb210460006b3","HT_RZ",
+                getHTFace_APP_ID(),getHTFace_SDK_KEY())
+        //亨通多人
+        flavor(HT_DR,
+                "true","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL",
+                "@string/ht_multiple","@mipmap/logo_icon2","5cbe87a60cafb210460006b3","HT_DR",
+                getHTFace_APP_ID(),getHTFace_SDK_KEY())
+        //亨通安检
+        flavor(HT_SC,
+                "true","false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK",
+                "@string/ht_safety_chceck","@mipmap/logo_icon2","5cbe87a60cafb210460006b3","HT_SC",
+                getHTFace_APP_ID(),getHTFace_SDK_KEY())
     }
+    //APK输出配置
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
@@ -235,8 +159,6 @@ android {
     greendao {
         schemaVersion 28//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
-        //这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
-//        targetGenDir 'src/main/java'
     }
 }
 
@@ -247,6 +169,36 @@ def buildTime() {
     def formattedDate = date.format('yyyyMMddHHmm')
     return formattedDate
 }
+
+def getYBFace_APP_ID(){
+    return "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
+}
+
+def getYBFace_SDK_KEY(){
+    return "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
+}
+
+def getHTFace_APP_ID(){
+    return "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
+}
+
+def getHTFace_SDK_KEY(){
+    return "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
+}
+
+/*
+多渠道范文
+YB {
+    buildConfigField "boolean", "IS_SK", "false"
+    buildConfigField "boolean", "IS_HT", "false"
+    buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN"
+    manifestPlaceholders = [
+            app_name     : "@string/yb_check_in",
+            app_icon     : "@mipmap/ic_launcher",
+            UMENG_APPKEY : "5cbe87a60cafb210460006b3",
+            UMENG_CHANNEL: "YB"
+    ]
+}*/
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -265,10 +217,6 @@ dependencies {
 
     /*GSON*/
     implementation files('libs/core-3.0.0.jar')
-
-    /*京东Face*/
-//    implementation fileTree(includes: ['android_sdk-release.aar'], dir: 'libs')
-//    implementation fileTree(includes: ['FaceLocalSDK-release_201906101703.aar'], dir: 'libs')
 
     implementation files('libs/XHApi.jar')
 
@@ -299,14 +247,6 @@ dependencies {
     implementation 'com.wang.avi:library:1.0.0'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
-    /*PieChart*/
-
-    //bugly
-
-    //    implementation 'com.tencent.bugly:crashreport_upgrade:1.4.5'
-
-    //    implementation 'com.tencent.bugly:nativecrashreport:3.7.1'
 
     //umeng
     implementation 'com.umeng.umsdk:analytics:7.5.4'
