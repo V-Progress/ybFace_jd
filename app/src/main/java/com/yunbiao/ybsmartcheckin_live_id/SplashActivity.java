@@ -254,7 +254,7 @@ public class SplashActivity extends BaseActivity {
                 } else if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES){//如果是云标人证则修改为云标考勤
                     Constants.DEVICE_TYPE = Constants.DeviceType.TEMPERATURE_CHECK_IN;
                 }
-                startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
+                startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
             }
             finish();
             return;

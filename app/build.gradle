@@ -144,6 +144,10 @@ android {
                 "@string/ht_safety_chceck", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_SC",
                 getHTFace_APP_ID(), getHTFace_SDK_KEY())
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
     //APK输出配置
     android.applicationVariants.all { variant ->
             variant.outputs.all {

@@ -30,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="32dp" />
 
-        <TextClock
+        <!--<TextClock
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="32dp" />-->
     </RelativeLayout>
 
     <RelativeLayout
@@ -163,7 +163,7 @@
             android:layout_width="180dp"
             android:layout_height="220dp">
             <View
-                android:src="@mipmap/icon_idcard_moren"
+                android:background="@mipmap/icon_idcard_moren"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <ImageView

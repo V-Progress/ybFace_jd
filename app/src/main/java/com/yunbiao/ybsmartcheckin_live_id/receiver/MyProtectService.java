@@ -22,7 +22,7 @@ public class MyProtectService extends Service {
     //看门狗service
     private String packageName = "com.yunbiao.ybsmartcheckin_live_id";
 
-    private final static int DELAY_TIME = 60 * 1000;//60s轮询一次
+    private final static int DELAY_TIME = 20 * 1000;//60s轮询一次
     private final static int CHECK_APP = 0x3211;
     /**
      * 判断服务是否开启
@@ -48,7 +48,7 @@ public class MyProtectService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand: 开启守护进程");
-        mHandler.sendEmptyMessage(CHECK_APP);
+        mHandler.sendEmptyMessageDelayed(CHECK_APP,DELAY_TIME);
         return super.onStartCommand(intent, flags, startId);
     }
 

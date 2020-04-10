@@ -229,10 +229,6 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
     };
 
-
-    private final int DEFAULT_FACE_IMAGE = R.mipmap.icon_face_moren;
-    private final int DEFAULT_IDCARD_IMAGE = R.mipmap.icon_idcard_moren;
-
     @Override
     protected void initData() {
         initCardReader();
@@ -268,21 +264,13 @@ public class CertificatesActivity extends BaseGpioActivity {
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             String port = "/dev/ttyS3";
             TemperatureModule.getIns().initSerialPort(this, port, 19200);
-            resultHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    TemperatureModule.getIns().startHotImageK1604(mThermalMirror, mLowTemp, hotImageK1604CallBack);
-                }
-            },2000);
+            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalMirror, mLowTemp, hotImageK1604CallBack),2000);
         } else {
             String port = "/dev/ttyS4";
-            TemperatureModule.getIns().initSerialPort(this, port, 115200);
-            resultHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack);
-                }
-            }, 2000);
+            resultHandler.postDelayed(() -> {
+                TemperatureModule.getIns().initSerialPort(CertificatesActivity.this, port, 115200);
+                resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack), 2000);
+            },2000);
         }
 
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
@@ -299,12 +287,9 @@ public class CertificatesActivity extends BaseGpioActivity {
         public void newestHotImageData(final Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
             mCacheHotImage = bitmap;
             if (ivHotImage != null) {
-                ivHotImage.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivHotImage.setImageBitmap(bitmap);
-                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + afterF + "℃");
-                    }
+                ivHotImage.post(() -> {
+                    ivHotImage.setImageBitmap(bitmap);
+                    tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + originalMaxT + "℃");
                 });
             }
 
@@ -449,10 +434,7 @@ public class CertificatesActivity extends BaseGpioActivity {
         //清除人脸的时候不清除缓存ID
         mSetFaceImageTime = 0;
         closeCompareThread();
-        if (currFaceImageId != DEFAULT_FACE_IMAGE) {
-            currFaceImageId = DEFAULT_FACE_IMAGE;
-            featureCacheList.clear();
-        }
+        featureCacheList.clear();
     }
 
     private Bitmap mIdCardBitmap = null;

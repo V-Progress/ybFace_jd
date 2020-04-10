@@ -52,7 +52,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private TypedArray hasFaceArray;
 
     private Bitmap mLastHotImage;
-//    private List<Float> mCacheTemperList = new ArrayList<>();//最终温度结果集
     private List<Float> mCacheTemperList = Collections.synchronizedList(new ArrayList<Float>());//最终温度结果集
     private float mCacheBeforeTemper = 0.0f;//缓存之前的温度
     private long mCacheTime = 0;//缓存时间
@@ -116,12 +115,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 portPath = "/dev/ttyS4";
             }
             TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
-            updateUIHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack);
-                }
-            }, 2000);
+            updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack), 2000);
         } else if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED) {
             String portPath;
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -132,19 +126,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         } else if (mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
-            String portPath;
-            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                portPath = "/dev/ttyS3";
-            } else {
-                portPath = "/dev/ttyS4";
-            }
+            String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
-            updateUIHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack);
-                }
-            }, 2000);
+            updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
         }
     }
 
@@ -245,7 +229,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        final int temperListSize = mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED ? 2 : 4;
+        final int temperListSize = mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.FACE_THERMAL_16_4 || mCurrMode == ThermalConst.FACE_THERMAL_16_4 ? 2 : 4;
         if (mCurrMode == ThermalConst.THERMAL_ONLY || mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.THERMAL_16_4_ONLY) {
             long currentTimeMillis = System.currentTimeMillis();
             if (mCacheTime != 0 && currentTimeMillis - mCacheTime < mSpeechDelay) {
@@ -262,9 +246,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             float resultTemper = max;
             if (resultTemper < mTempWarningThreshold) {
-                resultTemper += mTempCorrect;
+                if (mCurrMode != ThermalConst.THERMAL_16_4_ONLY && mCurrMode != ThermalConst.FACE_THERMAL_16_4) {
+                    resultTemper += mTempCorrect;
+                }
 
-                if (mCurrMode != ThermalConst.INFRARED_ONLY && mCurrMode != ThermalConst.FACE_INFRARED) {
+                if (mCurrMode != ThermalConst.INFRARED_ONLY && mCurrMode != ThermalConst.FACE_INFRARED && mCacheBeforeTemper != 0.0f) {
                     float currDiffValue = originT - mCacheBeforeTemper - 3.0f;
                     mCacheDiffValue = mCacheDiffValue == 2.0f
                             //判断当前差值是否大于2.0f，如果是则存值
@@ -274,8 +260,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 }
             }
             resultTemper = formatF(resultTemper);
-            //发送结果
-            sendResultMessage(resultTemper, "");
+            sendResultMessage(resultTemper, "");//发送结果
 
             if (resultTemper < HIGHEST_TEMPER) {
                 //上传数据
@@ -283,8 +268,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 Bitmap copyImage = mLastHotImage.copy(mLastHotImage.getConfig(), false);
                 temperatureSign.setHotImageBitmap(copyImage);
                 temperatureSign.setImgBitmap(viewInterface.getFacePicture());
-                sendUpdateSignMessage(temperatureSign);
-                SignManager.instance().uploadTemperatureSign(temperatureSign);
+                sendUpdateSignMessage(temperatureSign);//发送列表更新事件
+                SignManager.instance().uploadTemperatureSign(temperatureSign);//上传数据
             }
         } else if (mCurrMode == ThermalConst.FACE_THERMAL || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
             mCacheTemperList.add(afterT);
@@ -357,7 +342,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return false;
         }
         //判断集合中的温度数据
-        if (mCacheTemperList.size() < (mCurrMode == ThermalConst.FACE_INFRARED ? 2 : 3)) {
+        if (mCacheTemperList.size() < (mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.FACE_THERMAL_16_4 ? 2 : 3)) {
             return false;
         }
         return true;

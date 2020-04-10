@@ -167,7 +167,7 @@
             android:layout_width="175dp"
             android:layout_height="209dp">
             <View
-                android:src="@mipmap/icon_idcard_moren"
+                android:background="@mipmap/icon_idcard_moren"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <ImageView

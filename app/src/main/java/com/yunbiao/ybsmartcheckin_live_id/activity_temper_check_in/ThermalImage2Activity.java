@@ -212,6 +212,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     public void updateHotImage(Bitmap bitmap, float temper, boolean hasFace) {
         if (ivInfaredImaging.isShown()) {
             ivInfaredImaging.setImageBitmap(bitmap);
+//            tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
             tvThermalTemper.setText(hasFace ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
         } else if (ivThermalImaging.isShown()) {
             ivThermalImaging.setImageBitmap(bitmap);
