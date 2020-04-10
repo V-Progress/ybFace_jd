@@ -166,8 +166,7 @@ android {
 }
 
 String buildApkName(String param) {
-    String name;
-
+    String name
     if(param.contains("SK"))
         name = "SK"
     else if(param.contains("HT"))
@@ -205,6 +204,7 @@ def buildTime() {
     //yy年 MM月 dd日 HH小时 mm分钟 ss秒
     def formattedDate = date.format('yyyyMMddHHmm')
     return formattedDate
+//    return new Date().format("yyyy-MM-dd_HH-mm-ss", TimeZone.getTimeZone("GMT+8"))
 }
 
 def getYBFace_APP_ID() {
