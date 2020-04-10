@@ -5,6 +5,8 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
+    <string name="not_support_speech">當前語言系統不支持的語言:</string>
+    <string name="miss_speech_data">語音數據缺失:</string>
 
     <!--應用名稱-->
     <string name="yb_check_in">雲標智能考勤</string>
@@ -182,6 +184,8 @@
     <string name="face_thermal_16_4_model">人臉識別 + 熱成像模式（16*4）</string>
 
     <!--標簽-->
+    <string name="setting_tip_warning_number_reseted">計數已清零</string>
+    <string name="setting_reset_warning_number">計數清零</string>
     <string name="setting_face_similar_threshold">設置人臉相似度閾值</string>
     <string name="setting_enable_dialog">開啟人臉彈框</string>
     <string name="setting_enable_liveness">開啟活體檢測</string>

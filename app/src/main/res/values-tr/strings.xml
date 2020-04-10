@@ -5,6 +5,8 @@
     <string name="used">kullanılmış:</string>
     <string name="no_used">/mevcut:</string>
     <string name="back">Geri</string>
+    <string name="not_support_speech">Şimdiki dil sistemi tarafından diller desteklenmiyor:</string>
+    <string name="miss_speech_data">Ses verileri kayıp:</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -182,6 +184,8 @@
     <string name="face_thermal_16_4_model">Yüz tanıma + termal görüntüleme modu（16*4）</string>
 
     <!--标签-->
+    <string name="setting_tip_warning_number_reseted">Count cleared</string>
+    <string name="setting_reset_warning_number">Count cleared</string>
     <string name="setting_face_similar_threshold">Yüz benzerlik eşiğini ayarlama</string>
     <string name="setting_enable_dialog">Yüz açılır penceresini aç</string>
     <string name="setting_enable_liveness">Canlı algılamayı açma</string>

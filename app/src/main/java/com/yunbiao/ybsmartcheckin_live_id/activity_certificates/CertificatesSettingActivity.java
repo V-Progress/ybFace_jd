@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.hardware.Camera;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -22,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,7 +27,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -493,10 +489,8 @@ public class CertificatesSettingActivity extends BaseActivity {
                 int sml = Integer.parseInt(similar);
                 if (sml >= 100) {//太大
                     UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值过大将导致无法识别\n请重新设置");
-                    return;
                 } else if (sml <= 65) {//太小
                     UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值过小会导致误识率过高\n请重新设置");
-                    return;
                 } else if (sml > 90) {//比较大
                     UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值设置较大，识别速度将有所变慢\n设置成功");
                 } else if (sml < 75) {//比较小

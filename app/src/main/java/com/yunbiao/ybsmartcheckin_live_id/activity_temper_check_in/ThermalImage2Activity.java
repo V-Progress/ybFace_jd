@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -47,6 +48,8 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Locale;
 
 /**
  * 此处只进行UI界面的更新以及人脸部分的初始化工作
@@ -358,7 +361,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     @Override
     protected void initData() {
         super.initData();
-        KDXFSpeechManager.instance().init(this).welcome();
+        KDXFSpeechManager.instance().init(this);
 
         //开启Xmpp
         startXmpp();

@@ -254,6 +254,12 @@
             android:onClick="powerOnOff"
             android:text="@string/setting_power_on_off" />
 
+        <TextView
+            style="@style/setting_text_child"
+            android:layout_marginTop="10dp"
+            android:onClick="resetWarningNumber"
+            android:text="@string/setting_reset_warning_number" />
+
         <LinearLayout
             android:id="@+id/ll_black_body_pre_value"
             android:visibility="gone"

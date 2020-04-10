@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@mipmap/bg_main">
 
     <RelativeLayout
@@ -30,7 +29,7 @@
             android:textColor="@color/white"
             android:textSize="32dp" />
 
-        <TextClock
+        <!--<TextClock
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,70 +39,77 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="32dp" />-->
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@mipmap/bg_right_top"
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:id="@+id/rl_left"
+        android:layout_width="600dp"
+        android:layout_height="658dp"
+        android:layout_below="@+id/rl_top"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@mipmap/bg_camera">
 
-        <com.yunbiao.faceview.CertificatesView
-            android:id="@+id/certificates_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:textSize="20dp"
-            android:id="@+id/tv_net_state_certi"
-            android:layout_margin="10dp"
-            android:layout_alignParentRight="true"
-            android:background="#2D000000"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
+        <RelativeLayout
+            android:layout_width="564dp"
+            android:layout_height="564dp"
             android:layout_centerHorizontal="true"
-            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/bg_facearer"
+            android:padding="12dp">
+
+            <com.yunbiao.faceview.CertificatesView
+                android:id="@+id/certificates_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:textSize="20dp"
+                android:id="@+id/tv_net_state_certi"
+                android:layout_margin="10dp"
+                android:layout_alignParentRight="true"
+                android:background="#2D000000"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/ll_hot_image_area"
+                android:padding="5dp"
+                android:background="@mipmap/bg_warn"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_hot_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp" />
+
+                <TextView
+                    android:background="#3D000000"
+                    android:id="@+id/tv_temp_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="23dp"
-            android:text="请取下眼镜帽子"
+            android:text="@string/act_certificates_please_get_hat"
             android:textColor="#BBDAFF"
-            android:textSize="26dp" />
-
-        <LinearLayout
-            android:id="@+id/ll_hot_image_area"
-            android:padding="5dp"
-            android:background="@mipmap/bg_warn"
-            android:layout_width="160dp"
-            android:layout_height="80dp"
-            android:orientation="vertical">
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:id="@+id/iv_hot_image"
-                android:layout_width="match_parent"
-                android:layout_height="40dp" />
-
-            <TextView
-                android:background="#3D000000"
-                android:id="@+id/tv_temp_main"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
-        </LinearLayout>
+            android:textSize="28dp" />
 
         <Button
-            android:visibility="gone"
             android:id="@+id/btn_no_id_card"
             android:textSize="20dp"
             android:padding="10dp"
@@ -111,18 +117,16 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:text="@string/act_certificates_no_idcard_temper"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginTop="10dp"
         android:id="@+id/rl_righy_top"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_width="600dp"
+        android:layout_height="359dp"
         android:layout_alignTop="@+id/rl_left"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_toRightOf="@+id/rl_left"
         android:background="@mipmap/bg_right_top">
 
@@ -130,10 +134,10 @@
             android:id="@+id/fl_face"
             android:padding="3dp"
             android:background="@mipmap/bg_face_recg"
-            android:layout_marginLeft="53dp"
-            android:layout_marginTop="15dp"
-            android:layout_width="180dp"
-            android:layout_height="220dp">
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="175dp"
+            android:layout_height="209dp">
             <View
                 android:background="@mipmap/icon_face_moren"
                 android:layout_width="match_parent"
@@ -158,10 +162,10 @@
             android:padding="3dp"
             android:layout_alignParentRight="true"
             android:background="@mipmap/bg_idcard_recg"
-            android:layout_marginRight="53dp"
-            android:layout_marginTop="15dp"
-            android:layout_width="180dp"
-            android:layout_height="220dp">
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="175dp"
+            android:layout_height="209dp">
             <View
                 android:src="@mipmap/icon_idcard_moren"
                 android:layout_width="match_parent"
@@ -174,7 +178,6 @@
         </FrameLayout>
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/tv_rlzp"
             android:layout_width="120dp"
             android:layout_height="40dp"
@@ -185,10 +188,10 @@
             android:gravity="center"
             android:text="@string/act_certificates_face_picture"
             android:textColor="#F0DC00"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
+
 
         <TextView
-            android:visibility="gone"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_below="@+id/fl_card"
@@ -199,18 +202,28 @@
             android:gravity="center"
             android:text="@string/act_certificates_card_picture"
             android:textColor="#16E5FF"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
 
         <TextView
-            android:drawableLeft="@mipmap/icon_xsd"
             android:id="@+id/tv_alike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_ratio"
+            android:layout_below="@+id/fl_face"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
-            android:textSize="18dp"
+            android:textSize="22dp"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_xsd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fl_face"
+            android:layout_marginTop="38dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/tv_alike"
+            android:src="@mipmap/icon_xsd"
             android:visibility="visible" />
 
         <TextView
@@ -221,19 +234,19 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="12dp"
             android:textColor="#BBDAFF"
-            android:textSize="22dp" />
+            android:textSize="28dp" />
     </RelativeLayout>
 
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="600dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_righy_top"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
         android:layout_toRightOf="@+id/rl_left"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -248,7 +261,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/act_certificates_name"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -257,7 +270,7 @@
                 android:layout_marginLeft="28dp"
                 android:layout_toRightOf="@+id/tv_name_t"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_origin_t"
@@ -267,7 +280,7 @@
                 android:layout_toRightOf="@+id/tv_name_t"
                 android:text="@string/act_certificates_native_place"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_origin"
@@ -276,7 +289,7 @@
                 android:layout_marginLeft="28dp"
                 android:layout_toRightOf="@+id/tv_origin_t"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="24dp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -293,7 +306,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/act_certificates_temperature"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_tem"
@@ -302,7 +315,7 @@
                 android:layout_marginLeft="28dp"
                 android:layout_toRightOf="@+id/tv_tem_t"
                 android:textColor="@color/font_green"
-                android:textSize="22dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_status_t"
@@ -312,7 +325,7 @@
                 android:layout_toRightOf="@+id/tv_tem_t"
                 android:text="@string/act_certificates_status"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_ostatus"
@@ -321,7 +334,7 @@
                 android:layout_marginLeft="28dp"
                 android:layout_toRightOf="@+id/tv_status_t"
                 android:textColor="@color/font_green"
-                android:textSize="22dp" />
+                android:textSize="24dp" />
 
             <ImageView
                 android:id="@+id/iv_status"
@@ -333,11 +346,11 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="139dp"
             android:layout_marginTop="10dp">
 
             <include
-                layout="@layout/view_temp_default_h"
+                layout="@layout/view_temp_default"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -361,4 +374,4 @@
         android:textColor="#75EEF0"
         android:textSize="20dp" />
 
-</LinearLayout>
+</RelativeLayout>

@@ -46,6 +46,11 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initTemperFrame();
     }
 
+    public void resetWarningNumber(View view){
+        SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, 0l);
+        UIUtils.showShort(this,APP.getContext().getResources().getString(R.string.setting_tip_warning_number_reseted));
+    }
+
     private void initTemperFrame(){
         boolean isTemperEnable = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME,ThermalSafetyCheckConst.Default.TEMPER_FRAME);
         Switch swTemperFrame = findViewById(R.id.sw_temper_frame_enable_setting);

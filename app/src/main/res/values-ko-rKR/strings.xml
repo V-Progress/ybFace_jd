@@ -5,6 +5,8 @@
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
     <string name="back">물러나다</string>
+    <string name="not_support_speech">현재 언어 시스템 에서 지원 하지 않 는 언어:</string>
+    <string name="miss_speech_data">음성 데이터 부재:</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -263,6 +265,8 @@
     <string name="setting_switch_cancel">取消</string>
 
     <!--设置开关机-->
+    <string name="setting_tip_warning_number_reseted">Count cleared</string>
+    <string name="setting_reset_warning_number">Count cleared</string>
     <string name="setting_power_on_off">절전장치</string>
     <string name="act_power_title">스위치 설정</string>
     <string name="act_power_power_on_strategy">오픈 운영 전략</string>

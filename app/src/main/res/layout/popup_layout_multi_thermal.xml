@@ -155,6 +155,44 @@
                 android:layout_height="match_parent" />
 
         </TableRow>
+
+        <TableRow
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <Button
+                android:background="@drawable/selector_safety_check_main_correct_sub"
+                android:id="@+id/btn_correct_sub_multi"
+                android:textColor="@color/white"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+            <LinearLayout
+                style="@style/style_setting_input_save_button"
+                android:layout_marginLeft="0dp"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
+
+                <EditText
+                    android:id="@+id/edt_correct_multi"
+                    style="@style/style_setting_input_number_decimal_signed_edt"
+                    android:enabled="false" />
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="℃" />
+            </LinearLayout>
+            <Button
+                android:background="@drawable/selector_safety_check_main_correct_plus"
+                android:id="@+id/btn_correct_plus_multi"
+                android:textColor="@color/white"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+        </TableRow>
     </TableLayout>
 
     <ImageView

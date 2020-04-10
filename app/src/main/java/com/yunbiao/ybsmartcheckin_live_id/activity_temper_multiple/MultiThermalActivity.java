@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,6 +65,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -104,6 +106,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private boolean mBlackBodyFrame;
     private boolean mMultiTrack;
     private int mPreValue;
+    private boolean mBlackBodyEnable;
 
     @Override
     protected int getLayout() {
@@ -193,7 +196,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         super.onResume();
 
         faceView.resume();
-
+        mBlackBodyEnable = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_ENABLE,MultiThermalConst.Default.BLACK_BODY_ENABLE);
         mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE, MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
         mBlackBodyAreaRect = getCacheRect();
         mMultiTrack = SpUtils.getBoolean(MultiThermalConst.Key.MULTI_TRACK, MultiThermalConst.Default.MULTI_TRACK);
@@ -241,6 +244,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                         blackBody.setTempPreValue(mPreValue);
                         TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                         TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                        if(!mBlackBodyEnable){
+                            TemperatureModule.getIns().closeK6080BlackBodyMode();
+                        }
                     }
                 }, 1000);
             }
@@ -264,6 +270,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                     blackBody.setTempPreValue(mPreValue);
                     TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                    if(!mBlackBodyEnable){
+                        TemperatureModule.getIns().closeK6080BlackBodyMode();
+                    }
                 }
             }, 1000);
         }
@@ -792,6 +801,12 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     }
 
     public void showSystemInfo(View view) {
-        showSystemInfoPopup();
+        showSystemInfoPopup(mBodyCorrectTemper, new OnCorrectValueChangeListener() {
+            @Override
+            public void onCorrectValueChanged(float value) {
+                mBodyCorrectTemper = value;
+                TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
+            }
+        });
     }
 }

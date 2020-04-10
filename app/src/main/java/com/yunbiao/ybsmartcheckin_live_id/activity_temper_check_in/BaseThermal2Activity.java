@@ -52,7 +52,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private TypedArray hasFaceArray;
 
     private Bitmap mLastHotImage;
-    private List<Float> mCacheTemperList = new ArrayList<>();//最终温度结果集
+//    private List<Float> mCacheTemperList = new ArrayList<>();//最终温度结果集
+    private List<Float> mCacheTemperList = Collections.synchronizedList(new ArrayList<Float>());//最终温度结果集
     private float mCacheBeforeTemper = 0.0f;//缓存之前的温度
     private long mCacheTime = 0;//缓存时间
     private float mCacheDiffValue = 2.0f;//缓存温差值
@@ -279,7 +280,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (resultTemper < HIGHEST_TEMPER) {
                 //上传数据
                 Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                Bitmap copyImage = imageBmp.copy(Bitmap.Config.ARGB_4444, false);
+                Bitmap copyImage = mLastHotImage.copy(mLastHotImage.getConfig(), false);
                 temperatureSign.setHotImageBitmap(copyImage);
                 temperatureSign.setImgBitmap(viewInterface.getFacePicture());
                 sendUpdateSignMessage(temperatureSign);
@@ -403,7 +404,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             Log.e(TAG, "onFaceVerify: 识别的用户名：" + sign.getName());
 
             sign.setImgBitmap(facePicture);
-            Bitmap copyHotImage = mLastHotImage.copy(Bitmap.Config.ARGB_4444, false);
+            Bitmap copyHotImage = mLastHotImage.copy(mLastHotImage.getConfig(), false);
             sign.setHotImageBitmap(copyHotImage);
 
             sendResultMessage(resultTemper, sign.getName());

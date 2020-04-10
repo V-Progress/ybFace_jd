@@ -4,14 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -32,6 +36,7 @@ import com.arcsoft.face.FaceSimilar;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.intelligence.hardware.temperature.TemperatureModule;
+import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -41,6 +46,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
+import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -51,6 +57,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ScanKeyManager;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
@@ -68,6 +75,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import okhttp3.Call;
@@ -106,6 +114,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     private int mSimilar;
     private float mMinThreshold;
     private View tvBottomTitle;
+    private TextView tvNetState;
 
     @Override
     protected int getPortraitLayout() {
@@ -114,13 +123,14 @@ public class CertificatesActivity extends BaseGpioActivity {
 
     @Override
     protected int getLandscapeLayout() {
-        return R.layout.activity_ai_temp_verify;
+        return R.layout.activity_ai_temp_verify_h;
     }
 
     @Override
     protected void initView() {
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
+        tvNetState = findViewById(R.id.tv_net_state_certi);
         tvLeftTopTemp = findViewById(R.id.tv_temp_main);
         tvOriginT = findViewById(R.id.tv_origin_t);
         ivLogo = findViewById(R.id.iv_logo);
@@ -159,6 +169,54 @@ public class CertificatesActivity extends BaseGpioActivity {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
             ivLogo.setImageResource(R.mipmap.logo);
             tvBottomTitle.setVisibility(View.VISIBLE);
+        }
+
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            btnNoIdCard.setVisibility(View.GONE);
+        }
+
+        setDeviceInfo();
+
+        registerNetState();
+    }
+
+    private void registerNetState(){
+        NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(new NetWorkChangReceiver.NetWorkChangeListener() {
+            @Override
+            public void connect() {
+                tvNetState.setText("网络正常");
+                tvNetState.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void disConnect() {
+                tvNetState.setText("无网络");
+                tvNetState.setTextColor(Color.RED);
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkChangReceiver, filter);
+
+    }
+
+    private void setDeviceInfo(){
+        TextView tvDeviceNumber = findViewById(R.id.tv_device_number_certi);
+        TextView tvBindCode = findViewById(R.id.tv_bind_code_certi);
+        TextView tvAppVersion = findViewById(R.id.tv_app_version_certi);
+        if(tvDeviceNumber != null){
+            String deviceNumber = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
+            tvDeviceNumber.setText(deviceNumber);
+        }
+        if(tvBindCode != null){
+            String bindeCode = SpUtils.getStr(SpUtils.BIND_CODE);
+            tvBindCode.setText(bindeCode);
+        }
+        if(tvAppVersion != null){
+            String appVersion = CommonUtils.getAppVersion(this);
+            tvAppVersion.setText(appVersion);
         }
     }
 
@@ -207,20 +265,26 @@ public class CertificatesActivity extends BaseGpioActivity {
         //相似度
         mSimilar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
 
-        String port;
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            port = "/dev/ttyS1";
+            String port = "/dev/ttyS3";
+            TemperatureModule.getIns().initSerialPort(this, port, 19200);
+            resultHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    TemperatureModule.getIns().startHotImageK1604(mThermalMirror, mLowTemp, hotImageK1604CallBack);
+                }
+            },2000);
         } else {
-            port = "/dev/ttyS4";
+            String port = "/dev/ttyS4";
+            TemperatureModule.getIns().initSerialPort(this, port, 115200);
+            resultHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack);
+                }
+            }, 2000);
         }
 
-        TemperatureModule.getIns().initSerialPort(this, port, 115200);
-        resultHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack);
-            }
-        }, 2000);
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
     }
 
@@ -229,6 +293,41 @@ public class CertificatesActivity extends BaseGpioActivity {
         super.onStop();
         TemperatureModule.getIns().closeHotImageK3232();
     }
+
+    private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
+            mCacheHotImage = bitmap;
+            if (ivHotImage != null) {
+                ivHotImage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ivHotImage.setImageBitmap(bitmap);
+                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + afterF + "℃");
+                    }
+                });
+            }
+
+            if (isCode && mHasFace) {
+                Log.e(TAG, "newestHotImageData: 正在取温");
+                mCodeTempList.add(afterF);
+                return;
+            }
+            if(mCodeTempList.size() > 0){
+                mCodeTempList.clear();
+            }
+
+            if (certificatesView.hasFace()) {
+                //如果缓存集合中包含这个温度则不再添加
+                if (mTemperatureCacheList.size() > 10) {
+                    mTemperatureCacheList.remove(0);
+                }
+                mTemperatureCacheList.add(afterF);
+            } else {
+                mTemperatureCacheList.clear();
+            }
+        }
+    };
 
     private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
         @Override
@@ -279,6 +378,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                 KDXFSpeechManager.instance().playNormal(tips);
                 return;
             }
+            KDXFSpeechManager.instance().playPassRing();
             setIdCardImage(msg);
         }
     };
@@ -787,6 +887,8 @@ public class CertificatesActivity extends BaseGpioActivity {
         EventBus.getDefault().post(new UpdateMediaEvent());
 
         ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+
+        setDeviceInfo();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

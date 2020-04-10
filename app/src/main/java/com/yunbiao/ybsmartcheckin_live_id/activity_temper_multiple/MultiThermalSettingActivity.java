@@ -69,6 +69,31 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initMultiTrack();
 
         initBlackBodyPreValue();
+
+        initBlackEnable();
+    }
+
+    private void initBlackEnable(){
+        final View viewBlackBodyCorrection = findViewById(R.id.tv_black_body_correction_area);
+        final boolean blackBodyEnable = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_ENABLE,MultiThermalConst.Default.BLACK_BODY_ENABLE);
+        if(blackBodyEnable){
+            viewBlackBodyCorrection.setVisibility(View.VISIBLE);
+        } else {
+            viewBlackBodyCorrection.setVisibility(View.GONE);
+        }
+        Switch swBlackBodyEnable = findViewById(R.id.sw_black_body_enable_setting);
+        swBlackBodyEnable.setChecked(blackBodyEnable);
+        swBlackBodyEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(MultiThermalConst.Key.BLACK_BODY_ENABLE,isChecked);
+                if(isChecked){
+                    viewBlackBodyCorrection.setVisibility(View.VISIBLE);
+                } else {
+                    viewBlackBodyCorrection.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initBlackBodyPreValue(){

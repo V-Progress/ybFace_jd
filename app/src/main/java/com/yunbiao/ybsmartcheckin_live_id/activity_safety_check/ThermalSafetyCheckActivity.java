@@ -7,12 +7,13 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
 import com.intelligence.hardware.temperature.callback.HotImageK6080CallBack;
 import com.intelligence.hardware.temperature.callback.UsbPermissionCallBack;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
@@ -44,8 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetWorkChangReceiver.NetWorkChangeListener {
 
@@ -80,6 +82,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private int mPreValue;
     private ImageView ivLogo;
     private boolean mThermalFrameEnabled;
+    private Button btnCorrectPlus;
+    private Button btnCorrectSub;
+    private EditText edtCorrect;
 
     @Override
     protected int getPortraitLayout() {
@@ -98,6 +103,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             EventBus.getDefault().register(this);
         }
         startXmpp();
+        btnCorrectPlus = findViewById(R.id.btn_correct_plus_safety_check);
+        btnCorrectSub = findViewById(R.id.btn_correct_sub_safety_check);
+        edtCorrect = findViewById(R.id.edt_correct_safety_check);
         ivLogo = findViewById(R.id.iv_logo_safety_check);
         tvDeviceNumber = findViewById(R.id.tv_device_number_safety_check);
         tvNetState = findViewById(R.id.tv_net_state_safety_check);
@@ -141,8 +149,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             }
         });
 
-        KDXFSpeechManager.instance().init(this);
-
         if (Constants.isHT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
@@ -151,29 +157,85 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
         }
 
-        handleNumber();
     }
+
+    @Override
+    protected void initData() {
+        KDXFSpeechManager.instance().init(this);
+    }
+
+    private void initCorrect() {
+        edtCorrect.setText(mCorrectValue + "");
+        ButtonClickListener buttonLongClick = new ButtonClickListener() {
+            @Override
+            public void onShortClick(int viewId) {
+                if (viewId == R.id.btn_correct_plus_safety_check) {
+                    mCorrectValue += 0.1;
+                } else {
+                    mCorrectValue -= 0.1;
+                }
+                mCorrectValue = formatF(mCorrectValue);
+                edtCorrect.setText("" + mCorrectValue);
+                TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+
+                mHanlder.removeMessages(0);
+                mHanlder.sendEmptyMessageDelayed(0,1000);
+            }
+
+            @Override
+            public void onLongClick(int viewId) {
+                if (viewId == R.id.btn_correct_plus_safety_check) {
+                    mCorrectValue += 0.1;
+                } else {
+                    mCorrectValue -= 0.1;
+                }
+                mCorrectValue = formatF(mCorrectValue);
+                edtCorrect.setText("" + mCorrectValue);
+                TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+            }
+
+            @Override
+            public void onLongClickFinish(int viewId) {
+                Log.e(TAG, "onShortClick: 长按抬起：" + viewId);
+                mHanlder.removeMessages(0);
+                mHanlder.sendEmptyMessageDelayed(0,1000);
+            }
+        };
+        btnCorrectSub.setOnTouchListener(buttonLongClick);
+        btnCorrectPlus.setOnTouchListener(buttonLongClick);
+    }
+
+    private Handler mHanlder = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0) {
+                Log.e(TAG, "handleMessage: 保存数值：" + mCorrectValue);
+                SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,mCorrectValue);
+            }
+            return true;
+        }
+    });
 
     @Override
     protected void onResume() {
         super.onResume();
-        mBlackBodyEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.BLACK_BODY_ENABLED,ThermalSafetyCheckConst.Default.BLACK_BODY_ENABLED);
-        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE,MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
+        mBlackBodyEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.BLACK_BODY_ENABLED, ThermalSafetyCheckConst.Default.BLACK_BODY_ENABLED);
+        mPreValue = SpUtils.getIntOrDef(MultiThermalConst.Key.BLACK_BODY_PRE_VALUE, MultiThermalConst.Default.BLACK_BODY_PRE_VALUE);
         mCorrectValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, ThermalSafetyCheckConst.Default.CORRECT_VALUE);
         mWarningTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER, ThermalSafetyCheckConst.Default.WARNING_TEMPER);
         mThermalMirror = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR, ThermalSafetyCheckConst.Default.THERMAL_MIRROR);
         mLowTempMode = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.LOW_TEMP, ThermalSafetyCheckConst.Default.LOW_TEMP);
         mNormalTemper = SpUtils.getFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, ThermalSafetyCheckConst.Default.NORMAL_TEMPER);
-        mThermalFrameEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME,ThermalSafetyCheckConst.Default.TEMPER_FRAME);
+        mThermalFrameEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME, ThermalSafetyCheckConst.Default.TEMPER_FRAME);
 
         int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
-        if(temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL){
+        if (temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL) {
             mTemperRect.set(TemperRect.getTooSmall());
         } else if (temperAreaSize == ThermalSafetyCheckConst.Size.SMALL) {
             mTemperRect.set(TemperRect.getSmall());
         } else if (temperAreaSize == ThermalSafetyCheckConst.Size.MIDDLE) {
             mTemperRect.set(TemperRect.getMiddle());
-        } else if(temperAreaSize == ThermalSafetyCheckConst.Size.LARGE){
+        } else if (temperAreaSize == ThermalSafetyCheckConst.Size.LARGE) {
             mTemperRect.set(TemperRect.getLarge());
         }
 
@@ -181,6 +243,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         mBlackBodyTop = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_TOP, ThermalSafetyCheckConst.Default.BLACK_BODY_TOP);
         mBlackBodyRight = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_RIGHT, ThermalSafetyCheckConst.Default.BLACK_BODY_RIGHT);
         mBlackBodyBottom = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.BLACK_BODY_BOTTOM, ThermalSafetyCheckConst.Default.BLACK_BODY_BOTTOM);
+
+        initCorrect();
+
+        handleNumber(false);
 
         startHotImage();
     }
@@ -206,7 +272,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         blackBody.setTempPreValue(mPreValue);
                         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
                         TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
-                        if(!mBlackBodyEnabled){
+                        if (!mBlackBodyEnabled) {
                             TemperatureModule.getIns().closeK6080BlackBodyMode();
                         }
                     }
@@ -229,7 +295,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     blackBody.setTempPreValue(mPreValue);
                     TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
-                    if(!mBlackBodyEnabled){
+                    if (!mBlackBodyEnabled) {
                         TemperatureModule.getIns().closeK6080BlackBodyMode();
                     }
                 }
@@ -258,7 +324,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             FaceIndexInfo faceIndexInfo = arrayList.get(0);
             float originalTempF = faceIndexInfo.getOriginalTempF();
 
-            if(originalTempF < mNormalTemper){
+            if (originalTempF < mNormalTemper) {
                 if (mTemperFloats.size() > 0) {
                     Float max = Collections.max(mTemperFloats);
                     Log.e(TAG, "newestHotImageData: List大小：" + mTemperFloats.size() + "最终值：" + max);
@@ -270,7 +336,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
             float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
             mTemperFloats.add(afterTreatmentF);
-            if(mTemperFloats.size() > 30){
+            if (mTemperFloats.size() > 30) {
                 mTemperFloats.remove(0);
             }
         }
@@ -324,13 +390,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         tvTemperState.setText(tip);
                         tvTemperState.setBackgroundResource(R.mipmap.bg_verify_nopass);
                         KDXFSpeechManager.instance().stopPassRing();
-                        KDXFSpeechManager.instance().playNormal(tip, new Runnable() {
-                            @Override
-                            public void run() {
-                                KDXFSpeechManager.instance().playWaningRingNoStop();
-                            }
-                        });
-                        handleNumber();
+                        KDXFSpeechManager.instance().playWaningRingNoStop();
+//                        KDXFSpeechManager.instance().playNormalNoCheck(tip, new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                KDXFSpeechManager.instance().playWaningRingNoStop();
+//                            }
+//                        });
+                        handleNumber(true);
                     }
                     break;
             }
@@ -338,10 +405,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         }
     });
 
-    private void handleNumber() {
-        long number = SpUtils.getLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER,ThermalSafetyCheckConst.Default.WARNING_NUMBER);
+    private void handleNumber(boolean isCalcu) {
+        long number = SpUtils.getLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, ThermalSafetyCheckConst.Default.WARNING_NUMBER);
         stringBuffer.setLength(0);
-        number += 1;
+        if(isCalcu){
+            number += 1;
+        }
         if (number < 10) {
             stringBuffer.append("000").append(number);
         } else if (number < 100) {
@@ -367,6 +436,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         result = formatF(result);
         return result;
     }
+
     //设置人脸框
     private void setFaceIndex() {
         if (faceIndexInfos != null && faceIndexInfos.size() > 0) {

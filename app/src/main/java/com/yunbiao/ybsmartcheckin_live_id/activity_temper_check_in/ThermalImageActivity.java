@@ -361,7 +361,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
                     VipDialogManager.showVipDialog(ThermalImageActivity.this, sign);
                 }
 
-                KDXFSpeechManager.instance().playText(sign.getName());
+                KDXFSpeechManager.instance().playNormal(sign.getName());
 
                 if (sign.getType() == -2) {
                     return;
@@ -399,7 +399,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
     @Override
     protected void initData() {
         super.initData();
-        KDXFSpeechManager.instance().init(this).welcome();
+        KDXFSpeechManager.instance().init(this);
 
         //开启Xmpp
         startXmpp();

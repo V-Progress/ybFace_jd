@@ -53,6 +53,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SMTMainActivity extends SMTTempBaseActivity {
     private static final String TAG = "SMTMainActivity";
@@ -112,7 +113,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
     protected void initData() {
         super.initData();
 
-        KDXFSpeechManager.instance().init(this).welcome();
+        KDXFSpeechManager.instance().init(this);
 
         //开启Xmpp
         startXmpp();
@@ -280,7 +281,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
                     VipDialogManager.showVipDialog(SMTMainActivity.this, sign);
                 }
 
-                KDXFSpeechManager.instance().playText(sign.getName());
+                KDXFSpeechManager.instance().playNormal(sign.getName());
 
                 if (sign.getType() == -2) {
                     return;
@@ -328,7 +329,7 @@ public class SMTMainActivity extends SMTTempBaseActivity {
                 VipDialogManager.showVipDialog(SMTMainActivity.this, sign);
             }
 
-            KDXFSpeechManager.instance().playText(sign.getName());
+            KDXFSpeechManager.instance().playNormal(sign.getName());
 
             if (sign.getType() == -2) {
                 return;

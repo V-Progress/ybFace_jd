@@ -120,6 +120,16 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            tv_server_system.setText(getString(R.string.System_cloud_service));
+        } else {
+            tv_server_system.setText(getString(R.string.System_local_service));
+        }
+    }
+
     private String appName;
 
     @Override
@@ -131,8 +141,6 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
             e.printStackTrace();
         }
         tv_version_system.setText(appName);
-
-        updateServerState();
 
         setInfo();
 
@@ -203,14 +211,6 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
                 break;
             default:
                 break;
-        }
-    }
-
-    private void updateServerState() {
-        String host = Constants.RESOURCE_URL;
-        tv_server_system.setText(getString(R.string.System_cloud_service));
-        if (host.contains("192.168.")) {
-            tv_server_system.setText(getString(R.string.System_local_service));
         }
     }
 

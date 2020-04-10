@@ -59,7 +59,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
-                android:layout_marginTop="-26dp"
                 android:layout_centerHorizontal="true"
                 android:text="@string/main_real_detection"
                 android:textSize="20dp"
@@ -68,30 +67,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.yunbiao.faceview.FaceView
-                android:layout_marginTop="30dp"
-                android:background="#000"
-                android:id="@+id/face_view"
-                android:layout_width="1000dp"
-                android:layout_height="750dp"/>
-
-            <FrameLayout
-                android:background="#000"
-                android:layout_marginTop="30dp"
-                android:layout_toRightOf="@+id/face_view"
-                android:layout_width="1000dp"
-                android:layout_height="750dp">
-                <ImageView
-                    android:id="@+id/iv_hot_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY" />
-                <com.yunbiao.faceview.SecondFaceRectView
-                    android:id="@+id/face_rect_view_hot_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </FrameLayout>
-
+            <LinearLayout
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <com.yunbiao.faceview.FaceView
+                    android:layout_marginTop="30dp"
+                    android:background="#000"
+                    android:id="@+id/face_view"
+                    android:layout_width="1000dp"
+                    android:layout_height="750dp"/>
+                <FrameLayout
+                    android:background="#000"
+                    android:layout_marginTop="30dp"
+                    android:layout_toRightOf="@+id/face_view"
+                    android:layout_width="1000dp"
+                    android:layout_height="750dp">
+                    <ImageView
+                        android:id="@+id/iv_hot_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY" />
+                    <com.yunbiao.faceview.SecondFaceRectView
+                        android:id="@+id/face_rect_view_hot_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+            </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout

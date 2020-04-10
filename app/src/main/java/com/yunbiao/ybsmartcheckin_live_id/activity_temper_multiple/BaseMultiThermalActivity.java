@@ -10,6 +10,8 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,8 +30,10 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -117,8 +121,9 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     //显示系统信息
     private PopupWindow systemInfoPopup;
     private CountDownTimer countDownTimer;
-
-    protected void showSystemInfoPopup() {
+    private float mCacheCorrect;
+    protected void showSystemInfoPopup(float mCorrectValue, final OnCorrectValueChangeListener onCorrectValueChangeListener) {
+        mCacheCorrect = mCorrectValue;
         if (systemInfoPopup != null && systemInfoPopup.isShowing()) {
             dissmissSystemInfo();
             return;
@@ -211,8 +216,62 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
             }
         });
 
+        Button btnCorrSub = rootView.findViewById(R.id.btn_correct_sub_multi);
+        Button btnCorrPlus = rootView.findViewById(R.id.btn_correct_plus_multi);
+        final EditText edtCorr = rootView.findViewById(R.id.edt_correct_multi);
+        edtCorr.setText(mCacheCorrect+"");
+        ButtonClickListener buttonClickListener = new ButtonClickListener() {
+            @Override
+            public void onShortClick(int viewId) {
+                if(viewId == R.id.btn_correct_sub_multi){
+                    mCacheCorrect -= 0.1f;
+                } else {
+                    mCacheCorrect += 0.1f;
+                }
+                mCacheCorrect = formatF(mCacheCorrect);
+                edtCorr.setText(mCacheCorrect+"");
+                onCorrectValueChangeListener.onCorrectValueChanged(mCacheCorrect);
+
+                mHanlder.removeMessages(0);
+                mHanlder.sendEmptyMessageDelayed(0,1000);
+            }
+
+            @Override
+            public void onLongClick(int viewId) {
+                if(viewId == R.id.btn_correct_sub_multi){
+                    mCacheCorrect -= 0.1f;
+                } else {
+                    mCacheCorrect += 0.1f;
+                }
+                mCacheCorrect = formatF(mCacheCorrect);
+                edtCorr.setText(mCacheCorrect+"");
+                onCorrectValueChangeListener.onCorrectValueChanged(mCacheCorrect);
+            }
+
+            @Override
+            public void onLongClickFinish(int viewId) {
+                mHanlder.removeMessages(0);
+                mHanlder.sendEmptyMessageDelayed(0,1000);
+            }
+        };
+        btnCorrSub.setOnTouchListener(buttonClickListener);
+        btnCorrPlus.setOnTouchListener(buttonClickListener);
+
         View decorView = getWindow().getDecorView();
         systemInfoPopup.showAtLocation(decorView, Gravity.LEFT | Gravity.CENTER_VERTICAL, 0, 0);
+    }
+    private Handler mHanlder = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0) {
+                Log.e(TAG, "handleMessage: 保存数值：" + mCacheCorrect);
+                SpUtils.saveFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER,mCacheCorrect);
+            }
+            return true;
+        }
+    });
+    public interface OnCorrectValueChangeListener{
+        void onCorrectValueChanged(float value);
     }
 
     private void dissmissSystemInfo() {

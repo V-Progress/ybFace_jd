@@ -14,9 +14,8 @@ public class CertificatesConst {
     }
 
     interface Mode {
-        int CERTIFICATES_THERMAL = 0;//人证+热成像
-        int CERTIFICATES_INFARED = 1;//人证+红外
-        //        int CERTIFICATES_ONLY = 2;//仅人证
+        int CERTIFICATES_THERMAL = 0;//人证+热成像（32*32）
+        int CERTIFICATES_THERMAL_16_4 = 1;//人证+热成像（16*4）
     }
 
     public interface Key{
@@ -36,6 +35,6 @@ public class CertificatesConst {
         float WARNING_THRESHOLD = 37.3f;
         float CORRECT_VALUE = 0.0f;
         boolean THERMAL_MIRROR = true;
-        int SIMILAR = 75;
+        int SIMILAR = 50;
     }
 }

@@ -173,7 +173,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
 
-            KDXFSpeechManager.instance().playText(sign.getName());
+            KDXFSpeechManager.instance().playNormal(sign.getName());
 
             if (sign.getType() == -2) {
                 return;
@@ -197,7 +197,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
 
-            KDXFSpeechManager.instance().playText(sign.getName());
+            KDXFSpeechManager.instance().playNormal(sign.getName());
 
             if (sign.getType() == -2) {
                 return;
@@ -246,7 +246,7 @@ public class WelComeActivity extends BaseGpioActivity {
     protected void initData() {
         initCardReader();
 
-        KDXFSpeechManager.instance().init(this).welcome();
+        KDXFSpeechManager.instance().init(this);
 
         //开启Xmpp
         startXmpp();

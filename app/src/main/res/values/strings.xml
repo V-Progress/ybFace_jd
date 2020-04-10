@@ -5,6 +5,8 @@
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
+    <string name="not_support_speech">Languages not supported by the current speech engine:</string>
+    <string name="miss_speech_data">Voice data missing:</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -278,6 +280,8 @@
 
 
     <!--开关机设置-->
+    <string name="setting_tip_warning_number_reseted">Count cleared</string>
+    <string name="setting_reset_warning_number">Count cleared</string>
     <string name="setting_power_on_off">Timing switch</string>
     <string name="act_power_title">Timing switch</string>
     <string name="act_power_power_on_strategy">Boot strategy</string>

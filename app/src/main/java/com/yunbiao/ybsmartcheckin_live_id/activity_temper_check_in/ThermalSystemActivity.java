@@ -127,6 +127,16 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            tv_server_system.setText(getString(R.string.System_cloud_service));
+        } else {
+            tv_server_system.setText(getString(R.string.System_local_service));
+        }
+    }
+
     private String appName;
 
     @Override
@@ -139,8 +149,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             e.printStackTrace();
         }
         tv_version_system.setText(appName);
-
-        updateServerState();
 
         setInfo();
 
@@ -207,17 +215,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
                 break;
             default:
                 break;
-        }
-    }
-
-    private void updateServerState() {
-        String host = Constants.RESOURCE_URL;
-        tv_server_system.setText(getString(R.string.System_cloud_service));
-        if (host.contains("192.168.")) {
-            tv_server_system.setText(getString(R.string.System_local_service));
-        } else {
-//            ivQrCode.setVisibility(View.VISIBLE);
-//            tvQrLable.setVisibility(View.VISIBLE);
         }
     }
 

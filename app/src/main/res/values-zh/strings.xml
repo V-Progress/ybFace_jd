@@ -5,6 +5,8 @@
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
+    <string name="not_support_speech">当前语言系统不支持的语言:</string>
+    <string name="miss_speech_data">语音数据缺失:</string>
 
     <!--应用名称-->
     <string name="yb_check_in">云标智能考勤</string>
@@ -182,6 +184,8 @@
     <string name="face_thermal_16_4_model">人脸识别 + 热成像模式（16*4）</string>
 
     <!--标签-->
+    <string name="setting_tip_warning_number_reseted">计数已清零</string>
+    <string name="setting_reset_warning_number">计数清零</string>
     <string name="setting_face_similar_threshold">设置人脸相似度阈值</string>
     <string name="setting_enable_dialog">开启人脸弹框</string>
     <string name="setting_enable_liveness">开启活体检测</string>

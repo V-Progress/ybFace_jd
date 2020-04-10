@@ -63,7 +63,7 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
 
     @Override
     protected int getPortraitLayout() {
-        return R.layout.activity_certificates_system_h;
+        return R.layout.activity_certificates_system;
     }
 
     @Override
@@ -113,6 +113,16 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            tv_server_system.setText(getString(R.string.System_cloud_service));
+        } else {
+            tv_server_system.setText(getString(R.string.System_local_service));
+        }
+    }
+
     private String appName = "";
     @Override
     protected void initData() {
@@ -123,8 +133,6 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
             e.printStackTrace();
         }
         tv_version_system.setText(appName);
-
-        updateServerState();
 
         setInfo();
 
@@ -180,17 +188,6 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
                 break;
             default:
                 break;
-        }
-    }
-
-    private void updateServerState() {
-        String host = Constants.RESOURCE_URL;
-        tv_server_system.setText(getString(R.string.System_cloud_service));
-        if (host.contains("192.168.")) {
-            tv_server_system.setText(getString(R.string.System_local_service));
-        } else {
-//            ivQrCode.setVisibility(View.VISIBLE);
-//            tvQrLable.setVisibility(View.VISIBLE);
         }
     }
 

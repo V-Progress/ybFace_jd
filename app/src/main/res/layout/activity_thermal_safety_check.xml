@@ -9,6 +9,8 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingBottom="10dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity">
 
     <RelativeLayout
@@ -23,11 +25,14 @@
             android:src="@mipmap/yb_logo" />
 
         <TextClock
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:text="131313121"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:format12Hour="yyyy-MM-dd HH:mm"
+            android:layout_margin="8dp"
             android:format24Hour="yyyy-MM-dd HH:mm" />
 
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
@@ -76,12 +81,53 @@
                 android:layout_height="0dp" />
 
             <LinearLayout
-                android:visibility="invisible"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_sub"
+                        android:id="@+id/btn_correct_sub_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_correct_safety_check"
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_plus"
+                        android:id="@+id/btn_correct_plus_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                </LinearLayout>
+
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_device_number_safety_check"
                     android:layout_gravity="center"
                     android:textSize="26dp"
@@ -91,6 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
                 <TextView
+                    android:visibility="gone"
+                    android:gravity="center"
                     android:text="无网络"
                     android:layout_marginLeft="15dp"
                     android:id="@+id/tv_net_state_safety_check"
