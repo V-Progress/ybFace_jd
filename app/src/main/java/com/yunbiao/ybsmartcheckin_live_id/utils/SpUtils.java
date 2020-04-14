@@ -103,9 +103,6 @@ public class SpUtils {
 
     //热成像
     public static final String THERMAL_MODEL_SETTING = "thermalModelSetting";
-    public static final String LOW_TEMP_MODEL = "lowTempModel";
-
-    public static final String AMBIENT = "ambient";
 
     public static void init() {
         getCompany();
@@ -146,7 +143,7 @@ public class SpUtils {
     }
 
     public static boolean isMirror() {
-        return getBoolean(IS_MIRROR, true);
+        return getBoolean(IS_MIRROR, Constants.DEFAULT_FACE_MIRROR);
     }
 
     public static void setMirror(boolean b) {

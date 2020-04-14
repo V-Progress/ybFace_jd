@@ -38,6 +38,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
@@ -46,11 +47,14 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,6 +72,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import okhttp3.Call;
 
 public class MultiThermalActivity extends BaseMultiThermalActivity {
 
@@ -643,6 +649,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                 warningAdapter.notifyItemRemoved(index);
             }
             rlvWarningList.scrollToPosition(0);
+
+            sendWarningMessage(temper);
         } else {
             normalList.add(0, multiTemperBean);
             normalAdapter.notifyItemInserted(0);
@@ -672,6 +680,31 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         //如果map里不包含这个id，则直接加入数据库
         SignManager.instance().addSignToDB(multiTemperBean);
         handleData(multiTemperBean);
+    }
+
+    private void sendWarningMessage(float temper) {
+        int comid = SpUtils.getCompany().getComid();
+        if (comid == Constants.NOT_BIND_COMPANY_ID) {
+            return;
+        }
+        String url = ResourceUpdate.SAFETY_SEND_WARNING_MESSAGE;
+        Log.e(TAG, "sendWarningMessage: 发送异常短信:" + url);
+        OkHttpUtils.post()
+                .url(url)
+                .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                .addParams("temper", String.valueOf(temper))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: " + response);
+                    }
+                });
     }
 
     private Map<Integer, MultiTemperBean> totalMap = new HashMap<>();

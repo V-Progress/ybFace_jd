@@ -24,6 +24,14 @@ public class ThermalSafetyCheckConst {
         String BLACK_BODY_ENABLED = "thermalSafetyCheckBlackBodyEnabled";
 
         String TEMPER_FRAME = "thermalSafetyCheckTemperFrame";
+
+        String BODY_TEMPER = "thermalSafetyCheckBodyTemper";
+
+        String AUTO_CALIBRATION = "thermalSafetyCheckAutoCalibration";
+
+        String IS_FIRST = "thermalSafetyCheckIsFirst";
+
+        String LAST_MINT = "thermalSafetyCheckDateAndMinT";
     }
 
     public interface Default{
@@ -39,11 +47,19 @@ public class ThermalSafetyCheckConst {
         int TEMPER_AREA_SIZE = Size.SMALL;
 
         long WARNING_NUMBER = 0;
-        float NORMAL_TEMPER = 33.0f;//
+        float NORMAL_TEMPER = 35.0f;//
         float CORRECT_VALUE = 0.0f;
         boolean BLACK_BODY_ENABLED = false;
 
         boolean TEMPER_FRAME = false;
+
+        float BODY_TEMPER = 36.5f;
+
+        boolean AUTO_CALIBRATION = true;
+
+        boolean IS_FIRST = true;
+
+        float LAST_MINT = 0.0f;
     }
 
     public interface Size{

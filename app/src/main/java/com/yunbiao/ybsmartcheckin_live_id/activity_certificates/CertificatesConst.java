@@ -5,15 +5,12 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 
 public class CertificatesConst {
 
-
-    public static final int CERTIFICATES_DEFAULT_MODE = Mode.CERTIFICATES_THERMAL;
-
     public static String[] models;
     static {
         models = APP.getContext().getResources().getStringArray(R.array.certificates_mode);
     }
 
-    interface Mode {
+    public interface Mode {
         int CERTIFICATES_THERMAL = 0;//人证+热成像（32*32）
         int CERTIFICATES_THERMAL_16_4 = 1;//人证+热成像（16*4）
     }
@@ -28,13 +25,13 @@ public class CertificatesConst {
         String SIMILAR = "certificatesSimilar";
     }
 
-    public interface Default{
-        int MODE = Mode.CERTIFICATES_THERMAL;
-        boolean LOW_TEMP = true;
-        float MIN_THRESHOLD = 35.5f;
-        float WARNING_THRESHOLD = 37.3f;
-        float CORRECT_VALUE = 0.0f;
-        boolean THERMAL_MIRROR = true;
-        int SIMILAR = 50;
+    public static class Default{
+        public static int MODE = Mode.CERTIFICATES_THERMAL;
+        public static boolean LOW_TEMP = true;
+        public static float MIN_THRESHOLD = 35.5f;
+        public static float WARNING_THRESHOLD = 37.3f;
+        public static float CORRECT_VALUE = 0.0f;
+        public static boolean THERMAL_MIRROR = true;
+        public static int SIMILAR = 50;
     }
 }

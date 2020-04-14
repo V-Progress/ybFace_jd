@@ -206,7 +206,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED) {
+        if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED
+                /*|| mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4*/) {
             if (!isFaceInsideRange) {
                 mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) {

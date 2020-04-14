@@ -16,6 +16,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -28,6 +30,8 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSettingActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -71,6 +75,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackBodyPreValue();
 
         initBlackEnable();
+
+        initSetIp();
     }
 
     private void initBlackEnable(){
@@ -433,10 +439,142 @@ public class MultiThermalSettingActivity extends BaseActivity {
     }
 
 
+    private EditText edtIp;
+    private EditText edtResPort;
+    private EditText edtXmppPort;
+    private EditText edtProName;
+
+    //初始化IP设置
+    private void initSetIp() {
+        edtIp = findViewById(R.id.edt_ip);
+        edtResPort = findViewById(R.id.edt_res_port);
+        edtXmppPort = findViewById(R.id.edt_xmpp_port);
+        edtProName = findViewById(R.id.edt_pro_name);
+
+        RadioGroup rgServerModel = findViewById(R.id.rg_server_model);
+        final RadioButton rbYun = findViewById(R.id.rb_yun);
+        final RadioButton rbJu = findViewById(R.id.rb_ju);
+
+        Button btnSave = findViewById(R.id.btn_save_address);
+
+        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            rbYun.setChecked(true);
+            setServerInfo(Constants.serverModel.YUN);
+        } else {
+            rbJu.setChecked(true);
+            setServerInfo(Constants.serverModel.JU);
+        }
+
+        rgServerModel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (rbYun.isChecked()) {
+                    setServerInfo(Constants.serverModel.YUN);
+                }
+                if (rbJu.isChecked()) {
+                    setServerInfo(Constants.serverModel.JU);
+                }
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mIp = edtIp.getText().toString();
+                String mResPort = edtResPort.getText().toString();
+                String mXmppPort = edtXmppPort.getText().toString();
+                String mProName = edtProName.getText().toString();
+                if (TextUtils.isEmpty(mIp)) {
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置IP地址");
+                    return;
+                }
+
+
+                if (TextUtils.isEmpty(mResPort)) {
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置接口端口");
+                    return;
+                }
+                int intResPort = Integer.parseInt(mResPort);
+                if(intResPort > 65535){
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "服务端口格式不正确，请检查");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(mXmppPort)) {
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置XMPP端口");
+                    return;
+                }
+                int intXmppPort = Integer.parseInt(mXmppPort);
+                if(intXmppPort > 65535){
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "通信端口格式不正确，请检查");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(mProName)) {
+                }
+
+                if (rbYun.isChecked()) {
+                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                } else if (rbJu.isChecked()) {
+                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
+                }
+                UIUtils.showTitleTip(MultiThermalSettingActivity.this, "保存成功,重启APP后生效");
+            }
+        });
+    }
+
+    private void setServerInfo(int model) {
+        String ip;
+        String resPort;
+        String xmppPort;
+        String proName;
+
+        if (model == Constants.serverModel.YUN) {
+            ip = SpUtils.getStr(SpUtils.IP_CACHE);
+            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
+
+            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
+                edtIp.setText(Constants.NetConfig.PRO_URL);
+                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
+                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
+                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
+            } else {
+                edtIp.setText(ip);
+                edtResPort.setText(resPort);
+                edtXmppPort.setText(xmppPort);
+                edtProName.setText(proName);
+            }
+
+            edtIp.setEnabled(false);
+            edtResPort.setEnabled(false);
+            edtXmppPort.setEnabled(false);
+            edtProName.setEnabled(false);
+        } else {
+            ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
+            resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+            edtIp.setEnabled(true);
+            edtResPort.setEnabled(true);
+            edtXmppPort.setEnabled(true);
+            edtProName.setEnabled(true);
+
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
+        }
+    }
+
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.left_in, R.anim.left_out);
-
     }
 }

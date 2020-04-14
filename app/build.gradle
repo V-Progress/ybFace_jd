@@ -7,8 +7,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 41
-        versionName "1.4.3"
+        versionCode 42
+        versionName "1.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -208,19 +208,19 @@ def buildTime() {
 }
 
 def getYBFace_APP_ID() {
-    return "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
+    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""
 }
 
 def getYBFace_SDK_KEY() {
-    return "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
+    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""
 }
 
 def getHTFace_APP_ID() {
-    return "\"8njzCU8uk7SVoxjKw6M2yZQWso5dGFWtoL77R5hJRf5c\""
+    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""
 }
 
 def getHTFace_SDK_KEY() {
-    return "\"2UqjzBvBw1ZeoUhzJUPc9PNGwWU1EhU28zQPXYgXab5x\""
+    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""
 }
 
 /*

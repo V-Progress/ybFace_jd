@@ -3,6 +3,7 @@
     android:id="@+id/view_temp_default"
     android:layout_width="600dp"
     android:layout_height="139dp"
+    android:gravity="center_vertical"
     android:background="@mipmap/bg_warn">
 
     <TextView

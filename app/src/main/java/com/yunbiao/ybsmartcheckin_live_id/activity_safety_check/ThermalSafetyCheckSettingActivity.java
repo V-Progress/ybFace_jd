@@ -13,7 +13,6 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -44,6 +43,15 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initBlackBodyEnabled();
 
         initTemperFrame();
+
+        initAutoCalibration();
+    }
+
+    private void initAutoCalibration(){
+        boolean aBoolean = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.AUTO_CALIBRATION, ThermalSafetyCheckConst.Default.AUTO_CALIBRATION);
+        Switch swAutoCalibration = findViewById(R.id.sw_auto_calibration_setting);
+        swAutoCalibration.setChecked(aBoolean);
+        swAutoCalibration.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.AUTO_CALIBRATION, isChecked));
     }
 
     public void resetWarningNumber(View view){
@@ -112,19 +120,16 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         float correctValue = SpUtils.getFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,ThermalSafetyCheckConst.Default.CORRECT_VALUE);
         final EditText edtCorrect = findViewById(R.id.edt_body_correct__setting);
         edtCorrect.setText(correctValue+"");
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float value = Float.parseFloat(edtCorrect.getText().toString());
-                if(v.getId() == R.id.btn_body_correct_sub_setting){
-                    value -= 0.1f;
-                } else {
-                    value += 0.1f;
-                }
-                value = formatF(value);
-                edtCorrect.setText(value + "");
-                SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,value);
+        View.OnClickListener onClickListener = v -> {
+            float value = Float.parseFloat(edtCorrect.getText().toString());
+            if(v.getId() == R.id.btn_body_correct_sub_setting){
+                value -= 0.1f;
+            } else {
+                value += 0.1f;
             }
+            value = formatF(value);
+            edtCorrect.setText(value + "");
+            SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE,value);
         };
         btnSub.setOnClickListener(onClickListener);
         btnAdd.setOnClickListener(onClickListener);
@@ -172,6 +177,8 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
                 }
                 tempF = formatF(tempF);
                 edtNormalTemp.setText(tempF + "");
+
+                SpUtils.saveFloat(ThermalSafetyCheckConst.Key.NORMAL_TEMPER, tempF);
             }
         };
         btnNormalSub.setOnClickListener(onClickListener);
@@ -194,6 +201,8 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
                 }
                 tempF = formatF(tempF);
                 edtWarningTemp.setText(tempF + "");
+
+                SpUtils.saveFloat(ThermalSafetyCheckConst.Key.WARNING_TEMPER,tempF);
             }
         };
         btnWarningAdd.setOnClickListener(onClickListener1);

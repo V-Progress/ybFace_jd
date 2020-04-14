@@ -50,6 +50,8 @@ public class ResourceUpdate {
     public static String UPLOAD_IDCARD = WEB_BASE_URL + "/api/witness/checktemper.html";//人证测温记录
     public static String UPLOAD_NO_IDCARD = WEB_BASE_URL + "/api/witness/nocardUpload.html";//无证测温
 
+    public static String SAFETY_SEND_WARNING_MESSAGE = WEB_BASE_URL + "/api/device/temperexp.html";//安检门发信息
+
     /**
      * 判断服务器中的设备是否在线
      **/

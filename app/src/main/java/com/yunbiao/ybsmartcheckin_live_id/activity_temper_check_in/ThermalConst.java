@@ -41,7 +41,7 @@ public class ThermalConst {
 
     interface Default {
         boolean THERMAL_MIRROR = true;
-        boolean LOW_TEMP = true;
+        boolean LOW_TEMP = false;
         float AMBIENT_CORRECT = 25.0f;
         float THERMAL_CORRECT = 0.0f;
         String NORMAL_BROADCAST = "";

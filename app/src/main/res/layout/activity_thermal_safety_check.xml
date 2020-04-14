@@ -24,7 +24,7 @@
             android:layout_height="60dp"
             android:src="@mipmap/yb_logo" />
 
-        <TextClock
+        <!--<TextClock
             android:textSize="20dp"
             android:textColor="@color/white"
             android:text="131313121"
@@ -33,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:format12Hour="yyyy-MM-dd HH:mm"
             android:layout_margin="8dp"
-            android:format24Hour="yyyy-MM-dd HH:mm" />
+            android:format24Hour="yyyy-MM-dd HH:mm" />-->
 
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
             android:letterSpacing="0.1"
@@ -61,96 +61,241 @@
             android:layout_weight="2"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_gravity="center_horizontal"
-                android:textSize="22sp"
-                android:textColor="@color/font_green"
+            <RelativeLayout
                 android:layout_marginTop="15dp"
-                android:layout_centerHorizontal="true"
-                android:text="@string/main_real_detection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <ImageView
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY"
-                android:padding="10dp"
-                android:id="@+id/iv_hot_image_safety_check"
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp" />
-
-            <LinearLayout
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <LinearLayout
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <Button
-                        android:background="@drawable/selector_safety_check_main_correct_sub"
-                        android:id="@+id/btn_correct_sub_safety_check"
-                        android:textColor="@color/white"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"/>
-
-                    <LinearLayout
-                        style="@style/style_setting_input_save_button"
-                        android:layout_marginLeft="0dp"
-                        android:orientation="horizontal"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="10dp">
-
-                        <EditText
-                            android:id="@+id/edt_correct_safety_check"
-                            style="@style/style_setting_input_number_decimal_signed_edt"
-                            android:enabled="false" />
-
-                        <TextView
-                            style="@style/setting_text"
-                            android:text="℃" />
-                    </LinearLayout>
-                    <Button
-                        android:background="@drawable/selector_safety_check_main_correct_plus"
-                        android:id="@+id/btn_correct_plus_safety_check"
-                        android:textColor="@color/white"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"/>
-
-                </LinearLayout>
-
+                android:layout_height="wrap_content">
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/tv_device_number_safety_check"
-                    android:layout_gravity="center"
                     android:textSize="26dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
                 <TextView
-                    android:visibility="gone"
+                    android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:text="无网络"
                     android:layout_marginLeft="15dp"
                     android:id="@+id/tv_net_state_safety_check"
                     android:layout_gravity="center"
                     android:textSize="26dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
                     android:textColor="@color/red"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="22sp"
+                    android:textColor="@color/font_green"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/main_real_detection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
 
-            </LinearLayout>
+            <FrameLayout
+                android:padding="10dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <ImageView
+                    android:scaleType="fitXY"
+                    android:id="@+id/iv_hot_image_safety_check"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_mcu_stable_safety_check"
+                    android:background="#4D000000"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/av_load"
+                        android:layout_centerInParent="true"
+                        android:layout_width="200dp"
+                        android:layout_height="160dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_tip"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/av_load"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:text="测温模块稳定中，请等待..."
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/tv_tip"
+                        android:id="@+id/tv_timer_safety_check"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/btn_skip_safety_check"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/shape_bg_btnrepicture"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:text="模块未断电，跳过"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_correction_area"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:textSize="16dp"
+                        android:textColor="@color/white"
+                        android:text="@string/safety_measure_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:textSize="20dp"
+                        android:gravity="center"
+                        android:id="@+id/tv_oringinT_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="16dp"
+                            android:textColor="@color/white"
+                            android:text="@string/safety_correct_main"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_sub"
+                            android:id="@+id/btn_correct_sub_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                        <LinearLayout
+                            style="@style/style_setting_input_save_button"
+                            android:layout_marginLeft="0dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp">
+
+                            <EditText
+                                android:id="@+id/edt_correct_safety_check"
+                                style="@style/style_setting_input_number_decimal_signed_edt"
+                                android:enabled="false" />
+
+                            <TextView
+                                style="@style/setting_text"
+                                android:text="℃" />
+                        </LinearLayout>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_plus"
+                            android:id="@+id/btn_correct_plus_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:textSize="16dp"
+                            android:textColor="@color/white"
+                            android:text="@string/safety_temper_main"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_sub"
+                            android:id="@+id/btn_body_temper_sub_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                        <LinearLayout
+                            style="@style/style_setting_input_save_button"
+                            android:layout_marginLeft="0dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp">
+
+                            <EditText
+                                android:id="@+id/edt_body_temper_safety_check"
+                                style="@style/style_setting_input_number_decimal_signed_edt"
+                                android:enabled="false" />
+
+                            <TextView
+                                style="@style/setting_text"
+                                android:text="℃" />
+                        </LinearLayout>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_plus"
+                            android:id="@+id/btn_body_temper_plus_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <Button
+                            android:background="@mipmap/cancel_icon"
+                            android:id="@+id/btn_cancel_correction_safety_check"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                        <Button
+                            android:layout_marginLeft="20dp"
+                            android:background="@mipmap/confirm_icon"
+                            android:id="@+id/btn_confirm_correction_safety_check"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:id="@+id/btn_correction_safety_check"
+                    android:layout_gravity="center_vertical|right"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:text="@string/safety_calibration_main"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+
         </LinearLayout>
 
         <LinearLayout

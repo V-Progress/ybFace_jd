@@ -493,4 +493,13 @@
     <string name="safety_black_body_enable">开启黑体矫正</string>
     <string name="safety_temperature_threshold">取温阈值</string>
     <string name="safety_temperature_frame_enable">开启测温框</string><!--开启测温框-->
+    <string name="safety_calibration_main">校准</string><!--校准-->
+    <string name="safety_measure_main">测温:</string><!--测温:-->
+    <string name="safety_correct_main">校准:</string><!--校准:-->
+    <string name="safety_temper_main">体温:</string><!--体温:-->
+    <string name="safety_auto_calibration_setting">自动校准</string>
+    <string name="safety_correct_temper_tip">请将人脸对准测温框，即将开始测温</string>
+    <string name="safety_correct_temper_completion">测温结束</string><!--測溫完成-->
+    <string name="safety_save_completion">校準完成</string><!--矯正完成-->
+    <string name="safety_save_cancel">取消校准</string><!--保存-->
 </resources>

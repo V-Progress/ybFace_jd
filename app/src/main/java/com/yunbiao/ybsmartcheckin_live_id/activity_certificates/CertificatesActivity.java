@@ -16,6 +16,7 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -81,7 +82,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import okhttp3.Call;
 import okhttp3.Request;
 
-public class CertificatesActivity extends BaseGpioActivity {
+public class CertificatesActivity extends BaseCertificatesActivity implements CertificatesViewInterface {
 
     private static final String TAG = "CertificatesActivity";
     private ImageView ivFace;
@@ -101,20 +102,12 @@ public class CertificatesActivity extends BaseGpioActivity {
     private ServiceManager serviceManager;
     private ImageView ivLogo;
     private View llBgVerifyStatus;
-    private ReadCardUtils readCardUtils;
-    private ConcurrentLinkedQueue<FaceFeature> featureCacheList;
     private TextView tvOriginT;
     private TextView tvLeftTopTemp;
     private Button btnNoIdCard;
-    private boolean mThermalMirror;
-    private Float mWarningThreshold;
-    private Float mCorrectValue;
-    private boolean mLowTemp;
-    private int mMode;
-    private int mSimilar;
-    private float mMinThreshold;
     private View tvBottomTitle;
     private TextView tvNetState;
+    private ImageView ivSimilarIcon;
 
     @Override
     protected int getPortraitLayout() {
@@ -130,6 +123,7 @@ public class CertificatesActivity extends BaseGpioActivity {
     protected void initView() {
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
+        ivSimilarIcon = findViewById(R.id.iv_similar_icon_certi);
         tvNetState = findViewById(R.id.tv_net_state_certi);
         tvLeftTopTemp = findViewById(R.id.tv_temp_main);
         tvOriginT = findViewById(R.id.tv_origin_t);
@@ -152,16 +146,9 @@ public class CertificatesActivity extends BaseGpioActivity {
         btnNoIdCard = findViewById(R.id.btn_no_id_card);
         tvBottomTitle = findViewById(R.id.tv_bottomTitle);
         btnNoIdCard.setOnClickListener(onClickListener);
-        ivLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goSetting();
-            }
-        });
+        ivLogo.setOnClickListener(v -> goSetting());
 
-        TIP_READ_ID_CARD = getResources().getString(R.string.act_certificates_please_set_id_card);
-
-        if(Constants.isHT){
+        if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             tvBottomTitle.setVisibility(View.GONE);
@@ -176,45 +163,21 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
 
         setDeviceInfo();
-
-        registerNetState();
     }
 
-    private void registerNetState(){
-        NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(new NetWorkChangReceiver.NetWorkChangeListener() {
-            @Override
-            public void connect() {
-                tvNetState.setText("网络正常");
-                tvNetState.setTextColor(Color.GREEN);
-            }
-
-            @Override
-            public void disConnect() {
-                tvNetState.setText("无网络");
-                tvNetState.setTextColor(Color.RED);
-            }
-        });
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(netWorkChangReceiver, filter);
-
-    }
-
-    private void setDeviceInfo(){
+    private void setDeviceInfo() {
         TextView tvDeviceNumber = findViewById(R.id.tv_device_number_certi);
         TextView tvBindCode = findViewById(R.id.tv_bind_code_certi);
         TextView tvAppVersion = findViewById(R.id.tv_app_version_certi);
-        if(tvDeviceNumber != null){
+        if (tvDeviceNumber != null) {
             String deviceNumber = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
             tvDeviceNumber.setText(deviceNumber);
         }
-        if(tvBindCode != null){
+        if (tvBindCode != null) {
             String bindeCode = SpUtils.getStr(SpUtils.BIND_CODE);
             tvBindCode.setText(bindeCode);
         }
-        if(tvAppVersion != null){
+        if (tvAppVersion != null) {
             String appVersion = CommonUtils.getAppVersion(this);
             tvAppVersion.setText(appVersion);
         }
@@ -225,621 +188,154 @@ public class CertificatesActivity extends BaseGpioActivity {
         public void onClick(View v) {
             v.setEnabled(false);
             tvTip.setText(getResources().getString(R.string.act_certificates_testing));
-            getTempHandler.sendEmptyMessageDelayed(0, 100);
+//            getTempHandler.sendEmptyMessageDelayed(0, 100);
         }
     };
 
     @Override
     protected void initData() {
-        initCardReader();
+        super.initData();
 
-        KDXFSpeechManager.instance().init(this);
+        setFaceCallback(certificatesView);
+
+        setCertificatesView(this);
 
         startXmpp();
-
-        certificatesView.setCallback(faceCallback);
-        IDCardReader.getInstance().startReaderThread(this, readListener);
-        featureCacheList = new ConcurrentLinkedQueue();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        certificatesView.resume();
-        //热成像镜像
-        mThermalMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
-        //报警值
-        mWarningThreshold = SpUtils.getFloat(CertificatesConst.Key.WARNING_THRESHOLD, CertificatesConst.Default.WARNING_THRESHOLD);
-        //最小值
-        mMinThreshold = SpUtils.getFloat(CertificatesConst.Key.MIN_THRESHOLD,CertificatesConst.Default.MIN_THRESHOLD);
-        //温度补偿
-        mCorrectValue = SpUtils.getFloat(CertificatesConst.Key.CORRECT_VALUE, CertificatesConst.Default.CORRECT_VALUE);
-        //低温模式
-        mLowTemp = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
-        mMode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
-        //相似度
-        mSimilar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
-
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            String port = "/dev/ttyS3";
-            TemperatureModule.getIns().initSerialPort(this, port, 19200);
-            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalMirror, mLowTemp, hotImageK1604CallBack),2000);
-        } else {
-            String port = "/dev/ttyS4";
-            resultHandler.postDelayed(() -> {
-                TemperatureModule.getIns().initSerialPort(CertificatesActivity.this, port, 115200);
-                resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalMirror, mLowTemp, hotImageK3232CallBack), 2000);
-            },2000);
-        }
-
-        TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+    public void onModeChanged(int mode) {
+        Log.e(TAG, "onModeChanged: 当前模式：" + mode);
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        TemperatureModule.getIns().closeHotImageK3232();
-    }
-
-    private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
-            mCacheHotImage = bitmap;
-            if (ivHotImage != null) {
-                ivHotImage.post(() -> {
-                    ivHotImage.setImageBitmap(bitmap);
-                    tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + originalMaxT + "℃");
-                });
-            }
-
-            if (isCode && mHasFace) {
-                Log.e(TAG, "newestHotImageData: 正在取温");
-                mCodeTempList.add(afterF);
-                return;
-            }
-            if(mCodeTempList.size() > 0){
-                mCodeTempList.clear();
-            }
-
-            if (certificatesView.hasFace()) {
-                //如果缓存集合中包含这个温度则不再添加
-                if (mTemperatureCacheList.size() > 10) {
-                    mTemperatureCacheList.remove(0);
-                }
-                mTemperatureCacheList.add(afterF);
-            } else {
-                mTemperatureCacheList.clear();
-            }
-        }
-    };
-
-    private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap bitmap, float measureF, final float afterF, float v2, float v3, boolean b, int i) {
-            mCacheHotImage = bitmap;
-
-            if (ivHotImage != null) {
-                ivHotImage.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivHotImage.setImageBitmap(bitmap);
-                        tvLeftTopTemp.setText(getResources().getString(R.string.act_certificates_temper) + afterF + "℃");
-                    }
-                });
-            }
-
-            if (isCode && mHasFace) {
-                Log.e(TAG, "newestHotImageData: 正在取温");
-                mCodeTempList.add(afterF);
-                return;
-            }
-            if(mCodeTempList.size() > 0){
-                mCodeTempList.clear();
-            }
-
-            if (certificatesView.hasFace()) {
-                //如果缓存集合中包含这个温度则不再添加
-                if (mTemperatureCacheList.size() > 10) {
-                    mTemperatureCacheList.remove(0);
-                }
-                mTemperatureCacheList.add(afterF);
-            } else {
-                mTemperatureCacheList.clear();
-            }
-        }
-    };
-
-    private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
-        @Override
-        public void getCardInfo(IdCardMsg msg) {
-            if (isCode) {
-                tvTip.setText(getResources().getString(R.string.act_certificates_please_wait));
-                return;
-            }
-            if (msg.name == null || msg.ptoto == null) {
-                String tips = getResources().getString(R.string.act_certificates_idcard_failed);
-                tvTip.setText(tips);
-                KDXFSpeechManager.instance().playNormal(tips);
-                return;
-            }
-            KDXFSpeechManager.instance().playPassRing();
-            setIdCardImage(msg);
-        }
-    };
-
-    private boolean mHasFace = false;
-    private CertificatesView.FaceCallback faceCallback = new CertificatesView.FaceCallback() {
-
-        @Override
-        public void onReady() {
-            SyncManager.instance().requestOnlyCompany();
-        }
-
-        @Override
-        public void onFaceDetection(boolean hasFace, FaceInfo faceInfo) {
-            mHasFace = hasFace;
-            if (isCode) {
-                return;
-            }
-            if (hasFace) {
-                setFaceImage(faceInfo);
-            } else {
-                removeFaceImage();
-            }
-        }
-    };
-
-
-    /*
-     * 以mCacheFaceId为判断依据
-     * 在刷卡时判断是否有人脸,如果有,则将mCacheFaceId置为-1,代表先刷卡
-     * 1.mCacheFaceId为-1时,代表初始化或者先刷卡,不清除身份证信息
-     * 2.如果此时人脸出去再进来,此时mCacheFaceId肯定不为-1,此时判断为下一个人,清除身份信息
-     *
-     * */
-    private long mSetFaceImageTime = 0;//缓存时间,两秒刷新一次
-    private int mCacheFaceId = -1;//缓存ID
-    private int currFaceImageId = -1;//当前设置的ImageId,避免重复绘制消耗性能
-
-    //显示人脸头像
-    private void setFaceImage(FaceInfo faceInfo) {
-        if (mSetFaceImageTime == 0 || System.currentTimeMillis() - mSetFaceImageTime > 2000) {
-            mSetFaceImageTime = System.currentTimeMillis();
-            Bitmap faceBitmap = certificatesView.getFaceBitmap(faceInfo);
-            ivFace.setImageBitmap(faceBitmap);
-            currFaceImageId = -1;
-
-
-            //如果缓存为-1,代表先刷卡,不清楚身份证信息
-            if (mCacheFaceId == -1) {
-                mCacheFaceId = faceInfo.getFaceId();
-                startCompareThread();
-            } else
-                //如果缓存ID不为-1,代表后进来的人,则清除身份证信息
-                if (mCacheFaceId != faceInfo.getFaceId()) {
-                    mCacheFaceId = faceInfo.getFaceId();
-                    mSetFaceImageTime = 0;
-                    mIdCardBitmap = null;
-                    closeCompareThread();
-                    resultHandler.removeMessages(2);
-                    clearUITips();
-                    startCompareThread();
-                }
-        }
-    }
-
-    //人脸移除时关闭对比线程清除缓存时间,不控制mCacheId的变化
-    private void removeFaceImage() {
-        //清除人脸的时候不清除缓存ID
-        mSetFaceImageTime = 0;
-        closeCompareThread();
-        featureCacheList.clear();
-    }
-
-    private Bitmap mIdCardBitmap = null;
-    private IdCardMsg mIdCardMsg = null;
-
-    private void setIdCardImage(IdCardMsg idCardMsg) {
-        closeCompareThread();
-        resultHandler.removeMessages(2);
-
-        mIdCardMsg = idCardMsg;
-        byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
-        mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        String nativeplace = IDCardReader.getNativeplace(idCardMsg.id_num);
-        //由此判断是先刷脸还是先刷卡
-        if (!certificatesView.hasFace()) {
-            sendSpeechTip(getResources().getString(R.string.act_certificates_please_look_camera));
-            clearUITips();
-            mCacheFaceId = -1;
-            resultHandler.removeMessages(-1);
-            resultHandler.sendEmptyMessageDelayed(-1, 8000);
+    public void onNetStateChanged(boolean isNet) {
+        if (isNet) {
+            tvNetState.setText("网络正常");
+            tvNetState.setTextColor(Color.GREEN);
         } else {
-            mCacheFaceId = -1;
-            startCompareThread();
+            tvNetState.setText("无网络");
+            tvNetState.setTextColor(Color.RED);
         }
+    }
 
-        ivIdCard.setImageBitmap(mIdCardBitmap);
+    @Override
+    public void onFaceViewReady() {
+        SyncManager.instance().requestOnlyCompany();
+    }
+
+    @Override
+    public void updateFaceImage(Bitmap bitmap) {
+        ivFace.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void updateHotImage(Bitmap hotImage, float temper) {
+        ivHotImage.setImageBitmap(hotImage);
+        tvLeftTopTemp.setText("体温：" + temper + "℃");
+    }
+
+    @Override
+    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap) {
+        Log.e(TAG, "updateIdCardInfo: " + idCardMsg.name);
+        ivIdCard.setImageBitmap(bitmap);
         tvName.setText(idCardMsg.name);
-        tvOriginT.setText(getResources().getString(R.string.act_certificates_native_place));
-        tvOrigin.setText(nativeplace);
+        tvOriginT.setText("籍贯:");
+        tvOrigin.setText(IDCardReader.getNativeplace(idCardMsg.id_num));
     }
 
-    //对比线程
-    private boolean isRunning = false;
-    private Thread compareThread = null;
-
-    private String TIP_READ_ID_CARD;
-
-    private void startCompareThread() {
-        if (compareThread != null && compareThread.isAlive()  && isRunning) {
-            return;
+    @Override
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal) {
+        tvTemp.setText(finalTemper + "℃");
+        tvSimilar.setText("相似度" + similarInt + "%");
+        tvTip.setText(Html.fromHtml(resultTip));
+        if (isAlike) {
+            tvSimilar.setTextColor(Color.GREEN);
+            ivSimilarIcon.setImageResource(R.mipmap.confirm_icon);
+        } else {
+            tvSimilar.setTextColor(Color.RED);
+            ivSimilarIcon.setImageResource(R.mipmap.cancel_icon);
         }
-        resultHandler.removeMessages(-1);
-        isRunning = true;
-        compareThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (isRunning) {
-                    if (mIdCardBitmap == null) {
-                        String s = tvTip.getText().toString();
-                        if (!TextUtils.equals(s, TIP_READ_ID_CARD)) {
-                            sendTextTips(TIP_READ_ID_CARD);
-                        }
-                        closeCompareThread();
-                        continue;
-                    }
 
-                    sendSpeechTip(getResources().getString(R.string.act_certificates_verify_ing));
-
-                    Log.e(TAG, "run: 正在验证");
-                    //人脸进来后添加人脸特征
-                    while (featureCacheList.size() < 5) {
-                        Log.e(TAG, "run: 添加人脸");
-                        FaceFeature faceFeature = certificatesView.getFaceFeature();
-                        if (faceFeature != null) {
-                            featureCacheList.add(faceFeature);
-                        }
-                        if (!certificatesView.hasFace()) {
-                            break;
-                        }
-                    }
-
-                    Log.e(TAG, "继续进行");
-
-                    FaceFeature idCardFeature = certificatesView.inputIdCard(mIdCardBitmap);
-
-                    float finalSimilar = 0;
-                    for (FaceFeature faceFeature : featureCacheList) {
-                        FaceSimilar compare = certificatesView.compare(faceFeature, idCardFeature);
-                        float comapareSimilar = compare.getScore();
-                        Log.e(TAG, "run: 对比:" + comapareSimilar);
-                        if (comapareSimilar > finalSimilar) {
-                            finalSimilar = comapareSimilar;
-                        }
-                    }
-
-                    int similar = (int) (finalSimilar * 100);
-                    sendResult(similar);
-
-                    featureCacheList.clear();
-                    closeCompareThread();
-                    break;
-                }
-            }
-        });
-        compareThread.start();
-    }
-
-    private void closeCompareThread() {
-        if (isRunning) {
-            Log.e(TAG, "startCompareThread: 结束");
-            isRunning = false;
-            compareThread = null;
+        if (isNormal) {
+            tvOStatus.setText("正常");
+            tvOStatus.setTextColor(Color.GREEN);
+            tvTemp.setTextColor(Color.GREEN);
+            ivStatus.setImageResource(R.mipmap.icon_normal);
+        } else {
+            tvOStatus.setText("异常");
+            tvOStatus.setTextColor(Color.RED);
+            tvTemp.setTextColor(Color.RED);
+            ivStatus.setImageResource(R.mipmap.icon_warning);
         }
-    }
 
-    private void sendTextTips(String text) {
-        Message message = Message.obtain();
-        message.what = -2;
-        message.obj = text;
-        resultHandler.sendMessage(message);
-    }
-
-    private void sendResult(int similar) {
-        Message message = Message.obtain();
-        message.what = 1;
-        message.obj = similar;
-        resultHandler.sendMessage(message);
-    }
-
-    private void sendSpeechTip(String tip) {
-        Message message = Message.obtain();
-        message.what = 0;
-        message.obj = tip;
-        resultHandler.sendMessage(message);
-    }
-
-    private Handler resultHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case -2://设置提示
-                    String text = (String) msg.obj;
-                    tvTip.setText(text);
-                    break;
-                case -1://自动清除身份信息
-                    mIdCardBitmap = null;
-                    ivIdCard.setImageBitmap(null);
-                    tvName.setText("");
-                    tvOrigin.setText("");
-                    break;
-                case 0://语音提醒
-                    KDXFSpeechManager.instance().stopNormal();
-                    String tip = (String) msg.obj;
-                    tvTip.setText(tip);
-                    KDXFSpeechManager.instance().playNormal(tip);
-                    break;
-                case 1://人证结果提示
-                    int similar = (int) msg.obj;
-
-                    Float maxTemp = 0f;
-                    if (mTemperatureCacheList != null && mTemperatureCacheList.size() > 0) {
-                        maxTemp = Collections.max(mTemperatureCacheList);//取出最大温度
-                    }
-                    if (maxTemp != 0f) {
-                        maxTemp += mCorrectValue;
-                    }
-                    boolean isVerify = similar >= mSimilar;
-                    boolean isNormal = maxTemp != 0f && maxTemp < mWarningThreshold;//是否正常
-
-                    final boolean isPass = isVerify && isNormal;
-
-                    setUITips(isVerify, isNormal, isPass, maxTemp, similar);
-
-                    Bitmap faceBitmap = ((BitmapDrawable) ivFace.getDrawable()).getBitmap();
-                    Bitmap idCardBitmap = ((BitmapDrawable) ivIdCard.getDrawable()).getBitmap();
-                    SignManager.instance().uploadIdCardAndReImage(maxTemp, mIdCardMsg, similar, (isPass ? 0 : 1), idCardBitmap, faceBitmap, mCacheHotImage);
-
-                    resultHandler.removeMessages(2);
-                    resultHandler.sendEmptyMessageDelayed(2, 10000);
-                    break;
-                case 3://扫码结果提示
-                    String entryId = (String) msg.obj;
-                    int color = msg.arg1;
-
-                    float temp = mCodeTempList.size() <= 0 ? 0.0f : Collections.max(mCodeTempList);
-                    if(temp != 0.0f){
-                        temp += mCorrectValue;
-                    }
-
-                    boolean isOk = temp != 0f && temp >= 36.0f && temp < mWarningThreshold;//是否正常
-
-                    setUITips(true, isOk, isOk, temp, -1);
-
-                    Bitmap currCameraFrame = certificatesView.getCurrCameraFrame();
-
-                    SignManager.instance().uploadCodeVerifyResult(entryId, (isOk && color == 1), currCameraFrame, temp, mCacheHotImage);
-
-                    resultHandler.removeMessages(4);
-                    resultHandler.sendEmptyMessageDelayed(4, 5000);
-
-                    resultHandler.removeMessages(2);
-                    resultHandler.sendEmptyMessageDelayed(2, 10000);
-                    break;
-                case 2://清除UI
-                    clearUITips();
-                    break;
-                case 4://清除扫码状态
-                    isCode = false;
-                    break;
-                default:
-                    break;
-            }
+        if (!verifyStatusTip.isShown()) {
+            verifyStatusTip.setVisibility(View.VISIBLE);
         }
-    };
 
-    private void clearUITips() {
-        tvOStatus.setText("");
-        ivStatus.setImageBitmap(null);
+        if (isAlike && isNormal) {
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
+            tvVerifyInfo.setText("可以通行");
+        } else {
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
+            tvVerifyInfo.setText("禁止通行");
+        }
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) ivFace.getDrawable();
+        Bitmap faceImage = bitmapDrawable.getBitmap();
+        BitmapDrawable hotImageBitmap = (BitmapDrawable) ivHotImage.getDrawable();
+        Bitmap hotImage = hotImageBitmap.getBitmap();
+        BitmapDrawable idCardDrawable = (BitmapDrawable) ivIdCard.getDrawable();
+        Bitmap idCardImage = idCardDrawable.getBitmap();
+        SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1) , idCardImage, faceImage, hotImage);
+    }
+
+    @Override
+    public void updateTips(String tip) {
+        tvTip.setText(tip);
+    }
+
+    @Override
+    public void resetAllUI() {
+        ivFace.setImageBitmap(null);
+        ivIdCard.setImageBitmap(null);
         tvSimilar.setText("");
-        tvTemp.setText("");
-        verifyStatusTip.setVisibility(View.GONE);
         tvTip.setText("");
         tvName.setText("");
         tvOrigin.setText("");
-        ivIdCard.setImageBitmap(null);
-        ivFace.setImageBitmap(null);
-        KDXFSpeechManager.instance().stopNormal();
-        KDXFSpeechManager.instance().stopWarningRing();
-        resetLedDelay(0);
+        tvOStatus.setText("");
+        tvTemp.setText("");
+        ivSimilarIcon.setImageBitmap(null);
+        ivStatus.setImageBitmap(null);
+        if (verifyStatusTip.isShown()) {
+            verifyStatusTip.setVisibility(View.GONE);
+        }
     }
 
-    private void setUITips(boolean isVerify, boolean isNormal, final boolean isPass, float maxTemp, int intSimilar) {
-        String message;
-        if (isVerify) {
-            message = getResources().getString(R.string.act_certificates_verify_pass);
-        } else {
-            message = getResources().getString(R.string.act_certificates_verify_not_pass);
-        }
-
-        if (isNormal) {
-            message += getResources().getString(R.string.act_certificates_temper_normal);
-            tvOStatus.setText(getResources().getString(R.string.act_certificates_normal));
+    @Override
+    public void updateRealTimeTemper(float temper, boolean isTempNormal) {
+        tvTemp.setText(temper + "℃");
+        if (isTempNormal) {
+            tvOStatus.setText("正常");
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
-            message += getResources().getString(R.string.act_certificates_temper_warning);
-            tvOStatus.setText(getResources().getString(R.string.act_certificates_warning));
+            tvOStatus.setText("异常");
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
         }
-
-        if (intSimilar != -1) {
-            tvSimilar.setText(getResources().getString(R.string.act_certificates_similar) + intSimilar + "%");
-        }
-        tvTemp.setText(maxTemp + "℃");
-        tvTip.setText(message);
-
-        if (!verifyStatusTip.isShown()) {
-            verifyStatusTip.setVisibility(View.VISIBLE);
-        }
-
-        if (isPass) {
-            message += getResources().getString(R.string.act_certificates_please_pass);
-            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
-            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_can_pass));
-            ledGreen();
-        } else {
-            message += getResources().getString(R.string.act_certificates_please_not_pass);
-            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
-            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
-            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_not_pass));
-            ledRed();
-        }
-
-        KDXFSpeechManager.instance().playNormal(message, new Runnable() {
-            @Override
-            public void run() {
-                if (isPass) {
-                    resetLedDelay(0);
-                } else {
-                    KDXFSpeechManager.instance().playWaningRing();
-                    resetLedDelay(3000);
-                }
-            }
-        });
     }
 
-    private void setUITips2(boolean isNormal, final boolean isPass, float maxTemp) {
-        tvName.setText(getResources().getString(R.string.act_certificates_visitor));
-        String message = "";
-        if (isNormal) {
-            message += getResources().getString(R.string.act_certificates_temper_normal);
-            tvOStatus.setText(getResources().getString(R.string.act_certificates_normal));
-            tvOStatus.setTextColor(Color.GREEN);
-            tvTemp.setTextColor(Color.GREEN);
-            ivStatus.setImageResource(R.mipmap.icon_normal);
-        } else {
-            message += getResources().getString(R.string.act_certificates_temper_warning);
-            tvOStatus.setText(getResources().getString(R.string.act_certificates_warning));
-            tvOStatus.setTextColor(Color.RED);
-            tvTemp.setTextColor(Color.RED);
-            ivStatus.setImageResource(R.mipmap.icon_warning);
-        }
-
-        tvTemp.setText(maxTemp + "℃");
-        tvTip.setText(message);
-
-        if (!verifyStatusTip.isShown()) {
-            verifyStatusTip.setVisibility(View.VISIBLE);
-        }
-
-        if (isPass) {
-            message += getResources().getString(R.string.act_certificates_please_pass);
-            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
-            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_can_pass));
-            ledGreen();
-        } else {
-            message += getResources().getString(R.string.act_certificates_please_not_pass);
-            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
-            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
-            tvVerifyInfo.setText(getResources().getString(R.string.act_certificates_please_not_pass));
-            ledRed();
-        }
-
-        KDXFSpeechManager.instance().playNormal(message, new Runnable() {
-            @Override
-            public void run() {
-                if (isPass) {
-                    resetLedDelay(0);
-                } else {
-                    KDXFSpeechManager.instance().playWaningRing();
-                    resetLedDelay(3000);
-                }
-            }
-        });
-    }
-
-    //=热成像测温逻辑==================================================
-
-    private List<Float> mTemperatureCacheList = new ArrayList<>();
-    private Bitmap mCacheHotImage = null;
-
-    private Handler getTempHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 0) {
-                isCode = true;
-                sendEmptyMessageDelayed(1, 2000);
-                return;
-            } else if (msg.what == 1) {
-                isCode = false;
-                if (mCodeTempList.size() <= 0) {
-                    Log.e(TAG, "handleMessage: 没有获取到温度" );
-                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
-                    isCode = false;
-                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
-                    btnNoIdCard.setEnabled(true);
-                    getTempHandler.removeMessages(2);
-                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
-                    return;
-                }
-
-                for (Float aFloat : mCodeTempList) {
-                    Log.e(TAG, "handleMessage: 取到的温度：" + aFloat);
-                }
-
-                Float max = Collections.max(mCodeTempList);
-
-                if (max < mMinThreshold) {
-                    isCode = false;
-                    tvTip.setText(getResources().getString(R.string.act_certificates_temper_failed));
-                    KDXFSpeechManager.instance().playNormal(getResources().getString(R.string.act_certificates_temper_failed));
-                    btnNoIdCard.setEnabled(true);
-                    getTempHandler.removeMessages(2);
-                    getTempHandler.sendEmptyMessageDelayed(2, 3000);
-                    return;
-                }
-                if(max != 0f){
-                    max += mCorrectValue;
-                }
-
-                tvTip.setText("");
-                boolean isWarning = max >= mWarningThreshold;
-
-                Log.e(TAG, "handleMessage: 最高温度：" + max);
-
-                setUITips2(!isWarning, !isWarning, max);
-                btnNoIdCard.setEnabled(true);
-
-                Bitmap currCameraFrame = certificatesView.getCurrCameraFrame();
-                SignManager.instance().uploadNoIdCardResult(isWarning ? 1 : 0, currCameraFrame, max, mCacheHotImage);
-
-                getTempHandler.removeMessages(2);
-                getTempHandler.sendEmptyMessageDelayed(2, 5000);
-            } else if (msg.what == 2) {
-                clearUITips();
-            }
-        }
-    };
-
-    private float getMean(List<Float> array) {
-        float result = 0.0f;
-        if (array.size() == 0) {
-            return result;
-        }
-        for (float anArray : array) {
-            result += anArray;
-        }
-        result = result / array.size();
-        result = formatF(result);
-        return result;
+    @Override
+    public void clearRealTimeTemper() {
+        tvOrigin.setText("");
+        tvOStatus.setText("");
+        tvTemp.setText("");
+        ivStatus.setImageBitmap(null);
     }
 
     private void startXmpp() {//开启xmpp
@@ -854,16 +350,9 @@ public class CertificatesActivity extends BaseGpioActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        certificatesView.pause();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
 
-        Log.e(TAG, "update: 11111111111111");
         Company company = SpUtils.getCompany();
 
         EventBus.getDefault().post(new UpdateMediaEvent());
@@ -891,30 +380,27 @@ public class CertificatesActivity extends BaseGpioActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_input_pwd);
 
-        final Animation animation = AnimationUtils.loadAnimation(CertificatesActivity.this, R.anim.anim_edt_shake);
+        final Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_edt_shake);
         final View rootView = dialog.findViewById(R.id.ll_input_pwd);
-        Button btnConfirm = (Button) dialog.findViewById(R.id.btn_input_confirm);
-        final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_input_pwd);
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pwd = edtPwd.getText().toString();
-                if (TextUtils.isEmpty(pwd)) {
-                    edtPwd.setError(getString(R.string.act_wel_error_bywjsrmmo));
-                    rootView.startAnimation(animation);
-                    return;
-                }
-                String spPwd = SpUtils.getStr(SpUtils.MENU_PWD);
-                if (!TextUtils.equals(pwd, spPwd)) {
-                    edtPwd.setError(getString(R.string.act_wel_error_mmclqcxsrb));
-                    rootView.startAnimation(animation);
-                    return;
-                }
-                if (runnable != null) {
-                    runnable.run();
-                }
-                dialog.dismiss();
+        Button btnConfirm = dialog.findViewById(R.id.btn_input_confirm);
+        final EditText edtPwd = dialog.findViewById(R.id.edt_input_pwd);
+        btnConfirm.setOnClickListener(v -> {
+            String pwd = edtPwd.getText().toString();
+            if (TextUtils.isEmpty(pwd)) {
+                edtPwd.setError(getString(R.string.act_wel_error_bywjsrmmo));
+                rootView.startAnimation(animation);
+                return;
             }
+            String spPwd = SpUtils.getStr(SpUtils.MENU_PWD);
+            if (!TextUtils.equals(pwd, spPwd)) {
+                edtPwd.setError(getString(R.string.act_wel_error_mmclqcxsrb));
+                rootView.startAnimation(animation);
+                return;
+            }
+            if (runnable != null) {
+                runnable.run();
+            }
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -927,20 +413,10 @@ public class CertificatesActivity extends BaseGpioActivity {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-    public void setFaceViewSimilar() {
-        Log.e(TAG, "setFaceViewSimilar: 设置人脸识别阈值");
-        certificatesView.setSimilarThreshold();
-    }
-
     private void goSetting() {
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
         if (!TextUtils.isEmpty(pwd)) {
-            inputPwd(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(CertificatesActivity.this, CertificatesSystemActivity.class));
-                }
-            });
+            inputPwd(() -> startActivity(new Intent(CertificatesActivity.this, CertificatesSystemActivity.class)));
             return;
         }
         startActivity(new Intent(CertificatesActivity.this, CertificatesSystemActivity.class));
@@ -984,34 +460,40 @@ public class CertificatesActivity extends BaseGpioActivity {
                     }
                 });
             }
-        }, new DialogInterface.OnClickListener() {
+        }, (dialog, which) -> onBackKeyPressed(new Runnable() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                onBackKeyPressed(new Runnable() {
-                    @Override
-                    public void run() {
-                        APP.exit();
-                    }
-                });
+            public void run() {
+                APP.exit();
             }
-        });
+        }));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        certificatesView.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        certificatesView.pause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        closeCardReader();
+//        closeCardReader();
         InfraredTemperatureUtils.getIns().closeSerialPort();
         destoryXmpp();
         certificatesView.destory();
         EventBus.getDefault().unregister(this);
         SyncManager.instance().destory();
-        KDXFSpeechManager.instance().destroy();
     }
 
-    /**
+    /*   *//**
      * 读卡器初始化
-     */
+     *//*
     private ScanKeyManager scanKeyManager;
 
     private void initCardReader() {
@@ -1040,13 +522,13 @@ public class CertificatesActivity extends BaseGpioActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onBefore(Request request, int id) {
-                UIUtils.showNetLoading(CertificatesActivity.this);
+                UIUtils.showNetLoading(CertificatesTestActivity.this);
             }
 
             @Override
             public void onError(Call call, Exception e, int id) {
                 Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showLong(CertificatesActivity.this, "获取信息失败，请重试" + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
+                UIUtils.showLong(CertificatesTestActivity.this, "获取信息失败，请重试" + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
 
                 resultHandler.removeMessages(4);
                 resultHandler.sendEmptyMessageDelayed(4, 1000);
@@ -1057,7 +539,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                 Log.e(TAG, "onResponse: 请求结果：" + response);
                 GetUserInfo getUserInfo = new Gson().fromJson(response, GetUserInfo.class);
                 if (getUserInfo.status != 1) {
-                    UIUtils.showLong(CertificatesActivity.this, "获取信息失败" + "（ " + getUserInfo.message + "）");
+                    UIUtils.showLong(CertificatesTestActivity.this, "获取信息失败" + "（ " + getUserInfo.message + "）");
                     return;
                 }
                 resultHandler.removeMessages(2);
@@ -1071,7 +553,7 @@ public class CertificatesActivity extends BaseGpioActivity {
 
                 tvTip.setText(getResources().getString(R.string.act_certificates_testing));
 
-                Glide.with(CertificatesActivity.this).load(getUserInfo.head).asBitmap().into(ivIdCard);
+                Glide.with(CertificatesTestActivity.this).load(getUserInfo.head).asBitmap().into(ivIdCard);
                 resultHandler.removeMessages(3);
                 Message message = Message.obtain();
                 message.what = 3;
@@ -1128,7 +610,7 @@ public class CertificatesActivity extends BaseGpioActivity {
                 isInput = false;
             }
         });
-    }
+    }*/
 
 
 }

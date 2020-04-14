@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.SplashActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckConst;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -39,6 +40,7 @@ public class BootRestartReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
 
+            SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IS_FIRST,true);
             Intent i = new Intent(context, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);

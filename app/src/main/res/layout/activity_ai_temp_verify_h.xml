@@ -204,6 +204,14 @@
             android:textColor="#16E5FF"
             android:textSize="24dp" />
 
+        <ImageView
+            android:id="@+id/iv_similar_icon_certi"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/iv_ratio"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
         <TextView
             android:id="@+id/tv_alike"
             android:layout_width="wrap_content"
@@ -327,21 +335,25 @@
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
-            <TextView
-                android:id="@+id/tv_ostatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
+            <LinearLayout
                 android:layout_toRightOf="@+id/tv_status_t"
-                android:textColor="@color/font_green"
-                android:textSize="24dp" />
-
-            <ImageView
-                android:id="@+id/iv_status"
+                android:gravity="center"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:layout_toRightOf="@+id/tv_ostatus" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_ostatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/font_green"
+                    android:textSize="24dp" />
+
+                <ImageView
+                    android:id="@+id/iv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="13dp"/>
+            </LinearLayout>
         </RelativeLayout>
 
         <FrameLayout

@@ -36,6 +36,8 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -189,6 +191,32 @@ public class CertificatesSettingActivity extends BaseActivity {
 
     private void initModelSetting() {
         setCorrectUI();
+
+        TextView tvMode = findViewById(R.id.tv_model_setting);
+        final String[] items = CertificatesConst.models;
+        final int model = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
+        tvMode.setText(items[model]);
+        tvMode.setOnClickListener(v -> {
+            final int currModel = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
+            Log.e(TAG, "initModelSetting: 当前模式：" + model);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CertificatesSettingActivity.this);
+            builder.setTitle(getResources().getString(R.string.setting_select_model));
+            builder.setSingleChoiceItems(items, currModel, (dialog, whichModel) -> {
+                Log.e(TAG, "initModelSetting: 选择后的模式：" + whichModel);
+                //如果模式相同则直接隐藏
+                if (whichModel == currModel) {
+                    dialog.dismiss();
+                    return;
+                }
+
+                SpUtils.saveInt(CertificatesConst.Key.MODE, whichModel);
+                tvMode.setText(items[whichModel]);
+
+                dialog.dismiss();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        });
 
         //热成像镜像==========================================================================================
         boolean thermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
@@ -482,31 +510,10 @@ public class CertificatesSettingActivity extends BaseActivity {
         int similar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
         edtSimilar.setText(similar + "");
 
-        findViewById(R.id.btn_set_similar_threshold).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String similar = edtSimilar.getText().toString();
-                int sml = Integer.parseInt(similar);
-                if (sml >= 100) {//太大
-                    UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值过大将导致无法识别\n请重新设置");
-                } else if (sml <= 65) {//太小
-                    UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值过小会导致误识率过高\n请重新设置");
-                } else if (sml > 90) {//比较大
-                    UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值设置较大，识别速度将有所变慢\n设置成功");
-                } else if (sml < 75) {//比较小
-                    UIUtils.showTitleTip(CertificatesSettingActivity.this, "阈值设置较小，误识率将增高\n设置成功");
-                } else {
-                    UIUtils.showTitleTip(CertificatesSettingActivity.this, "设置成功");
-                }
-
-                SpUtils.saveInt(CertificatesConst.Key.SIMILAR, sml);
-                Activity activity = APP.getMainActivity();
-                if (activity != null) {
-                    if (activity instanceof CertificatesActivity) {
-                        ((CertificatesActivity) activity).setFaceViewSimilar();
-                    }
-                }
-            }
+        findViewById(R.id.btn_set_similar_threshold).setOnClickListener(v -> {
+            String similar1 = edtSimilar.getText().toString();
+            int sml = Integer.parseInt(similar1);
+            SpUtils.saveInt(CertificatesConst.Key.SIMILAR, sml);
         });
     }
 

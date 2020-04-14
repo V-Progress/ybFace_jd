@@ -43,6 +43,7 @@ public class KDXFSpeechManager {
     private static KDXFSpeechManager instance;
     private static AudioManager audioManager = null; // 音频
     private static TextToSpeech mTextToSpeech;//语音类
+    private final int mDingDongId;
     private boolean isInited = false;
     private static HashMap<String, String> textToSpeechMap = new HashMap<>();
     private int mTTSSupport = 0;
@@ -71,6 +72,7 @@ public class KDXFSpeechManager {
         mSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(ab.build()).build();
         mVoiceId = mSoundPool.load(APP.getContext(), R.raw.warning_ring, 1);
         mPassId = mSoundPool.load(APP.getContext(), R.raw.pass, 1);
+        mDingDongId = mSoundPool.load(APP.getContext(),R.raw.dingdong,1);
         mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
@@ -201,6 +203,13 @@ public class KDXFSpeechManager {
             return;
         }
         mTextToSpeech.stop();
+    }
+
+    public void playDingDong(){
+        if(mSoundPool == null){
+            return;
+        }
+        mSoundPool.play(mDingDongId,1,1,1,0,1);
     }
 
     public void playPassRing() {

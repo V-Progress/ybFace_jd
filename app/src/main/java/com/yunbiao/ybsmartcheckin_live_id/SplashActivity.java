@@ -13,6 +13,7 @@ import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -21,7 +22,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImageActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -174,24 +174,21 @@ public class SplashActivity extends BaseActivity {
         }).start();
     }
 
-    private Runnable nextRunnable = new Runnable() {
-        @Override
-        public void run() {
-            UIUtils.dismissNetLoading();
+    private Runnable nextRunnable = () -> {
+        UIUtils.dismissNetLoading();
 
-            Constants.initStorage();
-            SpUtils.init();
+        Constants.initStorage();
+        SpUtils.init();
 
-            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                jump();
-            } else {
-                UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
-            }
-
-            overridePendingTransition(0, 0);
-            finish();
+        int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+        if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+            jump();
+        } else {
+            UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
         }
+
+        overridePendingTransition(0, 0);
+        finish();
     };
 
     private void jump() {
@@ -208,12 +205,12 @@ public class SplashActivity extends BaseActivity {
             //调整摄像头默认角度
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
+                Constants.DEFAULT_FACE_MIRROR = false;
             } else {
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
+                Constants.DEFAULT_FACE_MIRROR = true;
             }
-//            startActivity(new Intent(SplashActivity.this, ThermalImageActivity.class));
 
-            // TODO: 2020/4/3功能切换
             boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
             if(!jumpTag){
                 startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
@@ -232,6 +229,7 @@ public class SplashActivity extends BaseActivity {
         //视美泰测温考勤
         if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
             Constants.DEFAULT_CAMERA_ANGLE = 270;
+            Constants.DEFAULT_FACE_MIRROR = false;
             startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
             finish();
             return;
@@ -239,10 +237,17 @@ public class SplashActivity extends BaseActivity {
 
         //人证测温
         if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
-            Constants.DEFAULT_CAMERA_ANGLE = 0;
-//            startActivity(new Intent(this, CertificatesActivity.class));
+            //调整摄像头默认角度
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
+                Constants.DEFAULT_CAMERA_ANGLE = 90;
+                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                Constants.DEFAULT_FACE_MIRROR = false;
+            } else {
+                Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
+                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
+                Constants.DEFAULT_FACE_MIRROR = true;
+            }
 
-            // TODO: 2020/4/3功能切换
             boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
             //判断，如果不跳转则默认进入人证
             if (!jumpTag) {

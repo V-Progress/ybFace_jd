@@ -124,7 +124,7 @@ public class Constants {
 
     public static final String JUMP_TAG = "jumpTag";
     public static final boolean DEFAULT_JUMP_TAG = false;
-
+    public static boolean DEFAULT_FACE_MIRROR = true;
 
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
