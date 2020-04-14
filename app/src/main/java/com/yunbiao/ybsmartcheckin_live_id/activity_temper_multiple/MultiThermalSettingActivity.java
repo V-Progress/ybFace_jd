@@ -21,7 +21,6 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
-import com.google.gson.Gson;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
@@ -30,8 +29,8 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -64,8 +63,6 @@ public class MultiThermalSettingActivity extends BaseActivity {
 
         setHotImageMirror();
 
-        setBodyCorrect();
-
         setThermalFaceFrame();
 
         setBlackBodyFrame();
@@ -77,6 +74,20 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackEnable();
 
         initSetIp();
+    }
+
+    public void autoCorrect(View view){
+        boolean lowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP,MultiThermalConst.Default.LOW_TEMP);
+        boolean blackBodyEnable = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_ENABLE, MultiThermalConst.Default.BLACK_BODY_ENABLE);
+        if(blackBodyEnable || lowTemp){
+            UIUtils.showShort(this,"为了确保数据准确\n请关闭[黑体矫正]和[低温模式]后\n再进行校准");
+            return;
+        }
+        startActivity(new Intent(this,AutoCorrectionActivity.class));
+    }
+
+    public void upgrade(View view){
+        UpdateVersionControl.getInstance().checkUpdate(this);
     }
 
     private void initBlackEnable(){
@@ -166,11 +177,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
         });
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBodyCorrect();
+    }
+
     private void setBodyCorrect() {
         Button btnSub = findViewById(R.id.btn_body_correct_sub_setting);
         Button btnAdd = findViewById(R.id.btn_body_correct_add_setting);
         final EditText edtCorrect = findViewById(R.id.edt_body_correct__setting);
-        float mBodyCorrect = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
+        float mBodyCorrect = SpUtils.getFloat(MultiThermalConst.Key.CORRECT_VALUE, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
         edtCorrect.setText(mBodyCorrect + "");
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -184,7 +202,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 }
                 v1 = formatF(v1);
                 edtCorrect.setText(v1 + "");
-                SpUtils.saveFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, v1);
+                SpUtils.saveFloat(MultiThermalConst.Key.CORRECT_VALUE, v1);
             }
         };
         btnSub.setOnClickListener(onClickListener);
@@ -316,7 +334,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
         public void run() {
             boolean mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
             boolean mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
-            float mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
+            float mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.CORRECT_VALUE, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
 
             Rect cacheRect = getCacheRect();
 

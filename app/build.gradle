@@ -150,13 +150,13 @@ android {
     }
     //APK输出配置
     android.applicationVariants.all { variant ->
-            variant.outputs.all {
-                if (variant.buildType.name == "debug") {
-                    outputFileName = buildApkName("${variant.productFlavors[0].name}") + "_" + defaultConfig.versionName + "_" + buildTime() + "_debug" + ".apk"
-                } else {
-                    outputFileName = buildApkName("${variant.productFlavors[0].name}") + "_" + defaultConfig.versionName + "_" + buildTime() + ".apk"
-                }
+        variant.outputs.all {
+            if (variant.buildType.name == "debug") {
+                outputFileName = buildApkName("${variant.productFlavors[0].name}") + "_" + defaultConfig.versionName + "_" + buildTime() + "_debug" + ".apk"
+            } else {
+                outputFileName = buildApkName("${variant.productFlavors[0].name}") + "_" + defaultConfig.versionName + "_" + buildTime() + ".apk"
             }
+        }
     }
     //greenDao配置信息
     greendao {
@@ -167,30 +167,30 @@ android {
 
 String buildApkName(String param) {
     String name
-    if(param.contains("SK"))
+    if (param.contains("SK"))
         name = "SK"
-    else if(param.contains("HT"))
+    else if (param.contains("HT"))
         name = "亨通"
     else
         name = "云标"
 
-    if(param.contains("10")){
+    if (param.contains("10")) {
         name += "测温考勤"
-    } else if(param.contains("8")){
-        if(name.contains("SK")){//判断思库版本
+    } else if (param.contains("8")) {
+        if (name.contains("SK")) {//判断思库版本
             name += "TemperatureCheckingAttendance"
         } else {
             name += "测温闸机"
         }
-    } else if(param.contains("RZ")){
+    } else if (param.contains("RZ")) {
         name += "人证测温"
-    } else if(param.contains("DR")){
-        if(name.contains("SK")){//判断思库版本
+    } else if (param.contains("DR")) {
+        if (name.contains("SK")) {//判断思库版本
             name += "HighCapacity"
         } else {
             name += "大通量测温"
         }
-    } else if(param.contains("SC")){
+    } else if (param.contains("SC")) {
         name += "测温安检"
     } else {
         name += "智能考勤"

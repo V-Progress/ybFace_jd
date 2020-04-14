@@ -6,7 +6,7 @@ public class MultiThermalConst {
         String THERMAL_MIRROR = "multiThermalMirror";
         String LOW_TEMP = "multiThermalLowTemp";
         String WARNING_TEMP = "multiThermalWarningTemp";
-        String BODY_CORRECT_TEMPER = "multiThermalBodyTemper";
+        String CORRECT_VALUE = "multiThermalCorrectValue";
 
         String CORRECT_AREA_LEFT = "multiThermalCorrectAreaLeft";
         String CORRECT_AREA_TOP = "multiThermalCorrectAreaTop";
@@ -22,6 +22,8 @@ public class MultiThermalConst {
         String BLACK_BODY_PRE_VALUE = "multiThermalBlackBodyPreValue";
 
         String BLACK_BODY_ENABLE = "multiThermalBlackBodyEnable";
+
+        String BODY_TEMPER = "multiThermalBodyTemper";
     }
 
     public interface Default{
@@ -43,5 +45,7 @@ public class MultiThermalConst {
         int BLACK_BODY_PRE_VALUE = 345;
 
         boolean BLACK_BODY_ENABLE = true;
+
+        float BODY_TEMPER = 36.5f;
     }
 }

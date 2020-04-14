@@ -12,7 +12,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -69,7 +68,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -122,6 +120,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     @Override
     protected void initView() {
         super.initView();
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
         APP.setMainActivity(this);
         tvTotalNum = findViewById(R.id.tv_total_num_multi_thermal);
         tvNormalNum = findViewById(R.id.tv_normal_num_multi_thermal);
@@ -209,7 +210,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         mWarningTemper = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
         mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
-        mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
+        mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.CORRECT_VALUE, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
         mBlackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME, MultiThermalConst.Default.BLACK_BODY_FRAME);
         boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, MultiThermalConst.Default.THERMAL_FACE_FRAME);
         //是否显示热成像人脸框
@@ -296,6 +297,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         super.onDestroy();
         faceView.destory();
         destoryXmpp();
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private boolean mHasFace = false;

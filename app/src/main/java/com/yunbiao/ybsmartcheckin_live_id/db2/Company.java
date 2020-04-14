@@ -99,31 +99,6 @@ public class Company {
         this.codeUrl = codeUrl;
     }
 
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", comid=" + comid +
-                ", depId=" + depId +
-                ", deparray=" + deparray +
-                ", slogan='" + slogan + '\'' +
-                ", comname='" + comname + '\'' +
-                ", abbname='" + abbname + '\'' +
-                ", downtime='" + downtime + '\'' +
-                ", devicePwd='" + devicePwd + '\'' +
-                ", gotime='" + gotime + '\'' +
-                ", gotips='" + gotips + '\'' +
-                ", comlogo='" + comlogo + '\'' +
-                ", codeUrl='" + codeUrl + '\'' +
-                ", themeid=" + themeid +
-                ", toptitle='" + toptitle + '\'' +
-                ", downtips='" + downtips + '\'' +
-                ", bottomtitle='" + bottomtitle + '\'' +
-                ", notice='" + notice + '\'' +
-                ", displayPosition=" + displayPosition +
-                '}';
-    }
-
     public int getDisplayPosition() {
         return displayPosition;
     }
@@ -276,5 +251,31 @@ public class Company {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", comid=" + comid +
+                ", depId=" + depId +
+                ", bindType=" + bindType +
+                ", deparray=" + deparray +
+                ", slogan='" + slogan + '\'' +
+                ", comname='" + comname + '\'' +
+                ", abbname='" + abbname + '\'' +
+                ", downtime='" + downtime + '\'' +
+                ", devicePwd='" + devicePwd + '\'' +
+                ", gotime='" + gotime + '\'' +
+                ", gotips='" + gotips + '\'' +
+                ", comlogo='" + comlogo + '\'' +
+                ", codeUrl='" + codeUrl + '\'' +
+                ", themeid=" + themeid +
+                ", toptitle='" + toptitle + '\'' +
+                ", downtips='" + downtips + '\'' +
+                ", bottomtitle='" + bottomtitle + '\'' +
+                ", notice='" + notice + '\'' +
+                ", displayPosition=" + displayPosition +
+                '}';
     }
 }

@@ -248,6 +248,9 @@ public class CertificatesView extends FrameLayout {
         }
 
         FaceFeature faceFeature = new FaceFeature();
+        if(faceInfoList.size() <= 0){
+            return null;
+        }
         int i = frEngine.extractFaceFeature(bgr24, width, height, FaceEngine.CP_PAF_BGR24, faceInfoList.get(0), faceFeature);
         if (i != ErrorInfo.MOK) {
             return null;

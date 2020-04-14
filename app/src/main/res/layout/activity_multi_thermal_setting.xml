@@ -100,6 +100,24 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/setting_text"
+                android:text="@string/setting_multi_track" />
+
+            <Switch
+                android:id="@+id/sw_multi_track_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/setting_text"
                 android:text="@string/safety_black_body_enable" />
 
             <Switch
@@ -116,12 +134,13 @@
             style="@style/setting_text_child"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <TextView
                 style="@style/setting_text"
-                android:text="@string/setting_multi_track" />
+                android:text="@string/setting_low_temp_model" />
 
             <Switch
-                android:id="@+id/sw_multi_track_setting"
+                android:id="@+id/sw_low_temp_model_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -250,31 +269,18 @@
                 android:layout_height="30dp"
                 android:background="@mipmap/icon_jia" />
 
+            <Button
+                android:onClick="autoCorrect"
+                android:id="@+id/btn_set_similar_threshold"
+                style="@style/style_setting_input_save_button"
+                android:text="自动校准" />
+
             <TextView
                 android:layout_marginLeft="10dp"
                 android:text="@string/setting_please_correct_multi_thermal"
                 android:textColor="@color/red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/setting_text_child"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/setting_text"
-                android:text="@string/setting_low_temp_model" />
-
-            <Switch
-                android:id="@+id/sw_low_temp_model_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:textColor="@color/white" />
         </LinearLayout>
 
         <TextView
@@ -289,6 +295,12 @@
             android:layout_marginTop="10dp"
             android:onClick="powerOnOff"
             android:text="@string/setting_power_on_off" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:layout_marginTop="10dp"
+            android:onClick="upgrade"
+            android:text="@string/System_update" />
 
         <LinearLayout
             android:id="@+id/ll_black_body_pre_value"

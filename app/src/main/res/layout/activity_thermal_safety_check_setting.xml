@@ -279,6 +279,12 @@
             android:onClick="resetWarningNumber"
             android:text="@string/setting_reset_warning_number" />
 
+        <TextView
+            style="@style/setting_text_child"
+            android:layout_marginTop="10dp"
+            android:onClick="upgrade"
+            android:text="@string/System_update" />
+
         <LinearLayout
             android:id="@+id/ll_black_body_pre_value"
             android:visibility="gone"

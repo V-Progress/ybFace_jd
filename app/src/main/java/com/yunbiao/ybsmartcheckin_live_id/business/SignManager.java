@@ -98,7 +98,7 @@ public class SignManager {
         autoUploadThread = Executors.newSingleThreadScheduledExecutor();
         threadPool = Executors.newScheduledThreadPool(5);
 
-        if (Constants.DEVICE_TYPE != Constants.DeviceType.MULTIPLE_THERMAL) {
+        if (Constants.DEVICE_TYPE != Constants.DeviceType.MULTIPLE_THERMAL && Constants.DEVICE_TYPE != Constants.DeviceType.HT_MULTIPLE_THERMAL) {
             autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 1, 1, TimeUnit.MINUTES);
         } else {
             startMultiUploadThread();
@@ -1161,7 +1161,7 @@ public class SignManager {
         sign.setUpload(false);
         long add = DaoManager.get().add(sign);
 
-        Log.e(TAG, "addSignToDB: 当前是第：" + add);
+        Log.e(TAG, "addSignToDB: 当前是第：" + add + " --- " + sign.getTime());
 
         int comid = SpUtils.getCompany().getComid();
         if (comid == Constants.NOT_BIND_COMPANY_ID) {
@@ -1174,24 +1174,24 @@ public class SignManager {
         }*/
     }
 
-
     private void startMultiUploadThread() {
-        Log.e(TAG, "startMultiUploadThread: 开启多数据传输线程");
+        d("开启批量上传线程");
         threadPool.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                d("开始批量上传");
                 int comid = SpUtils.getCompany().getComid();
                 if (comid == Constants.NOT_BIND_COMPANY_ID) {
-                    Log.e(TAG, "run: 公司未绑定，不上传数据");
+                    d("公司未绑定，不上传数据");
                     checkDaoData(10 * 1000);
                     return;
                 }
 
                 final List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, false);
                 if (signs == null || signs.size() <= 0) {
+                    d("暂无批量数据");
                     return;
                 }
-                Log.e(TAG, "run: 查询的数量：" + signs.size());
 
                 Map<String, File> hotMap = new HashMap<>();
                 Map<String, File> fileMap = new HashMap<>();
@@ -1201,14 +1201,12 @@ public class SignManager {
                     String headPath1 = sign.getHeadPath();
                     String hotImgPath1 = sign.getHotImgPath();
                     if (TextUtils.isEmpty(headPath1) || TextUtils.isEmpty(hotImgPath1)) {
-                        Log.e(TAG, "run: 头像为空：" + headPath1);
-                        Log.e(TAG, "run: 热图为空：" + hotImgPath1);
+                        d("头像或热图不存在：" + headPath1 + "\n" + hotImgPath1);
                         DaoManager.get().delete(sign);
                         continue;
                     }
                     if (!new File(headPath1).exists() || !new File(hotImgPath1).exists()) {
-                        Log.e(TAG, "run: 头像不存在：" + headPath1);
-                        Log.e(TAG, "run: 热图不存在：" + hotImgPath1);
+                        d("头像或热图不存在：" + headPath1 + "\n" + hotImgPath1);
                         DaoManager.get().delete(sign);
                         continue;
                     }
@@ -1221,13 +1219,12 @@ public class SignManager {
                     //添加头像
                     File file;
                     String headPath = sign.getHeadPath();
-                    Log.e(TAG, "run: 当前头像：" + headPath);
                     if (TextUtils.isEmpty(headPath)) {
                         file = createNullFile("", sign.getTime());
                     } else {
                         file = new File(sign.getHeadPath());
                         if (!file.exists()) {
-                            Log.e(TAG, "run: 不存在:" + headPath);
+                            d("头像不存在:" + headPath);
                             file = createNullFile("", sign.getTime());
                         }
                     }
@@ -1236,13 +1233,12 @@ public class SignManager {
                     //添加热图
                     File hotFile;
                     String hotImgPath = sign.getHotImgPath();
-                    Log.e(TAG, "run: 当前头像：" + hotImgPath);
                     if (TextUtils.isEmpty(hotImgPath)) {
                         hotFile = createNullFile("hot_", sign.getTime());
                     } else {
                         hotFile = new File(sign.getHotImgPath());
                         if (!hotFile.exists()) {
-                            Log.e(TAG, "run: 不存在:" + hotImgPath);
+                            d("热图不存在:" + hotImgPath);
                             hotFile = createNullFile("hot_", sign.getTime());
                         }
                     }
@@ -1254,10 +1250,10 @@ public class SignManager {
                 params.put("deviceNo", HeartBeatClient.getDeviceNo());
                 params.put("comId", SpUtils.getCompany().getComid() + "");
 
-                Log.e(TAG, "地址：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY);
-                Log.e(TAG, "参数：" + params.toString());
-                Log.e(TAG, "头像：" + fileMap.size());
-                Log.e(TAG, "热图：" + hotMap.size());
+                d("地址：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY);
+                d("参数：" + params.toString());
+                d("头像：" + fileMap.size());
+                d("热图：" + hotMap.size());
 
                 OkHttpUtils.post().url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY)
                         .params(params)
@@ -1268,7 +1264,7 @@ public class SignManager {
                             @Override
                             public void onBefore(Request request, int id) {
                                 super.onBefore(request, id);
-                                Log.e(TAG, "onBefore: 开始上传");
+                                d("onBefore: 开始上传");
                             }
 
                             @Override
@@ -1280,7 +1276,7 @@ public class SignManager {
 
                             @Override
                             public void onResponse(String response, int id) {
-                                Log.e(TAG, "onResponse: 上传结果：" + response);
+                                d("onResponse: 上传结果：" + response);
                                 JSONObject jsonObject = JSONObject.parseObject(response);
                                 String status = jsonObject.getString("status");
                                 boolean isSucc = TextUtils.equals("1", status);
@@ -1336,12 +1332,12 @@ public class SignManager {
                         iterator.remove();
 
                         if (signs.size() <= mostNum) {
-                            Log.e(TAG, "run: 数量小于：" + mostNum + "，停止删除");
+                            d("run: 数量小于：" + mostNum + "，停止删除");
                             break;
                         }
                     }
                 }
-                Log.e(TAG, "run: 删除：" + deleteNum + "条");
+                d("run: 删除：" + deleteNum + "条");
             }
         });
     }

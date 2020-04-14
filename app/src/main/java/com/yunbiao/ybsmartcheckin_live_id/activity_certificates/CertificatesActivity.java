@@ -145,8 +145,8 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         ivIdCard = findViewById(R.id.iv_idCard);
         btnNoIdCard = findViewById(R.id.btn_no_id_card);
         tvBottomTitle = findViewById(R.id.tv_bottomTitle);
-        btnNoIdCard.setOnClickListener(onClickListener);
-        ivLogo.setOnClickListener(v -> goSetting());
+        btnNoIdCard.setOnClickListener(v -> noCardToTemper());//无证测温
+        ivLogo.setOnClickListener(v -> goSetting());//进入设置
 
         if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
@@ -182,15 +182,6 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
             tvAppVersion.setText(appVersion);
         }
     }
-
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            v.setEnabled(false);
-            tvTip.setText(getResources().getString(R.string.act_certificates_testing));
-//            getTempHandler.sendEmptyMessageDelayed(0, 100);
-        }
-    };
 
     @Override
     protected void initData() {
@@ -483,134 +474,10 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        closeCardReader();
-        InfraredTemperatureUtils.getIns().closeSerialPort();
+        SyncManager.instance().destory();
         destoryXmpp();
         certificatesView.destory();
         EventBus.getDefault().unregister(this);
-        SyncManager.instance().destory();
     }
-
-    /*   *//**
-     * 读卡器初始化
-     *//*
-    private ScanKeyManager scanKeyManager;
-
-    private void initCardReader() {
-        //读卡器声明
-        scanKeyManager = new ScanKeyManager(new ScanKeyManager.OnScanValueListener() {
-            @Override
-            public void onScanValue(String value) {
-                Log.e(TAG, "onScanValue: 检测到扫码：" + value);
-
-                isCode = true;
-                getUserInfoByCode(value);
-            }
-        });
-        onKeyBoardListener();
-    }
-
-    private boolean isCode = false;
-    private List<Float> mCodeTempList = new ArrayList<>();
-
-    private void getUserInfoByCode(String code) {
-        Log.e(TAG, "地址:" + ResourceUpdate.GETUSERINFO_BY_CODE);
-        Log.e(TAG, "参数：" + code);
-        OkHttpUtils.post()
-                .url(ResourceUpdate.GETUSERINFO_BY_CODE)
-                .addParams("code", code)
-                .build().execute(new StringCallback() {
-            @Override
-            public void onBefore(Request request, int id) {
-                UIUtils.showNetLoading(CertificatesTestActivity.this);
-            }
-
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showLong(CertificatesTestActivity.this, "获取信息失败，请重试" + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
-
-                resultHandler.removeMessages(4);
-                resultHandler.sendEmptyMessageDelayed(4, 1000);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: 请求结果：" + response);
-                GetUserInfo getUserInfo = new Gson().fromJson(response, GetUserInfo.class);
-                if (getUserInfo.status != 1) {
-                    UIUtils.showLong(CertificatesTestActivity.this, "获取信息失败" + "（ " + getUserInfo.message + "）");
-                    return;
-                }
-                resultHandler.removeMessages(2);
-                clearUITips();
-
-                tvOriginT.setText(getResources().getString(R.string.act_certificates_depart));
-
-                String dept = getUserInfo.dept;
-                tvOrigin.setText(TextUtils.isEmpty(dept) ? "" : dept);
-                tvName.setText(getUserInfo.name);
-
-                tvTip.setText(getResources().getString(R.string.act_certificates_testing));
-
-                Glide.with(CertificatesTestActivity.this).load(getUserInfo.head).asBitmap().into(ivIdCard);
-                resultHandler.removeMessages(3);
-                Message message = Message.obtain();
-                message.what = 3;
-                message.arg1 = TextUtils.equals("绿色", getUserInfo.color) ? 1 : TextUtils.equals("黄色", getUserInfo.color) ? 1 : 0;
-                message.obj = getUserInfo.entryId;
-                resultHandler.sendMessageDelayed(message, 1000);
-            }
-
-            @Override
-            public void onAfter(int id) {
-                UIUtils.dismissNetLoading();
-            }
-        });
-    }
-
-    class GetUserInfo {
-        int status;
-        String entryId;
-        String message;
-        String color;
-        String name;
-        String dept;
-        String head;
-    }
-
-    private void closeCardReader() {
-    }
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && !isInput) {
-            scanKeyManager.analysisKeyEvent(event);
-            return true;
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
-
-    private boolean isInput = false;
-
-    //监听软件盘是否弹起
-    private void onKeyBoardListener() {
-        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
-            @Override
-            public void keyBoardShow(int height) {
-                Log.e("软键盘", "键盘显示 高度" + height);
-                isInput = true;
-            }
-
-            @Override
-            public void keyBoardHide(int height) {
-                Log.e("软键盘", "键盘隐藏 高度" + height);
-                isInput = false;
-            }
-        });
-    }*/
-
 
 }

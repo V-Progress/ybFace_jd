@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
+        <activity android:name=".activity_temper_multiple.AutoCorrectionActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:enabled="true"
@@ -32,9 +33,7 @@
             android:label="Notification Details" />
         <activity
             android:name=".xmpp.NotificationSettingsActivity"
-            android:label="Notification Settings" />
-
-        <!--考勤-->
+            android:label="Notification Settings" /> <!-- 考勤 -->
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
@@ -47,9 +46,7 @@
         <activity android:name=".activity.DepartListActivity" />
         <activity android:name=".activity.VisitorActivity" />
         <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.PowerOnOffActivity" />
-
-        <!-- 测温考勤机 -->
+        <activity android:name=".activity.PowerOnOffActivity" /> <!-- 测温考勤机 -->
         <activity android:name=".activity_temper_check_in.ThermalImageActivity" />
         <activity android:name=".activity_temper_check_in.ThermalSettingActivity" />
         <activity android:name=".activity_temper_check_in.ThermalSystemActivity" />
@@ -57,18 +54,14 @@
         <activity android:name=".activity_temper_check_in.ThermalEditEmployActivity" />
         <activity android:name=".activity_temper_check_in.ThermalSignActivity" />
         <activity android:name=".activity_temper_check_in.ThermalVisitorActivity" />
-        <activity android:name=".activity_temper_check_in.TemperatureCorrectActivity" />
-
-        <!-- 视美泰竖屏闸机 -->
+        <activity android:name=".activity_temper_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
         <activity android:name=".activity_temper_check_in_smt.SMTMainActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTSystemActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTEmployListActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTEditEmployActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTRecordActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTSettingActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTVisitorActivity" />
-
-        <!-- 人证 -->
+        <activity android:name=".activity_temper_check_in_smt.SMTVisitorActivity" /> <!-- 人证 -->
         <activity android:name=".activity_certificates.CertificatesActivity">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -80,17 +73,13 @@
         </activity>
         <activity android:name=".activity_certificates.CertificatesSystemActivity" />
         <activity android:name=".activity_certificates.CertificatesSettingActivity" />
-        <activity android:name=".activity_certificates.CertificatesCorrectActivity" />
-
-        <!--多人-->
+        <activity android:name=".activity_certificates.CertificatesCorrectActivity" /> <!-- 多人 -->
         <activity android:name=".activity_temper_multiple.MultiThermalSettingActivity" />
-        <activity android:name=".activity_temper_multiple.MultiThermalActivity" />
-
-        <!--安检-->
-        <activity android:name=".activity_temper_check_in.ThermalImage2Activity"/>
+        <activity android:name=".activity_temper_multiple.MultiThermalActivity" /> <!-- 安检 -->
+        <activity android:name=".activity_temper_check_in.ThermalImage2Activity" />
         <activity android:name=".activity_safety_check.ThermalSafetyCheckSettingActivity" />
         <activity android:name=".activity_safety_check.ThermalSafetyCheckActivity" />
-        <activity android:name=".activity_safety_check.BlackBodyAreaActivity"/>
+        <activity android:name=".activity_safety_check.BlackBodyAreaActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -177,14 +166,14 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />

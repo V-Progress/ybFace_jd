@@ -33,7 +33,6 @@ import android.widget.TextView;
 import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -265,7 +264,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         public boolean handleMessage(Message msg) {
             if (msg.what == 0) {
                 Log.e(TAG, "handleMessage: 保存数值：" + mCacheCorrect);
-                SpUtils.saveFloat(MultiThermalConst.Key.BODY_CORRECT_TEMPER,mCacheCorrect);
+                SpUtils.saveFloat(MultiThermalConst.Key.CORRECT_VALUE,mCacheCorrect);
             }
             return true;
         }

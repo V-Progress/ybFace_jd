@@ -13,6 +13,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -45,6 +46,10 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initTemperFrame();
 
         initAutoCalibration();
+    }
+
+    public void upgrade(View view){
+        UpdateVersionControl.getInstance().checkUpdate(this);
     }
 
     private void initAutoCalibration(){

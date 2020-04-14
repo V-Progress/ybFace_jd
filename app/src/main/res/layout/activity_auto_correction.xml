@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@mipmap/multi_thermal_bg"
+    android:layout_height="match_parent"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.AutoCorrectionActivity">
+
+    <LinearLayout
+        android:layout_centerInParent="true"
+        android:background="@drawable/selector_btn_take_photo"
+        android:padding="6dp"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="660dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:text="测温校准"
+                android:layout_centerInParent="true"
+                android:textSize="24dp"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:gravity="center_vertical"
+                android:textSize="30dp"
+                android:textColor="#1296DB"
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:text="@string/back"
+                android:drawableLeft="@mipmap/back"/>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="600dp">
+            <ImageView
+                android:id="@+id/iv_hot_image"
+                android:padding="50dp"
+                android:layout_width="800dp"
+                android:layout_height="600dp"/>
+
+            <LinearLayout
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:id="@+id/ll_correction_area"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:onClick="startCorrect"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textSize="26dp"
+                    android:textColor="@color/white"
+                    android:text="开始校准"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_marginTop="30dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="26dp"
+                        android:textColor="@color/white"
+                        android:text="@string/safety_measure_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:textSize="30dp"
+                        android:id="@+id/tv_oringinT_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="30dp"
+                    android:textSize="26dp"
+                    android:textColor="@color/white"
+                    android:text="@string/safety_correct_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_sub"
+                        android:id="@+id/btn_correct_sub_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_correct_safety_check"
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_plus"
+                        android:id="@+id/btn_correct_plus_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="30dp"
+                    android:textSize="26dp"
+                    android:textColor="@color/white"
+                    android:text="@string/safety_temper_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_sub"
+                        android:id="@+id/btn_body_temper_sub_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_body_temper_safety_check"
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_plus"
+                        android:id="@+id/btn_body_temper_plus_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                </LinearLayout>
+
+                <Button
+                    android:textColor="@color/white"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:text="@string/act_correct_save"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:id="@+id/btn_confirm_correction_safety_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
