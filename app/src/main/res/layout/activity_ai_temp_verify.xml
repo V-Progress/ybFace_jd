@@ -30,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="32dp" />
 
-        <!--<TextClock
+        <TextClock
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/white"
-            android:textSize="32dp" />-->
+            android:textSize="32dp" />
     </RelativeLayout>
 
     <RelativeLayout

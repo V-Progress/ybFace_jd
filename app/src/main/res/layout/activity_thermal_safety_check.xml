@@ -24,7 +24,7 @@
             android:layout_height="60dp"
             android:src="@mipmap/yb_logo" />
 
-        <!--<TextClock
+        <TextClock
             android:textSize="20dp"
             android:textColor="@color/white"
             android:text="131313121"
@@ -33,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:format12Hour="yyyy-MM-dd HH:mm"
             android:layout_margin="8dp"
-            android:format24Hour="yyyy-MM-dd HH:mm" />-->
+            android:format24Hour="yyyy-MM-dd HH:mm" />
 
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
             android:letterSpacing="0.1"
