@@ -64,31 +64,38 @@ public class SignAdapter extends BaseAdapter {
         viewHolder.tv_No.setText(position + 1 + "");
         if (!TextUtils.isEmpty(vip.getEmployNum())) {
             viewHolder.tv_date.setText(vip.getTime() + "");
+        } else {
+            viewHolder.tv_date.setText("");
         }
-
         if (vip.getType() == -9) {
             viewHolder.tv_employName.setText(APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));
         } else if (!TextUtils.isEmpty(vip.getName())) {
             viewHolder.tv_employName.setText(vip.getName());
+        } else {
+            viewHolder.tv_employName.setText("");
         }
-
         if (!TextUtils.isEmpty(vip.getDepart())) {
             viewHolder.tv_employDepart.setText(vip.getDepart());
+        } else {
+            viewHolder.tv_employDepart.setText("");
         }
-
-
         if (!TextUtils.isEmpty(vip.getPosition())) {
             viewHolder.tv_employJob.setText(vip.getPosition());
+        } else {
+            viewHolder.tv_employJob.setText("");
         }
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         viewHolder.tv_date.setText(df.format(vip.getTime()));
         if (position % 2 == 1) {
             convertView.setBackgroundColor(Color.parseColor("#07216d"));
+        } else {
+            convertView.setBackgroundColor(Color.parseColor("#0007216d"));
         }
         if (!TextUtils.isEmpty(vip.getHeadPath())) {
             x.image().bind(viewHolder.iv_photo, vip.getHeadPath());
+        } else {
+            viewHolder.iv_photo.setImageBitmap(null);
         }
-
         return convertView;
     }
 

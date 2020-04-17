@@ -270,6 +270,7 @@
                 android:background="@mipmap/icon_jia" />
 
             <Button
+                android:visibility="gone"
                 android:onClick="autoCorrect"
                 android:id="@+id/btn_set_similar_threshold"
                 style="@style/style_setting_input_save_button"

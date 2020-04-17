@@ -434,11 +434,11 @@ public class CommonUtils {
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
         if(broad_info.contains("wxl")){
-            return "SMT";
+            return "SMT";//视美泰
         } else if(broad_info.contains("harris")){
-            return "HARRIS";
+            return "HARRIS";//亿晟
         } else if(broad_info.contains("lxr")){
-            return "LXR";
+            return "LXR";//亿莱顿
         }
         return broad_info;
     }

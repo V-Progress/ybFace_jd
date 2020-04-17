@@ -1,12 +1,10 @@
 package com.yunbiao.ybsmartcheckin_live_id.afinel;
 
-import android.content.Context;
+import android.hardware.Camera;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
-import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 public class Constants {
@@ -68,99 +66,80 @@ public class Constants {
         }
     }
 
+    //修改设备类型
+    public static final int DEVICE_TYPE = BuildConfig.APP_TYPE;
+    //是否亨通的版本（独立版本）
+    public static final boolean isHT = BuildConfig.IS_HT;
+    //是否思库的版本(云标分支版本)
+    public static final boolean isSK = BuildConfig.IS_SK;
+    //最大人脸抓取数
+    public static final int MAX_DETECT_NUM = BuildConfig.MAX_DETECT_FACE_NUM;
+    //最远人脸抓取距离
+    public static final int DETECT_FACE_SCALE_VAL = BuildConfig.DETECT_FACE_SCALE_VAL;
+    //设备未绑定时的公司Id
+    public static final int NOT_BIND_COMPANY_ID = 0;
+
+    /***
+     * 网络配置
+     */
     public interface NetConfig {
         String PRO_URL = "47.105.80.245";//主机地址
         String PRO_RES_PORT = "8080";//数据端口
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
-
-        /*String PRO_URL = "192.168.255.108";//主机地址
-        String PRO_RES_PORT = "80";//数据端口
-        String PRO_XMPP_PORT = "5222";//XMPP端口
-        String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）*/
     }
 
-    public static class Model {
-        public static int MODEL_FACE_ONLY = 0;
-        public static int MODEL_FACE_TEMPERATURE = 1;
-        public static int MODEL_TEMPERATURE_ONLY = 2;
-        public static int MODEL_THERMAL_IMAGING_ONLY = 3;
-        public static int MODEL_FACE_THERMAL_IMAGING = 4;
-        public static int MODEL_CERTIFICATES_THERMAL = 5;
-        public static String[] models;
-
-        public static void initModels(Context context) {
-            models = context.getResources().getStringArray(R.array.models);
-        }
-    }
-
+    /***
+     * 服务模式
+     */
     public interface serverModel {
         int YUN = 0;//云端
         int JU = 1;//局域网
     }
 
-    //修改设备类型
-    public static int DEVICE_TYPE = BuildConfig.APP_TYPE;
-    //是否亨通的版本（独立版本）
-    public static boolean isHT = BuildConfig.IS_HT;
-    //是否思库的版本(云标分支版本)
-    public static boolean isSK = BuildConfig.IS_SK;
-
+    /***
+     * 设备类型
+     */
     public interface DeviceType {
         int CHECK_IN = 1;//考勤机
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
-        int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
-        int TEMPERATURE_CERTIFICATES = 9;//人证测温机
-        int MULTIPLE_THERMAL = 10;//多人测温
-
         int HT_TEMPERATURE_CHECK_IN = 11;//亨通考勤
+
+        int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
         int HT_TEMPERATURE_CHECK_IN_SMT = 12;//亨通通行
+
+        int TEMPERATURE_CERTIFICATES = 9;//人证测温机
         int HT_TEMPERATURE_CERTIFICATES = 13;//亨通人证
+
+        int MULTIPLE_THERMAL = 10;//多人测温
         int HT_MULTIPLE_THERMAL = 14;//亨通多人
 
         int TEMPER_SAFETY_CHECK = 15;//安检门
         int HT_TEMPER_SAFETY_CHECK = 16;//亨通安检
+
+        int SAFETY_CHECK_DOUBLE_LIGHT = 17;//双光安检
+        int HT_SAFETY_CHECK_DOUBLE_LIGHT = 18;//亨通双光安检
     }
 
+    //人证、考勤跳转标识
     public static final String JUMP_TAG = "jumpTag";
+    //人证、考勤跳转默认值
     public static final boolean DEFAULT_JUMP_TAG = false;
+    //默认人脸镜像
     public static boolean DEFAULT_FACE_MIRROR = true;
-
-    //设备未绑定时的公司Id
-    public static final int NOT_BIND_COMPANY_ID = 0;
-    //最大人脸线程数
-    public static final int MAX_DETECT_NUM = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL ? 30 : 10;
-    //最远人脸抓取距离
-    public static final int DETECT_FACE_SCALE_VAL = DEVICE_TYPE == DeviceType.MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.HT_MULTIPLE_THERMAL || DEVICE_TYPE == DeviceType.CHECK_IN ? 32 : 7;
-
-
+    //默认人脸竖镜像
     public static boolean isVerticalMirror = false;
-    //设置默认模式（如果是8寸机则返回热成像模式，如果是其他则红外模式）
-    public static final int DEFAULT_TEMP_MODEL = Model.MODEL_THERMAL_IMAGING_ONLY;
-    //默认波特率
-    public static final int DEFAULT_BAUD_RATE = BaudRate.THERMAL_IMAGING_BAUD_RATE;
+    //默认摄像头ID
+    public static int CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_BACK;
+
     //屏幕角度默认值
     public static int DEFAULT_CAMERA_ANGLE = 0;
-    //端口号
-    public static final String DEFAULT_PORT_PATH = "/dev/ttyS4";
     //大屏海报开启状态
     public static final boolean DEFAULT_POSTER_ENABLED = false;
-    //默认热成像镜像
-    public static final boolean DEFAULT_THERMAL_IMAGE_MIRROR = true;
     //默认最小阈值
     public static final float DEFAULT_TEMP_MIN_THRESHOLD_VALUE = 35.5F;
-    //默认身体百分比
-    public static final int DEFAULT_BODY_PERCENT_VALUE = 1;
-    //默认热成像最小体温
-    public static final int DEFAULT_BODY_MIN_T_VALUE = 340;
-    //默认热成像最大体温值
-    public static final int DEFAULT_BODY_MAX_T_VALUE = 400;
     //测温报警值
     public static final float DEFAULT_TEMP_WARNING_THRESHOLD_VALUE = 37.3f;
-    //取温延时默认值
-    public static final int DEFAULT_GET_TEMP_DELAY_TIME_VALUE = 600;
-    //距离提示开关
-    public static final boolean DEFAULT_DISTANCE_TIPS_ENABLED_VALUE = true;
     //检测温差值
     public static final float DEFAULT_TEMP_D_VALUE_VALUE = 3.0f;
     //环境温度补正
@@ -173,12 +152,6 @@ public class Constants {
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
     //播报延时默认值
     public static final long DEFAULT_SPEECH_DELAY = 5000;
-
-    public interface BaudRate {
-        int INFARED_TEMP_BAUD_RATE = 9600;
-        int THERMAL_IMAGING_BAUD_RATE = 115200;
-    }
-
 }
 
 

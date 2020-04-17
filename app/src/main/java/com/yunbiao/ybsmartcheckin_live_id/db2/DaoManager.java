@@ -274,4 +274,11 @@ public class DaoManager {
         }
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CardId.eq(cardId)).unique();
     }
+
+    public void deleteSignByTime(long time) {
+        if(daoSession == null){
+            return;
+        }
+        daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
 }

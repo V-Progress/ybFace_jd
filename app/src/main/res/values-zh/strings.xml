@@ -103,6 +103,8 @@
     <string name="employ_list_delete_success">删除成功</string>
     <string name="employ_list_depart">部门</string>
     <string name="employ_list_add_depart">新增部门</string>
+    <string name="employ_list_please_input_name">请输入姓名</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">未搜索到该员工</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
     <string name="act_editEmploy_zjyg">增加员工</string>
@@ -129,6 +131,18 @@
     <string name="act_editEmploy_tip_gsmyzgbm">公司没有这个部门</string>
     <string name="act_editEmploy_tip_gsyzwyg">公司没有这位员工</string>
     <string name="act_editEmploy_tip_cscw">参数错误</string>
+    <string name="act_editEmploy_tip_qtxbm">请选择部门</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">添加成功</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">添加人脸数据失败</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">提交失败</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">请设置部门</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">更新成功</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">更新头像失败</string>
+    <string name="act_editEmploy_update_info_success">更新信息成功</string>
+    <string name="act_editEmploy_no_face">未检测到人脸</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">请保持屏幕中只有一张人脸</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">拍照失败，请重试</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">未知错误</string><!--未知错误-->
 
     <!--离线数据-->
     <string name="sign_list_title">离线记录</string>
@@ -415,7 +429,7 @@
 
     <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
     <string name="act_certificates_title">AI人证测温校验系统</string>
-    <string name="act_certificates_please_get_hat">请取下眼睛、帽子、正视镜头</string>
+    <string name="act_certificates_please_get_hat">请取下眼镜、帽子，正视镜头</string>
     <string name="act_certificates_no_idcard_temper">无证测温</string>
     <string name="act_certificates_face_picture">人脸照片</string>
     <string name="act_certificates_card_picture">证件照片</string>

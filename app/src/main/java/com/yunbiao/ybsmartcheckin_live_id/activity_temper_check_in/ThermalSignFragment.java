@@ -470,7 +470,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
                 }
                 tvTemp.setText(temper);
 
-                if (mCurrModel == Constants.Model.MODEL_FACE_ONLY || signBean.getTemperature() == 0.0f) {
+                if (mCurrModel == ThermalConst.FACE_ONLY || signBean.getTemperature() == 0.0f) {
                     tvTemp.setVisibility(View.INVISIBLE);
                 } else {
                     tvTemp.setVisibility(View.VISIBLE);

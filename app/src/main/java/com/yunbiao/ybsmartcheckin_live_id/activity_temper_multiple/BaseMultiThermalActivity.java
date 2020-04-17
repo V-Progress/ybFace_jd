@@ -339,17 +339,14 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
             }
         });
 
-        loadRecord(new Consumer<List<Sign>>() {
-            @Override
-            public void accept(List<Sign> signs) throws Exception {
-                progressBar.setVisibility(View.GONE);
-                if (signs == null || signs.size() <= 0) {
-                    tvNoData.setVisibility(View.VISIBLE);
-                    return;
-                }
-                tvNoData.setVisibility(View.GONE);
-                lvRecord.setAdapter(new MultiRecordAdapter(BaseMultiThermalActivity.this, signs));
+        loadRecord(signs -> {
+            progressBar.setVisibility(View.GONE);
+            if (signs == null || signs.size() <= 0) {
+                tvNoData.setVisibility(View.VISIBLE);
+                return;
             }
+            tvNoData.setVisibility(View.GONE);
+            lvRecord.setAdapter(new MultiRecordAdapter(BaseMultiThermalActivity.this, signs));
         });
 
         lvRecord.setOnScrollListener(new AbsListView.OnScrollListener() {

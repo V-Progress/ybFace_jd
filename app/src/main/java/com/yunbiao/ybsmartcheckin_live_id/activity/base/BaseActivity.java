@@ -1,8 +1,5 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity.base;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -27,18 +24,16 @@ import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.utils.KeyboardStatusDetector;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
+import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends FragmentActivity {
     protected boolean isLog = true;
-    private static final String TAG = "BaseActivity";
     protected int mCurrentOrientation;
     protected FragmentManager mFragmentManager;
     private boolean isSupportTouch;
@@ -48,7 +43,6 @@ public abstract class BaseActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setFullscreen(false, false);
         APP.addActivity(this);
-
         mCurrentOrientation = getResources().getConfiguration().orientation;
 
         //判断是否支持触屏
@@ -73,19 +67,16 @@ public abstract class BaseActivity extends FragmentActivity {
             setContentView(landscapeLayout);
         }
 
-        View backView = findViewById(R.id.iv_back);
-        if(backView != null){
-            backView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-        }
+        ButterKnife.bind(this);
 
         initView();
 
         initData();
+
+        View backView = findViewById(R.id.iv_back);
+        if (backView != null) {
+            backView.setOnClickListener(v -> finish());
+        }
 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
@@ -150,6 +141,10 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
+    protected String getResString(int id){
+        return APP.getContext().getResources().getString(id);
+    }
+
     public void onBack(View view) {
         finish();
     }
@@ -181,6 +176,18 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void initData() {
     }
 
+    protected void registerEventBus(Object object) {
+        if (!EventBus.getDefault().isRegistered(object)) {
+            EventBus.getDefault().register(object);
+        }
+    }
+
+    protected void unRegisterEventBus(Object object) {
+        if (EventBus.getDefault().isRegistered(object)) {
+            EventBus.getDefault().unregister(object);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -207,6 +214,12 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void d(String log) {
         if (isLog) {
             Log.d(this.getClass().getSimpleName(), log);
+        }
+    }
+
+    protected void e(String log) {
+        if (isLog) {
+            Log.e(this.getClass().getSimpleName(), log);
         }
     }
 

@@ -158,10 +158,10 @@ public class ThermalImageActivity extends BaseThermalActivity {
             signListFragment.setModelText(ThermalConst.models[mode]);
         }
         //设置人脸间隔
-        SignManager.instance().setVerifyDelay(mode == Constants.Model.MODEL_FACE_ONLY ? 10000 : 0);
+        SignManager.instance().setVerifyDelay(mode == ThermalConst.FACE_ONLY ? 10000 : 0);
 
         //根据模式选择启动逻辑
-        if (mode == Constants.Model.MODEL_FACE_ONLY) {
+        if (mode == ThermalConst.FACE_ONLY) {
             Log.e(TAG, "onResume: 仅人脸模式");
             flDotFrame.setVisibility(View.GONE);
             tvTempTips.setVisibility(View.GONE);

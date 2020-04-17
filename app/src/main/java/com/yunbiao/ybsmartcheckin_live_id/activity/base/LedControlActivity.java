@@ -36,7 +36,7 @@ public abstract class LedControlActivity extends BaseActivity {
 
     private int brightness = 15;//亮度：范围0-15
     protected SmdtManager mSmdtManager;
-    private GPIOManager gpioManager;
+    protected GPIOManager gpioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

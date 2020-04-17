@@ -330,7 +330,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                         if(mFEnabled){
                             resultTemper = (float) (resultTemper * 1.8 + 32);
                             resultTemper = formatF(resultTemper);
-                            resultTip += resultTemper + "℃";
+                            resultTip += resultTemper + "℉";
                         } else {
                             resultTip += resultTemper + "℃";
                         }

@@ -57,7 +57,7 @@
                 <Button
                     android:onClick="jumpTag"
                     style="@style/style_setting_input_save_button"
-                    android:text="@string/setting_switch_to_temperature_check_in" />
+                    android:text="@string/setting_switch_to_certificates" />
             </LinearLayout>
 
             <LinearLayout

@@ -560,6 +560,95 @@ public class SignManager {
         return sign;
     }
 
+    public void uploadTemperatureSignAndDelete(Sign sign){
+        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+
+        File file;
+        if (sign.getImgBitmap() != null) {
+            file = saveBitmap(sign.getTime(), sign.getImgBitmap());
+        } else {
+            file = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        sign.setHeadPath(file.getPath());
+        Log.e(TAG, "uploadTemperatureSign: 保存头像：" + file.getPath());
+
+        File hotFile;
+        Bitmap hotImageBitmap = sign.getHotImageBitmap();
+        if (hotImageBitmap != null) {
+            hotFile = saveBitmap("hot_", sign.getTime(), hotImageBitmap);
+        } else {
+            hotFile = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
+            if (!hotFile.exists()) {
+                try {
+                    hotFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.e(TAG, "uploadTemperatureSign: 保存热图：" + hotFile.getPath());
+        sign.setHotImgPath(hotFile.getPath());
+
+        // TODO: 2020/3/18 离线功能
+        if (sign.getComid() == Constants.NOT_BIND_COMPANY_ID) {
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("comId", SpUtils.getCompany().getComid() + "");
+        params.put("temper", sign.getTemperature() + "");
+        if (sign.getType() != -9) {
+            params.put("entryId", sign.getEmpId() + "");
+        }
+        Log.e(TAG, "上传温度");
+        Log.e(TAG, "地址：" + url);
+        Log.e(TAG, "参数: " + params.toString());
+        PostFormBuilder builder = OkHttpUtils.post()
+                .url(url)
+                .params(params);
+        builder.addFile("heads", file.getName(), file);
+        builder.addFile("reHead", hotFile.getName(), hotFile);
+
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                sign.setUpload(false);
+                DaoManager.get().addOrUpdate(sign);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 上传成功：" + response);
+                JSONObject jsonObject = JSONObject.parseObject(response);
+                String status = jsonObject.getString("status");
+                boolean isSucc = TextUtils.equals("1", status);
+                if(isSucc){
+                    if(file != null && file.exists()){
+                        boolean delete = file.delete();
+                        Log.e(TAG, "onResponse: 头像删除：" + file.getPath() + " ----- " + delete);
+                    }
+                    if(hotFile != null && hotFile.exists()){
+                        boolean delete = hotFile.delete();
+                        Log.e(TAG, "onResponse: 热图删除：" + hotFile.getPath() + " ----- " + delete);
+                    }
+                }
+            }
+
+            @Override
+            public void onAfter(int id) {
+            }
+        });
+    }
+
     public void uploadTemperatureSign(final Sign sign) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
@@ -1183,7 +1272,7 @@ public class SignManager {
                 int comid = SpUtils.getCompany().getComid();
                 if (comid == Constants.NOT_BIND_COMPANY_ID) {
                     d("公司未绑定，不上传数据");
-                    checkDaoData(10 * 1000);
+                    checkDaoData(20 * 1000);
                     return;
                 }
 

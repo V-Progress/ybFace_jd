@@ -163,7 +163,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         }
 
         //设置人脸间隔
-        SignManager.instance().setVerifyDelay(mode == Constants.Model.MODEL_FACE_ONLY ? 10000 : 0);
+        SignManager.instance().setVerifyDelay(mode == ThermalConst.FACE_ONLY ? 10000 : 0);
 
         switch (mode) {
             case ThermalConst.FACE_ONLY:

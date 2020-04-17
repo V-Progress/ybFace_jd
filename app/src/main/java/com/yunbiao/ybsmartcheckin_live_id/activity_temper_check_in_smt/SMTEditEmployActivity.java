@@ -26,6 +26,7 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -204,13 +205,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
 
     private void submitAddUser() {
         if (TextUtils.isEmpty(mCurrPhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
 
         String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
 
@@ -218,7 +219,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         int comid = SpUtils.getCompany().getComid();
         if(comid != Constants.NOT_BIND_COMPANY_ID){
             if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
+                UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
         }
@@ -233,7 +234,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
 
         String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -288,9 +289,9 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
             long add = DaoManager.get().add(addUser);
             if (b) {
-                UIUtils.showShort(SMTEditEmployActivity.this, "添加成功");
+                UIUtils.showShort(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_tip_add_success));
             } else {
-                UIUtils.showShort(SMTEditEmployActivity.this, "添加人脸库失败");
+                UIUtils.showShort(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_add_face_failed));
             }
             UIUtils.dismissNetLoading();
             return;
@@ -331,7 +332,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                        UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                        UIUtils.showTitleTip(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_submit_failed) + ":" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -372,7 +373,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
                         long add = DaoManager.get().add(addUser);
                         if (!b) {
-                            UIUtils.showShort(SMTEditEmployActivity.this, "添加人脸库失败");
+                            UIUtils.showShort(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_add_face_failed));
                         }
 
                         faceView.postDelayed(new Runnable() {
@@ -395,7 +396,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
-            UIUtils.showShort(SMTEditEmployActivity.this, "请先设置部门");
+            UIUtils.showShort(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_please_set_depart));
         }
 
         for (Depart depart : departs) {
@@ -469,13 +470,13 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
     private void initEditLogic() {
         long userId = getIntent().getLongExtra(SMTEditEmployActivity.KEY_ID, -1);
         if (userId == -1) {
-            UIUtils.showShort(this, "未知错误");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_unknown_error));
             finish();
             return;
         }
         user = DaoManager.get().queryUserById(userId);
         if (user == null) {
-            UIUtils.showShort(this, "用户不存在");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_gygbcz));
             finish();
             return;
         }
@@ -496,12 +497,12 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
 
     private void submitUpdateUser() {
         if (TextUtils.isEmpty(mUpdatePhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
         final String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
         int checkedRadioButtonId = rgSex.getCheckedRadioButtonId();
@@ -510,14 +511,14 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         // TODO: 2020/3/18 离线功能
         if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
             if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
+                UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
         }
 
         final String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -551,12 +552,12 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                 Log.e(TAG, "submitUpdateUser: 删除旧特征：" + b1);
                 boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                 if(b){
-                    UIUtils.showShort(this,"更新成功");
+                    UIUtils.showShort(this,APP.getContext().getString(R.string.act_editEmploy_update_complete));
                 } else {
-                    UIUtils.showShort(this,"更新头像失败");
+                    UIUtils.showShort(this,APP.getContext().getString(R.string.act_editEmploy_update_failed));
                 }
             } else {
-                UIUtils.showShort(this,"更新信息成功");
+                UIUtils.showShort(this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
             }
 
             UIUtils.dismissNetLoading();
@@ -615,7 +616,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
             @Override
             public void onError(Call call, Exception e, int id) {
                 Log.e(TAG, "提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_submit_failed) + ":" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
@@ -666,7 +667,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
-                        UIUtils.showShort(SMTEditEmployActivity.this, "更新人脸库失败");
+                        UIUtils.showShort(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_add_face_failed));
                     }
                 }
 
@@ -687,12 +688,12 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
         @Override
         public void handleMessage(Message msg) {
             if (mHasFace == -1) {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "未检测到人脸");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_no_face));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             } else if (mHasFace == -2) {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "请保持屏幕中只有一张人脸");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_please_face_only_one));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
@@ -704,7 +705,7 @@ public class SMTEditEmployActivity extends SMTBaseActivity implements View.OnCli
                 mUpdatePhotoPath = mCurrPhotoPath;
                 Glide.with(SMTEditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
             } else {
-                UIUtils.showTitleTip(SMTEditEmployActivity.this, "失败，请重试");
+                UIUtils.showTitleTip(SMTEditEmployActivity.this, APP.getContext().getString(R.string.act_editEmploy_photo_failed_try_again));
             }
 
             pbTakePhoto.setVisibility(View.GONE);

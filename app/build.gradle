@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao' // GreenDao配置
+apply plugin: 'com.jakewharton.butterknife'
 
 android {
     compileSdkVersion 28
@@ -63,13 +64,15 @@ android {
     //多渠道
     productFlavors {
         ext.flavor = {
-            _flavor, _isHT, _isSK, _appType, _appName, _appIcon, _umKey, _umChannel, _faceAppId, _faceSdkKey
+            _flavor, _isHT, _isSK, _appType, _appName, _appIcon, _umKey, _umChannel, _faceAppId, _faceSdkKey, _maxDetectNum, _detectFaceScaleVal
                 ->
                 _flavor.buildConfigField("boolean", "IS_HT", _isHT)
                 _flavor.buildConfigField("boolean", "IS_SK", _isSK)
                 _flavor.buildConfigField("int", "APP_TYPE", _appType)
                 _flavor.buildConfigField("String", "FACE_APP_ID", _faceAppId)
                 _flavor.buildConfigField("String", "FACE_SDK_KEY", _faceSdkKey)
+                _flavor.buildConfigField("Integer", "MAX_DETECT_FACE_NUM", _maxDetectNum)
+                _flavor.buildConfigField("Integer", "DETECT_FACE_SCALE_VAL", _detectFaceScaleVal)
                 _flavor.manifestPlaceholders.put("app_name", _appName)
                 _flavor.manifestPlaceholders.put("app_icon", _appIcon)
                 _flavor.manifestPlaceholders.put("UMENG_APPKEY", _umKey)
@@ -80,73 +83,85 @@ android {
         flavor(YB,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN",
                 "@string/yb_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "16")
 
         /*==云标版本============================================================================================*/
         //云标10寸
         flavor(YB_10,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_10",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         //云标8寸
         flavor(YB_8,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_10",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         //云标人证
         flavor(YB_RZ,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES",
                 "@string/yb_certificates", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_RZ",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         //云标多人
         flavor(YB_DR,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
                 "@string/yb_multiple", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_DR",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
         //云标安检
         flavor(YB_SC,
                 "false", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
                 "@string/yb_safety_chceck", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_SC",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        //云标双光安检
+        flavor(YB_SC_DL,
+                "falase", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT",
+                "@string/yb_safety_chceck", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_SC_DL",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*==思库版本============================================================================================*/
         flavor(SK_8,
                 "false", "true", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
                 "@string/sk_temper_check_in", "@mipmap/icon_logo3", "5cbe87a60cafb210460006b3", "SK_8",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         flavor(SK_DR,
                 "false", "true", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
                 "@string/sk_multiple", "@mipmap/icon_logo3", "5cbe87a60cafb210460006b3", "SK_DR",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY())
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
         /*==亨通版本============================================================================================*/
         //亨通10寸
         flavor(HT_10,
                 "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN",
                 "@string/ht_temper_check_in", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_10",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY())
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
         //亨通8寸
         flavor(HT_8,
                 "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT",
                 "@string/ht_temper_check_in", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_8",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY())
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
         //亨通人证
         flavor(HT_RZ,
                 "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES",
                 "@string/ht_certificates", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_RZ",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY())
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
         //亨通多人
         flavor(HT_DR,
                 "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL",
                 "@string/ht_multiple", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_DR",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY())
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "30", "32")
         //亨通安检
         flavor(HT_SC,
                 "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK",
                 "@string/ht_safety_chceck", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_SC",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY())
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
+        //亨通双光安检
+        flavor(YB_SC_DL,
+                "true", "false", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT",
+                "@string/yb_safety_chceck", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "HT_SC_DL",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     //APK输出配置
     android.applicationVariants.all { variant ->
@@ -180,7 +195,7 @@ String buildApkName(String param) {
         if (name.contains("SK")) {//判断思库版本
             name += "TemperatureCheckingAttendance"
         } else {
-            name += "测温闸机"
+            name += "测温通行"
         }
     } else if (param.contains("RZ")) {
         name += "人证测温"
@@ -248,6 +263,9 @@ dependencies {
     })
     compileOnly files('lib/classes4.2.jar')
     implementation files('libs/BaiduLBS_Android.jar')
+
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
     /*百度定位*/
     implementation files('libs/gson-2.8.5.jar')
@@ -359,4 +377,5 @@ dependencies {
 
     /*Excel处理*/
     implementation files('libs/yface.jar')
+
 }

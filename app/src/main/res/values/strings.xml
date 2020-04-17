@@ -104,6 +104,8 @@
     <string name="employ_list_delete_success">delete success</string><!-- 删除成功 -->
     <string name="employ_list_depart">Depart</string><!-- 部门 -->
     <string name="employ_list_add_depart">Add Depart</string><!-- 新增部门 -->
+    <string name="employ_list_please_input_name">Please enter a name</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">The employee was not searched</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
     <string name="act_editEmploy_zjyg">Add user</string><!-- 增加员工 -->
@@ -130,6 +132,18 @@
     <string name="act_editEmploy_tip_gsmyzgbm">The company does not have this department</string><!-- 公司没有这个部门 -->
     <string name="act_editEmploy_tip_gsyzwyg">The company does not have this employee</string><!--公司没有这位员工  -->
     <string name="act_editEmploy_tip_cscw">Parameter error</string><!--参数错误  -->
+    <string name="act_editEmploy_tip_qtxbm">Please select the department</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">Add Complete</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">Failed to add face data</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">Submit Failure</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">Please set up a department</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">Profile photo updated successfully</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">Update profile failed</string>
+    <string name="act_editEmploy_update_info_success">Update information successfully</string>
+    <string name="act_editEmploy_no_face">No face detected</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">Please keep only one face on the screen</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">Photo failed, please try again</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">Unknown Error</string><!--未知错误-->
 
     <!--离线数据-->
     <string name="sign_list_title">Record</string><!--离线记录-->

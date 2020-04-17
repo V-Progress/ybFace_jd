@@ -80,10 +80,6 @@ public class FaceView extends FrameLayout {
     private CameraHelper cameraHelper;
     private DrawHelper drawHelper;
     private Camera.Size previewSize;
-    /**
-     * 优先打开的摄像头，本界面主要用于单目RGB摄像头设备，因此默认打开前置
-     */
-    private Integer rgbCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     /**
      * VIDEO模式人脸检测引擎，用于预览帧人脸追踪
@@ -203,7 +199,7 @@ public class FaceView extends FrameLayout {
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
                 .rotation(angle)
-                .specificCameraId(rgbCameraID != null ? rgbCameraID : Camera.CameraInfo.CAMERA_FACING_FRONT)
+                .specificCameraId(Constants.CAMERA_ID)
                 .isMirror(true)
                 .previewOn(previewView)
                 .cameraListener(cameraListener)
@@ -237,17 +233,6 @@ public class FaceView extends FrameLayout {
         return drawHelper.adjustRect(faceRect);
     }
 
-    public boolean checkFaceInFrame(Rect faceRect, View areaView, RectCallback rectCallback) {
-        areaView.getGlobalVisibleRect(mAreaRect);
-        mAreaRect.left -= 50;
-        mAreaRect.right += 50;
-        mAreaRect.top -= 50;
-        mAreaRect.bottom += 50;
-        Rect rect = drawHelper.adjustRect(faceRect);
-        rectCallback.onAreaRect(mAreaRect, rect);
-        return mAreaRect.contains(rect);
-    }
-
     private final int faceRangeCorrectValue = 50;
 
     public boolean checkFaceInFrame(Rect faceRect, View areaView) {
@@ -266,22 +251,14 @@ public class FaceView extends FrameLayout {
         return realRect.contains(mAreaRect);
     }
 
-    public boolean checkFaceInFrame2(Rect faceRect, View areaView) {
-        areaView.getGlobalVisibleRect(mAreaRect);
-        mAreaRect.left += 20;
-        mAreaRect.right -= 20;
-        mAreaRect.top += 20;
-        mAreaRect.bottom -= 20;
-        return faceRect.contains(mAreaRect);
-    }
-
     private boolean thermalFaceFrame = false;
+
+    /***
+     * 是否显示热成像人脸框
+     * @param isThermalFaceFrame
+     */
     public void enableThermalFaceFrame(boolean isThermalFaceFrame) {
         thermalFaceFrame = isThermalFaceFrame;
-    }
-
-    public interface RectCallback {
-        void onAreaRect(Rect mAreaRect, Rect mFaceRect);
     }
 
     private Map<Integer, Float> temperHashMap = new HashMap<>();
@@ -295,7 +272,6 @@ public class FaceView extends FrameLayout {
             temperHashMap.clear();
         } else {
             if(!isMultiCallback){
-
                 idList.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     int faceId = faceIndexInfo.getFaceId();
@@ -303,6 +279,11 @@ public class FaceView extends FrameLayout {
                     idList.add(faceId);
                     if(!temperHashMap.containsKey(faceId)){
                         temperHashMap.put(faceId,afterTreatmentF);
+                    } else {
+                        Float aFloat = temperHashMap.get(faceId);
+                        if(aFloat < 35.5f && afterTreatmentF >= 35.5f){
+                            temperHashMap.put(faceId,afterTreatmentF);
+                        }
                     }
                 }
 

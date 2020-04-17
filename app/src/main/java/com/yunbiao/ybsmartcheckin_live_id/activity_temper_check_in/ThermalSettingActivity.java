@@ -49,6 +49,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -582,28 +583,28 @@ public class ThermalSettingActivity extends BaseActivity {
                 String mXmppPort = edtXmppPort.getText().toString();
                 String mProName = edtProName.getText().toString();
                 if (TextUtils.isEmpty(mIp)) {
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置IP地址");
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_please_set_ip));
                     return;
                 }
 
 
                 if (TextUtils.isEmpty(mResPort)) {
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置接口端口");
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_please_set_res));
                     return;
                 }
                 int intResPort = Integer.parseInt(mResPort);
                 if(intResPort > 65535){
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "服务端口格式不正确，请检查");
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_res_port_error));
                     return;
                 }
 
                 if (TextUtils.isEmpty(mXmppPort)) {
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "请设置XMPP端口");
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_please_set_xmpp));
                     return;
                 }
                 int intXmppPort = Integer.parseInt(mXmppPort);
                 if(intXmppPort > 65535){
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "通信端口格式不正确，请检查");
+                    UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_xmpp_port_error));
                     return;
                 }
 
@@ -619,7 +620,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
-                UIUtils.showTitleTip(ThermalSettingActivity.this, "保存成功,重启APP后生效");
+                UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_succ_please_restart));
             }
         });
     }
@@ -772,7 +773,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
                 edtTipsTime.setText(saveTime + "");
                 SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(ThermalSettingActivity.this, "保存成功");
+                UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
             }
         });
 
@@ -789,7 +790,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
                 s = edtTempDValue.getText().toString();
                 SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(ThermalSettingActivity.this, "保存成功");
+                UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
             }
         });
     }
@@ -800,31 +801,18 @@ public class ThermalSettingActivity extends BaseActivity {
         int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
         edtSimilar.setText(similar + "");
 
-        findViewById(R.id.btn_set_similar_threshold).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String similar = edtSimilar.getText().toString();
-                int sml = Integer.parseInt(similar);
-                if (sml >= 100) {//太大
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "阈值过大将导致无法识别\n请重新设置");
-                    return;
-                } else if (sml <= 65) {//太小
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "阈值过小会导致误识率过高\n请重新设置");
-                    return;
-                } else if (sml > 90) {//比较大
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "阈值设置较大，识别速度将有所变慢\n设置成功");
-                } else if (sml < 75) {//比较小
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "阈值设置较小，误识率将增高\n设置成功");
-                } else {
-                    UIUtils.showTitleTip(ThermalSettingActivity.this, "设置成功");
-                }
-
-                SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
-                Activity activity = APP.getMainActivity();
-                if (activity != null) {
-                    if (activity instanceof ThermalImageActivity) {
-                        ((ThermalImageActivity) activity).setFaceViewSimilar();
-                    }
+        findViewById(R.id.btn_set_similar_threshold).setOnClickListener(v -> {
+            String similar1 = edtSimilar.getText().toString();
+            if(TextUtils.isEmpty(similar1)){
+                edtSimilar.setText(similar1 + "");
+                return;
+            }
+            int sml = Integer.parseInt(similar1);
+            SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
+            Activity activity = APP.getMainActivity();
+            if (activity != null) {
+                if (activity instanceof ThermalImageActivity) {
+                    ((ThermalImageActivity) activity).setFaceViewSimilar();
                 }
             }
         });

@@ -280,7 +280,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         Bitmap hotImage = hotImageBitmap.getBitmap();
         BitmapDrawable idCardDrawable = (BitmapDrawable) ivIdCard.getDrawable();
         Bitmap idCardImage = idCardDrawable.getBitmap();
-        SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1) , idCardImage, faceImage, hotImage);
+        SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
     }
 
     @Override
@@ -290,7 +290,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
 
     @Override
     public void resetAllUI() {
-        ivFace.setImageBitmap(null);
+//        ivFace.setImageBitmap(null);
         ivIdCard.setImageBitmap(null);
         tvSimilar.setText("");
         tvTip.setText("");
@@ -327,6 +327,57 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         tvOStatus.setText("");
         tvTemp.setText("");
         ivStatus.setImageBitmap(null);
+    }
+
+    private String mEntryId;
+
+    @Override
+    public void getUserInfoByCode(UserInfo userInfo) {
+        String head = userInfo.head;
+        Glide.with(this).load(head).asBitmap().into(ivIdCard);
+
+        tvName.setText(userInfo.name);
+        tvOriginT.setText("部门:");
+        tvOrigin.setText(userInfo.dept);
+        mEntryId = userInfo.entryId;
+    }
+
+    @Override
+    public void updateCodeTemperResult(float finalTemper, boolean normal) {
+        tvTemp.setText(finalTemper + "℃");
+        if (normal) {
+            tvTip.setText("体温正常");
+            tvOStatus.setText("正常");
+            tvOStatus.setTextColor(Color.GREEN);
+            tvTemp.setTextColor(Color.GREEN);
+            ivStatus.setImageResource(R.mipmap.icon_normal);
+        } else {
+            tvTip.setText("体温异常");
+            tvOStatus.setText("异常");
+            tvOStatus.setTextColor(Color.RED);
+            tvTemp.setTextColor(Color.RED);
+            ivStatus.setImageResource(R.mipmap.icon_warning);
+        }
+
+        if (!verifyStatusTip.isShown()) {
+            verifyStatusTip.setVisibility(View.VISIBLE);
+        }
+
+        if (normal) {
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
+            tvVerifyInfo.setText("可以通行");
+        } else {
+            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
+            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
+            tvVerifyInfo.setText("禁止通行");
+        }
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) ivFace.getDrawable();
+        Bitmap faceImage = bitmapDrawable.getBitmap();
+        BitmapDrawable hotImageBitmap = (BitmapDrawable) ivHotImage.getDrawable();
+        Bitmap hotImage = hotImageBitmap.getBitmap();
+        SignManager.instance().uploadCodeVerifyResult(mEntryId, normal, faceImage, finalTemper, hotImage);
     }
 
     private void startXmpp() {//开启xmpp

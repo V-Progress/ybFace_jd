@@ -57,31 +57,30 @@ public class EmployAdapter extends BaseAdapter {
         else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
+
         User user=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
+
         if (!TextUtils.isEmpty(user.getNumber())){
             viewHolder.tv_employNo.setText(user.getNumber());
+        } else {
+            viewHolder.tv_employNo.setText("");
         }
         if (!TextUtils.isEmpty(user.getName())){
             viewHolder.tv_employName.setText(user.getName());
+        } else {
+            viewHolder.tv_employName.setText("");
         }
         if (!TextUtils.isEmpty(user.getDepartName())){
             viewHolder.tv_employDepart.setText(user.getDepartName());
+        } else {
+            viewHolder.tv_employDepart.setText("");
         }
-
         if (!TextUtils.isEmpty(user.getPosition())){
             viewHolder.tv_employJob.setText(user.getPosition());
-        }
-
-        /*if(user.getAddTag() == 0){
-            if (position%2==1){
-                convertView.setBackgroundColor(Color.parseColor("#07216d"));
-            } else {
-                convertView.setBackgroundColor(Color.parseColor("#00ff216d"));
-            }
         } else {
-            convertView.setBackgroundColor(Color.parseColor("#ff0000"));
-        }*/
+            viewHolder.tv_employJob.setText("");
+        }
 
         viewHolder.tv_delete.setOnClickListener(new View.OnClickListener() {
             @Override

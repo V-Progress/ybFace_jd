@@ -26,6 +26,7 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
@@ -212,13 +213,13 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
     private void submitAddUser() {
         if (TextUtils.isEmpty(mCurrPhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
 
         String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
 
@@ -226,7 +227,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         int comid = SpUtils.getCompany().getComid();
         if(comid != Constants.NOT_BIND_COMPANY_ID){
             if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
+                UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
         }
@@ -241,7 +242,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
         String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -296,9 +297,9 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
             if (b) {
                 DaoManager.get().add(addUser);
-                UIUtils.showShort(ThermalEditEmployActivity.this, "添加成功");
+                UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_add_success));
             } else {
-                UIUtils.showShort(ThermalEditEmployActivity.this, "添加人脸库失败");
+                UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
             }
             UIUtils.dismissNetLoading();
             return;
@@ -339,7 +340,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                        UIUtils.showTitleTip(ThermalEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                        UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_submit_failed) + "：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -379,7 +380,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
                         if (!b) {
-                            UIUtils.showShort(ThermalEditEmployActivity.this, "添加人脸库失败");
+                            UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
                         } else {
                             DaoManager.get().add(addUser);
                         }
@@ -403,7 +404,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
-            UIUtils.showShort(ThermalEditEmployActivity.this, "请先设置部门");
+            UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_set_depart));
         }
 
         for (Depart depart : departs) {
@@ -477,14 +478,14 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private void initEditLogic() {
         long userId = getIntent().getLongExtra(ThermalEditEmployActivity.KEY_ID, -1);
         if (userId == -1) {
-            UIUtils.showShort(this, "未知错误");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_unknown_error));
             finish();
             return;
         }
 
         user = DaoManager.get().queryUserById(userId);
         if (user == null) {
-            UIUtils.showShort(this, "用户不存在");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_gygbcz));
             finish();
             return;
         }
@@ -505,12 +506,12 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
     private void submitUpdateUser() {
         if (TextUtils.isEmpty(mUpdatePhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
         final String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
         int checkedRadioButtonId = rgSex.getCheckedRadioButtonId();
@@ -519,14 +520,14 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         // TODO: 2020/3/18 离线功能
         if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
             if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
+                UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
         }
 
         final String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -559,13 +560,13 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                 if(b){
                     DaoManager.get().addOrUpdate(user);
-                    UIUtils.showShort(this,"更新成功");
+                    UIUtils.showShort(this,APP.getContext().getResources().getString(R.string.act_editEmploy_update_complete));
                 } else {
-                    UIUtils.showShort(this,"更新头像失败");
+                    UIUtils.showShort(this,APP.getContext().getResources().getString(R.string.act_editEmploy_update_failed));
                 }
             } else {
                 DaoManager.get().addOrUpdate(user);
-                UIUtils.showShort(this,"更新信息成功");
+                UIUtils.showShort(this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
             }
 
             UIUtils.dismissNetLoading();
@@ -621,7 +622,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_submit_failed) + "：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
@@ -670,7 +671,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
-                        UIUtils.showShort(ThermalEditEmployActivity.this, "更新人脸库失败");
+                        UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_update_failed));
                     } else {
 
                         long l = DaoManager.get().addOrUpdate(user);
@@ -698,12 +699,12 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         @Override
         public void handleMessage(Message msg) {
             if (mHasFace == -1) {
-                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "未检测到人脸");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_no_face));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             } else if (mHasFace == -2) {
-                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "请保持屏幕中只有一张人脸");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_face_only_one));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
@@ -715,7 +716,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 mUpdatePhotoPath = mCurrPhotoPath;
                 Glide.with(ThermalEditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
             } else {
-                UIUtils.showTitleTip(ThermalEditEmployActivity.this, "失败，请重试");
+                UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_photo_failed_try_again));
             }
 
             pbTakePhoto.setVisibility(View.GONE);

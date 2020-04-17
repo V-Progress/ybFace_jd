@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
+import android.hardware.Camera;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light.SafetyCheckDoubleLightActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
@@ -88,11 +90,7 @@ public class SplashActivity extends BaseActivity {
         ybPermission.checkPermission(this, PERMISSONS);
     }
 
-    public Runnable machineRestartRun = new Runnable() {
-        public void run() {
-            PowerOffTool.getPowerOffTool().machineStart();
-        }
-    };
+    public Runnable machineRestartRun = () -> PowerOffTool.getPowerOffTool().machineStart();
 
     private void uploadException(final Runnable runnable) {
         UIUtils.showNetLoading(this);
@@ -182,6 +180,7 @@ public class SplashActivity extends BaseActivity {
 
         int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
         if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+            APP.bindProtectService();
             jump();
         } else {
             UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
@@ -192,91 +191,82 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void jump() {
-        APP.bindProtectService();
-        //普通考勤机
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {//考勤机
-            startActivity(new Intent(this, WelComeActivity.class));
-            finish();
-            return;
-        }
-
-        //测温考勤
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {//测温考勤机
-            //调整摄像头默认角度
-            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
+        String broadType;
+        switch (Constants.DEVICE_TYPE) {
+            case Constants.DeviceType.CHECK_IN:
+                startActivity(new Intent(this, WelComeActivity.class));
+                break;
+            case Constants.DeviceType.TEMPERATURE_CHECK_IN:
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+                broadType = CommonUtils.getBroadType2();
+                if (TextUtils.equals("SMT", broadType)) {
+                    Constants.DEFAULT_CAMERA_ANGLE = 270;
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                } else if (TextUtils.equals("HARRIS", broadType)) {
+                    Constants.DEFAULT_CAMERA_ANGLE = 90;
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                } else {
+                    Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
+                }
+                if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
+                    startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
+                }
+                break;
+            case Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT:
+            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
                 Constants.DEFAULT_FACE_MIRROR = false;
-            } else {
-                Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                Constants.DEFAULT_FACE_MIRROR = true;
-            }
-
-            boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
-            if(!jumpTag){
-                startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
-            } else {
-                if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
-                    Constants.DEVICE_TYPE = Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES;
-                } else if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN){
-                    Constants.DEVICE_TYPE = Constants.DeviceType.TEMPERATURE_CERTIFICATES;
+                startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
+                break;
+            case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
+            case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
+                broadType = CommonUtils.getBroadType2();
+                if (TextUtils.equals("SMT", broadType)) {//视美泰，16_4头
+                    Constants.DEFAULT_CAMERA_ANGLE = 270;
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                } else if (TextUtils.equals("HARRIS", broadType)) {//亿晟，16_4头
+                    Constants.DEFAULT_CAMERA_ANGLE = 90;
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                } else {
+                    Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
+                    Constants.DEFAULT_FACE_MIRROR = false;
+                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_ONLY;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
                 }
-                startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
-            }
-            finish();
-            return;
-        }
-
-        //视美泰测温考勤
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT) {//测温考勤机视美泰版
-            Constants.DEFAULT_CAMERA_ANGLE = 270;
-            Constants.DEFAULT_FACE_MIRROR = false;
-            startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
-            finish();
-            return;
-        }
-
-        //人证测温
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES) {//人证机
-            //调整摄像头默认角度
-            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
-                Constants.DEFAULT_CAMERA_ANGLE = 90;
-                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                Constants.DEFAULT_FACE_MIRROR = false;
-            } else {
-                Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                Constants.DEFAULT_FACE_MIRROR = true;
-            }
-
-            boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
-            //判断，如果不跳转则默认进入人证
-            if (!jumpTag) {
-                startActivity(new Intent(this, CertificatesActivity.class));
-            } else {
-                //如果跳转则判断当前类型，如果是亨通考勤版本则把相应的类型改成对应的亨通人证版本
-                if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){//如果是亨通人证则修改为亨通考勤
-                    Constants.DEVICE_TYPE = Constants.DeviceType.HT_TEMPERATURE_CHECK_IN;
-                } else if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CERTIFICATES){//如果是云标人证则修改为云标考勤
-                    Constants.DEVICE_TYPE = Constants.DeviceType.TEMPERATURE_CHECK_IN;
+                //判断，如果不跳转则默认进入人证
+                if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
+                    startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
+                } else {
+                    startActivity(new Intent(this, CertificatesActivity.class));
                 }
-                startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
-            }
-            finish();
-            return;
-        }
-
-        //高通量
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
-            startActivity(new Intent(this, MultiThermalActivity.class));
-            finish();
-            return;
-        }
-
-        //安检门
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPER_SAFETY_CHECK) {
-            startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
-            finish();
-            return;
+                break;
+            case Constants.DeviceType.MULTIPLE_THERMAL:
+            case Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                startActivity(new Intent(this, MultiThermalActivity.class));
+                break;
+            case Constants.DeviceType.TEMPER_SAFETY_CHECK:
+            case Constants.DeviceType.HT_TEMPER_SAFETY_CHECK:
+                startActivity(new Intent(this, ThermalSafetyCheckActivity.class));
+                break;
+            case Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT:
+            case Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT:
+                Constants.DEFAULT_FACE_MIRROR = true;
+                Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));
+                break;
         }
     }
 

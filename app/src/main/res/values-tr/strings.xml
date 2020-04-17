@@ -103,6 +103,8 @@
     <string name="employ_list_delete_success">Başarıyla silindi</string>
     <string name="employ_list_depart">Bölüm</string>
     <string name="employ_list_add_depart">Departman ekle</string>
+    <string name="employ_list_please_input_name">Lütfen bir isim girin</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">İşçi aramadı.</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
     <string name="act_editEmploy_zjyg">Personeli artırın</string>
@@ -129,6 +131,18 @@
     <string name="act_editEmploy_tip_gsmyzgbm">Şirketin bu departmanı yok</string>
     <string name="act_editEmploy_tip_gsyzwyg">Şirketin bu Personeli yok</string>
     <string name="act_editEmploy_tip_cscw">Parametre hatası</string>
+    <string name="act_editEmploy_tip_qtxbm">Lütfen bölümü seçin.</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">Tamamlandı</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">Yüz verileri eklemedi</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">Başarısızlığı teslim et</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">Lütfen bir bölüm ayarlayın.</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">Profil fotoğrafı başarıyla güncellendi</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">Güncelleme profili başarısız oldu</string>
+    <string name="act_editEmploy_update_info_success">Bilgileri başarıyla güncelleştir</string>
+    <string name="act_editEmploy_no_face">Yüzü keşfedilmedi.</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">Lütfen sadece bir yüzü ekranda tut.</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">Fotoğraf başarısız oldu, lütfen tekrar deneyin.</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">Bilinmegen hata</string><!--未知错误-->
 
     <!--离线数据-->
     <string name="sign_list_title">Çevrimdışı kayıt</string>

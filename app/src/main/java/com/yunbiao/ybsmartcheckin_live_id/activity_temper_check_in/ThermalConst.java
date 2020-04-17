@@ -14,7 +14,7 @@ public class ThermalConst {
     public static final int THERMAL_16_4_ONLY = 5;//仅热成像16*4
     public static final int FACE_THERMAL_16_4 = 6;//人脸+热成像16*4
 
-    public static final int DEFAULT_THERMAL_MODEL = THERMAL_ONLY;
+    public static int DEFAULT_THERMAL_MODEL = THERMAL_ONLY;
 
     public static String[] models;
 
@@ -41,7 +41,7 @@ public class ThermalConst {
 
     interface Default {
         boolean THERMAL_MIRROR = true;
-        boolean LOW_TEMP = false;
+        boolean LOW_TEMP = true;
         float AMBIENT_CORRECT = 25.0f;
         float THERMAL_CORRECT = 0.0f;
         String NORMAL_BROADCAST = "";

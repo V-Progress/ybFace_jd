@@ -103,7 +103,7 @@ public class XmppManager {
         CheckXmppOnline.getInstance(this).start();
 
         handler = new Handler();
-        taskList = new ArrayList<Runnable>();
+        taskList = new ArrayList<>();
     }
 
     public Context getContext() {

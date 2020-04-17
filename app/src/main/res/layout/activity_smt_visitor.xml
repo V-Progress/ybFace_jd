@@ -131,7 +131,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="下载头像失败"
+                android:text="@string/employ_list_download_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <View
@@ -142,7 +142,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="添加人脸库失败"
+                android:text="@string/employ_list_add_face_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <View
@@ -153,7 +153,7 @@
             <TextView
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:text="更新头像失败"
+                android:text="@string/employ_list_update_head_failed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

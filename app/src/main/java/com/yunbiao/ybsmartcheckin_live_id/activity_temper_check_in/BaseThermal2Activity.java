@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
@@ -207,7 +206,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         }
 
         if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED
-                /*|| mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4*/) {
+            /*|| mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4*/) {
             if (!isFaceInsideRange) {
                 mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) {
@@ -262,6 +261,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
             resultTemper = formatF(resultTemper);
             sendResultMessage(resultTemper, "");//发送结果
+            if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                openDoor();
+            }
 
             if (resultTemper < HIGHEST_TEMPER) {
                 //上传数据
@@ -397,6 +399,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             viewInterface.updateSignList(sign);
 
             SignManager.instance().uploadTemperatureSign(sign);
+
+            if (sign.getType() == -2 || sign.getType() == -9) {
+                return;
+            }
+            openDoor();
         }
     }
 
@@ -481,66 +488,51 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     viewInterface.updateHotImage(bitmap, temper, mHasFace);
                     break;
                 case 1://测温结果
-                    updateUIHandler.removeMessages(3);//清除隐藏事件
-                    updateUIHandler.sendEmptyMessage(4);
-                    KDXFSpeechManager.instance().stopNormal();
-                    KDXFSpeechManager.instance().stopWarningRing();
-
                     float temperature = (float) msg.obj;
                     if (temperature <= 0.0f) {
                         break;
                     }
 
-                    String name = msg.getData().getString("name");
-
+                    updateUIHandler.removeMessages(3);//清除隐藏事件
+                    updateUIHandler.sendEmptyMessage(4);
+                    KDXFSpeechManager.instance().stopNormal();
+                    KDXFSpeechManager.instance().stopWarningRing();
                     isResultShown = true;
 
-                    String resultTip = getTextTip(temperature);
+                    String name = msg.getData().getString("name");
+
+                    StringBuffer resultTip = getTextTip(temperature);
                     int bgId = getTipBackground(temperature);
                     Runnable resultRunnable;
                     if (temperature < mTempWarningThreshold) {
                         ledGreen();
-                        resultRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                sendResetResultMessage();
-                            }
-                        };
+                        resultRunnable = () -> sendResetResultMessage();
                     } else {
                         ledRed();
-                        resultRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                KDXFSpeechManager.instance().playWaningRing();
-                                sendResetResultMessage();
-                            }
+                        resultRunnable = () -> {
+                            KDXFSpeechManager.instance().playWaningRing();
+                            sendResetResultMessage();
                         };
                     }
 
-                    //设置文字提示
-                    String textTip;
-                    //换算华氏度
                     if (temperature < HIGHEST_TEMPER) {
-                        //华氏度
+                        resultTip.append(" ");
                         if (mFEnabled) {
-                            temperature = (float) (temperature * 1.8 + 32);
-                            temperature = formatF(temperature);
-                            resultTip += " " + temperature;
-                            textTip = resultTip + " ℉";
+                            resultTip.append(formatF((float) (temperature * 1.8 + 32)));
+                            resultTip.append("℉");
                         } else {
-                            resultTip += " " + temperature;
-                            textTip = resultTip + " ℃";
+                            resultTip.append(temperature);
+                            resultTip.append("℃");
                         }
-                    } else {
-                        textTip = resultTip;
                     }
 
-                    viewInterface.showResult(textTip, bgId);
-                    String speechText = getSpeechText(resultTip, temperature);
+                    Log.e(TAG, "handleMessage: " + resultTip.toString());
+                    viewInterface.showResult(resultTip.toString(), bgId);
+
+                    String speechText = getSpeechText(resultTip.toString(), temperature);
                     if (!TextUtils.isEmpty(name)) {
                         speechText += "，" + name;
                     }
-
                     KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
                     break;
                 case 2://提示相关
@@ -596,25 +588,27 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         return bgId;
     }
 
-    private String getTextTip(float temperature) {
-        String resultTip;
+    private StringBuffer getTextTip(float temperature) {
+        StringBuffer resultTip = new StringBuffer();
+        //如果体温正常
         if (temperature < mTempWarningThreshold) {
             String normalBroad = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
             if (TextUtils.isEmpty(normalBroad)) {
-                resultTip = getResources().getString(R.string.main_temp_normal_tips);
+                resultTip.append(getResources().getString(R.string.main_temp_normal_tips));
             } else {
-                resultTip = normalBroad;
+                resultTip.append(normalBroad);
             }
         } else {
+            //如果体温异常并且大于最高值
             if (temperature > HIGHEST_TEMPER) {
-                resultTip = getResources().getString(R.string.main_temp_error_tips);
-            } else {
+                resultTip.append(getResources().getString(R.string.main_temp_error_tips));
+            } else {//如果体温异常
                 //检查异常播报内容
                 String warningBroad = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
                 if (TextUtils.isEmpty(warningBroad)) {
-                    resultTip = getResources().getString(R.string.main_temp_warning_tips);
+                    resultTip.append(getResources().getString(R.string.main_temp_warning_tips));
                 } else {
-                    resultTip = warningBroad;
+                    resultTip.append(warningBroad);
                 }
             }
         }
@@ -622,20 +616,17 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     }
 
     private String getSpeechText(String resultTip, float temperature) {
-        //设置语音播报
-        Locale locale = APP.getContext().getResources().getConfiguration().locale;
-        boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
-        String speechTip;
         if (temperature < HIGHEST_TEMPER) {
+            //设置语音播报
+            Locale locale = APP.getContext().getResources().getConfiguration().locale;
+            boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
             if (mFEnabled) {
-                speechTip = resultTip + (isChina ? "华氏度" : "Fahrenheit degree");
+                resultTip += (isChina ? "华氏度" : "Fahrenheit degree");
             } else {
-                speechTip = resultTip + (isChina ? "摄氏度" : "Centigrade");
+                resultTip += (isChina ? "摄氏度" : "Centigrade");
             }
-        } else {
-            speechTip = resultTip;
         }
-        return speechTip;
+        return resultTip;
     }
 
     public boolean checkFaceToFar(Rect faceRect, int distance) {

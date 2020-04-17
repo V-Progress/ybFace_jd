@@ -61,6 +61,9 @@ public abstract class BaseGpioActivity extends LedControlActivity {
         if (xhApi != null) {
             xhApi.XHSetGpioValue(5, 0);
         }
+        if(gpioManager!= null){
+            gpioManager.pullUpRelay();
+        }
     }
 
     private void close() {
@@ -77,6 +80,9 @@ public abstract class BaseGpioActivity extends LedControlActivity {
         }
         if (xhApi != null) {
             xhApi.XHSetGpioValue(5, 1);
+        }
+        if(gpioManager!= null){
+            gpioManager.pullDownRelay();
         }
     }
 

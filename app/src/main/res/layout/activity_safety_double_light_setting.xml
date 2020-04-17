@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:focusableInTouchMode="true"
+    android:background="@mipmap/multi_thermal_bg"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light.SafetyDoubleLightSettingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
+            android:id="@+id/gctv_title_scdl"
+            android:layout_centerInParent="true"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:text="系统设置"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_gravity="right"
+            android:gravity="center_vertical"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:padding="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"/>
+
+    </RelativeLayout>
+    <View
+        android:background="#2690CC"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/safety_black_body_enable" />
+
+        <Switch
+            android:id="@+id/sw_black_body_enable_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/setting_show_black_body" />
+
+        <Switch
+            android:id="@+id/sw_black_body_frame_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/setting_thermal_imaging_mirror" />
+
+        <Switch
+            android:id="@+id/sw_thermal_imag_mirror_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/setting_low_temp_model" />
+
+        <Switch
+            android:id="@+id/sw_low_temp_model_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/setting_temp_correct_value" />
+
+        <Button
+            android:id="@+id/btn_body_correct_sub_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jian" />
+
+        <LinearLayout
+            style="@style/style_setting_input_save_button"
+            android:layout_marginLeft="0dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+
+            <EditText
+                android:id="@+id/edt_body_correct__setting"
+                style="@style/style_setting_input_number_decimal_signed_edt"
+                android:enabled="false" />
+
+            <TextView
+                style="@style/setting_text"
+                android:text="℃" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_body_correct_add_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jia" />
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:text="@string/setting_please_correct_multi_thermal"
+            android:textColor="@color/red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/setting_text_child"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/safety_temperature_threshold" />
+
+        <Button
+            android:id="@+id/btn_temp_min_threshold_sub_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jian" />
+
+        <LinearLayout
+            style="@style/style_setting_input_save_button"
+            android:layout_marginLeft="0dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+
+            <EditText
+                android:id="@+id/edt_temp_min_threshold_setting"
+                style="@style/style_setting_input_number_decimal_signed_edt"
+                android:enabled="false" />
+
+            <TextView
+                style="@style/setting_text"
+                android:text="℃" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_temp_min_threshold_add_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jia" />
+
+        <TextView
+            style="@style/setting_text"
+            android:text="@string/setting_temperature_warning" />
+
+        <Button
+            android:id="@+id/btn_temp_warning_threshold_sub_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jian" />
+
+        <LinearLayout
+            style="@style/style_setting_input_save_button"
+            android:layout_marginLeft="0dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+
+            <EditText
+                android:id="@+id/edt_temp_warning_threshold_setting"
+                style="@style/style_setting_input_number_decimal_signed_edt"
+                android:enabled="false" />
+
+            <TextView
+                style="@style/setting_text"
+                android:text="℃" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_temp_warning_threshold_add_setting"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/icon_jia" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_black_body_correction_area"
+        style="@style/setting_text_child"
+        android:layout_marginTop="10dp"
+        android:onClick="setBlackBody"
+        android:text="@string/setting_black_body_rect_multi_thermal" />
+
+    <TextView
+        style="@style/setting_text_child"
+        android:layout_marginTop="10dp"
+        android:onClick="powerOnOff"
+        android:text="@string/setting_power_on_off" />
+
+    <TextView
+        style="@style/setting_text_child"
+        android:layout_marginTop="10dp"
+        android:onClick="upgrade"
+        android:text="@string/System_update" />
+</LinearLayout>

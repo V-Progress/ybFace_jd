@@ -89,7 +89,6 @@
                 android:layout_height="0dp">
 
                 <TextView
-                    android:maxLength="20"
                     android:text="公司："
                     android:id="@+id/tv_company_name_sign_fragment"
                     android:layout_width="0dp"

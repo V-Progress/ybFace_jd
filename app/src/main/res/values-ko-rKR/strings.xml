@@ -4,7 +4,7 @@
     <string name="app_name3">思库考勤</string>
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
-    <string name="back">물러나다</string>
+    <string name="back">이전</string>
     <string name="not_support_speech">현재 언어 시스템 에서 지원 하지 않 는 언어:</string>
     <string name="miss_speech_data">음성 데이터 부재:</string>
 
@@ -67,7 +67,7 @@
     <string name="System_ValiDate">유효기간:</string>
     <string name="System_Manage">인원 관리</string>
     <string name="System_Add">인원 추가</string>
-    <string name="System_Record">출석 기록</string>
+    <string name="System_Record">출입기록</string>
     <string name="System_Setting">시스템 설정</string>
     <string name="System_Visitor">방문객</string>
     <string name="System_skin_select">피부 변경</string>
@@ -104,10 +104,12 @@
     <string name="employ_list_delete_success">성공적으로 삭제되었습니다</string>
     <string name="employ_list_depart">학과</string>
     <string name="employ_list_add_depart">부서 추가</string>
+    <string name="employ_list_please_input_name">이름 을 입력 하 세 요.</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">이 직원 을 찾 을 수 없습니다</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
     <string name="act_editEmploy_zjyg">직원 증가</string>
-    <string name="act_editEmploy_xgxx">정보 편집</string>
+    <string name="act_editEmploy_xgxx">인원 등록</string>
     <string name="act_editEmploy_pz">사진</string>
     <string name="act_editEmploy_reset">리셋</string>
     <string name="act_editEmploy_jbxx">기본 정보</string>
@@ -130,6 +132,18 @@
     <string name="act_editEmploy_tip_gsmyzgbm">회사에는이 부서가 없습니다</string>
     <string name="act_editEmploy_tip_gsyzwyg">회사에이 직원이 없습니다</string>
     <string name="act_editEmploy_tip_cscw">파라미터 에러</string>
+    <string name="act_editEmploy_tip_qtxbm">부서를 선택하십시오</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">추가에 성공함</string><!--添加成功-->
+        <string name="act_editEmploy_add_face_failed">기록할 수 없습니다</string><!--添加人脸数据失败-->
+        <string name="act_editEmploy_submit_failed">보내기 실패</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">부서를 설립하십시오</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">아바타 업데이트 성공</string><!--更新头像成功-->
+    <string name="act_editEmploy_update_failed">얼굴을 업데이트하지 못했습니다</string><!--更新头像失败-->
+    <string name="act_editEmploy_update_info_success">업데이트 성공</string><!--更新信息成功-->
+    <string name="act_editEmploy_no_face">얼굴은 볼 수 없지만</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">이 화면에서 얼굴 한 장을 유지해주세요</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">사진 촬영에 실패했습니다. 다시 시도하십시오</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">알 수 없는 오류</string><!--未知错误-->
 
     <!--离线数据-->
     <string name="sign_list_title">오프라인 데이터</string>
@@ -256,13 +270,13 @@
     <string name="setting_default_welcome_tip2">헨리 출퇴근 시스템 사용 을 환영 합 니 다.</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
     <string name="setting_broadcast_f">화 씨 사용 하기</string>
-    <string name="setting_switch_to_certificates">切换到人证测温</string><!--Switch to certificate temperature measurement-->
-    <string name="setting_switch_to_temperature_check_in">切换到测温考勤</string><!--Switch to temperature measurement attendance-->
-    <string name="setting_switch_function">功能切换</string><!--Function switch-->
-    <string name="setting_switch_tip1">确定切换到人证测温吗？</string><!--Are you sure to switch to certificate temperature measurement-->
-    <string name="setting_switch_tip2">确定切换到测温考勤吗？</string><!--Are you sure to switch to certificate temperature measurement-->
-    <string name="setting_switch_confirm">确定</string>
-    <string name="setting_switch_cancel">取消</string>
+    <string name="setting_switch_to_certificates">인증서로 전환</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">열측량 근무로 전환</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">기능 켬/끔</string><!--Function switch-->
+    <string name="setting_switch_tip1">인증서로 전환 가능할까요?</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">측온으로 출퇴근할까요?</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">확정</string>
+    <string name="setting_switch_cancel">취소</string>
 
     <!--设置开关机-->
     <string name="setting_tip_warning_number_reseted">Count cleared</string>
@@ -287,18 +301,13 @@
     <string name="act_power_save">보존 하 다</string>
     <string name="act_power_set_success">설정 성공！</string>
 
-    <string name="setting_save_success">保存成功</string>
-    <string name="setting_save_succ_please_restart">保存成功,重启APP后生效</string>
-    <string name="setting_please_set_ip">请设置IP地址</string>
-    <string name="setting_please_set_res">请设置服务端口</string>
-    <string name="setting_please_set_xmpp">请设置通信端口</string>
-    <string name="setting_res_port_error">服务端口格式不正确，请检查</string>
-    <string name="setting_xmpp_port_error">通信端口格式不正确，请检查</string>
-
-    <string name="setting_show_thermal_face_frame">显示热成像人脸框</string>
-    <string name="setting_show_black_body">显示黑体校准框</string>
-    <string name="setting_multi_track">开启多次抓取</string>
-
+    <string name="setting_save_success">저장에 성공함</string>
+    <string name="setting_save_succ_please_restart">저장하고 실행 취소 후 실행</string>
+    <string name="setting_please_set_ip">IP 주소를 설정해 주십시오</string>
+    <string name="setting_please_set_res">서비스 포트를 설정하시기 바랍니다</string>
+    <string name="setting_please_set_xmpp">통신 포트를 만드십시오.</string>
+    <string name="setting_res_port_error">서비스 포트 형식이 잘못되었습니다. 확인하십시오.</string>
+    <string name="setting_xmpp_port_error">통신 포트 형식이 잘못되었습니다. 확인하십시오.</string>
 
 
     <!--温度矫正页面-->
@@ -313,9 +322,9 @@
 
     <!--通用的  -->
     <string name="base_tip">힌트</string>
-    <string name="base_ensure">확정 하 다</string>
+    <string name="base_ensure">등록</string>
     <string name="base_cancel">취소</string>
-    <string name="base_male">말레</string>
+    <string name="base_male">남성</string>
     <string name="base_female">여성</string>
     <string name="base_people">사람</string>
     <string name="base_year">년</string>
@@ -398,8 +407,8 @@
 
     <!-- RestartAPPTool -->
     <string name="restartAPPTool_sftcyy">응용 프로그램을 종료 하시겠습니까?</string>
-    <string name="restartAPPTool_ycdht">배경으로 숨기기</string>
-    <string name="restartAPPTool_exit">출구</string>
+    <string name="restartAPPTool_ycdht">숨김</string>
+    <string name="restartAPPTool_exit">종료</string>
 
     <!-- UpdateManager -->
     <string name="updateManager_dqbbwzxbb">현재 버전은 최신 버전입니다</string>
@@ -440,6 +449,9 @@
     <string name="record_export_multi_thermal">导出</string>
     <string name="main_real_detection">实时监测</string>
     <string name="main_data_total">数据统计</string>
+    <string name="setting_show_thermal_face_frame">열영상 얼굴 프레임 보이기</string>
+    <string name="setting_show_black_body">흑체 조정 상자 보이기</string>
+    <string name="setting_multi_track">여러 번 탐색하기</string>
 
 
 

@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yunbiao.faceview.FaceManager;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateUserDBEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -125,7 +126,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     public void queryClick(View view) {
         String queryStr = edtQuery.getText().toString();
         if (TextUtils.isEmpty(queryStr)) {
-            UIUtils.showTitleTip(this, "请输入员工名");
+            UIUtils.showTitleTip(this, APP.getContext().getString(R.string.employ_list_please_input_name));
             return;
         }
         int index = -1;
@@ -135,7 +136,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
             }
         }
         if (index == -1) {
-            UIUtils.showTitleTip(this, "未搜索到该员工");
+            UIUtils.showTitleTip(this, APP.getContext().getString(R.string.employ_list_no_this_person));
             return;
         }
         lv_employ_List.setSelection(index);

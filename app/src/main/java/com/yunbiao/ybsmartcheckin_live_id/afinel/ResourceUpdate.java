@@ -77,6 +77,10 @@ public class ResourceUpdate {
      **/
     public static String SCREEN_UPLOAD_URL = WEB_BASE_URL + "device/service/uploadScreenImg.html";
 
+    /***
+     * 上传设备信息
+     */
+    public static String UPLOAD_MACHINE_INFO = WEB_BASE_URL + "device/service/updateDeviceHardwareInfo.html";
     /**
      * 音量调节值获取
      * http://tyiyun.com/device/service/getVolume.html?deviceId=ffffffff-

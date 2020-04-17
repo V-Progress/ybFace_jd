@@ -61,13 +61,14 @@ public class VisitorAdapter extends BaseAdapter {
         Visitor visitor = mlist.get(position);
         if (!TextUtils.isEmpty(visitor.getName())) {
             viewHolder.tvName.setText(visitor.getName());
-        }
-        if (!TextUtils.isEmpty(visitor.getUnit())) {
-            viewHolder.tvComp.setText(visitor.getUnit());
+        } else {
+            viewHolder.tvName.setText("");
         }
 
         if (!TextUtils.isEmpty(visitor.getUnit())) {
             viewHolder.tvComp.setText(visitor.getUnit());
+        } else {
+            viewHolder.tvComp.setText("");
         }
 
         viewHolder.tvReason.setText(visitor.getReason());

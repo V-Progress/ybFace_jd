@@ -103,6 +103,8 @@
     <string name="employ_list_delete_success">刪除成功</string>
     <string name="employ_list_depart">部門</string>
     <string name="employ_list_add_depart">新增部門</string>
+    <string name="employ_list_please_input_name">請輸入姓名</string><!--請輸入姓名-->
+    <string name="employ_list_no_this_person">未搜索到該員工</string><!--未搜索到該員工-->
 
     <!--編輯信息-->
     <string name="act_editEmploy_zjyg">增加員工</string>
@@ -129,7 +131,18 @@
     <string name="act_editEmploy_tip_gsmyzgbm">公司沒有這個部門</string>
     <string name="act_editEmploy_tip_gsyzwyg">公司沒有這位員工</string>
     <string name="act_editEmploy_tip_cscw">參數錯誤</string>
-
+    <string name="act_editEmploy_tip_qtxbm">請選擇部門</string><!--請選擇部門-->
+    <string name="act_editEmploy_tip_add_success">添加成功</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">添加人臉數據失敗</string><!--添加人臉數據失敗-->
+    <string name="act_editEmploy_submit_failed">提交失敗</string><!--提交失敗-->
+    <string name="act_editEmploy_please_set_depart">請設置部門</string><!--請設置部門-->
+    <string name="act_editEmploy_update_complete">更新成功</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">更新頭像失敗</string>
+    <string name="act_editEmploy_update_info_success">更新信息成功</string>
+    <string name="act_editEmploy_no_face">未檢測到人臉</string><!--未檢測到人臉-->
+    <string name="act_editEmploy_please_face_only_one">請保持屏幕中只有壹張人臉</string><!--請保持屏幕中只有壹張人臉-->
+    <string name="act_editEmploy_photo_failed_try_again">拍照失敗，請重試</string><!--拍照失敗，請重試-->
+    <string name="act_editEmploy_unknown_error">未知錯誤</string><!--未知錯誤-->
     <!--離線數據-->
     <string name="sign_list_title">離線記錄</string>
     <string name="sign_list_all_type">全部</string>

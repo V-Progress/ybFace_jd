@@ -652,21 +652,11 @@ public class SMTSettingActivity extends SMTBaseActivity {
             @Override
             public void onClick(View v) {
                 String similar = edtSimilar.getText().toString();
-                int sml = Integer.parseInt(similar);
-                if (sml >= 100) {//太大
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "阈值过大将导致无法识别\n请重新设置");
+                if (TextUtils.isEmpty(similar)) {
+                    edtSimilar.setText(similar + "");
                     return;
-                } else if (sml <= 65) {//太小
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "阈值过小会导致误识率过高\n请重新设置");
-                    return;
-                } else if (sml > 90) {//比较大
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "阈值设置较大，识别速度将有所变慢\n设置成功");
-                } else if (sml < 75) {//比较小
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "阈值设置较小，误识率将增高\n设置成功");
-                } else {
-                    UIUtils.showTitleTip(SMTSettingActivity.this, "设置成功");
                 }
-
+                int sml = Integer.parseInt(similar);
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
