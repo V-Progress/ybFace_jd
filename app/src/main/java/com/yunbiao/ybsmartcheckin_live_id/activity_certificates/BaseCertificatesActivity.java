@@ -21,11 +21,15 @@ import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CertificatesView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.White;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
@@ -56,6 +60,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
     private CertificatesViewInterface viewInterface;
     private CertificatesView mCertificatesView;
+    private boolean mWhiteListEnable;
 
     @Override
     protected void initData() {
@@ -88,6 +93,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     @Override
     protected void onResume() {
         super.onResume();
+        mWhiteListEnable = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
         mThermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
         mMinThreshold = SpUtils.getFloat(CertificatesConst.Key.MIN_THRESHOLD, CertificatesConst.Default.MIN_THRESHOLD);
         mWarningThreshold = SpUtils.getFloat(CertificatesConst.Key.WARNING_THRESHOLD, CertificatesConst.Default.WARNING_THRESHOLD);
@@ -183,11 +189,21 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         public void newestHotImageData(Bitmap bitmap, float sensorT, float afterT, float v2, float v3, boolean b, int i) {
             handleTemper(bitmap, sensorT, afterT);
         }
+
+        @Override
+        public void dataRecoveryFailed() {
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
+        }
     };
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
             handleTemper(bitmap, originalMaxT, afterF);
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 
@@ -209,7 +225,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             }
 
             //添加测温结果
-            if (mDetectTemperList.size() > 6) {
+            if (mDetectTemperList.size() > 5) {
                 mDetectTemperList.remove(0);
             }
             mDetectTemperList.add(afterT);
@@ -305,7 +321,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             }
 
             //等待测温
-            if (mDetectTemperList.size() < 6) {
+            if (mDetectTemperList.size() < 5) {
                 long l = System.currentTimeMillis();
                 if (waitTemperTime == 0) {
                     waitFaceTime = l;
@@ -410,7 +426,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 Bitmap bitmap = (Bitmap) msg.obj;
                 float temper = msg.getData().getFloat("temper");
                 if (viewInterface != null) {
-                    viewInterface.updateHotImage(bitmap, temper);
+                    viewInterface.updateHotImage(bitmap, temper, mHasFace);
                 }
                 break;
             case 1://更新卡片信息
@@ -439,6 +455,25 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 float finalTemper = msg.getData().getFloat("temper");
                 boolean isAlike = similarInt >= mSimilar;
                 boolean isNormal = finalTemper > mMinThreshold && finalTemper < mWarningThreshold;
+                boolean isInWhite = true;//白名单标识，如果不开启白名单，则此值不会变，也不会有相应的提示
+                if(mWhiteListEnable){
+                    String id_num = BaseCertificatesActivity.this.idCardMsg.id_num;
+                    d("身份证号：" + id_num);
+                    String num1 = id_num.substring(0, 2);
+                    String num2 = id_num.substring(2, 4);
+                    String num3 = id_num.substring(4, 6);
+                    d("一二位：" + num1);
+                    d("三四位：" + num2);
+                    d("五六位：" + num3);
+
+                    List<White> whites = DaoManager.get().queryAll(White.class);
+                    for (White white : whites) {
+                        d("白名单：" + white.getNum());
+                    }
+
+                    White white = DaoManager.get().queryWhiteByTopSixNum(num1, num2, num3);
+                    isInWhite = white != null;
+                }
 
                 StringBuffer resultBuffer = new StringBuffer();
                 String speech = "";
@@ -457,10 +492,15 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     resultBuffer.append("<font color='#ff0000'>体温异常</font>");//红字
                     speech += "，体温异常";
                 }
-                if (isAlike && isNormal) {
-                    speech += "，请通行";
-                } else {
+
+                if (!isAlike || !isNormal) {
                     speech += "，禁止通行";
+                } else {
+                    if(isInWhite){
+                        speech += "，请通行";
+                    } else {
+                        speech += "，请确认通行";
+                    }
                 }
                 KDXFSpeechManager.instance().stopNormal();
                 KDXFSpeechManager.instance().playNormal(speech, () -> {
@@ -469,9 +509,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     }
                 });
                 if (viewInterface != null) {
-                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, finalTemper, similarInt, isAlike, isNormal);
+                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, finalTemper, similarInt, isAlike, isNormal,isInWhite);
                 }
-                if (isAlike && isNormal) {
+                if (isAlike && isNormal && isInWhite) {
                     ledGreen();
                     openDoor();
                 } else {
@@ -573,9 +613,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     }
 
     //清除UI显示
-    private void sendClearUIMessage(long time){
+    private void sendClearUIMessage(long time) {
         resultHandler.removeMessages(4);
-        resultHandler.sendEmptyMessageDelayed(4,time);
+        resultHandler.sendEmptyMessageDelayed(4, time);
     }
 
     //实时更新体温测量值

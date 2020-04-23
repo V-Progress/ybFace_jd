@@ -102,7 +102,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private float mCorrectValue = 0.0f;
     private Float mBodyTemper;
     private boolean mAutoCalibration;
-    private DateFormat dateFormat = new SimpleDateFormat("mm:ss");
     private float mLastMinT;
 
     @Override
@@ -164,91 +163,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         } else {
             ivLogo.setImageResource(R.mipmap.yb_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
-        }
-
-        initStableLogic();
-    }
-
-    private boolean mIsFirst;
-
-    private void initStableLogic() {
-//        long systemRunTime = SystemClock.uptimeMillis();
-//        Log.e(TAG, "initView: 系统运行时长：" + systemRunTime);
-
-        Button btnCorrection = findViewById(R.id.btn_correction_safety_check);//矫正键
-        Button btnSkip = findViewById(R.id.btn_skip_safety_check);
-        View llMcuStable = findViewById(R.id.ll_mcu_stable_safety_check);
-        TextView tvTimer = findViewById(R.id.tv_timer_safety_check);
-
-        mIsFirst = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.IS_FIRST, ThermalSafetyCheckConst.Default.IS_FIRST);
-        if (mIsFirst) {
-            btnCorrection.setEnabled(false);
-            llMcuStable.setVisibility(View.VISIBLE);
-
-            CountDownTimer countDownTimer = new CountDownTimer(15 * 60 * 1000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    String format = dateFormat.format(millisUntilFinished);
-                    tvTimer.setText(format);
-                }
-
-                @Override
-                public void onFinish() {
-                    if (mAutoCalibration) {
-                        TemperatureModule.getIns().startK6080AutoCalibMode();
-                        Handler handler = new Handler();
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                float k6080OffsetStandard = TemperatureModule.getIns().getK6080OffsetStandard();
-                                if (k6080OffsetStandard != -1.0f) {
-                                    SpUtils.saveFloat(ThermalSafetyCheckConst.Key.LAST_MINT, k6080OffsetStandard);
-                                    Log.e(TAG, "onTick: 最终值：" + k6080OffsetStandard);
-
-                                    btnCorrection.setEnabled(true);
-                                    llMcuStable.setVisibility(View.GONE);
-                                    mIsFirst = false;
-                                    SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IS_FIRST, false);
-
-                                    if (mLastMinT == ThermalSafetyCheckConst.Default.LAST_MINT) {
-                                        return;
-                                    }
-
-                                    float offsetT = k6080OffsetStandard - mLastMinT;
-                                    Log.e(TAG, "onTick: 差值:" + offsetT);
-                                    Log.e(TAG, "onTick: 处理前的补正值:" + mCorrectValue);
-                                    mCorrectValue = offsetT < 0.0f ? (mCorrectValue + (0 - offsetT)) : (mCorrectValue -= offsetT);
-                                    mCorrectValue = formatF(mCorrectValue);
-                                    Log.e(TAG, "onTick: 处理后的补正值:" + mCorrectValue);
-                                    TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
-                                    SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, mCorrectValue);
-
-                                    return;
-                                }
-
-                                handler.postDelayed(this, 1000);
-                            }
-                        });
-                    } else {
-                        btnCorrection.setEnabled(true);
-                        llMcuStable.setVisibility(View.GONE);
-                        mIsFirst = false;
-                        SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IS_FIRST, false);
-
-                        TemperatureModule.getIns().closeK6080AutoCalibMode();
-                    }
-                }
-            };
-            countDownTimer.start();
-
-            btnSkip.setOnClickListener(v -> {
-                countDownTimer.cancel();
-
-                btnCorrection.setEnabled(true);
-                llMcuStable.setVisibility(View.GONE);
-                mIsFirst = false;
-                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IS_FIRST, false);
-            });
         }
     }
 
@@ -312,15 +226,11 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     BlackBody blackBody = new BlackBody(mBlackBodyLeft, mBlackBodyRight, mBlackBodyTop, mBlackBodyBottom);
                     blackBody.setFrameColor(Color.WHITE);
                     blackBody.setTempPreValue(mPreValue);
-                    TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+//                    setCorrectValue(mCorrectValue);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                    TemperatureModule.getIns().startK6080AutoCalibMode();
                     if (!mBlackBodyEnabled) {
                         TemperatureModule.getIns().closeK6080BlackBodyMode();
-                    }
-                    if (mAutoCalibration) {
-                        TemperatureModule.getIns().startK6080AutoCalibMode();
-                    } else {
-                        TemperatureModule.getIns().closeK6080AutoCalibMode();
                     }
                 }, 1000);
             }
@@ -330,36 +240,57 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             UIUtils.showShort(ThermalSafetyCheckActivity.this, getResources().getString(R.string.main_not_found_usb_multi_thermal));
         } else if (usbPermission == 1) {
             //usb设备初始化成功
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //开启热成像6080模块
-                    //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
-                    TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTempMode, hotImageK6080CallBack);
-                    BlackBody blackBody = new BlackBody(mBlackBodyLeft, mBlackBodyRight, mBlackBodyTop, mBlackBodyBottom);
-                    blackBody.setFrameColor(Color.WHITE);
-                    blackBody.setTempPreValue(mPreValue);
-                    TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
-                    TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
-                    if (!mBlackBodyEnabled) {
-                        TemperatureModule.getIns().closeK6080BlackBodyMode();
-                    }
-                    if (mAutoCalibration) {
-                        TemperatureModule.getIns().startK6080AutoCalibMode();
-                    } else {
-                        TemperatureModule.getIns().closeK6080AutoCalibMode();
-                    }
+            new Handler().postDelayed(() -> {
+                //开启热成像6080模块
+                //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
+                TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTempMode, hotImageK6080CallBack);
+                BlackBody blackBody = new BlackBody(mBlackBodyLeft, mBlackBodyRight, mBlackBodyTop, mBlackBodyBottom);
+                blackBody.setFrameColor(Color.WHITE);
+                blackBody.setTempPreValue(mPreValue);
+//                setCorrectValue(mCorrectValue);
+                TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                TemperatureModule.getIns().startK6080AutoCalibMode();
+                if (!mBlackBodyEnabled) {
+                    TemperatureModule.getIns().closeK6080BlackBodyMode();
                 }
             }, 1000);
         }
     }
 
-    //缓存温差值
+    private float mCacheRealTimeCorrectValue = -1f;
+    //缓存取温
     private List<Float> mTemperFloats = Collections.synchronizedList(new ArrayList<>());
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
-        public void newestHotImageData(Bitmap bitmap, float v, float v1, float v2) {
+        public void newestHotImageData(Bitmap bitmap, float originT, float afterT, float minT) {
             setFaceIndex();
+
+            //自动校准逻辑
+            if (mAutoCalibration) {
+                if (mCacheRealTimeCorrectValue == -1f) {
+                    float value = TemperatureModule.getIns().getK6080OffsetStandard();
+                    if (value != -1f) {
+                        Log.e(TAG, "上次最低值：" + mLastMinT);
+                        Log.e(TAG, "当前最低值：" + value);
+                        if (mLastMinT != 0.0f) {
+                            mCacheRealTimeCorrectValue = mLastMinT - value;
+                        } else {
+                            mCacheRealTimeCorrectValue = 0.0f;
+                        }
+                        mCacheRealTimeCorrectValue = formatF(mCacheRealTimeCorrectValue);
+                        Log.e(TAG, "前后差异值：" + mCacheRealTimeCorrectValue);
+                        Log.e(TAG, "上次校准值：" + mCorrectValue);
+
+                        mCorrectValue += mCacheRealTimeCorrectValue;
+                        mCorrectValue = formatF(mCorrectValue);
+                        Log.e(TAG, "最终校准值:" + mCorrectValue);
+
+                        SpUtils.saveFloat(ThermalSafetyCheckConst.Key.LAST_MINT, value);
+                        SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, mCorrectValue);
+                        TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+                    }
+                }
+            }
         }
 
         @Override
@@ -372,10 +303,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             FaceIndexInfo faceIndexInfo = arrayList.get(0);
             float originalTempF = faceIndexInfo.getOriginalTempF();
             sendUpdateHotImageMessage(bitmap, originalTempF);
-
-            if (mIsFirst) {
-                return;
-            }
 
             if (isCorrecting) {
                 mCorrectionTemperList.add(originalTempF);
@@ -514,15 +441,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        TemperatureModule.getIns().closeHotImageK6080();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         destoryXmpp();
+        TemperatureModule.getIns().closeHotImageK6080();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
@@ -628,8 +550,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                             } else {
                                 tvOriginT.setTextColor(Color.WHITE);
                             }
+
+                            Log.e(TAG, "原始值：" + measureT);
                             mCurrCorrectValue = mCurrBodyTemper - measureT;
                             mCurrCorrectValue = formatF(mCurrCorrectValue);
+                            Log.e(TAG, "校准值：" + mCurrCorrectValue);
+
                             edtCorrect.setText(mCurrCorrectValue + "");
                             TemperatureModule.getIns().setmCorrectionValue(mCurrCorrectValue);
 
@@ -661,12 +587,16 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 mBodyTemper = mCurrBodyTemper;
                 SpUtils.saveFloat(ThermalSafetyCheckConst.Key.CORRECT_VALUE, mCorrectValue);
                 SpUtils.saveFloat(ThermalSafetyCheckConst.Key.BODY_TEMPER, mBodyTemper);
+                Log.e(TAG, "最终保存校准值：" + mCorrectValue);
                 //点击确定或取消，
                 TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
             } else {
                 UIUtils.showShort(ThermalSafetyCheckActivity.this, APP.getContext().getResources().getString(R.string.safety_save_cancel));
                 TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
             }
+
+            findViewById(R.id.ll_correction_area).setVisibility(View.GONE);//矫正区
+            findViewById(R.id.btn_correction_safety_check).setVisibility(View.VISIBLE);//矫正键
         };
         btnCancel.setOnClickListener(onClickListener);
         btnConfirm.setOnClickListener(onClickListener);

@@ -63,39 +63,36 @@ public class IDCardReader {
         }
 
         isRunning = true;
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: 开启检测线程------------------------------");
-                while (isRunning) {
-                    int ret = sdtApi.SDT_StartFindIDCard();//寻找身份证
-                    if (ret == 0x9f) {//找卡成功  159=9f
-                        if (wltDec == null) {
-                            wltDec = new WltDec();
-                        }
+        executorService.submit(() -> {
+            Log.e(TAG, "run: 开启检测线程------------------------------");
+            while (isRunning) {
+                int ret = sdtApi.SDT_StartFindIDCard();//寻找身份证
+                if (ret == 0x9f) {//找卡成功  159=9f
+                    if (wltDec == null) {
+                        wltDec = new WltDec();
+                    }
 
-                        int selectIDCard = sdtApi.SDT_SelectIDCard();
-                        if (selectIDCard == 0x90) {
-                            final IdCardMsg msg = new IdCardMsg();
-                            int readResult = ReadBaseMsgToStr(msg);
-                            if (readResult >= 0) {
-                                Log.e(TAG, msg.toString());
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        readListener.getCardInfo(msg);
-                                    }
-                                });
-                            } else {
-                                Log.e(TAG, "run: 读取失败");
-                            }
+                    int selectIDCard = sdtApi.SDT_SelectIDCard();
+                    if (selectIDCard == 0x90) {
+                        final IdCardMsg msg = new IdCardMsg();
+                        int readResult = ReadBaseMsgToStr(msg);
+                        if (readResult >= 0) {
+                            Log.e(TAG, msg.toString());
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    readListener.getCardInfo(msg);
+                                }
+                            });
+                        } else {
+                            Log.e(TAG, "run: 读取失败");
                         }
                     }
-                    try {
-                        Thread.sleep(800);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                }
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -283,6 +280,11 @@ public class IDCardReader {
         return getNameString(i);
     }
 
+    public static String getPlace(String idNum){
+        int i = Integer.parseInt(idNum);
+        return getNameString(i);
+    }
+
     private static String getNameString(int code) {
         switch (code) {
             case 11:
@@ -369,6 +371,8 @@ public class IDCardReader {
                 return "市辖区";
             case 130102:
                 return "长安区";
+            case 130103:
+                return "桥东区";
             case 130104:
                 return "桥西区";
             case 130105:

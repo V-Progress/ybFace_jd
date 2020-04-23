@@ -286,6 +286,9 @@ public class SignManager {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, "批量上传测温记录:onResponse: 上传结果：" + response);
+                        if(TextUtils.isEmpty(response)){
+                            return;
+                        }
                         JSONObject jsonObject = JSONObject.parseObject(response);
                         String status = jsonObject.getString("status");
                         boolean isSucc = TextUtils.equals("1", status);

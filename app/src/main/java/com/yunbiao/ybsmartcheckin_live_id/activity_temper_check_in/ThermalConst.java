@@ -23,6 +23,7 @@ public class ThermalConst {
     }
 
     interface Key {
+        String MODE = "thermalModelSetting";
         String THERMAL_MIRROR = "thermalMirror";
         String LOW_TEMP_MODE = "lowTempMode";
         String AMBIENT_CORRECT = "ambientCorrect";
@@ -40,6 +41,7 @@ public class ThermalConst {
     }
 
     interface Default {
+        int MODE = THERMAL_ONLY;
         boolean THERMAL_MIRROR = true;
         boolean LOW_TEMP = true;
         float AMBIENT_CORRECT = 25.0f;

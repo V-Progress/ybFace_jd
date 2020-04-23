@@ -29,8 +29,6 @@ public class ThermalSafetyCheckConst {
 
         String AUTO_CALIBRATION = "thermalSafetyCheckAutoCalibration";
 
-        String IS_FIRST = "thermalSafetyCheckIsFirst";
-
         String LAST_MINT = "thermalSafetyCheckDateAndMinT";
     }
 
@@ -56,8 +54,6 @@ public class ThermalSafetyCheckConst {
         float BODY_TEMPER = 36.5f;
 
         boolean AUTO_CALIBRATION = true;
-
-        boolean IS_FIRST = true;
 
         float LAST_MINT = 0.0f;
     }

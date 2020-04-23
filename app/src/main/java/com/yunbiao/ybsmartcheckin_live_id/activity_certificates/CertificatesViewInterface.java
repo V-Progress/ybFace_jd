@@ -29,8 +29,9 @@ public interface CertificatesViewInterface {
      * 更新热成像图像
      * @param hotImage
      * @param temper
+     * @param mHasFace
      */
-    void updateHotImage(Bitmap hotImage, float temper);
+    void updateHotImage(Bitmap hotImage, float temper, boolean mHasFace);
     /***
      * 更新卡信息
      * @param idCardMsg
@@ -38,7 +39,7 @@ public interface CertificatesViewInterface {
      */
     void updateIdCardInfo(IdCardMsg idCardMsg,Bitmap bitmap);
     //更新人证测温结果
-    void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal);
+    void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal,boolean isInWhite);
     //更新提示
     void updateTips(String tip);
     //重置所有UI

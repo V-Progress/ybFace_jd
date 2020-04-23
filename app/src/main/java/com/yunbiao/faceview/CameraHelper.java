@@ -116,10 +116,11 @@ public class CameraHelper implements Camera.PreviewCallback {
                     Log.e(TAG, "start: 最佳：" + previewSize.width + " --- " + previewSize.height);
                 }
                 Log.e(TAG, "run: 最佳宽高：" + previewSize.width + " --- " + previewSize.height);
-                /*if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL) {
-                    previewSize.width = 1280;
-                    previewSize.height = 960;
-                }*/
+                if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL ||
+                        Constants.DEVICE_TYPE == Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT || Constants.DEVICE_TYPE == Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT) {
+                    previewSize.width = 1920;
+                    previewSize.height = 1080;
+                }
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
 
                 //对焦模式设置

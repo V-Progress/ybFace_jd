@@ -23,6 +23,7 @@ public class CertificatesConst {
         String CORRECT_VALUE = "certificatesCorrectValue";//矫正
         String THERMAL_MIRROR = "certificatesThermalMirror";//热成像镜像
         String SIMILAR = "certificatesSimilar";
+        String WHITE_LIST = "certificatesWhiteList";
     }
 
     public static class Default{
@@ -33,5 +34,6 @@ public class CertificatesConst {
         public static float CORRECT_VALUE = 0.0f;
         public static boolean THERMAL_MIRROR = true;
         public static int SIMILAR = 50;
+        public static boolean WHITE_LIST = false;
     }
 }

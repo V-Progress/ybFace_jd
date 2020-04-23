@@ -145,8 +145,6 @@ public class SMTSettingActivity extends SMTBaseActivity {
         initCameraSizeSetting();
         //相似度阈值
         initSimilarSetting();
-        //测温模块设置
-        initTemperatureSetting();
         //人脸弹窗设置
         initFaceVipDialogSetting();
         //摄像头设置
@@ -182,7 +180,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
 
         final View llTempSetting = findViewById(R.id.ll_temp_setting);
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
-        final int model = SpUtils.getIntOrDef(SpUtils.SMT_MODEL_SETTING, SMTModelConst.DEFAULT_SMT_MODEL);
+        final int model = SpUtils.getIntOrDef(SMTModelConst.key.MODE, SMTModelConst.Default.MODE);
         tvModelSetting.setText(SMTModelConst.models[model]);
         if (model == SMTModelConst.SMT_FACE_ONLY) {
             llTempSetting.setVisibility(View.GONE);
@@ -190,30 +188,24 @@ public class SMTSettingActivity extends SMTBaseActivity {
             llTempSetting.setVisibility(View.VISIBLE);
         }
 
-        tvModelSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final int model = SpUtils.getIntOrDef(SpUtils.SMT_MODEL_SETTING, SMTModelConst.DEFAULT_SMT_MODEL);
-                AlertDialog.Builder builder = new AlertDialog.Builder(SMTSettingActivity.this);
-                builder.setTitle(getResources().getString(R.string.setting_select_model));
-                builder.setSingleChoiceItems(SMTModelConst.models, model, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, final int whichModel) {
-                        if (whichModel == SMTModelConst.SMT_FACE_ONLY) {
-                            llTempSetting.setVisibility(View.GONE);
-                        } else {
-                            llTempSetting.setVisibility(View.VISIBLE);
-                        }
+        tvModelSetting.setOnClickListener(v -> {
+            final int model1 = SpUtils.getIntOrDef(SMTModelConst.key.MODE, SMTModelConst.Default.MODE);
+            AlertDialog.Builder builder = new AlertDialog.Builder(SMTSettingActivity.this);
+            builder.setTitle(getResources().getString(R.string.setting_select_model));
+            builder.setSingleChoiceItems(SMTModelConst.models, model1, (dialog, whichModel) -> {
+                if (whichModel == SMTModelConst.SMT_FACE_ONLY) {
+                    llTempSetting.setVisibility(View.GONE);
+                } else {
+                    llTempSetting.setVisibility(View.VISIBLE);
+                }
 
-                        dialog.dismiss();
-                        SpUtils.saveInt(SpUtils.SMT_MODEL_SETTING, whichModel);
-                        tvModelSetting.setText(SMTModelConst.models[whichModel]);
+                dialog.dismiss();
+                SpUtils.saveInt(SMTModelConst.key.MODE, whichModel);
+                tvModelSetting.setText(SMTModelConst.models[whichModel]);
 
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
 
         //修改测温阈值==========================================================================================
@@ -221,7 +213,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnMinAdd = findViewById(R.id.btn_temp_min_threshold_add_setting);
         final EditText edtMinThreshold = findViewById(R.id.edt_temp_min_threshold_setting);
         //温度最低阈值、温度报警阈值
-        final float minValue = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE);
+        final float minValue = SpUtils.getFloat(SMTModelConst.key.TEMP_MIN_THRESHOLD, SMTModelConst.Default.TEMP_MIN_THRESHOLD);
         edtMinThreshold.setText(minValue + "");
         View.OnClickListener minClickListener = new View.OnClickListener() {
             @Override
@@ -238,7 +230,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 }
                 v1 = formatF(v1);
                 edtMinThreshold.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.TEMP_MIN_THRESHOLD, v1);
+                SpUtils.saveFloat(SMTModelConst.key.TEMP_MIN_THRESHOLD, v1);
             }
         };
         btnMinSub.setOnClickListener(minClickListener);
@@ -248,7 +240,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnWarnSub = findViewById(R.id.btn_temp_warning_threshold_sub_setting);
         Button btnWarnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
         final EditText edtWarnThreshold = findViewById(R.id.edt_temp_warning_threshold_setting);
-        final float warningValue = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
+        final float warningValue = SpUtils.getFloat(SMTModelConst.key.TEMP_WARNING_THRESHOLD, SMTModelConst.Default.TEMP_WARNING_THRESHOLD);
         edtWarnThreshold.setText(warningValue + "");
         View.OnClickListener warnClickListener = new View.OnClickListener() {
             @Override
@@ -263,7 +255,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 v1 = formatF(v1);
                 edtWarnThreshold.setText(v1 + "");
 
-                SpUtils.saveFloat(SpUtils.TEMP_WARNING_THRESHOLD, v1);
+                SpUtils.saveFloat(SMTModelConst.key.TEMP_WARNING_THRESHOLD, v1);
             }
         };
         btnWarnSub.setOnClickListener(warnClickListener);
@@ -295,7 +287,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
         Button btnSpeechDelayAdd = findViewById(R.id.btn_speech_delay_add_setting);
         final EditText edtSpeechDelay = findViewById(R.id.edt_speech_delay_setting);
-        long speechDelayTime = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
+        long speechDelayTime = SpUtils.getLong(SMTModelConst.key.SPEECH_DELAY, SMTModelConst.Default.SPEECH_DELAY);
         edtSpeechDelay.setText(speechDelayTime + "");
         View.OnClickListener speechDelayOnClickLitsener = new View.OnClickListener() {
             @Override
@@ -309,7 +301,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 }
 
                 edtSpeechDelay.setText(l + "");
-                SpUtils.saveLong(SpUtils.SPEECH_DELAY, l);
+                SpUtils.saveLong(SMTModelConst.key.SPEECH_DELAY, l);
             }
         };
         btnSpeechDelayAdd.setOnClickListener(speechDelayOnClickLitsener);
@@ -319,7 +311,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
         Button btnTempCorrSub = findViewById(R.id.btn_temp_corr_sub_setting);
         Button btnTempCorrAdd = findViewById(R.id.btn_temp_corr_add_setting);
         final EditText edtTempCorr = findViewById(R.id.edt_temp_corr_setting);
-        Float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
+        Float tempCorr = SpUtils.getFloat(SMTModelConst.key.TEMP_CORRECT_VALUE, SMTModelConst.Default.TEMP_CORRECT_VALUE);
         edtTempCorr.setText(tempCorr + "");
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -336,7 +328,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
 
                 v1 = formatF(v1);
                 edtTempCorr.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.TEMP_CORRECT_VALUE, v1);
+                SpUtils.saveFloat(SMTModelConst.key.TEMP_CORRECT_VALUE, v1);
             }
         };
         btnTempCorrSub.setOnClickListener(onClickListener);
@@ -473,29 +465,15 @@ public class SMTSettingActivity extends SMTBaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip;
-        String resPort;
-        String xmppPort;
-        String proName;
-
+        String ip = Constants.NetConfig.PRO_URL;
+        String resPort = Constants.NetConfig.PRO_RES_PORT;
+        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
+        String proName = Constants.NetConfig.PRO_SUFFIX;
         if (model == Constants.serverModel.YUN) {
-            ip = SpUtils.getStr(SpUtils.IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-
-            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-                edtIp.setText(Constants.NetConfig.PRO_URL);
-                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
-                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
-                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
-            } else {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-            }
-
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);
@@ -599,45 +577,6 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 int delay = Integer.parseInt(s1);
                 SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
                 UIUtils.showShort(SMTSettingActivity.this, getString(R.string.setting_edit_password_success));
-            }
-        });
-    }
-
-    //初始化温度检测模块的设置
-    private void initTemperatureSetting() {
-        //提示时间
-        final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
-        Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
-        final int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
-        edtTipsTime.setText(time + "");
-        btnSaveTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int saveTime = time;
-                String s = edtTipsTime.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    saveTime = Integer.parseInt(s);
-                }
-                edtTipsTime.setText(saveTime + "");
-                SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_save_success));
-            }
-        });
-
-        Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
-        final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
-        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);
-        edtTempDValue.setText(dValue + "");
-        btnSaveDValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtTempDValue.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    edtTempDValue.setText(dValue + "");
-                }
-                s = edtTempDValue.getText().toString();
-                SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(SMTSettingActivity.this, getResources().getString(R.string.setting_save_success));
             }
         });
     }

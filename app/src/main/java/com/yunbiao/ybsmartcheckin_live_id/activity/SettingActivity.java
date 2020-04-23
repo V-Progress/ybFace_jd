@@ -291,29 +291,15 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip;
-        String resPort;
-        String xmppPort;
-        String proName;
-
+        String ip = Constants.NetConfig.PRO_URL;
+        String resPort = Constants.NetConfig.PRO_RES_PORT;
+        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
+        String proName = Constants.NetConfig.PRO_SUFFIX;
         if (model == Constants.serverModel.YUN) {
-            ip = SpUtils.getStr(SpUtils.IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-
-            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-                edtIp.setText(Constants.NetConfig.PRO_URL);
-                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
-                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
-                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
-            } else {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-            }
-
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);

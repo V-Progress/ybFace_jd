@@ -7,6 +7,10 @@
     <string name="back">Back</string>
     <string name="not_support_speech">Languages not supported by the current speech engine:</string>
     <string name="miss_speech_data">Voice data missing:</string>
+    <string name="alert_title_warning">Warning</string>
+    <string name="temper_error_tips">The temperature measurement data failed to be retrieved, please check the temperature measurement module</string>
+    <string name="temper_error_btn_restart">Reboot</string>
+    <string name="temper_error_btn_cancel">No processing</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -269,6 +273,7 @@
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
     <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
     <string name="setting_default_welcome_tip2">Welcome to HT intelligent attendance system</string>
+    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Correct Temperature</string>
     <string name="setting_broadcast_f">Enable Fahrenheit</string>
 
@@ -315,6 +320,8 @@
     <string name="act_power_turn_off_time">Turn off time</string>
     <string name="act_power_save">Save</string>
     <string name="act_power_set_success">Set up successfully!</string>
+    <string name="act_power_set_failed_not_check_on">Setting failed, please select the effective date in the boot operation policy</string>
+    <string name="act_power_set_failed_not_check_off">Setting failed, please select the effective date in the shutdown run policy</string>
 
 
     <!--温度矫正页面-->
@@ -333,9 +340,9 @@
     <string name="base_male">Mr</string><!--  男-->
     <string name="base_female">Ms</string><!-- 女 -->
     <string name="base_people"> </string><!-- 人  ppls-->
-    <string name="base_year">year</string><!-- 年 -->
-    <string name="base_month">month</string><!-- 月 -->
-    <string name="base_day">day</string><!-- 日 -->
+    <string name="base_year">-</string><!-- 年 -->
+    <string name="base_month">-</string><!-- 月 -->
+    <string name="base_day">""</string><!-- 日 -->
 
     <!--Splash界面  -->
     <string name="splash_request_permission_failed">Permission application failed</string><!-- 权限申请失败 -->
@@ -419,6 +426,13 @@
     <string name="updateManager_dqbbwzxbb">The current version is the latest version</string><!-- 当前版本为最新版本 -->
     <string name="updateManager_wlljsbqjcwl">Network connection failed, please check the network</string><!--网络连接失败，请检查网络  -->
     <string name="updateManager_xzsb">Download failed</string><!--下载失败  -->
+    <string name="update_version_title">Version Information</string>
+    <string name="update_lable_new">latest version：</string>
+    <string name="update_lable_current">current version：</string>
+    <string name="update_check_failed">Failed to detect the update. Please check the network</string>
+    <string name="update_check_ing">Checking the latest version</string>
+    <string name="update_have_new">A new version has been detected. Please check for details</string>
+    <string name="update_no_description">No details</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string><!-- DENIED:%s -->

@@ -5,10 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -41,9 +43,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import skin.support.SkinCompatManager;
 
 public class ThermalSystemActivity extends BaseActivity implements View.OnClickListener {
+
+    @BindView(R.id.tv_version_name_thermal_system)
+    TextView tvVersionName;
+    @BindView(R.id.tv_version_info_thermal_system)
+    TextView tvVersionInfo;
+    @BindView(R.id.fl_version_thermal_system)
+    View flVersionLoading;
 
     private Button btn_depart_system;
     private Button btn_add_system;
@@ -88,7 +98,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btnVisitorSystem = findViewById(R.id.btn_visitor_system);
         btnSkinSystem = findViewById(R.id.btn_skin_system);
 
-        int intOrDef = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
         tv_company_system = (TextView) findViewById(R.id.tv_company_system);
         tv_deviceno_system = (TextView) findViewById(R.id.tv_deviceno_system);
@@ -156,6 +165,43 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             @Override
             public void getSize(long size) {
                 Log.e("123", "getSize: -----------" + size);
+            }
+        });
+
+
+        checkUpgrade(new CheckUpgradeCallback() {
+            @Override
+            public void onStart() {
+                flVersionLoading.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void noUpgrade(String currVersionName) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
+                tvVersionInfo.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void haveNewVersion(String versionName, String versionInfo) {
+                tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
+                tvVersionInfo.setGravity(Gravity.LEFT);
+                tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+                tvVersionInfo.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onError(String currVersionName, String s) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.update_check_failed));
+                tvVersionInfo.setTextColor(Color.GRAY);
+            }
+
+            @Override
+            public void onFinish() {
+                flVersionLoading.setVisibility(View.GONE);
             }
         });
     }

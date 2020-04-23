@@ -24,11 +24,12 @@ public class MultiThermalConst {
         String BLACK_BODY_ENABLE = "multiThermalBlackBodyEnable";
 
         String BODY_TEMPER = "multiThermalBodyTemper";
+        String LAST_MIN_T = "multiThermalLastMinT";
     }
 
     public interface Default{
         boolean THERMAL_MIRROR = false;
-        boolean LOW_TEMP = true;
+        boolean LOW_TEMP = false;
         float WARNING_TEMP = 37.3f;
         float BODY_CORRECT_TEMPER = 0.0f;
 
@@ -44,8 +45,9 @@ public class MultiThermalConst {
 
         int BLACK_BODY_PRE_VALUE = 345;
 
-        boolean BLACK_BODY_ENABLE = true;
+        boolean BLACK_BODY_ENABLE = false;
 
         float BODY_TEMPER = 36.5f;
+        float LAST_MIN_T = 0.0f;
     }
 }

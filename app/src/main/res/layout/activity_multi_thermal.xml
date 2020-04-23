@@ -40,7 +40,6 @@
             android:textSize="34sp" />
     </RelativeLayout>
 
-
     <LinearLayout
         android:gravity="center_vertical"
         android:layout_marginTop="15dp"
@@ -51,37 +50,34 @@
         android:layout_width="match_parent"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:gravity="center"
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:layout_weight="5"
             android:background="@mipmap/multi_thermal_camera"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
-                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
                 android:text="@string/main_real_detection"
-                android:textSize="20dp"
+                android:textSize="24dp"
                 android:gravity="center"
                 android:textColor="#00FFFF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
-                android:layout_centerInParent="true"
+                android:layout_marginTop="30dp"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <com.yunbiao.faceview.FaceView
-                    android:layout_marginTop="30dp"
                     android:background="#000"
                     android:id="@+id/face_view"
                     android:layout_width="1000dp"
                     android:layout_height="750dp"/>
                 <FrameLayout
                     android:background="#000"
-                    android:layout_marginTop="30dp"
-                    android:layout_toRightOf="@+id/face_view"
                     android:layout_width="1000dp"
                     android:layout_height="750dp">
                     <ImageView
@@ -95,7 +91,183 @@
                         android:layout_height="match_parent"/>
                 </FrameLayout>
             </LinearLayout>
-        </RelativeLayout>
+
+            <FrameLayout
+                android:layout_gravity="center"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_correction_area"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:textSize="16dp"
+                        android:textColor="@color/white"
+                        android:text="@string/safety_measure_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:textSize="20dp"
+                        android:gravity="center"
+                        android:id="@+id/tv_oringinT_safety_check"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="16dp"
+                            android:textColor="@color/white"
+                            android:text="@string/safety_correct_main"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_sub"
+                            android:id="@+id/btn_correct_sub_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                        <LinearLayout
+                            style="@style/style_setting_input_save_button"
+                            android:layout_marginLeft="0dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp">
+
+                            <EditText
+                                android:id="@+id/edt_correct_safety_check"
+                                style="@style/style_setting_input_number_decimal_signed_edt"
+                                android:enabled="false" />
+
+                            <TextView
+                                style="@style/setting_text"
+                                android:text="℃" />
+                        </LinearLayout>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_plus"
+                            android:id="@+id/btn_correct_plus_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:textSize="16dp"
+                            android:textColor="@color/white"
+                            android:text="@string/safety_temper_main"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_sub"
+                            android:id="@+id/btn_body_temper_sub_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+
+                        <LinearLayout
+                            style="@style/style_setting_input_save_button"
+                            android:layout_marginLeft="0dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp">
+
+                            <EditText
+                                android:id="@+id/edt_body_temper_safety_check"
+                                style="@style/style_setting_input_number_decimal_signed_edt"
+                                android:enabled="false" />
+
+                            <TextView
+                                style="@style/setting_text"
+                                android:text="℃" />
+                        </LinearLayout>
+                        <Button
+                            android:background="@drawable/selector_safety_check_main_correct_plus"
+                            android:id="@+id/btn_body_temper_plus_safety_check"
+                            android:textColor="@color/white"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <Button
+                            android:background="@mipmap/cancel_icon"
+                            android:id="@+id/btn_cancel_correction_safety_check"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                        <Button
+                            android:layout_marginLeft="20dp"
+                            android:background="@mipmap/confirm_icon"
+                            android:id="@+id/btn_confirm_correction_safety_check"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/tv_device_number_safety_check"
+                        android:textSize="26dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/tv_net_state_safety_check"
+                        android:layout_gravity="center"
+                        android:textSize="26dp"
+                        android:textColor="@color/red"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+                <Button
+                    android:onClick="startCalibration"
+                    android:background="@drawable/selector_btn_take_photo"
+                    android:id="@+id/btn_correction_safety_check"
+                    android:layout_gravity="center"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:text="@string/safety_calibration_main"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:background="@mipmap/multi_thermal_warning_bg"

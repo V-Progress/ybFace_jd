@@ -44,9 +44,10 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
      * 更新热成像图像
      * @param hotImage
      * @param temper
+     * @param mHasFace
      */
     @Override
-    public void updateHotImage(Bitmap hotImage, float temper) {
+    public void updateHotImage(Bitmap hotImage, float temper, boolean mHasFace) {
 
     }
 
@@ -60,9 +61,8 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
 
     }
 
-    //更新人证测温结果
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal) {
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite) {
 
     }
 

@@ -37,6 +37,8 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NV21ToBitmap;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
+import org.apache.harmony.javax.security.auth.login.LoginException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -195,6 +197,7 @@ public class FaceView extends FrameLayout {
     };
 
     private void initCamera() {
+        Log.e(TAG, "initCamera: 打开摄像头：" + Constants.CAMERA_ID);
         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))

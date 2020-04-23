@@ -69,7 +69,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
     private Spinner spnDataMode;
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private DateFormat dateFormatter = new SimpleDateFormat("yyyy年MM月dd日");
-    private DateFormat dateFormat1 = new SimpleDateFormat("yyyy年MM月dd日");
+    private DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
     private DateFormat dateFormat2 = new SimpleDateFormat("HH:mm:ss");
     private Button btnUpload;
     private SignAdapter adapter;
@@ -120,12 +120,16 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 getResources().getString(R.string.sign_list_hot)};
 
         String today = dateFormatter.format(new Date());
-        tv_date.setText(today);
+        tv_date.setText(formatDate(today));
         queryDate = today;
         initSpinner();
 
         adapter = new SignAdapter(ThermalSignActivity.this, mShowList);
         lv_sign_List.setAdapter(adapter);
+    }
+
+    private String formatDate(String date){
+        return date.replace("年","-").replace("月","-").replace("日","");
     }
 
     private void initSpinner() {
@@ -261,27 +265,24 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 Calendar now = Calendar.getInstance();
                 new DatePickerDialog(
                         ThermalSignActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                String yearStr = year + getString(R.string.base_year);
+                        (view, year, month, dayOfMonth) -> {
+                            String yearStr = year + "年";
 
-                                int realMonth = month + 1;
-                                String monthStr = realMonth + getString(R.string.base_month);
-                                if (realMonth < 10) {
-                                    monthStr = "0" + realMonth + getString(R.string.base_month);
-                                }
-
-                                String dayStr = dayOfMonth + getString(R.string.base_day);
-                                if (dayOfMonth < 10) {
-                                    dayStr = "0" + dayOfMonth + getString(R.string.base_day);
-                                }
-                                String date = yearStr + monthStr + dayStr;
-                                tv_date.setText(date);
-
-                                queryDate = date;
-                                loadSignList();
+                            int realMonth = month + 1;
+                            String monthStr = realMonth + "月";
+                            if (realMonth < 10) {
+                                monthStr = "0" + realMonth + "月";
                             }
+
+                            String dayStr = dayOfMonth + "日";
+                            if (dayOfMonth < 10) {
+                                dayStr = "0" + dayOfMonth + "日";
+                            }
+                            String date = yearStr + monthStr + dayStr;
+                            tv_date.setText(formatDate(date));
+
+                            queryDate = date;
+                            loadSignList();
                         },
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
@@ -392,7 +393,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 Sign sign = signs.get(i);
                 List<String> beanList = new ArrayList<>();
 
-                beanList.add(TextUtils.isEmpty(sign.getName()) ? "" : sign.getName());
+                beanList.add(TextUtils.isEmpty(sign.getName()) ? getResString(R.string.fment_sign_visitor_name) : sign.getName());
                 beanList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
                 beanList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
                 beanList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");

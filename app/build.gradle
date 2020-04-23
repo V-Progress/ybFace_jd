@@ -8,8 +8,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 42
-        versionName "1.4.4"
+        versionCode 43
+        versionName "1.4.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -66,6 +66,8 @@ android {
         ext.flavor = {
             _flavor, _isHT, _isSK, _appType, _appName, _appIcon, _umKey, _umChannel, _faceAppId, _faceSdkKey, _maxDetectNum, _detectFaceScaleVal
                 ->
+//                defaultConfig.versionName "1.1.1"
+//                defaultConfig.versionCode 42
                 _flavor.buildConfigField("boolean", "IS_HT", _isHT)
                 _flavor.buildConfigField("boolean", "IS_SK", _isSK)
                 _flavor.buildConfigField("int", "APP_TYPE", _appType)
@@ -175,20 +177,22 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 28//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 30//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
     }
 }
 
 String buildApkName(String param) {
+    //确定前缀名
     String name
     if (param.contains("SK"))
-        name = "SK"
+        name = "思庫"
     else if (param.contains("HT"))
         name = "亨通"
     else
         name = "云标"
 
+    //确定后缀名
     if (param.contains("10")) {
         name += "测温考勤"
     } else if (param.contains("8")) {
@@ -200,11 +204,13 @@ String buildApkName(String param) {
     } else if (param.contains("RZ")) {
         name += "人证测温"
     } else if (param.contains("DR")) {
-        if (name.contains("SK")) {//判断思库版本
-            name += "HighCapacity"
+        if (param.contains("SK")) {//判断思库版本
+            name += "考勤"
         } else {
             name += "大通量测温"
         }
+    } else if(param.contains("SC_DL")){
+        name += "双光安检"
     } else if (param.contains("SC")) {
         name += "测温安检"
     } else {

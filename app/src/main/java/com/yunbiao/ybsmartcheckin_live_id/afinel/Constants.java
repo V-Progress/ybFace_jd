@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.afinel;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -51,19 +52,23 @@ public class Constants {
     private static final String TAG = "Constants";
     public static void checkSetIp() {
         if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, serverModel.YUN) == serverModel.JU) {
-            String ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            String xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-            String resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
+            Constants.XMPP_HOST = SpUtils.getStr(SpUtils.JU_IP_CACHE);
+            Constants.XMPP_PORT = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
+            Constants.RESOURCE_HOST = SpUtils.getStr(SpUtils.JU_IP_CACHE);
+            Constants.RESOURCE_PORT = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
             String projectName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
-
-            Constants.XMPP_HOST = ip;
-            Constants.XMPP_PORT = xmppPort;
-            Constants.RESOURCE_HOST = ip;
-            Constants.RESOURCE_PORT = resPort;
-            Constants.RESOURCE_URL = PRE + ip + COLON + resPort + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
-
-            ResourceUpdate.WEB_BASE_URL = Constants.RESOURCE_URL;
+            Constants.RESOURCE_URL = PRE + Constants.RESOURCE_HOST + COLON + Constants.RESOURCE_PORT + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
+            ResourceUpdate.refreshAddress();
         }
+        logNetConfig(TAG);
+    }
+
+    public static void logNetConfig(String TAG){
+        Log.e(TAG, "checkSetIp: IP地址：" + Constants.XMPP_HOST);
+        Log.e(TAG, "checkSetIp: 通信端口：" + Constants.XMPP_PORT);
+        Log.e(TAG, "checkSetIp: 服务地址：" + Constants.RESOURCE_HOST);
+        Log.e(TAG, "checkSetIp: 服务端口：" + Constants.RESOURCE_PORT);
+        Log.e(TAG, "checkSetIp: 服务地址：" + Constants.RESOURCE_URL);
     }
 
     //修改设备类型
@@ -131,27 +136,14 @@ public class Constants {
     public static boolean isVerticalMirror = false;
     //默认摄像头ID
     public static int CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_BACK;
-
     //屏幕角度默认值
     public static int DEFAULT_CAMERA_ANGLE = 0;
     //大屏海报开启状态
     public static final boolean DEFAULT_POSTER_ENABLED = false;
-    //默认最小阈值
-    public static final float DEFAULT_TEMP_MIN_THRESHOLD_VALUE = 35.5F;
-    //测温报警值
-    public static final float DEFAULT_TEMP_WARNING_THRESHOLD_VALUE = 37.3f;
-    //检测温差值
-    public static final float DEFAULT_TEMP_D_VALUE_VALUE = 3.0f;
-    //环境温度补正
-    public static final float DEFAULT_AMB_CORRECT_VALUE = 0.0F;
-    //检测温度补正
-    public static final float DEFAULT_TEMP_CORRECT_VALUE = 0.0f;
-    //默认读卡器
-    public static final boolean DEFAULT_READ_CARD_ENABLED = false;
     //默认二维码
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
-    //播报延时默认值
-    public static final long DEFAULT_SPEECH_DELAY = 5000;
+    //默认读卡器
+    public static final boolean DEFAULT_READ_CARD_ENABLED = false;
 }
 
 

@@ -39,7 +39,7 @@ public class UpdateVersionControl {
      *
      * @return
      */
-    private String getVersionName() {
+    public static String getVersionName() {
         String version = "";
         try {
             // 获取packagemanager的实例

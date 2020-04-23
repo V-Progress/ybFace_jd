@@ -20,6 +20,7 @@ public class SafetyCheckDoubleLightConst {
         String BLACK_BODY_BOTTOM = "safetyCheckDoubleLightBlackBodyBottom";
 
         String BLACK_BODY_FRAME = "safetyCheckDoubleLightBlackBodyFrame";
+        String LAST_MIN_T = "safetyCheckDoubleLightLastMinT";
     }
 
     public abstract static class Default{
@@ -39,5 +40,6 @@ public class SafetyCheckDoubleLightConst {
         public static int BLACK_BODY_BOTTOM = 16;
 
         public static boolean BLACK_BODY_FRAME = false;
+        public static float LAST_MIN_T = 0.0f;
     }
 }

@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
@@ -37,7 +39,15 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+
 public class MultiThermalSettingActivity extends BaseActivity {
+    @BindView(R.id.tv_version_info_multi_thermal_system)
+    TextView tvVersionInfo;
+    @BindView(R.id.tv_version_name_multi_thermal_system)
+    TextView tvVersionName;
+    @BindView(R.id.fl_version_multi_thermal_system)
+    View flVersionLoading;
 
     private ImageView ivHotImage;
 
@@ -74,6 +84,48 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackEnable();
 
         initSetIp();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+
+
+        checkUpgrade(new CheckUpgradeCallback() {
+            @Override
+            public void onStart() {
+                flVersionLoading.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void noUpgrade(String currVersionName) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
+                tvVersionInfo.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void haveNewVersion(String versionName, String versionInfo) {
+                tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
+                tvVersionInfo.setGravity(Gravity.LEFT);
+                tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+                tvVersionInfo.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onError(String currVersionName, String s) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.update_check_failed));
+                tvVersionInfo.setTextColor(Color.GRAY);
+            }
+
+            @Override
+            public void onFinish() {
+                flVersionLoading.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void autoCorrect(View view){
@@ -546,29 +598,15 @@ public class MultiThermalSettingActivity extends BaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip;
-        String resPort;
-        String xmppPort;
-        String proName;
-
+        String ip = Constants.NetConfig.PRO_URL;
+        String resPort = Constants.NetConfig.PRO_RES_PORT;
+        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
+        String proName = Constants.NetConfig.PRO_SUFFIX;
         if (model == Constants.serverModel.YUN) {
-            ip = SpUtils.getStr(SpUtils.IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-
-            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-                edtIp.setText(Constants.NetConfig.PRO_URL);
-                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
-                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
-                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
-            } else {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-            }
-
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);

@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.elcapi.jnielc;
 import com.example.yfaceapi.GPIOManager;
 import com.example.yfaceapi.GpioUtils;
+import com.intelligence.hardware.temperature.TemperatureModule;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 
@@ -204,6 +205,7 @@ public abstract class LedControlActivity extends BaseActivity {
 
     //亿舜============================================================
     protected void ysLedWhite(){
+        TemperatureModule.getIns().controlExpandLight(1);
         if(gpioManager == null){
             return;
         }
@@ -219,6 +221,7 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     protected void ysLedGreen(){
+        TemperatureModule.getIns().controlExpandLight(2);
         if(gpioManager == null){
             return;
         }
@@ -237,6 +240,7 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     protected void ysLedRed(){
+        TemperatureModule.getIns().controlExpandLight(3);
         if(gpioManager == null){
             return;
         }
@@ -255,6 +259,7 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     protected void ysLedOff(){
+        TemperatureModule.getIns().controlExpandLight(-1);
         if(gpioManager == null){
             return;
         }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.android.xhapimanager.XHApiManager;
+import com.intelligence.hardware.temperature.TemperatureModule;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
@@ -47,6 +48,8 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     private void open() {
+        TemperatureModule.getIns().controlExpandRelay(true);
+
         if (!(this instanceof WelComeActivity)) {
             if (mSmdtManager != null) {
                 mSmdtManager.setRelayIoValue(1);
@@ -67,6 +70,8 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     private void close() {
+        TemperatureModule.getIns().controlExpandRelay(false);
+
         if (!(this instanceof WelComeActivity)) {
             if (mSmdtManager != null) {
                 mSmdtManager.setRelayIoValue(0);

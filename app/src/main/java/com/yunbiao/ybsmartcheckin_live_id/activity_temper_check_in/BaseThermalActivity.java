@@ -20,6 +20,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
@@ -95,7 +96,7 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
 
         //模式切换
-        int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
+        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
         if (mCurrMode != currMode) {
             mCurrMode = currMode;
             onModeChanged(currMode);
@@ -242,6 +243,11 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     }
                 }
             }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 
@@ -400,6 +406,11 @@ public abstract class BaseThermalActivity extends BaseGpioActivity {
                     }
                 }
             }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 

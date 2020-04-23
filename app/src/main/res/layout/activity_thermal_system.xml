@@ -286,18 +286,91 @@
         </TableRow>
     </TableLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:padding="5dp"
+        android:background="@drawable/shape_employ_button"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom">
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:gravity="center"
+                    android:textSize="22dp"
+                    android:textColor="@color/white"
+                    android:text="@string/update_version_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_version_name_thermal_system"
+                    android:padding="6dp"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:background="#ffffff"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <ScrollView
+                    android:padding="6dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+                    <TextView
+                        android:id="@+id/tv_version_info_thermal_system"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </ScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#2d000000"
+                android:id="@+id/fl_version_thermal_system"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"/>
+
+                <TextView
+                    android:text="@string/update_check_ing"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </FrameLayout>
+
 
         <LinearLayout
-            android:layout_margin="30dp"
+            android:gravity="right"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="right|center">
-
+            android:layout_height="wrap_content">
             <TextView
+                android:layout_marginRight="10dp"
                 android:id="@+id/tv_version_system"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -305,26 +378,27 @@
                 android:textSize="20dp" />
 
             <Button
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
                 android:id="@+id/btn_update_system"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
                 android:background="@drawable/selector_btn_take_photo"
-                android:nextFocusUp="@+id/btn_setting_system"
                 android:text="@string/System_update"
                 android:textColor="@color/white"
-                android:textSize="25dp" />
+                android:textSize="22dp" />
         </LinearLayout>
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_copyright_smt_system"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="@string/System_copyright"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-    </FrameLayout>
+    <TextView
+        android:layout_marginTop="6dp"
+        android:id="@+id/tv_copyright_smt_system"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="6dp"
+        android:gravity="center"
+        android:text="@string/System_copyright"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
 </LinearLayout>

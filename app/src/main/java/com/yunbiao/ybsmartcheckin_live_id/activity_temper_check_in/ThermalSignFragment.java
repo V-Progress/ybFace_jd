@@ -177,8 +177,8 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         }
 
         Log.e(TAG, "onResume: 重加载数据");
-        float warningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE);
-        int newModel = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
+        float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
+        int newModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
         boolean fEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED,ThermalConst.Default.THERMAL_F_ENABLED);
         if (newModel != mCurrModel || mCurrWarningThreshold != warningThreshold || mFEnabled != fEnabled) {
             mCurrWarningThreshold = warningThreshold;

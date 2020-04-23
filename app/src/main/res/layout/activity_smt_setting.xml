@@ -428,62 +428,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="提示时长" />
-
-                    <EditText
-                        android:id="@+id/edt_temp_tip_time_setting"
-                        style="@style/style_setting_input_number_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="毫秒" />
-
-                    <Button
-                        android:id="@+id/btn_save_temp_tip_time_setting"
-                        style="@style/style_setting_input_save_button" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="高低温差值" />
-
-                    <EditText
-                        android:id="@+id/edt_temp_d_value_setting"
-                        style="@style/style_setting_input_number_decimal_edt" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="℃" />
-
-                    <Button
-                        android:id="@+id/btn_save_temp_d_value_setting"
-                        style="@style/style_setting_input_save_button" />
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:layout_marginLeft="20dp"
-                        android:text="用于检测人来或人走后的温度差"
-                        android:textColor="#ff0000" />
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout

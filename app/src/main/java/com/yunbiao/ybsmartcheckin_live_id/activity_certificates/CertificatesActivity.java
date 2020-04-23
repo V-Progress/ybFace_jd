@@ -1,21 +1,13 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_certificates;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
-import android.os.Handler;
-import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -31,83 +23,96 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.arcsoft.face.FaceFeature;
-import com.arcsoft.face.FaceInfo;
-import com.arcsoft.face.FaceSimilar;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.intelligence.hardware.temperature.TemperatureModule;
-import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
-import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
-import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
-import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
-import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ScanKeyManager;
-import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import okhttp3.Call;
-import okhttp3.Request;
+import butterknife.BindView;
 
 public class CertificatesActivity extends BaseCertificatesActivity implements CertificatesViewInterface {
 
     private static final String TAG = "CertificatesActivity";
-    private ImageView ivFace;
-    private ImageView ivIdCard;
-    private CertificatesView certificatesView;
-    private ImageView ivHotImage;
-    private TextView tvName;
-    private TextView tvOrigin;
-    private TextView tvTip;
-    private TextView tvSimilar;
-    private TextView tvTemp;
-    private TextView tvOStatus;
-    private ImageView ivStatus;
-    private View verifyStatusTip;
-    private TextView tvVerifyInfo;
-    private ImageView ivVerifyStatus;
+    @BindView(R.id.iv_logo)
+    ImageView ivLogo;
+    @BindView(R.id.iv_face)
+    ImageView ivFace;
+    @BindView(R.id.iv_idCard)
+    ImageView ivIdCard;
+    @BindView(R.id.certificates_view)
+    CertificatesView certificatesView;
+    @BindView(R.id.iv_hot_image)
+    ImageView ivHotImage;
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_origin)
+    TextView tvOrigin;
+    @BindView(R.id.tv_tip)
+    TextView tvTip;
+    @BindView(R.id.tv_alike)
+    TextView tvSimilar;
+    @BindView(R.id.tv_tem)
+    TextView tvTemp;
+    @BindView(R.id.tv_ostatus)
+    TextView tvOStatus;
+    @BindView(R.id.iv_status)
+    ImageView ivStatus;
+    @BindView(R.id.view_temp_verify)
+    View verifyStatusTip;
+    @BindView(R.id.iv_verifyInfo)
+    TextView tvVerifyInfo;
+    @BindView(R.id.iv_verifyStatus)
+    ImageView ivVerifyStatus;
+    @BindView(R.id.ll_bg_verifyStatus)
+    View llBgVerifyStatus;
+    @BindView(R.id.tv_origin_t)
+    TextView tvOriginT;
+    @BindView(R.id.tv_temp_main)
+    TextView tvLeftTopTemp;
+    @BindView(R.id.btn_no_id_card)
+    Button btnNoIdCard;
+    @BindView(R.id.tv_bottomTitle)
+    View tvBottomTitle;
+    @BindView(R.id.tv_net_state_certi)
+    TextView tvNetState;
+    @BindView(R.id.iv_similar_icon_certi)
+    ImageView ivSimilarIcon;
+    @BindView(R.id.tv_white_status)
+    TextView tvWhiteStatus;
+    @BindView(R.id.iv_white_status)
+    ImageView ivWhiteStatus;
+    @BindView(R.id.tv_white_label)
+    TextView tvWhiteLabel;
+    @BindView(R.id.ll_white_status)
+    View llWhiteStatus;
+    @BindView(R.id.tv_device_number_certi)
+    TextView tvDeviceNumber;
+    @BindView(R.id.tv_bind_code_certi)
+    TextView tvBindCode;
+    @BindView(R.id.tv_app_version_certi)
+    TextView tvAppVersion;
+
     private ServiceManager serviceManager;
-    private ImageView ivLogo;
-    private View llBgVerifyStatus;
-    private TextView tvOriginT;
-    private TextView tvLeftTopTemp;
-    private Button btnNoIdCard;
-    private View tvBottomTitle;
-    private TextView tvNetState;
-    private ImageView ivSimilarIcon;
 
     @Override
     protected int getPortraitLayout() {
@@ -123,28 +128,6 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     protected void initView() {
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
-        ivSimilarIcon = findViewById(R.id.iv_similar_icon_certi);
-        tvNetState = findViewById(R.id.tv_net_state_certi);
-        tvLeftTopTemp = findViewById(R.id.tv_temp_main);
-        tvOriginT = findViewById(R.id.tv_origin_t);
-        ivLogo = findViewById(R.id.iv_logo);
-        ivVerifyStatus = findViewById(R.id.iv_verifyStatus);
-        tvVerifyInfo = findViewById(R.id.iv_verifyInfo);
-        llBgVerifyStatus = findViewById(R.id.ll_bg_verifyStatus);
-        tvTemp = findViewById(R.id.tv_tem);
-        tvOStatus = findViewById(R.id.tv_ostatus);
-        ivStatus = findViewById(R.id.iv_status);
-        verifyStatusTip = findViewById(R.id.view_temp_verify);
-        tvSimilar = findViewById(R.id.tv_alike);
-        tvTip = findViewById(R.id.tv_tip);
-        tvName = findViewById(R.id.tv_name);
-        tvOrigin = findViewById(R.id.tv_origin);
-        ivHotImage = findViewById(R.id.iv_hot_image);
-        certificatesView = findViewById(R.id.certificates_view);
-        ivFace = findViewById(R.id.iv_face);
-        ivIdCard = findViewById(R.id.iv_idCard);
-        btnNoIdCard = findViewById(R.id.btn_no_id_card);
-        tvBottomTitle = findViewById(R.id.tv_bottomTitle);
         btnNoIdCard.setOnClickListener(v -> noCardToTemper());//无证测温
         ivLogo.setOnClickListener(v -> goSetting());//进入设置
 
@@ -166,9 +149,6 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     private void setDeviceInfo() {
-        TextView tvDeviceNumber = findViewById(R.id.tv_device_number_certi);
-        TextView tvBindCode = findViewById(R.id.tv_bind_code_certi);
-        TextView tvAppVersion = findViewById(R.id.tv_app_version_certi);
         if (tvDeviceNumber != null) {
             String deviceNumber = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
             tvDeviceNumber.setText(deviceNumber);
@@ -213,6 +193,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     public void onFaceViewReady() {
         SyncManager.instance().requestOnlyCompany();
+        SyncManager.instance().requestWhiteList(null);
     }
 
     @Override
@@ -221,9 +202,9 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void updateHotImage(Bitmap hotImage, float temper) {
+    public void updateHotImage(Bitmap hotImage, float temper, boolean mHasFace) {
         ivHotImage.setImageBitmap(hotImage);
-        tvLeftTopTemp.setText("体温：" + temper + "℃");
+        tvLeftTopTemp.setText(mHasFace ? "热成像 有人" : "热成像 无人");
     }
 
     @Override
@@ -236,16 +217,16 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal) {
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite) {
         tvTemp.setText(finalTemper + "℃");
         tvSimilar.setText("相似度" + similarInt + "%");
         tvTip.setText(Html.fromHtml(resultTip));
         if (isAlike) {
             tvSimilar.setTextColor(Color.GREEN);
-            ivSimilarIcon.setImageResource(R.mipmap.confirm_icon);
+            ivSimilarIcon.setImageResource(R.mipmap.icon_normal);
         } else {
             tvSimilar.setTextColor(Color.RED);
-            ivSimilarIcon.setImageResource(R.mipmap.cancel_icon);
+            ivSimilarIcon.setImageResource(R.mipmap.icon_warning);
         }
 
         if (isNormal) {
@@ -265,9 +246,21 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         }
 
         if (isAlike && isNormal) {
-            llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
-            ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-            tvVerifyInfo.setText("可以通行");
+            if (isInWhite) {
+                tvWhiteStatus.setText("是");
+                tvWhiteStatus.setTextColor(Color.GREEN);
+                ivWhiteStatus.setImageResource(R.mipmap.icon_normal);
+                llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
+                ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
+                tvVerifyInfo.setText("可以通行");
+            } else {
+                tvWhiteStatus.setText("否");
+                tvWhiteStatus.setTextColor(Color.RED);
+                ivWhiteStatus.setImageResource(R.mipmap.icon_warning);
+                llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_ensure);
+                ivVerifyStatus.setImageResource(R.mipmap.icon_verify_ensure);
+                tvVerifyInfo.setText("请确认通行");
+            }
         } else {
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
@@ -300,6 +293,8 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         tvTemp.setText("");
         ivSimilarIcon.setImageBitmap(null);
         ivStatus.setImageBitmap(null);
+        tvWhiteStatus.setText("");
+        ivWhiteStatus.setImageBitmap(null);
         if (verifyStatusTip.isShown()) {
             verifyStatusTip.setVisibility(View.GONE);
         }
@@ -513,6 +508,16 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     protected void onResume() {
         super.onResume();
+
+        boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
+        if (aBoolean) {
+            tvWhiteLabel.setVisibility(View.VISIBLE);
+            llWhiteStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvWhiteLabel.setVisibility(View.GONE);
+            llWhiteStatus.setVisibility(View.GONE);
+        }
+
         certificatesView.resume();
     }
 

@@ -7,6 +7,10 @@
     <string name="back">Geri</string>
     <string name="not_support_speech">Şimdiki dil sistemi tarafından diller desteklenmiyor:</string>
     <string name="miss_speech_data">Ses verileri kayıp:</string>
+    <string name="alert_title_warning">Uyarı</string>
+    <string name="temper_error_tips">Sıcaklık veri aktarımı başarısız oldu, lütfen sıcaklık ölçüm modüllerini kontrol edin</string>
+    <string name="temper_error_btn_restart">Yeni -den başlatın</string>
+    <string name="temper_error_btn_cancel">Bununla uğraşma</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -269,6 +273,7 @@
     <string name="setting_portrait_outline">Portre Gölgesi</string>
     <string name="setting_default_welcome_tip">Yunbiao Akıllı Katılım Sistemine Hoşgeldiniz</string>
     <string name="setting_default_welcome_tip2">Hengtong Katılım hoş geldiniz</string>
+    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Düzeltme sıcaklığı</string>
     <string name="setting_broadcast_f">Yayın Fahrenheit</string>
 
@@ -308,6 +313,10 @@
     <string name="act_power_turn_off_time">Kapanma süresi</string>
     <string name="act_power_save">Kaydet</string>
     <string name="act_power_set_success">Başarılı kurulum</string>
+
+    <string name="act_power_set_failed_not_check_on">Başarısız olarak ayarlayın, önyükleme çalıştıran ilkedeki geçerlilik tarihini seçin</string>
+    <string name="act_power_set_failed_not_check_off">Başarısız olarak ayarlayın, kapatma çalıştırma ilkesindeki geçerlilik tarihini seçin</string>
+
 
     <!--温度矫正页面-->
     <string name="act_correct_title">Sıcaklık düzeltmesi</string>
@@ -412,6 +421,13 @@
     <string name="updateManager_dqbbwzxbb">Mevcut sürüm en son sürüm</string>
     <string name="updateManager_wlljsbqjcwl">Ağ bağlantısı başarısız, lütfen ağı kontrol edin</string>
     <string name="updateManager_xzsb">Yükleme başarısız</string>
+    <string name="update_version_title">Sürüm bilgileri</string>
+    <string name="update_lable_new">En son sürüm：</string>
+    <string name="update_lable_current">Geçerli sürüm：</string>
+    <string name="update_check_failed">Güncelleştirme hatası nın algılanması, ağı kontrol edin</string>
+    <string name="update_check_ing">Sürüm bilgilerini algılama</string>
+    <string name="update_have_new">Yeni bir sürüm algılandı, lütfen Yükseltme\'ye tıklayın</string>
+    <string name="update_no_description">Kullanılabilir ayrıntı yok</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>

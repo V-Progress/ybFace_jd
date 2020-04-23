@@ -16,14 +16,17 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.CompanyResponse;
 import com.yunbiao.ybsmartcheckin_live_id.bean.StaffResponse;
+import com.yunbiao.ybsmartcheckin_live_id.bean.WhiteListBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.UserInfo;
+import com.yunbiao.ybsmartcheckin_live_id.db2.White;
 import com.yunbiao.ybsmartcheckin_live_id.exception.CrashHandler2;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.yunbiao.ybsmartcheckin_live_id.views.SyncDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -45,6 +48,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.Call;
+import okhttp3.Request;
 import timber.log.Timber;
 
 /**
@@ -55,7 +59,6 @@ public class SyncManager {
     private static final String TAG = "SyncManager";
 
     private static SyncManager instance;
-    private boolean isLocalServ = false;
     private boolean isFirst = true;
     private boolean isFirstNotBind = true;
 
@@ -79,13 +82,6 @@ public class SyncManager {
         File file = new File(Constants.HEAD_PATH);
         if (!file.exists()) {
             file.mkdirs();
-        }
-        String webBaseUrl = ResourceUpdate.WEB_BASE_URL;
-        String[] split = webBaseUrl.split(":");
-        for (String s : split) {
-            if (s.startsWith("192.168")) {
-                isLocalServ = true;
-            }
         }
         SyncDialog.instance().init(APP.getMainActivity());
     }
@@ -111,12 +107,7 @@ public class SyncManager {
                 break;
         }
         d("重新获取公司信息");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                requestOnlyCompany();
-            }
-        }, 30 * 1000);
+        new Handler().postDelayed(() -> requestOnlyCompany(), 30 * 1000);
     }
 
     /***
@@ -168,7 +159,7 @@ public class SyncManager {
 
                 if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     if (companyResponse.getStatus() == 4) {
-                        if(isFirstNotBind){
+                        if (isFirstNotBind) {
                             EventBus.getDefault().post(new UpdateInfoEvent());
                             isFirst = false;
 
@@ -213,14 +204,14 @@ public class SyncManager {
         });
     }
 
-    private void deleteNotBindUser(){
+    private void deleteNotBindUser() {
         List<User> users = DaoManager.get().queryAll(User.class);
-        if(users == null || users.size() <= 0){
+        if (users == null || users.size() <= 0) {
             return;
         }
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
-            if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
+            if (user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID) {
                 DaoManager.get().delete(user);
             }
         }
@@ -271,13 +262,13 @@ public class SyncManager {
                     StringBuffer stringBuffer = new StringBuffer();
                     stringBuffer.append(HeartBeatClient.getDeviceNo())
                             .append("\n").append("" + response);
-                    MobclickAgent.reportError(APP.getContext(),stringBuffer.toString());
+                    MobclickAgent.reportError(APP.getContext(), stringBuffer.toString());
                     retryOnluCompany(2);
                     return;
                 }
                 if (companyResponse.getStatus() != 1 && companyResponse.getStatus() != 5) {
                     if (companyResponse.getStatus() == 4) {
-                        if(isFirstNotBind){
+                        if (isFirstNotBind) {
                             EventBus.getDefault().post(new UpdateInfoEvent());
                             isFirst = false;
                         }
@@ -823,6 +814,74 @@ public class SyncManager {
     private void d(Throwable t) {
         Timber.tag(this.getClass().getSimpleName());
         Timber.d(t);
+    }
+
+    public interface WhiteListSyncListener{
+        void onSuccess();
+        void onFailed(String msg);
+    }
+
+    public void requestWhiteList(WhiteListSyncListener listSyncListener) {
+        String url = ResourceUpdate.CERTIFICATES_WHITE_LIST;
+        Log.e(TAG, "requestWhiteList: " + url);
+        OkHttpUtils.post().url(url).addParams("deviceNo", HeartBeatClient.getDeviceNo()).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: 白名单获取失败：" + (e == null ? "NULL" : e.getMessage()));
+                if(listSyncListener != null){
+                    listSyncListener.onFailed((e == null ? "NULL" : e.getMessage()));
+                }
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 获取成功：" + response);
+
+                WhiteListBean whiteListBean = new Gson().fromJson(response, WhiteListBean.class);
+                if (whiteListBean == null) {
+                    if(listSyncListener != null){
+                        listSyncListener.onFailed("数据解析异常");
+                    }
+                    return;
+                }
+
+                if (whiteListBean.getStatus() != 1) {
+                    if(listSyncListener != null){
+                        listSyncListener.onFailed(whiteListBean.getMessage());
+                    }
+                    return;
+                }
+
+                boolean b = DaoManager.get().deleteAll(White.class);
+                Log.e(TAG, "onResponse: 删除上一个白名单成功：" + b);
+                List<White> whites = DaoManager.get().queryAll(White.class);
+                Log.e(TAG, "onResponse: 检视数据：" + (whites == null ? 0 : whites.size()));
+
+                List<WhiteListBean.WhiteBean> data = whiteListBean.getData();
+                for (WhiteListBean.WhiteBean datum : data) {
+                    String num1 = datum.getProvince();
+                    String num2 = datum.getCity();
+                    String num3 = datum.getCounty();
+
+                    String num = num1;
+                    if (!TextUtils.equals("00", num2)) {
+                        num += num2;
+                    }
+                    if (!TextUtils.equals("00", num3)) {
+                        num += num3;
+                    }
+                    White white = new White();
+                    white.setNum(num);
+                    long l = DaoManager.get().addOrUpdate(white);
+                    Log.e(TAG, "onResponse: 白名单入库：" + l);
+                }
+
+
+                if(listSyncListener != null){
+                    listSyncListener.onSuccess();
+                }
+            }
+        });
     }
 
     public interface AddFaceCallback {

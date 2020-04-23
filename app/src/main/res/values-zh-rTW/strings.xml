@@ -7,6 +7,10 @@
     <string name="back">返回</string>
     <string name="not_support_speech">當前語言系統不支持的語言:</string>
     <string name="miss_speech_data">語音數據缺失:</string>
+    <string name="alert_title_warning">警告</string>
+    <string name="temper_error_tips">測溫數據調取失敗，請檢查測溫模組</string>
+    <string name="temper_error_btn_restart">重啓</string>
+    <string name="temper_error_btn_cancel">暫不處理</string>
 
     <!--應用名稱-->
     <string name="yb_check_in">雲標智能考勤</string>
@@ -268,6 +272,7 @@
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用雲標智能考勤系統</string>
     <string name="setting_default_welcome_tip2">歡迎使用亨通考勤</string>
+    <string name="setting_default_welcome_tip3">歡迎使用思庫考勤</string>
     <string name="setting_correct_temperature">矯正溫度</string>
     <string name="setting_broadcast_f">播報華氏度</string>
 
@@ -312,6 +317,10 @@
     <string name="act_power_turn_off_time">關機時間</string>
     <string name="act_power_save">保存</string>
     <string name="act_power_set_success">設置成功！</string>
+
+    <string name="act_power_set_failed_not_check_on">設置失敗，請在開機運行策略中選擇生效日期</string>
+    <string name="act_power_set_failed_not_check_off">設置失敗，請在關機運行策略中選擇生效日期</string>
+
 
     <!--溫度矯正頁面-->
     <string name="act_correct_title">溫度矯正</string>
@@ -416,6 +425,11 @@
     <string name="updateManager_dqbbwzxbb">當前版本為最新版本</string>
     <string name="updateManager_wlljsbqjcwl">網絡連接失敗，請檢查網絡</string>
     <string name="updateManager_xzsb">下載失敗</string>
+    <string name="update_version_title">版本信息</string>
+    <string name="update_lable_new">最新版本：</string>
+    <string name="update_lable_current">當前版本：</string>
+    <string name="update_check_failed">檢測更新失敗，請檢查網絡</string>
+    <string name="update_check_ing">正在檢測版本信息</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>
@@ -466,11 +480,11 @@
 
 
     <!--多人測溫-->
-    <string name="main_title_multi_thermal">AI人臉高通量測溫數據平臺</string>
+    <string name="main_title_multi_thermal">AI智慧測溫快篩系統</string>
     <string name="main_permission_failed_multi_thermal">USB權限獲取失敗</string>
     <string name="main_not_found_usb_multi_thermal">沒有找到目標設備</string>
-    <string name="main_exception_record_multi_thermal">異常人員記錄</string>
-    <string name="main_normal_record_multi_thermal">人員流動記錄</string>
+    <string name="main_exception_record_multi_thermal">異常體溫人員</string>
+    <string name="main_normal_record_multi_thermal">正常體溫人員</string>
     <string name="main_total_passage_multi_thermal">通過人數</string>
     <string name="main_normal_multi_thermal">正常體溫</string>
     <string name="main_error_multi_thermal">異常體溫</string>
@@ -490,8 +504,8 @@
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（請結合體溫槍測溫和熱成像溫度填寫差值）</string>
     <string name="record_export_multi_thermal">導出</string>
-    <string name="main_real_detection">實時監測</string>
-    <string name="main_data_total">數據統計</string>
+    <string name="main_real_detection">測溫中</string>
+    <string name="main_data_total">今日人數統計</string>
 
 
     <string name="safety_main_title">AI大通量測溫系統</string>

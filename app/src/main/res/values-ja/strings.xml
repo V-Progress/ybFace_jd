@@ -1,0 +1,662 @@
+<resources>
+    <string name="app_name">雲標インテリジェント勤務
+</string>
+    <string name="app_name2">順調インテリジェント勤務
+</string>
+    <string name="app_name3">思库インテリジェント勤務
+</string>
+    <string name="used">使用済み:</string>
+    <string name="no_used">/利用できる:</string>
+    <string name="back">戻る</string>
+    <string name="not_support_speech">現在の言語システムではサポートされていない言語</string>
+    <string name="miss_speech_data">音声データがありません:</string>
+    <string name="alert_title_warning">けいこく</string>
+    <string name="temper_error_tips">測温データの取り出しに失敗して、測温モジュールを検査してください</string>
+    <string name="temper_error_btn_restart">リブート</string>
+    <string name="temper_error_btn_cancel">処理を保留する</string>
+
+    <!--应用名称-->
+    <string name="yb_check_in">雲標測温勤務</string>
+    <string name="yb_temper_check_in">雲標人証測温</string>
+    <string name="yb_certificates">雲標大フラックス測温</string>
+    <string name="yb_multiple">順調測温勤務</string>
+    <string name="yb_safety_chceck">順調人証測温</string>
+
+    <string name="ht_temper_check_in">順調測温勤務</string>
+    <string name="ht_certificates">順調人証測温</string>
+    <string name="ht_multiple">順調大フラックス測温</string>
+    <string name="ht_safety_chceck">順調測温安全検査</string>
+
+    <string name="sk_temper_check_in">思库測温勤務</string>
+    <string name="sk_multiple">思库大フラックス測温</string>
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">正常</string>
+    <string name="smt_main_net_normal2">レート正常</string>
+    <string name="smt_main_net_no">无网络</string>
+    <string name="smt_main_all">予定</string>
+    <string name="smt_main_already">出席</string>
+    <string name="smt_main_ver">バージョン:</string>
+    <string name="smt_main_company">会社:</string>
+    <string name="smt_main_device_no">番号:</string>
+    <string name="smt_main_not_bind">バインディングされていません</string>
+
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">体温が異常である</string>
+    <string name="main_temp_normal_tips">体温正常</string>
+    <string name="main_temp_error_tips">平熱ではない</string>
+    <string name="main_temp_tips_please_close">ちょっと近くに来てください</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">距離が遠すぎるので、近づいてください</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">ちょっと遠くしてください</string>
+    <string name="main_temp_tips_so_close_text">距離が近すぎますので、ちょっと遠くしてください。</string>
+    <string name="main_thermal_temp">熱画像体温：</string>
+    <string name="main_thermal_has_person">熱画像有人</string>
+    <string name="main_thermal_no_person">熱画像無人</string>
+    <string name="main_please_waiting">待ってください</string>
+    <string name="main_temp_tips_please_in_range">顔を識別エリアに合わせてください。</string>
+    <string name="main_tips_please_close">请靠近点</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">温度を測っています</string>
+    <string name="port_setting">シリアル</string>
+    <string name="select_port_setting">シリアル選択</string>
+    <string name="auto_close_door_setting">（この時間以降は自動的に閉店します）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">推奨しきい値：８０</string>
+    <string name="current_model_setting">現在のモード</string>
+
+    <!--系统信息-->
+    <string name="System_title">システム情報</string>
+    <string name="System_deviceNo">デバイス番号:</string>
+    <string name="System_bindCode">バインディングコード:</string>
+    <string name="System_Company">所属会社:</string>
+    <string name="System_Service">サービスネットワーク:</string>
+    <string name="System_ValiDate">有効期間:</string>
+    <string name="System_Manage">人員管理</string>
+    <string name="System_Add">新規従業員</string>
+    <string name="System_Record">勤務評定記録</string>
+    <string name="System_Setting">システム設定</string>
+    <string name="System_Visitor">訪客</string>
+    <string name="System_skin_select">皮膚をとりかえる</string>
+    <string name="System_update">昇級</string>
+    <string name="System_copyright">著作権所有：北京雲標科技有限公司</string>
+    <string name="System_Service_offline">オフライン</string>
+    <string name="System_online">オンライン</string>
+    <string name="System_offline">オフライン</string>
+    <string name="System_validityPeriod">無期限</string>
+    <string name="System_cloud_service">クラウドサービス</string>
+    <string name="System_local_service">ローカルサービス</string>
+
+    <!--人员管理-->
+    <string name="employ_list_title">従業員リスト</string>
+    <string name="employ_list_depart_sync">同期</string>
+    <string name="employ_List_add_user">新規</string>
+    <string name="employ_List_query_button">検索</string>
+    <string name="employ_list_download_failed">画像のダウンロードに失敗しました</string>
+    <string name="employ_list_add_face_failed">顔ライブラリの追加に失敗しました</string>
+    <string name="employ_list_update_head_failed">画像の更新に失敗しました</string>
+    <string name="employ_list_field_index">番号</string>
+    <string name="employ_list_field_number">従業員番号</string>
+    <string name="employ_list_field_name">名前</string>
+    <string name="employ_list_field_depart">部門</string>
+    <string name="employ_list_field_position">職位</string>
+    <string name="employ_list_field_control">操作</string>
+    <string name="employ_list_item_delete">削除</string>
+    <string name="employ_list_item_edit">編集</string>
+    <string name="employ_list_all_depart">全部門</string>
+    <string name="employ_list_please_input_user_name">従業員の名前を入力してください</string>
+    <string name="employ_list_confirm_edit">変更を確定しますか？</string>
+    <string name="employ_list_confirm_delete">削除を確定しますか？</string>
+    <string name="employ_list_delete_failed">削除に失敗しました</string>
+    <string name="employ_list_delete_success">削除に成功しました</string>
+    <string name="employ_list_depart">部門</string>
+    <string name="employ_list_add_depart">新規部門</string>
+    <string name="employ_list_please_input_name">名前を入力してください</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">従業員が検索されませんでした。</string><!--未搜索到该员工-->
+
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">従業員を増やす</string>
+    <string name="act_editEmploy_xgxx">変更情報</string>
+    <string name="act_editEmploy_pz">写真を撮る</string>
+    <string name="act_editEmploy_reset">リセット</string>
+    <string name="act_editEmploy_jbxx">基本情報</string>
+    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
+    <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
+    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
+    <string name="act_editEmploy_ygbh">従業員番号:</string>
+    <string name="act_editEmploy_zw">職&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
+    <string name="act_editEmploy_csrq">誕生日:</string>
+    <string name="act_editEmploy_gxqm">個性的な署名:</string>
+    <string name="act_editEmploy_tip_qxpz">まず写真を撮ってください</string>
+    <string name="act_editEmploy_tip_qtxxm">名前を書いてください</string>
+    <string name="act_editEmploy_tip_qxzxb">性別を選択してください</string>
+    <string name="act_editEmploy_tip_qtxbh">番号を記入してください</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">画像ファイルが見つかりませんでした、もう一度写真を撮ってみてください。</string>
+    <string name="act_editEmploy_tip_wzrhxg">何も変更されていません</string>
+    <string name="act_editEmploy_tip_tjsb">追加に失敗しました</string>
+    <string name="act_editEmploy_tip_gygbcz">この従業員は存在しません</string>
+    <string name="act_editEmploy_tip_bczgbm">この部門は存在しません</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">会社にはこの部門がありません</string>
+    <string name="act_editEmploy_tip_gsyzwyg">会社にはこのこの従業員がいません</string>
+    <string name="act_editEmploy_tip_cscw">パラメータエラー</string>
+    <string name="act_editEmploy_tip_qtxbm">部門を選択してください</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">追加成功</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">顔データの追加に失敗しました</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">送信に失敗しました</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">部署を設置してください</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">更新成功</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">画像の更新に失敗しました</string>
+    <string name="act_editEmploy_update_info_success">情報の更新に成功しました</string>
+    <string name="act_editEmploy_no_face">顔が検出されませんでした</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">スクリーンの中には人の顔しかないようにしてください</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">写真の撮影に失敗しまして、やり直してください。</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">未知のエラー</string><!--未知错误-->
+
+    <!--离线数据-->
+    <string name="sign_list_title">オフライン記録</string>
+    <string name="sign_list_all_type">全部</string>
+    <string name="sign_list_sent">已发送</string>
+    <string name="sign_list_unsent">未送信</string>
+    <string name="sign_list_export">データをエクスポート</string>
+    <string name="sign_list_upload">データをアップロード</string>
+    <string name="sign_list_filed_index">序号</string>
+    <string name="sign_list_filed_time">時間</string>
+    <string name="sign_list_filed_name">姓名</string>
+    <string name="sign_list_filed_depart">部门</string>
+    <string name="sign_list_filed_job">职位</string>
+    <string name="sign_list_filed_head">顔写真</string>
+    <string name="sign_list_no_data">データがありません</string>
+    <string name="sign_list_upload_success">アップロード成功</string>
+    <string name="sign_list_upload_failed">アップロードに失敗しまして、ネットワークを確認してください</string>
+    <string name="sign_list_usb_disk">USBメモリを挿入してください</string>
+    <string name="sign_list_tip_usb_disk">USBデバイスが検出されていなくて、ローカルにエクスポートされます</string>
+    <string name="sign_list_all_data_sent">データを全部アップロードしました</string>
+    <string name="sign_list_name">姓名</string>
+    <string name="sign_list_number">编号</string>
+    <string name="sign_list_depart">部门</string>
+    <string name="sign_list_position">职位</string>
+    <string name="sign_list_date">日期</string>
+    <string name="sign_list_time">时间</string>
+    <string name="sign_list_temper">体温</string>
+    <string name="sign_list_head">头像</string>
+    <string name="sign_list_hot">熱画像</string>
+    <string name="sign_export_record">レコードをエクスポート</string>
+    <string name="sign_export_no_record">データがありません</string>
+    <string name="sign_export_create_record_failed">エクスポートデータの生成に失敗しました</string>
+    <string name="sign_export_record_success">エクスポート成功</string>
+    <string name="sign_export_record_path">目録：</string>
+    <string name="sign_export_record_failed">エクスポート失敗</string>
+
+
+    <!--访客列表-->
+    <string name="visitor_list_title">訪問者リスト</string>
+    <string name="visitor_list_filed_name">姓名</string>
+    <string name="visitor_list_filed_time">訪問期間</string>
+    <string name="visitor_list_filed_company">单位</string>
+    <string name="visitor_list_filed_reason">事由</string>
+
+    <!--系统设置-->
+    <!--模式-->
+    <string name="face_only_model">顔の識別勤務</string>
+    <string name="face_infared_model">顔の識別+熱画像（小さい）</string>
+    <string name="infared_only_model">熱画像（小さい）（勤務評定をしない）</string>
+    <string name="thermal_only_model">熱画像モード（32*32）（勤務評定をしない）</string>
+    <string name="face_thermal_model">顔の識別+熱画像（32*32）</string>
+    <string name="thermal_16_4_model">熱画像モード（16*4）（勤務評定をしない）</string>
+    <string name="face_thermal_16_4_model">顔の識別+熱画像（16*4）</string>
+
+    <!--标签-->
+    <string name="setting_tip_warning_number_reseted">カウントがクリアされました</string>
+    <string name="setting_reset_warning_number">カウントゼロ</string>
+    <string name="setting_face_similar_threshold">顔類似度閾値を設定</string>
+    <string name="setting_enable_dialog">顔ポップアップをオンにする</string>
+    <string name="setting_enable_liveness">生体検査をオンにする</string>
+    <string name="setting_camera_mirror">顔のイメージを開く</string>
+    <string name="setting_select_model">選択モード</string>
+    <string name="setting_current_port_path">カレント・シリアル</string>
+    <string name="setting_baud_rate">bps</string>
+    <string name="setting_open">開ける</string>
+    <string name="setting_enable_distance_tips">距離ヒントをオンにする</string>
+    <string name="setting_thermal_imaging_mirror">熱画像画面鏡像</string>
+    <string name="setting_open_temperature_delay">温度測定の遅延をオンにする</string>
+    <string name="setting_temperature_delay_time">温度測定の遅延</string>
+    <string name="setting_ms">ミリ秒</string>
+    <string name="setting_s">秒</string>
+    <string name="setting_temp_correct_value">温度測定矯正値</string>
+    <string name="setting_amb_correct_value">環境温度矯正値</string>
+    <string name="setting_temperature_threshold">最低体温放送</string>
+    <string name="setting_temperature_warning">温度測定警報値</string>
+    <string name="setting_temp_range">体温測定範囲</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">最低</string><!--minimum-->
+    <string name="setting_range_highest">最高</string><!--Highest-->
+    <string name="setting_speech_delay">連続放送間隔</string>
+    <string name="setting_screen_saver">スクリーン</string>
+    <string name="setting_welcome_speech">歓迎の言葉</string><!--Welcome speech-->
+    <string name="setting_show_qr_code">二次元コードを表示</string>
+    <string name="setting_enable_ic_card">ICリーダー</string>
+    <string name="setting_relay_delay_time">営業時間</string>
+    <string name="setting_cpu_temp">CPU温度:</string>
+    <string name="setting_camera_angle">カメラの角度</string>
+    <string name="setting_curr_net">現在のネットワーク:</string>
+    <string name="setting_net_name">【WIFI，ネットワーク名：XXXXX】</string>
+    <string name="setting_reboot_device">デバイスを再起動</string>
+    <string name="setting_check_update">検出昇級</string>
+    <string name="setting_manage_password">管理パスワード変更</string>
+    <string name="setting_system_password">システムのパスワード</string>
+    <string name="setting_please_input_password">6-12桁のパスワードを入力してください（数字、アルファベット）</string>
+    <string name="setting_please_input_again">パスワードをもう一度入力してください</string>
+    <string name="setting_cloud_service">クラウド</string>
+    <string name="setting_local_service">LAN</string>
+    <string name="setting_ip_address">IP</string>
+    <string name="setting_xmpp_port">通信ポート</string>
+    <string name="setting_resource_port">サービスポート</string>
+    <string name="setting_project_name">プロジェクト名</string>
+    <string name="setting_save_service_info">サービスを保存</string>
+    <string name="setting_total_one">全部で1つ</string>
+    <string name="setting_current_used">【現在の使用：】</string>
+    <string name="setting_cam_angle">角度</string>
+    <string name="setting_net_prefix">【イーサネット、IPアドレス:</string>
+    <string name="setting_ip_info">，IP:</string>
+    <string name="setting_best_camera_size">最適</string>
+    <string name="setting_max_camera_size">最大</string>
+    <string name="setting_wifi_name">名前:</string>
+    <string name="setting_wifi_rssi">，信号強度:</string>
+    <string name="setting_device_will_reboot">デバイスは再起動して、続行しますか？？</string>
+    <string name="setting_device_reboot">デバイスの再起動</string>
+    <string name="setting_3_scond_reboot">3秒後に再起動します。</string>
+    <string name="setting_password_not_null">パスワードは空ではいけません</string>
+    <string name="setting_password_min_6">パスワードは最低6桁を入力してください。</string>
+    <string name="setting_please_input_password_agian">パスワードをもう一度入力してください。</string>
+    <string name="setting_password_disaccord">二回入力したパスワードが一致しません。</string>
+    <string name="setting_edit_password_failed">変更に失敗しました</string>
+    <string name="setting_edit_password_success">変更に成功しました</string>
+    <string name="setting_current_correct_value">現在の矯正値：</string>
+    <string name="setting_normal_speech_content">体温正常放送内容</string>
+    <string name="setting_warning_speech_content">体温異常アナウンス内容</string>
+    <string name="setting_low_temp_model">低温モード</string>
+    <string name="setting_portrait_outline">人物の輪郭</string>
+    <string name="setting_default_welcome_tip">雲標スマート勤務評定システムをご利用ください</string>
+    <string name="setting_default_welcome_tip2">順番勤務評定システムをご利用ください</string>
+    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
+    <string name="setting_correct_temperature">温度を矯正する</string>
+    <string name="setting_broadcast_f">放送華氏度</string>
+
+    <string name="setting_save_success">保存に成功しました</string>
+    <string name="setting_save_succ_please_restart">保存に成功しまして、APPを再起動したら有効です</string>
+    <string name="setting_please_set_ip">IPアドレスを設定してください</string>
+    <string name="setting_please_set_res">サービスポートを設定してください</string>
+    <string name="setting_please_set_xmpp">通信スポートを設定してください</string>
+    <string name="setting_res_port_error">サービスポートのフォーマットが正しくなくて、確認してください。</string>
+    <string name="setting_xmpp_port_error">通信スポートのフォーマットが正しくなくて、確認してください。</string>
+
+    <string name="setting_show_thermal_face_frame">熱画像の顔枠を表示します</string>
+    <string name="setting_show_black_body">黒体キャリブレーションボックスを表示します</string>
+    <string name="setting_multi_track">複数回のスナップショットを開く</string>
+    <string name="setting_switch_to_certificates">人証の温度測定に切り替えます</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">温度測定に切り替えます</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">機能の切り替えます</string><!--Function switch-->
+    <string name="setting_switch_tip1">人証の温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">确定</string>
+    <string name="setting_switch_cancel">取消</string>
+
+    <!--设置开关机-->
+    <string name="setting_power_on_off">タイムスイッチ</string>
+    <string name="act_power_title">スイッチの設定</string>
+    <string name="act_power_power_on_strategy">起動運転ポリシー
+</string>
+    <string name="act_power_power_off_strategy">シャットダウン運転ポリシー
+</string>
+    <string name="act_power_power_on_strategy2">起動戦略
+</string>
+    <string name="act_power_power_off_strategy2">起動ポリシー
+</string>
+    <string name="act_power_none">シャットダウンポリシー
+</string>
+    <string name="act_power_monday">月曜日
+</string>
+    <string name="act_power_tuesday">火曜日
+</string>
+    <string name="act_power_wednesday">水曜日
+</string>
+    <string name="act_power_thursday">木曜日
+</string>
+    <string name="act_power_friday">金曜日
+</string>
+    <string name="act_power_saturday">土曜日
+</string>
+    <string name="act_power_sunday">日曜日
+</string>
+    <string name="act_power_all_select">全选すべて選択</string>
+    <string name="act_power_turn_on_time">起動時間
+</string>
+    <string name="act_power_turn_off_time">シャットダウン時間
+</string>
+    <string name="act_power_save">保存</string>
+    <string name="act_power_set_success">設定成功
+！</string>
+
+    <string name="act_power_set_failed_not_check_on">設定に失敗した場合は、電源投入実行時に発効日を選択してください</string>
+    <string name="act_power_set_failed_not_check_off">設定に失敗した場合は、シャットダウンの実行中に発効日を選択してください</string>
+
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">温度矯正
+</string>
+    <string name="act_correct_tips">体温ガンの実測温度に基づいて記入してください。
+</string>
+    <string name="act_correct_current_value">現在の補償値
+</string>
+    <string name="act_correct_thermal_temp">熱画像温度
+：</string>
+    <string name="act_correct_click_get_temperature">クリックして温度を測る
+</string>
+    <string name="act_correct_thermometer_gun">测温枪温度：</string>
+    <string name="act_correct_save">保存</string>
+
+    <!--通用的  -->
+    <string name="base_tip">ヒント
+</string>
+    <string name="base_ensure">确定</string>
+    <string name="base_cancel">取消</string>
+    <string name="base_male">男
+</string>
+    <string name="base_female">女
+</string>
+    <string name="base_people">人</string>
+    <string name="base_year">-</string><!-- 年 -->
+    <string name="base_month">-</string><!-- 月 -->
+    <string name="base_day">""</string><!-- 日 -->
+
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">権限申請に失敗しました
+</string>
+    <string name="splash_active_failed">アクティブ失敗しました
+</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">云标智能考勤</string>
+    <string name="act_wel_bottomTitle">云标智能考勤</string>
+    <string name="act_wel_error_bywjsrmmo">パスワードを入力するのを忘れないよ
+</string>
+    <string name="act_wel_error_mmclqcxsrb">パスワードが間違って、もう一度入力してください
+</string>
+    <string name="act_wel_glmm">パスワードの管理
+</string>
+    <string name="act_wel_qsrglmm">管理パスワードを入力してください。
+</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">インテリジェントな顔はサインして、企業にもっと安心させます。
+</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">署名済み
+</string>
+    <string name="fment_sign_bl">追録する
+</string>
+    <string name="fment_sign_jrqd">今日はサインします:</string>
+    <string name="fment_sign_visitor_name">访客</string>
+    <string name="fment_sign_company">公司：</string>
+    <string name="fment_sign_device_no">编号：</string>
+    <string name="fment_sign_version">版本：</string>
+    <string name="fment_sign_bind_code">バインディングコード：</string>
+    <string name="fment_sign_net">网络：</string>
+    <string name="fment_sign_total">应到</string>
+    <string name="fment_sign_already">已到</string>
+
+    <!--WebFragment-->
+    <string name="fment_Web_back">後退
+</string>
+    <string name="fment_Web_refresh">刷新
+</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">システム設定
+</string>
+    <string name="act_set_xtmm">システムのパスワード
+</string>
+    <string name="act_set_qchc">キャッシュをクリア
+</string>
+    <string name="act_set_qcsj">データをクリア
+</string>
+    <string name="act_set_jcsxt">カメラを検査する
+</string>
+    <string name="act_set_sfjx">鏡像かどうか
+</string>
+    <string name="act_set_wlzt">ネットワーク状態
+</string>
+    <string name="act_set_gb">閉める
+</string>
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">部署名を入力してください。
+</string>
+    <string name="act_departList_tip_qdscm">削除しますか
+？</string>
+    <string name="act_departList_bmlb">部門リスト
+</string>
+    <string name="act_departList_add">新增</string>
+    <string name="act_departList_xh">序号</string>
+    <string name="act_departList_bmmc">部门名称</string>
+    <string name="act_departList_cz">操作</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">请输入部门名称</string>
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">同期</string>
+    <string name="lay_loadPop_zlxsxx">ここに情報を表示します
+</string>
+    <string name="uiUtils_tip_notice">通知
+</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">アプリケーションをインストールしていますので、お待ちください。
+</string>
+    <string name="dialog_sync_tbjs">同期終了
+</string>
+    <string name="sync_company_1">会社情報を取得する
+</string>
+    <string name="sync_staff_2">人員情報を取得する
+</string>
+    <string name="sync_database_3">データベースの同期
+</string>
+    <string name="sync_head_4">顔の画像をダウンロード
+</string>
+    <string name="sync_face_5">顔ライブラリの同期
+</string>
+    <string name="sync_get_failed">取得に失敗しまして、やり直します。
+</string>
+    <string name="sync_not_bind">デバイスがバインディングされていません
+</string>
+    <string name="sync_data_resolve_failed">解析に失敗しました
+</string>
+    <string name="sync_not_depart">会社部門未設定
+</string>
+    <string name="sync_params_error">パラメータエラー
+</string>
+    <string name="edit_not_edit">何も変更されていません
+</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">アプリケーションを終了するかどうか？</string>
+    <string name="restartAPPTool_ycdht">バックグラウンドに隠れる
+</string>
+    <string name="restartAPPTool_exit">終了
+</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">現在のバージョンは最新バージョンです。
+</string>
+    <string name="updateManager_wlljsbqjcwl">ネットワーク接続に失敗しまして、ネットワークを確認してください。
+</string>
+    <string name="updateManager_xzsb">ダウンロード失敗
+</string>
+    <string name="update_version_title">バージョン情報</string>
+    <string name="update_lable_new">最新版：</string>
+    <string name="update_lable_current">当前版本：</string>
+    <string name="update_check_failed">検出の更新に失敗し、インターネットをチェックしてください</string>
+    <string name="update_check_ing">バージョン情報を検知しています</string>
+    <string name="update_have_new">新しいバージョンが検出されたので詳細を見てください</string>
+    <string name="update_no_description">まだ詳細がない</string>
+
+    <!--其他-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string>
+    <string name="System_Setting_save_threshold">保存</string>
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">人証マッチングモード
+</string>
+    <string name="act_certificates_idcard_thermal">人証マッチング＋熱画像(32*32)
+</string>
+    <string name="act_certificates_idcard_thermal_16_4">人証マッチング＋熱画像(16*4)
+</string>
+
+    <string name="act_certificates_idcard_infared">人証マッチング＋赤外線温度測定モード
+</string>
+    <string name="act_certificates_title">AI人証温度測定システム
+</string>
+    <string name="act_certificates_please_get_hat">メガネ、帽子を外して、レンズを正面から見てください。
+</string>
+    <string name="act_certificates_no_idcard_temper">証拠なしで温度を測る
+</string>
+    <string name="act_certificates_face_picture">人面写真
+</string>
+    <string name="act_certificates_card_picture">証明書の写真
+</string>
+    <string name="act_certificates_name">姓名：</string>
+    <string name="act_certificates_depart">部门：</string>
+    <string name="act_certificates_native_place">本籍地：</string>
+    <string name="act_certificates_temperature">体温：</string>
+    <string name="act_certificates_status">状態：</string>
+    <string name="act_certificates_health_code">健康コード
+</string>
+    <string name="act_certificates_can_go">通行できる
+</string>
+    <string name="act_certificates_not_pass">通行禁止
+</string>
+    <string name="act_certificates_ensure_pass">通行の確認
+</string>
+    <string name="act_certificates_please_set_id_card">身分証はカードゾーンに置いてください。
+</string>
+    <string name="act_certificates_testing">温度を測っていますので、少々お待ちください。
+</string>
+    <string name="act_certificates_please_wait">お待ちください
+</string>
+    <string name="act_certificates_idcard_failed">証明書の読み取りに失敗しまして、やり直してください。
+</string>
+    <string name="act_certificates_please_look_camera">カメラを直視してください
+</string>
+    <string name="act_certificates_verify_ing">検証中
+</string>
+    <string name="act_certificates_verify_pass">検証が通る，</string>
+    <string name="act_certificates_verify_not_pass">人証が一致しない，</string>
+    <string name="act_certificates_temper_normal">体温が正常である
+</string>
+    <string name="act_certificates_temper_warning">体温が異常である
+</string>
+    <string name="act_certificates_normal">正常
+</string>
+    <string name="act_certificates_warning">異常
+</string>
+    <string name="act_certificates_similar">類似度
+</string>
+    <string name="act_certificates_please_pass">，通行してください
+</string>
+    <string name="act_certificates_please_can_pass">可以通行</string>
+    <string name="act_certificates_please_not_pass">禁止通行</string>
+    <string name="act_certificates_visitor">访客</string>
+    <string name="act_certificates_temper">温度：</string>
+    <string name="act_certificates_temper_failed">温度測定に失敗しました
+</string>
+    <string name="act_certificates_green">緑
+</string>
+    <string name="act_certificates_yellow">黄色</string>
+
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI人の顔の高スループット測定データプラットフォーム
+</string>
+    <string name="main_permission_failed_multi_thermal">USB権限の取得に失敗しました
+</string>
+    <string name="main_not_found_usb_multi_thermal">ターゲットデバイスが見つかりませんでした
+</string>
+    <string name="main_exception_record_multi_thermal">異常人員記録
+</string>
+    <string name="main_normal_record_multi_thermal">人員流動記録
+</string>
+    <string name="main_total_passage_multi_thermal">通過人数
+</string>
+    <string name="main_normal_multi_thermal">正常体温</string>
+    <string name="main_error_multi_thermal">异常体温</string>
+    <string name="main_company_multi_thermal">会社員
+</string>
+    <string name="main_visitor_multi_thermal">訪問者
+</string>
+    <string name="system_net_status_multi_thermal">ネットワーク状態:</string>
+    <string name="system_record_multi_thermal">温度測定記録
+</string>
+    <string name="record_index_multi_thermal">シーケンス
+</string>
+    <string name="record_date_multi_thermal">日期</string>
+    <string name="record_pass_time_multi_thermal">通行時間
+</string>
+    <string name="record_temper_multi_thermal">体温</string>
+    <string name="record_head_multi_thermal">头像</string>
+    <string name="record_hot_multi_thermal">热成像</string>
+    <string name="setting_black_body_rect_multi_thermal">黒体検出エリアキャリブレーション
+</string>
+    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_success_multi_thermal">保存成功</string>
+    <string name="setting_save_multi_thermal">保存</string>
+    <string name="setting_please_correct_multi_thermal">（体温ガンの温度測定と熱結像温度に合わせて差を記入してください。）</string>
+    <string name="record_export_multi_thermal">エクスポート
+</string>
+    <string name="main_real_detection">リアルタイムモニタリング
+</string>
+    <string name="main_data_total">データ統計
+</string>
+
+    <string name="safety_main_title">AI大フラックス温度測定システム
+</string>
+    <string name="safety_main_real_detection">实时监测</string>
+    <string name="safety_main_temer_area">体温測定
+</string>
+    <string name="safety_main_warning_number">異常人数
+</string>
+    <string name="safety_main_device_no">デバイス番号:</string>
+
+    <string name="safety_black_body_size_large">大きい
+</string>
+    <string name="safety_black_body_size_Middle">中
+</string>
+    <string name="safety_black_body_size_Small">小さい
+</string>
+    <string name="safety_black_body_size_Smaller">より小さい
+</string>
+    <string name="safety_balck_body_size">検出エリアサイズ
+</string>
+    <string name="safety_black_body_enable">黒体矯正を開く
+</string>
+    <string name="safety_temperature_threshold">温度取り閾値</string>
+    <string name="safety_temperature_frame_enable">温度測定ボックスを開く
+</string><!--开启测温框-->
+    <string name="safety_calibration_main">キャリブレーション
+</string><!--校准-->
+    <string name="safety_measure_main">温度を測る:</string><!--测温:-->
+    <string name="safety_correct_main">自動キャリブレーション:</string><!--校准:-->
+    <string name="safety_temper_main">体温:</string><!--体温:-->
+    <string name="safety_auto_calibration_setting">自動キャリブレーション
+</string>
+    <string name="safety_correct_temper_tip">人の顔を温度測定枠に合わせてください。もうすぐ温度測定が始まります
+</string>
+    <string name="safety_correct_temper_completion">温度測定終了
+</string><!--測溫完成-->
+    <string name="safety_save_completion">キャリブレーション完了
+</string><!--矯正完成-->
+    <string name="safety_save_cancel">キャリブレーションをキャンセル
+</string><!--保存-->
+</resources>

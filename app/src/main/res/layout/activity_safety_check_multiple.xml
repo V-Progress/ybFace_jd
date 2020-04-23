@@ -29,7 +29,7 @@
             android:text="AI人脸高通量测温数据平台"
             android:layout_height="wrap_content"/>
 
-        <!--<TextClock
+        <TextClock
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
             android:format24Hour="yyyy-MM-dd HH:ss"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>-->
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
     <View
         android:background="#2690CC"
@@ -93,7 +93,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
 
-                <RelativeLayout
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:id="@+id/rl_device_info_scdl"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
@@ -101,6 +102,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:text="YB000000"
                         android:id="@+id/tv_device_no_double_light"
                         android:textSize="30dp"
                         android:textColor="#00FFFF"
@@ -109,12 +111,27 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/tv_bind_code_double_light"
+                        android:textSize="30dp"
+                        android:layout_weight="1"
+                        android:textColor="#00FFFF"
+                        android:layout_centerVertical="true"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:text="网络正常"
                         android:id="@+id/tv_net_state_double_light"
                         android:textColor="#00ff00"
                         android:textSize="30dp"
                         android:layout_centerInParent="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+
                     <Button
                         android:onClick="startCalibration"
                         android:paddingLeft="20dp"
@@ -127,7 +144,7 @@
                         android:text="校准"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"

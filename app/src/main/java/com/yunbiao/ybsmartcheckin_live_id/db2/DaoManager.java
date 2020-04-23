@@ -51,6 +51,7 @@ public class DaoManager {
         daoSession.getCompanyDao().detachAll();
         daoSession.getVisitorDao().detachAll();
         daoSession.getMultiTotalDao().detachAll();
+        daoSession.getWhiteDao().detachAll();
     }
 
     public DaoSession getDaoSession() {
@@ -66,6 +67,14 @@ public class DaoManager {
             return FAILURE;
         }
         return daoSession.insert(clazz);
+    }
+
+    public White queryWhiteByTopSixNum(String num1, String num2, String num3) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getWhiteDao().queryBuilder().whereOr(WhiteDao.Properties.Num.eq(num1), WhiteDao.Properties.Num.eq(num1 + num2), WhiteDao.Properties.Num.eq(num1 + num2 + num3)).unique();
+
     }
 
     public <T> long addOrUpdate(T clazz) {
@@ -90,6 +99,14 @@ public class DaoManager {
         return daoSession.loadAll(clazz);
     }
 
+    public boolean deleteAll(Class clazz) {
+        if (daoSession == null) {
+            return false;
+        }
+        daoSession.deleteAll(clazz);
+        return true;
+    }
+
     public <T> long delete(T t) {
         if (daoSession == null) {
             return FAILURE;
@@ -98,8 +115,8 @@ public class DaoManager {
         return SUCCESS;
     }
 
-    public void deleteSign(Sign sign){
-        if(daoSession == null){
+    public void deleteSign(Sign sign) {
+        if (daoSession == null) {
             return;
         }
         daoSession.getSignDao().delete(sign);
@@ -130,19 +147,20 @@ public class DaoManager {
         return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId)).list();
     }
 
-    public List<Sign> querySignByComIdAndUpload(int comId,boolean isUpload){
+    public List<Sign> querySignByComIdAndUpload(int comId, boolean isUpload) {
         if (daoSession == null) {
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId),SignDao.Properties.IsUpload.eq(isUpload)).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload)).list();
     }
 
-    public List<Sign> querySignByComIdAndDateWithLimit(int comid,String date,int limit){
-        if(daoSession == null){
+    public List<Sign> querySignByComIdAndDateWithLimit(int comid, String date, int limit) {
+        if (daoSession == null) {
             return null;
         }
-        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comid),SignDao.Properties.Date.eq(date)).limit(limit).list();
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comid), SignDao.Properties.Date.eq(date)).limit(limit).list();
     }
+
     /***
      * 查询所有未上传的数据
      * @param isUp
@@ -276,7 +294,7 @@ public class DaoManager {
     }
 
     public void deleteSignByTime(long time) {
-        if(daoSession == null){
+        if (daoSession == null) {
             return;
         }
         daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();

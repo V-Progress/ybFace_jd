@@ -7,6 +7,10 @@
     <string name="back">返回</string>
     <string name="not_support_speech">當前語言系統不支持的語言:</string>
     <string name="miss_speech_data">語音數據缺失:</string>
+    <string name="alert_title_warning">警告</string>
+    <string name="temper_error_tips">測溫數據調取失敗，請檢查測溫模組</string>
+    <string name="temper_error_btn_restart">重啓</string>
+    <string name="temper_error_btn_cancel">暫不處理</string>
 
     <!--應用名稱-->
     <string name="yb_check_in">雲標智能考勤</string>
@@ -268,6 +272,7 @@
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用雲標智能考勤系統</string>
     <string name="setting_default_welcome_tip2">歡迎使用亨通考勤</string>
+    <string name="setting_default_welcome_tip3">歡迎使用思庫考勤</string>
     <string name="setting_correct_temperature">矯正溫度</string>
     <string name="setting_broadcast_f">播報華氏度</string>
 
@@ -312,6 +317,10 @@
     <string name="act_power_turn_off_time">關機時間</string>
     <string name="act_power_save">保存</string>
     <string name="act_power_set_success">設置成功！</string>
+
+    <string name="act_power_set_failed_not_check_on">設置失敗，請在開機運行策略中選擇生效日期</string>
+    <string name="act_power_set_failed_not_check_off">設置失敗，請在關機運行策略中選擇生效日期</string>
+
 
     <!--溫度矯正頁面-->
     <string name="act_correct_title">溫度矯正</string>
@@ -416,6 +425,13 @@
     <string name="updateManager_dqbbwzxbb">當前版本為最新版本</string>
     <string name="updateManager_wlljsbqjcwl">網絡連接失敗，請檢查網絡</string>
     <string name="updateManager_xzsb">下載失敗</string>
+    <string name="update_version_title">版本信息</string>
+    <string name="update_lable_new">最新版本：</string>
+    <string name="update_lable_current">當前版本：</string>
+    <string name="update_check_failed">檢測更新失敗，請檢查網絡</string>
+    <string name="update_check_ing">正在檢測版本信息</string>
+    <string name="update_have_new">檢測到有新版本，請點擊升級</string>
+    <string name="update_no_description">暫無詳情</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:orientation="vertical"
+    android:background="@drawable/skin_main_screen_background"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesWhiteListActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <TextView
+            android:maxLength="20"
+            android:maxLines="2"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:id="@+id/tv_system_compName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="白名单"
+            android:textColor="@color/white"
+            android:textSize="38dp" />
+
+        <ImageView
+            android:padding="30dp"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="40dp"
+            android:src="@mipmap/icon_back" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:textSize="22dp"
+            android:onClick="syncWhiteList"
+            android:background="@drawable/selector_btn_take_photo"
+            android:textColor="@color/white"
+            android:text="同步白名单"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:textSize="22dp"
+                style="@style/setting_text"
+                android:text="开启白名单" />
+
+            <Switch
+                android:id="@+id/sw_white_list_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/lv_white_list_certificates"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:visibility="gone"
+            android:text="暂无数据"
+            android:gravity="center"
+            android:id="@+id/tv_data_state"
+            android:textSize="28dp"
+            android:textColor="@color/white"
+            android:background="#4D000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -178,8 +178,6 @@ public class ThermalSettingActivity extends BaseActivity {
         initCameraSizeSetting();
         //相似度阈值
         initSimilarSetting();
-        //测温模块设置
-        initTemperatureSetting();
         //人脸弹窗设置
         initFaceVipDialogSetting();
         //摄像头设置
@@ -279,7 +277,7 @@ public class ThermalSettingActivity extends BaseActivity {
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
         final String[] items = ThermalConst.models;
 
-        final int model = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
+        final int model = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
 
         //如果是红外模式或人脸模式则隐藏矫正按钮
         if (model == ThermalConst.FACE_INFRARED || model == ThermalConst.INFRARED_ONLY || model == ThermalConst.FACE_ONLY || model == ThermalConst.THERMAL_16_4_ONLY || model == ThermalConst.FACE_THERMAL_16_4) {
@@ -292,7 +290,7 @@ public class ThermalSettingActivity extends BaseActivity {
         tvModelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int currModel = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);
+                final int currModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ThermalSettingActivity.this);
                 builder.setTitle(getResources().getString(R.string.setting_select_model));
                 builder.setSingleChoiceItems(items, currModel, new DialogInterface.OnClickListener() {
@@ -310,7 +308,7 @@ public class ThermalSettingActivity extends BaseActivity {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
                         }
 
-                        SpUtils.saveInt(SpUtils.THERMAL_MODEL_SETTING, whichModel);
+                        SpUtils.saveInt(ThermalConst.Key.MODE, whichModel);
                         tvModelSetting.setText(items[whichModel]);
 
                         dialog.dismiss();
@@ -626,29 +624,15 @@ public class ThermalSettingActivity extends BaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip;
-        String resPort;
-        String xmppPort;
-        String proName;
-
+        String ip = Constants.NetConfig.PRO_URL;
+        String resPort = Constants.NetConfig.PRO_RES_PORT;
+        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
+        String proName = Constants.NetConfig.PRO_SUFFIX;
         if (model == Constants.serverModel.YUN) {
-            ip = SpUtils.getStr(SpUtils.IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-
-            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-                edtIp.setText(Constants.NetConfig.PRO_URL);
-                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
-                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
-                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
-            } else {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-            }
-
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);
@@ -752,45 +736,6 @@ public class ThermalSettingActivity extends BaseActivity {
                 int delay = Integer.parseInt(s1);
                 SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
                 UIUtils.showShort(ThermalSettingActivity.this, getString(R.string.setting_edit_password_success));
-            }
-        });
-    }
-
-    //初始化温度检测模块的设置
-    private void initTemperatureSetting() {
-        //提示时间
-        final EditText edtTipsTime = findViewById(R.id.edt_temp_tip_time_setting);
-        Button btnSaveTime = findViewById(R.id.btn_save_temp_tip_time_setting);
-        final int time = SpUtils.getIntOrDef(SpUtils.TEMP_TIPS_TIME, 7000);
-        edtTipsTime.setText(time + "");
-        btnSaveTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int saveTime = time;
-                String s = edtTipsTime.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    saveTime = Integer.parseInt(s);
-                }
-                edtTipsTime.setText(saveTime + "");
-                SpUtils.saveInt(SpUtils.TEMP_TIPS_TIME, saveTime);
-                UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
-            }
-        });
-
-        Button btnSaveDValue = findViewById(R.id.btn_save_temp_d_value_setting);
-        final EditText edtTempDValue = findViewById(R.id.edt_temp_d_value_setting);
-        final Float dValue = SpUtils.getFloat(SpUtils.TEMP_D_VALUE, Constants.DEFAULT_TEMP_D_VALUE_VALUE);
-        edtTempDValue.setText(dValue + "");
-        btnSaveDValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtTempDValue.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    edtTempDValue.setText(dValue + "");
-                }
-                s = edtTempDValue.getText().toString();
-                SpUtils.saveFloat(SpUtils.TEMP_D_VALUE, Float.parseFloat(s));
-                UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_save_success));
             }
         });
     }

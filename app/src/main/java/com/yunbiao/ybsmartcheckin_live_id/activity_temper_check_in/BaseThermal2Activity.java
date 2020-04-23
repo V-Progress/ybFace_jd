@@ -1,5 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
@@ -99,7 +102,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
 
         //模式切换
-        int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
+        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
         if (mCurrMode != currMode) {
             mCurrMode = currMode;
             viewInterface.onModeChanged(currMode);
@@ -152,12 +155,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         return BitmapFactory.decodeStream(getResources().openRawResource(id));
     }
 
-    private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
-        @Override
-        public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
-            handleTemperature(imageBmp, originalMaxT, maxT);
-        }
-    };
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
@@ -168,6 +165,24 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
             handleTemperature(imageBmp, sensorT, maxT);
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            d("获取数据失败");
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
+        }
+    };
+    private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            handleTemperature(imageBmp, originalMaxT, maxT);
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            d("获取数据失败");
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 

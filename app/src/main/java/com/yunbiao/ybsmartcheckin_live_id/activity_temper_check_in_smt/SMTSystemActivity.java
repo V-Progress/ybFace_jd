@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -38,9 +40,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import skin.support.SkinCompatManager;
 
 public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickListener {
+    @BindView(R.id.fl_version_smt_system)
+    TextView flVersionLoading;
+    @BindView(R.id.tv_version_name_smt_system)
+    TextView tvVersionInfo;
+    @BindView(R.id.tv_version_info_smt_system)
+    TextView tvVersionName;
 
     private Button btn_depart_system;
     private Button btn_add_system;
@@ -148,6 +157,42 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
             @Override
             public void getSize(long size) {
                 Log.e("123", "getSize: -----------" + size);
+            }
+        });
+
+        checkUpgrade(new CheckUpgradeCallback() {
+            @Override
+            public void onStart() {
+                flVersionLoading.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void noUpgrade(String currVersionName) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
+                tvVersionInfo.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void haveNewVersion(String versionName, String versionInfo) {
+                tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
+                tvVersionInfo.setGravity(Gravity.LEFT);
+                tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+                tvVersionInfo.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onError(String currVersionName, String s) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.update_check_failed));
+                tvVersionInfo.setTextColor(Color.GRAY);
+            }
+
+            @Override
+            public void onFinish() {
+                flVersionLoading.setVisibility(View.GONE);
             }
         });
     }

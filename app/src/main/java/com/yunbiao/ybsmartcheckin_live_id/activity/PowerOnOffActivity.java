@@ -18,6 +18,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTBaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -276,6 +277,30 @@ public class PowerOnOffActivity extends SMTBaseActivity {
     }
 
     public void savePower(View view) {
+        boolean onChecked = false;
+        for (CheckBox onBox : onBoxs) {
+            if(onBox.isChecked()){
+                onChecked = true;
+                break;
+            }
+        }
+        boolean offChecked = false;
+        for (CheckBox offBox : offBoxs) {
+            if(offBox.isChecked()){
+                offChecked = true;
+                break;
+            }
+        }
+
+        if(!onChecked){
+            UIUtils.showShort(this,getResString(R.string.act_power_set_failed_not_check_on));
+            return;
+        }
+
+        if(!offChecked){
+            UIUtils.showShort(this,getResString(R.string.act_power_set_failed_not_check_off));
+            return;
+        }
 
         onWeek=new ArrayList<>();
         offWeek=new ArrayList<>();
@@ -335,14 +360,10 @@ public class PowerOnOffActivity extends SMTBaseActivity {
             @Override
             public void run() {// 开关机时间设置
                 PowerOffTool.getPowerOffTool().putParam(powerJson);
-
             }
         });
-
-        Toast.makeText(PowerOnOffActivity.this,getResources().getString(R.string.act_power_set_success),Toast.LENGTH_SHORT).show();
+        UIUtils.showShort(this,getResources().getString(R.string.act_power_set_success));
         finish();
-
-
     }
 
 

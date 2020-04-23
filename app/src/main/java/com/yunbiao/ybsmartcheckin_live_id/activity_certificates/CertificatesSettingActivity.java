@@ -1,6 +1,5 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_certificates;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -88,36 +87,25 @@ public class CertificatesSettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        findViewById(R.id.iv_back).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    finish();
-                }
-                return false;
+        findViewById(R.id.iv_back).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                finish();
             }
+            return false;
         });
     }
 
-    public void jumpTag(View view){
-        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG,Constants.DEFAULT_JUMP_TAG);
+    public void jumpTag(View view) {
+        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
         builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip2));
-        builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                SpUtils.saveBoolean(Constants.JUMP_TAG,!jumpTag);
+        builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
+            dialog.dismiss();
+            SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
 
-                APP.exit2();
-            }
+            APP.exit2();
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -151,7 +139,7 @@ public class CertificatesSettingActivity extends BaseActivity {
         setCorrectUI();
     }
 
-    public void powerOnOff(View view){
+    public void powerOnOff(View view) {
         startActivity(new Intent(this, PowerOnOffActivity.class));
     }
 
@@ -388,29 +376,15 @@ public class CertificatesSettingActivity extends BaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip;
-        String resPort;
-        String xmppPort;
-        String proName;
-
+        String ip = Constants.NetConfig.PRO_URL;
+        String resPort = Constants.NetConfig.PRO_RES_PORT;
+        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
+        String proName = Constants.NetConfig.PRO_SUFFIX;
         if (model == Constants.serverModel.YUN) {
-            ip = SpUtils.getStr(SpUtils.IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.PROJECT_NAME_SUFFIX);
-
-            if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(resPort) || TextUtils.isEmpty(xmppPort) || TextUtils.isEmpty(proName)) {
-                edtIp.setText(Constants.NetConfig.PRO_URL);
-                edtResPort.setText(Constants.NetConfig.PRO_RES_PORT);
-                edtXmppPort.setText(Constants.NetConfig.PRO_XMPP_PORT);
-                edtProName.setText(Constants.NetConfig.PRO_SUFFIX);
-            } else {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-            }
-
+            edtIp.setText(ip);
+            edtResPort.setText(resPort);
+            edtXmppPort.setText(xmppPort);
+            edtProName.setText(proName);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);

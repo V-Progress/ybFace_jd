@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity.base;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -7,30 +8,43 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SoftKeyBoardListener;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Request;
 
 public abstract class BaseActivity extends FragmentActivity {
     protected boolean isLog = true;
@@ -81,15 +95,25 @@ public abstract class BaseActivity extends FragmentActivity {
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
+                d("显示虚拟键盘");
                 setFullscreen(false, false);
             }
 
             @Override
             public void keyBoardHide(int height) {
+                d("隐藏虚拟键盘");
                 setFullscreen(false, false);
             }
         });
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            setFullscreen(false, false);
+            handler.sendEmptyMessageDelayed(0, 10000);
+        }
+    };
 
     public void setFullscreen(boolean isShowStatusBar, boolean isShowNavigationBar) {
         //专门设置一下状态栏导航栏背景颜色为透明，凸显效果。
@@ -141,7 +165,7 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
-    protected String getResString(int id){
+    protected String getResString(int id) {
         return APP.getContext().getResources().getString(id);
     }
 
@@ -192,6 +216,10 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+
+        // TODO: 2020/4/18 如果此处未能有效隐藏导航键，就放到onResume中
+        handler.removeMessages(0);
+        handler.sendEmptyMessageDelayed(0, 3000);
     }
 
     @Override
@@ -254,4 +282,88 @@ public abstract class BaseActivity extends FragmentActivity {
     protected float formatF(float fValue) {
         return (float) (Math.round(fValue * 10)) / 10;
     }
+
+    protected void showRestartAlert(String message, String negative, Runnable runnable) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setTitle(getResString(R.string.alert_title_warning));
+        builder.setNegativeButton(getResString(R.string.temper_error_btn_cancel), (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(negative, (dialog, which) -> {
+            dialog.dismiss();
+            if (runnable != null) {
+                runnable.run();
+            }
+        });
+        builder.create().show();
+    }
+
+    protected void checkUpgrade(CheckUpgradeCallback callback) {
+        String currVersionName = UpdateVersionControl.getVersionName();
+        String url = ResourceUpdate.GET_VERSION_INFO;
+        d("检测更新");
+        d("地址：" + url);
+        OkHttpUtils.post().url(url).addParams("type", String.valueOf(Constants.DEVICE_TYPE)).build().execute(new StringCallback() {
+            @Override
+            public void onBefore(Request request, int id) {
+                super.onBefore(request, id);
+                if (callback != null) {
+                    callback.onStart();
+                }
+            }
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                d("请求失败：" + (e == null ? "NULL" : e.getMessage()));
+                if (callback != null) {
+                    callback.onError(currVersionName, (e == null ? "NULL" : e.getMessage()));
+                    callback.onFinish();
+                }
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                d("请求成功：" + response);
+                if (TextUtils.isEmpty(response)) {
+                    if (callback != null) {
+                        callback.noUpgrade(currVersionName);
+                        callback.onFinish();
+                    }
+                    return;
+                }
+
+                JSONObject jsonObject = JSONObject.parseObject(response);
+                String versionName = jsonObject.getString("serverVersion");
+                if (TextUtils.isEmpty(versionName) || TextUtils.equals(currVersionName,versionName)) {
+                    if (callback != null) {
+                        callback.noUpgrade(currVersionName);
+                        callback.onFinish();
+                    }
+                    return;
+                }
+
+                String versionInfo = jsonObject.getString("versionDesc");
+
+                if (callback != null) {
+                    UIUtils.showLong(BaseActivity.this,getResString(R.string.update_have_new));
+                    callback.haveNewVersion(versionName, versionInfo);
+                    callback.onFinish();
+                }
+            }
+        });
+    }
+
+    public interface CheckUpgradeCallback {
+        void onStart();
+
+        void noUpgrade(String currVersionName);
+
+        void haveNewVersion(String newVersionName, String versionInfo);
+
+        void onError(String currVersionName, String s);
+
+        void onFinish();
+
+    }
+
+
 }

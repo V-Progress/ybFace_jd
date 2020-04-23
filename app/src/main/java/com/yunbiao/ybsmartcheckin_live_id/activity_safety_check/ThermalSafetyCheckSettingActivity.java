@@ -1,12 +1,15 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_safety_check;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -17,7 +20,17 @@ import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
+import butterknife.BindView;
+
 public class ThermalSafetyCheckSettingActivity extends BaseActivity {
+    @BindView(R.id.tv_version_name_sc_system)
+    TextView tvVersionName;
+
+    @BindView(R.id.tv_version_info_sc_system)
+    TextView tvVersionInfo;
+
+    @BindView(R.id.fl_version_sc_system)
+    View flVersionLoading;
 
     @Override
     protected int getPortraitLayout() {
@@ -46,6 +59,47 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initTemperFrame();
 
         initAutoCalibration();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+
+        checkUpgrade(new CheckUpgradeCallback() {
+            @Override
+            public void onStart() {
+                flVersionLoading.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void noUpgrade(String currVersionName) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
+                tvVersionInfo.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void haveNewVersion(String versionName, String versionInfo) {
+                tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
+                tvVersionInfo.setGravity(Gravity.LEFT);
+                tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+                tvVersionInfo.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onError(String currVersionName, String s) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.update_check_failed));
+                tvVersionInfo.setTextColor(Color.GRAY);
+            }
+
+            @Override
+            public void onFinish() {
+                flVersionLoading.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void upgrade(View view){

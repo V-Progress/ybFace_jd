@@ -40,16 +40,11 @@ public class BootRestartReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
 
-            SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IS_FIRST,true);
             Intent i = new Intent(context, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
     }
 
-    public Runnable machineRestartRun = new Runnable() {
-        public void run() {
-            PowerOffTool.getPowerOffTool().machineStart();
-        }
-    };
+    public Runnable machineRestartRun = () -> PowerOffTool.getPowerOffTool().machineStart();
 }

@@ -7,6 +7,10 @@
     <string name="back">返回</string>
     <string name="not_support_speech">当前语言系统不支持的语言:</string>
     <string name="miss_speech_data">语音数据缺失:</string>
+    <string name="alert_title_warning">警告</string>
+    <string name="temper_error_tips">测温数据调取失败，请检查测温模块</string>
+    <string name="temper_error_btn_restart">重启</string>
+    <string name="temper_error_btn_cancel">暂不处理</string>
 
     <!--应用名称-->
     <string name="yb_check_in">云标智能考勤</string>
@@ -269,6 +273,7 @@
     <string name="setting_portrait_outline">人像轮廓</string>
     <string name="setting_default_welcome_tip">欢迎使用云标智能考勤系统</string>
     <string name="setting_default_welcome_tip2">欢迎使用亨通考勤</string>
+    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">矫正温度</string>
     <string name="setting_broadcast_f">播报华氏度</string>
 
@@ -311,6 +316,8 @@
     <string name="act_power_turn_off_time">关机时间</string>
     <string name="act_power_save">保存</string>
     <string name="act_power_set_success">设置成功！</string>
+    <string name="act_power_set_failed_not_check_on">设置失败，请在开机运行策略中选择生效日期</string>
+    <string name="act_power_set_failed_not_check_off">设置失败，请在关机运行策略中选择生效日期</string>
 
     <!--温度矫正页面-->
     <string name="act_correct_title">温度矫正</string>
@@ -412,9 +419,16 @@
     <string name="restartAPPTool_exit">退出</string>
 
     <!-- UpdateManager -->
-    <string name="updateManager_dqbbwzxbb">当前版本为最新版本</string>
+    <string name="updateManager_dqbbwzxbb">当前已是最新版本</string>
     <string name="updateManager_wlljsbqjcwl">网络连接失败，请检查网络</string>
     <string name="updateManager_xzsb">下载失败</string>
+    <string name="update_version_title">版本信息</string>
+    <string name="update_lable_new">最新版本：</string>
+    <string name="update_lable_current">当前版本：</string>
+    <string name="update_check_failed">检测更新失败，请检查网络</string>
+    <string name="update_check_ing">正在检测版本信息</string>
+    <string name="update_have_new">检测到有新版本，请点击升级</string>
+    <string name="update_no_description">暂无详情</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>

@@ -60,36 +60,14 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:orientation="vertical">
-
-            <RelativeLayout
+            <TextView
                 android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:textSize="22sp"
+                android:textColor="@color/font_green"
+                android:text="@string/main_real_detection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tv_device_number_safety_check"
-                    android:textSize="26dp"
-                    android:textColor="@color/white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/tv_net_state_safety_check"
-                    android:layout_gravity="center"
-                    android:textSize="26dp"
-                    android:textColor="@color/red"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="22sp"
-                    android:textColor="@color/font_green"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/main_real_detection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </RelativeLayout>
+                android:layout_height="wrap_content"/>
 
             <FrameLayout
                 android:padding="10dp"
@@ -102,49 +80,6 @@
                     android:id="@+id/iv_hot_image_safety_check"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-                <RelativeLayout
-                    android:visibility="gone"
-                    android:id="@+id/ll_mcu_stable_safety_check"
-                    android:background="#4D000000"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <com.wang.avi.AVLoadingIndicatorView
-                        android:id="@+id/av_load"
-                        android:layout_centerInParent="true"
-                        android:layout_width="200dp"
-                        android:layout_height="160dp"/>
-
-                    <TextView
-                        android:id="@+id/tv_tip"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/av_load"
-                        android:textSize="20dp"
-                        android:textColor="@color/white"
-                        android:text="测温模块稳定中，请等待..."
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/tv_tip"
-                        android:id="@+id/tv_timer_safety_check"
-                        android:textSize="20dp"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <Button
-                        android:id="@+id/btn_skip_safety_check"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="@color/white"
-                        android:background="@drawable/shape_bg_btnrepicture"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:text="模块未断电，跳过"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </RelativeLayout>
             </FrameLayout>
 
             <FrameLayout
@@ -284,8 +219,31 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/tv_device_number_safety_check"
+                        android:textSize="26dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/tv_net_state_safety_check"
+                        android:layout_gravity="center"
+                        android:textSize="26dp"
+                        android:textColor="@color/red"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
                 <Button
-                    android:background="@drawable/shape_bg_btnsync"
+                    android:background="@drawable/selector_btn_take_photo"
                     android:id="@+id/btn_correction_safety_check"
                     android:layout_gravity="center_vertical|right"
                     android:textSize="20dp"

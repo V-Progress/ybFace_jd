@@ -5,10 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,6 +25,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.VisitorActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
@@ -30,6 +33,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,9 +47,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import okhttp3.Call;
 import skin.support.SkinCompatManager;
 
 public class CertificatesSystemActivity extends BaseActivity implements View.OnClickListener {
+
+    @BindView(R.id.tv_version_name_certi_system)
+    TextView tvVersionName;
+    @BindView(R.id.tv_version_info_certi_system)
+    TextView tvVersionInfo;
+    @BindView(R.id.fl_version_certi_system)
+    View flVersionLoading;
 
     private Button btn_setting_system;
     private TextView btn_update_system;
@@ -100,7 +114,7 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         btn_update_system.setOnClickListener(this);
 
 
-        if(Constants.isHT){
+        if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             tvCopyRight.setVisibility(View.GONE);
@@ -111,6 +125,42 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
             tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.app_name);
         }
+
+        checkUpgrade(new CheckUpgradeCallback() {
+            @Override
+            public void onStart() {
+                flVersionLoading.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void noUpgrade(String currVersionName) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
+                tvVersionInfo.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void haveNewVersion(String versionName, String versionInfo) {
+                tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
+                tvVersionInfo.setGravity(Gravity.LEFT);
+                tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+                tvVersionInfo.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onError(String currVersionName, String s) {
+                tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
+                tvVersionInfo.setGravity(Gravity.CENTER);
+                tvVersionInfo.setText(getResString(R.string.update_check_failed));
+                tvVersionInfo.setTextColor(Color.GRAY);
+            }
+
+            @Override
+            public void onFinish() {
+                flVersionLoading.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -189,6 +239,10 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
             default:
                 break;
         }
+    }
+
+    public void goWhiteList(View view) {
+        startActivity(new Intent(this, CertificatesWhiteListActivity.class));
     }
 
     private void setTextWatchers(final EditText[] editTexts) {

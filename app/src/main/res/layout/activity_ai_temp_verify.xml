@@ -235,14 +235,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_righy_top"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/rl_left"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@mipmap/bg_info"
@@ -258,11 +256,10 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_name_t"
                 android:textColor="@color/white"
                 android:textSize="22dp" />
 
@@ -270,23 +267,21 @@
                 android:id="@+id/tv_origin_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="305dp"
                 android:layout_toRightOf="@+id/tv_name_t"
                 android:text="@string/act_certificates_native_place"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_origin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_origin_t"
                 android:textColor="@color/white"
                 android:textSize="22dp" />
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -303,11 +298,10 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_tem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_tem_t"
                 android:textColor="@color/font_green"
                 android:textSize="22dp" />
 
@@ -315,28 +309,56 @@
                 android:id="@+id/tv_status_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="305dp"
-                android:layout_toRightOf="@+id/tv_tem_t"
                 android:text="@string/act_certificates_status"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_ostatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/font_green"
+                    android:textSize="22dp" />
+
+                <ImageView
+                    android:id="@+id/iv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_ostatus"
+                android:id="@+id/tv_white_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_status_t"
-                android:textColor="@color/font_green"
-                android:textSize="22dp" />
+                android:text="白名单："
+                android:textColor="@color/white"
+                android:textSize="20dp" />
 
-            <ImageView
-                android:id="@+id/iv_status"
+            <LinearLayout
+                android:id="@+id/ll_white_status"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:layout_toRightOf="@+id/tv_ostatus" />
-        </RelativeLayout>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_white_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/font_green"
+                    android:textSize="22dp" />
+
+                <ImageView
+                    android:id="@+id/iv_white_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

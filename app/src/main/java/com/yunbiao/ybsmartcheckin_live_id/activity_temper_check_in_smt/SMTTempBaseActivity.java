@@ -44,16 +44,13 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     protected void onResume() {
         super.onResume();
         mDistanceTipEnable = SpUtils.getBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, SMTModelConst.Default.DISTANCE_TIP_ENABLE);
-
-        mSpeechDelay = SpUtils.getLong(SpUtils.SPEECH_DELAY, Constants.DEFAULT_SPEECH_DELAY);
-        mTempMinThreshold = SpUtils.getFloat(SpUtils.TEMP_MIN_THRESHOLD, Constants.DEFAULT_TEMP_MIN_THRESHOLD_VALUE); //测温最小阈值
-        mTempWarningThreshold = SpUtils.getFloat(SpUtils.TEMP_WARNING_THRESHOLD, Constants.DEFAULT_TEMP_WARNING_THRESHOLD_VALUE); //测温报警阈值
+        mTempWarningThreshold = SpUtils.getFloat(SMTModelConst.key.TEMP_WARNING_THRESHOLD, SMTModelConst.Default.TEMP_WARNING_THRESHOLD); //测温报警阈值
+        mTempMinThreshold = SpUtils.getFloat(SMTModelConst.key.TEMP_MIN_THRESHOLD, SMTModelConst.Default.TEMP_MIN_THRESHOLD); //测温最小阈值
+        mSpeechDelay = SpUtils.getLong(SMTModelConst.key.SPEECH_DELAY, SMTModelConst.Default.SPEECH_DELAY);
         mLowTemp = SpUtils.getBoolean(SMTModelConst.key.LOW_TEMP, SMTModelConst.Default.LOW_TEMP);
-        float tempCorr = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);
         mFEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED,SMTModelConst.Default.F_ENABLED);
-        TemperatureModule.getIns().setmCorrectionValue(tempCorr);
 
-        int currMode = SpUtils.getIntOrDef(SpUtils.SMT_MODEL_SETTING, SMTModelConst.DEFAULT_SMT_MODEL);
+        int currMode = SpUtils.getIntOrDef(SMTModelConst.key.MODE, SMTModelConst.Default.MODE);
         if (smtModel != currMode) {
             smtModel = currMode;
             onModeChanged(smtModel);
@@ -69,8 +66,8 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
             }, 2000);
         }
 
-        mAmbCorrValue = SpUtils.getFloat(SpUtils.AMB_CORRECT_VALUE, Constants.DEFAULT_AMB_CORRECT_VALUE);//环境温度补正
-        mTempCorrValue = SpUtils.getFloat(SpUtils.TEMP_CORRECT_VALUE, Constants.DEFAULT_TEMP_CORRECT_VALUE);//体温检测补正
+        mAmbCorrValue = SpUtils.getFloat(SMTModelConst.key.AMB_CORRECT_VALUE, SMTModelConst.Default.AMB_CORRECT_VALUE);//环境温度补正
+        mTempCorrValue = SpUtils.getFloat(SMTModelConst.key.TEMP_CORRECT_VALUE, SMTModelConst.Default.TEMP_CORRECT_VALUE);//体温检测补正
         TemperatureModule.getIns().setmCorrectionValue(mTempCorrValue);
         TemperatureModule.getIns().setaCorrectionValue(mAmbCorrValue);
     }

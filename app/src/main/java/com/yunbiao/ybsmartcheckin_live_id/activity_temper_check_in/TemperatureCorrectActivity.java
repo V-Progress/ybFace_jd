@@ -97,7 +97,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
 
     @Override
     protected void initData() {
-        int currMode = SpUtils.getIntOrDef(SpUtils.THERMAL_MODEL_SETTING, ThermalConst.DEFAULT_THERMAL_MODEL);//当前模式
+        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
         if (currMode == ThermalConst.INFRARED_ONLY || currMode == ThermalConst.FACE_INFRARED) {
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         } else if (currMode == ThermalConst.THERMAL_ONLY || currMode == ThermalConst.FACE_THERMAL) {
@@ -133,6 +133,11 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
 
                 }
             }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+
         }
     };
 

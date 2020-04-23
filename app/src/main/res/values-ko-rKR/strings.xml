@@ -7,6 +7,10 @@
     <string name="back">이전</string>
     <string name="not_support_speech">현재 언어 시스템 에서 지원 하지 않 는 언어:</string>
     <string name="miss_speech_data">음성 데이터 부재:</string>
+    <string name="alert_title_warning">경고</string>
+    <string name="temper_error_tips">측온 데이터를 가져올 수 없습니다. 측온 모듈을 확인하십시오.</string>
+    <string name="temper_error_btn_restart">재개</string>
+    <string name="temper_error_btn_cancel">잠시 처리하지 않다</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBCheckIn</string>
@@ -268,6 +272,7 @@
     <string name="setting_portrait_outline">실루엣</string>
     <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
     <string name="setting_default_welcome_tip2">헨리 출퇴근 시스템 사용 을 환영 합 니 다.</string>
+    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
     <string name="setting_broadcast_f">화 씨 사용 하기</string>
     <string name="setting_switch_to_certificates">인증서로 전환</string><!--Switch to certificate temperature measurement-->
@@ -300,6 +305,10 @@
     <string name="act_power_turn_off_time">종료 시간</string>
     <string name="act_power_save">보존 하 다</string>
     <string name="act_power_set_success">설정 성공！</string>
+
+    <string name="act_power_set_failed_not_check_on">설정이 실패했습니다. 실행 정책을 실행할 날을 선택하십시오.</string>
+    <string name="act_power_set_failed_not_check_off">설정이 실패했습니다. 다음 실행 정책 중 종료 날짜를 선택하십시오.</string>
+
 
     <string name="setting_save_success">저장에 성공함</string>
     <string name="setting_save_succ_please_restart">저장하고 실행 취소 후 실행</string>
@@ -414,6 +423,13 @@
     <string name="updateManager_dqbbwzxbb">현재 버전은 최신 버전입니다</string>
     <string name="updateManager_wlljsbqjcwl">네트워크 연결 실패, 네트워크를 확인하십시오</string>
     <string name="updateManager_xzsb">다운로드 실패</string>
+    <string name="update_version_title">버전 정보</string>
+    <string name="update_lable_new">최신 버전：</string>
+    <string name="update_lable_current">현재 버전：</string>
+    <string name="update_check_failed">업데이트 검사에 실패했습니다. 네트워크를 확인하십시오.</string>
+    <string name="update_check_ing">버전 정보 검사 중</string>
+    <string name="update_have_new">새 버전이 발견되었습니다. 자세히 보기 바랍니다</string>
+    <string name="update_no_description">더 이상 자세한 내용은 없습니다.</string>
 
     <!--其他-->
     <string name="recognize_failed_notice">DENIED:%s</string>

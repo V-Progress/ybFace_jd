@@ -256,12 +256,12 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@mipmap/bg_info"
             android:gravity="center_vertical"
-            android:paddingLeft="30dp">
+            android:paddingLeft="20dp">
 
             <TextView
                 android:id="@+id/tv_name_t"
@@ -272,11 +272,10 @@
                 android:textSize="24dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_name_t"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
@@ -284,29 +283,27 @@
                 android:id="@+id/tv_origin_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="305dp"
-                android:layout_toRightOf="@+id/tv_name_t"
                 android:text="@string/act_certificates_native_place"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_origin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_origin_t"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@mipmap/bg_info"
             android:gravity="center_vertical"
-            android:paddingLeft="30dp">
+            android:paddingLeft="20dp">
 
             <TextView
                 android:id="@+id/tv_tem_t"
@@ -317,11 +314,10 @@
                 android:textSize="24dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/tv_tem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:layout_toRightOf="@+id/tv_tem_t"
                 android:textColor="@color/font_green"
                 android:textSize="24dp" />
 
@@ -329,15 +325,13 @@
                 android:id="@+id/tv_status_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="305dp"
-                android:layout_toRightOf="@+id/tv_tem_t"
                 android:text="@string/act_certificates_status"
                 android:textColor="@color/white"
                 android:textSize="24dp" />
 
             <LinearLayout
-                android:layout_toRightOf="@+id/tv_status_t"
-                android:gravity="center"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -351,10 +345,38 @@
                 <ImageView
                     android:id="@+id/iv_status"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="13dp"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
-        </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_white_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="白名单："
+                android:textColor="@color/white"
+                android:textSize="24dp" />
+
+            <LinearLayout
+                android:id="@+id/ll_white_status"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_white_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/font_green"
+                    android:textSize="24dp" />
+
+                <ImageView
+                    android:id="@+id/iv_white_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -386,4 +408,19 @@
         android:textColor="#75EEF0"
         android:textSize="20dp" />
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_device_number_certi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_bind_code_certi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_app_version_certi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

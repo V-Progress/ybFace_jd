@@ -17,8 +17,10 @@ import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -135,6 +137,11 @@ public class CertificatesCorrectActivity extends BaseGpioActivity {
 
                 }
             }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 

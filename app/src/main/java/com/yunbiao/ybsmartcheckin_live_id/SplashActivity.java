@@ -66,8 +66,9 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        SpUtils.init();
         Constants.checkSetIp();
-
+        Constants.initStorage();
         ThreadUitls.runInThread(machineRestartRun);
         ybPermission = new YBPermission(new YBPermission.PermissionListener() {
             @Override
@@ -174,9 +175,6 @@ public class SplashActivity extends BaseActivity {
 
     private Runnable nextRunnable = () -> {
         UIUtils.dismissNetLoading();
-
-        Constants.initStorage();
-        SpUtils.init();
 
         int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
         if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {

@@ -1,7 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -11,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -25,7 +23,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,7 +45,6 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SystemActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -75,11 +71,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightActivity {
 
@@ -125,11 +119,12 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     Button btnCancelCorrectionScdl;
     @BindView(R.id.btn_confirm_correction_scdl)
     Button btnConfirmCorrectionScdl;
+    @BindView(R.id.tv_bind_code_double_light)
+    TextView tvBindCode;
 
     private boolean mThermalMirror;
     private boolean mLowTemp;
     private boolean mBlackBodyEnabled;
-    private boolean mAutoCalibration;
     private int mPreValue;
     private float mCorrectValue;
     private DoubleLightRecordAdapter doubleLightRecordAdapter;
@@ -145,6 +140,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     private int mTop;
     private int mBottom;
     private boolean mBlackBodyFrame;
+
+    private boolean isFirstCorrected = true;
+    private float mLastMinT;
 
     @Override
     protected int getPortraitLayout() {
@@ -203,13 +201,14 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
         mWarningThreshold = SpUtils.getFloat(SafetyCheckDoubleLightConst.Key.WARNING_THRESHOLD, SafetyCheckDoubleLightConst.Default.WARNING_THRESHOLD);
         mThermalMirror = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.THERMAL_MIRROR, SafetyCheckDoubleLightConst.Default.THERMAL_MIRROR);
         mLowTemp = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.LOW_TEMP, SafetyCheckDoubleLightConst.Default.LOW_TEMP);
-        mAutoCalibration = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.AUTO_CALIBRATION, SafetyCheckDoubleLightConst.Default.AUTO_CALIBRATION);
         mPreValue = SpUtils.getIntOrDef(SafetyCheckDoubleLightConst.Key.PRE_VALUE, SafetyCheckDoubleLightConst.Default.PRE_VALUE);
         mCorrectValue = SpUtils.getFloat(SafetyCheckDoubleLightConst.Key.CORRECT_VALUE, SafetyCheckDoubleLightConst.Default.CORRECT_VALUE);
-        e("当前补正值：" + mCorrectValue);
+        mLastMinT = SpUtils.getFloat(SafetyCheckDoubleLightConst.Key.LAST_MIN_T, SafetyCheckDoubleLightConst.Default.LAST_MIN_T);
+
+        d("缓存中的校准值：" + mCorrectValue);
 
         mBlackBodyEnabled = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.BLACK_BODY_ENABLED, SafetyCheckDoubleLightConst.Default.BLACK_BODY_ENABLED);
-        mBlackBodyFrame = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.BLACK_BODY_FRAME,SafetyCheckDoubleLightConst.Default.BLACK_BODY_FRAME);
+        mBlackBodyFrame = SpUtils.getBoolean(SafetyCheckDoubleLightConst.Key.BLACK_BODY_FRAME, SafetyCheckDoubleLightConst.Default.BLACK_BODY_FRAME);
         mLeft = SpUtils.getIntOrDef(SafetyCheckDoubleLightConst.Key.BLACK_BODY_LEFT, SafetyCheckDoubleLightConst.Default.BLACK_BODY_LEFT);
         mRight = SpUtils.getIntOrDef(SafetyCheckDoubleLightConst.Key.BLACK_BODY_RIGHT, SafetyCheckDoubleLightConst.Default.BLACK_BODY_RIGHT);
         mTop = SpUtils.getIntOrDef(SafetyCheckDoubleLightConst.Key.BLACK_BODY_TOP, SafetyCheckDoubleLightConst.Default.BLACK_BODY_TOP);
@@ -260,6 +259,8 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
         if (tvTitle != null) tvTitle.setText(company.getAbbname());
 
         tvDeviceNo.setText(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+
+        tvBindCode.setText(SpUtils.getStr(SpUtils.BIND_CODE));
 
         EventBus.getDefault().post(new UpdateMediaEvent());
 
@@ -338,11 +339,7 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
                     } else {
                         TemperatureModule.getIns().closeK6080BlackBodyMode();
                     }
-                    if (mAutoCalibration) {
-                        TemperatureModule.getIns().startK6080AutoCalibMode();
-                    } else {
-                        TemperatureModule.getIns().closeK6080AutoCalibMode();
-                    }
+                    TemperatureModule.getIns().startK6080AutoCalibMode();
                 }, 1000);
             }
         });
@@ -365,11 +362,7 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
                 } else {
                     TemperatureModule.getIns().closeK6080BlackBodyMode();
                 }
-                if (mAutoCalibration) {
-                    TemperatureModule.getIns().startK6080AutoCalibMode();
-                } else {
-                    TemperatureModule.getIns().closeK6080AutoCalibMode();
-                }
+                TemperatureModule.getIns().startK6080AutoCalibMode();
             }, 1000);
         }
     }
@@ -401,9 +394,34 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, float v, float v1, float v2) {
-            if (isCalibration) {
+            if (isFirstCorrected) {//开机校准
                 setFaceIndex();
-                return;
+
+                float value = TemperatureModule.getIns().getK6080OffsetStandard();
+                if (value != -1f) {
+                    d("上次最低值：" + mLastMinT);
+                    d("当前最低值：" + value);
+
+                    float diffValue = 0.0f;
+                    if (mLastMinT != 0.0f) {
+                        diffValue = mLastMinT - value;
+                    }
+                    diffValue = formatF(diffValue);
+                    d("前后差异值：" + diffValue);
+                    d("上次校准值：" + mCorrectValue);
+
+                    mCorrectValue += diffValue;
+                    mCorrectValue = formatF(mCorrectValue);
+                    d("最终校准值：" + mCorrectValue);
+
+                    SpUtils.saveFloat(SafetyCheckDoubleLightConst.Key.LAST_MIN_T, value);
+                    SpUtils.saveFloat(SafetyCheckDoubleLightConst.Key.CORRECT_VALUE, mCorrectValue);
+                    TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+
+                    isFirstCorrected = false;
+                }
+            } else if (isCalibration) {
+                setFaceIndex();
             } else {
                 if (!mHasFace) showHotBitmap(bitmap);
             }
@@ -411,7 +429,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
 
         @Override
         public void newestHotImageData(Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
-            if (isCalibration) {
+            if (isFirstCorrected) {//开机校准
+                showHotBitmap(bitmap);
+            } else if (isCalibration) {
                 showHotBitmap(bitmap);
                 if (arrayList == null || arrayList.size() <= 0) {
                     return;
@@ -442,6 +462,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
             if (!hasFace)
                 return;
 
+            if (isFirstCorrected)
+                return;
+
             if (isCalibration)
                 return;
 
@@ -450,25 +473,20 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
 
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
-            if (isCalibration) {
+            if (isFirstCorrected) {
                 return false;
-            }
-            if (hasFace) {
+            } else if (isCalibration) {
+                return false;
+            } else if (hasFace) {
                 List<FacePreviewInfo> facePreviewInfos = new ArrayList<>();
                 facePreviewInfos.add(facePreviewInfo);
                 setFaceIndex(facePreviewInfos);
-
-                float temperByTrackId = faceView.getTemperByTrackId(facePreviewInfo.getTrackId());
-                if (temperByTrackId < mMinThreshold) {
-                    return false;
-                }
             }
             return true;
         }
 
         @Override
         public void onFaceVerify(CompareResult faceAuth) {
-            d(faceAuth.getUserName() + " --- " + faceAuth.getSimilar());
             float temper = faceView.getTemperByTrackId(faceAuth.getTrackId());
             if (temper <= 0.0f) {
                 return;
@@ -783,6 +801,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
                 mBodyTemper = mCurrBodyTemper;
                 SpUtils.saveFloat(SafetyCheckDoubleLightConst.Key.CORRECT_VALUE, mCorrectValue);
                 SpUtils.saveFloat(SafetyCheckDoubleLightConst.Key.BODY_TEMPER, mBodyTemper);
+                UIUtils.showShort(SafetyCheckDoubleLightActivity.this, APP.getContext().getResources().getString(R.string.safety_save_completion));
+            } else {
+                UIUtils.showShort(SafetyCheckDoubleLightActivity.this, APP.getContext().getResources().getString(R.string.safety_save_cancel));
             }
             TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
 
