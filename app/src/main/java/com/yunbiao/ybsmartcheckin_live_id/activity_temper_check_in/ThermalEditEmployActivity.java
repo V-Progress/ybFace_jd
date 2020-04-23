@@ -379,18 +379,16 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                         addUser.setFaceId(addStaffResponse.getFaceId());
 
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
-                        if (!b) {
-                            UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
-                        } else {
+                        if (b) {
                             DaoManager.get().add(addUser);
-                        }
-                        faceView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
+                            UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_add_success));
+                            faceView.postDelayed(() -> {
                                 UIUtils.dismissNetLoading();
                                 finish();
-                            }
-                        }, 1000);
+                            }, 1000);
+                        } else {
+                            UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
+                        }
                     }
                 });
 

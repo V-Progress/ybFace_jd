@@ -45,7 +45,7 @@ import skin.support.SkinCompatManager;
 
 public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickListener {
     @BindView(R.id.fl_version_smt_system)
-    TextView flVersionLoading;
+    View flVersionLoading;
     @BindView(R.id.tv_version_name_smt_system)
     TextView tvVersionInfo;
     @BindView(R.id.tv_version_info_smt_system)

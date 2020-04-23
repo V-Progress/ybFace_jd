@@ -41,7 +41,7 @@ public class ThermalConst {
     }
 
     interface Default {
-        int MODE = THERMAL_ONLY;
+        int MODE = DEFAULT_THERMAL_MODEL;
         boolean THERMAL_MIRROR = true;
         boolean LOW_TEMP = true;
         float AMBIENT_CORRECT = 25.0f;

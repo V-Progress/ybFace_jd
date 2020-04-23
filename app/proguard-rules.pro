@@ -165,3 +165,16 @@ public static java.lang.String TABLENAME;
 -keep class * {
 public private *;
 }
+
+-keep class com.yunbiao.ybsmartcheckin_live_id.bean.**{*;}
+
+# Androidx混淆配置
+-keep class com.google.android.material.** {*;}
+-keep class androidx.** {*;}
+-keep public class * extends androidx.**
+-keep interface androidx.** {*;}
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+-dontwarn androidx.**
+
+-keep class android.support.**{*;}

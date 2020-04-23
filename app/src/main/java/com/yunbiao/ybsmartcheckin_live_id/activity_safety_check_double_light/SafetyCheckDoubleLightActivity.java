@@ -316,6 +316,8 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     }
 
     private void startHotImage() {
+        TemperatureModule.getIns().closeHotImageK6080();
+
         int usbPermission = TemperatureModule.getIns().initUsbDevice(this, new UsbPermissionCallBack() {
             @Override
             public void usbPermissionNotice(boolean b) {

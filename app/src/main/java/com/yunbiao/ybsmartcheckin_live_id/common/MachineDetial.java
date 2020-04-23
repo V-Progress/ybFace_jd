@@ -1,10 +1,10 @@
 package com.yunbiao.ybsmartcheckin_live_id.common;
 
 
-import android.os.SystemProperties;
+import android.content.Context;
+import android.view.WindowManager;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.VersionUpdateConstants;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
@@ -47,7 +47,11 @@ public class MachineDetial {
             map.put("useSpace", SdCardUtils.getMemoryUsedSize());
             map.put("softwareVersion", CommonUtils.getAppVersion(APP.getContext()) + "_" + VersionUpdateConstants
                     .CURRENT_VERSION);
-            map.put("screenRotate", String.valueOf(SystemProperties.get("persist.sys.hwrotation")));
+//            String s = String.valueOf(SystemProperties.get("persist.sys.hwrotation"));
+//            Log.e(TAG, "upLoadHardWareMessage: 当前屏幕方向：" + s);
+
+            int screenRotate = getScreenRotate();
+            map.put("screenRotate",String.valueOf(screenRotate));
             map.put("deviceCpu", CommonUtils.getCpuName() + " " + CommonUtils.getNumCores() + "核" + CommonUtils
                     .getMaxCpuFreq() + "khz");
             map.put("deviceIp", NetworkUtils.getIpAddress());//当前设备IP地址
@@ -71,5 +75,9 @@ public class MachineDetial {
                 }
             });
         });
+    }
+
+    private int getScreenRotate(){
+        return ((WindowManager)APP.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
     }
 }

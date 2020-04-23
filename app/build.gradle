@@ -36,7 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             aaptOptions.cruncherEnabled = false
             aaptOptions.useNewCruncher = false
-            minifyEnabled = false
+            minifyEnabled  false
             shrinkResources false//开启此配置必须打开混淆
             signingConfig signingConfigs.release
             applicationIdSuffix ".release"
@@ -46,7 +46,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             aaptOptions.cruncherEnabled = false
             aaptOptions.useNewCruncher = false
-            minifyEnabled = false
+            minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.release
             applicationIdSuffix ".debug"
@@ -267,7 +267,7 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compileOnly files('lib/classes4.2.jar')
+//    compileOnly files('lib/classes4.2.jar')
     implementation files('libs/BaiduLBS_Android.jar')
 
     implementation 'com.jakewharton:butterknife:10.2.1'
@@ -356,16 +356,15 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1148_43697_sharewithdownloadwithfile_withoutGame_obfs_20190805_175505.jar')
-    implementation 'skin.support:skin-support:4.0.4'
 
     // skin-support
+    implementation 'skin.support:skin-support:4.0.4'
     implementation 'skin.support:skin-support-appcompat:4.0.4'
-
     // skin-support 基础控件支持
     implementation 'skin.support:skin-support-design:4.0.4'
-
     // skin-support-cardview CardView 控件支持[可选]
     implementation 'skin.support:skin-support-constraint-layout:4.0.4'
+
     implementation project(path: ':vertical_scroll_player')
     implementation files('libs/arcsoft_face.jar')
 

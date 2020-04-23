@@ -210,6 +210,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     }
 
     private void startHotImage() {
+        TemperatureModule.getIns().closeHotImageK6080();
         int usbPermission = TemperatureModule.getIns().initUsbDevice(this, new UsbPermissionCallBack() {
             @Override
             public void usbPermissionNotice(boolean b) {
