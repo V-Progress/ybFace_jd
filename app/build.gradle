@@ -136,9 +136,9 @@ android {
                 "@string/app_name4", "@mipmap/osimle_logo", "5cbe87a60cafb210460006b3", "osimle_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*softworkz=====================================================================================================================*/
-        flavor(SOFT_WORK_Z_8,
+        flavor(SOFT_WORK_Z_10,
                 "false", "false", "false", "true", "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
-                "@string/app_name5", "@mipmap/softworkz_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
+                "@string/app_name5", "@mipmap/softworkz_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*==亨通版本============================================================================================*/
         //亨通10寸

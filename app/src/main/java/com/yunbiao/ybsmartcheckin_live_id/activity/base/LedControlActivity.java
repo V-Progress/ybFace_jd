@@ -55,17 +55,14 @@ public abstract class LedControlActivity extends BaseActivity {
 
     protected void resetLedDelay(int delay) {
         handler.removeMessages(0);
-        handler.sendEmptyMessageDelayed(0, delay);
+        handler.sendEmptyMessageDelayed(0, delay + 100);
     }
 
     private static final String TAG = "LedControlActivity";
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            Log.e(TAG, "handleMessage: --------- 已重置灯光");
-            ledInit();
-            return false;
-        }
+    private Handler handler = new Handler(msg -> {
+        Log.e(TAG, "handleMessage: --------- 已重置灯光");
+        ledInit();
+        return true;
     });
 
     protected void ledGreen() {

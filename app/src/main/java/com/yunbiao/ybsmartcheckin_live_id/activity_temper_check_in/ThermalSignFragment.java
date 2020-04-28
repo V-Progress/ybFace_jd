@@ -180,7 +180,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         }
 
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
-        rlv.setVisibility(isPrivacy ? View.INVISIBLE : View.VISIBLE);
+        if(rlv != null){
+            rlv.setVisibility(isPrivacy ? View.INVISIBLE : View.VISIBLE);
+        }
         Log.e(TAG, "onResume: 重加载数据");
         float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
         int newModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
