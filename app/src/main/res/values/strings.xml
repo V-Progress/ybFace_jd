@@ -2,6 +2,8 @@
     <string name="app_name">YBFace</string>
     <string name="app_name2">HTFace</string>
     <string name="app_name3">思库考勤</string>
+    <string name="app_name4">Osmile AI</string>
+    <string name="app_name5">SoftWorkz AI</string>
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
@@ -296,6 +298,9 @@
     <string name="setting_switch_tip2">Are you sure to switch to temperature measurement attendance？</string><!---->
     <string name="setting_switch_confirm">YES</string>
     <string name="setting_switch_cancel">NO</string>
+    <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
 
 
     <!--开关机设置-->
@@ -463,7 +468,7 @@
     <string name="record_head_multi_thermal">Head portrait</string>
     <string name="record_hot_multi_thermal">Thermal imaging</string>
     <string name="setting_black_body_rect_multi_thermal">Blackbody detection area calibration</string>
-    <string name="setting_save_failed_multi_thermal">Save failed</string>
+    <string name="setting_save_failed_multi_thermal">not changed</string>
     <string name="setting_save_success_multi_thermal">Save successfully</string>
     <string name="setting_save_multi_thermal">SAVE</string>
     <string name="setting_please_correct_multi_thermal">（Please fill in the difference according to the temperature measured by the temperature gun and the thermal imaging temperature）</string>
@@ -515,7 +520,7 @@
     <string name="safety_main_title">AI Temperature Measurement</string>
     <string name="safety_main_real_detection">Monitoring</string>
     <string name="safety_main_temer_area">Temperature</string>
-    <string name="safety_main_warning_number">Abnormal number</string>
+    <string name="safety_main_warning_number">Abnormal</string>
     <string name="safety_main_device_no">Device No.</string>
     <string name="safety_black_body_size_large">Large</string>
     <string name="safety_black_body_size_Middle">Middle</string>

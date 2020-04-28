@@ -135,11 +135,9 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
     @Override
     public void onResume() {
         super.onResume();
-        if(Constants.isHT){
+        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
             ivQRCode.setVisibility(View.GONE);
-        } else if(Constants.isSK){
-            ivQRCode.setVisibility(View.GONE);
-        } else {
+        }else {
             boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
             ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
         }

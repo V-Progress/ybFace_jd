@@ -2,6 +2,7 @@
     <string name="app_name">雲標智能考勤</string>
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思庫考勤</string>
+    <string name="app_name4">Osmile AI</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
@@ -501,7 +502,7 @@
     <string name="record_head_multi_thermal">頭像</string>
     <string name="record_hot_multi_thermal">熱成像</string>
     <string name="setting_black_body_rect_multi_thermal">黑體檢測區域校準</string>
-    <string name="setting_save_failed_multi_thermal">保存失敗</string>
+    <string name="setting_save_failed_multi_thermal">未修改</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（請結合體溫槍測溫和熱成像溫度填寫差值）</string>

@@ -261,6 +261,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT:
             case Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT:
+                Constants.HORIZONTAL_OFFSET = 4;
                 Constants.DEFAULT_FACE_MIRROR = true;
                 Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));

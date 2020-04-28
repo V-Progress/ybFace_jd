@@ -187,6 +187,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, float sensorT, float afterT, float v2, float v3, boolean b, int i) {
+            dismissAlert();
             handleTemper(bitmap, sensorT, afterT);
         }
 
@@ -198,6 +199,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
+            dismissAlert();
             handleTemper(bitmap, originalMaxT, afterF);
         }
 

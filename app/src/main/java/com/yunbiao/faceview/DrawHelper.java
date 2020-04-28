@@ -18,7 +18,7 @@ import java.util.List;
  * 绘制人脸框帮助类，用于在{@link FaceRectView}上绘制矩形
  */
 public class DrawHelper {
-    private int previewWidth, previewHeight, canvasWidth, canvasHeight, cameraDisplayOrientation, cameraId;
+    private static int previewWidth, previewHeight, canvasWidth, canvasHeight, cameraDisplayOrientation, cameraId;
     private boolean isMirror;
     private boolean mirrorHorizontal = false, mirrorVertical = false;
 
@@ -265,16 +265,13 @@ public class DrawHelper {
 
         Rect newRect = new Rect(drawInfo.getRect());
 
-        newRect.left -= newRect.width() / 10;
-        newRect.right += newRect.width() / 10;
-        if (newRect.left <= 0) {
-            newRect.left = 1;
+        int offset = previewHeight / 10;
+        if(newRect.height() < offset){
+            offset *= ((float)newRect.height() / 100);
         }
-        newRect.bottom += newRect.height() / 4;
-        newRect.top -= newRect.height() / 8;
-        if(newRect.top <= 0){
-            newRect.top = 1;
-        }
+
+        newRect.top -= offset;
+        newRect.bottom -= offset / 2;
 
         boolean thermalFaceFrame = drawInfo.isThermalFaceFrame();
         if(thermalFaceFrame){

@@ -229,7 +229,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     blackBody.setTempPreValue(mPreValue);
 //                    setCorrectValue(mCorrectValue);
                     TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
-                    TemperatureModule.getIns().startK6080AutoCalibMode();
+                    TemperatureModule.getIns().startK6080AutoCalibMode(1);
                     if (!mBlackBodyEnabled) {
                         TemperatureModule.getIns().closeK6080BlackBodyMode();
                     }
@@ -250,7 +250,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 blackBody.setTempPreValue(mPreValue);
 //                setCorrectValue(mCorrectValue);
                 TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
-                TemperatureModule.getIns().startK6080AutoCalibMode();
+                TemperatureModule.getIns().startK6080AutoCalibMode(1);
                 if (!mBlackBodyEnabled) {
                     TemperatureModule.getIns().closeK6080BlackBodyMode();
                 }
@@ -412,19 +412,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         }
         tvWarningNumber.setText(stringBuffer.toString());
         SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, number);
-    }
-
-    private float getMean(List<Float> array) {
-        float result = 0.0f;
-        if (array.size() == 0) {
-            return result;
-        }
-        for (float anArray : array) {
-            result += anArray;
-        }
-        result = result / array.size();
-        result = formatF(result);
-        return result;
     }
 
     //设置人脸框

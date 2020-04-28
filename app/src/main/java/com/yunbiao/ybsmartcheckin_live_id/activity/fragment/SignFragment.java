@@ -398,15 +398,12 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
             }
 
             public void bindData(Context context, Sign signBean) {
-                byte[] imgBytes = signBean.getImgBytes();
                 String headPath = signBean.getHeadPath();
                 Bitmap imgBitmap = signBean.getImgBitmap();
-                if (imgBytes != null) {
-                    Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(ivHead);
+                if (imgBitmap != null) {
+                    ivHead.setImageBitmap(imgBitmap);
                 } else if (!TextUtils.isEmpty(headPath)) {
                     Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
-                } else if (imgBitmap != null) {
-                    ivHead.setImageBitmap(imgBitmap);
                 }
 
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : getResources().getString(R.string.fment_sign_visitor_name));

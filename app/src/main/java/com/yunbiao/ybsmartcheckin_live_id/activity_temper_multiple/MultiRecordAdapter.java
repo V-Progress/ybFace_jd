@@ -8,9 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.utils.BlurTransformation;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,10 +22,12 @@ import java.util.Locale;
 public class MultiRecordAdapter extends BaseAdapter {
     private List<Sign> datas;
     private Activity mAct;
+    private boolean isPrivacy = false;
 
-    public MultiRecordAdapter(Activity activity, List<Sign> datas) {
+    public MultiRecordAdapter(Activity activity, List<Sign> datas, boolean privacy) {
         this.datas = datas;
-        mAct = activity;
+        this.mAct = activity;
+        this.isPrivacy = privacy;
     }
 
     private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -66,6 +70,7 @@ public class MultiRecordAdapter extends BaseAdapter {
     }
 
     private static final String TAG = "MultiRecordAdapter";
+
     class RecordViewHolder {
 
         public TextView tvIndex;
@@ -81,22 +86,29 @@ public class MultiRecordAdapter extends BaseAdapter {
             String date = sign.getDate();
 
             Locale locale = mAct.getResources().getConfiguration().locale;
-            if(!TextUtils.equals(locale.getCountry(),Locale.CHINA.getCountry())){
-                if(date.contains("年")){
-                    date = date.replaceAll("年","-");
+            if (!TextUtils.equals(locale.getCountry(), Locale.CHINA.getCountry())) {
+                if (date.contains("年")) {
+                    date = date.replaceAll("年", "-");
                 }
-                if(date.contains("月")){
-                    date = date.replaceAll("月","-");
+                if (date.contains("月")) {
+                    date = date.replaceAll("月", "-");
                 }
-                if(date.contains("日")){
-                    date = date.replaceAll("日","");
+                if (date.contains("日")) {
+                    date = date.replaceAll("日", "");
                 }
             }
 
             tvDate.setText(date);
             tvTime.setText(dateFormat.format(sign.getTime()));
             tvTemper.setText(sign.getTemperature() + "℃");
-            Glide.with(mAct).load(sign.getHeadPath()).asBitmap().into(ivHead);
+            DrawableTypeRequest<String> load = Glide.with(mAct).load(sign.getHeadPath());
+            if (isPrivacy) {
+                load.transform(new BlurTransformation(mAct, 20));
+            } else {
+                load.asBitmap();
+            }
+            load.into(ivHead);
+
             Glide.with(mAct).load(sign.getHotImgPath()).asBitmap().into(ivHot);
         }
     }

@@ -26,7 +26,7 @@
             android:textSize="30dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:text="AI人脸高通量测温数据平台"
+            android:text="@string/main_title_multi_thermal"
             android:layout_height="wrap_content"/>
 
         <TextClock
@@ -63,7 +63,7 @@
                 android:layout_marginTop="5dp"
                 android:textSize="24dp"
                 android:gravity="center"
-                android:text="实时监测"
+                android:text="@string/safety_main_real_detection"
                 android:textColor="#00FFFF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -124,7 +124,6 @@
                     <TextView
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
-                        android:text="网络正常"
                         android:id="@+id/tv_net_state_double_light"
                         android:textColor="#00ff00"
                         android:textSize="30dp"
@@ -141,7 +140,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/selector_btn_take_photo"
-                        android:text="校准"
+                        android:text="@string/safety_calibration_main"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -299,7 +298,7 @@
                     android:layout_marginTop="22dp"
                     android:textColor="#00FFFF"
                     android:gravity="center"
-                    android:text="体温测量"
+                    android:text="@string/safety_main_temer_area"
                     android:textSize="24dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -351,7 +350,7 @@
                         android:layout_centerVertical="true"
                         android:textStyle="bold"
                         android:gravity="center_vertical"
-                        android:text="异常"
+                        android:text="@string/safety_main_warning_number"
                         android:textColor="@color/red"
                         android:textSize="26dp"
                         android:layout_width="wrap_content"

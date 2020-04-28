@@ -173,6 +173,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
         } else if (Constants.isSK) {
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+        } else if (Constants.isOsimle) {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
+            ivLogo.setImageResource(R.mipmap.osimle_logo);
         } else {
             ivLogo.setImageResource(R.mipmap.logo_hushida);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_hushida);
@@ -256,7 +259,9 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
         Company company = SpUtils.getCompany();
-        if (tvTitle != null) tvTitle.setText(company.getAbbname());
+        if(!TextUtils.isEmpty(company.getAbbname())){
+            tvTitle.setText(company.getAbbname());
+        }
 
         tvDeviceNo.setText(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
 
@@ -270,13 +275,13 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     private NetWorkChangReceiver.NetWorkChangeListener netWorkChangeListener = new NetWorkChangReceiver.NetWorkChangeListener() {
         @Override
         public void connect() {
-            tvNetState.setText("网络正常");
+            tvNetState.setText(getResString(R.string.smt_main_net_normal2));
             tvNetState.setTextColor(Color.GREEN);
         }
 
         @Override
         public void disConnect() {
-            tvNetState.setText("无网络");
+            tvNetState.setText(getResString(R.string.smt_main_net_no));
             tvNetState.setTextColor(Color.RED);
         }
     };
@@ -341,7 +346,7 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
                     } else {
                         TemperatureModule.getIns().closeK6080BlackBodyMode();
                     }
-                    TemperatureModule.getIns().startK6080AutoCalibMode();
+                    TemperatureModule.getIns().startK6080AutoCalibMode(1);
                 }, 1000);
             }
         });
@@ -364,7 +369,7 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
                 } else {
                     TemperatureModule.getIns().closeK6080BlackBodyMode();
                 }
-                TemperatureModule.getIns().startK6080AutoCalibMode();
+                TemperatureModule.getIns().startK6080AutoCalibMode(1);
             }, 1000);
         }
     }
@@ -601,11 +606,11 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
     private void setTemperTips(float temper) {
         tvTemper.setText(temper + "℃");
         if (temper >= mWarningThreshold) {
-            tvTemperStatus.setText("体温异常");
+            tvTemperStatus.setText(getResString(R.string.main_temp_warning_tips));
             tvTemperStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
             tvTemper.setTextColor(Color.RED);
         } else {
-            tvTemperStatus.setText("体温正常");
+            tvTemperStatus.setText(getResString(R.string.main_temp_normal_tips));
             tvTemperStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
             tvTemper.setTextColor(Color.GREEN);
         }
@@ -891,7 +896,7 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
             inputPwd(() -> startActivity(new Intent(SafetyCheckDoubleLightActivity.this, SafetyDoubleLightSettingActivity.class)));
             return;
         }
-        startActivity(new Intent(this, SystemActivity.class));
+        startActivity(new Intent(this, SafetyDoubleLightSettingActivity.class));
     }
 
     private void onBackKeyPressed(Runnable runnable) {

@@ -18,6 +18,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -41,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -51,7 +53,8 @@ import io.reactivex.functions.Consumer;
 public class ThermalSignActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "SignActivity";
-
+    @BindView(R.id.tv_export_sign_data)
+    TextView tvExport;
     private ListView lv_sign_List;
     private TextView tv_date;
     private View pb_load_list;
@@ -95,6 +98,11 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         spnDataMode = (Spinner) findViewById(R.id.spn_data_mode);
         tv_date.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+
+        if(Constants.isSoftWorkz){
+            tvExport.setVisibility(View.INVISIBLE);
+            tvExport.setEnabled(false);
+        }
     }
 
     @Override
@@ -124,12 +132,13 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         queryDate = today;
         initSpinner();
 
-        adapter = new SignAdapter(ThermalSignActivity.this, mShowList);
+        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+        adapter = new SignAdapter(ThermalSignActivity.this, mShowList, isPrivacy);
         lv_sign_List.setAdapter(adapter);
     }
 
-    private String formatDate(String date){
-        return date.replace("年","-").replace("月","-").replace("日","");
+    private String formatDate(String date) {
+        return date.replace("年", "-").replace("月", "-").replace("日", "");
     }
 
     private void initSpinner() {

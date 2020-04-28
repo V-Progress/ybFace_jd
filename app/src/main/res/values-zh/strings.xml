@@ -2,6 +2,7 @@
     <string name="app_name">云标智能考勤</string>
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思库考勤</string>
+    <string name="app_name4">Osmile AI</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
@@ -499,7 +500,7 @@
     <string name="record_head_multi_thermal">头像</string>
     <string name="record_hot_multi_thermal">热成像</string>
     <string name="setting_black_body_rect_multi_thermal">黑体检测区域校准</string>
-    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_failed_multi_thermal">未修改</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>
@@ -510,7 +511,7 @@
     <string name="safety_main_title">AI大通量测温系统</string>
     <string name="safety_main_real_detection">实时监测</string>
     <string name="safety_main_temer_area">体温测量</string>
-    <string name="safety_main_warning_number">异常人数</string>
+    <string name="safety_main_warning_number">异常</string>
     <string name="safety_main_device_no">设备编号:</string>
 
     <string name="safety_black_body_size_large">大</string>

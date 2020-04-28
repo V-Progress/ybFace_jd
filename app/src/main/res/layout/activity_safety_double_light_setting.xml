@@ -407,6 +407,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
                 android:padding="5dp"
                 android:background="@drawable/shape_employ_button"
                 android:layout_marginTop="10dp"

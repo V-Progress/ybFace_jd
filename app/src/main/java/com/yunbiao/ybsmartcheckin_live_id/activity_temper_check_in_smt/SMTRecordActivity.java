@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -118,7 +119,8 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
         queryDate = today;
         initSpinner();
 
-        adapter = new SignAdapter(SMTRecordActivity.this, mShowList);
+        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+        adapter = new SignAdapter(SMTRecordActivity.this, mShowList,isPrivacy);
         lv_sign_List.setAdapter(adapter);
     }
 

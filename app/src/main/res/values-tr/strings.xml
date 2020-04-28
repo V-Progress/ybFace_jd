@@ -2,6 +2,7 @@
     <string name="app_name">Yunbiao Akıllı Katılım</string>
     <string name="app_name2">Hengtong katılım</string>
     <string name="app_name3">Siku Katılım</string>
+    <string name="app_name4">Osmile AI</string>
     <string name="used">kullanılmış:</string>
     <string name="no_used">/mevcut:</string>
     <string name="back">Geri</string>
@@ -497,7 +498,7 @@
     <string name="record_head_multi_thermal">头像</string>
     <string name="record_hot_multi_thermal">热成像</string>
     <string name="setting_black_body_rect_multi_thermal">黑体检测区域校准</string>
-    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_failed_multi_thermal">not changed</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>

@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.hardware.Camera;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,7 +26,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -49,7 +45,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,10 +55,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -135,8 +127,8 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
-    public void jumpTag(View view){
-        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG,Constants.DEFAULT_JUMP_TAG);
+    public void jumpTag(View view) {
+        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
         builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip1));
@@ -150,7 +142,7 @@ public class ThermalSettingActivity extends BaseActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                SpUtils.saveBoolean(Constants.JUMP_TAG,!jumpTag);
+                SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
 
                 APP.exit2();
             }
@@ -188,6 +180,67 @@ public class ThermalSettingActivity extends BaseActivity {
         initPosterSetting();
         //读卡器模块
         initReadCardSetting();
+        //隐私模式
+        initPrivacyMode();
+        //初始化清除策略
+        initClearPolicy();
+    }
+
+    private void initClearPolicy() {
+        RadioGroup rgClear = findViewById(R.id.rg_clear_policy);
+        if(!Constants.isSoftWorkz){
+            rgClear.setVisibility(View.GONE);
+            return;
+        }
+        TextView tvClearPolicy = findViewById(R.id.tv_clear_policy);
+        String str = tvClearPolicy.getText().toString();
+
+        int date = 0;
+        int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY, Constants.Default.CLEAR_POLICY);
+        switch (clearPolicy) {
+            case 0:
+                date = 7;
+                rgClear.check(R.id.rb_clear_policy_7);
+                break;
+            case 1:
+                date = 15;
+                rgClear.check(R.id.rb_clear_policy_15);
+                break;
+            case 2:
+                date = 30;
+                rgClear.check(R.id.rb_clear_policy_30);
+                break;
+        }
+        String format = String.format(str, String.valueOf(date));
+        tvClearPolicy.setText(format);
+        rgClear.setOnCheckedChangeListener((group, checkedId) -> {
+            int i = 0;
+            switch (checkedId) {
+                case R.id.rb_clear_policy_7:
+                    i = 7;
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 0);
+                    break;
+                case R.id.rb_clear_policy_15:
+                    i = 15;
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 1);
+                    break;
+                case R.id.rb_clear_policy_30:
+                    i = 30;
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 2);
+                    break;
+            }
+            String s = String.format(str, String.valueOf(i));
+            tvClearPolicy.setText(s);
+        });
+    }
+
+    private void initPrivacyMode() {
+        boolean isPrivacyModeEnabled = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+        Switch swPrivacy = findViewById(R.id.sw_privacy_mode);
+        swPrivacy.setChecked(isPrivacyModeEnabled);
+        swPrivacy.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SpUtils.saveBoolean(Constants.Key.PRIVACY_MODE, isChecked);
+        });
     }
 
     public void powerOnOff(View view) {
@@ -198,12 +251,7 @@ public class ThermalSettingActivity extends BaseActivity {
         boolean readCardEnabled = SpUtils.getBoolean(SpUtils.READ_CARD_ENABLED, Constants.DEFAULT_READ_CARD_ENABLED);
         Switch swReadCard = findViewById(R.id.sw_readcard_setting);
         swReadCard.setChecked(readCardEnabled);
-        swReadCard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.READ_CARD_ENABLED, isChecked);
-            }
-        });
+        swReadCard.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.READ_CARD_ENABLED, isChecked));
     }
 
     private void initPosterSetting() {
@@ -591,7 +639,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     return;
                 }
                 int intResPort = Integer.parseInt(mResPort);
-                if(intResPort > 65535){
+                if (intResPort > 65535) {
                     UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_res_port_error));
                     return;
                 }
@@ -601,7 +649,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     return;
                 }
                 int intXmppPort = Integer.parseInt(mXmppPort);
-                if(intXmppPort > 65535){
+                if (intXmppPort > 65535) {
                     UIUtils.showTitleTip(ThermalSettingActivity.this, APP.getContext().getResources().getString(R.string.setting_xmpp_port_error));
                     return;
                 }
@@ -748,7 +796,7 @@ public class ThermalSettingActivity extends BaseActivity {
 
         findViewById(R.id.btn_set_similar_threshold).setOnClickListener(v -> {
             String similar1 = edtSimilar.getText().toString();
-            if(TextUtils.isEmpty(similar1)){
+            if (TextUtils.isEmpty(similar1)) {
                 edtSimilar.setText(similar1 + "");
                 return;
             }

@@ -116,6 +116,11 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
             appName = getResources().getString(R.string.app_name3);
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+        } else if(Constants.isOsimle){
+            tvCopyRight.setVisibility(View.GONE);
+            appName = getResources().getString(R.string.app_name4);
+            ivLogo.setImageResource(R.mipmap.osimle_logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
         } else {
             tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.app_name);

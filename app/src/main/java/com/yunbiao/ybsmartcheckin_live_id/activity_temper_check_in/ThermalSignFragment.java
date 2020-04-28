@@ -46,6 +46,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UtilBitmap;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
 import org.greenrobot.eventbus.EventBus;
@@ -161,21 +162,25 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             //公告
             NoticeManager.getInstance().initSignData();
         }
+
+        if(Constants.isSoftWorkz){
+            ivQRCode.setImageResource(R.mipmap.soft_workz_qrcode);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if(Constants.isHT){
-            ivQRCode.setVisibility(View.GONE);
-        } else if(Constants.isSK) {
+        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
             ivQRCode.setVisibility(View.GONE);
         } else {
             boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
             ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
         }
 
+        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
+        rlv.setVisibility(isPrivacy ? View.INVISIBLE : View.VISIBLE);
         Log.e(TAG, "onResume: 重加载数据");
         float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
         int newModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
@@ -255,7 +260,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         }
 
         Company company = SpUtils.getCompany();
-        ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
+        if(!Constants.isSoftWorkz){
+            ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
+        }
 
         if (tvCompanyName != null) {
             if (TextUtils.isEmpty(company.getComname())) {
@@ -448,15 +455,12 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             }
 
             public void bindData(Context context, Sign signBean) {
-                byte[] imgBytes = signBean.getImgBytes();
                 String headPath = signBean.getHeadPath();
                 Bitmap imgBitmap = signBean.getImgBitmap();
-                if (imgBytes != null) {
-                    Glide.with(mContext).load(imgBytes).asBitmap().override(100, 100).into(ivHead);
-                } else if (!TextUtils.isEmpty(headPath)) {
-                    Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
-                } else if (imgBitmap != null) {
+                if(imgBitmap != null){
                     ivHead.setImageBitmap(imgBitmap);
+                } else if(!TextUtils.isEmpty(headPath)){
+                    Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
                 }
 
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));

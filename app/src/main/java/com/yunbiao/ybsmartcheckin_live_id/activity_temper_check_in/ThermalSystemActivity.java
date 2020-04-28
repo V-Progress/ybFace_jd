@@ -124,6 +124,16 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             appName = getResources().getString(R.string.sk_temper_check_in);
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+        } else if (Constants.isOsimle) {
+            tvCopyRight.setVisibility(View.GONE);
+            appName = getResString(R.string.app_name4);
+            ivLogo.setImageResource(R.mipmap.osimle_logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
+        } else if(Constants.isSoftWorkz){
+            tvCopyRight.setVisibility(View.GONE);
+            appName = getResString(R.string.app_name5);
+            ivLogo.setImageResource(R.mipmap.softworkz_logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
         } else {
             tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.yb_temper_check_in);

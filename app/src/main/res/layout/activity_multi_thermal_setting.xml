@@ -64,10 +64,10 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/setting_text"
-                android:text="@string/setting_show_thermal_face_frame" />
+                android:text="@string/setting_privacy_mode" />
 
             <Switch
-                android:id="@+id/sw_thermal_face_frame_setting"
+                android:id="@+id/sw_privacy_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -82,10 +82,10 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/setting_text"
-                android:text="@string/setting_show_black_body" />
+                android:text="@string/setting_show_thermal_face_frame" />
 
             <Switch
-                android:id="@+id/sw_black_body_frame_setting"
+                android:id="@+id/sw_thermal_face_frame_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -131,6 +131,25 @@
         </LinearLayout>
 
         <LinearLayout
+            style="@style/setting_text_child"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_show_black_body" />
+
+            <Switch
+                android:id="@+id/sw_black_body_frame_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
             style="@style/setting_text_child"
             android:gravity="center_vertical"
             android:orientation="horizontal">

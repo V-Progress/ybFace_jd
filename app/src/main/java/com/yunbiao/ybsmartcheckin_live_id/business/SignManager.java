@@ -103,6 +103,57 @@ public class SignManager {
         } else {
             startMultiUploadThread();
         }
+
+        if(Constants.isSoftWorkz){
+            threadPool.scheduleAtFixedRate(() -> {
+                int comid = SpUtils.getCompany().getComid();
+                List<Sign> signs = DaoManager.get().querySignByComId(comid);
+                if(signs == null || signs.size() <= 0){
+                    d("暂无多余的记录");
+                    return;
+                }
+                Date date = new Date();
+                int offset = 30;
+                int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY,Constants.Default.CLEAR_POLICY);
+                switch (clearPolicy) {
+                    case 0:
+                        offset = 7;
+                        break;
+                    case 1:
+                        offset = 15;
+                        break;
+                    case 2:
+                        offset = 30;
+                        break;
+                }
+                int count = 0;
+                Log.e(TAG, "SignManager: 当前策略：" + offset);
+                for (int i = 0; i < signs.size(); i++) {
+                    Sign sign = signs.get(i);
+                    long time = sign.getTime();
+                    if(date.getTime() - time < (offset * 24 * 60 * 60 * 1000)){
+                        continue;
+                    }
+                    count++;
+                    String headPath = sign.getHeadPath();
+                    if(!TextUtils.isEmpty(headPath)){
+                        File file = new File(headPath);
+                        if(file.exists()){
+                            file.delete();
+                        }
+                    }
+                    String hotImgPath = sign.getHotImgPath();
+                    if(!TextUtils.isEmpty(hotImgPath)){
+                        File file = new File(hotImgPath);
+                        if(file.exists()){
+                            file.delete();
+                        }
+                    }
+                    DaoManager.get().deleteSign(sign);
+                }
+                Log.e(TAG, "SignManager: 总共清除：" + count);
+            }, 3, 30,TimeUnit.MINUTES);
+        }
     }
 
     public List<Sign> getTodaySignData() {
@@ -652,41 +703,28 @@ public class SignManager {
         });
     }
 
-    public void uploadTemperatureSign(final Sign sign) {
-        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
-
-        File file;
-        if (sign.getImgBitmap() != null) {
-            file = saveBitmap(sign.getTime(), sign.getImgBitmap());
-        } else {
-            file = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    private File createEmptyFile(){
+        File file = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        return file;
+    }
+
+    public void uploadTemperatureSign(final Sign sign,boolean isPrivacy) {
+        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+
+        File file = sign.getImgBitmap() != null ? saveBitmap(sign.getTime(), sign.getImgBitmap()) : createEmptyFile();
         sign.setHeadPath(file.getPath());
         Log.e(TAG, "uploadTemperatureSign: 保存头像：" + file.getPath());
 
-        File hotFile = null;
-        Bitmap hotImageBitmap = sign.getHotImageBitmap();
-        if (hotImageBitmap != null) {
-            hotFile = saveBitmap("hot_", sign.getTime(), hotImageBitmap);
-        } else {
-            hotFile = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
-            if (!hotFile.exists()) {
-                try {
-                    hotFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        Log.e(TAG, "uploadTemperatureSign: 保存热图：" + hotFile.getPath());
+        File hotFile = sign.getHotImageBitmap() != null ? saveBitmap("hot_", sign.getTime(), sign.getHotImageBitmap()) : createEmptyFile();
         sign.setHotImgPath(hotFile.getPath());
+        Log.e(TAG, "uploadTemperatureSign: 保存热图：" + hotFile.getPath());
 
         sign.setUpload(false);
         DaoManager.get().addOrUpdate(sign);
@@ -711,7 +749,8 @@ public class SignManager {
         PostFormBuilder builder = OkHttpUtils.post()
                 .url(url)
                 .params(params);
-        builder.addFile("heads", file.getName(), file);
+        //如果不为隐私模式并且图片Bitmap不为null，则存照片
+        builder.addFile("heads", file.getName(), isPrivacy ? createEmptyFile() : file);
         builder.addFile("reHead", hotFile.getName(), hotFile);
 
         builder.build().execute(new StringCallback() {
@@ -1271,6 +1310,7 @@ public class SignManager {
         threadPool.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
                 d("开始批量上传");
                 int comid = SpUtils.getCompany().getComid();
                 if (comid == Constants.NOT_BIND_COMPANY_ID) {
@@ -1311,14 +1351,12 @@ public class SignManager {
                     //添加头像
                     File file;
                     String headPath = sign.getHeadPath();
-                    if (TextUtils.isEmpty(headPath)) {
+                    if (!TextUtils.isEmpty(headPath)) {
+                        file = new File(sign.getHeadPath());
+                    } else if(isPrivacy){
                         file = createNullFile("", sign.getTime());
                     } else {
-                        file = new File(sign.getHeadPath());
-                        if (!file.exists()) {
-                            d("头像不存在:" + headPath);
-                            file = createNullFile("", sign.getTime());
-                        }
+                        file = createNullFile("", sign.getTime());
                     }
                     fileMap.put(file.getName(), file);
 

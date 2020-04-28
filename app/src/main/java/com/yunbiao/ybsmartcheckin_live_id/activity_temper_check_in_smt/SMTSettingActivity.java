@@ -44,6 +44,7 @@ import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -82,9 +83,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
 
     @Override
     protected void initView() {
-        if(Constants.isHT){
-            findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
-        } else if(Constants.isSK) {
+        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
             findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
         } else {
             findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.VISIBLE);
@@ -262,24 +261,24 @@ public class SMTSettingActivity extends SMTBaseActivity {
         btnWarnAdd.setOnClickListener(warnClickListener);
 
         //体温播报设置==========================================================================================
-        String normalTips = SpUtils.getStr(SpUtils.NORMAL_TIPS, getResources().getString(R.string.main_temp_normal_tips));
+        String normalTips = SpUtils.getStr(SMTModelConst.key.NORMAL_BROADCAST,SMTModelConst.Default.NORMAL_BROADCAST);
         EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
         edtNormalTips.setText(normalTips);
         edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 String input = s.toString();
-                SpUtils.saveStr(SpUtils.NORMAL_TIPS, TextUtils.isEmpty(input) ? "" : input);
+                SpUtils.saveStr(SMTModelConst.key.NORMAL_BROADCAST, TextUtils.isEmpty(input) ? "" : input);
             }
         });
-        String warningTips = SpUtils.getStr(SpUtils.WARNING_TIPS, getResources().getString(R.string.main_temp_warning_tips));
+        String warningTips = SpUtils.getStr(SMTModelConst.key.WARNING_BROADCAST,SMTModelConst.Default.WARNING_BROADCAST);
         EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
         edtWarningTips.setText(warningTips);
         edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 String input = s.toString();
-                SpUtils.saveStr(SpUtils.WARNING_TIPS, TextUtils.isEmpty(input) ? "" : input);
+                SpUtils.saveStr(SMTModelConst.key.WARNING_BROADCAST, TextUtils.isEmpty(input) ? "" : input);
             }
         });
 

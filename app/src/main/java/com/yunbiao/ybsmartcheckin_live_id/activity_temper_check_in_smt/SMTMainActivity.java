@@ -102,6 +102,9 @@ public class SMTMainActivity extends SMTTempBaseActivity {
         } else if (Constants.isSK) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
             ivMainLogo.setImageResource(R.mipmap.icon_logo3);
+        } else if(Constants.isOsimle){
+            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
+            ivMainLogo.setImageResource(R.mipmap.osimle_logo);
         } else {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
             ivMainLogo.setImageResource(R.mipmap.logo);

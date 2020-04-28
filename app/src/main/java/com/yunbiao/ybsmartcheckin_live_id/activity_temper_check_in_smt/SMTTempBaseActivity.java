@@ -10,6 +10,7 @@ import android.util.Log;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.Smt3232TempCallBack;
 import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -20,6 +21,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private int smtModel;
@@ -34,6 +36,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     private Float mTempCorrValue;
     private boolean mDistanceTipEnable;
     private boolean mFEnabled;
+    private boolean mPrivacyMode;
 
     @Override
     protected void initData() {
@@ -43,6 +46,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
         mDistanceTipEnable = SpUtils.getBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, SMTModelConst.Default.DISTANCE_TIP_ENABLE);
         mTempWarningThreshold = SpUtils.getFloat(SMTModelConst.key.TEMP_WARNING_THRESHOLD, SMTModelConst.Default.TEMP_WARNING_THRESHOLD); //测温报警阈值
         mTempMinThreshold = SpUtils.getFloat(SMTModelConst.key.TEMP_MIN_THRESHOLD, SMTModelConst.Default.TEMP_MIN_THRESHOLD); //测温最小阈值
@@ -287,55 +291,27 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                     break;
                 case 1://显示温度提示
                     Log.e(TAG, "handleMessage: 提示温度");
+                    float resultTemper = (float) msg.obj;
+                    if(resultTemper <= 0.0f){
+                        break;
+                    }
+
                     isResultShown = true;
                     removeMessages(-2);//清除距离提示
                     removeMessages(-1);//清除温度提示
                     KDXFSpeechManager.instance().stopNormal();
                     KDXFSpeechManager.instance().stopWarningRing();
 
-                    int bgId;
-                    String resultTip;
-                    float resultTemper = (float) msg.obj;
-                    if (resultTemper < mTempWarningThreshold) {
-                        ledGreen();
-                        bgId = R.mipmap.bg_verify_pass;
-                        //检查正常播报内容
-                        resultTip = getResources().getString(R.string.main_temp_normal_tips);
-                        resultRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                sendClearMessage();
-                            }
-                        };
-                    } else {
-                        ledRed();
-                        bgId = R.mipmap.bg_verify_nopass;
-                        if (resultTemper > mHighestTemp) {
-                            resultTip = getResources().getString(R.string.main_temp_error_tips);
-                        } else {
-                            resultTip = getResources().getString(R.string.main_temp_warning_tips);
-                        }
-                        resultRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                KDXFSpeechManager.instance().playWaningRing();
-                                sendClearMessage();
-                            }
-                        };
-                    }
-                    if (resultTemper <= mHighestTemp) {
-                        if(mFEnabled){
-                            resultTemper = (float) (resultTemper * 1.8 + 32);
-                            resultTemper = formatF(resultTemper);
-                            resultTip += resultTemper + "℉";
-                        } else {
-                            resultTip += resultTemper + "℃";
-                        }
-                    }
-                    showUIResult(resultTip, bgId);
+                    int bgId = getBgId(resultTemper);
+                    String resultText = getResultText(mFEnabled,resultTemper);//获取显示文字
+                    String speechText = getSpeechText(mFEnabled,resultTemper);//获取阅读文字
+                    resultRunnable = speechCallback(resultTemper);//获取后续操作
+                    Log.e(TAG, "handleMessage: 显示文字：" + resultText);
+                    Log.e(TAG, "handleMessage: 阅读文字：" + speechText);
 
-                    KDXFSpeechManager.instance().playNormal(resultTip, resultRunnable);
-                    break;
+                    showUIResult(resultText, bgId);
+                    KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                   break;
                 case 2://上传测温数据
                     Log.e(TAG, "handleMessage: 上传数据" );
                     Sign sign = (Sign) msg.obj;
@@ -349,7 +325,7 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
                         }
                     }
                     updateSignList(sign);
-                    SignManager.instance().uploadTemperatureSign(sign);
+                    SignManager.instance().uploadTemperatureSign(sign,mPrivacyMode);
                     break;
                 case -1://清除温度提示
                     isResultShown = false;
@@ -360,6 +336,71 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
             }
         }
     };
+    private Runnable speechCallback(float temperature){
+        if(temperature >= mTempWarningThreshold){
+            ledRed();
+            return resultRunnable = () -> {
+                KDXFSpeechManager.instance().playWaningRing();
+                sendClearMessage();
+            };
+        } else {
+            ledGreen();
+            return resultRunnable = () -> sendClearMessage();
+        }
+    }
+    private int getBgId(float temperature){
+        if(temperature > 45.0f){
+            return R.mipmap.bg_verify_nopass;
+        } else if(temperature >= mTempWarningThreshold){
+            return R.mipmap.bg_verify_nopass;
+        } else {
+            return R.mipmap.bg_verify_pass;
+        }
+    }
+    private String getSpeechText(boolean fEnabled, float temperature) {
+        StringBuffer stringBuffer = new StringBuffer();
+        if(temperature > 45.0f){
+            return getResources().getString(R.string.main_temp_error_tips);
+        }
+
+        if(temperature >= mTempWarningThreshold){
+            String warningText = SpUtils.getStr(SMTModelConst.key.WARNING_BROADCAST,SMTModelConst.Default.WARNING_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
+        } else {
+            String normalText = SpUtils.getStr(SMTModelConst.key.NORMAL_BROADCAST,SMTModelConst.Default.NORMAL_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
+        }
+
+        //设置语音播报
+        Locale locale = APP.getContext().getResources().getConfiguration().locale;
+        boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
+        if (fEnabled) {
+            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));
+            stringBuffer.append(isChina ? "华氏度" : "Fahrenheit degree");
+        } else {
+            stringBuffer.append(" " + temperature);
+            stringBuffer.append(isChina ? "摄氏度" : "Centigrade");
+        }
+        return stringBuffer.toString();
+    }
+
+    private String getResultText(boolean fEnabled,float temperature){
+        StringBuffer stringBuffer = new StringBuffer();
+        if(temperature > 45.0f){
+            return getResources().getString(R.string.main_temp_error_tips);
+        }
+
+        if(temperature >= mTempWarningThreshold){
+            String warningText = SpUtils.getStr(SMTModelConst.key.WARNING_BROADCAST,SMTModelConst.Default.WARNING_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
+        } else {
+            String normalText = SpUtils.getStr(SMTModelConst.key.NORMAL_BROADCAST,SMTModelConst.Default.NORMAL_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
+        }
+        stringBuffer.append(" ").append(fEnabled ? formatF((float) (temperature * 1.8 + 32)) : temperature);
+        stringBuffer.append(fEnabled ? "℉" :"℃");
+        return stringBuffer.toString();
+    }
 
     protected void updateSignList(Sign sign) {
 
@@ -384,244 +425,4 @@ public abstract class SMTTempBaseActivity extends SMTBaseActivity {
     protected abstract void showUIResult(String tip, int id);
 
     protected abstract void clearUI();
-
-    private float getMean(List<Float> array) {
-        float result = 0.0f;
-        if (array.size() == 0) {
-            return result;
-        }
-        for (float anArray : array) {
-            result += anArray;
-        }
-        result = result / array.size();
-        result = formatF(result);
-        return result;
-    }
-
-    /*List<Float> cacheLits = new ArrayList<>();
-    private static final String TAG = "SMTTempBaseActivity";
-    //开始红外测温逻辑
-    private void startTemperatureThread() {
-        if (isRunning) {
-            return;
-        }
-        isRunning = true;
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                while (isRunning) {
-                    float measuringTemperatureF = TemperatureModule.getIns().getMeasuringTemperatureF();
-                    Log.e(TAG, "run: " + measuringTemperatureF);
-
-                    //获取检测温度
-                    measuringTemperatureF = formatF(measuringTemperatureF);
-
-                    sendTempUpdateMessage(measuringTemperatureF);
-                    mCurrentTemp = measuringTemperatureF;
-
-                    if (smtModel == SMTModelConst.SMT_TEMP_ONLY) {
-
-                        if (measuringTemperatureF < mTempMinThreshold) {
-                            sendTempLowMessage();
-                            mCacheTime = 0;
-                            cacheLits.clear();
-                        } else {
-                            cacheLits.add(measuringTemperatureF);
-                            Log.e("778899", "run: " + cacheLits.size());
-
-                            //检测一个人是否刚进去
-                            if (mCacheTime == 0) {
-                                mCacheTime = 1;
-                                try {
-                                    Thread.sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                continue;
-                            }
-
-                            if (mCacheTime == 1) {
-                                mCacheTime = 2;
-                                try {
-                                    Thread.sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                continue;
-                            }
-
-                            long timeMillis = System.currentTimeMillis();
-                            if (timeMillis - mCacheTime < mSpeechDelay) {
-                                try {
-                                    Thread.sleep(300);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                continue;
-                            }
-                            mCacheTime = timeMillis;
-
-                            float finalTemp = Collections.max(cacheLits);
-                            cacheLits.clear();
-
-                            *//*if(measuringTemperatureF < 36.0f){
-                                measuringTemperatureF += 0.3f;
-                            }
-                            float finalTemp = measuringTemperatureF;*//*
-                            boolean isWarning = finalTemp >= mTempWarningThreshold;
-
-                            //截取摄像头画面并提示
-                            Bitmap currCameraFrame = getFaceViewBitmap();
-                            final Sign temperatureSign = SignManager.instance().getTemperatureSign(finalTemp);
-                            temperatureSign.setImgBitmap(currCameraFrame);
-                            temperatureSign.setHotImageBitmap(null);
-
-                            //发送结果
-                            sendTempResultMessage(isWarning, temperatureSign);
-
-                            //上传记录
-                            SignManager.instance().uploadTemperatureSign(temperatureSign);
-                        }
-
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private void sendTempLowMessage() {
-        Message message = Message.obtain();
-        message.what = -1;
-        tipsHandler.sendMessage(message);
-    }
-
-    private void sendTempUpdateMessage(float f) {
-        Message message = Message.obtain();
-        message.what = 0;
-        message.obj = f;
-        tipsHandler.sendMessage(message);
-    }
-
-    protected void sendTempResultMessage(boolean isWarning, Sign sign) {
-        Message message = Message.obtain();
-        message.what = 2;
-        message.arg1 = isWarning ? 1 : 0;
-        message.obj = sign;
-        tipsHandler.sendMessage(message);
-    }
-
-    private void sendClearMessage() {
-        tipsHandler.removeMessages(-1);
-        tipsHandler.sendEmptyMessageDelayed(-1, 2000);
-    }
-
-    //计时器
-    private Handler tipsHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    float mTemp = (float) msg.obj;
-                    updateTemp(mTemp);
-                    break;
-                case 1:
-                    sendClearMessage();
-                    break;
-                case 2:
-                    removeMessages(-1);
-                    KDXFSpeechManager.instance().stopNormal();
-                    KDXFSpeechManager.instance().stopWarningRing();
-
-                    Sign sign = (Sign) msg.obj;
-                    boolean isWarning = msg.arg1 == 1;
-                    float tempr = sign.getTemperature();
-                    String name = sign.getName();
-
-                    Runnable runnable;
-                    String tip;
-                    int id;
-                    if (isWarning) {
-                        ledRed();
-                        id = R.mipmap.bg_verify_nopass;
-                        tip = getResources().getString(R.string.main_temp_warning_tips);
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                sendClearMessage();
-                                KDXFSpeechManager.instance().playWaningRing();
-                            }
-                        };
-                    } else {
-                        ledGreen();
-                        id = R.mipmap.bg_verify_pass;
-                        tip = getResources().getString(R.string.main_temp_normal_tips);
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                sendClearMessage();
-                            }
-                        };
-                    }
-                    tip += tempr + "℃";
-
-                    setResult(tip, id, sign);
-
-                    tip = TextUtils.isEmpty(name) ? tip : (name + tip);
-                    KDXFSpeechManager.instance().playNormal(tip, runnable);
-                    break;
-                case 3:
-
-                    break;
-                case -1:
-                    clearUI();
-                    KDXFSpeechManager.instance().stopWarningRing();
-                    resetLedDelay(0);//5秒后重置灯光为蓝色
-                    break;
-            }
-        }
-    };
-
-    private float formatF(float fValue) {
-        return (float) (Math.round(fValue * 10)) / 10;
-    }
-
-
-    protected abstract void onModeChanged(int mode);
-
-    protected abstract void updateTemp(float f);
-
-    protected abstract Bitmap getFaceViewBitmap();
-
-    protected abstract void clearUI();
-
-    protected abstract void setResult(String tip, int id, Sign sign);
-
-    protected float getCurrTemp() {
-        return mCurrentTemp;
-    }
-
-    protected boolean isOnlyTemp() {
-        return smtModel == SMTModelConst.SMT_TEMP_ONLY;
-    }
-
-    protected boolean isFaceAndTemp() {
-        return smtModel == SMTModelConst.SMT_FACE_TEMP;
-    }
-
-    protected boolean isOnlyFace() {
-        return smtModel == SMTModelConst.SMT_FACE_ONLY;
-    }
-
-    protected float getMinThread() {
-        return mTempMinThreshold;
-    }
-
-    protected float getWarningThread() {
-        return mTempWarningThreshold;
-    }*/
 }

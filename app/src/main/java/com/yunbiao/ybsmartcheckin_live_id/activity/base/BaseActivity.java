@@ -41,6 +41,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.w3c.dom.Text;
 
 import java.io.InputStream;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import okhttp3.Call;
@@ -279,10 +280,29 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
+    protected float getMean(List<Float> array) {
+        float result = 0.0f;
+        if (array.size() == 0) {
+            return result;
+        }
+        for (float anArray : array) {
+            result += anArray;
+        }
+        result = result / array.size();
+        result = formatF(result);
+        return result;
+    }
+
     protected float formatF(float fValue) {
         return (float) (Math.round(fValue * 10)) / 10;
     }
 
+    private AlertDialog mAlertDialog;
+    protected void dismissAlert(){
+        if(mAlertDialog != null && mAlertDialog.isShowing()){
+            mAlertDialog.dismiss();
+        }
+    }
     protected void showRestartAlert(String message, String negative, Runnable runnable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);
@@ -294,7 +314,8 @@ public abstract class BaseActivity extends FragmentActivity {
                 runnable.run();
             }
         });
-        builder.create().show();
+        mAlertDialog = builder.create();
+        mAlertDialog.show();
     }
 
     protected void checkUpgrade(CheckUpgradeCallback callback) {

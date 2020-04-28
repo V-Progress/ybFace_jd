@@ -82,47 +82,38 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         registerReceiver(netWorkChangReceiver, filter);
     }
 
-    protected Rect adjustRect(int width, int height, Rect ftRect) {
-        int previewWidth = width;
-        int previewHeight = height;
-        int canvasWidth = 60;
-        int canvasHeight = 80;
-
+    /**
+     * 获取对应的人脸框
+     * @param ftRect
+     * @return
+     */
+    protected Rect adjustRect(int previewWidth, int previewHeight, Rect ftRect) {
         if (ftRect == null) {
             return null;
         }
 
+        int canvasWidth = 80;
+        int canvasHeight = 60;
+        float horizontalRatio = (float) canvasWidth / (float) previewWidth;
+        float verticalRatio = (float) canvasHeight / (float) previewHeight;
+
         Rect rect = new Rect(ftRect);
-        float horizontalRatio;
-        float verticalRatio;
-       /* if (cameraDisplayOrientation % 180 == 0) {
-            horizontalRatio = (float) canvasWidth / (float) previewWidth;
-            verticalRatio = (float) canvasHeight / (float) previewHeight;
-        } else {
-            horizontalRatio = (float) canvasHeight / (float) previewWidth;
-            verticalRatio = (float) canvasWidth / (float) previewHeight;
-        }*/
-        horizontalRatio = (float) canvasHeight / (float) previewWidth;
-        verticalRatio = (float) canvasWidth / (float) previewHeight;
         rect.left *= horizontalRatio;
         rect.right *= horizontalRatio;
         rect.top *= verticalRatio;
         rect.bottom *= verticalRatio;
 
-        Rect newRect = new Rect();
-        newRect.left = rect.left;
-        newRect.right = rect.right;
-        newRect.top = rect.top;
-        newRect.bottom = rect.bottom;
-        return newRect;
+        rect.left += 3;
+        rect.right += 3;
+        rect.top -= 3;
+        rect.bottom += 3;
+        return rect;
     }
 
     //显示系统信息
     private PopupWindow systemInfoPopup;
     private CountDownTimer countDownTimer;
-    private float mCacheCorrect;
-    protected void showSystemInfoPopup(float mCorrectValue, final OnCorrectValueChangeListener onCorrectValueChangeListener) {
-        mCacheCorrect = mCorrectValue;
+    protected void showSystemInfoPopup() {
         if (systemInfoPopup != null && systemInfoPopup.isShowing()) {
             dissmissSystemInfo();
             return;
@@ -191,86 +182,21 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         countDownTimer.start();
         //隐藏
         View ivHidden = rootView.findViewById(R.id.iv_hidden_info_multi_thermal);
-        ivHidden.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dissmissSystemInfo();
-            }
-        });
+        ivHidden.setOnClickListener(v -> dissmissSystemInfo());
         //跳转
         View btnSignList = rootView.findViewById(R.id.btn_sign_list_multi_thermal);
-        btnSignList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dissmissSystemInfo();
-                showSignListPopup();
-            }
+        btnSignList.setOnClickListener(v -> {
+            dissmissSystemInfo();
+            showSignListPopup();
         });
 
-        rootView.findViewById(R.id.iv_setting_info_multi_thermal).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dissmissSystemInfo();
-                goSetting();
-            }
+        rootView.findViewById(R.id.iv_setting_info_multi_thermal).setOnClickListener(v -> {
+            dissmissSystemInfo();
+            goSetting();
         });
-
-        Button btnCorrSub = rootView.findViewById(R.id.btn_correct_sub_multi);
-        Button btnCorrPlus = rootView.findViewById(R.id.btn_correct_plus_multi);
-        final EditText edtCorr = rootView.findViewById(R.id.edt_correct_multi);
-        edtCorr.setText(mCacheCorrect+"");
-        ButtonClickListener buttonClickListener = new ButtonClickListener() {
-            @Override
-            public void onShortClick(int viewId) {
-                if(viewId == R.id.btn_correct_sub_multi){
-                    mCacheCorrect -= 0.1f;
-                } else {
-                    mCacheCorrect += 0.1f;
-                }
-                mCacheCorrect = formatF(mCacheCorrect);
-                edtCorr.setText(mCacheCorrect+"");
-                onCorrectValueChangeListener.onCorrectValueChanged(mCacheCorrect);
-
-                mHanlder.removeMessages(0);
-                mHanlder.sendEmptyMessageDelayed(0,1000);
-            }
-
-            @Override
-            public void onLongClick(int viewId) {
-                if(viewId == R.id.btn_correct_sub_multi){
-                    mCacheCorrect -= 0.1f;
-                } else {
-                    mCacheCorrect += 0.1f;
-                }
-                mCacheCorrect = formatF(mCacheCorrect);
-                edtCorr.setText(mCacheCorrect+"");
-                onCorrectValueChangeListener.onCorrectValueChanged(mCacheCorrect);
-            }
-
-            @Override
-            public void onLongClickFinish(int viewId) {
-                mHanlder.removeMessages(0);
-                mHanlder.sendEmptyMessageDelayed(0,1000);
-            }
-        };
-        btnCorrSub.setOnTouchListener(buttonClickListener);
-        btnCorrPlus.setOnTouchListener(buttonClickListener);
 
         View decorView = getWindow().getDecorView();
         systemInfoPopup.showAtLocation(decorView, Gravity.LEFT | Gravity.CENTER_VERTICAL, 0, 0);
-    }
-    private Handler mHanlder = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == 0) {
-                Log.e(TAG, "handleMessage: 保存数值：" + mCacheCorrect);
-                SpUtils.saveFloat(MultiThermalConst.Key.CORRECT_VALUE,mCacheCorrect);
-            }
-            return true;
-        }
-    });
-    public interface OnCorrectValueChangeListener{
-        void onCorrectValueChanged(float value);
     }
 
     private void dissmissSystemInfo() {
@@ -346,7 +272,8 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
                 return;
             }
             tvNoData.setVisibility(View.GONE);
-            lvRecord.setAdapter(new MultiRecordAdapter(BaseMultiThermalActivity.this, signs));
+            boolean aBoolean = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+            lvRecord.setAdapter(new MultiRecordAdapter(BaseMultiThermalActivity.this, signs,aBoolean));
         });
 
         lvRecord.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -415,29 +342,12 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
             @Override
             public void run() {
                 int comid = SpUtils.getCompany().getComid();
-//                final List<String> dateList = new ArrayList<>();
                 final List<Sign> signs = DaoManager.get().querySignByComId(comid);
-    /*            if (signs != null && signs.size() > 0) {
-                    for (int i = 0; i < signs.size(); i++) {
-                        Sign sign = signs.get(i);
-                        String date = sign.getDate();
-                        if(TextUtils.isEmpty(date)){
-                            continue;
-                        }
-                        if (!dateList.contains(date)) {
-                            dateList.add(date);
-                        }
-                    }
-                }*/
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            resultConsumer.accept(signs);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                runOnUiThread(() -> {
+                    try {
+                        resultConsumer.accept(signs);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
             }

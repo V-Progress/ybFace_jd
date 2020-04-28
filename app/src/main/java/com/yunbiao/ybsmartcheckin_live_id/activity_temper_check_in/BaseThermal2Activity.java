@@ -24,6 +24,9 @@ import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTModelConst;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
@@ -66,6 +69,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private Rect mAreaRect = new Rect();//范围限制View的Rect
 
     private ThermalViewInterface viewInterface;
+    private boolean mPrivacyMode;
 
     @Override
     protected void initData() {
@@ -83,6 +87,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     @Override
     protected void onResume() {
         super.onResume();
+        //隐私模式
+        mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
         //播报延时
         mSpeechDelay = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY, ThermalConst.Default.SPEECH_DELAY);
         //测温最小阈值
@@ -98,7 +104,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         //温度补偿
         mTempCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         TemperatureModule.getIns().setmCorrectionValue(mTempCorrect);
-
+        //华氏度
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
 
         //模式切换
@@ -164,6 +170,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private HotImageK3232CallBack imageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
+            dismissAlert();
             handleTemperature(imageBmp, sensorT, maxT);
         }
 
@@ -176,6 +183,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            dismissAlert();
             handleTemperature(imageBmp, originalMaxT, maxT);
         }
 
@@ -287,7 +295,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 temperatureSign.setHotImageBitmap(copyImage);
                 temperatureSign.setImgBitmap(viewInterface.getFacePicture());
                 sendUpdateSignMessage(temperatureSign);//发送列表更新事件
-                SignManager.instance().uploadTemperatureSign(temperatureSign);//上传数据
+                SignManager.instance().uploadTemperatureSign(temperatureSign,mPrivacyMode);//上传数据
             }
         } else if (mCurrMode == ThermalConst.FACE_THERMAL || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
             mCacheTemperList.add(afterT);
@@ -413,7 +421,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             sendResultMessage(resultTemper, sign.getName());
             viewInterface.updateSignList(sign);
 
-            SignManager.instance().uploadTemperatureSign(sign);
+            SignManager.instance().uploadTemperatureSign(sign,mPrivacyMode);
 
             if (sign.getType() == -2 || sign.getType() == -9) {
                 return;
@@ -504,6 +512,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     break;
                 case 1://测温结果
                     float temperature = (float) msg.obj;
+                    String name = msg.getData().getString("name");
                     if (temperature <= 0.0f) {
                         break;
                     }
@@ -514,40 +523,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     KDXFSpeechManager.instance().stopWarningRing();
                     isResultShown = true;
 
-                    String name = msg.getData().getString("name");
-
-                    StringBuffer resultTip = getTextTip(temperature);
-                    int bgId = getTipBackground(temperature);
-                    Runnable resultRunnable;
-                    if (temperature < mTempWarningThreshold) {
-                        ledGreen();
-                        resultRunnable = () -> sendResetResultMessage();
-                    } else {
-                        ledRed();
-                        resultRunnable = () -> {
-                            KDXFSpeechManager.instance().playWaningRing();
-                            sendResetResultMessage();
-                        };
-                    }
-
-                    if (temperature < HIGHEST_TEMPER) {
-                        resultTip.append(" ");
-                        if (mFEnabled) {
-                            resultTip.append(formatF((float) (temperature * 1.8 + 32)));
-                            resultTip.append("℉");
-                        } else {
-                            resultTip.append(temperature);
-                            resultTip.append("℃");
-                        }
-                    }
-
-                    Log.e(TAG, "handleMessage: " + resultTip.toString());
-                    viewInterface.showResult(resultTip.toString(), bgId);
-
-                    String speechText = getSpeechText(resultTip.toString(), temperature);
+                    int bgId = getBgId(temperature);
+                    Runnable resultRunnable = speechCallback(temperature);
+                    String resultText = getResultText(mFEnabled,temperature);
+                    String speechText = getSpeechText(mFEnabled,temperature);
                     if (!TextUtils.isEmpty(name)) {
                         speechText += "，" + name;
                     }
+
+                    viewInterface.showResult(resultText, bgId);
                     KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
                     break;
                 case 2://提示相关
@@ -584,64 +568,79 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return true;
         }
     });
-
-    private int getTipBackground(float temperature) {
-        int bgId;
-        if (temperature < mTempWarningThreshold) {
+    private Runnable speechCallback(float temperature){
+        if(temperature >= mTempWarningThreshold){
+            ledRed();
+            return () -> {
+                KDXFSpeechManager.instance().playWaningRing();
+                sendResetResultMessage();
+            };
+        } else {
+            ledGreen();
+            if(mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.THERMAL_ONLY){
+                openDoor();
+            }
+            return () -> sendResetResultMessage();
+        }
+    }
+    private int getBgId(float temperature){
+        if(temperature >= mTempWarningThreshold){
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                bgId = R.mipmap.bg_verify_pass;
+                return R.mipmap.bg_verify_nopass;
             } else {
-                bgId = R.drawable.shape_main_frame_temperature_normal;
+                return R.drawable.shape_main_frame_temperature_warning;
             }
         } else {
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                bgId = R.mipmap.bg_verify_nopass;
+                return R.mipmap.bg_verify_pass;
             } else {
-                bgId = R.drawable.shape_main_frame_temperature_warning;
+                return R.drawable.shape_main_frame_temperature_normal;
             }
         }
-        return bgId;
     }
+    private String getSpeechText(boolean fEnabled, float temperature) {
+        StringBuffer stringBuffer = new StringBuffer();
+        if(temperature > 45.0f){
+            return getResources().getString(R.string.main_temp_error_tips);
+        }
 
-    private StringBuffer getTextTip(float temperature) {
-        StringBuffer resultTip = new StringBuffer();
-        //如果体温正常
-        if (temperature < mTempWarningThreshold) {
-            String normalBroad = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
-            if (TextUtils.isEmpty(normalBroad)) {
-                resultTip.append(getResources().getString(R.string.main_temp_normal_tips));
-            } else {
-                resultTip.append(normalBroad);
-            }
+        if(temperature >= mTempWarningThreshold){
+            String warningText = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST,ThermalConst.Default.WARNING_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
         } else {
-            //如果体温异常并且大于最高值
-            if (temperature > HIGHEST_TEMPER) {
-                resultTip.append(getResources().getString(R.string.main_temp_error_tips));
-            } else {//如果体温异常
-                //检查异常播报内容
-                String warningBroad = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
-                if (TextUtils.isEmpty(warningBroad)) {
-                    resultTip.append(getResources().getString(R.string.main_temp_warning_tips));
-                } else {
-                    resultTip.append(warningBroad);
-                }
-            }
+            String normalText = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST,ThermalConst.Default.NORMAL_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
         }
-        return resultTip;
+
+        //设置语音播报
+        Locale locale = APP.getContext().getResources().getConfiguration().locale;
+        boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
+        if (fEnabled) {
+            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));
+            stringBuffer.append(isChina ? "华氏度" : "Fahrenheit degree");
+        } else {
+            stringBuffer.append(" " + temperature);
+            stringBuffer.append(isChina ? "摄氏度" : "Centigrade");
+        }
+        return stringBuffer.toString();
     }
 
-    private String getSpeechText(String resultTip, float temperature) {
-        if (temperature < HIGHEST_TEMPER) {
-            //设置语音播报
-            Locale locale = APP.getContext().getResources().getConfiguration().locale;
-            boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
-            if (mFEnabled) {
-                resultTip += (isChina ? "华氏度" : "Fahrenheit degree");
-            } else {
-                resultTip += (isChina ? "摄氏度" : "Centigrade");
-            }
+    private String getResultText(boolean fEnabled,float temperature){
+        StringBuffer stringBuffer = new StringBuffer();
+        if(temperature > 45.0f){
+            return getResources().getString(R.string.main_temp_error_tips);
         }
-        return resultTip;
+
+        if(temperature >= mTempWarningThreshold){
+            String warningText = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST,ThermalConst.Default.WARNING_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
+        } else {
+            String normalText = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST,ThermalConst.Default.NORMAL_BROADCAST);
+            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
+        }
+        stringBuffer.append(" ").append(fEnabled ? formatF((float) (temperature * 1.8 + 32)) : temperature);
+        stringBuffer.append(fEnabled ? "℉" :"℃");
+        return stringBuffer.toString();
     }
 
     public boolean checkFaceToFar(Rect faceRect, int distance) {

@@ -48,6 +48,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
     TextView tvVersionName;
     @BindView(R.id.fl_version_multi_thermal_system)
     View flVersionLoading;
+    @BindView(R.id.sw_privacy_mode)
+    Switch swPrivacyMode;
 
     private ImageView ivHotImage;
 
@@ -84,6 +86,14 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackEnable();
 
         initSetIp();
+
+        initPrivacy();
+    }
+
+    private void initPrivacy(){
+        boolean aBoolean = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+        swPrivacyMode.setChecked(aBoolean);
+        swPrivacyMode.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.PRIVACY_MODE,isChecked));
     }
 
     @Override
@@ -385,14 +395,12 @@ public class MultiThermalSettingActivity extends BaseActivity {
         @Override
         public void run() {
             boolean mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
-            boolean mLowTemp = SpUtils.getBoolean(MultiThermalConst.Key.LOW_TEMP, MultiThermalConst.Default.LOW_TEMP);
-            float mBodyCorrectTemper = SpUtils.getFloat(MultiThermalConst.Key.CORRECT_VALUE, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
 
             Rect cacheRect = getCacheRect();
 
             //开启热成像6080模块
             //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
-            TemperatureModule.getIns().startHotImageK6080(mThermalMirror, mLowTemp, new HotImageK6080CallBack() {
+            TemperatureModule.getIns().startHotImageK6080(mThermalMirror, false, new HotImageK6080CallBack() {
                 @Override
                 public void newestHotImageData(final Bitmap bitmap, float v, float v1, float v2) {
                     if (ivHotImage != null) {
@@ -410,7 +418,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
 
                 }
             });
-            TemperatureModule.getIns().setmCorrectionValue(mBodyCorrectTemper);
+            TemperatureModule.getIns().setmCorrectionValue(0.0f);
             BlackBody blackBody = new BlackBody(cacheRect.left, cacheRect.right, cacheRect.top, cacheRect.bottom);
             blackBody.setFrameColor(Color.WHITE);
             blackBody.setTempPreValue(345);

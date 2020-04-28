@@ -735,6 +735,10 @@ public class SyncManager {
             return;
         }
 
+        if(Constants.isSoftWorkz){
+            return;
+        }
+
         if (!SyncDialog.instance().isShown()) {
             SyncDialog.instance().show();
         }

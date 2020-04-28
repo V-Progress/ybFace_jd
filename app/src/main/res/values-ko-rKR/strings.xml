@@ -2,6 +2,7 @@
     <string name="app_name">YBFace</string>
     <string name="app_name2">HTFace</string>
     <string name="app_name3">思库考勤</string>
+    <string name="app_name4">Osmile AI</string>
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
     <string name="back">이전</string>
@@ -458,7 +459,7 @@
     <string name="record_head_multi_thermal">头像</string>
     <string name="record_hot_multi_thermal">热成像</string>
     <string name="setting_black_body_rect_multi_thermal">黑体检测区域校准</string>
-    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_failed_multi_thermal">not changed</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>

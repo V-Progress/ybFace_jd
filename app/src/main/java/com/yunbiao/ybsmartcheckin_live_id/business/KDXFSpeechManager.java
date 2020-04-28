@@ -120,7 +120,7 @@ public class KDXFSpeechManager {
     public void welcome() {
         String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
                 ? APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
-                : Constants.isSK
+                : Constants.isSK || Constants.isOsimle
                 ? ""
                 : APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         if (TextUtils.isEmpty(welcomeTips)) {

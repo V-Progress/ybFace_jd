@@ -123,15 +123,18 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
         if (Constants.isHT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-            ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             setImageByResId(ivMainLogo, R.mipmap.logo_icon_horizontal);
         } else if(Constants.isSK){
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-            ivMainLogo.setImageResource(R.mipmap.icon_logo3);
             setImageByResId(ivMainLogo, R.mipmap.icon_logo3);
+        } else if (Constants.isOsimle) {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
+            setImageByResId(ivMainLogo, R.mipmap.osimle_logo);
+        } else if(Constants.isSoftWorkz){
+            ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
+            setImageByResId(ivMainLogo, R.mipmap.softworkz_logo);
         } else {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
-            ivMainLogo.setImageResource(R.mipmap.logo);
             setImageByResId(ivMainLogo, R.mipmap.logo);
         }
     }
@@ -212,7 +215,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     public void updateHotImage(Bitmap bitmap, float temper, boolean hasFace) {
         if (ivInfaredImaging.isShown()) {
             ivInfaredImaging.setImageBitmap(bitmap);
-//            tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
             tvThermalTemper.setText(hasFace ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
         } else if (ivThermalImaging.isShown()) {
             ivThermalImaging.setImageBitmap(bitmap);

@@ -56,9 +56,6 @@ public class Sign {
     private String hotImgPath;
 
     @Transient
-    private byte[] imgBytes;
-
-    @Transient
     private Bitmap imgBitmap;
 
     @Transient
@@ -142,14 +139,6 @@ public class Sign {
 
     public void setComid(int comid) {
         this.comid = comid;
-    }
-
-    public byte[] getImgBytes() {
-        return imgBytes;
-    }
-
-    public void setImgBytes(byte[] imgBytes) {
-        this.imgBytes = imgBytes;
     }
 
     public long getVisEntryId() {
@@ -309,7 +298,6 @@ public class Sign {
                 ", comid=" + comid +
                 ", type=" + type +
                 ", visEntryId=" + visEntryId +
-                ", imgBytes=" + Arrays.toString(imgBytes) +
                 '}';
     }
 }

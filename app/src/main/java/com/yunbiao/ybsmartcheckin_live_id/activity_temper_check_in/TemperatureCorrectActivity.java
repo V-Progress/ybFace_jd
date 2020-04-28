@@ -245,17 +245,4 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         TemperatureModule.getIns().closeHotImageK3232();
     }
 
-    private float getMean(List<Float> array) {
-        float result = 0.0f;
-        if (array.size() == 0) {
-            return result;
-        }
-        for (float anArray : array) {
-            result += anArray;
-        }
-        result = result / array.size();
-        result = formatF(result);
-        return result;
-    }
-
 }

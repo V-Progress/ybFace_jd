@@ -825,7 +825,7 @@ public class FaceView extends FrameLayout {
         }
         drawHelper.draw(faceRectView, drawInfoList);
 
-        if (sencondFaceRectView != null) {
+        if (sencondFaceRectView != null && isDrawSecondFaceRect) {
             drawHelper.draw2(sencondFaceRectView, drawInfoList);
         }
     }
@@ -846,6 +846,11 @@ public class FaceView extends FrameLayout {
     }
 
     private SecondFaceRectView sencondFaceRectView;
+
+    private boolean isDrawSecondFaceRect = true;
+    public void setDrawSecondFaceRect(boolean isDraw){
+        isDrawSecondFaceRect = isDraw;
+    }
 
     public void setSecondFaceRectView(SecondFaceRectView view) {
         Log.e(TAG, "setSecondFaceRectView: 设置第二个人脸框");

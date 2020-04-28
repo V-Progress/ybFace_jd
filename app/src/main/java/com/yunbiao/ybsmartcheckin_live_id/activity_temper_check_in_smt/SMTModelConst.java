@@ -25,6 +25,8 @@ public class SMTModelConst {
         String TEMP_CORRECT_VALUE = "tempCorrectValue";
         String AMB_CORRECT_VALUE = "ambCorrectValue";
         String MODE = "smt_model_setting";
+        String NORMAL_BROADCAST = "smtNormalBroadcast";
+        String WARNING_BROADCAST = "smtWarningBroadcast";
     }
 
     interface Default{
@@ -37,5 +39,7 @@ public class SMTModelConst {
         float TEMP_CORRECT_VALUE= 0.0f;
         float AMB_CORRECT_VALUE= 0.0f;
         int MODE = SMT_TEMP_ONLY;
+        String  NORMAL_BROADCAST = "";
+        String WARNING_BROADCAST = "";
     }
 }

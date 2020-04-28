@@ -5,6 +5,7 @@
 </string>
     <string name="app_name3">思库インテリジェント勤務
 </string>
+    <string name="app_name4">Osmile AI</string>
     <string name="used">使用済み:</string>
     <string name="no_used">/利用できる:</string>
     <string name="back">戻る</string>
@@ -609,7 +610,7 @@
     <string name="record_hot_multi_thermal">热成像</string>
     <string name="setting_black_body_rect_multi_thermal">黒体検出エリアキャリブレーション
 </string>
-    <string name="setting_save_failed_multi_thermal">保存失败</string>
+    <string name="setting_save_failed_multi_thermal">not changed</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
     <string name="setting_please_correct_multi_thermal">（体温ガンの温度測定と熱結像温度に合わせて差を記入してください。）</string>

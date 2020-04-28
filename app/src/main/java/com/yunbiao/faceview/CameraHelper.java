@@ -114,24 +114,32 @@ public class CameraHelper implements Camera.PreviewCallback {
                     }
                     previewSize = getBestSupportedSize(supportedPreviewSizes, previewViewSize);
                 }
+
                 if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL ||
                         Constants.DEVICE_TYPE == Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT || Constants.DEVICE_TYPE == Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT) {
-                    previewSize.width = 1280;
+                    previewSize.width = 800;
+                    previewSize.height = 600;
+                    /*previewSize.width = 1280;
                     previewSize.height = 960;
                     boolean isSupport960 = false;
                     if(supportedPreviewSizes != null && supportedPreviewSizes.size() > 0){
                         for (Camera.Size size : supportedPreviewSizes) {
                             if(size.width == previewSize.width && size.height == previewSize.height){
+                                Log.e(TAG, "111: " + size.width + " --- " + previewSize.width);
+                                Log.e(TAG, "111: " + size.height + " ---" + previewSize.height);
                                 isSupport960 = true;
                                 break;
                             }
                         }
                     }
+                    Log.e(TAG, "start: 是否支持：" + isSupport960);
+
                     if(!isSupport960){
                         previewSize.width = 1280;
                         previewSize.height = 720;
-                    }
+                    }*/
                 }
+                Log.e(TAG, "start: 当前摄像头分辨率：" + previewSize.width + " --- " + previewSize.height);
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
 
                 //对焦模式设置

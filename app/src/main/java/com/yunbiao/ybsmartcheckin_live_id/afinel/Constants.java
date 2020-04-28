@@ -77,12 +77,18 @@ public class Constants {
     public static final boolean isHT = BuildConfig.IS_HT;
     //是否思库的版本(云标分支版本)
     public static final boolean isSK = BuildConfig.IS_SK;
+    //是否是Osmile的版本
+    public static final boolean isOsimle = BuildConfig.IS_OSIMLE;
+    //是否SoftWorkz的版本
+    public static final boolean isSoftWorkz = BuildConfig.IS_SOFT_WORK_Z;
     //最大人脸抓取数
     public static final int MAX_DETECT_NUM = BuildConfig.MAX_DETECT_FACE_NUM;
     //最远人脸抓取距离
     public static final int DETECT_FACE_SCALE_VAL = BuildConfig.DETECT_FACE_SCALE_VAL;
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
+    //双光头横向大小偏移量
+    public static int HORIZONTAL_OFFSET = 4;
 
     /***
      * 网络配置
@@ -144,6 +150,16 @@ public class Constants {
     public static final boolean DEFAULT_QRCODE_ENABLED = true;
     //默认读卡器
     public static final boolean DEFAULT_READ_CARD_ENABLED = false;
+
+    public interface Key{
+        String PRIVACY_MODE = "privacyMode";
+        String CLEAR_POLICY = "clearPolicy";
+    }
+
+    public static class Default{
+        public static final boolean PRIVACY_MODE = false;
+        public static final int CLEAR_POLICY = 2;
+    }
 }
 
 
