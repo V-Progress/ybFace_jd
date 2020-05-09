@@ -1,11 +1,15 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
 import android.app.Activity;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +22,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyChe
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light.SafetyCheckDoubleLightActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMain2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -66,6 +71,17 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        /*APP.getContext().bindService(new Intent(this,TestService.class), new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.e("TestService", "onServiceConnected: ");
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Log.e("TestService", "onServiceDisconnected: ");
+            }
+        }, Service.BIND_AUTO_CREATE);*/
         SpUtils.init();
         Constants.checkSetIp();
         Constants.initStorage();
@@ -177,6 +193,7 @@ public class SplashActivity extends BaseActivity {
         UIUtils.dismissNetLoading();
 
         int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+        Log.e(TAG, "激活结果: " + code);
         if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
             APP.bindProtectService();
             jump();
@@ -223,7 +240,7 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
                 Constants.DEFAULT_FACE_MIRROR = false;
-                startActivity(new Intent(SplashActivity.this, SMTMainActivity.class));
+                startActivity(new Intent(SplashActivity.this, SMTMain2Activity.class));
                 break;
             case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
             case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
@@ -262,7 +279,7 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT:
             case Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT:
                 Constants.HORIZONTAL_OFFSET = 4;
-                Constants.DEFAULT_FACE_MIRROR = true;
+                Constants.DEFAULT_FACE_MIRROR = false;
                 Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));
                 break;

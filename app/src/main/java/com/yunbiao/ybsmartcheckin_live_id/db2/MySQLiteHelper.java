@@ -34,6 +34,7 @@ public class MySQLiteHelper extends DaoMaster.OpenHelper {
         MigrationHelper.migrate(db, MultiTotalDao.class);
         MigrationHelper.migrate(db, ExceptionDao.class);
         MigrationHelper.migrate(db, WhiteDao.class);
+        MigrationHelper.migrate(db, VertifyRecordDao.class);
     }
 
     private void d(String msg) {

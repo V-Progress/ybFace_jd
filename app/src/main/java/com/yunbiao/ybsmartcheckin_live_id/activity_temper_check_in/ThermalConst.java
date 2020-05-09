@@ -13,6 +13,8 @@ public class ThermalConst {
     public static final int FACE_INFRARED = 4;//人脸+红外
     public static final int THERMAL_16_4_ONLY = 5;//仅热成像16*4
     public static final int FACE_THERMAL_16_4 = 6;//人脸+热成像16*4
+    public static final int ONLY_THERMAL_MLX_16_4 = 7;//仅测温模式MLX-16*4
+    public static final int FACE_THERMAL_MLX_16_4 = 8;//人脸+测温模式MLX-16*4
 
     public static int DEFAULT_THERMAL_MODEL = THERMAL_ONLY;
 

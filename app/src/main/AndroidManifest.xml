@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity.ClearPolicyActivity"></activity>
+        <activity android:name=".activity_certificates.VertifyRecordActivity"></activity>
+        <activity android:name=".activity.ClearPolicyActivity" />
         <activity android:name=".activity_certificates.CertificatesWhiteListActivity" />
         <activity android:name=".activity_safety_check_double_light.SafetyDoubleLightSettingActivity" />
         <activity android:name=".activity_safety_check_double_light.SafetyCheckDoubleLightActivity" />
@@ -63,6 +64,9 @@
         <activity android:name=".activity_temper_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
         <activity
             android:name=".activity_temper_check_in_smt.SMTMainActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activity_temper_check_in_smt.SMTMain2Activity"
             android:launchMode="singleTask" />
         <activity android:name=".activity_temper_check_in_smt.SMTSystemActivity" />
         <activity android:name=".activity_temper_check_in_smt.SMTEmployListActivity" />
@@ -135,6 +139,7 @@
                 <action android:name="alarm_action" />
             </intent-filter>
         </receiver> <!-- 百度定位 -->
+        <service android:name=".TestService"/>
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service
             android:name=".ReadCardService"
@@ -175,14 +180,14 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.hardware.usb.accessory" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />

@@ -102,11 +102,11 @@ public class MultiRecordAdapter extends BaseAdapter {
             tvTime.setText(dateFormat.format(sign.getTime()));
             tvTemper.setText(sign.getTemperature() + "℃");
             DrawableTypeRequest<String> load = Glide.with(mAct).load(sign.getHeadPath());
-            if (isPrivacy) {
+            /*if (isPrivacy) {
                 load.transform(new BlurTransformation(mAct, 20));
             } else {
                 load.asBitmap();
-            }
+            }*/
             load.into(ivHead);
 
             Glide.with(mAct).load(sign.getHotImgPath()).asBitmap().into(ivHot);

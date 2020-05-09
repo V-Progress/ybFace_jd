@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
@@ -106,17 +107,17 @@ public class SMTSystemActivity extends SMTBaseActivity implements View.OnClickLi
 
         btnSkinSystem.setVisibility(View.INVISIBLE);
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name2);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else if (Constants.isSK) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name3);
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-        } else if(Constants.isOsimle){
+        } else if(Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name4);
             ivLogo.setImageResource(R.mipmap.osimle_logo);

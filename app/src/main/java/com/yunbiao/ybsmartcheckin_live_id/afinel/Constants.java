@@ -73,14 +73,8 @@ public class Constants {
 
     //修改设备类型
     public static final int DEVICE_TYPE = BuildConfig.APP_TYPE;
-    //是否亨通的版本（独立版本）
-    public static final boolean isHT = BuildConfig.IS_HT;
-    //是否思库的版本(云标分支版本)
-    public static final boolean isSK = BuildConfig.IS_SK;
-    //是否是Osmile的版本
-    public static final boolean isOsimle = BuildConfig.IS_OSIMLE;
-    //是否SoftWorkz的版本
-    public static final boolean isSoftWorkz = BuildConfig.IS_SOFT_WORK_Z;
+    //打包版本
+    public static final int FLAVOR_TYPE = BuildConfig.FLAVOR_TYPE;
     //最大人脸抓取数
     public static final int MAX_DETECT_NUM = BuildConfig.MAX_DETECT_FACE_NUM;
     //最远人脸抓取距离

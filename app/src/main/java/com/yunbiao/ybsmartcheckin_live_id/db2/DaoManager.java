@@ -52,6 +52,7 @@ public class DaoManager {
         daoSession.getVisitorDao().detachAll();
         daoSession.getMultiTotalDao().detachAll();
         daoSession.getWhiteDao().detachAll();
+        daoSession.getVertifyRecordDao().detachAll();
     }
 
     public DaoSession getDaoSession() {
@@ -298,5 +299,12 @@ public class DaoManager {
             return;
         }
         daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    public List<VertifyRecord> queryVertifyRecordByDate(String date){
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getVertifyRecordDao().queryBuilder().where(VertifyRecordDao.Properties.Date.eq(date)).list();
     }
 }

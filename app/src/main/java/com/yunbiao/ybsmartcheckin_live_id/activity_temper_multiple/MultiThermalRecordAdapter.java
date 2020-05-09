@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,14 +27,9 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private int itemId = -1;
     private Activity mAct;
-    private boolean isPrivacy;
 
     public void setWarningThreshold(float warningThreshold) {
         this.warningThreshold = warningThreshold;
-    }
-
-    public void setPrivacy(boolean privacy) {
-        isPrivacy = privacy;
     }
 
     public MultiThermalRecordAdapter(Activity activity, List<MultiTemperBean> list, int horizontal) {
@@ -80,18 +76,11 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         public void bindData(MultiTemperBean multiTemperBean) {
-            DrawableTypeRequest request;
             if (multiTemperBean.getHeadImage() != null) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                multiTemperBean.getHeadImage().compress(Bitmap.CompressFormat.PNG, 100, baos);
-                request = Glide.with(mAct).load(baos.toByteArray());
+                ivHead.setImageBitmap(multiTemperBean.getHeadImage());
             } else {
-                request = Glide.with(mAct).load(multiTemperBean.getHeadPath());
+                Glide.with(mAct).load(multiTemperBean.getHeadPath()).asBitmap().into(ivHead);
             }
-            if(isPrivacy){
-                request.transform(new BlurTransformation(mAct, 20f));
-            }
-            request.into(ivHead);
 
             Bitmap hotImage = multiTemperBean.getHotImage();
             if (hotImage != null) {

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -99,7 +100,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         tv_date.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
 
-        if(Constants.isSoftWorkz){
+        if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
             tvExport.setVisibility(View.INVISIBLE);
             tvExport.setEnabled(false);
         }

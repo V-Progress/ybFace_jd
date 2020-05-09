@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
@@ -83,7 +84,7 @@ public class SMTSettingActivity extends SMTBaseActivity {
 
     @Override
     protected void initView() {
-        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
+        if(Constants.FLAVOR_TYPE == FlavorType.HT || Constants.FLAVOR_TYPE == FlavorType.SK || Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
             findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.GONE);
         } else {
             findViewById(R.id.ll_qr_code_enable_area).setVisibility(View.VISIBLE);
@@ -91,9 +92,12 @@ public class SMTSettingActivity extends SMTBaseActivity {
     }
 
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
-                ? APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
-                : APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = "";
+        if(Constants.FLAVOR_TYPE == FlavorType.YB){
+            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
+            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
+        }
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);
         edtWelComeTips.addTextChangedListener(new TextWatcher() {

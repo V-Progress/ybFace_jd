@@ -131,6 +131,15 @@ public class CertificatesSettingActivity extends BaseActivity {
         initSimilarSetting();
         //摄像头设置
         initCameraSetting();
+        //打印机配置
+        initUsbPrinter();
+    }
+
+    private void initUsbPrinter(){
+        Switch swPrinter = findViewById(R.id.sw_usb_printer_setting);
+        boolean enabled = SpUtils.getBoolean(CertificatesConst.Key.USB_PRINTER_ENABLED, CertificatesConst.Default.USB_PRINTER_ENABLED);
+        swPrinter.setChecked(enabled);
+        swPrinter.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(CertificatesConst.Key.USB_PRINTER_ENABLED, isChecked));
     }
 
     @Override

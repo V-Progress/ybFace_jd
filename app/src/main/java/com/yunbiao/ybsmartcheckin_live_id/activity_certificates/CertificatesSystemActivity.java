@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
@@ -113,8 +114,7 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
 
-
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             tvCopyRight.setVisibility(View.GONE);
@@ -243,6 +243,10 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
 
     public void goWhiteList(View view) {
         startActivity(new Intent(this, CertificatesWhiteListActivity.class));
+    }
+
+    public void goRecordList(View view){
+        startActivity(new Intent(this,VertifyRecordActivity.class));
     }
 
     private void setTextWatchers(final EditText[] editTexts) {

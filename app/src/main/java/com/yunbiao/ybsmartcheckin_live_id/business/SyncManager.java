@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -735,7 +736,7 @@ public class SyncManager {
             return;
         }
 
-        if(Constants.isSoftWorkz){
+        if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
             return;
         }
 

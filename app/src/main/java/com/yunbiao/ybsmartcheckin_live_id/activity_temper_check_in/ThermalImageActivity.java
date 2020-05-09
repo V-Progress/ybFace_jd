@@ -25,6 +25,7 @@ import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
@@ -114,7 +115,7 @@ public class ThermalImageActivity extends BaseThermalActivity {
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivMainLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             setImageByResId(ivMainLogo,R.mipmap.logo_icon_horizontal);

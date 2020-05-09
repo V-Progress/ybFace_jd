@@ -126,15 +126,10 @@
         android:layout_height="wrap_content"
         android:paddingLeft="40dp"
         android:paddingRight="40dp">
-
         <TableRow
-            android:layout_margin="26dp"
-            android:gravity="center"
-            android:weightSum="2">
-        </TableRow>
-
-        <TableRow
-            android:layout_margin="26dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:weightSum="2"
             android:gravity="center">
             <Button
@@ -159,18 +154,44 @@
                 android:text="@string/System_Setting"
                 android:textColor="@color/white"
                 android:textSize="32dp" />
-
         </TableRow>
 
         <TableRow
-            android:layout_margin="26dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:gravity="center"
             android:weightSum="2">
+            <Button
+                android:onClick="goRecordList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_take_photo"
+                android:padding="26dp"
+                android:text="验证记录"
+                android:textColor="@color/white"
+                android:textSize="32dp" />
+
+            <Button
+                android:enabled="false"
+                android:visibility="invisible"
+                android:onClick="goRecordList"
+                android:layout_width="0dp"
+                android:layout_marginLeft="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_take_photo"
+                android:padding="26dp"
+                android:text="验证记录"
+                android:textColor="@color/white"
+                android:textSize="32dp" />
+
         </TableRow>
     </TableLayout>
 
     <LinearLayout
-        android:paddingTop="10dp"
+        android:paddingTop="15dp"
         android:padding="5dp"
         android:background="@drawable/shape_employ_button"
         android:layout_marginTop="10dp"

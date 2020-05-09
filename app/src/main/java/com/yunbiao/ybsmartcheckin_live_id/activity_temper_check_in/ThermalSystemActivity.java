@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
@@ -114,22 +115,22 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
         Company company = SpUtils.getCompany();
         //亨通隐藏版权
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.ht_temper_check_in);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else if (Constants.isSK) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.sk_temper_check_in);
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-        } else if (Constants.isOsimle) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             tvCopyRight.setVisibility(View.GONE);
             appName = getResString(R.string.app_name4);
             ivLogo.setImageResource(R.mipmap.osimle_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
-        } else if(Constants.isSoftWorkz){
+        } else if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
             tvCopyRight.setVisibility(View.GONE);
             appName = getResString(R.string.app_name5);
             ivLogo.setImageResource(R.mipmap.softworkz_logo);

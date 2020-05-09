@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yunbiao.faceview.FaceView
+        android:id="@+id/face_view"
+        android:layout_width="match_parent"
+        android:layout_height="1422dp"
+        android:layout_gravity="center" />
+
+    <View
+        android:visibility="invisible"
+        android:id="@+id/view_face_distance"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_temperature_frame_background" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_top_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_main_logo"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:onClick="goSetting"
+                android:scaleType="fitStart"
+                android:src="@mipmap/yb_logo" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_main_abbname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_clock_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+                <!--<TextClock
+                    android:id="@+id/textClock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+                    android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+                    android:textColor="@color/text_clock_color_main"
+                    android:textSize="28dp" />-->
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_big_head"
+            android:src="@mipmap/big_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/fl_dot_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="280dp"
+            android:background="@drawable/shape_dot_area_background">
+
+            <ImageView
+                android:layout_marginRight="150dp"
+                android:layout_marginLeft="150dp"
+                android:layout_centerInParent="true"
+                android:layout_width="100px"
+                android:layout_height="160px"
+                android:src="@mipmap/detection_dot" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tip1"
+            android:layout_marginBottom="136dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="160dp">
+            <TextView
+                android:visibility="invisible"
+                android:gravity="center"
+                android:id="@+id/tv_tips_main"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+            <TextView
+                android:visibility="invisible"
+                android:gravity="center"
+                android:id="@+id/tv_temp_tips_main"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/ll_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_top_area" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_face_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

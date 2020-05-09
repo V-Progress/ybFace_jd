@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_index"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="121213"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="121213"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="asasas"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_nation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="asas"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_temper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="asasas"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_similar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="asasas"
+            android:gravity="center" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+            <ImageView
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                android:id="@+id/iv_idcard_head"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+            <ImageView
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                android:id="@+id/iv_person_head"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:gravity="center" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

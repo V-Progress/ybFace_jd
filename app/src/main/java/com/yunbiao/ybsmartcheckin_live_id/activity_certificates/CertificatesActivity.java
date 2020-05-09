@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
@@ -131,7 +132,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         btnNoIdCard.setOnClickListener(v -> noCardToTemper());//无证测温
         ivLogo.setOnClickListener(v -> goSetting());//进入设置
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             tvBottomTitle.setVisibility(View.GONE);

@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.HandleMessageUtils;
@@ -118,11 +119,12 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, Constants.isHT
-                ? APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2)
-                : Constants.isSK || Constants.isOsimle
-                ? ""
-                : APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = "";
+        if(Constants.FLAVOR_TYPE == FlavorType.YB){
+            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
+            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
+        }
         if (TextUtils.isEmpty(welcomeTips)) {
             return;
         }
@@ -135,6 +137,10 @@ public class KDXFSpeechManager {
 
     public void playNormal(final String message, Runnable runnable) {
         playNormalAddCallback(TextToSpeech.QUEUE_FLUSH, message, runnable);
+    }
+
+    public void playNormalAdd(String message,Runnable runnable){
+        playNormalAddCallback(TextToSpeech.QUEUE_ADD,message,runnable);
     }
 
     private String mMessage;

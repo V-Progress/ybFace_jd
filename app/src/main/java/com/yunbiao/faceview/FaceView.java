@@ -162,9 +162,6 @@ public class FaceView extends FrameLayout {
     }
 
     private void initView() {
-        MAX_DETECT_NUM = Constants.MAX_DETECT_NUM;
-        DETECT_FACE_SCALE_VAL = Constants.DETECT_FACE_SCALE_VAL;
-
         setSimilarThreshold();
         nv21ToBitmap = new NV21ToBitmap(getContext());
         compareResultList = new ArrayList<>();
@@ -266,6 +263,7 @@ public class FaceView extends FrameLayout {
 
     private Map<Integer, Float> temperHashMap = new HashMap<>();
     private List<Integer> idList = new ArrayList<>();
+
     public void setTemperList(ArrayList<FaceIndexInfo> arrayList) {
         if (arrayList == null) {
             Log.e(TAG, "setTemperList: list为空，清除Map");
@@ -274,18 +272,18 @@ public class FaceView extends FrameLayout {
             }
             temperHashMap.clear();
         } else {
-            if(!isMultiCallback){
+            if (!isMultiCallback) {
                 idList.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     int faceId = faceIndexInfo.getFaceId();
                     float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
                     idList.add(faceId);
-                    if(!temperHashMap.containsKey(faceId)){
-                        temperHashMap.put(faceId,afterTreatmentF);
+                    if (!temperHashMap.containsKey(faceId)) {
+                        temperHashMap.put(faceId, afterTreatmentF);
                     } else {
                         Float aFloat = temperHashMap.get(faceId);
-                        if(aFloat < 35.5f && afterTreatmentF >= 35.5f){
-                            temperHashMap.put(faceId,afterTreatmentF);
+                        if (aFloat < 35.5f && afterTreatmentF >= 35.5f) {
+                            temperHashMap.put(faceId, afterTreatmentF);
                         }
                     }
                 }
@@ -294,7 +292,7 @@ public class FaceView extends FrameLayout {
                 while (iterator.hasNext()) {
                     Map.Entry<Integer, Float> next = iterator.next();
                     Integer key = next.getKey();
-                    if(!idList.contains(key)){
+                    if (!idList.contains(key)) {
                         iterator.remove();
                     }
                 }
@@ -308,7 +306,7 @@ public class FaceView extends FrameLayout {
     }
 
     public float getTemperByTrackId(int trackId) {
-        if(!temperHashMap.containsKey(trackId)){
+        if (!temperHashMap.containsKey(trackId)) {
             return 0.0f;
         }
         Float temper = temperHashMap.get(trackId);
@@ -357,7 +355,7 @@ public class FaceView extends FrameLayout {
             if (faceRectView != null) {
                 faceRectView.clearFaceInfo();
             }
-            if(sencondFaceRectView != null){
+            if (sencondFaceRectView != null) {
                 sencondFaceRectView.clearFaceInfo();
             }
             List<FacePreviewInfo> facePreviewInfoList = faceHelper.onPreviewFrame(nv21, isSignleDetect);
@@ -369,9 +367,9 @@ public class FaceView extends FrameLayout {
                 for (int i = 0; i < facePreviewInfoList.size(); i++) {
                     FacePreviewInfo facePreviewInfo = facePreviewInfoList.get(i);
                     int trackId = facePreviewInfo.getTrackId();
-                    if(temperHashMap.containsKey(trackId)){
+                    if (temperHashMap.containsKey(trackId)) {
                         Float temper = temperHashMap.get(trackId);
-                        if(temper != null){
+                        if (temper != null) {
                             facePreviewInfo.setTemper(temper);
                         }
                     }
@@ -596,29 +594,6 @@ public class FaceView extends FrameLayout {
         this.callback = callback;
     }
 
-    public Bitmap getCurrCameraFrame() {
-        if (mCurrBytes != null) {
-            try {
-                byte[] clone = mCurrBytes.clone();
-                YuvImage image = new YuvImage(clone, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
-                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-
-                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-                if (bmp != null && angle != 0) {
-                    Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
-                    return bitmap1;
-                }
-                stream.close();
-                return bmp;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
     private Bitmap adjustPhotoRotation1(Bitmap bm, final int orientationDegree) {
         Matrix m = new Matrix();
         m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
@@ -681,8 +656,36 @@ public class FaceView extends FrameLayout {
     }
 
     public Bitmap takePicture() {
+        long start = System.currentTimeMillis();
         if (mCurrBytes != null) {
-            try {
+            Bitmap originBitmap = NV21ToBitmap.nv21ToBitmap2(mCurrBytes.clone(), cameraHelper.getWidth(), cameraHelper.getHeight());
+            if (infoList != null && infoList.size() > 0) {
+                FacePreviewInfo facePreviewInfo = infoList.get(0);
+                FaceInfo faceInfo = facePreviewInfo.getFaceInfo();
+                if (faceInfo != null) {
+                    Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
+                    int width = bestRect.right - bestRect.left;
+                    int height = bestRect.bottom - bestRect.top;
+                    if (width > 0 && height > 0) {
+                        Bitmap bitmap = Bitmap.createBitmap(originBitmap, bestRect.left, bestRect.top, width, height);
+                        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                        if(originBitmap != null && !originBitmap.equals(bitmap) && !originBitmap.isRecycled()){
+                            originBitmap.recycle();
+                        }
+
+                        Log.e(TAG, "getCurrCameraFrame: 截人像耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
+                        if (bitmap != null && angle != 0) {
+                            return ImageUtils.rotateBitmap(bitmap, angle);
+                        } else {
+                            return bitmap;
+                        }
+                    }
+                }
+            }
+        }
+        return getCurrCameraFrame();
+
+            /*try {
                 YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
@@ -714,9 +717,42 @@ public class FaceView extends FrameLayout {
                 return bmp;
             } catch (IOException e) {
                 e.printStackTrace();
+            }*/
+    }
+
+    public Bitmap getCurrCameraFrame() {
+        long start = System.currentTimeMillis();
+        Bitmap bitmap = NV21ToBitmap.nv21ToBitmap(mCurrBytes, cameraHelper.getWidth(), cameraHelper.getHeight());
+        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        if (bitmap != null && angle != 0) {
+            Bitmap bitmap1 = ImageUtils.rotateBitmap(bitmap, angle);
+            if(bitmap != null && !bitmap.equals(bitmap1) && !bitmap.isRecycled()){
+                bitmap.recycle();
+            }
+            Log.e(TAG, "getCurrCameraFrame: 截全屏耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
+            return bitmap1;
+        } else {
+            return bitmap;
+        }
+        /*if (mCurrBytes != null) {
+            try {
+                YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
+                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+
+                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                if (bmp != null && angle != 0) {
+                    Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
+                    return bitmap1;
+                }
+                stream.close();
+                return bmp;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        return null;
+        return null;*/
     }
 
     public interface FaceCallback {
@@ -740,6 +776,10 @@ public class FaceView extends FrameLayout {
         } else {
             orientPriority = DetectFaceOrientPriority.ASF_OP_ALL_OUT;
         }
+
+        MAX_DETECT_NUM = Constants.MAX_DETECT_NUM;
+        DETECT_FACE_SCALE_VAL = Constants.DETECT_FACE_SCALE_VAL;
+        Log.e(TAG, "initView: 抓取距离：" + DETECT_FACE_SCALE_VAL);
 
         ftEngine = new FaceEngine();
         ftInitCode = ftEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_VIDEO, orientPriority,
@@ -848,7 +888,8 @@ public class FaceView extends FrameLayout {
     private SecondFaceRectView sencondFaceRectView;
 
     private boolean isDrawSecondFaceRect = true;
-    public void setDrawSecondFaceRect(boolean isDraw){
+
+    public void setDrawSecondFaceRect(boolean isDraw) {
         isDrawSecondFaceRect = isDraw;
     }
 

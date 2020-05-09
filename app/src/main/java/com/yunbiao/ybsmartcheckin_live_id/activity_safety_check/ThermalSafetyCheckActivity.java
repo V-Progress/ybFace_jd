@@ -29,6 +29,7 @@ import com.intelligence.hardware.temperature.callback.HotImageK6080CallBack;
 import com.intelligence.hardware.temperature.callback.UsbPermissionCallBack;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
@@ -157,7 +158,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
         ivLogo.setOnClickListener(v -> startActivity(new Intent(ThermalSafetyCheckActivity.this, ThermalSafetyCheckSettingActivity.class)));
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
         } else {

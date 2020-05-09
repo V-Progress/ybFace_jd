@@ -17,17 +17,17 @@ import java.io.IOException;
 
 public class NV21ToBitmap {
 
-    private RenderScript rs;
-    private ScriptIntrinsicYuvToRGB yuvToRgbIntrinsic;
-    private Type.Builder yuvType, rgbaType;
-    private Allocation in, out;
+    private static RenderScript rs;
+    private static ScriptIntrinsicYuvToRGB yuvToRgbIntrinsic;
+    private static Type.Builder yuvType, rgbaType;
+    private static Allocation in, out;
 
     public NV21ToBitmap(Context context) {
         rs = RenderScript.create(context);
         yuvToRgbIntrinsic = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
     }
 
-    public Bitmap nv21ToBitmap(byte[] nv21, int width, int height) {
+    public static Bitmap nv21ToBitmap(byte[] nv21, int width, int height) {
         if (yuvType == null) {
             yuvType = new Type.Builder(rs, Element.U8(rs)).setX(nv21.length);
             in = Allocation.createTyped(rs, yuvType.create(), Allocation.USAGE_SCRIPT);
@@ -37,7 +37,7 @@ public class NV21ToBitmap {
         in.copyFrom(nv21);
         yuvToRgbIntrinsic.setInput(in);
         yuvToRgbIntrinsic.forEach(out);
-        Bitmap bmpout = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap bmpout = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
         out.copyTo(bmpout);
         return bmpout;
     }

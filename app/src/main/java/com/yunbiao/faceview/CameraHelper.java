@@ -117,8 +117,8 @@ public class CameraHelper implements Camera.PreviewCallback {
 
                 if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL ||
                         Constants.DEVICE_TYPE == Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT || Constants.DEVICE_TYPE == Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT) {
-                    previewSize.width = 800;
-                    previewSize.height = 600;
+                    previewSize.width = 1024;
+                    previewSize.height = 768;
                     /*previewSize.width = 1280;
                     previewSize.height = 960;
                     boolean isSupport960 = false;

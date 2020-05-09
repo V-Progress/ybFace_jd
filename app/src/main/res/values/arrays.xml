@@ -8,6 +8,8 @@
         <item>@string/face_infared_model</item>
         <item>@string/thermal_16_4_model</item>
         <item>@string/face_thermal_16_4_model</item>
+        <item>@string/only_thermal_mlx_16_4_model</item>
+        <item>@string/face_thermal_mlx_16_4_model</item>
     </string-array>
 
     <string-array name="smt_models">

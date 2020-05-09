@@ -34,6 +34,7 @@ import com.yunbiao.faceview.FaceView;
 import com.yunbiao.faceview.SecondFaceRectView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
@@ -158,7 +159,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private boolean isFirstCorrected = true;
     private float mLastMinT;
     private boolean mTempMode = false;
-    private boolean mPrivacyMode;
 
     @Override
     protected int getLayout() {
@@ -184,13 +184,13 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         faceView.setCallback(faceCallback);
         startXmpp();
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else if (Constants.isSK) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-        } else if (Constants.isOsimle) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             ivLogo.setImageResource(R.mipmap.osimle_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
         } else {
@@ -202,7 +202,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     @Override
     protected void initData() {
         KDXFSpeechManager.instance().init(this);
-        mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
         setHorizontalRlv();
         setVerticalRlv();
         addAllItemRecord();
@@ -219,7 +218,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             }
         });
         normalAdapter = new MultiThermalRecordAdapter(this, normalList, RecyclerView.HORIZONTAL);
-        normalAdapter.setPrivacy(mPrivacyMode);
         rlvNormalList.setAdapter(normalAdapter);
     }
 
@@ -234,7 +232,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         });
 
         warningAdapter = new MultiThermalRecordAdapter(this, warningList, RecyclerView.VERTICAL);
-        warningAdapter.setPrivacy(mPrivacyMode);
         rlvWarningList.setAdapter(warningAdapter);
     }
 
@@ -266,19 +263,6 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         //开启多次回调
         faceView.enableMultiCallback(mMultiTrack);
         startHotImage();
-
-        boolean privacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
-        if(mPrivacyMode != privacyMode){
-            mPrivacyMode = privacyMode;
-            if(normalAdapter != null){
-                normalAdapter.setPrivacy(mPrivacyMode);
-                normalAdapter.notifyDataSetChanged();
-            }
-            if(warningAdapter != null){
-                warningAdapter.setPrivacy(mPrivacyMode);
-                warningAdapter.notifyDataSetChanged();
-            }
-        }
     }
 
     private Rect getCacheRect() {

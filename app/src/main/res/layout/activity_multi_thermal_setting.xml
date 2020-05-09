@@ -59,6 +59,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             style="@style/setting_text_child"
             android:gravity="center_vertical"
             android:orientation="horizontal">

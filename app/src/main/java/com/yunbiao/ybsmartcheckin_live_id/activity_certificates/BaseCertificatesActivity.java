@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -30,6 +32,9 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.White;
+import com.yunbiao.ybsmartcheckin_live_id.printer.PrinterUtils;
+import com.yunbiao.ybsmartcheckin_live_id.printer.UsbPrinter;
+import com.yunbiao.ybsmartcheckin_live_id.printer.UsbPrinterStatus;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
@@ -41,8 +46,13 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -61,6 +71,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private CertificatesViewInterface viewInterface;
     private CertificatesView mCertificatesView;
     private boolean mWhiteListEnable;
+    private boolean mUsbPrinterEnabled;
 
     @Override
     protected void initData() {
@@ -69,25 +80,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         IDCardReader.getInstance().startReaderThread(this, readListener);
         initCardReader();
         registerNetState();
-    }
-
-    //设置View接口
-    protected void setCertificatesView(CertificatesViewInterface viewInterface) {
-        this.viewInterface = viewInterface;
-        if (this.viewInterface == null) {
-            this.viewInterface = new CertificatesViewImpl();
-        }
-    }
-
-    //设置人脸回调
-    protected void setFaceCallback(CertificatesView certificatesView) {
-        mCertificatesView = certificatesView;
-        mCertificatesView.setCallback(this);
-    }
-
-    //无证测温
-    protected void noCardToTemper() {
-        mUpdateTemperList.clear();
+        initUsbPrinter();
     }
 
     @Override
@@ -109,8 +102,75 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 viewInterface.onModeChanged(mMode);
             }
         }
-
         startTemperModule();
+
+        mUsbPrinterEnabled = SpUtils.getBoolean(CertificatesConst.Key.USB_PRINTER_ENABLED, CertificatesConst.Default.USB_PRINTER_ENABLED);
+    }
+
+    private void initUsbPrinter(){
+        boolean open = PrinterUtils.getInstance().openDevice(this);
+        if(!open){
+            UIUtils.showShort(this,"未检测到打印机");
+            return;
+        }
+
+        int printerStatus = PrinterUtils.getInstance().getPrinterStatus();
+        String stringStatus = UsbPrinterStatus.getStringStatus(printerStatus);
+        if(!TextUtils.isEmpty(stringStatus)){
+            UIUtils.showShort(this, stringStatus);
+        }
+    }
+
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private void printMsg(IdCardMsg idCardMsg, float finalTemper, boolean isInWhite){
+        if(!mUsbPrinterEnabled){
+            return;
+        }
+        int printerStatus = PrinterUtils.getInstance().getPrinterStatus();
+        if(printerStatus != UsbPrinterStatus.AVAILABLE //可用
+                && printerStatus != UsbPrinterStatus.SDK_DONT_MATCH //不匹配
+                && printerStatus != UsbPrinterStatus.PRINT_HEAD_OPEN //打印头已打开
+                && printerStatus != UsbPrinterStatus.PAPER_LESS //纸较少
+        ){
+            UIUtils.showShort(this,"警告：打印机" + UsbPrinterStatus.getStringStatus(printerStatus));
+            return;
+        }
+
+        String name = idCardMsg.name;
+        String nativeplace = IDCardReader.getNativeplace(idCardMsg.id_num.substring(0,6));
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("AI人证测温系统").append("\n");
+        stringBuffer.append("==============================").append("\n");
+        stringBuffer.append("姓名：").append(name).append("\n").append("\n");
+        stringBuffer.append("籍贯：").append(nativeplace).append("\n").append("\n");
+        stringBuffer.append("体温：").append(finalTemper).append("℃").append("\n").append("\n");
+        stringBuffer.append("到访时间：").append(dateFormat.format(new Date())).append("\n");
+        if(mWhiteListEnable){
+            stringBuffer.append("\n").append("白名单：").append((isInWhite ? "是" : "否")).append("\n");
+        }
+        stringBuffer.append("==============================").append("\n");
+        stringBuffer.append("请保存好打印凭证，以便查验").append("\n");
+        stringBuffer.append("==============================").append("\n");
+        PrinterUtils.getInstance().printText(stringBuffer.toString());
+    }
+
+    //设置View接口
+    protected void setCertificatesView(CertificatesViewInterface viewInterface) {
+        this.viewInterface = viewInterface;
+        if (this.viewInterface == null) {
+            this.viewInterface = new CertificatesViewImpl();
+        }
+    }
+
+    //设置人脸回调
+    protected void setFaceCallback(CertificatesView certificatesView) {
+        mCertificatesView = certificatesView;
+        mCertificatesView.setCallback(this);
+    }
+
+    //无证测温
+    protected void noCardToTemper() {
+        mUpdateTemperList.clear();
     }
 
     //开启测温模块
@@ -193,7 +253,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void dataRecoveryFailed() {
-            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
+//            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
@@ -205,7 +265,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void dataRecoveryFailed() {
-            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
+//            showRestartAlert(getResString(R.string.temper_error_tips),getResString(R.string.temper_error_btn_restart), () -> PowerOffTool.getPowerOffTool().restart());
         }
     };
 
@@ -259,6 +319,30 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         } else {
 
         }
+    }
+
+
+    protected void testIdCard(){
+        IdCardMsg idCardMsg = new IdCardMsg();
+        Bitmap bitmap = BitmapFactory.decodeFile(new File(Environment.getExternalStorageDirectory(),"12345.jpg").getPath());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] datas = baos.toByteArray();
+
+        idCardMsg.name = "张威";
+        idCardMsg.id_num = "130481199308122419";
+        idCardMsg.ptoto = datas ;
+        idCardMsg.sex = "男";
+        idCardMsg.nation_str = "汉族";
+        idCardMsg.birth_year = "1993";
+        idCardMsg.useful_e_date_year = "1993";
+        idCardMsg.birth_month = "08";
+        idCardMsg.useful_e_date_month = "08";
+        idCardMsg.birth_day = "12";
+        idCardMsg.useful_e_date_day = "12";
+        idCardMsg.address = "A撒大大撒撒";
+
+        readListener.getCardInfo(idCardMsg);
     }
 
     //证件收集
@@ -369,8 +453,10 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             d("特征提取完成");
 
             //提取身份证信息
+            // TODO: 2020/5/1
             byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
             Bitmap cardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            Bitmap cardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
             FaceFeature idCardFeature = mCertificatesView.inputIdCard(cardBitmap);
             if (idCardFeature == null) {
                 if (mDetectTemperList.size() > 0) {
@@ -434,8 +520,10 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             case 1://更新卡片信息
                 IdCardMsg idCardMsg = (IdCardMsg) msg.obj;
                 if (idCardMsg != null) {
+                    // TODO: 2020/5/1
                     byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
                     Bitmap mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                    Bitmap mIdCardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
                     if (viewInterface != null) {
                         viewInterface.updateIdCardInfo(idCardMsg, mIdCardBitmap);
                     }
@@ -510,6 +598,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                         KDXFSpeechManager.instance().playWaningRingNoStop();
                     }
                 });
+
+                printMsg(BaseCertificatesActivity.this.idCardMsg,finalTemper,isInWhite);
                 if (viewInterface != null) {
                     viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, finalTemper, similarInt, isAlike, isNormal,isInWhite);
                 }

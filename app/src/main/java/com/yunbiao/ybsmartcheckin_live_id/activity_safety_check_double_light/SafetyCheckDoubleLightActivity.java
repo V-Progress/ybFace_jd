@@ -41,6 +41,7 @@ import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
@@ -167,13 +168,13 @@ public class SafetyCheckDoubleLightActivity extends BaseSafetyCheckDoubleLightAc
         faceView.enableMultiRetry(true);
         faceView.setRetryTime(0);
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else if (Constants.isSK) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-        } else if (Constants.isOsimle) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
             ivLogo.setImageResource(R.mipmap.osimle_logo);
         } else {

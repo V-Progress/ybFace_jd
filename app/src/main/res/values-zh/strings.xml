@@ -197,10 +197,12 @@
     <string name="face_only_model">人脸识别考勤</string>
     <string name="face_infared_model">人脸识别 + 热成像（小）</string>
     <string name="infared_only_model">热成像（小）（不考勤）</string>
-    <string name="thermal_only_model">热成像模式（32*32）（不考勤）</string>
-    <string name="face_thermal_model">人脸识别 + 热成像模式（32*32）</string>
-    <string name="thermal_16_4_model">热成像模式（16*4）（不考勤）</string>
-    <string name="face_thermal_16_4_model">人脸识别 + 热成像模式（16*4）</string>
+    <string name="thermal_only_model">仅测温模式（HM-32*32）</string>
+    <string name="face_thermal_model">人脸识别 + 测温模式（HM-32*32）</string>
+    <string name="thermal_16_4_model">仅测温模式（HM-16*4）</string>
+    <string name="face_thermal_16_4_model">人脸识别 + 测温模式（HM-16*4）</string>
+    <string name="only_thermal_mlx_16_4_model">仅测温模式（MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">人脸识别 + 测温模式（MLX-16*4）</string>
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">计数已清零</string>

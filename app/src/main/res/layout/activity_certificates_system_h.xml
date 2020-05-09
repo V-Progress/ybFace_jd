@@ -137,7 +137,6 @@
         <LinearLayout
             android:gravity="bottom"
             android:paddingBottom="10dp"
-            android:paddingTop="30dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="20dp"
@@ -146,26 +145,22 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp">
+                android:layout_height="wrap_content">
 
                 <TableRow
-                    android:layout_margin="26dp"
                     android:gravity="center"
                     android:weightSum="2">
                 </TableRow>
 
                 <TableRow
-                    android:layout_margin="26dp"
                     android:weightSum="2"
                     android:gravity="center">
                     <Button
                         android:onClick="goWhiteList"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
                         android:layout_weight="1"
+                        android:layout_marginRight="15dp"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
                         android:text="白名单"
@@ -175,7 +170,7 @@
                         android:id="@+id/btn_setting_system"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
@@ -186,20 +181,40 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_margin="26dp"
-                    android:gravity="center"
+                    android:layout_marginTop="15dp"
                     android:weightSum="2">
+                    <Button
+                        android:onClick="goRecordList"
+                        android:layout_width="0dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="验证记录"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
+
+                    <Button
+                        android:enabled="false"
+                        android:visibility="invisible"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:padding="26dp"
+                        android:text="@string/System_Setting"
+                        android:textColor="@color/white"
+                        android:textSize="32dp" />
                 </TableRow>
             </TableLayout>
-
 
             <LinearLayout
                 android:padding="5dp"
                 android:background="@drawable/shape_employ_button"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="60dp"
-                android:layout_marginRight="60dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

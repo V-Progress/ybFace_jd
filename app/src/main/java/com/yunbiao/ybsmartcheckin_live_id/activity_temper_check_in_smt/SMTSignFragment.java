@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -135,7 +136,7 @@ public class SMTSignFragment extends Fragment implements NetWorkChangReceiver.Ne
     @Override
     public void onResume() {
         super.onResume();
-        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
+        if(Constants.FLAVOR_TYPE == FlavorType.HT || Constants.FLAVOR_TYPE == FlavorType.SK || Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
             ivQRCode.setVisibility(View.GONE);
         }else {
             boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);

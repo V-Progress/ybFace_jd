@@ -86,8 +86,6 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackEnable();
 
         initSetIp();
-
-        initPrivacy();
     }
 
     private void initPrivacy(){

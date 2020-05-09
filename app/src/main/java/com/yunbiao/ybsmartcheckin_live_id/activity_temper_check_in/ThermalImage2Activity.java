@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
@@ -121,18 +122,21 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
 
-        if (Constants.isHT) {
+        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             setImageByResId(ivMainLogo, R.mipmap.logo_icon_horizontal);
-        } else if(Constants.isSK){
+        } else if(Constants.FLAVOR_TYPE == FlavorType.SK){
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
             setImageByResId(ivMainLogo, R.mipmap.icon_logo3);
-        } else if (Constants.isOsimle) {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
             setImageByResId(ivMainLogo, R.mipmap.osimle_logo);
-        } else if(Constants.isSoftWorkz){
+        } else if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
             ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
             setImageByResId(ivMainLogo, R.mipmap.softworkz_logo);
+        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
+//            ImageFileLoader.setDefaultLogoId(0);
+//            ivMainLogo.setImageBitmap(null);
         } else {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
             setImageByResId(ivMainLogo, R.mipmap.logo);
@@ -148,7 +152,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     protected void onResume() {
         faceView.resume();
 
-        mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG,ThermalConst.Default.SHOW_DIALOG);
+        mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
@@ -185,6 +189,8 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             case ThermalConst.FACE_INFRARED:
             case ThermalConst.THERMAL_16_4_ONLY:
             case ThermalConst.FACE_THERMAL_16_4:
+            case ThermalConst.ONLY_THERMAL_MLX_16_4:
+            case ThermalConst.FACE_THERMAL_MLX_16_4:
                 ivThermalImaging.setVisibility(View.GONE);
                 llThermalArea.setVisibility(View.VISIBLE);
                 ivInfaredImaging.setVisibility(View.VISIBLE);
@@ -224,7 +230,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void hasFace(boolean hasFace) {
-        if(hasFace){
+        if (hasFace) {
             //检测到人后开灯
             onLight();
             //收起海报界面
@@ -262,7 +268,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (tvTempTips.isShown()) {
             tvTempTips.setVisibility(View.GONE);
         }
-        if(tvTips.isShown()){
+        if (tvTips.isShown()) {
             tvTips.setVisibility(View.GONE);
         }
         setBigHeadDottedLine();
@@ -279,18 +285,18 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void dismissTips() {
-        if(tvTips.isShown()){
+        if (tvTips.isShown()) {
             tvTips.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void updateSignList(Sign sign) {
-        if(signListFragment != null){
+        if (signListFragment != null) {
             signListFragment.addSignData(sign);
         }
-        if(mShowDialog){
-            VipDialogManager.showVipDialog(this,sign);
+        if (mShowDialog) {
+            VipDialogManager.showVipDialog(this, sign);
         }
     }
 
@@ -301,11 +307,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public Bitmap getFacePicture() {
-        Bitmap bitmap = faceView.takePicture();
-        if(bitmap == null){
-            bitmap = faceView.getCurrCameraFrame();
-        }
-        return bitmap;
+        return faceView.takePicture();
     }
 
     @Override
@@ -331,7 +333,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         }
         if (isRealLine) {
             isRealLine = false;
-            setImageByResId(ivBigHead,R.mipmap.big_head);
+            setImageByResId(ivBigHead, R.mipmap.big_head);
         }
     }
 
@@ -340,7 +342,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             return;
         }
         isRealLine = true;
-        setImageByResId(ivBigHead,R.mipmap.big_head_real_line);
+        setImageByResId(ivBigHead, R.mipmap.big_head_real_line);
     }
 
     /**

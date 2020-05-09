@@ -12,8 +12,10 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.yunbiao.faceview.CompareResult;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -35,6 +37,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Ref;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,6 +71,7 @@ public class SignManager {
     private final ScheduledExecutorService autoUploadThread;
     private long verifyOffsetTime = 0;//验证间隔时间
 
+    private DateFormat vertifySdf = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat visitSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private boolean isDebug = true;
     private boolean isBulu = false;
@@ -104,17 +108,17 @@ public class SignManager {
             startMultiUploadThread();
         }
 
-        if(Constants.isSoftWorkz){
+        if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
             threadPool.scheduleAtFixedRate(() -> {
                 int comid = SpUtils.getCompany().getComid();
                 List<Sign> signs = DaoManager.get().querySignByComId(comid);
-                if(signs == null || signs.size() <= 0){
+                if (signs == null || signs.size() <= 0) {
                     d("暂无多余的记录");
                     return;
                 }
                 Date date = new Date();
                 int offset = 30;
-                int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY,Constants.Default.CLEAR_POLICY);
+                int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY, Constants.Default.CLEAR_POLICY);
                 switch (clearPolicy) {
                     case 0:
                         offset = 7;
@@ -131,28 +135,28 @@ public class SignManager {
                 for (int i = 0; i < signs.size(); i++) {
                     Sign sign = signs.get(i);
                     long time = sign.getTime();
-                    if(date.getTime() - time < (offset * 24 * 60 * 60 * 1000)){
+                    if (date.getTime() - time < (offset * 24 * 60 * 60 * 1000)) {
                         continue;
                     }
                     count++;
                     String headPath = sign.getHeadPath();
-                    if(!TextUtils.isEmpty(headPath)){
+                    if (!TextUtils.isEmpty(headPath)) {
                         File file = new File(headPath);
-                        if(file.exists()){
+                        if (file.exists()) {
                             file.delete();
                         }
                     }
                     String hotImgPath = sign.getHotImgPath();
-                    if(!TextUtils.isEmpty(hotImgPath)){
+                    if (!TextUtils.isEmpty(hotImgPath)) {
                         File file = new File(hotImgPath);
-                        if(file.exists()){
+                        if (file.exists()) {
                             file.delete();
                         }
                     }
                     DaoManager.get().deleteSign(sign);
                 }
                 Log.e(TAG, "SignManager: 总共清除：" + count);
-            }, 3, 30,TimeUnit.MINUTES);
+            }, 3, 30, TimeUnit.MINUTES);
         }
     }
 
@@ -227,7 +231,7 @@ public class SignManager {
         //上传访客数据
         uploadVisitorSignArray(visitorSignList, callback);
         //上传测温记录
-        uploadTemperArray(temperSignList,callback);
+        uploadTemperArray(temperSignList, callback);
     }
 
     private void uploadSignArray(final List<Sign> signList, final Consumer<Boolean> callback) {
@@ -280,13 +284,13 @@ public class SignManager {
                             DaoManager.get().addOrUpdate(sign);
                         }
 
-                        uploadTemperArray(signList,callback);
+                        uploadTemperArray(signList, callback);
                     }
                 });
     }
 
     private void uploadTemperArray(final List<Sign> signList, final Consumer<Boolean> callback) {
-        if(signList == null || signList.size() <= 0){
+        if (signList == null || signList.size() <= 0) {
             return;
         }
         List<TemperSignBean> temperSignBeans = new ArrayList<>();
@@ -337,7 +341,7 @@ public class SignManager {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, "批量上传测温记录:onResponse: 上传结果：" + response);
-                        if(TextUtils.isEmpty(response)){
+                        if (TextUtils.isEmpty(response)) {
                             return;
                         }
                         JSONObject jsonObject = JSONObject.parseObject(response);
@@ -359,7 +363,7 @@ public class SignManager {
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        if(callback != null){
+                        if (callback != null) {
                             try {
                                 callback.accept(true);
                             } catch (Exception e) {
@@ -401,7 +405,7 @@ public class SignManager {
                 .addParams("witJson", json)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
                 .addParams("comId", comid + "")
-                .files("heads",headMap)
+                .files("heads", headMap)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -429,7 +433,7 @@ public class SignManager {
                             sign.setUpload(true);
                             DaoManager.get().addOrUpdate(sign);
                         }
-                        uploadTemperArray(signList,callback);
+                        uploadTemperArray(signList, callback);
                     }
                 });
     }
@@ -614,7 +618,7 @@ public class SignManager {
         return sign;
     }
 
-    public void uploadTemperatureSignAndDelete(Sign sign){
+    public void uploadTemperatureSignAndDelete(Sign sign) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
         File file;
@@ -685,12 +689,12 @@ public class SignManager {
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 String status = jsonObject.getString("status");
                 boolean isSucc = TextUtils.equals("1", status);
-                if(isSucc){
-                    if(file != null && file.exists()){
+                if (isSucc) {
+                    if (file != null && file.exists()) {
                         boolean delete = file.delete();
                         Log.e(TAG, "onResponse: 头像删除：" + file.getPath() + " ----- " + delete);
                     }
-                    if(hotFile != null && hotFile.exists()){
+                    if (hotFile != null && hotFile.exists()) {
                         boolean delete = hotFile.delete();
                         Log.e(TAG, "onResponse: 热图删除：" + hotFile.getPath() + " ----- " + delete);
                     }
@@ -703,7 +707,7 @@ public class SignManager {
         });
     }
 
-    private File createEmptyFile(){
+    private File createEmptyFile() {
         File file = new File(Constants.LOCAL_ROOT_PATH + File.separator + "0.txt");
         if (!file.exists()) {
             try {
@@ -715,7 +719,88 @@ public class SignManager {
         return file;
     }
 
-    public void uploadTemperatureSign(final Sign sign,boolean isPrivacy) {
+    public void uploadTemperatureSign(Bitmap headBitmap,Bitmap hotBitmap,final Sign sign,boolean isPrivacy,Consumer<Sign> signConsumer) {
+        long start = System.currentTimeMillis();
+        String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
+
+        File file = headBitmap != null ? saveBitmap(sign.getTime(), headBitmap) : createEmptyFile();
+        sign.setHeadPath(file.getPath());
+        if(headBitmap != null && !headBitmap.isRecycled()){
+            headBitmap.recycle();
+        }
+
+        File hotFile = hotBitmap != null ? saveBitmap("hot_", sign.getTime(), hotBitmap) : createEmptyFile();
+        sign.setHotImgPath(hotFile.getPath());
+        if(hotBitmap != null && !hotBitmap.isRecycled()){
+            hotBitmap.recycle();
+        }
+
+        sign.setUpload(false);
+        DaoManager.get().addOrUpdate(sign);
+
+        Log.e(TAG, "uploadTemperatureSign: 存DB耗时:" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
+        if(signConsumer != null){
+            try {
+                signConsumer.accept(sign);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TODO: 2020/3/18 离线功能
+        if (sign.getComid() == Constants.NOT_BIND_COMPANY_ID) {
+            return;
+        }
+
+        final long time = sign.getTime();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+        params.put("comId", SpUtils.getCompany().getComid() + "");
+        params.put("temper", sign.getTemperature() + "");
+        if (sign.getType() != -9) {
+            params.put("entryId", sign.getEmpId() + "");
+        }
+        Log.e(TAG, "上传温度");
+        Log.e(TAG, "地址：" + url);
+        Log.e(TAG, "参数: " + params.toString());
+        PostFormBuilder builder = OkHttpUtils.post()
+                .url(url)
+                .params(params);
+        //如果不为隐私模式并且图片Bitmap不为null，则存照片
+        builder.addFile("heads", file.getName(), isPrivacy ? createEmptyFile() : file);
+        builder.addFile("reHead", hotFile.getName(), hotFile);
+
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                sign.setUpload(false);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: 上传结果：" + response);
+
+                JSONObject jsonObject = JSONObject.parseObject(response);
+                if (jsonObject.getInteger("status") == 1) {
+                    Sign sign = DaoManager.get().querySignByTime(time);
+                    if (sign != null) {
+                        sign.setUpload(true);
+                        DaoManager.get().addOrUpdate(sign);
+                    }
+                } else {
+                    Log.e(TAG, "onResponse: 上传失败");
+                }
+            }
+
+            @Override
+            public void onAfter(int id) {
+
+            }
+        });
+    }
+    public void uploadTemperatureSign(final Sign sign, boolean isPrivacy) {
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
         File file = sign.getImgBitmap() != null ? saveBitmap(sign.getTime(), sign.getImgBitmap()) : createEmptyFile();
@@ -762,11 +847,16 @@ public class SignManager {
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: 上传成功：" + response);
-                Sign sign = DaoManager.get().querySignByTime(time);
-                if (sign != null) {
-                    sign.setUpload(true);
-                    DaoManager.get().addOrUpdate(sign);
+                Log.e(TAG, "onResponse: 上传结果：" + response);
+                JSONObject jsonObject = JSONObject.parseObject(response);
+                if (jsonObject.getInteger("status") == 1) {
+                    Sign sign = DaoManager.get().querySignByTime(time);
+                    if (sign != null) {
+                        sign.setUpload(true);
+                        DaoManager.get().addOrUpdate(sign);
+                    }
+                } else {
+                    Log.e(TAG, "onResponse: 上传失败");
                 }
             }
 
@@ -1006,92 +1096,71 @@ public class SignManager {
     }
 
     public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
-        Log.e(TAG, "上传身份信息");
-        String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
-        Log.e(TAG, "地址" + uploadIdcard);
-        Log.e(TAG, "身份证图：" + (idCardBitmap == null ? (0 + "---" + 0) : (idCardBitmap.getWidth() + "---" + idCardBitmap.getHeight())));
-        Log.e(TAG, "人脸图：" + (faceBitmap == null ? (0 + "---" + 0) : (faceBitmap.getWidth() + "---" + faceBitmap.getHeight())));
-        Log.e(TAG, "热量图：" + (reBitmap == null ? (0 + "---" + 0) : (reBitmap.getWidth() + "---" + reBitmap.getHeight())));
+        long time = System.currentTimeMillis();
+        File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
+        File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
+        File reFile = reBitmap != null ? saveBitmap("re_", time, reBitmap) : createEmptyFile();
+        VertifyRecord vertifyRecord = new VertifyRecord();
+        vertifyRecord.setIdCardHeadPath(idCardFile.getPath());
+        vertifyRecord.setPersonHeadPath(faceFile.getPath());
+        vertifyRecord.setHotImagePath(reFile.getPath());
+        vertifyRecord.setSimilar(similar + "");
+        vertifyRecord.setName(msg.name.trim());
+        vertifyRecord.setSex(TextUtils.equals(msg.sex, "男") ? "1" : "0");
+        vertifyRecord.setNation(msg.nation_str);
+        vertifyRecord.setBirthDate(msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
+        vertifyRecord.setIdNum(msg.id_num);
+        vertifyRecord.setAddress(msg.address);
+        vertifyRecord.setTermDate(msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
+        vertifyRecord.setIsPass(isPass + "");
+        vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");
+        vertifyRecord.setTemper(temper + "");
+        vertifyRecord.setTime(time);
+        vertifyRecord.setDate(vertifySdf.format(new Date(time)));
+        vertifyRecord.setUpload(false);
+        long l = DaoManager.get().addOrUpdate(vertifyRecord);
+        vertifyRecord.set_id(l);
 
         Map<String, String> params = new HashMap();
-        params.put("similar", similar + "");
-        params.put("name", msg.name.trim());
-        params.put("sex", TextUtils.equals(msg.sex, "男") ? "1" : "0");
-        params.put("nation", msg.nation_str);
-        params.put("birthDate", msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
-        params.put("IdCard", msg.id_num);
-        params.put("address", msg.address);
-        params.put("termDate", msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
-        params.put("isPass", isPass + "");
+        params.put("similar", vertifyRecord.getSimilar());
+        params.put("name", vertifyRecord.getName());
+        params.put("sex", vertifyRecord.getSex());
+        params.put("nation", vertifyRecord.getNation());
+        params.put("birthDate", vertifyRecord.getBirthDate());
+        params.put("IdCard", vertifyRecord.getIdNum());
+        params.put("address", vertifyRecord.getAddress());
+        params.put("termDate", vertifyRecord.getTermDate());
+        params.put("isPass", vertifyRecord.getIsPass());
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
-        params.put("comId", SpUtils.getCompany().getComid() + "");
-        params.put("temper", temper + "");
-        Log.e(TAG, "uploadIdCardAndReImage: " + params.toString());
+        params.put("comId", vertifyRecord.getComId());
+        params.put("temper", vertifyRecord.getTemper());
 
-        PostFormBuilder builder = OkHttpUtils.post().url(uploadIdcard).params(params);
-        //存身份证图
-        long l = System.currentTimeMillis();
-        File idCardFile;
-        if (idCardBitmap != null) {
-            idCardFile = saveBitmap("idCard_", l, idCardBitmap);
-            Log.e(TAG, "存身份证图：" + idCardFile.getPath());
-        } else {
-            idCardFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
-            if (!idCardFile.exists()) {
-                try {
-                    idCardFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        builder.addFile("oldHeads", idCardFile.getName(), idCardFile);
-        //存人脸图
-        File faceFile = null;
-        if (faceBitmap != null) {
-            faceFile = saveBitmap(l, faceBitmap);
-            Log.e(TAG, "存人脸图：" + faceFile.getPath());
-        } else {
-            faceFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
-            if (!faceFile.exists()) {
-                try {
-                    faceFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        builder.addFile("newHeads", faceFile.getName(), faceFile);
-        //存热量图
-        File reFile = null;
-        if (reBitmap != null) {
-            reFile = saveBitmap("re_", l, reBitmap);
-            Log.e(TAG, "存热量图：" + reFile.getPath());
-        } else {
-            reFile = new File(Constants.LOCAL_ROOT_PATH, "0.txt");
-            if (!reFile.exists()) {
-                try {
-                    reFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        builder.addFile("reHead", reFile.getName(), reFile);
+        String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
+        Log.e(TAG, "上传身份信息");
+        Log.e(TAG, "地址" + uploadIdcard);
+        Log.e(TAG, "参数：" + params.toString());
+        Log.e(TAG, "身份证图像: " + vertifyRecord.getIdCardHeadPath());
+        Log.e(TAG, "人脸图像：" + vertifyRecord.getPersonHeadPath());
+        Log.e(TAG, "热成像图像" + vertifyRecord.getHotImagePath());
+        OkHttpUtils.post().url(uploadIdcard)
+                .params(params)
+                .addFile("oldHeads", idCardFile.getName(), idCardFile)
+                .addFile("newHeads", faceFile.getName(), faceFile)
+                .addFile("reHead", reFile.getName(), reFile)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                    }
 
-        //创建请求
-        RequestCall build = builder.build();
-        build.execute(new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: " + response);
-            }
-        });
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "onResponse: " + response);
+                        vertifyRecord.setUpload(true);
+                        DaoManager.get().update(vertifyRecord);
+                    }
+                });
     }
 
     //*************************************************************************************************8
@@ -1310,7 +1379,7 @@ public class SignManager {
         threadPool.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
+                boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
                 d("开始批量上传");
                 int comid = SpUtils.getCompany().getComid();
                 if (comid == Constants.NOT_BIND_COMPANY_ID) {
@@ -1353,7 +1422,7 @@ public class SignManager {
                     String headPath = sign.getHeadPath();
                     if (!TextUtils.isEmpty(headPath)) {
                         file = new File(sign.getHeadPath());
-                    } else if(isPrivacy){
+                    } else if (isPrivacy) {
                         file = createNullFile("", sign.getTime());
                     } else {
                         file = createNullFile("", sign.getTime());

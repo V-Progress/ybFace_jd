@@ -7,6 +7,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.hardware.Camera;
+import android.util.Log;
 
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.GenderInfo;
@@ -265,13 +266,24 @@ public class DrawHelper {
 
         Rect newRect = new Rect(drawInfo.getRect());
 
-        int offset = previewHeight / 10;
-        if(newRect.height() < offset){
-            offset *= ((float)newRect.height() / 100);
-        }
+        Log.e("112233", "drawFaceRect2: " + canvasWidth + " ----- " + canvasHeight);
 
-        newRect.top -= offset;
-        newRect.bottom -= offset / 2;
+        if(newRect.left <= 50){
+            newRect.left += 40;
+            newRect.right += 60;
+        } else if(newRect.left < 130){
+            newRect.left += 10;
+            newRect.right += 30;
+        }    else if(newRect.right >= 680 && newRect.right < 720){
+            newRect.left -= 10;
+        } if(newRect.right >= 720){
+            newRect.left -= 30;
+            newRect.right -= 10;
+        } else {
+            newRect.left += 10;
+            newRect.right += 30;
+        }
+        newRect.top -= 70;
 
         boolean thermalFaceFrame = drawInfo.isThermalFaceFrame();
         if(thermalFaceFrame){

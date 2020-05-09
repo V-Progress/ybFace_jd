@@ -24,9 +24,11 @@ public class CertificatesConst {
         String THERMAL_MIRROR = "certificatesThermalMirror";//热成像镜像
         String SIMILAR = "certificatesSimilar";
         String WHITE_LIST = "certificatesWhiteList";
+        String USB_PRINTER_ENABLED = "certificatesPrinterEnabled";
     }
 
     public static class Default{
+        public static final boolean USB_PRINTER_ENABLED = true;
         public static int MODE = Mode.CERTIFICATES_THERMAL;
         public static boolean LOW_TEMP = true;
         public static float MIN_THRESHOLD = 35.5f;

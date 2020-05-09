@@ -103,10 +103,23 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         rect.top *= verticalRatio;
         rect.bottom *= verticalRatio;
 
-        rect.left += 3;
-        rect.right += 3;
-        rect.top -= 3;
-        rect.bottom += 3;
+        if(rect.left <= 5){
+            rect.left += 4;
+            rect.right += 6;
+        } else if(rect.left < 13){
+            rect.left += 1;
+            rect.right += 3;
+        } else if(rect.right >= 70 && rect.right < 78){
+            rect.left -= 1;
+        } if(rect.right >= 78){
+            rect.right -= 1;
+            rect.left -= 3;
+        } else {
+            rect.left += 1;
+            rect.right += 3;
+        }
+
+        rect.top -= 7;
         return rect;
     }
 

@@ -33,6 +33,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -163,8 +164,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             NoticeManager.getInstance().initSignData();
         }
 
-        if(Constants.isSoftWorkz){
+        if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
             ivQRCode.setImageResource(R.mipmap.soft_workz_qrcode);
+        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
         }
     }
 
@@ -172,7 +174,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     public void onResume() {
         super.onResume();
 
-        if(Constants.isHT || Constants.isSK || Constants.isOsimle){
+        if(Constants.FLAVOR_TYPE == FlavorType.HT || Constants.FLAVOR_TYPE == FlavorType.SK || Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
             ivQRCode.setVisibility(View.GONE);
         } else {
             boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
@@ -262,8 +264,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         }
 
         Company company = SpUtils.getCompany();
-        if(!Constants.isSoftWorkz){
+        if(Constants.FLAVOR_TYPE != FlavorType.SOFT_WORK_Z){
             ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
+        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
+
         }
 
         if (tvCompanyName != null) {
@@ -457,13 +461,14 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             }
 
             public void bindData(Context context, Sign signBean) {
-                String headPath = signBean.getHeadPath();
+                /*String headPath = signBean.getHeadPath();
                 Bitmap imgBitmap = signBean.getImgBitmap();
                 if(imgBitmap != null){
                     ivHead.setImageBitmap(imgBitmap);
                 } else if(!TextUtils.isEmpty(headPath)){
-                    Glide.with(mContext).load(headPath).asBitmap().override(100, 100).into(ivHead);
-                }
+                    Glide.with(mContext).load(headPath).asBitmap().override(60, 60).into(ivHead);
+                }*/
+                Glide.with(mContext).load(signBean.getHeadPath()).asBitmap().override(60, 60).into(ivHead);
 
                 tvName.setText(signBean.getType() != -9 ? signBean.getName() : APP.getContext().getResources().getString(R.string.fment_sign_visitor_name));
                 tvTime.setText(df.format(signBean.getTime()));
