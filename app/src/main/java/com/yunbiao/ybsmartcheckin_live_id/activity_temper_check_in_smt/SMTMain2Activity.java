@@ -98,7 +98,7 @@ public class SMTMain2Activity extends SMTTempBase2Activity implements SMTViewInt
         faceView.enableMultiRetry(true);
         faceView.enableMultiCallback(true);
         faceView.setRetryTime(1);
-        faceView.setRetryDelayTime(3500);
+        faceView.setRetryDelayTime(4000);
 
         //加载签到列表Fragment
         signListFragment = new SMTSignFragment();

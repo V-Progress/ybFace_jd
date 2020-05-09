@@ -42,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -107,11 +108,17 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
+            return R.layout.activity_thermal_safety_check_19201080;
+        }
         return R.layout.activity_thermal_safety_check;
     }
 
     @Override
     protected int getLandscapeLayout() {
+        if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
+            return R.layout.activity_thermal_safety_check_19201080;
+        }
         return R.layout.activity_thermal_safety_check;
     }
 
@@ -132,7 +139,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         tvTemperState = findViewById(R.id.tv_temper_state_safety_check);
         tsTemper = findViewById(R.id.ts_temper_safety_check);
         tsTemper.setFactory(() -> {
-            TextView textView = (TextView) View.inflate(tsTemper.getContext(), R.layout.layout_safety_check_temper_textview, null);
+            TextView textView;
+            if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
+                textView = (TextView) View.inflate(tsTemper.getContext(), R.layout.layout_safety_check_temper_textview_19201080, null);
+            } else {
+                textView = (TextView) View.inflate(tsTemper.getContext(), R.layout.layout_safety_check_temper_textview, null);
+            }
             return textView;
         });
 

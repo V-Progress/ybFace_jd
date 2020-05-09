@@ -19,6 +19,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalC
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 
 import butterknife.BindView;
 
@@ -34,11 +35,17 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
+            return R.layout.activity_thermal_safety_check_setting_19201080;
+        }
         return R.layout.activity_thermal_safety_check_setting;
     }
 
     @Override
     protected int getLandscapeLayout() {
+        if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
+            return R.layout.activity_thermal_safety_check_setting_19201080;
+        }
         return R.layout.activity_thermal_safety_check_setting;
     }
 
