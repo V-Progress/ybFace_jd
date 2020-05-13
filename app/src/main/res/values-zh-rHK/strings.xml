@@ -17,7 +17,7 @@
     <string name="yb_check_in">雲標智能考勤</string>
     <string name="yb_temper_check_in">雲標測溫考勤</string>
     <string name="yb_certificates">雲標人證測溫</string>
-    <string name="yb_multiple">雲標大通量測溫</string>
+    <string name="yb_multiple">YBFace大通量</string>
     <string name="yb_safety_chceck">雲標測溫安檢</string>
 
     <string name="ht_temper_check_in">亨通測溫考勤</string>

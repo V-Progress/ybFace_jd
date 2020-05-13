@@ -282,6 +282,7 @@
     <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
     <string name="setting_default_welcome_tip2">Welcome to HT intelligent attendance system</string>
     <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
+    <string name="setting_default_welcome_tip4">Welcome to use the high-throughput temperature measurement and screening system</string>
     <string name="setting_correct_temperature">Correct Temperature</string>
     <string name="setting_broadcast_f">Enable Fahrenheit</string>
 

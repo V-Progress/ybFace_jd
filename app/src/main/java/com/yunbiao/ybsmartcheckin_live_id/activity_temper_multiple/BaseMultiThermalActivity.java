@@ -59,6 +59,9 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
 
     private TextView tvNetState;
 
+    public static int boxPortraitOffset = 0;
+    public static int boxSizeOffset = 0;
+
     @Override
     protected int getPortraitLayout() {
         return getLayout();
@@ -105,21 +108,25 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
 
         if(rect.left <= 5){
             rect.left += 4;
-            rect.right += 6;
+            rect.right += 4;
         } else if(rect.left < 13){
             rect.left += 1;
-            rect.right += 3;
+            rect.right += 1;
         } else if(rect.right >= 70 && rect.right < 78){
-            rect.left -= 1;
-        } if(rect.right >= 78){
-            rect.right -= 1;
             rect.left -= 3;
+            rect.right -= 3;
+        } if(rect.right >= 78){
+            rect.right -= 4;
+            rect.left -= 4;
         } else {
             rect.left += 1;
-            rect.right += 3;
+            rect.right += 1;
         }
 
-        rect.top -= 7;
+        rect.left -= boxSizeOffset;
+        rect.right += boxSizeOffset;
+        rect.top += (boxPortraitOffset - boxSizeOffset);
+        rect.bottom += (boxPortraitOffset + boxSizeOffset);
         return rect;
     }
 

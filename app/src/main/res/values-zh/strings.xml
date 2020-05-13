@@ -17,7 +17,7 @@
     <string name="yb_check_in">云标智能考勤</string>
     <string name="yb_temper_check_in">云标测温考勤</string>
     <string name="yb_certificates">云标人证测温</string>
-    <string name="yb_multiple">云标大通量测温</string>
+    <string name="yb_multiple">YBFace大通量</string>
     <string name="yb_safety_chceck">云标测温安检</string>
 
     <string name="ht_temper_check_in">亨通测温考勤</string>
@@ -583,4 +583,6 @@
     <string name="safety_correct_temper_completion">测温结束</string><!--測溫完成-->
     <string name="safety_save_completion">校準完成</string><!--矯正完成-->
     <string name="safety_save_cancel">取消校准</string><!--保存-->
+
+    <string name="setting_default_welcome_tip4">欢迎使用大通量测温筛查系统</string>
 </resources>

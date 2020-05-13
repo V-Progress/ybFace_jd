@@ -72,6 +72,9 @@ public class SpUtils {
     public static final String WELCOM_TIPS = "welcomeTips";//欢迎语
     public static final String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
 
+    public static final String MULTI_BOX_PORTRAIT_OFFSET = "multiBoxPortraitOffset";//大通量热成像人脸框纵向偏移值
+    public static final String MULTI_BOX_SIZE_OFFSET = "multiBoxSizeOffset";//大通量热成像人脸框大小偏移值
+
     static {
         sp = APP.getContext().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
     }

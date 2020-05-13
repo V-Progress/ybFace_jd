@@ -19,6 +19,17 @@
             android:layout_width="140dp"
             android:layout_height="80dp" />
 
+        <TextView
+            android:onClick="showSystemInfo"
+            android:id="@+id/tv_logo_multi_thermal"
+            android:text="YBFace"
+            android:textColor="@color/white"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"/>
+
         <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
             android:id="@+id/gtv_title_multi_thermal"
             android:textStyle="bold"
@@ -102,6 +113,7 @@
                     android:visibility="gone"
                     android:id="@+id/ll_correction_area"
                     android:gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
@@ -255,6 +267,53 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/ll_correction_box_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="160dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <Button
+                        android:id="@+id/btn_box_up"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@mipmap/icon_multi_up_box"/>
+                    <Button
+                        android:id="@+id/btn_box_down"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="30dp"
+                        android:background="@mipmap/icon_multi_down_box"/>
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_sub"
+                        android:id="@+id/btn_box_size_sub"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="50dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                    <Button
+                        android:background="@drawable/selector_safety_check_main_correct_plus"
+                        android:id="@+id/btn_box_size_add"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="30dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                    <Button
+                        android:background="@mipmap/cancel_icon"
+                        android:id="@+id/btn_cancel_correction_box"
+                        android:layout_marginLeft="50dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                    <Button
+                        android:layout_marginLeft="20dp"
+                        android:background="@mipmap/confirm_icon"
+                        android:id="@+id/btn_confirm_correction_box"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                </LinearLayout>
                 <Button
                     android:onClick="startCalibration"
                     android:background="@drawable/selector_btn_take_photo"

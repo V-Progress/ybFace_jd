@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -133,6 +134,23 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     @BindView(R.id.rlv_normal_list)
     RecyclerView rlvNormalList;//正常列表
 
+    @BindView(R.id.tv_logo_multi_thermal)
+    TextView tvLogo;
+    @BindView(R.id.ll_correction_box_area)
+    View llCorrectionBoxArea;
+    @BindView(R.id.btn_box_up)
+    Button btnBoxUp;
+    @BindView(R.id.btn_box_down)
+    Button btnBoxDown;
+    @BindView(R.id.btn_cancel_correction_box)
+    Button btnCancelCorrectionBox;
+    @BindView(R.id.btn_confirm_correction_box)
+    Button btnConfirmCorrectionBox;
+    @BindView(R.id.btn_box_size_sub)
+    Button btnBoxSizeSub;
+    @BindView(R.id.btn_box_size_add)
+    Button btnBoxSizeAdd;
+
     private boolean mThermalMirror;
     private MultiThermalRecordAdapter warningAdapter;
     private List<MultiTemperBean> warningList = new ArrayList<>();
@@ -194,9 +212,16 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             ivLogo.setImageResource(R.mipmap.osimle_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
         } else {
-            ivLogo.setImageResource(R.mipmap.logo_hushida);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_hushida);
+            ivLogo.setVisibility(View.GONE);
+//            ivLogo.setImageResource(R.mipmap.logo_hushida);
+//            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_hushida);
         }
+
+        initCalibrationBoxBtn();
+        btnCorrect.setOnLongClickListener(v -> {
+            startCalibrationBox();
+            return true;
+        });
     }
 
     @Override
@@ -939,12 +964,16 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         EventBus.getDefault().post(new UpdateMediaEvent());
 
+        ivLogo.setVisibility(View.VISIBLE);
+        tvLogo.setVisibility(View.GONE);
         ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(ResetLogoEvent event) {
         Company company = SpUtils.getCompany();
+        ivLogo.setVisibility(View.VISIBLE);
+        tvLogo.setVisibility(View.GONE);
         ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
     }
 
@@ -1196,4 +1225,130 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         return false;
     });
+
+    /***
+     * 校准人脸框
+     * ============================================================================================
+     * ============================================================================================
+     * ============================================================================================
+     * ============================================================================================
+     */
+    private void startCalibrationBox() {
+        btnCorrect.setVisibility(View.GONE);
+        llCorrectionBoxArea.setVisibility(View.VISIBLE);
+    }
+
+    private BoxUpOrDownThread boxUpOrDownThread;
+    private BoxSubOrAddThread boxSubOrAddThread;
+    private boolean isUpOrDownLongClick = false;
+    private boolean isSubOrAddLongClick = false;
+
+    private void initCalibrationBoxBtn() {
+        boxPortraitOffset = SpUtils.getIntOrDef(SpUtils.MULTI_BOX_PORTRAIT_OFFSET, 0);
+        boxSizeOffset = SpUtils.getIntOrDef(SpUtils.MULTI_BOX_SIZE_OFFSET, 0);
+
+        View.OnClickListener clickListener = v -> {
+            switch (v.getId()) {
+                case R.id.btn_cancel_correction_box:
+                    boxPortraitOffset = SpUtils.getIntOrDef(SpUtils.MULTI_BOX_PORTRAIT_OFFSET, 0);
+                    boxSizeOffset = SpUtils.getIntOrDef(SpUtils.MULTI_BOX_SIZE_OFFSET, 0);
+                    llCorrectionBoxArea.setVisibility(View.GONE);
+                    btnCorrect.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.btn_confirm_correction_box:
+                    SpUtils.saveInt(SpUtils.MULTI_BOX_PORTRAIT_OFFSET, boxPortraitOffset);
+                    SpUtils.saveInt(SpUtils.MULTI_BOX_SIZE_OFFSET, boxSizeOffset);
+                    llCorrectionBoxArea.setVisibility(View.GONE);
+                    btnCorrect.setVisibility(View.VISIBLE);
+                    break;
+            }
+        };
+
+        View.OnTouchListener upOrDownTouchListener = (v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (v.getId() == R.id.btn_box_up) {
+                    boxUpOrDownThread = new BoxUpOrDownThread(true);
+                } else {
+                    boxUpOrDownThread = new BoxUpOrDownThread(false);
+                }
+                isUpOrDownLongClick = true;
+                boxUpOrDownThread.start();
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                isUpOrDownLongClick = false;
+                boxUpOrDownThread = null;
+            }
+            return false;
+        };
+
+        View.OnTouchListener subOrAddTouchListener = (v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (v.getId() == R.id.btn_box_size_add) {
+                    boxSubOrAddThread = new BoxSubOrAddThread(true);
+                } else {
+                    boxSubOrAddThread = new BoxSubOrAddThread(false);
+                }
+                isSubOrAddLongClick = true;
+                boxSubOrAddThread.start();
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                isSubOrAddLongClick = false;
+                boxSubOrAddThread = null;
+            }
+            return false;
+        };
+
+        btnBoxUp.setOnTouchListener(upOrDownTouchListener);
+        btnBoxDown.setOnTouchListener(upOrDownTouchListener);
+        btnBoxSizeAdd.setOnTouchListener(subOrAddTouchListener);
+        btnBoxSizeSub.setOnTouchListener(subOrAddTouchListener);
+        btnCancelCorrectionBox.setOnClickListener(clickListener);
+        btnConfirmCorrectionBox.setOnClickListener(clickListener);
+    }
+
+    private class BoxUpOrDownThread extends Thread {
+        private boolean isUp;
+        public BoxUpOrDownThread(boolean isUp) {
+            this.isUp = isUp;
+        }
+        @Override
+        public void run() {
+            while (isUpOrDownLongClick) {
+                try {
+                    Thread.sleep(200);
+                    if (isUp) {
+                        boxPortraitOffset -= 1;
+                    } else {
+                        boxPortraitOffset += 1;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            super.run();
+        }
+    }
+
+    private class BoxSubOrAddThread extends Thread {
+        private boolean isAdd;
+        public BoxSubOrAddThread(boolean isAdd) {
+            this.isAdd = isAdd;
+        }
+        @Override
+        public void run() {
+            while (isSubOrAddLongClick) {
+                try {
+                    Thread.sleep(200);
+                    if (isAdd) {
+                        boxSizeOffset += 1;
+                    } else {
+                        if (boxSizeOffset > 0) {
+                            boxSizeOffset -= 1;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            super.run();
+        }
+    }
 }

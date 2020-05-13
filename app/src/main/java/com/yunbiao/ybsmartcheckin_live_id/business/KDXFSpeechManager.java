@@ -127,6 +127,10 @@ public class KDXFSpeechManager {
         } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
             welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
         }
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL) {
+            welcomeTips = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip4);
+            mSpeed = 2.0f;
+        }
         if (TextUtils.isEmpty(welcomeTips)) {
             return;
         }

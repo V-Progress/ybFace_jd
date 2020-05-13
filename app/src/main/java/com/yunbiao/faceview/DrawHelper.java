@@ -12,6 +12,8 @@ import android.util.Log;
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.GenderInfo;
 import com.arcsoft.face.LivenessInfo;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.BaseMultiThermalActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
 
 import java.util.List;
 
@@ -270,20 +272,25 @@ public class DrawHelper {
 
         if(newRect.left <= 50){
             newRect.left += 40;
-            newRect.right += 60;
+            newRect.right += 40;
         } else if(newRect.left < 130){
             newRect.left += 10;
-            newRect.right += 30;
-        }    else if(newRect.right >= 680 && newRect.right < 720){
-            newRect.left -= 10;
+            newRect.right += 10;
+        } else if(newRect.right >= 680 && newRect.right < 720){
+            newRect.left -= 40;
+            newRect.right -= 40;
         } if(newRect.right >= 720){
-            newRect.left -= 30;
-            newRect.right -= 10;
+            newRect.left -= 40;
+            newRect.right -= 40;
         } else {
             newRect.left += 10;
-            newRect.right += 30;
+            newRect.right += 10;
         }
-        newRect.top -= 70;
+
+        newRect.left -= MultiThermalActivity.boxSizeOffset * 10;
+        newRect.right += MultiThermalActivity.boxSizeOffset * 10;
+        newRect.top += ((MultiThermalActivity.boxPortraitOffset - MultiThermalActivity.boxSizeOffset) * 10);
+        newRect.bottom += ((MultiThermalActivity.boxPortraitOffset + MultiThermalActivity.boxSizeOffset) * 10);
 
         boolean thermalFaceFrame = drawInfo.isThermalFaceFrame();
         if(thermalFaceFrame){
