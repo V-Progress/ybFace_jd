@@ -23,17 +23,14 @@ import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.yunbiao.faceview.CertificatesView;
-import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
-import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
+import com.yunbiao.ybsmartcheckin_live_id.db2.CertificatesUser;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.White;
 import com.yunbiao.ybsmartcheckin_live_id.printer.PrinterUtils;
-import com.yunbiao.ybsmartcheckin_live_id.printer.UsbPrinter;
 import com.yunbiao.ybsmartcheckin_live_id.printer.UsbPrinterStatus;
 import com.yunbiao.ybsmartcheckin_live_id.serialport.InfraredTemperatureUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
@@ -72,13 +69,13 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private CertificatesView mCertificatesView;
     private boolean mWhiteListEnable;
     private boolean mUsbPrinterEnabled;
+    private boolean icCardMode;
 
     @Override
     protected void initData() {
         super.initData();
         KDXFSpeechManager.instance().init(this);
         IDCardReader.getInstance().startReaderThread(this, readListener);
-        initCardReader();
         registerNetState();
         initUsbPrinter();
     }
@@ -86,6 +83,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     @Override
     protected void onResume() {
         super.onResume();
+        icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE, CertificatesConst.Default.IC_CARD_MODE);
         mWhiteListEnable = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
         mThermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
         mMinThreshold = SpUtils.getFloat(CertificatesConst.Key.MIN_THRESHOLD, CertificatesConst.Default.MIN_THRESHOLD);
@@ -104,52 +102,63 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         }
         startTemperModule();
 
+        initScanQrCodeReader();
+
         mUsbPrinterEnabled = SpUtils.getBoolean(CertificatesConst.Key.USB_PRINTER_ENABLED, CertificatesConst.Default.USB_PRINTER_ENABLED);
     }
 
-    private void initUsbPrinter(){
+    private void initUsbPrinter() {
         boolean open = PrinterUtils.getInstance().openDevice(this);
-        if(!open){
-            UIUtils.showShort(this,"未检测到打印机");
+        if (!open) {
+            UIUtils.showShort(this, getResString(R.string.act_certificates_no_printer));
             return;
         }
 
         int printerStatus = PrinterUtils.getInstance().getPrinterStatus();
         String stringStatus = UsbPrinterStatus.getStringStatus(printerStatus);
-        if(!TextUtils.isEmpty(stringStatus)){
+        if (!TextUtils.isEmpty(stringStatus)) {
             UIUtils.showShort(this, stringStatus);
         }
     }
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private void printMsg(IdCardMsg idCardMsg, float finalTemper, boolean isInWhite){
-        if(!mUsbPrinterEnabled){
+
+    private void printMsg(IdCardMsg idCardMsg, float finalTemper, boolean isNormal, boolean isInWhite) {
+        if (!mUsbPrinterEnabled) {
             return;
         }
         int printerStatus = PrinterUtils.getInstance().getPrinterStatus();
-        if(printerStatus != UsbPrinterStatus.AVAILABLE //可用
+        if (printerStatus != UsbPrinterStatus.AVAILABLE //可用
                 && printerStatus != UsbPrinterStatus.SDK_DONT_MATCH //不匹配
                 && printerStatus != UsbPrinterStatus.PRINT_HEAD_OPEN //打印头已打开
                 && printerStatus != UsbPrinterStatus.PAPER_LESS //纸较少
-        ){
-            UIUtils.showShort(this,"警告：打印机" + UsbPrinterStatus.getStringStatus(printerStatus));
+        ) {
+            UIUtils.showShort(this, getResString(R.string.act_certificates_warning_printer) + UsbPrinterStatus.getStringStatus(printerStatus));
             return;
         }
 
         String name = idCardMsg.name;
-        String nativeplace = IDCardReader.getNativeplace(idCardMsg.id_num.substring(0,6));
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("AI人证测温系统").append("\n");
+        stringBuffer.append(getResString(R.string.act_certificates_title)).append("\n");
         stringBuffer.append("==============================").append("\n");
-        stringBuffer.append("姓名：").append(name).append("\n").append("\n");
-        stringBuffer.append("籍贯：").append(nativeplace).append("\n").append("\n");
-        stringBuffer.append("体温：").append(finalTemper).append("℃").append("\n").append("\n");
-        stringBuffer.append("到访时间：").append(dateFormat.format(new Date())).append("\n");
-        if(mWhiteListEnable){
-            stringBuffer.append("\n").append("白名单：").append((isInWhite ? "是" : "否")).append("\n");
+        stringBuffer.append(getResString(R.string.act_certificates_printer_name)).append(name).append("\n").append("\n");
+        if(icCardMode){
+            stringBuffer.append(getResString(R.string.act_certificates_printer_depart)).append(idCardMsg.nation_str).append("\n").append("\n");
+        } else {
+            stringBuffer.append(getResString(R.string.act_certificates_printer_native_place)).append(IDCardReader.getNativeplace(idCardMsg.id_num.substring(0, 6))).append("\n").append("\n");
+        }
+        stringBuffer.append(getResString(R.string.act_certificates_printer_temper)).append(finalTemper).append("℃");
+        if (!isNormal) {
+            stringBuffer.append(getResString(R.string.act_certificates_printer_error));
+        }
+        stringBuffer.append("\n").append("\n");
+
+        stringBuffer.append(getResString(R.string.act_certificates_printer_time)).append(dateFormat.format(new Date())).append("\n");
+        if (mWhiteListEnable) {
+            stringBuffer.append("\n").append(getResString(R.string.act_certificates_printer_white)).append((isInWhite ? getResString(R.string.act_certificates_printer_white_yes) : getResString(R.string.act_certificates_printer_white_no))).append("\n");
         }
         stringBuffer.append("==============================").append("\n");
-        stringBuffer.append("请保存好打印凭证，以便查验").append("\n");
+        stringBuffer.append(getResString(R.string.act_certificates_printer_tips)).append("\n");
         stringBuffer.append("==============================").append("\n");
         PrinterUtils.getInstance().printText(stringBuffer.toString());
     }
@@ -321,17 +330,16 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         }
     }
 
-
-    protected void testIdCard(){
+    protected IdCardMsg testIdCard() {
         IdCardMsg idCardMsg = new IdCardMsg();
-        Bitmap bitmap = BitmapFactory.decodeFile(new File(Environment.getExternalStorageDirectory(),"12345.jpg").getPath());
+        Bitmap bitmap = BitmapFactory.decodeFile(new File(Environment.getExternalStorageDirectory(), "12345.jpg").getPath());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] datas = baos.toByteArray();
 
         idCardMsg.name = "张威";
         idCardMsg.id_num = "130481199308122419";
-        idCardMsg.ptoto = datas ;
+        idCardMsg.ptoto = datas;
         idCardMsg.sex = "男";
         idCardMsg.nation_str = "汉族";
         idCardMsg.birth_year = "1993";
@@ -342,7 +350,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         idCardMsg.useful_e_date_day = "12";
         idCardMsg.address = "A撒大大撒撒";
 
-        readListener.getCardInfo(idCardMsg);
+//        readListener.getCardInfo(idCardMsg);
+        return idCardMsg;
     }
 
     //证件收集
@@ -353,7 +362,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             sendClearUIMessage(0);
             KDXFSpeechManager.instance().playDingDong();
             if (msg == null || msg.name == null || msg.ptoto == null) {
-                sendTipMessage("证件读取失败，请重新贴卡", true);
+                sendTipMessage(getResString(R.string.act_certificates_card_read_failed), true);
                 return;
             }
             idCardMsg = msg;
@@ -378,7 +387,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         if (compareThread != null && compareThread.isAlive()) {
             d("对比线程正在运行");
         } else {
-            sendTipMessage("正在验证，请正视摄像头", true);
+            sendTipMessage(getResString(R.string.act_certificates_verifing), true);
             comparing = true;
             compareThread = new Thread(compareRunnable);
             compareThread.start();
@@ -397,7 +406,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     d("等待人脸超时");
                     waitFaceTime = 0;
                     sendClearUIMessage(5000);
-                    sendTipMessage("检测超时，请重新贴卡", true);
+                    sendTipMessage(getResString(R.string.act_certficates_check_outtime), true);
                     stopCompareThread();
                     break;//检测超时重新贴卡
                 }
@@ -418,7 +427,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                         mDetectTemperList.clear();
                     }
                     sendClearUIMessage(5000);
-                    sendTipMessage("测温失败，请重新贴卡", true);
+                    sendTipMessage(getResString(R.string.act_certficates_check_failed), true);
                     stopCompareThread();
                     break;//测温超时，重新贴卡
                 }
@@ -439,7 +448,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                         }
                         d("提取特征失败");
                         sendClearUIMessage(5000);
-                        sendTipMessage("特征提取超时，请重新贴卡", true);
+                        sendTipMessage(getResString(R.string.act_certficates_feature_outtime), true);
                         stopCompareThread();
                         break;//特征提取超时，重新贴卡
                     }
@@ -453,10 +462,14 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             d("特征提取完成");
 
             //提取身份证信息
-            // TODO: 2020/5/1
-            byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
-            Bitmap cardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//            Bitmap cardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+            Bitmap cardBitmap;
+            if (icCardMode) {
+                cardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+            } else {
+                byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
+                cardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            }
+
             FaceFeature idCardFeature = mCertificatesView.inputIdCard(cardBitmap);
             if (idCardFeature == null) {
                 if (mDetectTemperList.size() > 0) {
@@ -465,7 +478,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 if (faceFeatureList.size() > 0) {
                     faceFeatureList.clear();
                 }
-                sendTipMessage("证件读取失败，请重新贴卡", true);
+                sendTipMessage(getResString(R.string.act_certificates_card_read_failed), true);
                 stopCompareThread();
                 break;
             }
@@ -520,12 +533,15 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             case 1://更新卡片信息
                 IdCardMsg idCardMsg = (IdCardMsg) msg.obj;
                 if (idCardMsg != null) {
-                    // TODO: 2020/5/1
-                    byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
-                    Bitmap mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                    Bitmap mIdCardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+                    Bitmap mIdCardBitmap = null;
+                    if (icCardMode) {
+                        mIdCardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+                    } else {
+                        byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
+                        mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    }
                     if (viewInterface != null) {
-                        viewInterface.updateIdCardInfo(idCardMsg, mIdCardBitmap);
+                        viewInterface.updateIdCardInfo(idCardMsg, mIdCardBitmap, icCardMode);
                     }
                 }
                 break;
@@ -546,7 +562,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 boolean isAlike = similarInt >= mSimilar;
                 boolean isNormal = finalTemper > mMinThreshold && finalTemper < mWarningThreshold;
                 boolean isInWhite = true;//白名单标识，如果不开启白名单，则此值不会变，也不会有相应的提示
-                if(mWhiteListEnable){
+                if (mWhiteListEnable) {
                     String id_num = BaseCertificatesActivity.this.idCardMsg.id_num;
                     d("身份证号：" + id_num);
                     String num1 = id_num.substring(0, 2);
@@ -567,29 +583,40 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
                 StringBuffer resultBuffer = new StringBuffer();
                 String speech = "";
+
+                String v1 = getResString(R.string.act_certificates_verify_pass_yes);
+                String v2 = getResString(R.string.act_certificates_verify_pass_no);
+
+                String t1 = getResString(R.string.act_certificates_verify_temper_yes);
+                String t2 = getResString(R.string.act_certificates_verify_temper_no);
+
+                String p1 = getResString(R.string.act_certificates_verify_passage_no);
+                String p2 = getResString(R.string.act_certificates_verify_passage_yes);
+                String p3 = getResString(R.string.act_certificates_verify_passage_ensure);
+
                 if (isAlike) {
-                    resultBuffer.append("<font color='#00ff00'>验证通过</font>");//绿色字体
-                    speech += "验证通过";
+                    resultBuffer.append("<font color='#00ff00'>" + v1 + "</font>");//绿色字体
+                    speech += v1;
                 } else {
-                    resultBuffer.append("<font color='#ff0000'>人证不匹配</font>");//红字
-                    speech += "人证不匹配";
+                    resultBuffer.append("<font color='#ff0000'>" + v2 + "</font>");//红字
+                    speech += v2;
                 }
                 resultBuffer.append("<font color='#ffffff'>，</font>");//白字
                 if (isNormal) {
-                    resultBuffer.append("<font color='#00ff00'>体温正常</font>");//绿字
-                    speech += "，体温正常";
+                    resultBuffer.append("<font color='#00ff00'>" + t1 + "</font>");//绿字
+                    speech += "，" + t1;
                 } else {
-                    resultBuffer.append("<font color='#ff0000'>体温异常</font>");//红字
-                    speech += "，体温异常";
+                    resultBuffer.append("<font color='#ff0000'>" + t2 + "</font>");//红字
+                    speech += "，" + t2;
                 }
 
                 if (!isAlike || !isNormal) {
-                    speech += "，禁止通行";
+                    speech += "，" + p1;
                 } else {
-                    if(isInWhite){
-                        speech += "，请通行";
+                    if (isInWhite) {
+                        speech += "，" + p2;
                     } else {
-                        speech += "，请确认通行";
+                        speech += "，" + p3;
                     }
                 }
                 KDXFSpeechManager.instance().stopNormal();
@@ -599,9 +626,11 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     }
                 });
 
-                printMsg(BaseCertificatesActivity.this.idCardMsg,finalTemper,isInWhite);
+                if (isAlike) {
+                    printMsg(BaseCertificatesActivity.this.idCardMsg, finalTemper, isNormal, isInWhite);
+                }
                 if (viewInterface != null) {
-                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, finalTemper, similarInt, isAlike, isNormal,isInWhite);
+                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, finalTemper, similarInt, isAlike, isNormal, isInWhite, icCardMode);
                 }
                 if (isAlike && isNormal && isInWhite) {
                     ledGreen();
@@ -634,9 +663,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 float mTemper = (float) msg.obj;
                 boolean normal = mTemper >= mMinThreshold && mTemper < mWarningThreshold;
                 if (normal) {
-                    KDXFSpeechManager.instance().playNormal("体温正常，请通行");
+                    KDXFSpeechManager.instance().playNormal(getResString(R.string.act_certificates_speech_pass_yes));
                 } else {
-                    KDXFSpeechManager.instance().playNormal("体温异常，禁止通行");
+                    KDXFSpeechManager.instance().playNormal(getResString(R.string.act_certificates_speech_pass_no));
                 }
                 if (viewInterface != null) {
                     viewInterface.updateCodeTemperResult(mTemper, normal);
@@ -750,16 +779,46 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
      */
     private ScanKeyManager scanKeyManager;
 
-    private void initCardReader() {
+    private void initScanQrCodeReader() {
         //读卡器声明
         scanKeyManager = new ScanKeyManager(value -> {
             d("onScanValue: 检测到扫码：" + value);
-
-            d("贴卡，清除UI");
-            sendClearUIMessage(0);
-            getUserInfoByCode(value);
+            if (icCardMode) {
+                d("检测到IC卡，清除UI");
+                sendClearUIMessage(0);
+                KDXFSpeechManager.instance().playDingDong();
+                if (TextUtils.isEmpty(value)) {
+                    sendTipMessage(getResString(R.string.act_certificates_card_read_failed), true);
+                    return;
+                }
+                getUserInfoByICCard(value);
+            } else {
+                d("贴卡，清除UI");
+                sendClearUIMessage(0);
+                getUserInfoByCode(value);
+            }
         });
         onKeyBoardListener();
+    }
+
+    private void getUserInfoByICCard(String cardNum) {
+        CertificatesUser user = DaoManager.get().queryCertiUserByCardNum(cardNum);
+        if(user == null){
+            UIUtils.showShort(this,getResString(R.string.act_certificates_no_this_person));
+            return;
+        }
+        idCardMsg = new IdCardMsg();
+        idCardMsg.id_num = user.getNum();
+        idCardMsg.name = user.getName();
+        idCardMsg.nation_str = user.getDepart();
+
+        Bitmap bitmap = BitmapFactory.decodeFile(user.getHeadPath());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        idCardMsg.ptoto = baos.toByteArray();
+
+        sendCardInfoMessage(idCardMsg);
+        startCompareThread();
     }
 
     private void getUserInfoByCode(String code) {
@@ -777,7 +836,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("onError: " + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showLong(BaseCertificatesActivity.this, "获取信息失败，请重试" + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
+                UIUtils.showLong(BaseCertificatesActivity.this, getResString(R.string.act_certificates_get_info_failed) + "（ " + (e == null ? "NULL" : e.getMessage()) + "）");
 
                 resultHandler.removeMessages(4);
                 resultHandler.sendEmptyMessageDelayed(4, 1000);
@@ -788,7 +847,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 d("onResponse: 请求结果：" + response);
                 UserInfo getUserInfo = new Gson().fromJson(response, UserInfo.class);
                 if (getUserInfo.status != 1) {
-                    UIUtils.showLong(BaseCertificatesActivity.this, "获取信息失败" + "（ " + getUserInfo.message + "）");
+                    UIUtils.showLong(BaseCertificatesActivity.this, getResString(R.string.act_certificates_get_info_failed) + "（ " + getUserInfo.message + "）");
                     return;
                 }
                 sendUserInfoByCode(getUserInfo);
@@ -834,7 +893,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 } else if (currMillis - mCodeWaitFaceTime > 5000) {
                     mCodeWaitFaceTime = 0;
                     sendClearUIMessage(5000);
-                    sendTipMessage("检测超时，请重新扫码", true);
+                    sendTipMessage(getResString(R.string.act_certificates_check_outtime_scan_code), true);
                     stopCodeTemperThread();
                     break;
                 }
@@ -851,7 +910,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 } else if (currMillis - mCodeWaitTemperTime > 5000) {
                     mCodeWaitTemperTime = 0;
                     sendClearUIMessage(5000);
-                    sendTipMessage("测温超时，请重新扫码", true);
+                    sendTipMessage(getResString(R.string.act_certificates_temper_outtime_scan_code), true);
                     stopCodeTemperThread();
                     break;
                 }
@@ -860,7 +919,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 mCodeWaitTemperTime = 0;
             }
 
-            Float finalTemper = Collections.max(mDetectTemperList);
+            Float finalTemper = getMean(mDetectTemperList);
+//            Float finalTemper = Collections.max(mDetectTemperList);
             d("测温完毕：" + finalTemper);
 
             sendCodeTemperResult(finalTemper);
@@ -913,6 +973,4 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             }
         });
     }
-
-
 }

@@ -88,6 +88,7 @@ public class APP extends Application {
     }
 
     public static void finishAllActivity() {
+        Log.e(TAG, "finishAllActivity: " + activityList.size());
         for (Activity activity : activityList) {
             activity.finish();
         }
@@ -107,10 +108,6 @@ public class APP extends Application {
         instance = this;
 
         Timber.plant(new Timber.DebugTree());
-
-        initGpio();
-
-        DaoManager.get().initDb();
 
         cauchException();
 
@@ -139,7 +136,7 @@ public class APP extends Application {
                 .loadSkin();
     }
 
-    //IO引脚
+  /*  //IO引脚
     private int dir_set_io[] = {1, 2, 3, 4};
     //IO口方向，0：输入，1：输出
     private int dir_set_import = 0;
@@ -148,7 +145,7 @@ public class APP extends Application {
     private int dir_set_value = 0;
 
     private void initGpio() {
-        /*try {
+        *//*try {
             smdt = SmdtManager.create(this);
             //设置gpio为输出
             if (smdt != null) {
@@ -164,14 +161,14 @@ public class APP extends Application {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }*//*
 
-        /*try{
+        *//*try{
             xhApiManager = new XHApiManager();
         }catch (Exception e){
             e.printStackTrace();
-        }*/
-    }
+        }*//*
+    }*/
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//
     public void cauchException() {
@@ -305,8 +302,8 @@ public class APP extends Application {
     public static void exit() {
         unbindProtectService();
         finishAllActivity();
-        //关闭整个应用
-        System.exit(0);
+//        //关闭整个应用
+//        System.exit(0);
     }
     public static void exit2() {
         finishAllActivity();

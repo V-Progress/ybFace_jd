@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.yunbiao.ybsmartcheckin_live_id">
+    package="com.yunbiao.ybsmartcheckin_live_id" >
+
+    <permission android:name="android.permission.REBOOT" />
+    <permission android:name="android.permission.SHUTDOWN" />
+    <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <permission android:name="android.permission.UPDATE_DEVICE_STATS" />
+    <permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
+    <permission android:name="android.permission.READ_LOGS" />
+    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <permission android:name="android.permission.SET_TIME" />
+    <permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.hardware.usb.accessory" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.RECORD_VIDEO" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".APP"
@@ -12,8 +53,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="label,allowBackup">
-        <activity android:name=".activity_certificates.VertifyRecordActivity"></activity>
+        tools:replace="label,allowBackup" >
+        <activity android:name=".activity_certificates.CertificatesAddUserActivity" >
+        </activity>
+        <activity android:name=".activity_certificates.VertifyRecordActivity" />
         <activity android:name=".activity.ClearPolicyActivity" />
         <activity android:name=".activity_certificates.CertificatesWhiteListActivity" />
         <activity android:name=".activity_safety_check_double_light.SafetyDoubleLightSettingActivity" />
@@ -22,7 +65,7 @@
         <activity
             android:name=".SplashActivity"
             android:enabled="true"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -42,6 +85,7 @@
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".activity_certificates.CertificatesUserListActivity"/>
         <activity
             android:name=".activity.EditEmployActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -63,9 +107,6 @@
         <activity android:name=".activity_temper_check_in.ThermalVisitorActivity" />
         <activity android:name=".activity_temper_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
         <activity
-            android:name=".activity_temper_check_in_smt.SMTMainActivity"
-            android:launchMode="singleTask" />
-        <activity
             android:name=".activity_temper_check_in_smt.SMTMain2Activity"
             android:launchMode="singleTask" />
         <activity android:name=".activity_temper_check_in_smt.SMTSystemActivity" />
@@ -76,7 +117,7 @@
         <activity android:name=".activity_temper_check_in_smt.SMTVisitorActivity" /> <!-- 人证 -->
         <activity
             android:name=".activity_certificates.CertificatesActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
@@ -113,20 +154,20 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".receiver.BootRestartReceiver">
+        <receiver android:name=".receiver.BootRestartReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.DateChangedReceiver">
+        <receiver android:name=".receiver.DateChangedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
@@ -134,18 +175,18 @@
         <receiver
             android:name=".business.AlarmManagerUtil$AlarmBroadcast"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="alarm_action" />
             </intent-filter>
         </receiver> <!-- 百度定位 -->
-        <service android:name=".TestService"/>
+        <service android:name=".TestService" />
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
         <service
             android:name=".ReadCardService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -163,46 +204,5 @@
             android:permission="android.permission.BAIDU_LOCATION_SERVICE"
             android:process=":remote" />
     </application>
-    <permission android:name="android.permission.REBOOT" />
-    <permission android:name="android.permission.SHUTDOWN" />
-    <permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <permission android:name="android.permission.UPDATE_DEVICE_STATS" />
-    <permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
-    <permission android:name="android.permission.READ_LOGS" />
-    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <permission android:name="android.permission.SET_TIME" />
-    <permission android:name="android.permission.CHANGE_CONFIGURATION" />
-
-    <permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-feature android:name="android.hardware.usb.host" />
-    <uses-feature android:name="android.hardware.camera" />
-
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.hardware.usb.accessory" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 这个权限用于进行网络定位 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-    <uses-permission android:name="android.permission.RECORD_VIDEO" />
-    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 </manifest>

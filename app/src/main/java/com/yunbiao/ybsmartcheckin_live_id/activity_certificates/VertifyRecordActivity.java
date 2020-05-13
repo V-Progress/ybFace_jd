@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,12 +41,15 @@ public class VertifyRecordActivity extends BaseActivity {
     RecyclerView rlvRecord;
     @BindView(R.id.btn_select_date)
     Button btnSelectDate;
+    @BindView(R.id.tv_certificates_native_place)
+    TextView tvNative;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private DateFormat format = new SimpleDateFormat("yyyMMddHHmmss");
     private List<VertifyRecord> vertifyRecordList = new ArrayList<>();
     private VertifyRecordAdapter vertifyRecordAdapter;
+    private boolean isICCARDMode;
 
     @Override
     protected int getPortraitLayout() {
@@ -59,13 +63,20 @@ public class VertifyRecordActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        isICCARDMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE, CertificatesConst.Default.IC_CARD_MODE);
         Float warningThreshold = SpUtils.getFloat(CertificatesConst.Key.WARNING_THRESHOLD, CertificatesConst.Default.WARNING_THRESHOLD);
         int similar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
-        vertifyRecordAdapter = new VertifyRecordAdapter(vertifyRecordList,this);
+        vertifyRecordAdapter = new VertifyRecordAdapter(vertifyRecordList, this, isICCARDMode);
         vertifyRecordAdapter.setTemperThreshold(warningThreshold);
         vertifyRecordAdapter.setSimilarThreshold(similar);
-        rlvRecord.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        rlvRecord.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rlvRecord.setAdapter(vertifyRecordAdapter);
+
+        if (isICCARDMode) {
+            tvNative.setText(getResString(R.string.certificates_record_native));
+        } else {
+            tvNative.setText(getResString(R.string.certificates_record_depart));
+        }
     }
 
     @Override
@@ -76,15 +87,15 @@ public class VertifyRecordActivity extends BaseActivity {
         loadData(format);
     }
 
-    private void loadData(String date){
-        if(TextUtils.isEmpty(date)){
+    private void loadData(String date) {
+        if (TextUtils.isEmpty(date)) {
             return;
         }
         if (vertifyRecordList.size() > 0) {
             vertifyRecordList.clear();
         }
         List<VertifyRecord> vertifyRecords = DaoManager.get().queryVertifyRecordByDate(date);
-        if(vertifyRecords != null){
+        if (vertifyRecords != null) {
             vertifyRecordList.addAll(vertifyRecords);
         }
         if (vertifyRecordAdapter != null) {
@@ -92,7 +103,7 @@ public class VertifyRecordActivity extends BaseActivity {
         }
     }
 
-    public void selectDate(View thisView){
+    public void selectDate(View thisView) {
         Calendar now = Calendar.getInstance();
         new DatePickerDialog(
                 VertifyRecordActivity.this,
@@ -119,10 +130,11 @@ public class VertifyRecordActivity extends BaseActivity {
         ).show();
     }
 
-    private static String[] title = {"日期","时间","体温", "相似度", "姓名", "性别","民族","籍贯","身份证号码","家庭地址","证件有效期","证件照","头像","热成像图"};
+    private static String[] title = {"日期", "时间", "体温", "相似度", "姓名", "性别", "民族", "籍贯", "身份证号码", "家庭地址", "证件有效期", "证件照", "头像", "热成像图"};
     private static final String TAG = "VertifyRecordActivity";
     private boolean isExporting = false;
-    public void exportData(View view){
+
+    public void exportData(View view) {
         //获取U盘地址
         String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
         File file = new File(usbDiskPath);
@@ -172,9 +184,9 @@ public class VertifyRecordActivity extends BaseActivity {
                     String personHeadPath = data.getPersonHeadPath();
                     String hotImagePath = data.getHotImagePath();
 
-                    if(!TextUtils.isEmpty(idCardHeadPath)){
+                    if (!TextUtils.isEmpty(idCardHeadPath)) {
                         File idCardFile = new File(idCardHeadPath);
-                        if(idCardFile.exists()){
+                        if (idCardFile.exists()) {
                             boolean copy = FileUtil.copy(idCardFile.getPath(), imgDir.getPath() + File.separator + idCardFile.getName());
                             Log.e(TAG, "run: 证件照，拷贝结果：" + copy);
                         }
@@ -188,9 +200,9 @@ public class VertifyRecordActivity extends BaseActivity {
                         }
                     }
 
-                    if(!TextUtils.isEmpty(hotImagePath)){
+                    if (!TextUtils.isEmpty(hotImagePath)) {
                         File hotImageFile = new File(hotImagePath);
-                        if(hotImageFile.exists()){
+                        if (hotImageFile.exists()) {
                             boolean copy = FileUtil.copy(hotImageFile.getPath(), imgDir.getPath() + File.separator + hotImageFile.getName());
                             Log.e(TAG, "run: 热图，拷贝结果：" + copy);
                         }
@@ -224,7 +236,7 @@ public class VertifyRecordActivity extends BaseActivity {
                 beanList.add(vertifyRecord.getTemper());
                 beanList.add(vertifyRecord.getSimilar() + "％");
                 beanList.add(vertifyRecord.getName());
-                beanList.add(TextUtils.equals("1",vertifyRecord.getSex()) ? "男":"女");
+                beanList.add(TextUtils.equals("1", vertifyRecord.getSex()) ? "男" : "女");
                 beanList.add(vertifyRecord.getNation());
                 beanList.add(IDCardReader.getNativeplace(vertifyRecord.getIdNum()));
                 beanList.add(vertifyRecord.getIdNum());

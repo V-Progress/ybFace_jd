@@ -27,6 +27,7 @@ public class SMTModelConst {
         String MODE = "smt_model_setting";
         String NORMAL_BROADCAST = "smtNormalBroadcast";
         String WARNING_BROADCAST = "smtWarningBroadcast";
+        String VOICE_SPEED = "smtVoiceSpeed";
     }
 
     interface Default{
@@ -41,5 +42,6 @@ public class SMTModelConst {
         int MODE = SMT_TEMP_ONLY;
         String  NORMAL_BROADCAST = "";
         String WARNING_BROADCAST = "";
+        float VOICE_SPEED = 2.5f;
     }
 }

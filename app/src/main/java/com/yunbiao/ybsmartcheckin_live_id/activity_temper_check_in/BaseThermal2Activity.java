@@ -25,12 +25,9 @@ import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTModelConst;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
-import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
@@ -39,8 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-
-import io.reactivex.functions.Consumer;
 
 public abstract class BaseThermal2Activity extends BaseGpioActivity implements FaceView.FaceCallback {
     private static final String TAG = "BaseThermalActivity";
@@ -112,6 +107,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
         //模式切换
         int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
+        Log.e(TAG, "onResume: 当前mode：" + currMode);
         if (mCurrMode != currMode) {
             mCurrMode = currMode;
             viewInterface.onModeChanged(currMode);
@@ -128,6 +124,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
             isMLXRunning = false;
         } else if (mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
+            portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
             isMLXRunning = false;
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
             updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
@@ -137,6 +134,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     TemperatureModule.getIns().startMLX90621YsI2C(lowTempModel,16 * 30, 4 * 40, mlx90621YsTempCallBack);
                     isMLXRunning = true;
                 },1 * 1000);
+            } else {
+                TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
             }
         } else if(mCurrMode == ThermalConst.FACE_ONLY){
             isMLXRunning = false;
@@ -223,7 +222,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         }
 
         mLastHotImage = imageBmp;
-        sendUpdateHotInfoMessage(imageBmp, originT);
+        sendUpdateHotInfoMessage(imageBmp, afterT);
 
         if (!mHasFace) {
             if (mCacheBeforeTemper == 0.0f || originT < mCacheBeforeTemper) {
@@ -282,12 +281,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
             mCacheTime = currentTimeMillis;
 
-            Float max = Collections.max(mCacheTemperList);
+            Collections.sort(mCacheTemperList);
+            Float max = mCacheTemperList.get(mCacheTemperList.size() / 2 + 1);
             mCacheTemperList.clear();
 
             float resultTemper = max;
             if (resultTemper < mTempWarningThreshold) {
-                if (mCurrMode != ThermalConst.THERMAL_16_4_ONLY && mCurrMode != ThermalConst.FACE_THERMAL_16_4) {
+                if (mCurrMode != ThermalConst.THERMAL_16_4_ONLY
+                        && mCurrMode != ThermalConst.FACE_THERMAL_16_4
+                        && mCurrMode != ThermalConst.ONLY_THERMAL_MLX_16_4
+                        && mCurrMode != ThermalConst.FACE_THERMAL_MLX_16_4) {
                     resultTemper += mTempCorrect;
                 }
 
@@ -328,7 +331,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         if (mCacheTemperList.size() <= 0) {
             return 0.0f;
         }
-        Float max = Collections.max(mCacheTemperList);
+        Collections.sort(mCacheTemperList);
+        Float max = mCacheTemperList.get(mCacheTemperList.size() / 2 + 1);
         mCacheTemperList.clear();
         return max;
     }
@@ -439,13 +443,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             Log.e(TAG, "onFaceVerify: 识别的用户名：" + sign.getName());
             sendResultMessage(resultTemper, sign.getName());
             SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), sign, mPrivacyMode, sign1 -> viewInterface.updateSignList(sign1));
-
-//            Bitmap facePicture = viewInterface.getFacePicture();
-//            sign.setImgBitmap(facePicture);
-//            Bitmap copyHotImage = mLastHotImage.copy(mLastHotImage.getConfig(), false);
-//            sign.setHotImageBitmap(copyHotImage);
-//            viewInterface.updateSignList(sign);
-//            SignManager.instance().uploadTemperatureSign(sign,mPrivacyMode);
 
             if (sign.getType() == -2 || sign.getType() == -9) {
                 return;

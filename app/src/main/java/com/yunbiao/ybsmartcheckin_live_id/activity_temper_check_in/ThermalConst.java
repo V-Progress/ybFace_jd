@@ -5,16 +5,15 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 
 public class ThermalConst {
 
-
-    public static final int FACE_ONLY = 0;//仅人脸模式
-    public static final int FACE_THERMAL = 1;//人脸+热成像
-    public static final int THERMAL_ONLY = 2;//仅热成像
-    public static final int INFRARED_ONLY = 3;//仅红外
-    public static final int FACE_INFRARED = 4;//人脸+红外
-    public static final int THERMAL_16_4_ONLY = 5;//仅热成像16*4
-    public static final int FACE_THERMAL_16_4 = 6;//人脸+热成像16*4
-    public static final int ONLY_THERMAL_MLX_16_4 = 7;//仅测温模式MLX-16*4
-    public static final int FACE_THERMAL_MLX_16_4 = 8;//人脸+测温模式MLX-16*4
+    public static final int FACE_ONLY = 0;//ONLY FACE
+    public static final int FACE_THERMAL = 1;//FACE + HM-32*32
+    public static final int THERMAL_ONLY = 2;//ONLY HM-32*32
+    public static final int INFRARED_ONLY = 3;//ONLY SMALL
+    public static final int FACE_INFRARED = 4;//FACE + SMALL
+    public static final int THERMAL_16_4_ONLY = 5;//ONLY HM-16*4
+    public static final int FACE_THERMAL_16_4 = 6;//FACE HM-16*4
+    public static final int ONLY_THERMAL_MLX_16_4 = 7;//ONLY MLX-16*4
+    public static final int FACE_THERMAL_MLX_16_4 = 8;//FACE MLX-16*4
 
     public static int DEFAULT_THERMAL_MODEL = THERMAL_ONLY;
 

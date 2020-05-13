@@ -53,6 +53,7 @@ public class DaoManager {
         daoSession.getMultiTotalDao().detachAll();
         daoSession.getWhiteDao().detachAll();
         daoSession.getVertifyRecordDao().detachAll();
+        daoSession.getCertificatesUserDao().detachAll();
     }
 
     public DaoSession getDaoSession() {
@@ -306,5 +307,12 @@ public class DaoManager {
             return null;
         }
         return daoSession.getVertifyRecordDao().queryBuilder().where(VertifyRecordDao.Properties.Date.eq(date)).list();
+    }
+
+    public CertificatesUser queryCertiUserByCardNum(String cardNum) {
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getCertificatesUserDao().queryBuilder().where(CertificatesUserDao.Properties.Num.eq(cardNum)).unique();
     }
 }

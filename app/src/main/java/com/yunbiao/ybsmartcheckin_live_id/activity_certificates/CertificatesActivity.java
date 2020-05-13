@@ -205,22 +205,27 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     public void updateHotImage(Bitmap hotImage, float temper, boolean mHasFace) {
         ivHotImage.setImageBitmap(hotImage);
-        tvLeftTopTemp.setText(mHasFace ? "热成像 有人" : "热成像 无人");
+        tvLeftTopTemp.setText(mHasFace ? getResString(R.string.act_certificates_someone) : getResString(R.string.act_certificates_noone));
     }
 
     @Override
-    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap) {
+    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode) {
         Log.e(TAG, "updateIdCardInfo: " + idCardMsg.name);
         ivIdCard.setImageBitmap(bitmap);
         tvName.setText(idCardMsg.name);
-        tvOriginT.setText("籍贯:");
-        tvOrigin.setText(IDCardReader.getNativeplace(idCardMsg.id_num));
+        if (icCardMode) {
+            tvOriginT.setText(getResString(R.string.act_certificates_depart));
+            tvOrigin.setText(idCardMsg.nation_str);
+        } else {
+            tvOriginT.setText(getResString(R.string.act_certificates_printer_native_place));
+            tvOrigin.setText(IDCardReader.getNativeplace(idCardMsg.id_num));
+        }
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite) {
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
         tvTemp.setText(finalTemper + "℃");
-        tvSimilar.setText("相似度" + similarInt + "%");
+        tvSimilar.setText(getResString(R.string.act_certificates_similar) + similarInt + "%");
         tvTip.setText(Html.fromHtml(resultTip));
         if (isAlike) {
             tvSimilar.setTextColor(Color.GREEN);
@@ -231,12 +236,12 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         }
 
         if (isNormal) {
-            tvOStatus.setText("正常");
+            tvOStatus.setText(getResString(R.string.act_certificates_normal));
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
-            tvOStatus.setText("异常");
+            tvOStatus.setText(getResString(R.string.act_certificates_warning));
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
@@ -248,24 +253,24 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
 
         if (isAlike && isNormal) {
             if (isInWhite) {
-                tvWhiteStatus.setText("是");
+                tvWhiteStatus.setText(getResString(R.string.act_certificates_printer_white_yes));
                 tvWhiteStatus.setTextColor(Color.GREEN);
                 ivWhiteStatus.setImageResource(R.mipmap.icon_normal);
                 llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_pass);
                 ivVerifyStatus.setImageResource(R.mipmap.icon_verify_pass);
-                tvVerifyInfo.setText("可以通行");
+                tvVerifyInfo.setText(getResString(R.string.act_certificates_verify_passage_yes));
             } else {
-                tvWhiteStatus.setText("否");
+                tvWhiteStatus.setText(getResString(R.string.act_certificates_printer_white_no));
                 tvWhiteStatus.setTextColor(Color.RED);
                 ivWhiteStatus.setImageResource(R.mipmap.icon_warning);
                 llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_ensure);
                 ivVerifyStatus.setImageResource(R.mipmap.icon_verify_ensure);
-                tvVerifyInfo.setText("请确认通行");
+                tvVerifyInfo.setText(getResString(R.string.act_certificates_verify_passage_ensure));
             }
         } else {
             llBgVerifyStatus.setBackgroundResource(R.mipmap.bg_verify_nopass);
             ivVerifyStatus.setImageResource(R.mipmap.icon_verify_nopass);
-            tvVerifyInfo.setText("禁止通行");
+            tvVerifyInfo.setText(getResString(R.string.act_certificates_verify_passage_no));
         }
 
         BitmapDrawable bitmapDrawable = (BitmapDrawable) ivFace.getDrawable();
@@ -274,7 +279,11 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         Bitmap hotImage = hotImageBitmap.getBitmap();
         BitmapDrawable idCardDrawable = (BitmapDrawable) ivIdCard.getDrawable();
         Bitmap idCardImage = idCardDrawable.getBitmap();
-        SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+        if (icCardMode) {
+            SignManager.instance().addVerifyRecordToDB(faceImage, hotImage, idCardImage, finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1));
+        } else {
+            SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+        }
     }
 
     @Override
@@ -305,12 +314,12 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     public void updateRealTimeTemper(float temper, boolean isTempNormal) {
         tvTemp.setText(temper + "℃");
         if (isTempNormal) {
-            tvOStatus.setText("正常");
+            tvOStatus.setText(getResString(R.string.act_certificates_normal));
             tvOStatus.setTextColor(Color.GREEN);
             tvTemp.setTextColor(Color.GREEN);
             ivStatus.setImageResource(R.mipmap.icon_normal);
         } else {
-            tvOStatus.setText("异常");
+            tvOStatus.setText(getResString(R.string.act_certificates_warning));
             tvOStatus.setTextColor(Color.RED);
             tvTemp.setTextColor(Color.RED);
             ivStatus.setImageResource(R.mipmap.icon_warning);
@@ -509,6 +518,17 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     protected void onResume() {
         super.onResume();
+
+        if(btnNoIdCard != null){
+            boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
+            if(icCardMode){
+                btnNoIdCard.setVisibility(View.GONE);
+            } else {
+                if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                    btnNoIdCard.setVisibility(View.VISIBLE);
+                }
+            }
+        }
 
         boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
         if (aBoolean) {

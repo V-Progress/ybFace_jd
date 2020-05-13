@@ -317,13 +317,7 @@ public class ThermalSettingActivity extends BaseActivity {
         boolean aBoolean1 = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         Switch swPersonFrame = findViewById(R.id.sw_person_frame_setting);
         swPersonFrame.setChecked(aBoolean1);
-        swPersonFrame.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(ThermalConst.Key.PERSON_FRAME, isChecked);
-            }
-        });
-
+        swPersonFrame.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.PERSON_FRAME, isChecked));
 
         //模式==================================================================================
         final TextView tvModelSetting = findViewById(R.id.tv_model_setting);
@@ -348,6 +342,9 @@ public class ThermalSettingActivity extends BaseActivity {
                 builder.setSingleChoiceItems(items, currModel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, final int whichModel) {
+
+                        Log.e(TAG, "onClick: 模式选择：" + whichModel);
+
                         //如果模式相同则直接隐藏
                         if (whichModel == currModel) {
                             dialog.dismiss();
@@ -808,8 +805,8 @@ public class ThermalSettingActivity extends BaseActivity {
             SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
             Activity activity = APP.getMainActivity();
             if (activity != null) {
-                if (activity instanceof ThermalImageActivity) {
-                    ((ThermalImageActivity) activity).setFaceViewSimilar();
+                if (activity instanceof ThermalImage2Activity) {
+                    ((ThermalImage2Activity) activity).setFaceViewSimilar();
                 }
             }
         });

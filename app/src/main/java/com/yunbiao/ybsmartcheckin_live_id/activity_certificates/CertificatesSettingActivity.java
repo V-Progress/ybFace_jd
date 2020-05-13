@@ -133,6 +133,16 @@ public class CertificatesSettingActivity extends BaseActivity {
         initCameraSetting();
         //打印机配置
         initUsbPrinter();
+        //初始化读卡模式
+        initICCardModel();
+    }
+
+    private void initICCardModel(){
+        boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
+        Switch swICCard = findViewById(R.id.sw_ic_card_enabled);
+        swICCard.setChecked(icCardMode);
+        swICCard.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(CertificatesConst.Key.IC_CARD_MODE,isChecked));
+
     }
 
     private void initUsbPrinter(){

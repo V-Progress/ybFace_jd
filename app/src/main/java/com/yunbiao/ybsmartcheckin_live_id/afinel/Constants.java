@@ -47,6 +47,8 @@ public class Constants {
         Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
         Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
+
+
     }
 
     private static final String TAG = "Constants";
@@ -155,5 +157,3 @@ public class Constants {
         public static final int CLEAR_POLICY = 2;
     }
 }
-
-

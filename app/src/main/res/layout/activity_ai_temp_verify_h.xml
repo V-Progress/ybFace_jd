@@ -28,7 +28,7 @@
             android:textColor="@color/white"
             android:textSize="32dp" />
 
-        <TextClock
+        <!--<TextClock
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="32dp" />-->
     </RelativeLayout>
 
     <RelativeLayout
@@ -403,7 +403,7 @@
         android:background="@mipmap/bg_bottom"
         android:gravity="center"
         android:paddingTop="5dp"
-        android:text="北京云标物联技术支持"
+        android:text="@string/act_certificates_tech_support"
         android:textColor="#75EEF0"
         android:textSize="20dp" />
 

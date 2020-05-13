@@ -420,27 +420,29 @@ public class CommonUtils {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if (broad_info.contains("lxr@ubuntu")){
+        if (broad_info.contains("lxr@ubuntu")) {
             return 5;
-        }else {
+        } else {
             return 0;
         }
     }
 
-    public static String getBroadType2(){
+    public static String getBroadType2() {
         String broad_info = SpUtils.getStr(SpUtils.BOARD_INFO);
         if (TextUtils.isEmpty(broad_info)) {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if(broad_info.contains("wxl")){
+        if (broad_info.contains("wxl")) {
             return "SMT";//视美泰
-        } else if(broad_info.contains("harris")){
-            return "HARRIS";//亿晟
-        } else if(broad_info.contains("lxr")){
+        } else if (broad_info.contains("lxr")) {
             return "LXR";//亿莱顿
+        } else if (broad_info.contains("harris")) {
+            return "HARRIS";//亿晟
+        } else {
+            return "HARRIS";//亿晟
         }
-        return broad_info;
+//        return broad_info;
     }
 
     /**

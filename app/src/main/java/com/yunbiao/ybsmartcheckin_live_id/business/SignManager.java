@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
+import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
@@ -771,6 +773,8 @@ public class SignManager {
         builder.addFile("heads", file.getName(), isPrivacy ? createEmptyFile() : file);
         builder.addFile("reHead", hotFile.getName(), hotFile);
 
+        OutputLog.getInstance().addLog(sign.getTemperature() + " ----- " + params.toString());
+
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -945,6 +949,8 @@ public class SignManager {
         d("地址：" + ResourceUpdate.SIGNLOG);
         d("参数：" + map.toString());
 
+        OutputLog.getInstance().addLog(signBean.getTemperature() + " ----- " + signBean.getName() + " ----- " + map.toString());
+
         DaoManager.get().addOrUpdate(signBean);
         final long time = signBean.getTime();
 
@@ -1093,6 +1099,33 @@ public class SignManager {
                 Log.e(TAG, "onResponse: 上传结果：" + response);
             }
         });
+    }
+
+    public void addVerifyRecordToDB(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
+        long time = System.currentTimeMillis();
+        File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
+        File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
+        File reFile = reBitmap != null ? saveBitmap("re_", time, reBitmap) : createEmptyFile();
+
+        VertifyRecord vertifyRecord = new VertifyRecord();
+        vertifyRecord.setIdCardHeadPath(idCardFile.getPath());
+        vertifyRecord.setPersonHeadPath(faceFile.getPath());
+        vertifyRecord.setHotImagePath(reFile.getPath());
+        vertifyRecord.setSimilar(similar + "");
+        vertifyRecord.setName(msg.name.trim());
+        vertifyRecord.setSex(TextUtils.equals(msg.sex, "男") ? "1" : "0");
+        vertifyRecord.setNation(msg.nation_str);
+        vertifyRecord.setBirthDate(msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
+        vertifyRecord.setIdNum(msg.id_num);
+        vertifyRecord.setAddress(msg.address);
+        vertifyRecord.setTermDate(msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
+        vertifyRecord.setIsPass(isPass + "");
+        vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");
+        vertifyRecord.setTemper(temper + "");
+        vertifyRecord.setTime(time);
+        vertifyRecord.setDate(vertifySdf.format(new Date(time)));
+        vertifyRecord.setUpload(false);
+        long l = DaoManager.get().addOrUpdate(vertifyRecord);
     }
 
     public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {

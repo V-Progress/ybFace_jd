@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
@@ -29,7 +30,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Exception;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMainActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
@@ -71,20 +71,12 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        /*APP.getContext().bindService(new Intent(this,TestService.class), new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.e("TestService", "onServiceConnected: ");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.e("TestService", "onServiceDisconnected: ");
-            }
-        }, Service.BIND_AUTO_CREATE);*/
         SpUtils.init();
+        DaoManager.get().initDb();
         Constants.checkSetIp();
         Constants.initStorage();
+        OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
+
         ThreadUitls.runInThread(machineRestartRun);
         ybPermission = new YBPermission(new YBPermission.PermissionListener() {
             @Override
@@ -195,6 +187,10 @@ public class SplashActivity extends BaseActivity {
         int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
         Log.e(TAG, "激活结果: " + code);
         if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+            ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+            int activeFileInfo1 = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
+            Log.e(TAG, ": " + activeFileInfo.getStartTime() + " ----- " + activeFileInfo.getEndTime());
+
             APP.bindProtectService();
             jump();
         } else {

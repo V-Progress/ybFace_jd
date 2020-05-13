@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
@@ -154,6 +155,31 @@ public class SMTSettingActivity extends SMTBaseActivity {
         initCameraSetting();
         //活体开关
         initLivenessSetting();
+        //语音速度
+        initVoiceSpeed();
+    }
+
+    private void initVoiceSpeed(){
+        final Float voidSpeed = SpUtils.getFloat(SMTModelConst.key.VOICE_SPEED, SMTModelConst.Default.VOICE_SPEED);
+        Button btnSpeedSub = findViewById(R.id.btn_speed_sub_setting);
+        Button btnSpeedPlus = findViewById(R.id.btn_speed_plus_setting);
+        EditText edtSpeed = findViewById(R.id.edt_speed_setting);
+        edtSpeed.setText(String.valueOf(voidSpeed));
+        View.OnClickListener onClickListener = v -> {
+            String value = edtSpeed.getText().toString();
+            float speed = formatF(Float.parseFloat(value));
+
+            if(v.getId() == R.id.btn_speed_sub_setting){
+                speed -= 0.1f;
+            } else {
+                speed += 0.1f;
+            }
+            speed = formatF(speed);
+            edtSpeed.setText(String.valueOf(speed));
+            SpUtils.saveFloat(SMTModelConst.key.VOICE_SPEED,speed);
+        };
+        btnSpeedPlus.setOnClickListener(onClickListener);
+        btnSpeedSub.setOnClickListener(onClickListener);
     }
 
     public void powerOnOff(View view) {
@@ -602,8 +628,8 @@ public class SMTSettingActivity extends SMTBaseActivity {
                 SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
-                    if (activity instanceof SMTMainActivity) {
-                        ((SMTMainActivity) activity).setFaceViewSimilar();
+                    if (activity instanceof SMTMain2Activity) {
+                        ((SMTMain2Activity) activity).setFaceViewSimilar();
                     }
                 }
             }

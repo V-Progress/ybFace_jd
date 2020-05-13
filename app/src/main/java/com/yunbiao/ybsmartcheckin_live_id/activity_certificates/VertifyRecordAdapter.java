@@ -25,10 +25,12 @@ public class VertifyRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
     private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private List<VertifyRecord> vertifyRecordList;
     private Context mContext;
+    private boolean icCardMode = false;
 
-    public VertifyRecordAdapter(List<VertifyRecord> vertifyRecordList, Context mContext) {
+    public VertifyRecordAdapter(List<VertifyRecord> vertifyRecordList, Context mContext,boolean isIC) {
         this.vertifyRecordList = vertifyRecordList;
         this.mContext = mContext;
+        icCardMode = isIC;
     }
 
     @NonNull
@@ -82,7 +84,11 @@ public class VertifyRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
             tvIndex.setText((position + 1) + "");
             tvTime.setText(dateFormat.format(new Date(vertifyRecord.getTime())));
             tvName.setText(vertifyRecord.getName());
-            tvNation.setText(IDCardReader.getNativeplace(vertifyRecord.getIdNum()));
+            if(icCardMode){
+                tvNation.setText(vertifyRecord.getNation());
+            } else {
+                tvNation.setText(IDCardReader.getNativeplace(vertifyRecord.getIdNum()));
+            }
 
             tvTemper.setText(vertifyRecord.getTemper() + "℃");
             if (Float.parseFloat(vertifyRecord.getTemper()) >= warningThreshold) {

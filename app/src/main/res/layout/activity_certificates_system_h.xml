@@ -156,6 +156,7 @@
                     android:weightSum="2"
                     android:gravity="center">
                     <Button
+                        android:id="@+id/btn_white_list"
                         android:onClick="goWhiteList"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -163,7 +164,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
-                        android:text="白名单"
+                        android:text="@string/act_certificates_white_list"
                         android:textColor="@color/white"
                         android:textSize="32dp" />
                     <Button
@@ -191,20 +192,19 @@
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
-                        android:text="验证记录"
+                        android:text="@string/act_certificates_verify_record"
                         android:textColor="@color/white"
                         android:textSize="32dp" />
 
                     <Button
-                        android:enabled="false"
-                        android:visibility="invisible"
+                        android:onClick="goUserManager"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
                         android:background="@drawable/selector_btn_take_photo"
                         android:padding="26dp"
-                        android:text="@string/System_Setting"
+                        android:text="@string/act_certificates_user_manage"
                         android:textColor="@color/white"
                         android:textSize="32dp" />
                 </TableRow>

@@ -25,6 +25,7 @@ public class CertificatesConst {
         String SIMILAR = "certificatesSimilar";
         String WHITE_LIST = "certificatesWhiteList";
         String USB_PRINTER_ENABLED = "certificatesPrinterEnabled";
+        String IC_CARD_MODE = "certificatesICCardMode";
     }
 
     public static class Default{
@@ -37,5 +38,6 @@ public class CertificatesConst {
         public static boolean THERMAL_MIRROR = true;
         public static int SIMILAR = 50;
         public static boolean WHITE_LIST = false;
+        public static boolean IC_CARD_MODE = false;
     }
 }

@@ -60,6 +60,8 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
     TextView tvVersionInfo;
     @BindView(R.id.fl_version_certi_system)
     View flVersionLoading;
+    @BindView(R.id.btn_white_list)
+    View btnWhiteList;
 
     private Button btn_setting_system;
     private TextView btn_update_system;
@@ -171,9 +173,17 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         } else {
             tv_server_system.setText(getString(R.string.System_local_service));
         }
+
+        boolean whiteListEnabled = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
+        if(whiteListEnabled){
+            btnWhiteList.setVisibility(View.GONE);
+        } else {
+            btnWhiteList.setVisibility(View.INVISIBLE);
+        }
     }
 
     private String appName = "";
+
     @Override
     protected void initData() {
         try {
@@ -245,8 +255,12 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         startActivity(new Intent(this, CertificatesWhiteListActivity.class));
     }
 
-    public void goRecordList(View view){
-        startActivity(new Intent(this,VertifyRecordActivity.class));
+    public void goRecordList(View view) {
+        startActivity(new Intent(this, VertifyRecordActivity.class));
+    }
+
+    public void goUserManager(View view) {
+        startActivity(new Intent(this, CertificatesUserListActivity.class));
     }
 
     private void setTextWatchers(final EditText[] editTexts) {

@@ -440,11 +440,11 @@
 
     <!--人證測溫系統-->
     <string name="act_certificates_idcard_only">人證比對模式</string>
-    <string name="act_certificates_idcard_thermal">人证比对+热成像(32*32)</string>
-    <string name="act_certificates_idcard_thermal_16_4">人证比对+热成像(16*4)</string>
+    <string name="act_certificates_idcard_thermal">人證比對+熱成像(32*32)</string>
+    <string name="act_certificates_idcard_thermal_16_4">人證比對+熱成像(16*4)</string>
     <string name="act_certificates_idcard_infared">人證比對+紅外測溫模式</string>
     <string name="act_certificates_title">AI人證測溫校驗系統</string>
-    <string name="act_certificates_please_get_hat">請取下眼睛、帽子、正視鏡頭</string>
+    <string name="act_certificates_please_get_hat">請取下眼鏡、帽子，正視鏡頭</string>
     <string name="act_certificates_no_idcard_temper">無證測溫</string>
     <string name="act_certificates_face_picture">人臉照片</string>
     <string name="act_certificates_card_picture">證件照片</string>
@@ -479,6 +479,56 @@
     <string name="act_certificates_green">綠色</string>
     <string name="act_certificates_yellow">黃色</string>
 
+    <string name="act_certificates_no_printer">未檢測到打印機</string>
+    <string name="act_certificates_warning_printer">警告：打印機</string>
+    <string name="act_certificates_printer_name">姓名：</string>
+    <string name="act_certificates_printer_depart">部門：</string>
+    <string name="act_certificates_printer_native_place">籍貫：</string>
+    <string name="act_certificates_printer_temper">體溫：</string>
+    <string name="act_certificates_printer_error">  (異常)</string>
+    <string name="act_certificates_printer_time">到訪時間：</string>
+    <string name="act_certificates_printer_white">白名單：</string>
+    <string name="act_certificates_printer_white_yes">是</string>
+    <string name="act_certificates_printer_white_no">否</string>
+    <string name="act_certificates_printer_tips">請保存好打印憑證，以便查驗</string><!--Please keep the printed voucher for checking-->
+    <string name="act_certificates_card_read_failed">證件讀取失敗，請重新貼卡</string>
+    <string name="act_certificates_verifing">正在驗證，請正視攝像頭</string>
+    <string name="act_certficates_check_outtime">檢測超時，請重新貼卡</string>
+    <string name="act_certficates_check_failed">測溫失敗，請重新貼卡</string>
+    <string name="act_certficates_feature_outtime">特征提取超時，請重新貼卡</string>
+    <string name="act_certificates_verify_pass_yes">驗證通過</string>
+    <string name="act_certificates_verify_pass_no">人證不匹配</string>
+    <string name="act_certificates_verify_temper_yes">體溫正常</string>
+    <string name="act_certificates_verify_temper_no">體溫異常</string>
+    <string name="act_certificates_verify_passage_no">禁止通行</string>
+    <string name="act_certificates_verify_passage_yes">請通行</string>
+    <string name="act_certificates_verify_passage_ensure">請確認通行</string>
+    <string name="act_certificates_speech_pass_yes">體溫正常，請通行</string>
+    <string name="act_certificates_speech_pass_no">體溫異常，禁止通行</string>
+    <string name="act_certificates_get_info_failed">獲取信息失敗，請重試</string>
+    <string name="act_certificates_check_outtime_scan_code">檢測超時，請重新掃碼</string>
+    <string name="act_certificates_temper_outtime_scan_code">測溫超時，請重新掃碼</string>
+    <string name="act_certificates_white_list">白名單</string>
+    <string name="act_certificates_verify_record">驗證記錄</string>
+    <string name="act_certificates_user_manage">人員管理</string>
+    <string name="certificates_record_title">驗證記錄</string>
+    <string name="certificates_record_export_all">導出全部</string>
+    <string name="certificates_record_index">序列</string>
+    <string name="certificates_record_time">時間</string>
+    <string name="certificates_record_name">姓名</string>
+    <string name="certificates_record_native">籍貫</string>
+    <string name="certificates_record_temper">體溫</string>
+    <string name="certificates_record_similar">相似度</string>
+    <string name="certificates_record_id_photo">證件照</string>
+    <string name="certificates_record_face_photo">頭像</string>
+    <string name="certificates_user_list_card_number">卡號</string>
+    <string name="act_certificates_someone">熱成像 有人</string>
+    <string name="act_certificates_noone">熱成像 無人</string>
+    <string name="certificates_add_user_card_tips">請刷卡或輸入卡號</string>
+    <string name="certificates_setting_printer_enable">啟用USB打印機</string>
+    <string name="certificates_setting_id_card_mode">啟用IC卡模式</string>
+    <string name="act_certificates_tech_support">北京雲標物聯技術支持</string>
+    <string name="act_certificates_no_this_person">查無此人，請先錄入卡號信息</string>
 
     <!--多人測溫-->
     <string name="main_title_multi_thermal">AI智慧測溫快篩系統</string>

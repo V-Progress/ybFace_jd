@@ -139,7 +139,7 @@ public class NotificationService extends Service {
 
     public static Intent getIntent() {
         Intent intent = new Intent(SERVICE_NAME);
-        intent.setPackage("com.yunbiao.facecheckin_online");//这里你需要设置你应用的包名
+        intent.setPackage("com.yunbiao.ybsmartcheckin_live_id");//这里你需要设置你应用的包名
         return intent;
     }
 

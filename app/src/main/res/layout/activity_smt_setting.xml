@@ -381,6 +381,47 @@
                             android:maxLength="20" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="@string/setting_broadcast_speed" />
+
+
+                        <Button
+                            android:layout_marginLeft="20dp"
+                            android:id="@+id/btn_speed_sub_setting"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@mipmap/icon_jian" />
+
+                        <LinearLayout
+                            style="@style/style_setting_input_save_button"
+                            android:layout_marginLeft="0dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp">
+
+                            <EditText
+                                android:id="@+id/edt_speed_setting"
+                                style="@style/style_setting_input_number_edt"
+                                android:enabled="false" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_speed_plus_setting"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@mipmap/icon_jia" />
+                    </LinearLayout>
+
                     <!--todo -->
                     <LinearLayout
                         android:gravity="center_vertical"
@@ -769,5 +810,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

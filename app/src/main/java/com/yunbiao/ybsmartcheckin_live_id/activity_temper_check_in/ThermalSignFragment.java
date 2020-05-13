@@ -84,6 +84,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvVer;
     private TextView tvAlready;
     private boolean mFEnabled;
+    private NetWorkChangReceiver netWorkChangReceiver;
 
     @Nullable
     @Override
@@ -127,7 +128,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(this);
+        netWorkChangReceiver = new NetWorkChangReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -509,6 +510,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(netWorkChangReceiver != null){
+            getActivity().unregisterReceiver(netWorkChangReceiver);
+        }
         EventBus.getDefault().unregister(this);
     }
 }

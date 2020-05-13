@@ -61,6 +61,22 @@
             </LinearLayout>
 
             <LinearLayout
+                style="@style/setting_text_child">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/certificates_setting_id_card_mode" />
+
+                <Switch
+                    android:id="@+id/sw_ic_card_enabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_marginTop="10dp"
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
@@ -115,7 +131,7 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="启用打印机" />
+                    android:text="@string/certificates_setting_printer_enable" />
 
                 <Switch
                     android:id="@+id/sw_usb_printer_setting"
@@ -674,5 +690,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

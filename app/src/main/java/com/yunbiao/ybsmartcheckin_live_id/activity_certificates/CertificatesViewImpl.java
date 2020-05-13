@@ -51,18 +51,13 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
 
     }
 
-    /***
-     * 更新卡信息
-     * @param idCardMsg
-     * @param bitmap
-     */
     @Override
-    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap) {
+    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode) {
 
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite) {
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
 
     }
 

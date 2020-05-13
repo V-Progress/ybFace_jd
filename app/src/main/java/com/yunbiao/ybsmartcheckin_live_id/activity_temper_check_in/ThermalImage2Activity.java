@@ -57,7 +57,7 @@ import java.util.Locale;
  */
 
 public class ThermalImage2Activity extends BaseThermal2Activity implements ThermalViewInterface {
-    private static final String TAG = "WelComeActivity";
+    private static final String TAG = "ThermalImage2Activity";
     private ImageView ivMainLogo;//公司logo
     private TextView tvMainAbbName;//公司名
 
@@ -222,6 +222,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (ivInfaredImaging.isShown()) {
             ivInfaredImaging.setImageBitmap(bitmap);
             tvThermalTemper.setText(hasFace ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
+//            tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
         } else if (ivThermalImaging.isShown()) {
             ivThermalImaging.setImageBitmap(bitmap);
             tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
@@ -497,44 +498,39 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void onBackPressed() {
-        RestartAPPTool.showExitDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                onBackKeyPressed(new Runnable() {
-                    @Override
-                    public void run() {
-                        moveTaskToBack(true);
-                    }
-                });
-            }
-        }, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                onBackKeyPressed(new Runnable() {
-                    @Override
-                    public void run() {
-                        APP.exit();
-                    }
-                });
-            }
-        });
+        RestartAPPTool.showExitDialog(this,
+                (dialog, which) -> onBackKeyPressed(() -> moveTaskToBack(true)),
+                (dialog, which) -> onBackKeyPressed(() -> APP.exit()));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         faceView.pause();
+        Log.e(TAG, "onPause: 执行了onPause");
+        if(isFinishing()){
+            Log.e(TAG, "onPause: 该Activity正在结束");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop: 执行了onStop");
+        if(isFinishing()){
+            Log.e(TAG, "onStop: 该Activity正在结束");
+        }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        Log.e(TAG, "onDestroy: 执行了销毁" );
+        Log.e(TAG, "onDestroy: 执行了销毁" );
         if (readCardUtils != null) {
             readCardUtils.removeScanSuccessListener();
             readCardUtils = null;
         }
 
-        InfraredTemperatureUtils.getIns().closeSerialPort();
         faceView.destory();
         destoryXmpp();
 
@@ -542,5 +538,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         SyncManager.instance().destory();
         KDXFSpeechManager.instance().destroy();
         LocateManager.instance().destory();
+        super.onDestroy();
     }
 }

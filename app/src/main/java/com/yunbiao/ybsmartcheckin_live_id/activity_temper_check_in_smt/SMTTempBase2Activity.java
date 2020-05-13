@@ -45,6 +45,7 @@ public abstract class SMTTempBase2Activity extends SMTBaseActivity {
     private boolean isResultShown = false;
     private SMTViewInterface viewInterface;
     private boolean mHasFace = false;
+    private Float mVoidSpeed;
 
     @Override
     protected void initData() {
@@ -71,6 +72,8 @@ public abstract class SMTTempBase2Activity extends SMTBaseActivity {
         mTempCorrValue = SpUtils.getFloat(SMTModelConst.key.TEMP_CORRECT_VALUE, SMTModelConst.Default.TEMP_CORRECT_VALUE);
         mDistanceTipEnable = SpUtils.getBoolean(SMTModelConst.key.DISTANCE_TIP_ENABLE, SMTModelConst.Default.DISTANCE_TIP_ENABLE);
         mFEnabled = SpUtils.getBoolean(SMTModelConst.key.F_ENABLED, SMTModelConst.Default.F_ENABLED);
+        mVoidSpeed = SpUtils.getFloat(SMTModelConst.key.VOICE_SPEED, SMTModelConst.Default.VOICE_SPEED);
+        KDXFSpeechManager.instance().setSpeed(mVoidSpeed);
 
         int currMode = SpUtils.getIntOrDef(SMTModelConst.key.MODE, SMTModelConst.Default.MODE);
         if (mCurrMode != currMode) {

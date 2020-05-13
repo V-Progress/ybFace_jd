@@ -188,7 +188,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 33//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 35//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
     }
 }
@@ -383,7 +383,6 @@ dependencies {
     // skin-support-cardview CardView 控件支持[可选]
     implementation 'skin.support:skin-support-constraint-layout:4.0.4'
     implementation project(path: ':vertical_scroll_player')
-    implementation files('libs/arcsoft_face.jar')
 
     /*虹软*/
     implementation files('libs/arcsoft_image_util.jar')
@@ -401,4 +400,6 @@ dependencies {
     implementation files('libs/yface.jar')
     implementation files('libs/printsdk1015-v2.2.jar')
     implementation files('libs/PrintUtils1114.jar')
+
+    implementation files('libs/arcsoft_face.jar')
 }

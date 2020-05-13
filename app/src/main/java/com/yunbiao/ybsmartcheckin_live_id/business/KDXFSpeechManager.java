@@ -54,6 +54,11 @@ public class KDXFSpeechManager {
     private int mPlayId = -1;
     private int mPassId = -1;
     private int mPlayPassId = -1;
+    private float mSpeed = 2.5f;
+
+    public void setSpeed(float speed){
+        mSpeed = speed;
+    }
 
     public static KDXFSpeechManager instance() {
         if (instance == null) {
@@ -88,24 +93,21 @@ public class KDXFSpeechManager {
         if (!isInited) {
             try {
                 mTextToSpeech = new TextToSpeech(context,
-                        new TextToSpeech.OnInitListener() {
-                            @Override
-                            public void onInit(int status) {
-                                if (status == TextToSpeech.SUCCESS) {
-                                    isInited = true;
-                                    // 设置朗读语言
-                                    Locale locale = APP.getContext().getResources().getConfiguration().locale;
-                                    mTTSSupport = mTextToSpeech.setLanguage(locale);
+                        status -> {
+                            if (status == TextToSpeech.SUCCESS) {
+                                isInited = true;
+                                // 设置朗读语言
+                                Locale locale = APP.getContext().getResources().getConfiguration().locale;
+                                mTTSSupport = mTextToSpeech.setLanguage(locale);
 
-                                    if (mTTSSupport == TextToSpeech.LANG_NOT_SUPPORTED) {
-                                        String notSupport = APP.getContext().getResources().getString(R.string.not_support_speech);
-                                        Toast.makeText(context, notSupport + locale.getCountry(), Toast.LENGTH_LONG).show();
-                                    } else if (mTTSSupport == TextToSpeech.LANG_MISSING_DATA) {
-                                        String missData = APP.getContext().getResources().getString(R.string.miss_speech_data);
-                                        Toast.makeText(context, missData + locale.getCountry(), Toast.LENGTH_LONG).show();
-                                    } else {
-                                        welcome();
-                                    }
+                                if (mTTSSupport == TextToSpeech.LANG_NOT_SUPPORTED) {
+                                    String notSupport = APP.getContext().getResources().getString(R.string.not_support_speech);
+                                    Toast.makeText(context, notSupport + locale.getCountry(), Toast.LENGTH_LONG).show();
+                                } else if (mTTSSupport == TextToSpeech.LANG_MISSING_DATA) {
+                                    String missData = APP.getContext().getResources().getString(R.string.miss_speech_data);
+                                    Toast.makeText(context, missData + locale.getCountry(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    welcome();
                                 }
                             }
                         });
@@ -171,7 +173,7 @@ public class KDXFSpeechManager {
                 }
             }
         });
-        mTextToSpeech.setSpeechRate(2.0f);
+        mTextToSpeech.setSpeechRate(mSpeed);
         mTextToSpeech.speak(message, queueMode, textToSpeechMap);
     }
 
@@ -188,15 +190,12 @@ public class KDXFSpeechManager {
         if (TextUtils.isEmpty(message)) {
             return;
         }
-        mTextToSpeech.setSpeechRate(1.5f);
+        mTextToSpeech.setSpeechRate(mSpeed);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
         textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
-        mTextToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-            @Override
-            public void onUtteranceCompleted(String utteranceId) {
-                if (runnable != null) {
-                    runnable.run();
-                }
+        mTextToSpeech.setOnUtteranceCompletedListener(utteranceId -> {
+            if (runnable != null) {
+                runnable.run();
             }
         });
         mTextToSpeech.speak(message, queueMode, textToSpeechMap);

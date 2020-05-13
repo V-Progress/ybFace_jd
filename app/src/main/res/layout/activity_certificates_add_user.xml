@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/skin_main_screen_background"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesAddUserActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_title_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/act_editEmploy_zjyg"
+            android:textColor="@color/white"
+            android:textSize="32dp" />
+
+
+        <TextView
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"/>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:background="@drawable/shape_bg_btnrepicture"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_weight="2"
+                android:id="@+id/layout_camera"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_below="@+id/tv_ads_addname"
+                android:background="@color/colorAccent"
+                android:orientation="vertical">
+
+                <com.yunbiao.faceview.FaceView
+                    android:layout_gravity="center"
+                    android:id="@+id/face_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_weight="1.5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+
+
+                <RelativeLayout
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/layout_camera"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/view_middle">
+
+                    <Button
+                        android:id="@+id/btn_TakePhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/selector_btn_take_photo"
+                        android:drawableLeft="@mipmap/icon_camera"
+                        android:paddingLeft="18dp"
+                        android:text="@string/act_editEmploy_pz"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/alv_take_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"
+                        match:indicator="LineScalePulseOutRapid" />
+
+                </RelativeLayout>
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/btn_ReTakePhoto"
+                    android:layout_width="108dp"
+                    android:layout_height="44dp"
+                    android:layout_below="@+id/layout_camera"
+                    android:layout_marginLeft="50dp"
+                    android:layout_toRightOf="@+id/view_middle"
+                    android:background="@drawable/shape_bg_btnrepicture"
+                    android:drawableLeft="@mipmap/icon_repicture"
+                    android:paddingLeft="18dp"
+                    android:text="@string/act_editEmploy_reset"
+                    android:textColor="@color/theme_green"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/shape_bg_btnrepicture"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:scaleType="centerInside"
+                    android:id="@+id/iv_capture"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@mipmap/image_default_head" />
+
+                <TextView
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:id="@+id/tv_jbxx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/act_editEmploy_jbxx"
+                    android:textColor="@color/font_green"
+                    android:textSize="28dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                style="@style/item_style_edt_emp">
+
+                <TextView
+                    style="@style/tv_style_edt_emp"
+                    android:text="@string/act_editEmploy_name" />
+
+                <EditText
+                    android:id="@+id/et_name"
+                    style="@style/edt_style_edt_emp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/item_style_edt_emp">
+                <TextView
+                    style="@style/tv_style_edt_emp"
+                    android:text="@string/act_editEmploy_bm"/>
+
+                <EditText
+                    android:paddingLeft="10dp"
+                    android:textColorHint="@color/white"
+                    android:id="@+id/et_depart"
+                    style="@style/edt_style_edt_emp" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/item_style_edt_emp">
+                <TextView
+                    style="@style/tv_style_edt_emp"
+                    android:text="@string/act_editEmploy_kh"/>
+
+                <EditText
+                    android:paddingLeft="10dp"
+                    android:textColorHint="@color/white"
+                    android:hint="@string/certificates_add_user_card_tips"
+                    android:id="@+id/et_num"
+                    style="@style/edt_style_edt_emp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                style="@style/item_style_edt_emp">
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:text="@string/base_ensure"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+                <Button
+                    android:layout_marginLeft="50dp"
+                    android:id="@+id/btn_cancle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_bg_btnrepicture"
+                    android:text="@string/base_cancel"
+                    android:textColor="@color/theme_green"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>
