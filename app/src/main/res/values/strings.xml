@@ -588,6 +588,7 @@
     <string name="safety_black_body_enable">Turn on blackbody correction</string><!--开启黑体矫正-->
     <string name="safety_temperature_threshold">Temperature threshold</string><!--取温阈值-->
     <string name="safety_temperature_frame_enable">temperature measuring frame</string><!--开启测温框-->
+    <string name="safety_immediate_report_enable">Immediate temperature report</string><!--立即报温-->
     <string name="safety_calibration_main">Calibration</string><!--校准-->
     <string name="safety_measure_main">measure:</string><!--测温:-->
     <string name="safety_correct_main">correct:</string><!--校准:-->

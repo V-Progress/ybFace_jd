@@ -575,6 +575,7 @@
     <string name="safety_black_body_enable">開啟黑體矯正</string>
     <string name="safety_temperature_threshold">取溫閾值</string>
     <string name="safety_temperature_frame_enable">開啟測溫框</string><!--開啟測溫框-->
+    <string name="safety_immediate_report_enable">立即報溫</string><!--立即报温-->
     <string name="safety_calibration_main">校準</string><!--校准-->
     <string name="safety_measure_main">測溫:</string><!--测温:-->
     <string name="safety_correct_main">校準:</string><!--校准:-->

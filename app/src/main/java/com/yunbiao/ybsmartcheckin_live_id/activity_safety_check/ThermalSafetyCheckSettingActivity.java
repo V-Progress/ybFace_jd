@@ -66,6 +66,8 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initTemperFrame();
 
         initAutoCalibration();
+
+        initImmediateReportMode();
     }
 
     @Override
@@ -221,6 +223,18 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.THERMAL_MIRROR,isChecked);
+            }
+        });
+    }
+
+    private void initImmediateReportMode() {
+        Switch swImmediateReportMode = findViewById(R.id.sw_immediate_report_mode_setting);
+        boolean isImmediateReportMode = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.IMMEDIATE_REPORT_MODE, ThermalSafetyCheckConst.Default.IMMEDIATE_REPORT_MODE);
+        swImmediateReportMode.setChecked(isImmediateReportMode);
+        swImmediateReportMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IMMEDIATE_REPORT_MODE, isChecked);
             }
         });
     }

@@ -8,10 +8,8 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
@@ -35,33 +32,23 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
-import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
-import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
-import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-
-import okhttp3.Call;
 
 /***
  * 自动校准逻辑：
@@ -105,6 +92,9 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private Float mBodyTemper;
     private boolean mAutoCalibration;
     private float mLastMinT;
+
+    private boolean mImmediateReportModeEnabled;
+    private boolean isReport = false;
 
     @Override
     protected int getPortraitLayout() {
@@ -198,6 +188,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         mThermalFrameEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.TEMPER_FRAME, ThermalSafetyCheckConst.Default.TEMPER_FRAME);
         mAutoCalibration = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.AUTO_CALIBRATION, ThermalSafetyCheckConst.Default.AUTO_CALIBRATION);
         mLastMinT = SpUtils.getFloat(ThermalSafetyCheckConst.Key.LAST_MINT, ThermalSafetyCheckConst.Default.LAST_MINT);
+        mImmediateReportModeEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.IMMEDIATE_REPORT_MODE, ThermalSafetyCheckConst.Default.IMMEDIATE_REPORT_MODE);
 
         int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
         if (temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL) {
@@ -322,6 +313,25 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 mCorrectionTemperList.add(originalTempF);
                 if (mCorrectionTemperList.size() > 30) {
                     mCorrectionTemperList.remove(0);
+                }
+                return;
+            }
+
+            if (mImmediateReportModeEnabled) {
+                if (originalTempF < MIN_TEMPER) {
+                    isReport = false;
+                    return;
+                }
+                if (!isReport) {
+                    if (mTemperFloats.size() < 5) {
+                        float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                        mTemperFloats.add(afterTreatmentF);
+                    } else {
+                        Float max = Collections.max(mTemperFloats);
+                        mTemperFloats.clear();
+                        isReport = true;
+                        sendTipsMessage(max);
+                    }
                 }
                 return;
             }

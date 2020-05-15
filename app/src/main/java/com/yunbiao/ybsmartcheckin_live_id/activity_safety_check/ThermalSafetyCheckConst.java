@@ -30,6 +30,8 @@ public class ThermalSafetyCheckConst {
         String AUTO_CALIBRATION = "thermalSafetyCheckAutoCalibration";
 
         String LAST_MINT = "thermalSafetyCheckDateAndMinT";
+
+        String IMMEDIATE_REPORT_MODE = "thermalImmediateReportMode";
     }
 
     public interface Default{
@@ -56,6 +58,8 @@ public class ThermalSafetyCheckConst {
         boolean AUTO_CALIBRATION = true;
 
         float LAST_MINT = 0.0f;
+
+        boolean IMMEDIATE_REPORT_MODE = false;
     }
 
     public interface Size{
