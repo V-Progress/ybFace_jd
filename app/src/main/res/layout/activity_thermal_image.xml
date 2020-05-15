@@ -11,6 +11,30 @@
         android:layout_height="1422dp"
         android:layout_gravity="center" />
 
+    <ImageView
+        android:id="@+id/iv_big_head"
+        android:src="@mipmap/big_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/fl_dot_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:background="@drawable/shape_dot_area_background">
+
+        <ImageView
+            android:layout_marginRight="150dp"
+            android:layout_marginLeft="150dp"
+            android:layout_centerInParent="true"
+            android:layout_width="100px"
+            android:layout_height="160px"
+            android:src="@mipmap/detection_dot" />
+    </RelativeLayout>
+
     <View
         android:visibility="invisible"
         android:id="@+id/view_face_distance"
@@ -25,103 +49,68 @@
         android:layout_height="match_parent"
         android:padding="10dp">
 
-        <RelativeLayout
-            android:id="@+id/rl_top_area"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_main_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:maxWidth="200dp"
-                android:maxHeight="100dp"
-                android:onClick="goSetting"
-                android:scaleType="centerInside"
-                android:src="@mipmap/yb_logo" />
-            <TextView
-                android:id="@+id/tv_main_abbname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <LinearLayout
-                android:id="@+id/ll_clock_area"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
-
-                <TextClock
-                    android:id="@+id/textClock"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_main_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:format12Hour="yyyy/MM/dd  HH:mm:ss"
-                    android:format24Hour="yyyy/MM/dd  HH:mm:ss"
-                    android:textColor="@color/text_clock_color_main"
-                    android:textSize="28dp" />
+                    android:adjustViewBounds="true"
+                    android:maxWidth="200dp"
+                    android:maxHeight="100dp"
+                    android:onClick="goSetting"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/yb_logo" />
+                <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
+                    android:layout_marginLeft="5dp"
+                    android:textStyle="bold"
+                    android:textSize="34dp"
+                    android:text="YBFACE"
+                    android:id="@+id/tv_main_abbname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/iv_big_head"
-            android:src="@mipmap/big_head"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/ll_thermal_area_main"
-            android:padding="3dp"
-            android:background="@drawable/shape_thermal_image_main"
-            android:orientation="vertical"
-            android:layout_below="@+id/rl_top_area"
-            android:layout_marginTop="10dp"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:id="@+id/iv_infared_imaging_main"
+            <LinearLayout
+                android:onClick="goSetting"
+                android:id="@+id/ll_thermal_area_main"
+                android:padding="3dp"
+                android:background="@drawable/shape_thermal_image_main"
+                android:orientation="vertical"
+                android:layout_below="@+id/rl_top_area"
+                android:layout_marginTop="10dp"
                 android:layout_width="200dp"
-                android:layout_height="40dp"/>
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@mipmap/ads_bg"
+                    android:scaleType="fitXY"
+                    android:id="@+id/iv_infared_imaging_main"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"/>
+                <ImageView
+                    android:visibility="gone"
+                    android:src="@mipmap/ads_bg"
+                    android:scaleType="fitXY"
+                    android:id="@+id/iv_thermal_imaging_main"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp" />
+                <TextView
+                    android:id="@+id/tv_thermal_temper_main"
+                    android:gravity="center"
+                    android:background="#65000000"
+                    android:textColor="@color/white"
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
-            <ImageView
-                android:src="@mipmap/ads_bg"
-                android:scaleType="fitXY"
-                android:id="@+id/iv_thermal_imaging_main"
-                android:layout_width="200dp"
-                android:layout_height="200dp" />
-            <TextView
-                android:id="@+id/tv_thermal_temper_main"
-                android:gravity="center"
-                android:background="#65000000"
-                android:textColor="@color/white"
-                android:padding="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:visibility="gone"
-            android:id="@+id/fl_dot_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="280dp"
-            android:background="@drawable/shape_dot_area_background">
-
-            <ImageView
-                android:layout_marginRight="150dp"
-                android:layout_marginLeft="150dp"
-                android:layout_centerInParent="true"
-                android:layout_width="100px"
-                android:layout_height="160px"
-                android:src="@mipmap/detection_dot" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_marginBottom="136dp"
@@ -150,6 +139,26 @@
                 android:textSize="50dp"
                 android:textStyle="bold" />
         </RelativeLayout>
+
+        <TextClock
+            android:layout_toLeftOf="@+id/iv_setting"
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:format12Hour="yyyy/MM/dd  HH:mm:ss"
+            android:format24Hour="yyyy/MM/dd  HH:mm:ss"
+            android:textColor="@color/text_clock_color_main"
+            android:textSize="28dp" />
+
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:onClick="goSetting"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/setting_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
 
         <FrameLayout
             android:id="@+id/ll_list_container"

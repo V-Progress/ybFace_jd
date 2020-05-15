@@ -118,6 +118,13 @@ public class SpUtils {
         saveBoolean(IS_MIRROR, b);
     }
 
+    public static boolean remove(String key){
+        if(sp != null){
+            return sp.edit().remove(key).commit();
+        }
+        return false;
+    }
+
     public static boolean saveStr(String key, String value) {
         if (sp != null) {
             return sp.edit().putString(key, value).commit();

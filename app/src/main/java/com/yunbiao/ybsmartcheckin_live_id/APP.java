@@ -178,7 +178,7 @@ public class APP extends Application {
                 Log.e("APP", "uploadCrashMessage: -------------------");
                 MobclickAgent.reportError(APP.getContext(), ex);
                 MobclickAgent.reportError(APP.getContext(), HeartBeatClient.getDeviceNo() + "/n" + (ex == null ? "NULL" : ex.getMessage()));
-                RestartAPPTool.restartAPP(APP.getContext());
+//                RestartAPPTool.restartAPP(APP.getContext());
             }
         };
         CrashHandler2.getInstance().init(this, uploader, null);
@@ -302,8 +302,9 @@ public class APP extends Application {
     public static void exit() {
         unbindProtectService();
         finishAllActivity();
-//        //关闭整个应用
-//        System.exit(0);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        //关闭整个应用
+        System.exit(0);
     }
     public static void exit2() {
         finishAllActivity();

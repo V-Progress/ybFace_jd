@@ -137,8 +137,8 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             tvBottomTitle.setVisibility(View.GONE);
         } else {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
-            ivLogo.setImageResource(R.mipmap.logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+            ivLogo.setImageResource(R.mipmap.yb_logo);
             tvBottomTitle.setVisibility(View.VISIBLE);
         }
 

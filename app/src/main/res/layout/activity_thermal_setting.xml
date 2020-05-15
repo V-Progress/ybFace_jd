@@ -62,149 +62,397 @@
             <LinearLayout
                 style="@style/setting_text_child"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_face_similar_threshold" />
-
-                <EditText
-                    android:id="@+id/edt_similar_threshold"
-                    style="@style/style_setting_input_number_edt" />
-
-                <Button
-                    android:id="@+id/btn_set_similar_threshold"
-                    style="@style/style_setting_input_save_button"
-                    android:text="@string/setting_save_service_info" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp"
-                    android:gravity="center"
-                    android:text="@string/recommend_valuez_setting"
-                    android:textColor="#ff0000"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_privacy_mode" />
-
-                <Switch
-                    android:id="@+id/sw_privacy_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_enable_dialog" />
-
-                <Switch
-                    android:id="@+id/sw_face_dialog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_enable_liveness" />
-
-                <Switch
-                    android:id="@+id/sw_liveness_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_camera_mirror" />
-
-                <CheckBox
-                    android:id="@+id/cb_mirror"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:checked="true"
-                    android:text="@string/setting_open"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:text="@string/setting_current_correct_value"
-                    style="@style/setting_text" />
-
-                <Button
-                    android:id="@+id/btn_correct_sub_setting"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@mipmap/icon_jian" />
+                android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/style_setting_input_save_button"
-                    android:layout_marginLeft="0dp"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="10dp">
-
-                    <EditText
-                        android:id="@+id/edt_correct_setting"
-                        style="@style/style_setting_input_number_decimal_signed_edt"
-                        android:enabled="false" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="℃" />
+                        android:text="@string/setting_face_similar_threshold" />
+
+                    <EditText
+                        android:id="@+id/edt_similar_threshold"
+                        style="@style/style_setting_input_number_edt" />
+
+                    <Button
+                        android:id="@+id/btn_set_similar_threshold"
+                        style="@style/style_setting_input_save_button"
+                        android:text="@string/setting_save_service_info" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:gravity="center"
+                        android:text="@string/recommend_valuez_setting"
+                        android:textColor="#ff0000"
+                        android:textSize="20dp" />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btn_correct_add_setting"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@mipmap/icon_jia" />
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:layout_marginLeft="50dp"
-                    android:id="@+id/btn_thermal_corr"
-                    style="@style/style_setting_input_save_button"
-                    android:text="@string/setting_correct_temperature" />
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_enable_liveness" />
 
+                    <Switch
+                        android:id="@+id/sw_liveness_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_camera_mirror" />
+
+                    <CheckBox
+                        android:id="@+id/cb_mirror"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:checked="true"
+                        android:text="@string/setting_open"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_enable_dialog" />
+
+                    <Switch
+                        android:id="@+id/sw_face_dialog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_camera_angle" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_total_one"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_camera"
+                        style="@style/setting_text"
+                        android:text="@string/setting_current_used"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btn_setAngle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/cb_mirror"
+                        android:background="@drawable/shape_system_name"
+                        android:onClick="setAngle"
+                        android:textColor="#59B4CA" />
+
+                    <Spinner
+                        android:id="@+id/spn_camera_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/shape_system_name"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_show_main_logo" />
+
+                    <Switch
+                        android:id="@+id/sw_main_logo_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_show_main_thermal" />
+
+                    <Switch
+                        android:id="@+id/sw_main_thermal_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_show_main_info" />
+
+                    <Switch
+                        android:id="@+id/sw_main_info_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_qr_code_enable_area"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_marginLeft="10dp"
+                            style="@style/setting_text"
+                            android:text="@string/setting_show_qr_code" />
+
+                        <Switch
+                            android:id="@+id/sw_qrcode_setting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_screen_saver" />
+
+                    <Switch
+                        android:id="@+id/sw_poster_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_broadcast_speed" />
+
+
+                    <Button
+                        android:layout_marginLeft="20dp"
+                        android:id="@+id/btn_speed_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_speed_setting"
+                            style="@style/style_setting_input_number_edt"
+                            android:enabled="false" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_speed_plus_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="logo文字" />
+
+                    <EditText
+                        android:id="@+id/edt_main_logo_text"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
+                        android:inputType="text"
+                        android:maxLength="20"
+                        android:padding="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_normal_speech_content" />
+
+                    <EditText
+                        android:id="@+id/edt_normal_tips_tips"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
+                        android:inputType="text"
+                        android:maxLength="20"
+                        android:padding="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:text="@string/setting_warning_speech_content"
+                        style="@style/setting_text" />
+
+                    <EditText
+                        android:id="@+id/edt_warning_tips_tips"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
+                        android:inputType="text"
+                        android:maxLength="20"
+                        android:padding="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:text="@string/temper_tips_close"
+                        style="@style/setting_text" />
+
+                    <EditText
+                        android:id="@+id/edt_please_close_tips"
+                        style="@style/style_setting_input_number_edt"
+                        android:layout_width="400dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/shape_system_name"
+                        android:inputType="text"
+                        android:maxLength="20"
+                        android:padding="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_welcome_speech" />
+
+                    <EditText
+                        android:gravity="center"
+                        android:layout_marginRight="20dp"
+                        android:maxLines="3"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="20dp"
+                        android:textColorHint="@color/gray_low"
+                        android:textColor="@color/white"
+                        android:background="@drawable/shape_system_name"
+                        android:layout_marginLeft="10dp"
+                        android:singleLine="false"
+                        android:scrollHorizontally="true"
+                        android:id="@+id/edt_welcome_tips"
+                        android:layout_width="match_parent"
+                        android:inputType="text|textMultiLine"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -233,6 +481,26 @@
                         android:paddingTop="10dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_privacy_mode" />
+
+                    <Switch
+                        android:id="@+id/sw_privacy_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -297,7 +565,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -318,7 +586,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -334,6 +602,56 @@
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:text="@string/setting_current_correct_value"
+                        style="@style/setting_text" />
+
+                    <Button
+                        android:id="@+id/btn_correct_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:id="@+id/edt_correct_setting"
+                            style="@style/style_setting_input_number_decimal_signed_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="℃" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_correct_add_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+
+                    <Button
+                        android:layout_marginLeft="50dp"
+                        android:id="@+id/btn_thermal_corr"
+                        style="@style/style_setting_input_save_button"
+                        android:text="@string/setting_correct_temperature" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -501,9 +819,15 @@
                         android:layout_height="30dp"
                         android:background="@mipmap/icon_jia" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
@@ -511,227 +835,80 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="@string/setting_normal_speech_content" />
+                        android:text="@string/setting_cpu_temp" />
 
-                    <EditText
-                        android:id="@+id/edt_normal_tips_tips"
-                        style="@style/style_setting_input_number_edt"
-                        android:layout_width="400dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_system_name"
-                        android:inputType="text"
-                        android:maxLength="20"
-                        android:padding="5dp" />
+                    <TextView
+                        android:id="@+id/tv_cpu_temper"
+                        style="@style/setting_text"
+                        android:text="0℃" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:text="@string/setting_warning_speech_content"
-                        style="@style/setting_text" />
+                        style="@style/setting_text"
+                        android:text="@string/setting_curr_net" />
+
+                    <TextView
+                        android:id="@+id/tv_wifi_state"
+                        style="@style/setting_text"
+                        android:text="@string/setting_net_name" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_enable_ic_card" />
+
+                    <Switch
+                        android:id="@+id/sw_readcard_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="@string/setting_relay_delay_time" />
 
                     <EditText
-                        android:id="@+id/edt_warning_tips_tips"
-                        style="@style/style_setting_input_number_edt"
-                        android:layout_width="400dp"
+                        android:id="@+id/edt_delay"
+                        style="@style/style_setting_input_number_edt" />
+
+                    <TextView
+                        style="@style/setting_text"
                         android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_system_name"
-                        android:inputType="text"
-                        android:maxLength="20"
-                        android:padding="5dp" />
+                        android:text="@string/setting_s" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/auto_close_door_setting"
+                        android:textColor="@android:color/holo_red_light" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_screen_saver" />
-
-                <Switch
-                    android:id="@+id/sw_poster_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_welcome_speech" />
-
-                <EditText
-                    android:layout_marginRight="20dp"
-                    android:maxLines="3"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="20dp"
-                    android:textColorHint="@color/gray_low"
-                    android:textColor="@color/white"
-                    android:background="@drawable/shape_system_name"
-                    android:layout_marginLeft="10dp"
-                    android:singleLine="false"
-                    android:scrollHorizontally="true"
-                    android:id="@+id/edt_welcome_tips"
-                    android:layout_width="match_parent"
-                    android:inputType="text|textMultiLine"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_qr_code_enable_area"
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_show_qr_code" />
-
-                <Switch
-                    android:id="@+id/sw_qrcode_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_enable_ic_card" />
-
-                <Switch
-                    android:id="@+id/sw_readcard_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_relay_delay_time" />
-
-                <EditText
-                    android:id="@+id/edt_delay"
-                    style="@style/style_setting_input_number_edt" />
-
-                <TextView
-                    style="@style/setting_text"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/setting_s" />
-
-                <TextView
-                    style="@style/setting_text"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/auto_close_door_setting"
-                    android:textColor="@android:color/holo_red_light" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_cpu_temp" />
-
-                <TextView
-                    android:id="@+id/tv_cpu_temper"
-                    style="@style/setting_text"
-                    android:text="0℃" />
-            </LinearLayout>
 
 
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_camera_angle" />
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_total_one"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_camera"
-                    style="@style/setting_text"
-                    android:text="@string/setting_current_used"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/btn_setAngle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@id/cb_mirror"
-                    android:background="@drawable/shape_system_name"
-                    android:onClick="setAngle"
-                    android:textColor="#59B4CA" />
-
-                <Spinner
-                    android:id="@+id/spn_camera_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/shape_system_name"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                style="@style/setting_text_child"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/setting_text"
-                    android:text="@string/setting_curr_net" />
-
-                <TextView
-                    android:id="@+id/tv_wifi_state"
-                    style="@style/setting_text"
-                    android:text="@string/setting_net_name" />
             </LinearLayout>
 
             <TextView
@@ -739,12 +916,6 @@
                 android:layout_marginTop="10dp"
                 android:onClick="rebootDevice"
                 android:text="@string/setting_reboot_device" />
-
-            <TextView
-                style="@style/setting_text_child"
-                android:layout_marginTop="10dp"
-                android:onClick="checkUpgrade"
-                android:text="@string/setting_check_update" />
 
             <TextView
                 style="@style/setting_text_child"
@@ -759,6 +930,7 @@
                 android:text="@string/setting_power_on_off" />
 
             <LinearLayout
+                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"

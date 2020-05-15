@@ -68,7 +68,7 @@ public class ExcelUtils {
      * @param fileName
      * @param colName
      */
-    public static void initExcel(String fileName, String[] colName) {
+    public static void initExcel(String fileName, String tableName, String[] colName) {
         format();
         WritableWorkbook workbook = null;
         try {
@@ -77,7 +77,7 @@ public class ExcelUtils {
                 file.createNewFile();
             }
             workbook = Workbook.createWorkbook(file);
-            WritableSheet sheet = workbook.createSheet("成绩表", 0);
+            WritableSheet sheet = workbook.createSheet(tableName, 0);
             //创建标题栏
             sheet.addCell((WritableCell) new Label(0, 0, fileName, arial14format));
             for (int col = 0; col < colName.length; col++) {

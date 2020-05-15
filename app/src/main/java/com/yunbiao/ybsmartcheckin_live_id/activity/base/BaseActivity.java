@@ -354,7 +354,16 @@ public abstract class BaseActivity extends FragmentActivity {
 
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 String versionName = jsonObject.getString("serverVersion");
-                if (TextUtils.isEmpty(versionName) || TextUtils.equals(currVersionName,versionName)) {
+                //如果新版本为空
+                if (TextUtils.isEmpty(versionName) ) {
+                    if (callback != null) {
+                        callback.noUpgrade(currVersionName);
+                        callback.onFinish();
+                    }
+                    return;
+                }
+                //如果版本相同
+                if(TextUtils.equals(currVersionName,versionName)){
                     if (callback != null) {
                         callback.noUpgrade(currVersionName);
                         callback.onFinish();
@@ -362,8 +371,29 @@ public abstract class BaseActivity extends FragmentActivity {
                     return;
                 }
 
-                String versionInfo = jsonObject.getString("versionDesc");
+                //如果新版本int值小于等于当前版本
+                try {
+                    String currV = currVersionName.replaceAll("\\.", "");
+                    String newV = versionName.replaceAll("\\.","");
+                    int currI = Integer.parseInt(currV);
+                    int newI = Integer.parseInt(newV);
+                    if(newI <= currI){
+                        if (callback != null) {
+                            callback.noUpgrade(currVersionName);
+                            callback.onFinish();
+                        }
+                        return;
+                    }
+                }catch (Exception e){
+                    if (callback != null) {
+                        callback.noUpgrade(currVersionName);
+                        callback.onFinish();
+                    }
+                    e.printStackTrace();
+                    return;
+                }
 
+                String versionInfo = jsonObject.getString("versionDesc");
                 if (callback != null) {
                     UIUtils.showLong(BaseActivity.this,getResString(R.string.update_have_new));
                     callback.haveNewVersion(versionName, versionInfo);

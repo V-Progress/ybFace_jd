@@ -10,6 +10,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -420,10 +421,14 @@ public class CommonUtils {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if (broad_info.contains("lxr@ubuntu")) {
+        if (broad_info.contains("lxr")) {//视美泰
             return 5;
+        } else if (broad_info.contains("lxr")) {
+            return 5;
+        } else if (broad_info.contains("HARRIS") || broad_info.contains("silence")) {//亿晟
+            return 4;
         } else {
-            return 0;
+            return 4;
         }
     }
 
@@ -433,11 +438,12 @@ public class CommonUtils {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
+        Log.e(TAG, "getBroadType2: " + broad_info);
         if (broad_info.contains("wxl")) {
             return "SMT";//视美泰
         } else if (broad_info.contains("lxr")) {
             return "LXR";//亿莱顿
-        } else if (broad_info.contains("harris")) {
+        } else if (broad_info.contains("harris") || broad_info.contains("silence")) {
             return "HARRIS";//亿晟
         } else {
             return "HARRIS";//亿晟

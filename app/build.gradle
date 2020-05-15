@@ -8,8 +8,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 44
-        versionName "1.4.6"
+        versionCode 45
+        versionName "1.4.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -284,6 +284,7 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
 
     //    compileOnly files('lib/classes4.2.jar')
     implementation files('libs/BaiduLBS_Android.jar')
@@ -400,6 +401,6 @@ dependencies {
     implementation files('libs/yface.jar')
     implementation files('libs/printsdk1015-v2.2.jar')
     implementation files('libs/PrintUtils1114.jar')
-
     implementation files('libs/arcsoft_face.jar')
+    implementation files('libs/poweronoff.jar')
 }

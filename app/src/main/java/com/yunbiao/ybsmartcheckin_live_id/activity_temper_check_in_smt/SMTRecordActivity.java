@@ -365,7 +365,7 @@ public class SMTRecordActivity extends SMTBaseActivity implements View.OnClickLi
                     }
                 }
 
-                ExcelUtils.initExcel(excelFile.getPath(), title);
+                ExcelUtils.initExcel(excelFile.getPath(), getResString(R.string.sign_list_table_name),title);
                 final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
                 Log.e(TAG, "run: excel，导出结果：" + result);
                 runOnUiThread(new Runnable() {

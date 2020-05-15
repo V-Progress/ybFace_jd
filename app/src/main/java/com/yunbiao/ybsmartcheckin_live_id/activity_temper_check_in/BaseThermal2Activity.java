@@ -19,6 +19,7 @@ import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.intelligence.hardware.temperature.callback.InfraredTempCallBack;
 import com.intelligence.hardware.temperature.callback.MLX90621YsTempCallBack;
+import com.intelligence.hardware.temperature.callback.Smt3232TempCallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
@@ -36,6 +37,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import io.reactivex.functions.Consumer;
 
 public abstract class BaseThermal2Activity extends BaseGpioActivity implements FaceView.FaceCallback {
     private static final String TAG = "BaseThermalActivity";
@@ -68,6 +71,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     private ThermalViewInterface viewInterface;
     private boolean mPrivacyMode;
+    private float mVoiceSpeed;
+    private String pleaseCloseTips;
+    private String normalTips;
+    private String warningTips;
 
     @Override
     protected void initData() {
@@ -85,8 +92,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityPaused = false;
         //隐私模式
-        mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
+        mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
         //播报延时
         mSpeechDelay = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY, ThermalConst.Default.SPEECH_DELAY);
         //测温最小阈值
@@ -104,45 +112,90 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         TemperatureModule.getIns().setmCorrectionValue(mTempCorrect);
         //华氏度
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
+        //语音速度
+        mVoiceSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
+        KDXFSpeechManager.instance().setSpeed(mVoiceSpeed);
 
-        //模式切换
-        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
-        Log.e(TAG, "onResume: 当前mode：" + currMode);
-        if (mCurrMode != currMode) {
-            mCurrMode = currMode;
-            viewInterface.onModeChanged(currMode);
+        //靠近点
+        pleaseCloseTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS,ThermalConst.Default.CLOSE_TIPS);
+        if(TextUtils.isEmpty(pleaseCloseTips)){
+            pleaseCloseTips = getResString(R.string.main_tips_please_close);
+        }
+        //正常报警
+        normalTips = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
+        if(TextUtils.isEmpty(normalTips)){
+            normalTips = getResString(R.string.main_temp_normal_tips);
+        }
+        //异常报警
+        warningTips = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
+        if(TextUtils.isEmpty(warningTips)){
+            warningTips = getResString(R.string.main_temp_warning_tips);
         }
 
+        //模式切换
+        mCurrMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
+        viewInterface.onModeChanged(mCurrMode);
+
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
-        //初始化串口号
-        if (mCurrMode == ThermalConst.THERMAL_ONLY || mCurrMode == ThermalConst.FACE_THERMAL) {
-            isMLXRunning = false;
-            TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
-            updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack), 2000);
-        } else if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED) {
-            TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
-            TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
-            isMLXRunning = false;
-        } else if (mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4) {
-            portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
-            isMLXRunning = false;
-            TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
-            updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
-        } else if(mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4 || mCurrMode == ThermalConst.FACE_THERMAL_MLX_16_4){
-            if(!isMLXRunning){
-                updateUIHandler.postDelayed(() -> {
-                    TemperatureModule.getIns().startMLX90621YsI2C(lowTempModel,16 * 30, 4 * 40, mlx90621YsTempCallBack);
-                    isMLXRunning = true;
-                },1 * 1000);
-            } else {
-                TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
-            }
-        } else if(mCurrMode == ThermalConst.FACE_ONLY){
-            isMLXRunning = false;
-            TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
+        switch (mCurrMode) {
+                //NO_Temper
+            case ThermalConst.FACE_ONLY:
+                isMLXRunning = false;
+                TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
+                break;
+                //红外
+            case ThermalConst.INFRARED_ONLY:
+            case ThermalConst.FACE_INFRARED:
+                isMLXRunning = false;
+                TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
+                TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
+                break;
+                //32*32
+            case ThermalConst.THERMAL_ONLY:
+            case ThermalConst.FACE_THERMAL:
+                isMLXRunning = false;
+                TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
+                updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack), 2000);
+                break;
+                //HM_16*4
+            case ThermalConst.THERMAL_16_4_ONLY:
+            case ThermalConst.FACE_THERMAL_16_4:
+                isMLXRunning = false;
+                portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
+                TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
+                updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
+                break;
+                //MLX_16*4
+            case ThermalConst.ONLY_THERMAL_MLX_16_4:
+            case ThermalConst.FACE_THERMAL_MLX_16_4:
+                if (!isMLXRunning) {
+                    updateUIHandler.postDelayed(() -> {
+                        TemperatureModule.getIns().startMLX90621YsI2C(lowTempModel, 16 * 30, 4 * 40, mlx90621YsTempCallBack);
+                        isMLXRunning = true;
+                    }, 1 * 1000);
+                } else {
+                    TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
+                }
+                break;
+                //SMT
+            case ThermalConst.ONLY_SMT_THERMAL:
+            case ThermalConst.FACE_SMT_THERMAL:
+                isMLXRunning = false;
+                Log.e(TAG, "onResume: 开启测温模块");
+                TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 115200);
+                updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startSmt3232Temp(lowTempModel, smt3232TempCallBack), 2000);
+                break;
+
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isActivityPaused = true;
+    }
+
+    private boolean isActivityPaused = false;
     private boolean isMLXRunning = false;
 
     //==测温相关============================================================================================================
@@ -201,7 +254,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
         @Override
-        public void newestHotImageData(Bitmap bitmap,  final float originalMaxT, final float maxT, final float minT) {
+        public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
             handleTemperature(bitmap, originalMaxT, maxT);
         }
 
@@ -211,8 +264,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         }
     };
 
+    private int distanceTipNumber = 0;
+    private int nobodyTemperTag = 0;
+    private int nobodyFaceTag = 0;
+
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
+        if (isActivityPaused) {
+            return;
+        }
         if (mCurrMode == ThermalConst.FACE_ONLY) {
             return;
         }
@@ -225,6 +285,52 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         sendUpdateHotInfoMessage(imageBmp, afterT);
 
         if (!mHasFace) {
+            /*Log.e(TAG, "handleTemperature: 最低温度：" + originT);
+            if(originT <= 18.0f){
+                TemperatureModule.getIns().setHotImageColdMode(true);
+                TemperatureModule.getIns().setHotImageHotMode(false,originT);
+            } else if(originT >= 35.0f){
+                TemperatureModule.getIns().setHotImageColdMode(false);
+                TemperatureModule.getIns().setHotImageHotMode(true,originT);
+            } else {
+                TemperatureModule.getIns().setHotImageColdMode(false);
+                TemperatureModule.getIns().setHotImageHotMode(false,originT);
+            }*/
+            /*// TODO: 2020/5/14  无人无脸播报问题
+            if (mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
+                if (nobodyFaceTag < 5) {
+                    nobodyFaceTag++;
+                } else if (nobodyTemperTag < 5) {
+                    if (originT - mCacheBeforeTemper >= 6.0f) {
+                        nobodyTemperTag++;
+                    } else {
+                        nobodyTemperTag = 0;
+                        nobodyFaceTag = 0;
+                    }
+                } else {
+                    float resultTemper = formatF(afterT);
+                    sendResultMessage(resultTemper, "");//发送结果
+                    if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                        openDoor();
+                    }
+
+                    if (resultTemper < HIGHEST_TEMPER) {
+                        //上传数据
+                        Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
+                        SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
+                            Log.e(TAG, "accept: 保存完成");
+                            sendUpdateSignMessage(sign);//发送列表更新事件
+                        });
+                    }
+                    nobodyTemperTag = 0;
+                    nobodyFaceTag = 0;
+                }
+            }
+            // TODO: 2020/5/14  无人无脸播报问题*/
+
+            if (distanceTipNumber != 0) {
+                distanceTipNumber = 0;
+            }
             if (mCacheBeforeTemper == 0.0f || originT < mCacheBeforeTemper) {
                 mCacheBeforeTemper = originT;
             }
@@ -237,16 +343,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         }
 
         if (isFaceToFar) {
-            mCacheTime = 0;
-            if (mCacheTemperList.size() > 0) {
-                mCacheTemperList.clear();
-            }
-            sendTipsMessage(getResources().getString(R.string.main_tips_please_close));
+            if (mCacheTime != 0) mCacheTime = 0;
+            if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
+            sendTipsMessage(pleaseCloseTips);
+            if (distanceTipEnable && distanceTipNumber < 5)
+                KDXFSpeechManager.instance().playNormalAdd(pleaseCloseTips, () -> distanceTipNumber++);
             return;
         }
 
-        if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED
-            /*|| mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.FACE_THERMAL_16_4*/) {
+        if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.FACE_INFRARED) {
             if (!isFaceInsideRange) {
                 mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) {
@@ -256,6 +361,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 return;
             }
         }
+        //全部通过后清除提示框
+        sendResetTipsMessage(0);
 
         if (originT - mCacheBeforeTemper < mCacheDiffValue) {
             return;
@@ -310,12 +417,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
 
             if (resultTemper < HIGHEST_TEMPER) {
-                //上传数据
-//                Bitmap copyImage = mLastHotImage.copy(mLastHotImage.getConfig(), false);
-//                temperatureSign.setHotImageBitmap(copyImage);
-//                temperatureSign.setImgBitmap(viewInterface.getFacePicture());
-//                sendUpdateSignMessage(temperatureSign);//发送列表更新事件
-//                SignManager.instance().uploadTemperatureSign(temperatureSign,mPrivacyMode);//上传数据
                 Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
                 SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
                     Log.e(TAG, "accept: 保存完成");
@@ -326,6 +427,76 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             mCacheTemperList.add(afterT);
         }
     }
+
+    private Smt3232TempCallBack smt3232TempCallBack = new Smt3232TempCallBack() {
+        @Override
+        public void newestSmt3232Temp(float measureF, float afterF) {
+            if (isActivityPaused) {
+                return;
+            }
+            if (mCurrMode == ThermalConst.FACE_ONLY) {
+                return;
+            }
+
+            if (!mHasFace) {
+                if (distanceTipNumber != 0) {
+                    distanceTipNumber = 0;
+                }
+                mCacheTime = 0;
+                if (mCacheTemperList.size() > 0) {
+                    mCacheTemperList.clear();
+                }
+                sendClearAllUIMessage();
+                return;
+            }
+
+            if (isFaceToFar && !isResultShown) {
+                if (mCacheTime != 0) mCacheTime = 0;
+                if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
+                sendTipsMessage(pleaseCloseTips);
+                if (distanceTipEnable && distanceTipNumber < 5) KDXFSpeechManager.instance().playNormalAdd(pleaseCloseTips, () -> distanceTipNumber++);
+                return;
+            }
+
+            //如果处理后的数值小于播报阈值，清除最终值
+            if (afterF < mTempMinThreshold) {
+                if (mCacheTime != 0) mCacheTime = 0;
+                if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
+                return;
+            }
+
+            if (mCurrMode == ThermalConst.ONLY_SMT_THERMAL) {
+                if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
+                    mCacheTemperList.add(afterF);
+                    if (mCacheTemperList.size() < 3) {
+                        return;
+                    }
+                    mCacheTime = System.currentTimeMillis();
+
+                    Float max = Collections.max(mCacheTemperList);
+                    mCacheTemperList.clear();
+
+                    float resultTemper = formatF(max);
+                    sendResultMessage(resultTemper, "");//发送结果
+                    if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                        openDoor();
+                    }
+
+                    if(resultTemper < HIGHEST_TEMPER){
+                        Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
+                        SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), null, temperatureSign, false, new Consumer<Sign>() {
+                            @Override
+                            public void accept(Sign sign) throws Exception {
+                                sendUpdateSignMessage(sign);//发送列表更新事件
+                            }
+                        });
+                    }
+                }
+            } else {
+                mCacheTemperList.add(afterF);
+            }
+        }
+    };
 
     private float getResultTemperForFandT() {
         if (mCacheTemperList.size() <= 0) {
@@ -360,6 +531,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     @Override
     public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
+        if (isActivityPaused) {
+            return false;
+        }
         mHasFace = hasFace;
         viewInterface.hasFace(hasFace);
         if (!hasFace) {
@@ -431,8 +605,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 return;
             }
 
-            Log.e(TAG, "onFaceVerify: 识别到的FaceId：" + faceAuth.getUserName());
-
             Sign sign = null;
             if (!TextUtils.equals("-1", faceAuth.getUserName())) {
                 sign = SignManager.instance().checkSignData(faceAuth, resultTemper);
@@ -442,8 +614,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
             Log.e(TAG, "onFaceVerify: 识别的用户名：" + sign.getName());
             sendResultMessage(resultTemper, sign.getName());
-            SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), sign, mPrivacyMode, sign1 -> viewInterface.updateSignList(sign1));
-
+            SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                    (mLastHotImage != null ? mLastHotImage.copy(mLastHotImage.getConfig(), false) : null),
+                    sign,
+                    mPrivacyMode,
+                    sign1 -> viewInterface.updateSignList(sign1));
             if (sign.getType() == -2 || sign.getType() == -9) {
                 return;
             }
@@ -491,7 +666,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     //提示相关
     private void sendTipsMessage(String string) {
-        if (isResultShown) {
+        if (viewInterface.isTipsShown()) {
             return;
         }
         updateUIHandler.removeMessages(2);
@@ -502,9 +677,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     }
 
     //重置UI
-    private void sendResetTipsMessage() {
-        updateUIHandler.removeMessages(4);
-        updateUIHandler.sendEmptyMessageDelayed(4, 3000);
+    private void sendResetTipsMessage(int delay) {
+        if (viewInterface.isTipsShown()) {
+            updateUIHandler.removeMessages(4);
+            updateUIHandler.sendEmptyMessageDelayed(4, delay);
+        }
     }
 
     //清除所有UI提示
@@ -546,8 +723,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
                     int bgId = getBgId(temperature);
                     Runnable resultRunnable = speechCallback(temperature);
-                    String resultText = getResultText(mFEnabled,temperature);
-                    String speechText = getSpeechText(mFEnabled,temperature);
+                    String resultText = getResultText(mFEnabled, temperature);
+                    String speechText = getSpeechText(mFEnabled, temperature);
                     if (!TextUtils.isEmpty(name)) {
                         speechText += "，" + name;
                     }
@@ -564,10 +741,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     }
                     String tips = (String) msg.obj;
                     viewInterface.showTips(tips, id);
-                    if (distanceTipEnable) {
-                        KDXFSpeechManager.instance().playNormal(tips);
-                    }
-                    sendResetTipsMessage();
                     break;
                 case 3://重置UI
                     isResultShown = false;
@@ -579,6 +752,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     viewInterface.dismissTips();
                     break;
                 case 5://清除所有UI（除灯光和语音播报）
+                    isResultShown = false;
                     viewInterface.clearAllUI();
                     break;
                 case 6://仅添加
@@ -589,8 +763,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return true;
         }
     });
-    private Runnable speechCallback(float temperature){
-        if(temperature >= mTempWarningThreshold){
+
+    private Runnable speechCallback(float temperature) {
+        if (temperature >= mTempWarningThreshold) {
             ledRed();
             return () -> {
                 KDXFSpeechManager.instance().playWaningRing();
@@ -598,14 +773,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             };
         } else {
             ledGreen();
-            if(mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.THERMAL_ONLY){
+            if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.THERMAL_ONLY) {
                 openDoor();
             }
             return () -> sendResetResultMessage();
         }
     }
-    private int getBgId(float temperature){
-        if(temperature >= mTempWarningThreshold){
+
+    private int getBgId(float temperature) {
+        if (temperature >= mTempWarningThreshold) {
             if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 return R.mipmap.bg_verify_nopass;
             } else {
@@ -619,48 +795,43 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
         }
     }
+
     private String getSpeechText(boolean fEnabled, float temperature) {
         StringBuffer stringBuffer = new StringBuffer();
-        if(temperature > 45.0f){
+        if (temperature > 45.0f) {
             return getResources().getString(R.string.main_temp_error_tips);
         }
 
-        if(temperature >= mTempWarningThreshold){
-            String warningText = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST,ThermalConst.Default.WARNING_BROADCAST);
-            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
+        if (temperature >= mTempWarningThreshold) {
+            stringBuffer.append(warningTips);
         } else {
-            String normalText = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST,ThermalConst.Default.NORMAL_BROADCAST);
-            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
+            stringBuffer.append(normalTips);
         }
 
         //设置语音播报
-        Locale locale = APP.getContext().getResources().getConfiguration().locale;
-        boolean isChina = TextUtils.equals(locale.getLanguage(), "zh");
         if (fEnabled) {
-            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));
-            stringBuffer.append(isChina ? "华氏度" : "Fahrenheit degree");
+            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));;
+            stringBuffer.append(getResString(R.string.temper_tips_fahrenheit));
         } else {
             stringBuffer.append(" " + temperature);
-            stringBuffer.append(isChina ? "摄氏度" : "Centigrade");
+            stringBuffer.append(getResString(R.string.temper_tips_centigrade));
         }
         return stringBuffer.toString();
     }
 
-    private String getResultText(boolean fEnabled,float temperature){
+    private String getResultText(boolean fEnabled, float temperature) {
         StringBuffer stringBuffer = new StringBuffer();
-        if(temperature > 45.0f){
+        if (temperature > 45.0f) {
             return getResources().getString(R.string.main_temp_error_tips);
         }
 
-        if(temperature >= mTempWarningThreshold){
-            String warningText = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST,ThermalConst.Default.WARNING_BROADCAST);
-            stringBuffer.append(TextUtils.isEmpty(warningText) ? getResources().getString(R.string.main_temp_warning_tips) : warningText);
+        if (temperature >= mTempWarningThreshold) {
+            stringBuffer.append(warningTips);
         } else {
-            String normalText = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST,ThermalConst.Default.NORMAL_BROADCAST);
-            stringBuffer.append(TextUtils.isEmpty(normalText) ? getResources().getString(R.string.main_temp_normal_tips) : normalText);
+            stringBuffer.append(normalTips);
         }
         stringBuffer.append(" ").append(fEnabled ? formatF((float) (temperature * 1.8 + 32)) : temperature);
-        stringBuffer.append(fEnabled ? "℉" :"℃");
+        stringBuffer.append(fEnabled ? "℉" : "℃");
         return stringBuffer.toString();
     }
 

@@ -37,12 +37,13 @@
             android:paddingTop="10dp" />
 
         <LinearLayout
+            android:gravity="center_vertical"
             android:id="@+id/ll_logo_area_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -53,17 +54,17 @@
                 android:maxWidth="200dp"
                 android:maxHeight="100dp"
                 android:onClick="goSetting"
-                android:scaleType="centerInside"
+                android:scaleType="fitCenter"
                 android:src="@mipmap/yb_logo" />
 
-            <TextView
+            <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
                 android:id="@+id/tv_main_abbname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/iv_main_logo"
                 android:textColor="@color/white"
-                android:textSize="30dp"
+                android:textSize="34dp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -74,7 +75,7 @@
             android:orientation="vertical"
             android:layout_below="@+id/ll_logo_area_main"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_width="200dp"
             android:layout_height="wrap_content">
             <ImageView
@@ -117,6 +118,15 @@
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textColor="@color/text_clock_color_main"
                 android:textSize="28dp" />
+
+            <ImageView
+                android:id="@+id/iv_setting"
+                android:onClick="goSetting"
+                android:scaleType="fitCenter"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/setting_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
         </LinearLayout>
 
         <FrameLayout

@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -54,12 +55,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class ThermalSignFragment extends Fragment implements NetWorkChangReceiver.NetWorkChangeListener/* implements SignManager.SignEventListener*/ {
 
@@ -69,7 +74,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private SignAdapter signAdapter;
     private static final String TAG = "SignFragment";
     private int mCurrentOrientation;
-    private ImageView ivQRCode;
+//    private ImageView ivQRCode;
     private PieChart pieChart;
     private View rootView;
     private TextView tvSignMale;
@@ -85,6 +90,8 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     private TextView tvAlready;
     private boolean mFEnabled;
     private NetWorkChangReceiver netWorkChangReceiver;
+    private View llInfoSignList;
+    private GifImageView gifImageView;
 
     @Nullable
     @Override
@@ -104,8 +111,19 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         tvNetState = rootView.findViewById(R.id.tv_net_state_sign_fragment);//网路状态
         tvVer = rootView.findViewById(R.id.tv_ver_sign_fragment);//版本号
         tvModel = rootView.findViewById(R.id.tv_model_sign);//模式
-        ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);//二维码
+//        ivQRCode = rootView.findViewById(R.id.iv_qrcode_sign_list);//二维码
         tvTotal = rootView.findViewById(R.id.tv_total_sign_list);//签到总人数
+        llInfoSignList = rootView.findViewById(R.id.ll_info_sign_list);
+
+        gifImageView = rootView.findViewById(R.id.iv_qrcode_sign_list);
+        try {
+            GifDrawable drawable = new GifDrawable(getResources(),R.mipmap.splash2);
+            drawable.setLoopCount(0);
+            drawable.setSpeed(2.0f);
+            gifImageView.setImageDrawable(drawable);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         setModelText(mModel);
 
@@ -164,11 +182,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             //公告
             NoticeManager.getInstance().initSignData();
         }
-
-        if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
-            ivQRCode.setImageResource(R.mipmap.soft_workz_qrcode);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
-        }
     }
 
     @Override
@@ -176,10 +189,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         super.onResume();
 
         if(Constants.FLAVOR_TYPE == FlavorType.HT || Constants.FLAVOR_TYPE == FlavorType.SK || Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
-            ivQRCode.setVisibility(View.GONE);
+            gifImageView.setVisibility(View.GONE);
         } else {
             boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
-            ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
+            gifImageView.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
         }
 
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
@@ -195,6 +208,13 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             mCurrModel = newModel;
             mFEnabled = fEnabled;
             loadSignData();
+        }
+
+        boolean showMainInfo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_INFO, ThermalConst.Default.SHOW_MAIN_INFO);
+        if(showMainInfo){
+            llInfoSignList.setVisibility(View.VISIBLE);
+        } else {
+            llInfoSignList.setVisibility(View.GONE);
         }
     }
 
@@ -265,10 +285,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         }
 
         Company company = SpUtils.getCompany();
-        if(Constants.FLAVOR_TYPE != FlavorType.SOFT_WORK_Z){
-            ImageFileLoader.i().loadAndSave(getActivity(), company.getCodeUrl(), Constants.DATA_PATH, ivQRCode);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
-
+        String codeUrl = company.getCodeUrl();
+        if(!TextUtils.isEmpty(codeUrl)){
+            Glide.with(getActivity()).load(codeUrl).asBitmap().into(gifImageView);
         }
 
         if (tvCompanyName != null) {

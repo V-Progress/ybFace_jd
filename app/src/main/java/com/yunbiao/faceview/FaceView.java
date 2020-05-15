@@ -181,7 +181,6 @@ public class FaceView extends FrameLayout {
         @Override
         public void onGlobalLayout() {
             previewView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
             initEngine();
             initCamera();
 

@@ -13,9 +13,13 @@
     <string name="temper_error_btn_restart">重啓</string>
     <string name="temper_error_btn_cancel">暫不處理</string>
 
+    <!--溫度單位-->
+    <string name="temper_tips_centigrade">攝氏度</string>
+    <string name="temper_tips_fahrenheit">華氏度</string>
+    <string name="temper_tips_close">靠近提示</string>
     <!--應用名稱-->
-    <string name="yb_check_in">雲標智能考勤</string>
-    <string name="yb_temper_check_in">雲標測溫考勤</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">雲標人證測溫</string>
     <string name="yb_multiple">YBFace大通量</string>
     <string name="yb_safety_chceck">雲標測溫安檢</string>
@@ -116,6 +120,7 @@
     <string name="act_editEmploy_xgxx">修改信息</string>
     <string name="act_editEmploy_pz">拍照</string>
     <string name="act_editEmploy_reset">重置</string>
+    <string name="act_editEmploy_kh">卡號:</string><!-- 員工編號 -->
     <string name="act_editEmploy_jbxx">基本信息</string>
     <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
     <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;別:</string>
@@ -182,6 +187,7 @@
     <string name="sign_export_record_success">導出成功</string>
     <string name="sign_export_record_path">目錄：</string>
     <string name="sign_export_record_failed">導出失敗</string>
+    <string name="sign_list_table_name">記錄</string>
 
 
     <!--訪客列表-->
@@ -194,12 +200,17 @@
     <!--系統設置-->
     <!--模式-->
     <string name="face_only_model">人臉識別考勤</string>
-    <string name="face_infared_model">人臉識別 + 熱成像（小）</string>
-    <string name="infared_only_model">熱成像（小）（不考勤）</string>
-    <string name="thermal_only_model">熱成像模式（32*32）（不考勤）</string>
-    <string name="face_thermal_model">人臉識別 + 熱成像模式（32*32）</string>
-    <string name="thermal_16_4_model">熱成像模式（16*4）（不考勤）</string>
-    <string name="face_thermal_16_4_model">人臉識別 + 熱成像模式（16*4）</string>
+    <string name="infared_only_model">僅測溫模式（小）</string>
+    <string name="face_infared_model">人臉識別 + 測溫模式（小）</string>
+    <string name="thermal_only_model">僅測溫模式（HM-32*32）</string>
+    <string name="face_thermal_model">人臉識別 + 測溫模式（HM-32*32）</string>
+    <string name="thermal_16_4_model">僅測溫模式（HM-16*4）</string>
+    <string name="face_thermal_16_4_model">人臉識別 + 測溫模式（HM-16*4）</string>
+    <string name="only_thermal_mlx_16_4_model">僅測溫模式（MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">人臉識別 + 測溫模式（MLX-16*4）</string>
+    <string name="smt_only_thermal">僅測溫模式（SMT）</string>
+    <string name="smt_face_thermal">人臉識別 + 測溫模式（SMT）</string>
+
 
     <!--標簽-->
     <string name="setting_tip_warning_number_reseted">計數已清零</string>
@@ -271,7 +282,7 @@
     <string name="setting_warning_speech_content">體溫異常播報內容</string>
     <string name="setting_low_temp_model">低溫模式</string>
     <string name="setting_portrait_outline">人像輪廓</string>
-    <string name="setting_default_welcome_tip">歡迎使用雲標智能考勤系統</string>
+    <string name="setting_default_welcome_tip">歡迎使用AI智能考勤系統</string>
     <string name="setting_default_welcome_tip2">歡迎使用亨通考勤</string>
     <string name="setting_default_welcome_tip3">歡迎使用思庫考勤</string>
     <string name="setting_correct_temperature">矯正溫度</string>
@@ -295,6 +306,7 @@
     <string name="setting_switch_tip2">確定切換到測溫考勤嗎？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">確定</string>
     <string name="setting_switch_cancel">取消</string>
+    <string name="setting_broadcast_speed">語音速度</string><!--語音速度-->
 
 
 

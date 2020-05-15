@@ -120,8 +120,8 @@ public class SMTMain2Activity extends SMTTempBase2Activity implements SMTViewInt
 //            ImageFileLoader.setDefaultLogoId(0);
 //            ivMainLogo.setImageBitmap(null);
         } else {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
-            setImageByResId(ivMainLogo, R.mipmap.logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+            setImageByResId(ivMainLogo, R.mipmap.yb_logo);
         }
     }
 

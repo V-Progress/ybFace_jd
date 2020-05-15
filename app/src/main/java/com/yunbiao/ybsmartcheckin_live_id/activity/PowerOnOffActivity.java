@@ -28,7 +28,6 @@ public class PowerOnOffActivity extends SMTBaseActivity {
     private static final String TAG = "SMTPowerOnOffActivity";
 
     private List<CheckBox> onBoxs=new ArrayList<>();
-    private List<CheckBox> offBoxs=new ArrayList<>();
 
     private  int onHTime=9;
     private int onMTime=0;
@@ -191,23 +190,6 @@ public class PowerOnOffActivity extends SMTBaseActivity {
         onBoxs.add(cb_on_6);
         onBoxs.add(cb_on_7);
 
-        CheckBox cb_off_1=findViewById(R.id.cb_off_1);
-        CheckBox cb_off_2=findViewById(R.id.cb_off_2);
-        CheckBox cb_off_3=findViewById(R.id.cb_off_3);
-        CheckBox cb_off_4=findViewById(R.id.cb_off_4);
-        CheckBox cb_off_5=findViewById(R.id.cb_off_5);
-        CheckBox cb_off_6=findViewById(R.id.cb_off_6);
-        CheckBox cb_off_7=findViewById(R.id.cb_off_7);
-        CheckBox cb_off_all=findViewById(R.id.cb_off_all);
-
-        offBoxs.add(cb_off_1);
-        offBoxs.add(cb_off_2);
-        offBoxs.add(cb_off_3);
-        offBoxs.add(cb_off_4);
-        offBoxs.add(cb_off_5);
-        offBoxs.add(cb_off_6);
-        offBoxs.add(cb_off_7);
-
         cb_on_all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -223,25 +205,6 @@ public class PowerOnOffActivity extends SMTBaseActivity {
                 }
             }
         });
-
-        cb_off_all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-
-                    for (int i = 0; i < offBoxs.size(); i++) {
-                        offBoxs.get(i).setChecked(true);
-                    }
-                }else {
-                    for (int i = 0; i < offBoxs.size(); i++) {
-                        offBoxs.get(i).setChecked(false);
-                    }
-                }
-            }
-        });
-
-
-
     }
 
     @Override
@@ -284,21 +247,9 @@ public class PowerOnOffActivity extends SMTBaseActivity {
                 break;
             }
         }
-        boolean offChecked = false;
-        for (CheckBox offBox : offBoxs) {
-            if(offBox.isChecked()){
-                offChecked = true;
-                break;
-            }
-        }
 
         if(!onChecked){
             UIUtils.showShort(this,getResString(R.string.act_power_set_failed_not_check_on));
-            return;
-        }
-
-        if(!offChecked){
-            UIUtils.showShort(this,getResString(R.string.act_power_set_failed_not_check_off));
             return;
         }
 
@@ -309,11 +260,6 @@ public class PowerOnOffActivity extends SMTBaseActivity {
             if (onBoxs.get(i).isChecked()){
                 int tag=Integer.parseInt((String) onBoxs.get(i).getTag());
                 onWeek.add(tag);
-            }
-        }
-        for (int i = 0; i < offBoxs.size(); i++) {
-            if (offBoxs.get(i).isChecked()){
-                int tag=Integer.parseInt((String) offBoxs.get(i).getTag());
                 offWeek.add(tag);
             }
         }
@@ -355,6 +301,7 @@ public class PowerOnOffActivity extends SMTBaseActivity {
 
 
        final String powerJson=new Gson().toJson(powerBeanList);
+        Log.e(TAG, "savePower: 设置开关机的规则：" + powerJson);
 
         ThreadUitls.runInThread(new Runnable() {
             @Override
@@ -365,8 +312,6 @@ public class PowerOnOffActivity extends SMTBaseActivity {
         UIUtils.showShort(this,getResources().getString(R.string.act_power_set_success));
         finish();
     }
-
-
 
     public class PowerBean{
 

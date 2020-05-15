@@ -35,6 +35,7 @@ import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTModelConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -93,30 +94,128 @@ public class ThermalSettingActivity extends BaseActivity {
         }
     }
 
-    private void initUISetting() {
-        String welcomeTips = "";
-        if(Constants.FLAVOR_TYPE == FlavorType.YB){
-            SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
-        } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
-            SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
-        }
-        EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        edtWelComeTips.setText(welcomeTips);
-        edtWelComeTips.addTextChangedListener(new TextWatcher() {
+    @Override
+    protected void initData() {
+        initUISetting();
+        //当前模式
+        initModelSetting();
+        //设置IP
+        initSetIp();
+        //CPU温度
+        startUpdateCpuTemperature();
+        //继电器设置
+        initRelayDelay();
+        //网络信息
+        initNetInfo();
+        //人脸框镜像
+        initFaceRectMirrorSetting();
+        //摄像头尺寸
+        initCameraSizeSetting();
+        //相似度阈值
+        initSimilarSetting();
+        //人脸弹窗设置
+        initFaceVipDialogSetting();
+        //摄像头设置
+        initCameraSetting();
+        //活体开关
+        initLivenessSetting();
+        //大屏海报开关
+        initPosterSetting();
+        //读卡器模块
+        initReadCardSetting();
+        //隐私模式
+        initPrivacyMode();
+        //初始化清除策略
+        initClearPolicy();
+        //调整语速
+        initVoiceSpeed();
+        //隐藏首页LOGO
+        initMainLogo();
+        //隐藏首页信息
+        initMainInfo();
+        //显示首页热成像
+        initMainThermal();
+        //靠近提示
+        initCloseTips();
+        //首页文字
+        initLogoText();
+    }
+
+    private void initLogoText(){
+        String mainLogoText = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT,ThermalConst.Default.MAIN_LOGO_TEXT);
+        EditText edtMainLogoText = findViewById(R.id.edt_main_logo_text);
+        edtMainLogoText.setText(mainLogoText);
+        edtMainLogoText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String s1 = s.toString().trim();
+                if(TextUtils.isEmpty(s1)){
+                    SpUtils.remove(ThermalConst.Key.MAIN_LOGO_TEXT);
+                } else {
+                    SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_TEXT,s1);
+                }
+            }
+        });
+    }
 
+    private void initCloseTips(){
+        String closeTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS,ThermalConst.Default.CLOSE_TIPS);
+        EditText edtPleaseClose = findViewById(R.id.edt_please_close_tips);
+        if(TextUtils.isEmpty(closeTips)){
+            edtPleaseClose.setHint(getResString(R.string.main_tips_please_close));
+        } else {
+            edtPleaseClose.setText(closeTips);
+        }
+        edtPleaseClose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-                String inputWelcome = s.toString();
-                SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
+                String tips = s.toString().trim();
+                if(TextUtils.isEmpty(tips)){
+                    SpUtils.remove(ThermalConst.Key.CLOSE_TIPS);
+                } else {
+                    SpUtils.saveStr(ThermalConst.Key.CLOSE_TIPS,tips);
+                }
+            }
+        });
+    }
+
+    private void initUISetting() {
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, "");
+        EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
+        if(TextUtils.isEmpty(welcomeTips)){
+            String tips = Constants.FLAVOR_TYPE == FlavorType.YB ? getResString(R.string.setting_default_welcome_tip) : Constants.FLAVOR_TYPE == FlavorType.HT ? getResString(R.string.setting_default_welcome_tip2) : "";
+            edtWelComeTips.setHint(tips);
+        } else {
+            edtWelComeTips.setText(welcomeTips);
+        }
+        edtWelComeTips.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputWelcome = s.toString()/*.trim()*/;
+                if(TextUtils.isEmpty(inputWelcome)){
+                    SpUtils.remove(SpUtils.WELCOM_TIPS);
+                } else {
+                    SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
+                }
             }
         });
 
@@ -155,39 +254,63 @@ public class ThermalSettingActivity extends BaseActivity {
         alertDialog.show();
     }
 
-    @Override
-    protected void initData() {
-        initUISetting();
-        //当前模式
-        initModelSetting();
-        //设置IP
-        initSetIp();
-        //CPU温度
-        startUpdateCpuTemperature();
-        //继电器设置
-        initRelayDelay();
-        //网络信息
-        initNetInfo();
-        //人脸框镜像
-        initFaceRectMirrorSetting();
-        //摄像头尺寸
-        initCameraSizeSetting();
-        //相似度阈值
-        initSimilarSetting();
-        //人脸弹窗设置
-        initFaceVipDialogSetting();
-        //摄像头设置
-        initCameraSetting();
-        //活体开关
-        initLivenessSetting();
-        //大屏海报开关
-        initPosterSetting();
-        //读卡器模块
-        initReadCardSetting();
-        //隐私模式
-        initPrivacyMode();
-        //初始化清除策略
-        initClearPolicy();
+    private void initMainThermal(){
+        boolean showMainThermal = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, ThermalConst.Default.SHOW_MAIN_THERMAL);
+        Switch swMainThermal = findViewById(R.id.sw_main_thermal_setting);
+        swMainThermal.setChecked(showMainThermal);
+        swMainThermal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, isChecked);
+            }
+        });
+    }
+
+    private void initMainInfo(){
+        boolean showMainInfo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_INFO, ThermalConst.Default.SHOW_MAIN_INFO);
+        Switch swMainInfo = findViewById(R.id.sw_main_info_setting);
+        swMainInfo.setChecked(showMainInfo);
+        swMainInfo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_INFO, isChecked);
+            }
+        });
+    }
+
+    private void initMainLogo(){
+        boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,ThermalConst.Default.SHOW_MAIN_LOGO);
+        Switch swMainLogo = findViewById(R.id.sw_main_logo_setting);
+        swMainLogo.setChecked(showMainLogo);
+        swMainLogo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,isChecked);
+            }
+        });
+    }
+
+    private void initVoiceSpeed(){
+        final Float voidSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
+        Button btnSpeedSub = findViewById(R.id.btn_speed_sub_setting);
+        Button btnSpeedPlus = findViewById(R.id.btn_speed_plus_setting);
+        EditText edtSpeed = findViewById(R.id.edt_speed_setting);
+        edtSpeed.setText(String.valueOf(voidSpeed));
+        View.OnClickListener onClickListener = v -> {
+            String value = edtSpeed.getText().toString();
+            float speed = formatF(Float.parseFloat(value));
+
+            if(v.getId() == R.id.btn_speed_sub_setting){
+                speed -= 0.1f;
+            } else {
+                speed += 0.1f;
+            }
+            speed = formatF(speed);
+            edtSpeed.setText(String.valueOf(speed));
+            SpUtils.saveFloat(ThermalConst.Key.VOICE_SPEED,speed);
+        };
+        btnSpeedPlus.setOnClickListener(onClickListener);
+        btnSpeedSub.setOnClickListener(onClickListener);
     }
 
     private void initClearPolicy() {
@@ -269,8 +392,6 @@ public class ThermalSettingActivity extends BaseActivity {
             }
         });
     }
-
-    public static String[] models = {};
 
     @Override
     protected void onResume() {
@@ -444,24 +565,42 @@ public class ThermalSettingActivity extends BaseActivity {
         btnWarnAdd.setOnClickListener(warnClickListener);
 
         //体温播报设置==========================================================================================
+        //正常
         String normalTips = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
         EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
-        edtNormalTips.setText(normalTips);
+        if(TextUtils.isEmpty(normalTips)){
+            edtNormalTips.setHint(getResources().getString(R.string.main_temp_normal_tips));
+        } else {
+            edtNormalTips.setText(normalTips);
+        }
         edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                SpUtils.saveStr(ThermalConst.Key.NORMAL_BROADCAST, TextUtils.isEmpty(input) ? "" : input);
+                String input = s.toString()/*.trim()*/;
+                if(TextUtils.isEmpty(input)){
+                    SpUtils.remove(ThermalConst.Key.NORMAL_BROADCAST);
+                } else {
+                    SpUtils.saveStr(ThermalConst.Key.NORMAL_BROADCAST,input);
+                }
             }
         });
+        //异常
         String warningTips = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
         EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
-        edtWarningTips.setText(warningTips);
+        if(TextUtils.isEmpty(warningTips)){
+            edtWarningTips.setHint(getResources().getString(R.string.main_temp_warning_tips));
+        } else {
+            edtWarningTips.setText(warningTips);
+        }
         edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                SpUtils.saveStr(ThermalConst.Key.WARNING_BROADCAST, TextUtils.isEmpty(input) ? "" : input);
+                String input = s.toString()/*.trim()*/;
+                if (TextUtils.isEmpty(input)) {
+                    SpUtils.remove(ThermalConst.Key.WARNING_BROADCAST);
+                } else {
+                    SpUtils.saveStr(ThermalConst.Key.WARNING_BROADCAST, input);
+                }
             }
         });
 
@@ -714,7 +853,6 @@ public class ThermalSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(ThermalConst.Key.SHOW_DIALOG, isChecked);
             }
         });
-
     }
 
     //初始化摄像头设置
@@ -909,10 +1047,6 @@ public class ThermalSettingActivity extends BaseActivity {
 
     public void modifyPWD(View view) {
         setPwd();
-    }
-
-    public void checkUpgrade(View view) {
-        UpdateVersionControl.getInstance().checkUpdate(this);
     }
 
     public void setAngle(final View view) {

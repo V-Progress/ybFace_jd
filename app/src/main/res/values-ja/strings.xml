@@ -16,9 +16,16 @@
     <string name="temper_error_btn_restart">リブート</string>
     <string name="temper_error_btn_cancel">処理を保留する</string>
 
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">摂氏度</string>
+    <string name="temper_tips_fahrenheit">華氏度</string>
+    <string name="temper_tips_close">ヒントに近づく</string>
+
+
     <!--应用名称-->
-    <string name="yb_check_in">雲標測温勤務</string>
-    <string name="yb_temper_check_in">雲標人証測温</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">雲標大フラックス測温</string>
     <string name="yb_multiple">順調測温勤務</string>
     <string name="yb_safety_chceck">順調人証測温</string>
@@ -120,6 +127,7 @@
     <string name="act_editEmploy_pz">写真を撮る</string>
     <string name="act_editEmploy_reset">リセット</string>
     <string name="act_editEmploy_jbxx">基本情報</string>
+    <string name="act_editEmploy_kh">ナンバー:</string><!-- 员工编号 -->
     <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
     <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
     <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
@@ -186,6 +194,7 @@
     <string name="sign_export_record_success">エクスポート成功</string>
     <string name="sign_export_record_path">目録：</string>
     <string name="sign_export_record_failed">エクスポート失敗</string>
+    <string name="sign_list_table_name">記録</string>
 
 
     <!--访客列表-->
@@ -204,6 +213,10 @@
     <string name="face_thermal_model">顔の識別+熱画像（32*32）</string>
     <string name="thermal_16_4_model">熱画像モード（16*4）（勤務評定をしない）</string>
     <string name="face_thermal_16_4_model">顔の識別+熱画像（16*4）</string>
+    <string name="only_thermal_mlx_16_4_model">熱画像モード（MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">顔の識別+熱画像（MLX-16*4）</string>
+    <string name="smt_only_thermal">熱画像モード（SMT）</string>
+    <string name="smt_face_thermal">顔の識別+熱画像（SMT）</string>
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">カウントがクリアされました</string>
@@ -275,7 +288,7 @@
     <string name="setting_warning_speech_content">体温異常アナウンス内容</string>
     <string name="setting_low_temp_model">低温モード</string>
     <string name="setting_portrait_outline">人物の輪郭</string>
-    <string name="setting_default_welcome_tip">雲標スマート勤務評定システムをご利用ください</string>
+    <string name="setting_default_welcome_tip">AIスマート勤務評定システムをご利用ください</string>
     <string name="setting_default_welcome_tip2">順番勤務評定システムをご利用ください</string>
     <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">温度を矯正する</string>
@@ -299,6 +312,7 @@
     <string name="setting_switch_tip2">温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">确定</string>
     <string name="setting_switch_cancel">取消</string>
+    <string name="setting_broadcast_speed">语速</string>
 
     <!--设置开关机-->
     <string name="setting_power_on_off">タイムスイッチ</string>

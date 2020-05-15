@@ -56,6 +56,7 @@
         android:textColor="#46C6F4" />
 
     <LinearLayout
+        android:id="@+id/ll_info_sign_list"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
         android:gravity="right|center"
@@ -63,7 +64,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
+        <pl.droidsonroids.gif.GifImageView
             android:layout_marginRight="10dp"
             android:id="@+id/iv_qrcode_sign_list"
             android:layout_width="108dp"

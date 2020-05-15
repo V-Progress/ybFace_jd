@@ -32,11 +32,12 @@
             android:textColor="#46C6F4" />
 
         <LinearLayout
+            android:id="@+id/ll_info_sign_list"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:layout_marginRight="10dp"
                 android:id="@+id/iv_qrcode_sign_list"
                 android:layout_width="100dp"

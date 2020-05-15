@@ -13,9 +13,14 @@
     <string name="temper_error_btn_restart">Yeni -den başlatın</string>
     <string name="temper_error_btn_cancel">Bununla uğraşma</string>
 
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Santigrat</string>
+    <string name="temper_tips_fahrenheit">Derece fahrenhayt</string>
+    <string name="temper_tips_close">İpuçlarına yakın</string>
+
     <!--应用名称-->
-    <string name="yb_check_in">YBCheckIn</string>
-    <string name="yb_temper_check_in">YBTemperatureCheckIn</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">YBCertificates</string>
     <string name="yb_multiple">YBHighThroughput</string>
     <string name="yb_safety_chceck">YBTemperatureSecurityCheck</string>
@@ -120,6 +125,7 @@
     <string name="act_editEmploy_name">İsim:</string>
     <string name="act_editEmploy_sex">Cinsiyet:</string>
     <string name="act_editEmploy_bm">Bölüm:</string>
+    <string name="act_editEmploy_kh">Kart No:</string><!-- 员工编号 -->
     <string name="act_editEmploy_ygbh">Personel Kimliği:</string>
     <string name="act_editEmploy_zw">Durum:</string>
     <string name="act_editEmploy_csrq">Doğum tarihi:</string>
@@ -183,6 +189,8 @@
     <string name="sign_export_record_success">Dışa aktarma başarılı</string>
     <string name="sign_export_record_path">İçindekiler：</string>
     <string name="sign_export_record_failed">Dışa aktarma başarısız</string>
+    <string name="sign_list_table_name">Kayıt</string>
+    <string name="setting_broadcast_speed">Ses hızı</string>
 
 
     <!--访客列表-->
@@ -194,13 +202,17 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Yüz tanıma katılımı</string>
-    <string name="face_infared_model">Yüz tanıma + termal görüntüleme (küçük)</string>
-    <string name="infared_only_model">Termal Görüntüleme (Küçük) (Seyirci Değil)</string>
-    <string name="thermal_only_model">Termal görüntüleme modu (32 * 32) (katılımsız)</string>
-    <string name="face_thermal_model">Yüz tanıma + termal görüntüleme modu (32 * 32)</string>
-    <string name="thermal_16_4_model">Termal görüntüleme modu (16 * 4) (katılımsız)</string>
-    <string name="face_thermal_16_4_model">Yüz tanıma + termal görüntüleme modu（16*4）</string>
+    <string name="face_only_model">Yüz Tanıma Katılım</string>
+    <string name="infared_only_model">Yalnızca sıcaklık modu (küçük)</string>
+    <string name="face_infared_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (Küçük)</string>
+    <string name="thermal_only_model">Yalnızca sıcaklık modu (HM-32 x 32)</string>
+    <string name="face_thermal_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (HM-32 x 32)</string>
+    <string name="thermal_16_4_model">Yalnızca sıcaklık modu (HM-16 x 4)</string>
+    <string name="face_thermal_16_4_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (HM-16 x 4)</string>
+    <string name="only_thermal_mlx_16_4_model">Yalnızca sıcaklık modu (MLX-16x4)</string>
+    <string name="face_thermal_mlx_16_4_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (MLX-16 x 4)</string>
+    <string name="smt_only_thermal">Yalnızca sıcaklık modu (SMT)</string>
+    <string name="smt_face_thermal">Yüz Tanıma ve Sıcaklık Ölçüm Modu (SMT)</string>
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">Count cleared</string>
@@ -272,7 +284,7 @@
     <string name="setting_warning_speech_content">Vücut ısısı anormal yayın içeriği</string>
     <string name="setting_low_temp_model">Düşük sıcaklık modu</string>
     <string name="setting_portrait_outline">Portre Gölgesi</string>
-    <string name="setting_default_welcome_tip">Yunbiao Akıllı Katılım Sistemine Hoşgeldiniz</string>
+    <string name="setting_default_welcome_tip">AI Akıllı Katılım Sistemine Hoşgeldiniz</string>
     <string name="setting_default_welcome_tip2">Hengtong Katılım hoş geldiniz</string>
     <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Düzeltme sıcaklığı</string>

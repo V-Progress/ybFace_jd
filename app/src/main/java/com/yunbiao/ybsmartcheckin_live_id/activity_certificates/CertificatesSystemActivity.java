@@ -122,8 +122,8 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
             tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name2);
         } else {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
-            ivLogo.setImageResource(R.mipmap.logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+            ivLogo.setImageResource(R.mipmap.yb_logo);
             tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.app_name);
         }

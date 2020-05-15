@@ -54,8 +54,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup" >
-        <activity android:name=".activity_certificates.CertificatesAddUserActivity" >
-        </activity>
+        <activity android:name=".activity_certificates.CertificatesAddUserActivity"/>
         <activity android:name=".activity_certificates.VertifyRecordActivity" />
         <activity android:name=".activity.ClearPolicyActivity" />
         <activity android:name=".activity_certificates.CertificatesWhiteListActivity" />

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -73,7 +74,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private Button btnVisitorSystem;
     private Button btnSkinSystem;
-    private TextView tvCopyRight;
+    private TextView tvAbbName;
 
     @Override
     protected int getPortraitLayout() {
@@ -90,7 +91,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         EventBus.getDefault().register(this);
         ivLogo = (ImageView) findViewById(R.id.iv_system_logo);
 
-        tvCopyRight = findViewById(R.id.tv_copyright_smt_system);
         btn_depart_system = findViewById(R.id.btn_depart_system);
         btn_add_system = findViewById(R.id.btn_add_system);
         btn_data_system = findViewById(R.id.btn_data_system);
@@ -99,6 +99,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btnVisitorSystem = findViewById(R.id.btn_visitor_system);
         btnSkinSystem = findViewById(R.id.btn_skin_system);
 
+        tvAbbName = findViewById(R.id.tv_abb_name_system_thermal);
         tv_bindcode_syetem = (TextView) findViewById(R.id.tv_bindcode_syetem);
         tv_company_system = (TextView) findViewById(R.id.tv_company_system);
         tv_deviceno_system = (TextView) findViewById(R.id.tv_deviceno_system);
@@ -113,37 +114,22 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
 
-        Company company = SpUtils.getCompany();
         //亨通隐藏版权
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
-            tvCopyRight.setVisibility(View.GONE);
-            appName = getResources().getString(R.string.ht_temper_check_in);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
         } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
-            tvCopyRight.setVisibility(View.GONE);
-            appName = getResources().getString(R.string.sk_temper_check_in);
             ivLogo.setImageResource(R.mipmap.icon_logo3);
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
         } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
-            tvCopyRight.setVisibility(View.GONE);
-            appName = getResString(R.string.app_name4);
             ivLogo.setImageResource(R.mipmap.osimle_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
         } else if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
-            tvCopyRight.setVisibility(View.GONE);
-            appName = getResString(R.string.app_name5);
             ivLogo.setImageResource(R.mipmap.softworkz_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
         } else {
-            tvCopyRight.setVisibility(View.VISIBLE);
-            appName = getResources().getString(R.string.yb_temper_check_in);
             ivLogo.setImageResource(R.mipmap.yb_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
-        }
-
-        if (!TextUtils.isEmpty(company.getComlogo())) {
-            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
         }
     }
 
@@ -155,13 +141,22 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         } else {
             tv_server_system.setText(getString(R.string.System_local_service));
         }
+
+        //onResume中加载该加载的东西
+        Company company = SpUtils.getCompany();
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+            tvAbbName.setText(company.getAbbname());
+        } else {
+            ivLogo.setImageResource(R.mipmap.yb_logo);
+            tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
+        }
     }
 
-    private String appName;
+    private String appName = "";
 
     @Override
     protected void initData() {
-
         try {
             PackageInfo packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             appName += " V" + packageInfo.versionName;
@@ -188,6 +183,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void noUpgrade(String currVersionName) {
+                btn_update_system.setEnabled(false);
                 tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
                 tvVersionInfo.setGravity(Gravity.CENTER);
                 tvVersionInfo.setText(getResString(R.string.updateManager_dqbbwzxbb));
@@ -196,6 +192,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void haveNewVersion(String versionName, String versionInfo) {
+                btn_update_system.setEnabled(true);
                 tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
                 tvVersionInfo.setGravity(Gravity.LEFT);
                 tvVersionInfo.setText(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
@@ -204,6 +201,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onError(String currVersionName, String s) {
+                btn_update_system.setEnabled(false);
                 tvVersionName.setText(getResString(R.string.update_lable_current) + currVersionName);
                 tvVersionInfo.setGravity(Gravity.CENTER);
                 tvVersionInfo.setText(getResString(R.string.update_check_failed));
@@ -228,8 +226,15 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     }
 
     public void setInfo() {
+        //获取到公司信息时加载该加载的东西
         Company company = SpUtils.getCompany();
-        ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+            tvAbbName.setText(company.getAbbname());
+        } else {
+            ivLogo.setImageResource(R.mipmap.yb_logo);
+            tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
+        }
 
         tv_company_system.setText(company.getComname());
 

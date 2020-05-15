@@ -12,10 +12,12 @@ import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
@@ -40,12 +42,15 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
@@ -70,162 +75,110 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
+    protected void initView() {
+        super.initView();
+
+        GifImageView gifImageView = findViewById(R.id.giv);
+        try {
+            GifDrawable gifDrawable = new GifDrawable(getResources(),R.mipmap.splash);
+            gifImageView.setImageDrawable(gifDrawable);
+            gifDrawable.setLoopCount(0);
+            gifDrawable.setSpeed(3.0f);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void initData() {
-        SpUtils.init();
-        DaoManager.get().initDb();
-        Constants.checkSetIp();
-        Constants.initStorage();
-        OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
-
-        ThreadUitls.runInThread(machineRestartRun);
-        ybPermission = new YBPermission(new YBPermission.PermissionListener() {
-            @Override
-            public void onPermissionFailed(String[] objects) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(objects, YBPermission.PERMISSION_REQUEST_CODE);
-                }
-            }
-
-            @Override
-            public void onFinish(boolean isComplete) {
-                if (!isComplete) {
-                    UIUtils.showShort(SplashActivity.this, getString(R.string.splash_request_permission_failed));
-                    return;
-                }
-
-                uploadException(nextRunnable);
-            }
-        });
+        ybPermission = new YBPermission(permissionListener);
         ybPermission.checkPermission(this, PERMISSONS);
     }
 
-    public Runnable machineRestartRun = () -> PowerOffTool.getPowerOffTool().machineStart();
-
-    private void uploadException(final Runnable runnable) {
-        UIUtils.showNetLoading(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
-                if (exceptions == null || exceptions.size() <= 0) {
-                    Log.e(TAG, "run: 没有异常");
-                    if (runnable != null) {
-                        runOnUiThread(runnable);
-                    }
-                    return;
-                }
-                Log.e(TAG, "run: 异常条数：" + exceptions.size());
-                //地址
-                String url = ResourceUpdate.DEVICE_EXCEPTION_UPLOAD;
-                //版本号
-                String versionName = "x.x.x";
-                int versionCode = -1;
-                try {
-                    PackageManager mPackageManager = getPackageManager();
-                    PackageInfo packageInfo = mPackageManager.getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
-                    versionName = packageInfo.versionName;
-                    versionCode = packageInfo.versionCode;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                //设备号
-                String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
-                if (TextUtils.isEmpty(str)) {
-                    str = "";
-                }
-                //转jsonString
-                String crashArray = new Gson().toJson(exceptions);
-                //参数
-                Map<String, String> params = new HashMap<>();
-                params.put("deviceId", HeartBeatClient.getDeviceNo() + "");
-                params.put("deviceType", Constants.DEVICE_TYPE + "");
-                params.put("versionName", versionName + "");
-                params.put("versionCode", versionCode + "");
-                params.put("cpuAbi", "");
-                params.put("boardType", CommonUtils.saveBroadInfo() + "");
-                params.put("deviceNumber", str + "");
-                params.put("crasharray", crashArray + "");
-
-                Log.e(TAG, "异常上传：" + url);
-                Log.e(TAG, "参数：" + params.toString());
-
-                OkHttpUtils.post()
-                        .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
-                        .params(params)
-                        .build()
-                        .connTimeOut(5000)
-                        .readTimeOut(5000)
-                        .writeTimeOut(5000)
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onError(Call call, java.lang.Exception e, int id) {
-                                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
-                            }
-
-                            @Override
-                            public void onResponse(String response, int id) {
-                                Log.e(TAG, "onResponse: 上传结果：" + response);
-                                for (Exception exception : exceptions) {
-                                    DaoManager.get().delete(exception);
-                                }
-                            }
-
-                            @Override
-                            public void onAfter(int id) {
-                                if (runnable != null) {
-                                    runnable.run();
-                                }
-                            }
-                        });
+    private YBPermission.PermissionListener permissionListener = new YBPermission.PermissionListener() {
+        @Override
+        public void onPermissionFailed(String[] objects) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(objects, YBPermission.PERMISSION_REQUEST_CODE);
             }
-        }).start();
-    }
+        }
+
+        @Override
+        public void onFinish(boolean isComplete) {
+            if (!isComplete) {
+                UIUtils.showShort(SplashActivity.this, getString(R.string.splash_request_permission_failed));
+                return;
+            }
+
+            SpUtils.init();
+            DaoManager.get().initDb();
+            Constants.checkSetIp();
+            Constants.initStorage();
+            OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
+
+            ThreadUitls.runInThread(() -> PowerOffTool.getPowerOffTool().machineStart());
+
+            uploadException(nextRunnable);
+        }
+    };
 
     private Runnable nextRunnable = () -> {
         UIUtils.dismissNetLoading();
 
-        int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-        Log.e(TAG, "激活结果: " + code);
-        if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-            ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-            int activeFileInfo1 = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
-            Log.e(TAG, ": " + activeFileInfo.getStartTime() + " ----- " + activeFileInfo.getEndTime());
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+            Log.e(TAG, "激活结果: " + code);
+            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+                int activeFileInfo1 = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
+                Log.e(TAG, ": " + activeFileInfo.getStartTime() + " ----- " + activeFileInfo.getEndTime());
+                APP.bindProtectService();
+                jump();
+            } else {
+                UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
+            }
 
-            APP.bindProtectService();
-            jump();
-        } else {
-            UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
-        }
-
-        overridePendingTransition(0, 0);
-        finish();
+            finish();
+        }).start();
     };
 
     private void jump() {
-        String broadType;
+        String broadTypeStr = CommonUtils.getBroadType2();
+        Log.e(TAG, "jump: 板卡信息：" + broadTypeStr);
+        switch (broadTypeStr) {
+            case "SMT":
+                Constants.DEFAULT_CAMERA_ANGLE = 270;
+                Constants.DEFAULT_FACE_MIRROR = false;
+                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+//                ThermalConst.Default.MODE = ThermalConst.SMT_THERMAL;
+                ThermalConst.Default.MODE = ThermalConst.ONLY_SMT_THERMAL;
+                break;
+            case "LXR":
+                Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
+                Constants.DEFAULT_FACE_MIRROR = true;
+                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
+                ThermalConst.Default.MODE = ThermalConst.THERMAL_ONLY;
+                break;
+            case "HARRIS":
+            default:
+                Constants.DEFAULT_CAMERA_ANGLE = 90;
+                Constants.DEFAULT_FACE_MIRROR = false;
+                CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_MLX_16_4;
+                break;
+        }
+
         switch (Constants.DEVICE_TYPE) {
             case Constants.DeviceType.CHECK_IN:
                 startActivity(new Intent(this, WelComeActivity.class));
                 break;
             case Constants.DeviceType.TEMPERATURE_CHECK_IN:
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
-                broadType = CommonUtils.getBroadType2();
-                if (TextUtils.equals("SMT", broadType)) {
-                    Constants.DEFAULT_CAMERA_ANGLE = 270;
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                } else if (TextUtils.equals("HARRIS", broadType)) {
-                    Constants.DEFAULT_CAMERA_ANGLE = 90;
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                } else {
-                    Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                }
                 if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
                     startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
                 } else {
@@ -240,23 +193,6 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
             case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
-                broadType = CommonUtils.getBroadType2();
-                if (TextUtils.equals("SMT", broadType)) {//视美泰，16_4头
-                    Constants.DEFAULT_CAMERA_ANGLE = 270;
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                } else if (TextUtils.equals("HARRIS", broadType)) {//亿晟，16_4头
-                    Constants.DEFAULT_CAMERA_ANGLE = 90;
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_16_4_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                } else {
-                    Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                    Constants.DEFAULT_FACE_MIRROR = false;
-                    ThermalConst.DEFAULT_THERMAL_MODEL = ThermalConst.THERMAL_ONLY;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                }
                 //判断，如果不跳转则默认进入人证
                 if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
                     startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
@@ -285,80 +221,87 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ybPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    public static class YBPermission {
-        public static final int PERMISSION_REQUEST_CODE = 101;
-        private PermissionListener permissionListener;
-
-        public YBPermission(PermissionListener permissionListener) {
-            this.permissionListener = permissionListener;
-        }
-
-        interface PermissionListener {
-            void onPermissionFailed(String[] objects);
-
-            void onFinish(boolean isComplete);
-        }
-
-        public void checkPermission(Activity activity, String[] permissions) {
-            if (permissions == null || permissions.length <= 0) {
-                if (permissionListener != null) {
-                    permissionListener.onFinish(false);
-                }
-                return;
-            }
-
-            List<String> deniedPermissionList = new ArrayList<>();
-            for (String permission : permissions) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                        deniedPermissionList.add(permission);
-                    }
-                }
-            }
-
-            if (deniedPermissionList.size() > 0) {
-                String[] strings = deniedPermissionList.toArray(new String[deniedPermissionList.size()]);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    activity.requestPermissions(strings, PERMISSION_REQUEST_CODE);
-                }
-            } else {
-                if (permissionListener != null) {
-                    permissionListener.onFinish(true);
-                }
-            }
-        }
-
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-            if (requestCode != PERMISSION_REQUEST_CODE) {
-                return;
-            }
-
-            if (permissions == null || permissions.length <= 0) {
-                if (permissionListener != null) {
-                    permissionListener.onFinish(false);
-                }
-                return;
-            }
-
-            List<String> permiList = new ArrayList<>();
-            for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    permiList.add(permissions[i]);
-                }
-            }
-            if (permiList.size() <= 0) {
-                if (permissionListener != null) {
-                    permissionListener.onFinish(true);
-                }
-                return;
-            }
-
-            if (permissionListener != null) {
-                permissionListener.onPermissionFailed(permiList.toArray(new String[permiList.size()]));
-            }
+        if (ybPermission != null) {
+            ybPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    //上传错误日志
+    private void uploadException(final Runnable runnable) {
+        UIUtils.showNetLoading(this);
+        new Thread(() -> {
+            final List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
+            if (exceptions == null || exceptions.size() <= 0) {
+                Log.e(TAG, "run: 没有异常");
+                if (runnable != null) {
+                    runOnUiThread(runnable);
+                }
+                return;
+            }
+            Log.e(TAG, "run: 异常条数：" + exceptions.size());
+            //地址
+            String url = ResourceUpdate.DEVICE_EXCEPTION_UPLOAD;
+            //版本号
+            String versionName = "x.x.x";
+            int versionCode = -1;
+            try {
+                PackageManager mPackageManager = getPackageManager();
+                PackageInfo packageInfo = mPackageManager.getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
+                versionName = packageInfo.versionName;
+                versionCode = packageInfo.versionCode;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            //设备号
+            String str = SpUtils.getStr(SpUtils.DEVICE_NUMBER);
+            if (TextUtils.isEmpty(str)) {
+                str = "";
+            }
+            //转jsonString
+            String crashArray = new Gson().toJson(exceptions);
+            //参数
+            Map<String, String> params = new HashMap<>();
+            params.put("deviceId", HeartBeatClient.getDeviceNo() + "");
+            params.put("deviceType", Constants.DEVICE_TYPE + "");
+            params.put("versionName", versionName + "");
+            params.put("versionCode", versionCode + "");
+            params.put("cpuAbi", "");
+            params.put("boardType", CommonUtils.saveBroadInfo() + "");
+            params.put("deviceNumber", str + "");
+            params.put("crasharray", crashArray + "");
+
+            Log.e(TAG, "异常上传：" + url);
+            Log.e(TAG, "参数：" + params.toString());
+
+            OkHttpUtils.post()
+                    .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
+                    .params(params)
+                    .build()
+                    .connTimeOut(5000)
+                    .readTimeOut(5000)
+                    .writeTimeOut(5000)
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, java.lang.Exception e, int id) {
+                            Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Log.e(TAG, "onResponse: 上传结果：" + response);
+                            for (Exception exception : exceptions) {
+                                DaoManager.get().delete(exception);
+                            }
+                        }
+
+                        @Override
+                        public void onAfter(int id) {
+                            if (runnable != null) {
+                                runnable.run();
+                            }
+                        }
+                    });
+        }).start();
+    }
+
 }

@@ -13,9 +13,14 @@
     <string name="temper_error_btn_restart">재개</string>
     <string name="temper_error_btn_cancel">잠시 처리하지 않다</string>
 
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">섭씨</string>
+    <string name="temper_tips_fahrenheit">화씨 경도</string>
+    <string name="temper_tips_close">바투 팁</string>
+
     <!--应用名称-->
-    <string name="yb_check_in">YBCheckIn</string>
-    <string name="yb_temper_check_in">YBTemperatureCheckIn</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">YBCertificates</string>
     <string name="yb_multiple">YBHighThroughput</string>
     <string name="yb_safety_chceck">YBTemperatureSecurityCheck</string>
@@ -121,6 +126,7 @@
     <string name="act_editEmploy_name">성명:</string>
     <string name="act_editEmploy_sex">성별:</string>
     <string name="act_editEmploy_bm">부서:</string>
+    <string name="act_editEmploy_kh">카드번호:</string><!-- 员工编号 -->
     <string name="act_editEmploy_ygbh">직원번호:</string>
     <string name="act_editEmploy_zw">직위:</string>
     <string name="act_editEmploy_csrq">생년월일:</string>
@@ -184,6 +190,7 @@
     <string name="sign_export_record_success">내 보 내기 성공</string>
     <string name="sign_export_record_path">목록：</string>
     <string name="sign_export_record_failed">내 보 내기 실패</string>
+    <string name="sign_list_table_name">기록</string>
 
     <!--访客列表-->
     <string name="visitor_list_title">방문자 목록</string>
@@ -202,6 +209,10 @@
     <string name="face_thermal_model">얼굴 + 열이미지 (32*32)</string>
     <string name="thermal_16_4_model">열이미지 (16*4)</string>
     <string name="face_thermal_16_4_model">얼굴 + 열이미지 (16*4)</string>
+    <string name="only_thermal_mlx_16_4_model">열이미지（MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">얼굴 + 열이미지（MLX-16*4）</string>
+    <string name="smt_only_thermal">열이미지（SMT）</string>
+    <string name="smt_face_thermal">얼굴 + 열이미지（SMT）</string>
 
     <!--标签-->
     <string name="setting_face_similar_threshold">얼굴 유사도 설정</string>
@@ -283,6 +294,7 @@
     <string name="setting_switch_tip2">측온으로 출퇴근할까요?</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">확정</string>
     <string name="setting_switch_cancel">취소</string>
+    <string name="setting_broadcast_speed">음성 속도</string>
 
     <!--设置开关机-->
     <string name="setting_tip_warning_number_reseted">Count cleared</string>

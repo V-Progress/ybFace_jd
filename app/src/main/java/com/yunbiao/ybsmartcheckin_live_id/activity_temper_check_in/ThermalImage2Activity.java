@@ -1,18 +1,17 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -49,8 +49,6 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Locale;
 
 /**
  * 此处只进行UI界面的更新以及人脸部分的初始化工作
@@ -84,6 +82,8 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     private ImageView ivInfaredImaging;
     private boolean mShowDialog;
     private TextView tvTips;
+    private boolean showMainLogo;
+    private boolean showMainThermal;
 
     @Override
     protected int getPortraitLayout() {
@@ -101,6 +101,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);//人脸识别
         faceView.setCallback(this);
+        faceView.enableMultiRetry(true);
+        faceView.enableMultiCallback(true);
+        faceView.setRetryTime(4);
+        faceView.setRetryDelayTime(4000);
+
         ivMainLogo = findViewById(R.id.iv_main_logo);//LOGO
         tvMainAbbName = findViewById(R.id.tv_main_abbname);//公司名
         faceDistanceView = findViewById(R.id.view_face_distance);//人脸距离框
@@ -113,11 +118,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         tvThermalTemper = findViewById(R.id.tv_thermal_temper_main);//热成像温度显示
         llThermalArea = findViewById(R.id.ll_thermal_area_main);//热成像数据区域
 
-        faceView.enableMultiRetry(true);
-        faceView.enableMultiCallback(true);
-        faceView.setRetryTime(4);
-        faceView.setRetryDelayTime(4000);
-
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
@@ -125,21 +125,21 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             setImageByResId(ivMainLogo, R.mipmap.logo_icon_horizontal);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.SK){
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
             setImageByResId(ivMainLogo, R.mipmap.icon_logo3);
         } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
             setImageByResId(ivMainLogo, R.mipmap.osimle_logo);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
             setImageByResId(ivMainLogo, R.mipmap.softworkz_logo);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.BIO){
+        } else if (Constants.FLAVOR_TYPE == FlavorType.BIO) {
 //            ImageFileLoader.setDefaultLogoId(0);
 //            ivMainLogo.setImageBitmap(null);
         } else {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo);
-            setImageByResId(ivMainLogo, R.mipmap.logo);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
+            setImageByResId(ivMainLogo, R.mipmap.yb_logo);
         }
     }
 
@@ -150,18 +150,43 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     protected void onResume() {
-        faceView.resume();
-
+        if (faceView != null) {
+            faceView.resume();
+        }
+        showMainThermal = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, ThermalConst.Default.SHOW_MAIN_THERMAL);
+        showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
+        if (showMainLogo) {
+            ivMainLogo.setVisibility(View.VISIBLE);
+        } else {
+            ivMainLogo.setVisibility(View.GONE);
+        }
         mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
-        faceView.setLiveness(livenessEnabled);
+        if (faceView != null) {
+            faceView.setLiveness(livenessEnabled);
+        }
+
+        if (showMainThermal) {
+            llThermalArea.setVisibility(View.VISIBLE);
+        } else {
+            llThermalArea.setVisibility(View.GONE);
+        }
 
         initAds();
         super.onResume();
-    }
 
+        //再onResume中判断
+        Company company = SpUtils.getCompany();
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            tvMainAbbName.setText(company.getAbbname());
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivMainLogo);
+        } else {
+            ivMainLogo.setImageResource(R.mipmap.yb_logo);
+            tvMainAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT,ThermalConst.Default.MAIN_LOGO_TEXT));
+        }
+    }
 
     @Override
     public void onModeChanged(int mode) {
@@ -172,33 +197,41 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         //设置人脸间隔
         SignManager.instance().setVerifyDelay(mode == ThermalConst.FACE_ONLY ? 10000 : 0);
 
-        switch (mode) {
-            case ThermalConst.FACE_ONLY:
-                flDotFrame.setVisibility(View.GONE);
-                tvTempTips.setVisibility(View.GONE);
-                llThermalArea.setVisibility(View.GONE);
-                ivBigHead.setVisibility(View.GONE);
-                break;
-            case ThermalConst.THERMAL_ONLY:
-            case ThermalConst.FACE_THERMAL:
-                ivInfaredImaging.setVisibility(View.GONE);
-                llThermalArea.setVisibility(View.VISIBLE);
-                ivThermalImaging.setVisibility(View.VISIBLE);
-                break;
-            case ThermalConst.INFRARED_ONLY:
-            case ThermalConst.FACE_INFRARED:
-            case ThermalConst.THERMAL_16_4_ONLY:
-            case ThermalConst.FACE_THERMAL_16_4:
-            case ThermalConst.ONLY_THERMAL_MLX_16_4:
-            case ThermalConst.FACE_THERMAL_MLX_16_4:
-                ivThermalImaging.setVisibility(View.GONE);
-                llThermalArea.setVisibility(View.VISIBLE);
-                ivInfaredImaging.setVisibility(View.VISIBLE);
-                break;
+        if (showMainThermal) {
+            Log.e(TAG, "onModeChanged: 显示热成像");
+            switch (mode) {
+                case ThermalConst.FACE_ONLY:
+                    flDotFrame.setVisibility(View.GONE);
+                    tvTempTips.setVisibility(View.GONE);
+                    llThermalArea.setVisibility(View.GONE);
+                    ivBigHead.setVisibility(View.GONE);
+                    break;
+                case ThermalConst.THERMAL_ONLY:
+                case ThermalConst.FACE_THERMAL:
+                    Log.e(TAG, "onModeChanged: 显示大热成像画面");
+                    ivInfaredImaging.setVisibility(View.GONE);
+                    llThermalArea.setVisibility(View.VISIBLE);
+                    ivThermalImaging.setVisibility(View.VISIBLE);
+                    break;
+                case ThermalConst.INFRARED_ONLY:
+                case ThermalConst.FACE_INFRARED:
+                case ThermalConst.THERMAL_16_4_ONLY:
+                case ThermalConst.FACE_THERMAL_16_4:
+                case ThermalConst.ONLY_THERMAL_MLX_16_4:
+                case ThermalConst.FACE_THERMAL_MLX_16_4:
+                    Log.e(TAG, "onModeChanged: 显示小热成像画面");
+                    ivThermalImaging.setVisibility(View.GONE);
+                    llThermalArea.setVisibility(View.VISIBLE);
+                    ivInfaredImaging.setVisibility(View.VISIBLE);
+                    break;
+                case ThermalConst.ONLY_SMT_THERMAL:
+                case ThermalConst.FACE_SMT_THERMAL:
+                    llThermalArea.setVisibility(View.GONE);
+                    break;
+            }
         }
 
-        //切换头像框
-        if (mCurrMode != ThermalConst.FACE_ONLY) {
+        if(mCurrMode != ThermalConst.FACE_ONLY){
             if (personFrameEnable) {
                 ivBigHead.setVisibility(View.VISIBLE);
                 flDotFrame.setVisibility(View.GONE);
@@ -219,6 +252,8 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void updateHotImage(Bitmap bitmap, float temper, boolean hasFace) {
+        if (!showMainThermal) return;
+
         if (ivInfaredImaging.isShown()) {
             ivInfaredImaging.setImageBitmap(bitmap);
             tvThermalTemper.setText(hasFace ? getResources().getString(R.string.main_thermal_has_person) : getResources().getString(R.string.main_thermal_no_person));
@@ -240,7 +275,9 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             }
         } else {
             //没人时第一次进入只重试两次
-            faceView.setRetryTime(2);
+            if (faceView != null) {
+                faceView.setRetryTime(2);
+            }
         }
     }
 
@@ -253,7 +290,9 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         tvTempTips.setBackgroundResource(id);
         tvTempTips.setText(tip);
         //在弹出结果后将重试次数置为5
-        faceView.setRetryTime(5);
+        if (faceView != null) {
+            faceView.setRetryTime(5);
+        }
     }
 
     @Override
@@ -308,12 +347,12 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public Bitmap getFacePicture() {
-        return faceView.takePicture();
+        return faceView != null ? faceView.takePicture() : null;
     }
 
     @Override
     public Rect getRealRect(Rect faceRect) {
-        return faceView.getRealRect(faceRect);
+        return faceView != null ? faceView.getRealRect(faceRect) : new Rect();
     }
 
     @Override
@@ -378,23 +417,34 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
         Company company = SpUtils.getCompany();
-        if (tvMainAbbName != null) tvMainAbbName.setText(company.getAbbname());
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            tvMainAbbName.setText(company.getAbbname());
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivMainLogo);
+        }
 
         EventBus.getDefault().post(new UpdateMediaEvent());
-
-        ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivMainLogo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(ResetLogoEvent event) {
         Company company = SpUtils.getCompany();
-        ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivMainLogo);
+        //如果不是未绑定则加载该加载的东西
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            tvMainAbbName.setText(company.getAbbname());
+            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivMainLogo);
+        } else {
+            //如果是未绑定则显示自己设置的东西
+            ivMainLogo.setImageResource(R.mipmap.yb_logo);
+            tvMainAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT,ThermalConst.Default.MAIN_LOGO_TEXT));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(DisplayOrientationEvent event) {
         Log.e(TAG, "update: 收到摄像头更新事件");
-        faceView.changeAngle();
+        if (faceView != null) {
+            faceView.changeAngle();
+        }
     }
 
     private void startXmpp() {//开启xmpp
@@ -453,10 +503,12 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     public void setFaceViewSimilar() {
         Log.e(TAG, "setFaceViewSimilar: 设置人脸识别阈值");
-        faceView.setSimilarThreshold();
+        if (faceView != null) {
+            faceView.setSimilarThreshold();
+        }
     }
 
-    private void goSetting() {
+    public void goSetting() {
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
         if (!TextUtils.isEmpty(pwd)) {
             inputPwd(new Runnable() {
@@ -506,9 +558,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     @Override
     protected void onPause() {
         super.onPause();
-        faceView.pause();
+        if (faceView != null) {
+            faceView.pause();
+        }
         Log.e(TAG, "onPause: 执行了onPause");
-        if(isFinishing()){
+        if (isFinishing()) {
             Log.e(TAG, "onPause: 该Activity正在结束");
         }
     }
@@ -517,21 +571,23 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     protected void onStop() {
         super.onStop();
         Log.e(TAG, "onStop: 执行了onStop");
-        if(isFinishing()){
+        if (isFinishing()) {
             Log.e(TAG, "onStop: 该Activity正在结束");
         }
     }
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy: 执行了销毁" );
-        Log.e(TAG, "onDestroy: 执行了销毁" );
+        Log.e(TAG, "onDestroy: 执行了销毁");
+        Log.e(TAG, "onDestroy: 执行了销毁");
         if (readCardUtils != null) {
             readCardUtils.removeScanSuccessListener();
             readCardUtils = null;
         }
 
-        faceView.destory();
+        if (faceView != null) {
+            faceView.destory();
+        }
         destoryXmpp();
 
         EventBus.getDefault().unregister(this);

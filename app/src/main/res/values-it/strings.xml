@@ -14,9 +14,16 @@
     <string name="temper_error_btn_restart">Reboot</string>
     <string name="temper_error_btn_cancel">No processing</string>
 
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Gradi centigradi</string>
+    <string name="temper_tips_fahrenheit">Fahrenheit gradi</string>
+    <string name="temper_tips_close">Vicino a tip</string>
+
+
     <!--应用名称-->
-    <string name="yb_check_in">YBCheckIn</string>
-    <string name="yb_temper_check_in">YBTemperatureCheckIn</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">YBCertificates</string>
     <string name="yb_multiple">YBHighThroughput</string>
     <string name="yb_safety_chceck">YBTemperatureSecurityCheck</string>
@@ -123,6 +130,7 @@
     <string name="act_editEmploy_name">User name:</string><!-- 姓名: -->
     <string name="act_editEmploy_sex">Sex:</string><!-- 性别: -->
     <string name="act_editEmploy_bm">Depart:</string><!--部门:  -->
+    <string name="act_editEmploy_kh">Card Id:</string><!-- 员工编号 -->
     <string name="act_editEmploy_ygbh">User Id:</string><!-- 员工编号 -->
     <string name="act_editEmploy_zw">Position:</string><!-- 职位: -->
     <string name="act_editEmploy_csrq">Birthday:</string><!--  出生日期-->
@@ -168,6 +176,7 @@
     <string name="sign_list_no_data">No data</string><!-- 暂无数据 -->
     <string name="sign_list_upload_success">Upload Success</string><!-- 上传成功 -->
     <string name="sign_list_upload_failed">Upload failed, please check the network</string>
+    <string name="sign_list_table_name">Record</string>
     ><!-- 上传失败，请检查网络 -->
     <string name="sign_list_usb_disk">Please insert U disk</string><!--  请插入U盘-->
     <string name="sign_list_tip_usb_disk">No USB device detected, will export to local</string>
@@ -206,6 +215,11 @@
     <string name="face_thermal_model">Face + Thermal imaging (32*32)</string><!-- 人脸识别+热成像测温模式 -->
     <string name="thermal_16_4_model">Only Thermal imaging (16*4)</string><!--16*4模块-->
     <string name="face_thermal_16_4_model">Face + Thermal imaging (16*4)</string><!--16*4模块-->
+    <string name="only_thermal_mlx_16_4_model">Only Thermal imaging（MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">Face + Thermal imaging（MLX-16*4）</string>
+    <string name="smt_only_thermal">Only Thermal imaging（SMT）</string>
+    <string name="smt_face_thermal">Face + Thermal imaging（SMT）</string>
+
     <!--标签-->
     <string name="setting_face_similar_threshold">Face similarity threshold</string><!-- 设置人脸相似度阈值 -->
     <string name="setting_enable_dialog">show face infomaction</string><!-- 开启人脸弹框 -->
@@ -274,7 +288,7 @@
     <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
     <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
-    <string name="setting_default_welcome_tip">Welcome to Yunbiao intelligent attendance system</string><!--欢迎语-->
+    <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
     <string name="setting_default_welcome_tip2">Welcome to HT intelligent attendance system</string>
     <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Correct Temperature</string>
@@ -302,6 +316,7 @@
     <string name="setting_privacy_mode">Privacy Mode</string>
     <string name="setting_periodic_purge_policy">Periodic purge policy</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_broadcast_speed">Voice speed</string>
 
 
     <!--开关机设置-->

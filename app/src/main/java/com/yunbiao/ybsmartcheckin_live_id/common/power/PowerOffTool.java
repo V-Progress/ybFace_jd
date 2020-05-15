@@ -67,6 +67,9 @@ public class PowerOffTool {
             case 5:
                 PowerControllerTool.getPowerContrArray();
                 break;
+            case 4:
+                YsPowerController.setPower();
+                break;
         }
     }
 

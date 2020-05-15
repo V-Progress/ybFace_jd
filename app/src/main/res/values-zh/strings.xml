@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">云标智能考勤</string>
+    <string name="app_name">YBFace</string>
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思库考勤</string>
     <string name="app_name4">Osmile AI</string>
@@ -13,11 +13,16 @@
     <string name="temper_error_btn_restart">重启</string>
     <string name="temper_error_btn_cancel">暂不处理</string>
 
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">摄氏度</string>
+    <string name="temper_tips_fahrenheit">华氏度</string>
+    <string name="temper_tips_close">靠近提示</string>
+
     <!--应用名称-->
-    <string name="yb_check_in">云标智能考勤</string>
-    <string name="yb_temper_check_in">云标测温考勤</string>
-    <string name="yb_certificates">云标人证测温</string>
-    <string name="yb_multiple">YBFace大通量</string>
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
+    <string name="yb_certificates">YBFace</string>
+    <string name="yb_multiple">云标大通量测温</string>
     <string name="yb_safety_chceck">云标测温安检</string>
 
     <string name="ht_temper_check_in">亨通测温考勤</string>
@@ -124,6 +129,7 @@
     <string name="act_editEmploy_zw">职&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
     <string name="act_editEmploy_csrq">出生日期:</string>
     <string name="act_editEmploy_gxqm">个性签名:</string>
+    <string name="act_editEmploy_kh">卡号:</string><!-- 员工编号 -->
     <string name="act_editEmploy_tip_qxpz">请先拍照</string>
     <string name="act_editEmploy_tip_qtxxm">请填写姓名</string>
     <string name="act_editEmploy_tip_qxzxb">请选择性别</string>
@@ -183,6 +189,7 @@
     <string name="sign_export_record_success">导出成功</string>
     <string name="sign_export_record_path">目录：</string>
     <string name="sign_export_record_failed">导出失败</string>
+    <string name="sign_list_table_name">记录</string>
 
 
     <!--访客列表-->
@@ -195,14 +202,16 @@
     <!--系统设置-->
     <!--模式-->
     <string name="face_only_model">人脸识别考勤</string>
-    <string name="face_infared_model">人脸识别 + 热成像（小）</string>
-    <string name="infared_only_model">热成像（小）（不考勤）</string>
+    <string name="infared_only_model">仅测温模式（小）</string>
+    <string name="face_infared_model">人脸识别 + 测温模式（小）</string>
     <string name="thermal_only_model">仅测温模式（HM-32*32）</string>
     <string name="face_thermal_model">人脸识别 + 测温模式（HM-32*32）</string>
     <string name="thermal_16_4_model">仅测温模式（HM-16*4）</string>
     <string name="face_thermal_16_4_model">人脸识别 + 测温模式（HM-16*4）</string>
     <string name="only_thermal_mlx_16_4_model">仅测温模式（MLX-16*4）</string>
     <string name="face_thermal_mlx_16_4_model">人脸识别 + 测温模式（MLX-16*4）</string>
+    <string name="smt_only_thermal">仅测温模式（SMT）</string>
+    <string name="smt_face_thermal">人脸识别 + 测温模式（SMT）</string>
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">计数已清零</string>
@@ -274,11 +283,12 @@
     <string name="setting_warning_speech_content">体温异常播报内容</string>
     <string name="setting_low_temp_model">低温模式</string>
     <string name="setting_portrait_outline">人像轮廓</string>
-    <string name="setting_default_welcome_tip">欢迎使用云标智能考勤系统</string>
+    <string name="setting_default_welcome_tip">欢迎使用 A I 智能考勤系统</string>
     <string name="setting_default_welcome_tip2">欢迎使用亨通考勤</string>
     <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">矫正温度</string>
     <string name="setting_broadcast_f">播报华氏度</string>
+    <string name="setting_broadcast_speed">语音速度</string><!--語音速度-->
 
     <string name="setting_save_success">保存成功</string>
     <string name="setting_save_succ_please_restart">保存成功,重启APP后生效</string>
@@ -298,6 +308,12 @@
     <string name="setting_switch_tip2">确定切换到测温考勤吗？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">确定</string>
     <string name="setting_switch_cancel">取消</string>
+    <string name="setting_privacy_mode">隐私模式</string>
+    <string name="setting_periodic_purge_policy">清除策略</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">显示首页Logo</string>
+    <string name="setting_show_main_thermal">显示热成像画面</string>
+    <string name="setting_show_main_info">显示首页信息</string>
 
     <!--设置开关机-->
     <string name="setting_power_on_off">定时开关机</string>
@@ -574,7 +590,6 @@
     <string name="safety_black_body_enable">开启黑体矫正</string>
     <string name="safety_temperature_threshold">取温阈值</string>
     <string name="safety_temperature_frame_enable">开启测温框</string><!--开启测温框-->
-    <string name="safety_immediate_report_enable">立即报温</string><!--立即报温-->
     <string name="safety_calibration_main">校准</string><!--校准-->
     <string name="safety_measure_main">测温:</string><!--测温:-->
     <string name="safety_correct_main">校准:</string><!--校准:-->
@@ -584,6 +599,4 @@
     <string name="safety_correct_temper_completion">测温结束</string><!--測溫完成-->
     <string name="safety_save_completion">校準完成</string><!--矯正完成-->
     <string name="safety_save_cancel">取消校准</string><!--保存-->
-
-    <string name="setting_default_welcome_tip4">欢迎使用大通量测温筛查系统</string>
 </resources>

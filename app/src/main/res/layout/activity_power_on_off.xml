@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="15dp"
     tools:context=".activity.PowerOnOffActivity">
 
@@ -122,167 +123,93 @@
                 android:layout_marginLeft="20dp"
                 android:checked="true"/>
         </LinearLayout>
+
         <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:text="@string/act_power_turn_on_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <NumberPicker
-                android:id="@+id/number_power_on_h_smt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"/>
-
-            <TextView
+            <LinearLayout
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="30dp"
-                android:gravity="center"
-                android:text=":"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <NumberPicker
-                android:id="@+id/number_power_on_m_smt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:padding="10dp"
-        android:orientation="vertical"
-        android:background="@drawable/shape_bg_btnrepicture"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-        <TextView
-            android:text="@string/act_power_power_off_strategy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="@string/act_power_turn_on_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <CheckBox
-                android:id="@+id/cb_off_1"
-                android:text="@string/act_power_monday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="1"
-                android:checked="true"/>
-
-            <CheckBox
-                android:id="@+id/cb_off_2"
-                android:text="@string/act_power_tuesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="2"
-                android:checked="true"/>
-            <CheckBox
-                android:id="@+id/cb_off_3"
-                android:text="@string/act_power_wednesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="3"
-                android:checked="true"/>
-            <CheckBox
-                android:id="@+id/cb_off_4"
-                android:text="@string/act_power_thursday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="4"
-                android:checked="true"/>
-            <CheckBox
-                android:id="@+id/cb_off_5"
-                android:text="@string/act_power_friday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="5"
-                android:checked="true"/>
-            <CheckBox
-                android:id="@+id/cb_off_6"
-                android:text="@string/act_power_saturday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="6"
-                android:checked="true"/>
-            <CheckBox
-                android:id="@+id/cb_off_7"
-                android:text="@string/act_power_sunday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="7"
-                android:checked="true"/>
-
-            <CheckBox
-                android:id="@+id/cb_off_all"
-                android:text="@string/act_power_all_select"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:checked="true"/>
-        </LinearLayout>
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="@string/act_power_turn_off_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <NumberPicker
-                android:id="@+id/number_power_off_h_smt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"/>
-            <TextView
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textSize="30dp"
-                android:gravity="center"
-                android:text=":"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <NumberPicker
-                android:id="@+id/number_power_off_m_smt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/shape_bg_btnsync"
-                    android:layout_marginTop="20dp"
-                    android:id="@+id/btn_save"
-                    android:layout_width="300dp"
-                    android:textSize="22dp"
+                <NumberPicker
+                    android:id="@+id/number_power_on_h_smt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:text="@string/act_power_save"
-                    android:onClick="savePower"/>
+                    android:layout_marginLeft="20dp"/>
 
-            </RelativeLayout>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="30dp"
+                    android:gravity="center"
+                    android:text=":"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <NumberPicker
+                    android:id="@+id/number_power_on_m_smt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/act_power_turn_off_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <NumberPicker
+                    android:id="@+id/number_power_off_h_smt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"/>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="30dp"
+                    android:gravity="center"
+                    android:text=":"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <NumberPicker
+                    android:id="@+id/number_power_off_m_smt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_bg_btnsync"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:textSize="22dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="@string/act_power_save"
+        android:onClick="savePower"/>
 </LinearLayout>
