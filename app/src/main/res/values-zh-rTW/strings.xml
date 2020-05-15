@@ -17,6 +17,8 @@
     <string name="temper_tips_centigrade">攝氏度</string>
     <string name="temper_tips_fahrenheit">華氏度</string>
     <string name="temper_tips_close">靠近提示</string>
+    <string name="app_main_title">應用標題</string>
+
     <!--應用名稱-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>

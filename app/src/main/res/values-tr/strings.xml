@@ -17,6 +17,7 @@
     <string name="temper_tips_centigrade">Santigrat</string>
     <string name="temper_tips_fahrenheit">Derece fahrenhayt</string>
     <string name="temper_tips_close">İpuçlarına yakın</string>
+    <string name="app_main_title">Uygulama başlığı</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>

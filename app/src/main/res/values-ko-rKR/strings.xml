@@ -17,6 +17,7 @@
     <string name="temper_tips_centigrade">섭씨</string>
     <string name="temper_tips_fahrenheit">화씨 경도</string>
     <string name="temper_tips_close">바투 팁</string>
+    <string name="app_main_title">제목 적용</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>

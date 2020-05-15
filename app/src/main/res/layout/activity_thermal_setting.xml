@@ -344,7 +344,7 @@
 
                     <TextView
                         style="@style/setting_text"
-                        android:text="logo文字" />
+                        android:text="@string/app_main_title" />
 
                     <EditText
                         android:id="@+id/edt_main_logo_text"

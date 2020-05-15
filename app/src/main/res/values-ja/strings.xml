@@ -21,6 +21,7 @@
     <string name="temper_tips_centigrade">摂氏度</string>
     <string name="temper_tips_fahrenheit">華氏度</string>
     <string name="temper_tips_close">ヒントに近づく</string>
+    <string name="app_main_title">アプリケーションタイトル</string>
 
 
     <!--应用名称-->

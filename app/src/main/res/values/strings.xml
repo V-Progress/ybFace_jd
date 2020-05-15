@@ -18,6 +18,7 @@
     <string name="temper_tips_centigrade">Centigrade</string>
     <string name="temper_tips_fahrenheit">Fahrenheit degree</string>
     <string name="temper_tips_close">Close to the tip</string>
+    <string name="app_main_title">The application title</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>

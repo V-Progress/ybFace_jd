@@ -197,20 +197,20 @@ String buildApkName(String param) {
     //确定前缀名
     String name
     if (param.contains("SK"))
-        name = "思庫"
+        name = "SK"
     else if (param.contains("HT"))
-        name = "亨通"
+        name = "HT"
     else if (param.contains("OSIMLE"))
         name = "Osimle AI"
     else if (param.contains("SOFT_WORK"))
         name = "SoftWorkz AI"
     else
-        name = "云标"
+        name = "YB"
 
     if (!param.contains("OSIMLE") && !param.contains("SOFT_WORK")) {
         //确定后缀名
         if (param.contains("10")) {
-            name += "测温考勤"
+            name += "Face"
         } else if (param.contains("8")) {
             if (name.contains("SK")) {//判断思库版本
                 name += "TemperatureCheckingAttendance"
