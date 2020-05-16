@@ -19,6 +19,12 @@
     <string name="temper_tips_close">바투 팁</string>
     <string name="app_main_title">제목 적용</string>
 
+    <string name="select_img_title">Select Image</string>
+    <string name="select_img_failed">Image selection failed</string>
+    <string name="select_img_failed_not_exists">The selected image does not exist</string>
+    <string name="setting_app_logo">APP Logo</string>
+    <string name="setting_select_image">Choose</string>
+    <string name="setting_restore_image">Restore</string>
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>

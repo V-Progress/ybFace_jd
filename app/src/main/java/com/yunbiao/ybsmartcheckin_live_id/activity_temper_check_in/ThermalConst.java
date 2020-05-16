@@ -45,6 +45,7 @@ public class ThermalConst {
         String SHOW_MAIN_THERMAL = "thermalShowMainThermal";
         String CLOSE_TIPS = "thermalCloseTips";
         String MAIN_LOGO_TEXT = "thermalMainLogoText";
+        String MAIN_LOGO_IMG = "thermalMainLogoImg";
     }
 
     public static class Default {
@@ -69,6 +70,7 @@ public class ThermalConst {
         public static boolean THERMAL_IMAGE_MIRROR = true;
         public static boolean THERMAL_F_ENABLED = false;
         public static String MAIN_LOGO_TEXT = "YBFACE";
+        public static String MAIN_LOGO_IMG = "";
     }
 
 }

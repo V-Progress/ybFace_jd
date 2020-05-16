@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,21 +25,25 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
+import com.lcw.library.imagepicker.ImagePicker;
+import com.lcw.library.imagepicker.utils.ImageLoader;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTModelConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -139,10 +144,95 @@ public class ThermalSettingActivity extends BaseActivity {
         initCloseTips();
         //首页文字
         initLogoText();
+        //首页Logo
+        initMainLogoImage();
     }
 
-    private void initLogoText(){
-        String mainLogoText = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT,ThermalConst.Default.MAIN_LOGO_TEXT);
+    private void initMainLogoImage() {
+        Button btnRestore = findViewById(R.id.btn_restore_main_logo);
+        Button btnSaveMainLogo = findViewById(R.id.btn_save_main_logo);
+        ImageView ivMainLogo = findViewById(R.id.iv_main_logo);
+        String mainLogoImg = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+        if (TextUtils.isEmpty(mainLogoImg)) {
+            ivMainLogo.setImageResource(R.mipmap.yb_logo);
+        } else {
+            File file = new File(mainLogoImg);
+            if (!file.exists()) {
+                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+            } else {
+                ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(mainLogoImg));
+            }
+        }
+
+        btnSaveMainLogo.setOnClickListener(v -> {
+            ImagePicker.getInstance()
+                    .setTitle(getResString(R.string.select_img_title))//设置标题
+                    .showCamera(true)//设置是否显示拍照按钮
+                    .showImage(true)//设置是否展示图片
+                    .showVideo(false)//设置是否展示视频
+//                    .setMaxCount(1)//设置最大选择图片数目(默认为1，单选)
+//                    .setImagePaths(mImageList)//保存上一次选择图片的状态，如果不需要可以忽略
+                    .setImageLoader(new ImgLoader())//设置自定义图片加载器
+                    .start(ThermalSettingActivity.this, REQEST_SELECT_IMAGES_CODE);//REQEST_SELECT_IMAGES_CODE为Intent调用的
+        });
+        btnRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
+                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+            }
+        });
+    }
+
+    private final int REQEST_SELECT_IMAGES_CODE = 12345;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQEST_SELECT_IMAGES_CODE && resultCode == RESULT_OK) {
+            List<String> imagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
+            if (1 > imagePaths.size()) {
+                return;
+            }
+            String imgPath = imagePaths.get(0);
+            ImageView ivMainLogo = findViewById(R.id.iv_main_logo);
+            if (TextUtils.isEmpty(imgPath)) {
+                UIUtils.showShort(this, getResString(R.string.select_img_failed));
+                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+            } else {
+                File file = new File(imgPath);
+                if (!file.exists()) {
+                    UIUtils.showShort(this, getResString(R.string.select_img_failed_not_exists));
+                    ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                } else {
+                    SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_IMG, imgPath);
+                    ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
+                }
+            }
+        }
+    }
+
+    class ImgLoader implements ImageLoader {
+
+        @Override
+        public void loadImage(ImageView imageView, String imagePath) {
+            Glide.with(APP.getContext()).load(imagePath).asBitmap().override(50, 50).into(imageView);
+        }
+
+        @Override
+        public void loadPreImage(ImageView imageView, String imagePath) {
+            Glide.with(APP.getContext()).load(imagePath).asBitmap().override(50, 50).into(imageView);
+        }
+
+        @Override
+        public void clearMemoryCache() {
+            //清理缓存
+            Glide.get(APP.getContext()).clearMemory();
+        }
+    }
+
+    private void initLogoText() {
+        String mainLogoText = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT);
         EditText edtMainLogoText = findViewById(R.id.edt_main_logo_text);
         edtMainLogoText.setText(mainLogoText);
         edtMainLogoText.addTextChangedListener(new TextWatcher() {
@@ -155,19 +245,19 @@ public class ThermalSettingActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString().trim();
-                if(TextUtils.isEmpty(s1)){
+                if(TextUtils.isEmpty(s1)) {
                     SpUtils.remove(ThermalConst.Key.MAIN_LOGO_TEXT);
                 } else {
-                    SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_TEXT,s1);
+                    SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_TEXT, s1);
                 }
             }
         });
     }
 
-    private void initCloseTips(){
-        String closeTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS,ThermalConst.Default.CLOSE_TIPS);
+    private void initCloseTips() {
+        String closeTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS, ThermalConst.Default.CLOSE_TIPS);
         EditText edtPleaseClose = findViewById(R.id.edt_please_close_tips);
-        if(TextUtils.isEmpty(closeTips)){
+        if (TextUtils.isEmpty(closeTips)) {
             edtPleaseClose.setHint(getResString(R.string.main_tips_please_close));
         } else {
             edtPleaseClose.setText(closeTips);
@@ -183,7 +273,7 @@ public class ThermalSettingActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String tips = s.toString().trim();
-                if(TextUtils.isEmpty(tips)){
+                if(TextUtils.isEmpty(tips)) {
                     SpUtils.remove(ThermalConst.Key.CLOSE_TIPS);
                 } else {
                     SpUtils.saveStr(ThermalConst.Key.CLOSE_TIPS,tips);
@@ -195,7 +285,7 @@ public class ThermalSettingActivity extends BaseActivity {
     private void initUISetting() {
         String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, "");
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        if(TextUtils.isEmpty(welcomeTips)){
+        if (TextUtils.isEmpty(welcomeTips)) {
             String tips = Constants.FLAVOR_TYPE == FlavorType.YB ? getResString(R.string.setting_default_welcome_tip) : Constants.FLAVOR_TYPE == FlavorType.HT ? getResString(R.string.setting_default_welcome_tip2) : "";
             edtWelComeTips.setHint(tips);
         } else {
@@ -279,18 +369,18 @@ public class ThermalSettingActivity extends BaseActivity {
     }
 
     private void initMainLogo(){
-        boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,ThermalConst.Default.SHOW_MAIN_LOGO);
+        boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
         Switch swMainLogo = findViewById(R.id.sw_main_logo_setting);
         swMainLogo.setChecked(showMainLogo);
         swMainLogo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, isChecked);
             }
         });
     }
 
-    private void initVoiceSpeed(){
+    private void initVoiceSpeed() {
         final Float voidSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
         Button btnSpeedSub = findViewById(R.id.btn_speed_sub_setting);
         Button btnSpeedPlus = findViewById(R.id.btn_speed_plus_setting);
@@ -315,7 +405,7 @@ public class ThermalSettingActivity extends BaseActivity {
 
     private void initClearPolicy() {
         RadioGroup rgClear = findViewById(R.id.rg_clear_policy);
-        if(Constants.FLAVOR_TYPE != FlavorType.SOFT_WORK_Z){
+        if (Constants.FLAVOR_TYPE != FlavorType.SOFT_WORK_Z) {
             rgClear.setVisibility(View.GONE);
             return;
         }
@@ -568,7 +658,7 @@ public class ThermalSettingActivity extends BaseActivity {
         //正常
         String normalTips = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
         EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
-        if(TextUtils.isEmpty(normalTips)){
+        if (TextUtils.isEmpty(normalTips)) {
             edtNormalTips.setHint(getResources().getString(R.string.main_temp_normal_tips));
         } else {
             edtNormalTips.setText(normalTips);
@@ -577,17 +667,17 @@ public class ThermalSettingActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String input = s.toString()/*.trim()*/;
-                if(TextUtils.isEmpty(input)){
+                if (TextUtils.isEmpty(input)) {
                     SpUtils.remove(ThermalConst.Key.NORMAL_BROADCAST);
                 } else {
-                    SpUtils.saveStr(ThermalConst.Key.NORMAL_BROADCAST,input);
+                    SpUtils.saveStr(ThermalConst.Key.NORMAL_BROADCAST, input);
                 }
             }
         });
         //异常
         String warningTips = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
         EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
-        if(TextUtils.isEmpty(warningTips)){
+        if (TextUtils.isEmpty(warningTips)) {
             edtWarningTips.setHint(getResources().getString(R.string.main_temp_warning_tips));
         } else {
             edtWarningTips.setText(warningTips);

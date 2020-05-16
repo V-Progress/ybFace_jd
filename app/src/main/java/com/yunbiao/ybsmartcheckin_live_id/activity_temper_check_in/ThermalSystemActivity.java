@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -148,7 +150,13 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
             tvAbbName.setText(company.getAbbname());
         } else {
-            ivLogo.setImageResource(R.mipmap.yb_logo);
+            //如果是未绑定则显示自己设置的东西
+            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+            if(TextUtils.isEmpty(logoPath)){
+                ivLogo.setImageResource(R.mipmap.yb_logo);
+            } else {
+                ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+            }
             tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
         }
     }
@@ -232,7 +240,13 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
             tvAbbName.setText(company.getAbbname());
         } else {
-            ivLogo.setImageResource(R.mipmap.yb_logo);
+            //如果是未绑定则显示自己设置的东西
+            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+            if(TextUtils.isEmpty(logoPath)){
+                ivLogo.setImageResource(R.mipmap.yb_logo);
+            } else {
+                ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+            }
             tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
         }
 

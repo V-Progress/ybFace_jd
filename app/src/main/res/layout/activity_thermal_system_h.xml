@@ -25,11 +25,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="10dp"
                 android:scaleType="fitCenter"
-                android:maxWidth="160dp"
-                android:maxHeight="80dp"
                 android:id="@+id/iv_system_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="160dp"
+                android:layout_height="80dp" />
 
             <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
                 android:id="@+id/tv_abb_name_system_thermal"

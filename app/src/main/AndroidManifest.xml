@@ -53,8 +53,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="label,allowBackup" >
-        <activity android:name=".activity_certificates.CertificatesAddUserActivity"/>
+        tools:replace="label,allowBackup">
+        <activity android:name=".activity_certificates.CertificatesAddUserActivity" />
         <activity android:name=".activity_certificates.VertifyRecordActivity" />
         <activity android:name=".activity.ClearPolicyActivity" />
         <activity android:name=".activity_certificates.CertificatesWhiteListActivity" />
@@ -64,7 +64,7 @@
         <activity
             android:name=".SplashActivity"
             android:enabled="true"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -84,7 +84,7 @@
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity_certificates.CertificatesUserListActivity"/>
+        <activity android:name=".activity_certificates.CertificatesUserListActivity" />
         <activity
             android:name=".activity.EditEmployActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -116,7 +116,7 @@
         <activity android:name=".activity_temper_check_in_smt.SMTVisitorActivity" /> <!-- 人证 -->
         <activity
             android:name=".activity_certificates.CertificatesActivity"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
@@ -153,20 +153,20 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".receiver.BootRestartReceiver" >
+        <receiver android:name=".receiver.BootRestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.DateChangedReceiver" >
+        <receiver android:name=".receiver.DateChangedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
@@ -174,7 +174,7 @@
         <receiver
             android:name=".business.AlarmManagerUtil$AlarmBroadcast"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="alarm_action" />
             </intent-filter>
@@ -185,7 +185,7 @@
             android:name=".ReadCardService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

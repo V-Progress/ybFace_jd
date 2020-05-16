@@ -268,6 +268,42 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private int nobodyTemperTag = 0;
     private int nobodyFaceTag = 0;
 
+    private List<Float> autoCheckList = new ArrayList<>();
+    private void startAutoCheck(float originT){
+        Log.e(TAG, "handleTemperature: 原始温度：" + originT);
+        if(autoCheckList.size() < 10){
+            autoCheckList.add(originT);
+        } else {
+            int highTotal = 0;
+            int lowTotal = 0;
+            for (Float aFloat : autoCheckList) {
+                if(aFloat <= 16f){
+                    lowTotal++;
+                } else if(aFloat >= 29f){
+                    highTotal ++;
+                }
+            }
+            Log.e(TAG, "handleTemperature: 低温数量：" + lowTotal + " ----- " + autoCheckList.size());
+            Log.e(TAG, "handleTemperature: 高温数量：" + highTotal + " ----- " + autoCheckList.size());
+            int total = (autoCheckList.size() / 2) + 1;
+            if(lowTotal >= total){
+                Log.e(TAG, "handleTemperature: 开启低温模式");
+                TemperatureModule.getIns().setHotImageColdMode(true);
+                TemperatureModule.getIns().setHotImageHotMode(false,45f);
+            } else if(highTotal >= total){
+                Log.e(TAG, "handleTemperature: 开启高温模式");
+                TemperatureModule.getIns().setHotImageColdMode(false);
+                TemperatureModule.getIns().setHotImageHotMode(true,45f);
+            } else {
+                Log.e(TAG, "handleTemperature: 常温模式");
+                TemperatureModule.getIns().setHotImageColdMode(false);
+                TemperatureModule.getIns().setHotImageHotMode(false,45f);
+            }
+            autoCheckList.clear();
+        }
+
+    }
+
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
         if (isActivityPaused) {
@@ -285,18 +321,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         sendUpdateHotInfoMessage(imageBmp, afterT);
 
         if (!mHasFace) {
-            /*Log.e(TAG, "handleTemperature: 最低温度：" + originT);
-            if(originT <= 18.0f){
-                TemperatureModule.getIns().setHotImageColdMode(true);
-                TemperatureModule.getIns().setHotImageHotMode(false,originT);
-            } else if(originT >= 35.0f){
-                TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(true,originT);
-            } else {
-                TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(false,originT);
-            }*/
-            /*// TODO: 2020/5/14  无人无脸播报问题
+            /*if(!lowTempModel){
+                startAutoCheck(originT);
+            }
+            // TODO: 2020/5/14  无人无脸播报问题
             if (mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
                 if (nobodyFaceTag < 5) {
                     nobodyFaceTag++;
@@ -340,6 +368,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
             sendClearAllUIMessage();
             return;
+        }
+
+        if(autoCheckList.size() > 0){
+            autoCheckList.clear();
         }
 
         if (isFaceToFar) {

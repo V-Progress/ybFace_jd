@@ -403,4 +403,6 @@ dependencies {
     implementation files('libs/PrintUtils1114.jar')
     implementation files('libs/arcsoft_face.jar')
     implementation files('libs/poweronoff.jar')
+
+    implementation 'com.lcw.library:imagepicker:2.1.2'
 }
