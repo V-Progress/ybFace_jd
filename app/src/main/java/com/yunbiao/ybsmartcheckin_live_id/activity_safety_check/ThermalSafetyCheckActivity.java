@@ -95,6 +95,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
     private boolean mImmediateReportModeEnabled;
     private boolean isReport = false;
+    private long reportTimeMillis = 0;
+    private long temperUpdateInterval = 2 * 1000;
 
     @Override
     protected int getPortraitLayout() {
@@ -330,7 +332,20 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         Float max = Collections.max(mTemperFloats);
                         mTemperFloats.clear();
                         isReport = true;
+                        reportTimeMillis = System.currentTimeMillis();
                         sendTipsMessage(max);
+                    }
+                } else {
+                    if (System.currentTimeMillis() - reportTimeMillis >= temperUpdateInterval) {
+                        if (mTemperFloats.size() < 5) {
+                            float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                            mTemperFloats.add(afterTreatmentF);
+                        } else {
+                            Float max = Collections.max(mTemperFloats);
+                            mTemperFloats.clear();
+                            reportTimeMillis = System.currentTimeMillis();
+                            sendTipsMessage(max);
+                        }
                     }
                 }
                 return;

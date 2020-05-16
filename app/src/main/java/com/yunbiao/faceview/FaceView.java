@@ -2,12 +2,9 @@ package com.yunbiao.faceview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,10 +34,6 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NV21ToBitmap;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
-import org.apache.harmony.javax.security.auth.login.LoginException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -261,6 +254,9 @@ public class FaceView extends FrameLayout {
     }
 
     private Map<Integer, Float> temperHashMap = new HashMap<>();
+    private Map<Integer, Long> temperTimeMap = new HashMap<>();
+    private long timeMillis = 0;
+    private long temperUpdateInterval = 1000;
     private List<Integer> idList = new ArrayList<>();
 
     public void setTemperList(ArrayList<FaceIndexInfo> arrayList) {
@@ -270,7 +266,9 @@ public class FaceView extends FrameLayout {
                 return;
             }
             temperHashMap.clear();
+            temperTimeMap.clear();
         } else {
+            timeMillis = System.currentTimeMillis();
             if (!isMultiCallback) {
                 idList.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
@@ -279,11 +277,19 @@ public class FaceView extends FrameLayout {
                     idList.add(faceId);
                     if (!temperHashMap.containsKey(faceId)) {
                         temperHashMap.put(faceId, afterTreatmentF);
+                        temperTimeMap.put(faceId, timeMillis);
                     } else {
-                        Float aFloat = temperHashMap.get(faceId);
-                        if (aFloat < 35.5f && afterTreatmentF >= 35.5f) {
-                            temperHashMap.put(faceId, afterTreatmentF);
+                        if (timeMillis - temperTimeMap.get(faceId) >= temperUpdateInterval) {
+                            Float aFloat = temperHashMap.get(faceId);
+                            if (afterTreatmentF > aFloat + 0.3f || afterTreatmentF < aFloat - 0.3f) {
+                                temperHashMap.put(faceId, afterTreatmentF);
+                                temperTimeMap.put(faceId, timeMillis);
+                            }
                         }
+//                        Float aFloat = temperHashMap.get(faceId);
+//                        if (aFloat < 35.5f && afterTreatmentF >= 35.5f) {
+//                            temperHashMap.put(faceId, afterTreatmentF);
+//                        }
                     }
                 }
 
@@ -299,6 +305,7 @@ public class FaceView extends FrameLayout {
                 temperHashMap.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     temperHashMap.put(faceIndexInfo.getFaceId(), faceIndexInfo.getAfterTreatmentF());
+                    temperTimeMap.put(faceIndexInfo.getFaceId(), timeMillis);
                 }
             }
         }
