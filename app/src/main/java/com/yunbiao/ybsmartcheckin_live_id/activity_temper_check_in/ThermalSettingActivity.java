@@ -723,12 +723,31 @@ public class ThermalSettingActivity extends BaseActivity {
 
         //===低温模式=========================================================
         Switch swLowTempModel = findViewById(R.id.sw_low_temp_model_setting);
+        Switch swAutoMode = findViewById(R.id.sw_auto_model_setting);
         boolean aBoolean = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
         swLowTempModel.setChecked(aBoolean);
         swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked && swAutoMode.isChecked()){
+                    SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
+                    swAutoMode.setChecked(false);
+                }
                 SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, isChecked);
+            }
+        });
+
+        //===自动模式=========================================================
+        boolean autoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER,ThermalConst.Default.AUTO_TEMPER);
+        swAutoMode.setChecked(autoTemper);
+        swAutoMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked && swLowTempModel.isChecked()){
+                    SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
+                    swLowTempModel.setChecked(false);
+                }
+                SpUtils.saveBoolean(ThermalConst.Key.AUTO_TEMPER,isChecked);
             }
         });
 

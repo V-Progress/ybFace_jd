@@ -46,13 +46,14 @@ public class ThermalConst {
         String CLOSE_TIPS = "thermalCloseTips";
         String MAIN_LOGO_TEXT = "thermalMainLogoText";
         String MAIN_LOGO_IMG = "thermalMainLogoImg";
+        String AUTO_TEMPER = "thermalAutoTemper";
     }
 
     public static class Default {
         public static final float VOICE_SPEED = 1.8f;
-        public static final boolean SHOW_MAIN_LOGO = true;
-        public static final boolean SHOW_MAIN_INFO = true;
-        public static final boolean SHOW_MAIN_THERMAL = true;
+        public static final boolean SHOW_MAIN_LOGO = false;//LOGO
+        public static final boolean SHOW_MAIN_INFO = false;//主页信息
+        public static final boolean SHOW_MAIN_THERMAL = false;//热成像
         public static final boolean SHOW_DIALOG = false;
         public static int MODE = ONLY_THERMAL_MLX_16_4;
         public static boolean THERMAL_MIRROR = true;
@@ -71,6 +72,7 @@ public class ThermalConst {
         public static boolean THERMAL_F_ENABLED = false;
         public static String MAIN_LOGO_TEXT = "YBFACE";
         public static String MAIN_LOGO_IMG = "";
+        public static boolean AUTO_TEMPER = false;
     }
 
 }

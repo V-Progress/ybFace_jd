@@ -75,6 +75,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private String pleaseCloseTips;
     private String normalTips;
     private String warningTips;
+    private boolean mAutoTemper;
 
     @Override
     protected void initData() {
@@ -115,20 +116,22 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         //语音速度
         mVoiceSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
         KDXFSpeechManager.instance().setSpeed(mVoiceSpeed);
+        //自动模式
+        mAutoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER, ThermalConst.Default.AUTO_TEMPER);
 
         //靠近点
-        pleaseCloseTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS,ThermalConst.Default.CLOSE_TIPS);
-        if(TextUtils.isEmpty(pleaseCloseTips)){
+        pleaseCloseTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS, ThermalConst.Default.CLOSE_TIPS);
+        if (TextUtils.isEmpty(pleaseCloseTips)) {
             pleaseCloseTips = getResString(R.string.main_tips_please_close);
         }
         //正常报警
         normalTips = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
-        if(TextUtils.isEmpty(normalTips)){
+        if (TextUtils.isEmpty(normalTips)) {
             normalTips = getResString(R.string.main_temp_normal_tips);
         }
         //异常报警
         warningTips = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
-        if(TextUtils.isEmpty(warningTips)){
+        if (TextUtils.isEmpty(warningTips)) {
             warningTips = getResString(R.string.main_temp_warning_tips);
         }
 
@@ -138,26 +141,26 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
         switch (mCurrMode) {
-                //NO_Temper
+            //NO_Temper
             case ThermalConst.FACE_ONLY:
                 isMLXRunning = false;
                 TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
                 break;
-                //红外
+            //红外
             case ThermalConst.INFRARED_ONLY:
             case ThermalConst.FACE_INFRARED:
                 isMLXRunning = false;
                 TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
                 TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
                 break;
-                //32*32
+            //32*32
             case ThermalConst.THERMAL_ONLY:
             case ThermalConst.FACE_THERMAL:
                 isMLXRunning = false;
                 TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack), 2000);
                 break;
-                //HM_16*4
+            //HM_16*4
             case ThermalConst.THERMAL_16_4_ONLY:
             case ThermalConst.FACE_THERMAL_16_4:
                 isMLXRunning = false;
@@ -165,7 +168,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
                 break;
-                //MLX_16*4
+            //MLX_16*4
             case ThermalConst.ONLY_THERMAL_MLX_16_4:
             case ThermalConst.FACE_THERMAL_MLX_16_4:
                 if (!isMLXRunning) {
@@ -177,7 +180,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
                 }
                 break;
-                //SMT
+            //SMT
             case ThermalConst.ONLY_SMT_THERMAL:
             case ThermalConst.FACE_SMT_THERMAL:
                 isMLXRunning = false;
@@ -265,44 +268,45 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     };
 
     private int distanceTipNumber = 0;
-    private int nobodyTemperTag = 0;
-    private int nobodyFaceTag = 0;
 
     private List<Float> autoCheckList = new ArrayList<>();
-    private void startAutoCheck(float originT){
+
+    private void startAutoCheck(float originT) {
         Log.e(TAG, "handleTemperature: 原始温度：" + originT);
-        if(autoCheckList.size() < 10){
+        if (autoCheckList.size() < 10) {
             autoCheckList.add(originT);
         } else {
             int highTotal = 0;
             int lowTotal = 0;
             for (Float aFloat : autoCheckList) {
-                if(aFloat <= 16f){
+                if (aFloat <= 16f) {
                     lowTotal++;
-                } else if(aFloat >= 29f){
-                    highTotal ++;
+                } else if (aFloat >= 29f) {
+                    highTotal++;
                 }
             }
             Log.e(TAG, "handleTemperature: 低温数量：" + lowTotal + " ----- " + autoCheckList.size());
             Log.e(TAG, "handleTemperature: 高温数量：" + highTotal + " ----- " + autoCheckList.size());
             int total = (autoCheckList.size() / 2) + 1;
-            if(lowTotal >= total){
+            if (lowTotal >= total) {
                 Log.e(TAG, "handleTemperature: 开启低温模式");
                 TemperatureModule.getIns().setHotImageColdMode(true);
-                TemperatureModule.getIns().setHotImageHotMode(false,45f);
-            } else if(highTotal >= total){
+                TemperatureModule.getIns().setHotImageHotMode(false, 45f);
+            } else if (highTotal >= total) {
                 Log.e(TAG, "handleTemperature: 开启高温模式");
                 TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(true,45f);
+                TemperatureModule.getIns().setHotImageHotMode(true, 45f);
             } else {
                 Log.e(TAG, "handleTemperature: 常温模式");
                 TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(false,45f);
+                TemperatureModule.getIns().setHotImageHotMode(false, 45f);
             }
             autoCheckList.clear();
         }
 
     }
+
+    private List<Float> mNoBodyTemperList = new ArrayList<>();
 
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
@@ -321,41 +325,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         sendUpdateHotInfoMessage(imageBmp, afterT);
 
         if (!mHasFace) {
-            /*if(!lowTempModel){
-                startAutoCheck(originT);
-            }
-            // TODO: 2020/5/14  无人无脸播报问题
-            if (mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
-                if (nobodyFaceTag < 5) {
-                    nobodyFaceTag++;
-                } else if (nobodyTemperTag < 5) {
-                    if (originT - mCacheBeforeTemper >= 6.0f) {
-                        nobodyTemperTag++;
-                    } else {
-                        nobodyTemperTag = 0;
-                        nobodyFaceTag = 0;
-                    }
-                } else {
-                    float resultTemper = formatF(afterT);
-                    sendResultMessage(resultTemper, "");//发送结果
-                    if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
-                        openDoor();
-                    }
-
-                    if (resultTemper < HIGHEST_TEMPER) {
-                        //上传数据
-                        Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                        SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
-                            Log.e(TAG, "accept: 保存完成");
-                            sendUpdateSignMessage(sign);//发送列表更新事件
-                        });
-                    }
-                    nobodyTemperTag = 0;
-                    nobodyFaceTag = 0;
-                }
-            }
-            // TODO: 2020/5/14  无人无脸播报问题*/
-
             if (distanceTipNumber != 0) {
                 distanceTipNumber = 0;
             }
@@ -366,11 +335,51 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (mCacheTemperList.size() > 0) {
                 mCacheTemperList.clear();
             }
+
+            if (mAutoTemper) {
+                if (!lowTempModel) {
+                    startAutoCheck(originT);
+                }
+                // TODO: 2020/5/14  无人无脸播报问题
+                if (mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
+                    Log.e(TAG, "handleTemperature: 原始温度：" + originT);
+                    if (originT - mCacheBeforeTemper >= 4.0f) {
+                        if (mNoBodyTemperList.size() < 8) {
+                            mNoBodyTemperList.add(afterT);
+                        } else {
+                            int index = (mNoBodyTemperList.size() / 2) + 1;
+                            float resultTemper = mNoBodyTemperList.get(index);
+                            resultTemper = formatF(resultTemper);
+                            mNoBodyTemperList.clear();
+
+                            sendResultMessage(resultTemper, "");//发送结果
+                            if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                                openDoor();
+                            }
+
+                            if (resultTemper < HIGHEST_TEMPER) {
+                                //上传数据
+                                Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
+                                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
+                                    Log.e(TAG, "accept: 保存完成");
+                                    sendUpdateSignMessage(sign);//发送列表更新事件
+                                });
+                            }
+                        }
+                        return;
+                    } else {
+                        if (mNoBodyTemperList.size() > 0) {
+                            mNoBodyTemperList.clear();
+                        }
+                    }
+                }
+                // TODO: 2020/5/14  无人无脸播报问题
+            }
             sendClearAllUIMessage();
             return;
         }
 
-        if(autoCheckList.size() > 0){
+        if (autoCheckList.size() > 0) {
             autoCheckList.clear();
         }
 
@@ -486,7 +495,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 if (mCacheTime != 0) mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
                 sendTipsMessage(pleaseCloseTips);
-                if (distanceTipEnable && distanceTipNumber < 5) KDXFSpeechManager.instance().playNormalAdd(pleaseCloseTips, () -> distanceTipNumber++);
+                if (distanceTipEnable && distanceTipNumber < 5)
+                    KDXFSpeechManager.instance().playNormalAdd(pleaseCloseTips, () -> distanceTipNumber++);
                 return;
             }
 
@@ -514,7 +524,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         openDoor();
                     }
 
-                    if(resultTemper < HIGHEST_TEMPER){
+                    if (resultTemper < HIGHEST_TEMPER) {
                         Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
                         SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), null, temperatureSign, false, new Consumer<Sign>() {
                             @Override
@@ -842,7 +852,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
         //设置语音播报
         if (fEnabled) {
-            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));;
+            stringBuffer.append(" " + formatF((float) (temperature * 1.8 + 32)));
+            ;
             stringBuffer.append(getResString(R.string.temper_tips_fahrenheit));
         } else {
             stringBuffer.append(" " + temperature);

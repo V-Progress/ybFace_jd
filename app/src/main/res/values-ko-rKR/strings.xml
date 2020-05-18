@@ -25,6 +25,7 @@
     <string name="setting_app_logo">APP Logo</string>
     <string name="setting_select_image">Choose</string>
     <string name="setting_restore_image">Restore</string>
+    <string name="setting_auto_temper">자동 모드</string>
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>
