@@ -598,6 +598,7 @@
     <string name="safety_black_body_enable">开启黑体矫正</string>
     <string name="safety_temperature_threshold">取温阈值</string>
     <string name="safety_temperature_frame_enable">开启测温框</string><!--开启测温框-->
+    <string name="safety_immediate_report_enable">立即报温</string><!--立即报温-->
     <string name="safety_calibration_main">校准</string><!--校准-->
     <string name="safety_measure_main">测温:</string><!--测温:-->
     <string name="safety_correct_main">校准:</string><!--校准:-->

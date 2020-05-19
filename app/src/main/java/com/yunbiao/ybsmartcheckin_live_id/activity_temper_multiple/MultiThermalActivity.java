@@ -596,7 +596,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         //设置热成像画面中人脸框的颜色，默认为黑色
         TemperatureModule.getIns().setFaceFrameColor(0xFFFFFFFF);
         //人脸框信息faceIndexInfoList，是否在热成像画面中绘制人脸框(true为绘制)
-        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfoList, true);
+        TemperatureModule.getIns().setFaceIndexInfoList(faceIndexInfoList, false);
     }
 
     /*====数据刷新=======================================================================================*/

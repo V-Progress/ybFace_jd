@@ -84,6 +84,12 @@
                     android:id="@+id/iv_hot_image_safety_check"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/iv_tracing_point"
+                    android:visibility="gone"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@mipmap/icon_tracing_point"/>
             </FrameLayout>
 
             <FrameLayout

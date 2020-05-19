@@ -202,6 +202,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.MULTIPLE_THERMAL:
             case Constants.DeviceType.HT_MULTIPLE_THERMAL:
+                Constants.DEFAULT_CAMERA_ANGLE = 0;
                 startActivity(new Intent(this, MultiThermalActivity.class));
                 break;
             case Constants.DeviceType.TEMPER_SAFETY_CHECK:

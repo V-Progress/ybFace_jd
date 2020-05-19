@@ -13,8 +13,10 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -98,6 +100,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private long reportTimeMillis = 0;
     private long temperUpdateInterval = 2 * 1000;
 
+    private ImageView ivTracingPoint;
+    private int ivHotWidth = 0;
+    private int ivHotHeight = 0;
+
     @Override
     protected int getPortraitLayout() {
         if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
@@ -128,6 +134,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         tvWarningNumber = findViewById(R.id.tv_warning_number_safety_check);
         tvSsdSafetyCheck = findViewById(R.id.tv_ssd_safety_check);
         ivHot = findViewById(R.id.iv_hot_image_safety_check);
+        ivTracingPoint = findViewById(R.id.iv_tracing_point);
         tvTemperState = findViewById(R.id.tv_temper_state_safety_check);
         tsTemper = findViewById(R.id.ts_temper_safety_check);
         tsTemper.setFactory(() -> {
@@ -267,6 +274,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private float mCacheRealTimeCorrectValue = -1f;
     //缓存取温
     private List<Float> mTemperFloats = Collections.synchronizedList(new ArrayList<>());
+    private float mCacheTemp = 0;
     private HotImageK6080CallBack hotImageK6080CallBack = new HotImageK6080CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, float originT, float afterT, float minT) {
@@ -312,6 +320,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             sendUpdateHotImageMessage(bitmap, originalTempF);
 
             if (isCorrecting) {
+                uiHandler.sendEmptyMessage(3);
                 mCorrectionTemperList.add(originalTempF);
                 if (mCorrectionTemperList.size() > 30) {
                     mCorrectionTemperList.remove(0);
@@ -321,12 +330,17 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
             if (mImmediateReportModeEnabled) {
                 if (originalTempF < MIN_TEMPER) {
+                    uiHandler.sendEmptyMessage(3);
                     isReport = false;
                     return;
                 }
+                float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                if (afterTreatmentF > mCacheTemp + 0.3f || afterTreatmentF < mCacheTemp - 0.3f) {
+                    sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
+                    mCacheTemp = afterTreatmentF;
+                }
                 if (!isReport) {
                     if (mTemperFloats.size() < 5) {
-                        float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
                         mTemperFloats.add(afterTreatmentF);
                     } else {
                         Float max = Collections.max(mTemperFloats);
@@ -338,7 +352,6 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 } else {
                     if (System.currentTimeMillis() - reportTimeMillis >= temperUpdateInterval) {
                         if (mTemperFloats.size() < 5) {
-                            float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
                             mTemperFloats.add(afterTreatmentF);
                         } else {
                             Float max = Collections.max(mTemperFloats);
@@ -352,6 +365,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             }
 
             if (originalTempF < MIN_TEMPER) {
+                uiHandler.sendEmptyMessage(3);
                 if (mTemperFloats.size() > 0) {
                     Float max = Collections.max(mTemperFloats);
                     mTemperFloats.clear();
@@ -363,6 +377,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             }
 
             float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+            if (afterTreatmentF > mCacheTemp + 0.5f || afterTreatmentF < mCacheTemp - 0.5f) {
+                sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
+                mCacheTemp = afterTreatmentF;
+            }
             mTemperFloats.add(afterTreatmentF);
             if (mTemperFloats.size() > 30) {
                 mTemperFloats.remove(0);
@@ -377,6 +395,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         Bundle bundle = new Bundle();
         bundle.putFloat("temper", value);
         message.setData(bundle);
+        uiHandler.sendMessage(message);
+    }
+
+    private void sendUpdateMaxIndexMessage(int x, int y) {
+        Message message = Message.obtain();
+        message.what = 2;
+        message.arg1 = x;
+        message.arg2 = y;
         uiHandler.sendMessage(message);
     }
 
@@ -396,6 +422,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 case 0:
                     Bitmap bitmap = (Bitmap) msg.obj;
                     ivHot.setImageBitmap(bitmap);
+                    if (ivHotWidth == 0) {
+                        ivHotWidth = ivHot.getWidth();
+                    }
+                    if (ivHotHeight == 0) {
+                        ivHotHeight = ivHot.getHeight();
+                    }
 //                    Bundle data = msg.getData();
 //                    float temper = data.getFloat("temper", 0.0f);
 //                    tvOringinT.setText(temper + "℃");
@@ -427,6 +459,25 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         KDXFSpeechManager.instance().playWaningRingNoStop();
                         handleNumber(true);
                     }
+                    break;
+                case 2:
+                    if (ivHotWidth == 0 || ivHotHeight == 0) {
+                        break;
+                    }
+                    ivTracingPoint.setVisibility(View.VISIBLE);
+                    int x = msg.arg1;
+                    int y = msg.arg2;
+                    int adjustX = (int) ((x / 80f) * ivHotWidth);
+                    int adjustY = (int) ((y / 60f) * ivHotHeight);
+
+                    ViewGroup.MarginLayoutParams margin = new ViewGroup.MarginLayoutParams(ivTracingPoint.getLayoutParams());
+                    margin.setMargins(adjustX, adjustY, adjustX + margin.width, adjustY + margin.height);
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(margin);
+                    ivTracingPoint.setLayoutParams(layoutParams);
+
+                    break;
+                case 3:
+                    ivTracingPoint.setVisibility(View.GONE);
                     break;
             }
             return false;
