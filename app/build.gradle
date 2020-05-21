@@ -8,8 +8,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 45
-        versionName "1.4.7"
+        versionCode 46
+        versionName "1.4.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -66,7 +66,11 @@ android {
         ext.flavor = {
             _flavor,
             _flavorType,
-            _appType, _appName, _appIcon, _umKey, _umChannel, _faceAppId, _faceSdkKey, _maxDetectNum, _detectFaceScaleVal
+            _appType,
+            _appName, _appIcon,
+            _umKey, _umChannel,
+            _faceAppId, _faceSdkKey,
+            _maxDetectNum, _detectFaceScaleVal
                 ->
                 _flavor.buildConfigField("int", "FLAVOR_TYPE", _flavorType)
                 _flavor.buildConfigField("int", "APP_TYPE", _appType)
@@ -169,6 +173,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name5", "@mipmap/softworkz_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*ScanTemp*/
+        flavor(SCAN_TEMP,"6",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/app_name6", "@mipmap/scan_temp", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -190,6 +199,9 @@ android {
     greendao {
         schemaVersion 35//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
+    }
+    dataBinding {
+        enabled = true
     }
 }
 

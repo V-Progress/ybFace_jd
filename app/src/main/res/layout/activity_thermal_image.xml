@@ -66,13 +66,11 @@
                     android:maxWidth="200dp"
                     android:maxHeight="100dp"
                     android:onClick="goSetting"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/yb_logo" />
+                    android:scaleType="fitCenter" />
                 <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
                     android:layout_marginLeft="5dp"
                     android:textStyle="bold"
                     android:textSize="34dp"
-                    android:text="YBFACE"
                     android:id="@+id/tv_main_abbname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

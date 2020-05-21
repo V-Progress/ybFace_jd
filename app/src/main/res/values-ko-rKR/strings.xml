@@ -3,6 +3,8 @@
     <string name="app_name2">HTFace</string>
     <string name="app_name3">思库考勤</string>
     <string name="app_name4">Osmile AI</string>
+    <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="used">중고:</string>
     <string name="no_used">/가능:</string>
     <string name="back">이전</string>
@@ -13,10 +15,29 @@
     <string name="temper_error_btn_restart">재개</string>
     <string name="temper_error_btn_cancel">잠시 처리하지 않다</string>
 
-    <!--温度单位-->
-    <string name="temper_tips_centigrade">섭씨</string>
-    <string name="temper_tips_fahrenheit">화씨 경도</string>
+    <!--语音设置-->
     <string name="temper_tips_close">바투 팁</string>
+    <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->
+    <string name="setting_normal_speech_content">체온 이 정상 적 으로 방송 되다:</string>
+    <string name="setting_warning_speech_content">체온 이상 보도:</string>
+    <string name="setting_broadcast_speed">음성 속도</string>
+    <string name="speech_setting_title">음성 뉴스 설정</string>
+    <string name="speech_setting_open_or_close">켜질지 말지</string>
+    <string name="speech_setting_show_temper">온도 보이기</string>
+    <string name="speech_setting_temper_location">온도 표시위치</string>
+    <string name="speech_setting_location_start">첫</string>
+    <string name="speech_setting_location_center">기호 비트</string>
+    <string name="speech_setting_location_end">꼬리</string>
+    <string name="speech_setting_alert">온도 표시는 # 기호 표시, 자동 완성 온도 숫자, 예시 (36.5도) 이며, 하나의 # 표시자만 존재하고, 여러 개의 # 표시자가 있을 경우 첫 번째 기호를 기준으로 사용하고, 나머지 기호를 자동으로 삭제합니다.</string>
+    <string name="speech_setting_welcome_exmaple">환영어 예제：</string>
+    <string name="speech_setting_distance_exmaple">거리 표시 예시：</string>
+    <string name="speech_setting_normal_exmaple">정상적인 예제：</string>
+    <string name="speech_setting_warning_exmaple">이상적 예시：</string>
+    <string name="speech_setting_audition">오디션</string>
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">섭씨 도</string>
+    <string name="temper_tips_fahrenheit">화씨 도</string>
     <string name="app_main_title">제목 적용</string>
 
     <string name="select_img_title">Select Image</string>
@@ -246,7 +267,6 @@
     <string name="setting_range_highest">최고</string><!--Highest-->
     <string name="setting_speech_delay">연속 방송 간격</string>
     <string name="setting_screen_saver">광고화면</string>
-    <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->
     <string name="setting_show_qr_code">QR 코드 표시</string>
     <string name="setting_enable_ic_card">IC 카드 리더</string>
     <string name="setting_relay_delay_time">개관 시간</string>
@@ -286,8 +306,6 @@
     <string name="setting_edit_password_failed">편집 실패</string>
     <string name="setting_edit_password_success">성공적으로 수정되었습니다</string>
     <string name="setting_current_correct_value">당면교정 하 다:</string>
-    <string name="setting_normal_speech_content">체온 이 정상 적 으로 방송 되다:</string>
-    <string name="setting_warning_speech_content">체온 이상 보도:</string>
     <string name="setting_low_temp_model">저온 모드</string>
     <string name="setting_portrait_outline">실루엣</string>
     <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
@@ -302,7 +320,6 @@
     <string name="setting_switch_tip2">측온으로 출퇴근할까요?</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">확정</string>
     <string name="setting_switch_cancel">취소</string>
-    <string name="setting_broadcast_speed">음성 속도</string>
 
     <!--设置开关机-->
     <string name="setting_tip_warning_number_reseted">Count cleared</string>

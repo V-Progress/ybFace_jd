@@ -3,10 +3,8 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -48,8 +46,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UtilBitmap;
-import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -501,7 +497,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
                 }
                 tvTemp.setText(temper);
 
-                if (mCurrModel == ThermalConst.FACE_ONLY || signBean.getTemperature() == 0.0f) {
+                if (mCurrModel == ThermalConst.ONLY_FACE || signBean.getTemperature() == 0.0f) {
                     tvTemp.setVisibility(View.INVISIBLE);
                 } else {
                     tvTemp.setVisibility(View.VISIBLE);

@@ -217,7 +217,7 @@ public abstract class SMTTempBase2Activity extends SMTBaseActivity {
             mHasFace = hasFace;
             viewInterface.hasFace(hasFace);
             if (!hasFace) {
-                if (mCurrMode == ThermalConst.FACE_ONLY) {
+                if (mCurrMode == ThermalConst.ONLY_FACE) {
                     maskTipNumber = 0;
                     sendClearMaskTipMessage(0);
                 }
@@ -225,7 +225,7 @@ public abstract class SMTTempBase2Activity extends SMTBaseActivity {
             }
 
             //如果是人脸模式
-            if (mCurrMode == ThermalConst.FACE_ONLY) {
+            if (mCurrMode == ThermalConst.ONLY_FACE) {
                 return true;
             }
 
@@ -495,7 +495,7 @@ public abstract class SMTTempBase2Activity extends SMTBaseActivity {
             };
         } else {
             ledGreen();
-            if (mCurrMode == ThermalConst.INFRARED_ONLY || mCurrMode == ThermalConst.THERMAL_16_4_ONLY || mCurrMode == ThermalConst.THERMAL_ONLY) {
+            if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
                 openDoor();
             }
             return () -> {

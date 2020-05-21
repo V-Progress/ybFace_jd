@@ -3,6 +3,8 @@
     <string name="app_name2">Hengtong katılım</string>
     <string name="app_name3">Siku Katılım</string>
     <string name="app_name4">Osmile AI</string>
+    <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="used">kullanılmış:</string>
     <string name="no_used">/mevcut:</string>
     <string name="back">Geri</string>
@@ -13,10 +15,29 @@
     <string name="temper_error_btn_restart">Yeni -den başlatın</string>
     <string name="temper_error_btn_cancel">Bununla uğraşma</string>
 
+    <!--语音设置-->
+    <string name="temper_tips_close">İpuçlarına yakın</string>
+    <string name="setting_broadcast_speed">Ses hızı</string>
+    <string name="setting_welcome_speech">Karşılama mesajı</string><!--Welcome speech-->
+    <string name="setting_normal_speech_content">Vücut ısısı yayın içeriği</string>
+    <string name="setting_warning_speech_content">Vücut ısısı anormal yayın içeriği</string>
+    <string name="speech_setting_title">Sesli yayın ayarları</string>
+    <string name="speech_setting_open_or_close">Açıp açma</string>
+    <string name="speech_setting_show_temper">Sıcaklığı göster</string>
+    <string name="speech_setting_temper_location">Sıcaklık görüntü pozisyonu</string>
+    <string name="speech_setting_location_start">Ilk</string>
+    <string name="speech_setting_location_center">Sembol biti</string>
+    <string name="speech_setting_location_end">Kuyruk</string>
+    <string name="speech_setting_alert">Sıcaklık görüntüleme konumu sembolle tanımlanır, sıcaklık numarası otomatik olarak doldurulur, örnek (36,5 derece C), sadece bir s-karakter olabilir, birden fazla s vardır, ilk geçerli olacak ve kalan semboller otomatik olarak silinir</string>
+    <string name="speech_setting_welcome_exmaple">Hoş geldiniz örneği：</string>
+    <string name="speech_setting_distance_exmaple">Mesafe ipuçları örneği：</string>
+    <string name="speech_setting_normal_exmaple">Normal örnek：</string>
+    <string name="speech_setting_warning_exmaple">Özel durum örneği：</string>
+    <string name="speech_setting_audition">Seçme</string>
+
     <!--温度单位-->
     <string name="temper_tips_centigrade">Santigrat</string>
     <string name="temper_tips_fahrenheit">Derece fahrenhayt</string>
-    <string name="temper_tips_close">İpuçlarına yakın</string>
     <string name="app_main_title">Uygulama başlığı</string>
 
     <string name="select_img_title">Select Image</string>
@@ -198,7 +219,6 @@
     <string name="sign_export_record_path">İçindekiler：</string>
     <string name="sign_export_record_failed">Dışa aktarma başarısız</string>
     <string name="sign_list_table_name">Kayıt</string>
-    <string name="setting_broadcast_speed">Ses hızı</string>
 
 
     <!--访客列表-->
@@ -248,7 +268,6 @@
     <string name="setting_range_highest">En yüksek</string><!--Highest-->
     <string name="setting_speech_delay">Sürekli yayın aralığı</string>
     <string name="setting_screen_saver">Ekran koruyucusu</string>
-    <string name="setting_welcome_speech">Karşılama mesajı</string><!--Welcome speech-->
     <string name="setting_show_qr_code">QR kodunu göster</string>
     <string name="setting_enable_ic_card">IC kart okuyucu</string>
     <string name="setting_relay_delay_time">Açılış saatleri</string>
@@ -288,8 +307,6 @@
     <string name="setting_edit_password_failed">Düzenleme başarısız</string>
     <string name="setting_edit_password_success">Başarıyla değiştirildi</string>
     <string name="setting_current_correct_value">Geçerli düzeltme değeri:</string>
-    <string name="setting_normal_speech_content">Vücut ısısı yayın içeriği</string>
-    <string name="setting_warning_speech_content">Vücut ısısı anormal yayın içeriği</string>
     <string name="setting_low_temp_model">Düşük sıcaklık modu</string>
     <string name="setting_portrait_outline">Portre Gölgesi</string>
     <string name="setting_default_welcome_tip">AI Akıllı Katılım Sistemine Hoşgeldiniz</string>

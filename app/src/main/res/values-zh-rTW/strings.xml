@@ -3,6 +3,8 @@
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思庫考勤</string>
     <string name="app_name4">Osmile AI</string>
+    <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
@@ -13,10 +15,29 @@
     <string name="temper_error_btn_restart">重啓</string>
     <string name="temper_error_btn_cancel">暫不處理</string>
 
+    <!--语音设置-->
+    <string name="speech_setting_title">语音播报设置</string>
+    <string name="setting_broadcast_speed">语音速度</string><!--語音速度-->
+    <string name="setting_welcome_speech">欢迎语</string><!--Welcome speech-->
+    <string name="temper_tips_close">靠近提示</string>
+    <string name="setting_normal_speech_content">体温正常播报内容</string>
+    <string name="setting_warning_speech_content">体温异常播报内容</string>
+    <string name="speech_setting_open_or_close">是否开启</string>
+    <string name="speech_setting_show_temper">显示温度</string>
+    <string name="speech_setting_temper_location">温度显示位置</string>
+    <string name="speech_setting_location_start">首部</string>
+    <string name="speech_setting_location_center">符号位</string>
+    <string name="speech_setting_location_end">尾部</string>
+    <string name="speech_setting_alert">温度显示位置使用#符号标识，将自动补全温度数字，示例( 36.5℃ )，只能存在一个#符，存在多个#符时，将以第一个为准，并自动删除其余的符号</string>
+    <string name="speech_setting_welcome_exmaple">欢迎语示例：</string>
+    <string name="speech_setting_distance_exmaple">距离提示示例：</string>
+    <string name="speech_setting_normal_exmaple">体温正常播报示例：</string>
+    <string name="speech_setting_warning_exmaple">体温异常播报示例：</string>
+    <string name="speech_setting_audition">试听</string>
+
     <!--溫度單位-->
     <string name="temper_tips_centigrade">攝氏度</string>
     <string name="temper_tips_fahrenheit">華氏度</string>
-    <string name="temper_tips_close">靠近提示</string>
     <string name="app_main_title">應用標題</string>
 
     <string name="select_img_title">选择图片</string>
@@ -247,7 +268,6 @@
     <string name="setting_range_highest">最高</string><!--Highest-->
     <string name="setting_speech_delay">連續播報間隔</string>
     <string name="setting_screen_saver">屏保</string>
-    <string name="setting_welcome_speech">歡迎語</string><!--Welcome speech-->
     <string name="setting_show_qr_code">顯示二維碼</string>
     <string name="setting_enable_ic_card">IC讀卡器</string>
     <string name="setting_relay_delay_time">開門時間</string>
@@ -287,8 +307,6 @@
     <string name="setting_edit_password_failed">修改失敗</string>
     <string name="setting_edit_password_success">修改成功</string>
     <string name="setting_current_correct_value">當前矯正值：</string>
-    <string name="setting_normal_speech_content">體溫正常播報內容</string>
-    <string name="setting_warning_speech_content">體溫異常播報內容</string>
     <string name="setting_low_temp_model">低溫模式</string>
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用AI智能考勤系統</string>
@@ -315,7 +333,6 @@
     <string name="setting_switch_tip2">確定切換到測溫考勤嗎？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">確定</string>
     <string name="setting_switch_cancel">取消</string>
-    <string name="setting_broadcast_speed">語音速度</string><!--語音速度-->
 
 
     <!--設置開關機-->

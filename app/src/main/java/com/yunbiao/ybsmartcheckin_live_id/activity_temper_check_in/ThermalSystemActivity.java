@@ -126,9 +126,12 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
             ivLogo.setImageResource(R.mipmap.osimle_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
-        } else if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
             ivLogo.setImageResource(R.mipmap.softworkz_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SCAN_TEMP) {
+            ImageFileLoader.setDefaultLogoId(R.mipmap.scan_temp);
+            setImageByResId(ivLogo, R.mipmap.scan_temp);
         } else {
             ivLogo.setImageResource(R.mipmap.yb_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
@@ -146,18 +149,25 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
         //onResume中加载该加载的东西
         Company company = SpUtils.getCompany();
-        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
-            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
-            tvAbbName.setText(company.getAbbname());
-        } else {
-            //如果是未绑定则显示自己设置的东西
-            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
-            if(TextUtils.isEmpty(logoPath)){
-                ivLogo.setImageResource(R.mipmap.yb_logo);
+        if (Constants.FLAVOR_TYPE == FlavorType.YB) {
+            if (company.getComid() != Constants.NOT_BIND_COMPANY_ID) {
+                ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+                tvAbbName.setText(company.getAbbname());
             } else {
-                ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+                //如果是未绑定则显示自己设置的东西
+                String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+                if (TextUtils.isEmpty(logoPath)) {
+                    ivLogo.setImageResource(R.mipmap.yb_logo);
+                } else {
+                    ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+                }
+                tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
             }
-            tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
+        } else {
+            if (company.getComid() != Constants.NOT_BIND_COMPANY_ID) {
+                ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+                tvAbbName.setText(company.getAbbname());
+            }
         }
     }
 
@@ -234,20 +244,27 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     }
 
     public void setInfo() {
-        //获取到公司信息时加载该加载的东西
         Company company = SpUtils.getCompany();
-        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
-            ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
-            tvAbbName.setText(company.getAbbname());
-        } else {
-            //如果是未绑定则显示自己设置的东西
-            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
-            if(TextUtils.isEmpty(logoPath)){
-                ivLogo.setImageResource(R.mipmap.yb_logo);
+        //获取到公司信息时加载该加载的东西
+        if (Constants.FLAVOR_TYPE == FlavorType.YB) {
+            if (company.getComid() != Constants.NOT_BIND_COMPANY_ID) {
+                ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+                tvAbbName.setText(company.getAbbname());
             } else {
-                ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+                //如果是未绑定则显示自己设置的东西
+                String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+                if (TextUtils.isEmpty(logoPath)) {
+                    ivLogo.setImageResource(R.mipmap.yb_logo);
+                } else {
+                    ivLogo.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+                }
+                tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
             }
-            tvAbbName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
+        } else {
+            if (company.getComid() != Constants.NOT_BIND_COMPANY_ID) {
+                ImageFileLoader.i().loadAndSave(this, company.getComlogo(), Constants.DATA_PATH, ivLogo);
+                tvAbbName.setText(company.getAbbname());
+            }
         }
 
         tv_company_system.setText(company.getComname());

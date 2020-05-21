@@ -7,4 +7,5 @@ public interface FlavorType {
     int OSIMLE = 3;
     int SOFT_WORK_Z = 4;
     int BIO = 5;
+    int SCAN_TEMP = 6;
 }

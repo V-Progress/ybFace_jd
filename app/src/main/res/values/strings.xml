@@ -4,6 +4,7 @@
     <string name="app_name3">思库考勤</string>
     <string name="app_name4">Osmile AI</string>
     <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
@@ -14,10 +15,38 @@
     <string name="temper_error_btn_restart">Reboot</string>
     <string name="temper_error_btn_cancel">No processing</string>
 
+    <!--语音设置-->
+    <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
+    <string name="setting_welcome_speech">Welcome Speech</string><!--Welcome speech-->
+    <string name="temper_tips_close">Close to the tip</string>
+    <string name="speech_setting_open_or_close">On</string>
+    <string name="speech_setting_show_temper">Displays the temperature value</string>
+    <string name="speech_setting_temper_location">Temperature display position</string>
+    <string name="speech_setting_location_start">Before</string>
+    <string name="speech_setting_location_center">Sign position</string>
+    <string name="speech_setting_location_end">behind</string>
+    <string name="speech_setting_alert">The temperature display position is identified by the # symbol, and the temperature number will be automatically completed. For example (36.5℃), only one # character can exist, and when there are multiple # characters, the first one will prevail and the remaining symbols will be deleted automatically</string>
+    <string name="speech_setting_welcome_exmaple">Example of welcome：</string>
+    <string name="speech_setting_distance_exmaple">Distance prompt example：</string>
+    <string name="speech_setting_normal_exmaple">Example of normal temperature：</string>
+    <string name="speech_setting_warning_exmaple">Examples of abnormal temperature：</string>
+    <string name="speech_setting_audition">play</string>
+    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
+    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
+    <string name="setting_broadcast_speed">Voice speed</string>
+    <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
+
+    <!--logo设置-->
+    <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">Display home LOGO</string>
+    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
+    <string name="setting_show_main_info">Display home page information</string>
+
     <!--温度单位-->
     <string name="temper_tips_centigrade">Centigrade</string>
     <string name="temper_tips_fahrenheit">Fahrenheit degree</string>
-    <string name="temper_tips_close">Close to the tip</string>
     <string name="app_main_title">The application title</string>
     <string name="select_img_title">Select Image</string>
     <string name="select_img_failed">Image selection failed</string>
@@ -250,7 +279,6 @@
     <string name="setting_range_highest">Highest</string><!--Highest--><!-- 最高 -->
     <string name="setting_speech_delay">Broadcast delay</string><!-- 连续播报间隔 -->
     <string name="setting_screen_saver">Screen saver</string><!--屏保  -->
-    <string name="setting_welcome_speech">Welcome speech</string><!--Welcome speech--><!--欢迎语  -->
     <string name="setting_show_qr_code">Show QrCode</string><!-- 显示二维码 -->
     <string name="setting_enable_ic_card">IC Card Reader</string><!-- IC读卡器 -->
     <string name="setting_relay_delay_time">Close Door Delay</string><!-- 开门时间 -->
@@ -290,14 +318,8 @@
     <string name="setting_edit_password_failed">Modified failed</string><!-- 修改失败 -->
     <string name="setting_edit_password_success">Modified success</string><!-- 修改成功 -->
     <string name="setting_current_correct_value">Current correction value:</string><!--当前补正值-->
-    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
-    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
-    <string name="setting_broadcast_speed">Voice speed</string>
     <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
-    <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
-    <string name="setting_default_welcome_tip2">Welcome to HT intelligent attendance system</string>
-    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_default_welcome_tip4">Welcome to use the high-throughput temperature measurement and screening system</string>
     <string name="setting_correct_temperature">Correct Temperature</string>
     <string name="setting_broadcast_f">Enable Fahrenheit</string>
@@ -321,12 +343,6 @@
     <string name="setting_switch_tip2">Are you sure to switch to temperature measurement attendance？</string><!---->
     <string name="setting_switch_confirm">YES</string>
     <string name="setting_switch_cancel">NO</string>
-    <string name="setting_privacy_mode">Privacy Mode</string>
-    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
-    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
-    <string name="setting_show_main_logo">Display home LOGO</string>
-    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
-    <string name="setting_show_main_info">Display home page information</string>
 
 
     <!--开关机设置-->

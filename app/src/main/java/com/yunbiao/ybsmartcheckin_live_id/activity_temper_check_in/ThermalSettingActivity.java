@@ -132,20 +132,20 @@ public class ThermalSettingActivity extends BaseActivity {
         initPrivacyMode();
         //初始化清除策略
         initClearPolicy();
-        //调整语速
-        initVoiceSpeed();
         //隐藏首页LOGO
         initMainLogo();
         //隐藏首页信息
         initMainInfo();
         //显示首页热成像
         initMainThermal();
-        //靠近提示
-        initCloseTips();
         //首页文字
         initLogoText();
         //首页Logo
         initMainLogoImage();
+    }
+
+    public void goSpeechSetting(View view){
+        startActivity(new Intent(this,SpeechContentActivity.class));
     }
 
     private void initMainLogoImage() {
@@ -254,61 +254,7 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
-    private void initCloseTips() {
-        String closeTips = SpUtils.getStr(ThermalConst.Key.CLOSE_TIPS, ThermalConst.Default.CLOSE_TIPS);
-        EditText edtPleaseClose = findViewById(R.id.edt_please_close_tips);
-        if (TextUtils.isEmpty(closeTips)) {
-            edtPleaseClose.setHint(getResString(R.string.main_tips_please_close));
-        } else {
-            edtPleaseClose.setText(closeTips);
-        }
-        edtPleaseClose.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                String tips = s.toString().trim();
-                if(TextUtils.isEmpty(tips)) {
-                    SpUtils.remove(ThermalConst.Key.CLOSE_TIPS);
-                } else {
-                    SpUtils.saveStr(ThermalConst.Key.CLOSE_TIPS,tips);
-                }
-            }
-        });
-    }
-
     private void initUISetting() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, "");
-        EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
-        if (TextUtils.isEmpty(welcomeTips)) {
-            String tips = Constants.FLAVOR_TYPE == FlavorType.YB ? getResString(R.string.setting_default_welcome_tip) : Constants.FLAVOR_TYPE == FlavorType.HT ? getResString(R.string.setting_default_welcome_tip2) : "";
-            edtWelComeTips.setHint(tips);
-        } else {
-            edtWelComeTips.setText(welcomeTips);
-        }
-        edtWelComeTips.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                String inputWelcome = s.toString()/*.trim()*/;
-                if(TextUtils.isEmpty(inputWelcome)){
-                    SpUtils.remove(SpUtils.WELCOM_TIPS);
-                } else {
-                    SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
-                }
-            }
-        });
-
         boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
         Switch swQrCode = findViewById(R.id.sw_qrcode_setting);
         swQrCode.setChecked(qrCodeEnabled);
@@ -378,29 +324,6 @@ public class ThermalSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, isChecked);
             }
         });
-    }
-
-    private void initVoiceSpeed() {
-        final Float voidSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
-        Button btnSpeedSub = findViewById(R.id.btn_speed_sub_setting);
-        Button btnSpeedPlus = findViewById(R.id.btn_speed_plus_setting);
-        EditText edtSpeed = findViewById(R.id.edt_speed_setting);
-        edtSpeed.setText(String.valueOf(voidSpeed));
-        View.OnClickListener onClickListener = v -> {
-            String value = edtSpeed.getText().toString();
-            float speed = formatF(Float.parseFloat(value));
-
-            if(v.getId() == R.id.btn_speed_sub_setting){
-                speed -= 0.1f;
-            } else {
-                speed += 0.1f;
-            }
-            speed = formatF(speed);
-            edtSpeed.setText(String.valueOf(speed));
-            SpUtils.saveFloat(ThermalConst.Key.VOICE_SPEED,speed);
-        };
-        btnSpeedPlus.setOnClickListener(onClickListener);
-        btnSpeedSub.setOnClickListener(onClickListener);
     }
 
     private void initClearPolicy() {
@@ -537,7 +460,7 @@ public class ThermalSettingActivity extends BaseActivity {
         final int model = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
 
         //如果是红外模式或人脸模式则隐藏矫正按钮
-        if (model == ThermalConst.FACE_INFRARED || model == ThermalConst.INFRARED_ONLY || model == ThermalConst.FACE_ONLY || model == ThermalConst.THERMAL_16_4_ONLY || model == ThermalConst.FACE_THERMAL_16_4) {
+        if (model == ThermalConst.FACE_INFRARED || model == ThermalConst.ONLY_INFRARED || model == ThermalConst.ONLY_FACE || model == ThermalConst.ONLY_THERMAL_HM_16_4 || model == ThermalConst.FACE_THERMAL_HM_16_4) {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
         } else {
             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -562,7 +485,7 @@ public class ThermalSettingActivity extends BaseActivity {
                             return;
                         }
                         //如果是红外模式则隐藏矫正按钮
-                        if (whichModel == ThermalConst.FACE_INFRARED || whichModel == ThermalConst.INFRARED_ONLY || whichModel == ThermalConst.FACE_ONLY) {
+                        if (whichModel == ThermalConst.FACE_INFRARED || whichModel == ThermalConst.ONLY_INFRARED || whichModel == ThermalConst.ONLY_FACE) {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
                         } else {
                             findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
@@ -576,17 +499,6 @@ public class ThermalSettingActivity extends BaseActivity {
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-            }
-        });
-
-        //距离提示==========================================================================================
-        boolean distanceEnabled = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP, ThermalConst.Default.DISTANCE_TIP);
-        Switch swDistance = findViewById(R.id.sw_distance_setting);
-        swDistance.setChecked(distanceEnabled);
-        swDistance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(ThermalConst.Key.DISTANCE_TIP, isChecked);
             }
         });
 
@@ -653,46 +565,6 @@ public class ThermalSettingActivity extends BaseActivity {
         };
         btnWarnSub.setOnClickListener(warnClickListener);
         btnWarnAdd.setOnClickListener(warnClickListener);
-
-        //体温播报设置==========================================================================================
-        //正常
-        String normalTips = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, ThermalConst.Default.NORMAL_BROADCAST);
-        EditText edtNormalTips = findViewById(R.id.edt_normal_tips_tips);
-        if (TextUtils.isEmpty(normalTips)) {
-            edtNormalTips.setHint(getResources().getString(R.string.main_temp_normal_tips));
-        } else {
-            edtNormalTips.setText(normalTips);
-        }
-        edtNormalTips.addTextChangedListener(new TextWatcherImpl() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString()/*.trim()*/;
-                if (TextUtils.isEmpty(input)) {
-                    SpUtils.remove(ThermalConst.Key.NORMAL_BROADCAST);
-                } else {
-                    SpUtils.saveStr(ThermalConst.Key.NORMAL_BROADCAST, input);
-                }
-            }
-        });
-        //异常
-        String warningTips = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, ThermalConst.Default.WARNING_BROADCAST);
-        EditText edtWarningTips = findViewById(R.id.edt_warning_tips_tips);
-        if (TextUtils.isEmpty(warningTips)) {
-            edtWarningTips.setHint(getResources().getString(R.string.main_temp_warning_tips));
-        } else {
-            edtWarningTips.setText(warningTips);
-        }
-        edtWarningTips.addTextChangedListener(new TextWatcherImpl() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString()/*.trim()*/;
-                if (TextUtils.isEmpty(input)) {
-                    SpUtils.remove(ThermalConst.Key.WARNING_BROADCAST);
-                } else {
-                    SpUtils.saveStr(ThermalConst.Key.WARNING_BROADCAST, input);
-                }
-            }
-        });
 
         //体温播报延时==========================================================================================
         Button btnSpeechDelaySub = findViewById(R.id.btn_speech_delay_sub_setting);
@@ -761,45 +633,6 @@ public class ThermalSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(ThermalConst.Key.THERMAL_F_ENABLED, isChecked);
             }
         });
-
-/*        //====环境温度================================================================
-        Button btnAmbientSub = findViewById(R.id.btn_ambient_sub_setting);
-        Button btnAmbientAdd = findViewById(R.id.btn_ambient_add_setting);
-        final EditText edtAmbient = findViewById(R.id.edt_ambient_setting);
-        float ambient = SpUtils.getFloat(SpUtils.AMBIENT, Constants.DEFAULT_AMBIENT);
-        edtAmbient.setText(ambient + "");
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = edtAmbient.getText().toString();
-                float v1 = Float.parseFloat(s);
-
-                if (v.getId() == R.id.btn_ambient_sub_setting) {
-                    v1 -= 0.1f;
-                } else if (v.getId() == R.id.btn_ambient_add_setting) {
-
-                    v1 += 0.1f;
-                    if (v1 >= 35.8f) {
-                        v1 = 35.8f;
-                    }
-                }
-                v1 = formatF(v1);
-                edtAmbient.setText(v1 + "");
-                SpUtils.saveFloat(SpUtils.AMBIENT, v1);
-            }
-        };
-        btnAmbientSub.setOnClickListener(onClickListener);
-        btnAmbientAdd.setOnClickListener(onClickListener);
-
-        View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-
-                return false;
-            }
-        };
-        btnAmbientSub.setOnLongClickListener(onLongClickListener);*/
     }
 
     class TextWatcherImpl implements TextWatcher {

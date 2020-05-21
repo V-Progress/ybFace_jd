@@ -4,6 +4,7 @@
     <string name="app_name3">思库考勤</string>
     <string name="app_name4">Osmile AI</string>
     <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
@@ -15,10 +16,29 @@
     <string name="temper_error_btn_cancel">No processing</string>
 
 
+    <!--语音设置-->
+    <string name="setting_welcome_speech">Welcome speech</string><!--Welcome speech--><!--欢迎语  -->
+    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
+    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
+    <string name="setting_broadcast_speed">Voice speed</string>
+    <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
+    <string name="temper_tips_close">Vicino a tip</string>
+    <string name="speech_setting_open_or_close">attivazione</string>
+    <string name="speech_setting_show_temper">Che temperatura</string>
+    <string name="speech_setting_temper_location">Posizione indicata dalla temperatura</string>
+    <string name="speech_setting_location_start">prima</string>
+    <string name="speech_setting_location_center">Simboli bit</string>
+    <string name="speech_setting_location_end">coda</string>
+    <string name="speech_setting_alert">L’uso del logo # simboli temperatura mostra l’ubicazione, la temperatura di completamento automatico di dati, esempi (36,5 ℃), esiste solo un # descrittori, esistono oltre # descrittori, sarà la prima a prevalere, simboli e cancellare il resto automaticamente</string>
+    <string name="speech_setting_welcome_exmaple">Esempi di parole di benvenuto：</string>
+    <string name="speech_setting_distance_exmaple">Esempi di distanza：</string>
+    <string name="speech_setting_normal_exmaple">Esempi di normale：</string>
+    <string name="speech_setting_warning_exmaple">Esempi di anomalie：</string>
+    <string name="speech_setting_audition">In onda</string>
+
     <!--温度单位-->
     <string name="temper_tips_centigrade">Gradi centigradi</string>
     <string name="temper_tips_fahrenheit">Fahrenheit gradi</string>
-    <string name="temper_tips_close">Vicino a tip</string>
     <string name="app_main_title">Applicazioni titolo</string>
     <string name="select_img_title">Select Image</string>
     <string name="select_img_failed">Image selection failed</string>
@@ -251,7 +271,6 @@
     <string name="setting_range_highest">Highest</string><!--Highest--><!-- 最高 -->
     <string name="setting_speech_delay">Broadcast delay</string><!-- 连续播报间隔 -->
     <string name="setting_screen_saver">Screen saver</string><!--屏保  -->
-    <string name="setting_welcome_speech">Welcome speech</string><!--Welcome speech--><!--欢迎语  -->
     <string name="setting_show_qr_code">Show QrCode</string><!-- 显示二维码 -->
     <string name="setting_enable_ic_card">IC Card Reader</string><!-- IC读卡器 -->
     <string name="setting_relay_delay_time">Close Door Delay</string><!-- 开门时间 -->
@@ -291,8 +310,6 @@
     <string name="setting_edit_password_failed">Modified failed</string><!-- 修改失败 -->
     <string name="setting_edit_password_success">Modified success</string><!-- 修改成功 -->
     <string name="setting_current_correct_value">Current correction value:</string><!--当前补正值-->
-    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
-    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
     <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
     <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
     <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
@@ -323,7 +340,6 @@
     <string name="setting_privacy_mode">Privacy Mode</string>
     <string name="setting_periodic_purge_policy">Periodic purge policy</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
-    <string name="setting_broadcast_speed">Voice speed</string>
 
 
     <!--开关机设置-->

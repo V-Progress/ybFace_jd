@@ -207,6 +207,27 @@
 
                     <TextView
                         style="@style/setting_text"
+                        android:text="@string/setting_screen_saver" />
+
+                    <Switch
+                        android:id="@+id/sw_poster_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
                         android:text="@string/setting_show_main_logo" />
 
                     <Switch
@@ -274,68 +295,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="@string/setting_screen_saver" />
-
-                    <Switch
-                        android:id="@+id/sw_poster_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="@color/white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="@string/setting_broadcast_speed" />
-
-
-                    <Button
-                        android:layout_marginLeft="20dp"
-                        android:id="@+id/btn_speed_sub_setting"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@mipmap/icon_jian" />
-
-                    <LinearLayout
-                        style="@style/style_setting_input_save_button"
-                        android:layout_marginLeft="0dp"
-                        android:orientation="horizontal"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="10dp">
-
-                        <EditText
-                            android:id="@+id/edt_speed_setting"
-                            style="@style/style_setting_input_number_edt"
-                            android:enabled="false" />
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_speed_plus_setting"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@mipmap/icon_jia" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -388,102 +347,16 @@
                         android:padding="5dp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="@string/setting_normal_speech_content" />
-
-                    <EditText
-                        android:id="@+id/edt_normal_tips_tips"
-                        style="@style/style_setting_input_number_edt"
-                        android:layout_width="400dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_system_name"
-                        android:inputType="text"
-                        android:maxLength="20"
-                        android:padding="5dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:text="@string/setting_warning_speech_content"
-                        style="@style/setting_text" />
-
-                    <EditText
-                        android:id="@+id/edt_warning_tips_tips"
-                        style="@style/style_setting_input_number_edt"
-                        android:layout_width="400dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_system_name"
-                        android:inputType="text"
-                        android:maxLength="20"
-                        android:padding="5dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:text="@string/temper_tips_close"
-                        style="@style/setting_text" />
-
-                    <EditText
-                        android:id="@+id/edt_please_close_tips"
-                        style="@style/style_setting_input_number_edt"
-                        android:layout_width="400dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/shape_system_name"
-                        android:inputType="text"
-                        android:maxLength="20"
-                        android:padding="5dp" />
-                </LinearLayout>
-
-                <LinearLayout
+                <Button
+                    android:maxWidth="600dp"
+                    android:minWidth="200dp"
                     android:layout_marginTop="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/setting_text"
-                        android:text="@string/setting_welcome_speech" />
-
-                    <EditText
-                        android:gravity="center"
-                        android:layout_marginRight="20dp"
-                        android:maxLines="3"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="20dp"
-                        android:textColorHint="@color/gray_low"
-                        android:textColor="@color/white"
-                        android:background="@drawable/shape_system_name"
-                        android:layout_marginLeft="10dp"
-                        android:singleLine="false"
-                        android:scrollHorizontally="true"
-                        android:id="@+id/edt_welcome_tips"
-                        android:layout_width="match_parent"
-                        android:inputType="text|textMultiLine"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                    android:layout_marginLeft="0dp"
+                    style="@style/style_setting_input_save_button"
+                    android:onClick="goSpeechSetting"
+                    android:text="@string/speech_setting_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout

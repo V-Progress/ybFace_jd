@@ -5,6 +5,8 @@
 </string>
     <string name="app_name3">思库インテリジェント勤務
 </string>
+    <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
     <string name="app_name4">Osmile AI</string>
     <string name="used">使用済み:</string>
     <string name="no_used">/利用できる:</string>
@@ -16,20 +18,53 @@
     <string name="temper_error_btn_restart">リブート</string>
     <string name="temper_error_btn_cancel">処理を保留する</string>
 
+    <!--语音设置-->
+    <string name="speech_setting_title">音声放送設定</string>
+    <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->
+    <string name="setting_welcome_speech">歓迎のことば</string><!--Welcome speech-->
+    <string name="temper_tips_close">ヒントに近づく</string>
+    <string name="setting_normal_speech_content">体温正常</string>
+    <string name="setting_warning_speech_content">体温異常</string>
+    <string name="speech_setting_open_or_close">開くかどうか</string>
+    <string name="speech_setting_show_temper">表示温度</string>
+    <string name="speech_setting_temper_location">温度表示位置</string>
+    <string name="speech_setting_location_start">初の</string>
+    <string name="speech_setting_location_center">符号ビット</string>
+    <string name="speech_setting_location_end">尾部</string>
+    <string name="speech_setting_alert">温度表示位置#记号使用表示、自動的に補完温度数字を例示(36.5℃)、お守りを一つしか存在#あまりの#符の時、存在する初の基準で、自動削除し、残りの符号</string>
+    <string name="speech_setting_welcome_exmaple">歓迎語例：</string>
+    <string name="speech_setting_distance_exmaple">距離提示例：</string>
+    <string name="speech_setting_normal_exmaple">体温正常例：</string>
+    <string name="speech_setting_warning_exmaple">体温異常例：</string>
+    <string name="speech_setting_audition">试听</string>
 
-    <!--温度单位-->
+
+    <!--温度単位-->
     <string name="temper_tips_centigrade">摂氏度</string>
     <string name="temper_tips_fahrenheit">華氏度</string>
-    <string name="temper_tips_close">ヒントに近づく</string>
-    <string name="app_main_title">アプリケーションタイトル</string>
+    <string name="app_main_title">メインタイトル</string>
 
-    <string name="select_img_title">Select Image</string>
-    <string name="select_img_failed">Image selection failed</string>
-    <string name="select_img_failed_not_exists">The selected image does not exist</string>
-    <string name="setting_app_logo">APP Logo</string>
-    <string name="setting_select_image">Choose</string>
-    <string name="setting_restore_image">Restore</string>
-    <string name="setting_auto_temper">自動モード</string>
+    <string name="select_img_title">画像を選択</string>
+    <string name="select_img_failed">画像を選択できませんでした</string>
+    <string name="select_img_failed_not_exists">選択した画像は存在しません</string>
+    <string name="setting_app_logo">APPロゴ</string>
+    <string name="setting_select_image">アバターを選択</string>
+    <string name="setting_restore_image">アバターを復元する</string>
+    <string name="setting_auto_temper">自動温度測定</string>
+    <string name="main_temp_warning_tips">体温が異常であるである</string>
+    <string name="main_temp_normal_tips">通常の体温</string>
+    <string name="main_temp_error_tips">異常な体温</string>
+    <string name="main_temp_tips_please_close">ちょっと近くに来てください</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">距離が遠すぎるので、近づいてください</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">ちょっと遠くしてください</string>
+    <string name="main_temp_tips_so_close_text">距離が近すぎますので、ちょっと遠くしてください。</string>
+    <string name="main_thermal_temp">熱画像体温：</string>
+    <string name="main_thermal_has_person">熱画像誰か</string>
+    <string name="main_thermal_no_person">熱画像無人</string>
+    <string name="main_please_waiting">お待ちください</string>
+    <string name="main_temp_tips_please_in_range">顔を識別エリアに合わせてください。</string>
+    <string name="main_tips_please_close">ちょっと近くに来てください
+</string>
 
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
@@ -58,19 +93,6 @@
     <string name="smt_main_not_bind">バインディングされていません</string>
 
     <!--首页测温提示-->
-    <string name="main_temp_warning_tips">体温が異常である</string>
-    <string name="main_temp_normal_tips">体温正常</string>
-    <string name="main_temp_error_tips">平熱ではない</string>
-    <string name="main_temp_tips_please_close">ちょっと近くに来てください</string><!--Please approach-->
-    <string name="main_temp_tips_so_far_text">距離が遠すぎるので、近づいてください</string><!--Please approach-->
-    <string name="main_temp_tips_please_far">ちょっと遠くしてください</string>
-    <string name="main_temp_tips_so_close_text">距離が近すぎますので、ちょっと遠くしてください。</string>
-    <string name="main_thermal_temp">熱画像体温：</string>
-    <string name="main_thermal_has_person">熱画像有人</string>
-    <string name="main_thermal_no_person">熱画像無人</string>
-    <string name="main_please_waiting">待ってください</string>
-    <string name="main_temp_tips_please_in_range">顔を識別エリアに合わせてください。</string>
-    <string name="main_tips_please_close">请靠近点</string>
 
     <!--设置-->
     <string name="temp_measuring_setting">温度を測っています</string>
@@ -252,7 +274,6 @@
     <string name="setting_range_highest">最高</string><!--Highest-->
     <string name="setting_speech_delay">連続放送間隔</string>
     <string name="setting_screen_saver">スクリーン</string>
-    <string name="setting_welcome_speech">歓迎の言葉</string><!--Welcome speech-->
     <string name="setting_show_qr_code">二次元コードを表示</string>
     <string name="setting_enable_ic_card">ICリーダー</string>
     <string name="setting_relay_delay_time">営業時間</string>
@@ -292,8 +313,6 @@
     <string name="setting_edit_password_failed">変更に失敗しました</string>
     <string name="setting_edit_password_success">変更に成功しました</string>
     <string name="setting_current_correct_value">現在の矯正値：</string>
-    <string name="setting_normal_speech_content">体温正常放送内容</string>
-    <string name="setting_warning_speech_content">体温異常アナウンス内容</string>
     <string name="setting_low_temp_model">低温モード</string>
     <string name="setting_portrait_outline">人物の輪郭</string>
     <string name="setting_default_welcome_tip">AIスマート勤務評定システムをご利用ください</string>
@@ -320,7 +339,6 @@
     <string name="setting_switch_tip2">温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_confirm">确定</string>
     <string name="setting_switch_cancel">取消</string>
-    <string name="setting_broadcast_speed">语速</string>
 
     <!--设置开关机-->
     <string name="setting_power_on_off">タイムスイッチ</string>
@@ -651,85 +669,55 @@
     <string name="act_certificates_no_this_person">No such person, please input the card number information first</string>
 
     <!--多人测温-->
-    <string name="main_title_multi_thermal">AI人の顔の高スループット測定データプラットフォーム
-</string>
-    <string name="main_permission_failed_multi_thermal">USB権限の取得に失敗しました
-</string>
-    <string name="main_not_found_usb_multi_thermal">ターゲットデバイスが見つかりませんでした
-</string>
-    <string name="main_exception_record_multi_thermal">異常人員記録
-</string>
-    <string name="main_normal_record_multi_thermal">人員流動記録
-</string>
-    <string name="main_total_passage_multi_thermal">通過人数
-</string>
-    <string name="main_normal_multi_thermal">正常体温</string>
-    <string name="main_error_multi_thermal">异常体温</string>
-    <string name="main_company_multi_thermal">会社員
-</string>
-    <string name="main_visitor_multi_thermal">訪問者
-</string>
+    <string name="main_title_multi_thermal">AI人の顔の高スループット測定データプラットフォーム</string>
+    <string name="main_permission_failed_multi_thermal">USB権限の取得に失敗しました</string>
+    <string name="main_not_found_usb_multi_thermal">ターゲットデバイスが見つかりませんでした</string>
+    <string name="main_exception_record_multi_thermal">異常人員記録</string>
+    <string name="main_normal_record_multi_thermal">人員流動記録</string>
+    <string name="main_total_passage_multi_thermal">通過人数</string>
+    <string name="main_normal_multi_thermal">通常の体温</string>
+    <string name="main_error_multi_thermal">異常な体温</string>
+    <string name="main_company_multi_thermal">会社員</string>
+    <string name="main_visitor_multi_thermal">訪問者</string>
     <string name="system_net_status_multi_thermal">ネットワーク状態:</string>
-    <string name="system_record_multi_thermal">温度測定記録
-</string>
-    <string name="record_index_multi_thermal">シーケンス
-</string>
-    <string name="record_date_multi_thermal">日期</string>
-    <string name="record_pass_time_multi_thermal">通行時間
-</string>
+    <string name="system_record_multi_thermal">温度測定記録</string>
+    <string name="record_index_multi_thermal">シーケンス</string>
+    <string name="record_date_multi_thermal">日付</string>
+    <string name="record_pass_time_multi_thermal">通行時間</string>
     <string name="record_temper_multi_thermal">体温</string>
-    <string name="record_head_multi_thermal">头像</string>
-    <string name="record_hot_multi_thermal">热成像</string>
-    <string name="setting_black_body_rect_multi_thermal">黒体検出エリアキャリブレーション
-</string>
-    <string name="setting_save_failed_multi_thermal">not changed</string>
-    <string name="setting_save_success_multi_thermal">保存成功</string>
-    <string name="setting_save_multi_thermal">保存</string>
-    <string name="setting_please_correct_multi_thermal">（体温ガンの温度測定と熱結像温度に合わせて差を記入してください。）</string>
-    <string name="record_export_multi_thermal">エクスポート
-</string>
-    <string name="main_real_detection">リアルタイムモニタリング
-</string>
-    <string name="main_data_total">データ統計
-</string>
+    <string name="record_head_multi_thermal">顔写真</string>
+    <string name="record_hot_multi_thermal">熱画像</string>
+    <string name="setting_black_body_rect_multi_thermal">黒体検出エリアキャリブレーション</string>
+    <string name="setting_save_failed_multi_thermal">未修正</string>
+    <string name="setting_save_success_multi_thermal">保存に成功しました</string>
+    <string name="setting_save_multi_thermal">セーブ</string>
+    <string name="setting_please_correct_multi_thermal">（体温ガンの温度測定と熱結像温度に合わせて差を記入してください）</string>
+    <string name="record_export_multi_thermal">エクスポート</string>
+    <string name="main_real_detection">リアルタイムモニタリング</string>
+    <string name="main_data_total">データ統計</string>
 
-    <string name="safety_main_title">AI大フラックス温度測定システム
-</string>
-    <string name="safety_main_real_detection">实时监测</string>
-    <string name="safety_main_temer_area">体温測定
-</string>
-    <string name="safety_main_warning_number">異常人数
-</string>
+    <string name="safety_main_title">AI大フラックス温度測定システム</string>
+    <string name="safety_main_real_detection">リアルタイムモニタリング</string>
+    <string name="safety_main_temer_area">体温測定</string>
+    <string name="safety_main_warning_number">異常人数</string>
     <string name="safety_main_device_no">デバイス番号:</string>
 
-    <string name="safety_black_body_size_large">大きい
-</string>
-    <string name="safety_black_body_size_Middle">中
-</string>
-    <string name="safety_black_body_size_Small">小さい
-</string>
-    <string name="safety_black_body_size_Smaller">より小さい
-</string>
-    <string name="safety_balck_body_size">検出エリアサイズ
-</string>
-    <string name="safety_black_body_enable">黒体矯正を開く
-</string>
+    <string name="safety_black_body_size_large">大きい</string>
+    <string name="safety_black_body_size_Middle">中</string>
+    <string name="safety_black_body_size_Small">小さい</string>
+    <string name="safety_black_body_size_Smaller">より小さい</string>
+    <string name="safety_balck_body_size">検出エリアサイズ</string>
+    <string name="safety_black_body_enable">黒体矯正を開く</string>
     <string name="safety_temperature_threshold">温度取り閾値</string>
-    <string name="safety_temperature_frame_enable">温度測定ボックスを開く
-</string><!--开启测温框-->
-    <string name="safety_calibration_main">キャリブレーション
-</string><!--校准-->
-    <string name="safety_measure_main">温度を測る:</string><!--测温:-->
-    <string name="safety_correct_main">自動キャリブレーション:</string><!--校准:-->
+    <string name="safety_temperature_frame_enable">温度測定ボックスを開く</string><!--温度測定ボックスを開く-->
+    <string name="safety_calibration_main">キャリブレーション</string><!--キャリブレーション-->
+    <string name="safety_measure_main">温度を測る:</string><!--温度を測る:-->
+    <string name="safety_correct_main">キャリブレーション:</string><!--キャリブレーション:-->
     <string name="safety_temper_main">体温:</string><!--体温:-->
-    <string name="safety_auto_calibration_setting">自動キャリブレーション
-</string>
-    <string name="safety_correct_temper_tip">人の顔を温度測定枠に合わせてください。もうすぐ温度測定が始まります
-</string>
-    <string name="safety_correct_temper_completion">温度測定終了
-</string><!--測溫完成-->
-    <string name="safety_save_completion">キャリブレーション完了
-</string><!--矯正完成-->
-    <string name="safety_save_cancel">キャリブレーションをキャンセル
-</string><!--保存-->
+    <string name="safety_auto_calibration_setting">自動キャリブレーション</string>
+    <string name="safety_correct_temper_tip">人の顔を温度測定枠に合わせてください。もうすぐ温度測定が始まります</string>
+    <string name="safety_correct_temper_completion">温度測定終了</string><!--温度測定終了-->
+    <string name="safety_save_completion">キャリブレーション完了</string><!--キャリブレーション完了-->
+    <string name="safety_save_cancel">キャリブレーションをキャンセル</string><!--セーブ-->
+
 </resources>

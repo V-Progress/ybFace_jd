@@ -1,23 +1,16 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
-import android.app.Activity;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
@@ -43,7 +36,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,14 +147,13 @@ public class SplashActivity extends BaseActivity {
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
                 Constants.DEFAULT_FACE_MIRROR = false;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-//                ThermalConst.Default.MODE = ThermalConst.SMT_THERMAL;
-                ThermalConst.Default.MODE = ThermalConst.ONLY_SMT_THERMAL;
+                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_16_4;
                 break;
             case "LXR":
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
                 Constants.DEFAULT_FACE_MIRROR = true;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                ThermalConst.Default.MODE = ThermalConst.THERMAL_ONLY;
+                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_32_32;
                 break;
             case "HARRIS":
             default:

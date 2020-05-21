@@ -121,12 +121,7 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        String welcomeTips = "";
-        if(Constants.FLAVOR_TYPE == FlavorType.YB){
-            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
-        } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
-            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
-        }
+        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL) {
             welcomeTips = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip4);
             mSpeed = 2.0f;
@@ -179,6 +174,27 @@ public class KDXFSpeechManager {
         });
         mTextToSpeech.setSpeechRate(mSpeed);
         mTextToSpeech.speak(message, queueMode, textToSpeechMap);
+    }
+    public void playNormalForSpeed(final String message,float speed) {
+        if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
+                && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
+            playPassRing();
+            return;
+        }
+
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        if (mTextToSpeech.isSpeaking() && TextUtils.equals(message, mMessage)) {
+            return;
+        } else {
+            mMessage = message;
+        }
+        textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
+        textToSpeechMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
+        mTextToSpeech.setSpeechRate(speed);
+        mTextToSpeech.speak(message, TextToSpeech.QUEUE_ADD, textToSpeechMap);
     }
 
     public void playNormalNoCheck(String mMessage, Runnable runnable) {

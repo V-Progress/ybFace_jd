@@ -96,8 +96,6 @@ public class SMTSettingActivity extends SMTBaseActivity {
         String welcomeTips = "";
         if(Constants.FLAVOR_TYPE == FlavorType.YB){
             welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
-        } else if(Constants.FLAVOR_TYPE == FlavorType.HT){
-            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip2));
         }
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
         edtWelComeTips.setText(welcomeTips);

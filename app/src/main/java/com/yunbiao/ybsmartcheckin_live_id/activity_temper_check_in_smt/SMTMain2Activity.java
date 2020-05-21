@@ -162,10 +162,10 @@ public class SMTMain2Activity extends SMTTempBase2Activity implements SMTViewInt
         }
 
         //设置人脸间隔
-        SignManager.instance().setVerifyDelay(mode == ThermalConst.FACE_ONLY ? 10000 : 0);
+        SignManager.instance().setVerifyDelay(mode == ThermalConst.ONLY_FACE ? 10000 : 0);
 
         //切换头像框
-        if (mode != ThermalConst.FACE_ONLY) {
+        if (mode != ThermalConst.ONLY_FACE) {
             if (personFrameEnable) {
                 ivBigHead.setVisibility(View.VISIBLE);
                 flDotFrame.setVisibility(View.GONE);
