@@ -65,7 +65,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     //摄像头分辨率
     public static FaceView faceView;
-    private AdsFragment adsFragment;
+    private ThermalAdsFragment adsFragment;
     private ThermalSignFragment signListFragment;
     private TextView tvTempTips;
 
@@ -408,7 +408,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
                 return;
             }
             //加载广告Fragment
-            adsFragment = new AdsFragment();
+            adsFragment = new ThermalAdsFragment();
             addFragment(R.id.ll_face_main, adsFragment);
         } else {
             removeFragment(adsFragment);

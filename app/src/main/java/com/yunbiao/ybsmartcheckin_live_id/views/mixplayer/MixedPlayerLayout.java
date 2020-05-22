@@ -15,9 +15,13 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class MixedPlayerLayout extends FrameLayout {
 
@@ -28,7 +32,7 @@ public class MixedPlayerLayout extends FrameLayout {
     private int playTime = 10;//播放时长
     private int mCurrIndex = 0;//当前指针
 
-    private ImageView imageView;//图片
+    private GifImageView imageView;//图片
     private TextureVideoView videoView;//视频
 
     private int defaultImgId;//默认图片 img_wel_h
@@ -56,8 +60,7 @@ public class MixedPlayerLayout extends FrameLayout {
     private void initChilds() {
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER);
 
-        imageView = new ImageView(getContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView = new GifImageView(getContext());
         addView(imageView, layoutParams);
 
         videoView = new TextureVideoView(getContext());
@@ -204,12 +207,19 @@ public class MixedPlayerLayout extends FrameLayout {
     };
 
     private void showDefaultImg() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.GONE);
-                Glide.with(getContext()).load(defaultImgId).asBitmap().skipMemoryCache(true).into(imageView);
+        post(() -> {
+            imageView.setVisibility(View.VISIBLE);
+            videoView.setVisibility(View.GONE);
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(),defaultImgId);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                gifDrawable.setLoopCount(0);
+                gifDrawable.setSpeed(3.0f);
+                gifDrawable.start();
+                imageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setImageResource(defaultImgId);
             }
         });
     }

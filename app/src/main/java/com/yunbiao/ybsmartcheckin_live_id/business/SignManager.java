@@ -725,20 +725,17 @@ public class SignManager {
         long start = System.currentTimeMillis();
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
-        File file = headBitmap != null ? saveBitmap(sign.getTime(), headBitmap) : createEmptyFile();
+        File file = !isPrivacy && headBitmap != null ? saveBitmap(sign.getTime(), headBitmap) : createEmptyFile();
         sign.setHeadPath(file.getPath());
         if(headBitmap != null && !headBitmap.isRecycled()){
             headBitmap.recycle();
         }
 
-        File hotFile = hotBitmap != null ? saveBitmap("hot_", sign.getTime(), hotBitmap) : createEmptyFile();
+        File hotFile = !isPrivacy && hotBitmap != null ? saveBitmap("hot_", sign.getTime(), hotBitmap) : createEmptyFile();
         sign.setHotImgPath(hotFile.getPath());
         if(hotBitmap != null && !hotBitmap.isRecycled()){
             hotBitmap.recycle();
         }
-
-        sign.setUpload(false);
-        DaoManager.get().addOrUpdate(sign);
 
         Log.e(TAG, "uploadTemperatureSign: 存DB耗时:" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
         if(signConsumer != null){
@@ -747,6 +744,13 @@ public class SignManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        sign.setUpload(false);
+        if(!isPrivacy){
+            DaoManager.get().addOrUpdate(sign);
+        } else {
+            return;
         }
 
         // TODO: 2020/3/18 离线功能
@@ -770,7 +774,7 @@ public class SignManager {
                 .url(url)
                 .params(params);
         //如果不为隐私模式并且图片Bitmap不为null，则存照片
-        builder.addFile("heads", file.getName(), isPrivacy ? createEmptyFile() : file);
+        builder.addFile("heads", file.getName(), file);
         builder.addFile("reHead", hotFile.getName(), hotFile);
 
         OutputLog.getInstance().addLog(sign.getTemperature() + " ----- " + params.toString());

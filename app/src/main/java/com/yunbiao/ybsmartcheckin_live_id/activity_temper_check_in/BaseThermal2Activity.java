@@ -320,7 +320,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             // TODO: 2020/5/14  无人无脸播报
             //如果模式不为高温模式，且模式为MLX164
             if (currTemperMode != 2 && mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
-                Log.e(TAG, "handleTemperature: 原始温度：" + originT);
                 if (originT - mCacheBeforeTemper >= 5.0f) {
                     if (mNoBodyTemperList.size() < 8) {
                         mNoBodyTemperList.add(afterT);
@@ -332,6 +331,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         if (resultTemper < mTempMinThreshold) {
                             return;
                         }
+                        runOnUiThread(() -> viewInterface.hasFace(true));
 
                         sendResultMessage(resultTemper, "");//发送结果
                         if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {

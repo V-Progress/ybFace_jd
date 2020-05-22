@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:background="#23000000"
+        android:translationY="-100dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:elevation="15dp"
+        android:id="@+id/layout_head"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_ads_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="160dp"
+            android:maxHeight="80dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/yb_logo" />
+
+        <TextClock
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/skin_color_main_clock"
+            android:gravity="center"
+            android:id="@+id/tc_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="yyyy.MM.dd EE a"
+            android:format24Hour="yyyy.MM.dd EE a"
+            android:textSize="26dp" />
+
+        <TextClock
+            android:layout_centerInParent="true"
+            android:textColor="@color/skin_color_main_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="HH:mm"
+            android:format24Hour="HH:mm"
+            android:textSize="50dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:background="#030303"
+        android:translationY="1800dp"
+        android:id="@+id/layout_ads"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp">
+        <com.yunbiao.ybsmartcheckin_live_id.views.mixplayer.MixedPlayerLayout
+            android:id="@+id/mpl_ads"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+</RelativeLayout>
