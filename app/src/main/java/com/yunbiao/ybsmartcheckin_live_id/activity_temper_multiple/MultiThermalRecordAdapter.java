@@ -94,6 +94,9 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
 
             String temperStr = "";
             float temper = multiTemperBean.getTemper();
+            if (MultiThermalActivity.fEnabled) {
+                temper = (float) (Math.round((temper * 1.8f + 32) * 10)) / 10;
+            }
             if (temper <= 0f || temper >= warningThreshold) {
                 temperStr = mAct.getResources().getString(R.string.main_error_multi_thermal) + "（" + temper + "）";
             } else {

@@ -86,6 +86,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
         initBlackEnable();
 
         initSetIp();
+
+        initFEnable();
     }
 
     private void initPrivacy(){
@@ -169,6 +171,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 } else {
                     viewBlackBodyCorrection.setVisibility(View.GONE);
                 }
+            }
+        });
+    }
+
+    private void initFEnable() {
+        boolean fEnabled = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_F_ENABLED, MultiThermalConst.Default.THERMAL_F_ENABLED);
+        Switch swFEnabled = findViewById(R.id.sw_f_enabled_setting);
+        swFEnabled.setChecked(fEnabled);
+        swFEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_F_ENABLED, isChecked);
             }
         });
     }

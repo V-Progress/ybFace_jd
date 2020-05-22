@@ -317,7 +317,11 @@ public class DrawHelper {
             text += drawInfoTemper + "℃，";
         }*/
         if (temper != 0.0f) {
-            text += temper + "℃";
+            if (!MultiThermalActivity.fEnabled) {
+                text += temper + "℃";
+            } else {
+                text += (float) (Math.round((temper * 1.8f + 32) * 10)) / 10 + "℉";
+            }
         }
         canvas.drawText(text, left, top, paint);
     }

@@ -25,6 +25,8 @@ public class MultiThermalConst {
 
         String BODY_TEMPER = "multiThermalBodyTemper";
         String LAST_MIN_T = "multiThermalLastMinT";
+
+        String THERMAL_F_ENABLED = "fEnabled";
     }
 
     public interface Default{
@@ -49,5 +51,7 @@ public class MultiThermalConst {
 
         float BODY_TEMPER = 36.5f;//预设体温
         float LAST_MIN_T = 0.0f;//最近一次的最低温
+
+        public static boolean THERMAL_F_ENABLED = false;
     }
 }

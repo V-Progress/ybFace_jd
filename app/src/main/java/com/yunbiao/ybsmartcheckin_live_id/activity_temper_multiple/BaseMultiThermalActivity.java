@@ -62,6 +62,8 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     public static int boxPortraitOffset = 0;
     public static int boxSizeOffset = 0;
 
+    public static boolean fEnabled;
+
     @Override
     protected int getPortraitLayout() {
         return getLayout();

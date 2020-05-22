@@ -283,6 +283,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         mCorrectValue = SpUtils.getFloat(MultiThermalConst.Key.CORRECT_VALUE, MultiThermalConst.Default.BODY_CORRECT_TEMPER);
         mBlackBodyFrame = SpUtils.getBoolean(MultiThermalConst.Key.BLACK_BODY_FRAME, MultiThermalConst.Default.BLACK_BODY_FRAME);
         boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, MultiThermalConst.Default.THERMAL_FACE_FRAME);
+
+        fEnabled = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_F_ENABLED, MultiThermalConst.Default.THERMAL_F_ENABLED);
         //是否显示热成像人脸框
         faceView.enableThermalFaceFrame(isThermalFaceFrame);
         //开启多次回调
