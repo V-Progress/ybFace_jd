@@ -34,10 +34,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -48,6 +50,88 @@ import java.util.regex.Pattern;
 public class CommonUtils {
     private static final String TAG = "CommonUtils";
 
+    public static String getWifiMac(){
+        String macAddress = "";
+        WifiManager wifiManager = (WifiManager) APP.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        }
+
+        WifiInfo info = wifiManager.getConnectionInfo();
+        if (info != null) {
+            macAddress = info.getMacAddress();
+        }
+
+        if (!TextUtils.isEmpty(macAddress) && macAddress.equals("02:00:00:00:00:00")) {//6.0及以上系统获取的mac错误
+            macAddress = CommonUtils.getMacAddr();
+        }
+
+        if (TextUtils.isEmpty(macAddress)) {
+            macAddress = CommonUtils.getSixOSMac();
+        }
+
+        macAddress = macAddress.toUpperCase();
+        return macAddress;
+    }
+    /**
+     * android 7.0及以上 （2）扫描各个网络接口获取mac地址
+     *
+     */
+    /**
+     * 获取设备HardwareAddress地址
+     *
+     * @return
+     */
+    public static String getLocalMac() {
+        Enumeration<NetworkInterface> interfaces = null;
+        try {
+            interfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        String hardWareAddress = null;
+        NetworkInterface iF = null;
+        if (interfaces == null) {
+            return null;
+        }
+        while (interfaces.hasMoreElements()) {
+            iF = interfaces.nextElement();
+            try {
+                hardWareAddress = bytesToString(iF.getHardwareAddress());
+                if (hardWareAddress != null)
+                    break;
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (hardWareAddress != null) {
+            String mac = hardWareAddress.toUpperCase();
+            return mac;
+        } else {
+            return "mac";
+        }
+    }
+
+    /***
+     * byte转为String
+     *
+     * @param bytes
+     * @return
+     */
+    private static String bytesToString(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return null;
+        }
+        StringBuilder buf = new StringBuilder();
+        for (byte b : bytes) {
+            buf.append(String.format("%02X:", b));
+        }
+        if (buf.length() > 0) {
+            buf.deleteCharAt(buf.length() - 1);
+        }
+        return buf.toString();
+    }
     @SuppressLint("HardwareIds")
     public static String getMacAddress() {
         String macAddress = "";

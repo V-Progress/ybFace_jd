@@ -44,6 +44,7 @@ public class ThermalConst {
         String MAIN_LOGO_IMG = "thermalMainLogoImg";
         String AUTO_TEMPER = "thermalAutoTemper";
 
+        String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";
         //欢迎语
         String WELCOME_TIP_CONTENT = "welcomeTips";
         String WELCOME_TIP_ENABLED = "welcomeTipEnabled";
@@ -66,6 +67,7 @@ public class ThermalConst {
         //单位
         String CENTIGRADE = "centigradeUnit";
         String FAHRENHEIT = "fahrenheitUnit";
+        String MASK_TIP = "thermalMaskTip";
     }
 
     public static class Default {
@@ -88,6 +90,7 @@ public class ThermalConst {
         public static String MAIN_LOGO_TEXT = "YBFACE";
         public static String MAIN_LOGO_IMG = "";
         public static boolean AUTO_TEMPER = false;
+        public static boolean MASK_DETECT_ENABLED = true;
 
         //欢迎语
         public static final boolean WELCOME_TIP_ENABLED = true;

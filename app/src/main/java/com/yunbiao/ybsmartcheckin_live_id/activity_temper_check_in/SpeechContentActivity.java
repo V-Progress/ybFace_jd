@@ -33,6 +33,9 @@ public class SpeechContentActivity extends Activity {
     }
 
     public class ActionPresenter {
+        public void onBackButtonClick(View view){
+            finish();
+        }
         public void onSpeedButtonClick(View view){
             EditText edtSpeed = viewDataBinding.getRoot().findViewById(R.id.edt_speed_setting);
             float speed = Float.parseFloat(edtSpeed.getText().toString());
@@ -60,6 +63,16 @@ public class SpeechContentActivity extends Activity {
         public void onWelcomeEnableChanged(CompoundButton buttonView, boolean isChecked){
             speechContent.setWelcomeTextEnabled(isChecked);
             speechContent.setWelcomeTextExample();
+        }
+        //口罩提示
+        public void onMaskTipChanged(CharSequence s, int start, int before, int count){
+            speechContent.setMaskContent(s.toString());
+            speechContent.setMaskExample();
+        }
+        //正常提示温度位置
+        public void onMaskEnabledChanged(CompoundButton buttonView, boolean isChecked){
+            speechContent.setMaskEnabled(isChecked);
+            speechContent.setMaskExample();
         }
         //距离提示
         public void onDistanceTextChanged(CharSequence s, int start, int before, int count) {
@@ -157,6 +170,10 @@ public class SpeechContentActivity extends Activity {
         //异常试听
         public void onWarningPlay(View view){
             String speech = speechContent.getWarningExample().replace("℃",speechContent.getCentigrade());
+            KDXFSpeechManager.instance().playNormalForSpeed(speech,speechContent.getSpeechSpeed());
+        }
+        public void onMaskPlay(View view){
+            String speech = speechContent.getMaskTipExample();
             KDXFSpeechManager.instance().playNormalForSpeed(speech,speechContent.getSpeechSpeed());
         }
     }

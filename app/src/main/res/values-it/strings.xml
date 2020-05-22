@@ -36,6 +36,11 @@
     <string name="speech_setting_warning_exmaple">Esempi di anomalie：</string>
     <string name="speech_setting_audition">In onda</string>
 
+    <!--口罩提示IT-->
+    <string name="no_mask_tip">Si prega di indossare la maschera</string>
+    <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
+    <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
+
     <!--温度单位-->
     <string name="temper_tips_centigrade">Gradi centigradi</string>
     <string name="temper_tips_fahrenheit">Fahrenheit gradi</string>

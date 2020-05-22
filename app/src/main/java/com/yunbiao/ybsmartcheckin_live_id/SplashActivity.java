@@ -116,7 +116,7 @@ public class SplashActivity extends BaseActivity {
 
     private Runnable nextRunnable = () -> {
         UIUtils.dismissNetLoading();
-
+        APP.bindProtectService();
         new Thread(() -> {
             try {
                 Thread.sleep(3000);
@@ -125,16 +125,15 @@ public class SplashActivity extends BaseActivity {
             }
             int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
             Log.e(TAG, "激活结果: " + code);
-            if (code == ErrorInfo.MOK || code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-                int activeFileInfo1 = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
-                Log.e(TAG, ": " + activeFileInfo.getStartTime() + " ----- " + activeFileInfo.getEndTime());
-                APP.bindProtectService();
-                jump();
-            } else {
-                UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
+            if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
+                    }
+                });
             }
-
+            jump();
             finish();
         }).start();
     };

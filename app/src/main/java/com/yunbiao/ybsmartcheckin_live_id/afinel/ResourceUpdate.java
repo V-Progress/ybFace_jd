@@ -56,6 +56,9 @@ public class ResourceUpdate {
     public static String UPLOAD_APP_VERSION_URL = Constants.RESOURCE_URL + "device/service/uploadAppVersionNew.html";
     public static String UPLOAD_DISK_URL = Constants.RESOURCE_URL + "device/service/uploadDisk.html";
 
+    public static String GET_ACTIVE_CODE = Constants.RESOURCE_URL + "api/activate/getCode.html";//获取激活码
+    public static String RETURN_ACTIVE_STATUS = Constants.RESOURCE_URL + "api/activate/getCodeReturn.html";//返回激活码
+
     public static void refreshAddress(){
         COMPANYINFO_ID = Constants.RESOURCE_URL + "api/company/getcompanyById.html";//获取公司信息以及下的部门信息接口
         UPDATE_PWD = Constants.RESOURCE_URL + "api/device/updatePassWord.html";
@@ -98,6 +101,8 @@ public class ResourceUpdate {
         VOLUME_URL = Constants.RESOURCE_URL + "device/service/getVolume.html";//音量调节值获取
         UPLOAD_APP_VERSION_URL = Constants.RESOURCE_URL + "device/service/uploadAppVersionNew.html";
         UPLOAD_DISK_URL = Constants.RESOURCE_URL + "device/service/uploadDisk.html";
+        GET_ACTIVE_CODE = Constants.RESOURCE_URL + "api/activate/getCode.html";//获取激活码
+        RETURN_ACTIVE_STATUS = Constants.RESOURCE_URL + "api/activate/getCodeReturn.html";//返回激活码
     }
 
     private static String CACHE_BASE_PATH = Constants.LOCAL_ROOT_PATH;

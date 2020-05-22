@@ -18,6 +18,11 @@
     <string name="temper_error_btn_restart">リブート</string>
     <string name="temper_error_btn_cancel">処理を保留する</string>
 
+    <!--口罩提示IT-->
+    <string name="no_mask_tip">Si prega di indossare la maschera</string>
+    <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
+    <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
+
     <!--语音设置-->
     <string name="speech_setting_title">音声放送設定</string>
     <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->

@@ -19,6 +19,9 @@ public class SpeechContent extends BaseObservable {
     private String welcomeText;
     private boolean welcomeTextEnabled;
 
+    private String maskContent;
+    private boolean maskEnabled;
+
     private String distanceTip;
     private boolean distanceTipEnabled;
     private String frameTip;
@@ -38,38 +41,50 @@ public class SpeechContent extends BaseObservable {
     private String fahrenheit;
 
     private String welcomeTextExample;
+    private String maskTipExample;
     private String distanceTipExample;
     private String frameTipExample;
     private String normalExample;
     private String warningExample;
-
-    private Default aDefault = new Default();
+    private LastStatus lastStatus;
 
     public void init(Context context) {
-        aDefault.init(context);
-        speechSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, aDefault.getSpeechSpeed());
+        speechSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
 
-        welcomeText = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, aDefault.getWelcomeText());
-        welcomeTextEnabled = SpUtils.getBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED, aDefault.isWelcomeTextEnabled());
+        welcomeText = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, context.getResources().getString(R.string.setting_default_welcome_tip));
+        welcomeTextEnabled = SpUtils.getBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED, ThermalConst.Default.WELCOME_TIP_ENABLED);
 
-        distanceTip = SpUtils.getStr(ThermalConst.Key.DISTANCE_TIP_CONTENT, aDefault.getDistanceTip());
-        distanceTipEnabled = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP_ENABLED, aDefault.isDistanceTipEnabled());
+        maskContent = SpUtils.getStr(ThermalConst.Key.MASK_TIP, context.getResources().getString(R.string.no_mask_tip));
+        maskEnabled = SpUtils.getBoolean(ThermalConst.Key.MASK_DETECT_ENABLED, ThermalConst.Default.MASK_DETECT_ENABLED);
 
-        frameTip = SpUtils.getStr(ThermalConst.Key.FRAME_TIP_CONTENT, aDefault.getFrameTip());
-        frameTipEnabled = SpUtils.getBoolean(ThermalConst.Key.FRAME_TIP_ENABLED, aDefault.isFrameTipEnabled());
+        distanceTip = SpUtils.getStr(ThermalConst.Key.DISTANCE_TIP_CONTENT, context.getResources().getString(R.string.main_tips_please_close));
+        distanceTipEnabled = SpUtils.getBoolean(ThermalConst.Key.DISTANCE_TIP_ENABLED, ThermalConst.Default.DISTANCE_TIP_ENABLED);
 
-        normalContent = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST, aDefault.getNormalContent());
-        normalShow = SpUtils.getBoolean(ThermalConst.Key.NORMAL_TEMPER_SHOW, aDefault.isNormalShow());
-        normalEnabled = SpUtils.getBoolean(ThermalConst.Key.NORMAL_BROADCAST_ENABLED, aDefault.isNormalEnabled());
-        normalTemperLocation = SpUtils.getIntOrDef(ThermalConst.Key.NORMAL_TEMPER_LOCATION, aDefault.getNormalTemperLocation());
+        frameTip = SpUtils.getStr(ThermalConst.Key.FRAME_TIP_CONTENT,context.getResources().getString(R.string.main_temp_tips_please_in_range));
+        frameTipEnabled = SpUtils.getBoolean(ThermalConst.Key.FRAME_TIP_ENABLED, ThermalConst.Default.FRAME_TIP_ENABLED);
 
-        warningContent = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, aDefault.getWarningContent());
-        warningShow = SpUtils.getBoolean(ThermalConst.Key.WARNING_TEMPER_SHOW, aDefault.isWarningShow());
-        warningEnabled = SpUtils.getBoolean(ThermalConst.Key.WARNING_BROAD_ENABLED, aDefault.isWarningEnabled());
-        warningTemperLocation = SpUtils.getIntOrDef(ThermalConst.Key.WARNING_TEMPER_LOCATION, aDefault.getWarningTemperLocation());
+        normalContent = SpUtils.getStr(ThermalConst.Key.NORMAL_BROADCAST,  context.getResources().getString(R.string.main_temp_normal_tips));
+        normalShow = SpUtils.getBoolean(ThermalConst.Key.NORMAL_TEMPER_SHOW, ThermalConst.Default.NORMAL_TEMPER_SHOW);
+        normalEnabled = SpUtils.getBoolean(ThermalConst.Key.NORMAL_BROADCAST_ENABLED, ThermalConst.Default.NORMAL_BROADCAST_ENABLED);
+        normalTemperLocation = SpUtils.getIntOrDef(ThermalConst.Key.NORMAL_TEMPER_LOCATION, ThermalConst.Default.NORMAL_TEMPER_LOCATION);
 
-        centigrade = SpUtils.getStr(ThermalConst.Key.CENTIGRADE, aDefault.getCentigrade());
-        fahrenheit = SpUtils.getStr(ThermalConst.Key.FAHRENHEIT, aDefault.getFahrenheit());
+        warningContent = SpUtils.getStr(ThermalConst.Key.WARNING_BROADCAST, context.getResources().getString(R.string.main_temp_warning_tips));
+        warningShow = SpUtils.getBoolean(ThermalConst.Key.WARNING_TEMPER_SHOW,  ThermalConst.Default.WARNING_TEMPER_SHOW);
+        warningEnabled = SpUtils.getBoolean(ThermalConst.Key.WARNING_BROAD_ENABLED, ThermalConst.Default.WARNING_BROAD_ENABLED);
+        warningTemperLocation = SpUtils.getIntOrDef(ThermalConst.Key.WARNING_TEMPER_LOCATION, ThermalConst.Default.WARNING_TEMPER_LOCATION);
+
+        centigrade = SpUtils.getStr(ThermalConst.Key.CENTIGRADE, context.getResources().getString(R.string.temper_tips_centigrade));
+        fahrenheit = SpUtils.getStr(ThermalConst.Key.FAHRENHEIT, context.getResources().getString(R.string.temper_tips_fahrenheit));
+
+        lastStatus = new LastStatus(
+                speechSpeed,
+                maskContent,maskEnabled,
+                welcomeText,welcomeTextEnabled,
+                distanceTip,distanceTipEnabled,
+                frameTip,frameTipEnabled,
+                normalContent,normalShow,normalEnabled,normalTemperLocation,
+                warningContent,warningShow,warningEnabled,warningTemperLocation,
+                centigrade,fahrenheit);
 
         setWelcomeTextExample();
         setDistanceTipExample();
@@ -80,13 +95,38 @@ public class SpeechContent extends BaseObservable {
         notifyChange();
     }
 
+    @Bindable
+    public String getMaskTipExample() {
+        return maskTipExample;
+    }
+
+    @Bindable
+    public String getMaskContent() {
+        return maskContent;
+    }
+
+    public void setMaskContent(String maskContent) {
+        this.maskContent = maskContent;
+        notifyPropertyChanged(BR.maskContent);
+    }
+
+    @Bindable
+    public boolean isMaskEnabled() {
+        return maskEnabled;
+    }
+
+    public void setMaskEnabled(boolean maskEnabled) {
+        this.maskEnabled = maskEnabled;
+        notifyPropertyChanged(BR.maskEnabled);
+    }
+
     public void save() {
         //速度
-        if (speechSpeed != aDefault.getSpeechSpeed()) {
+        if(speechSpeed != lastStatus.speechSpeed){
             SpUtils.saveFloat(ThermalConst.Key.VOICE_SPEED, speechSpeed);
         }
         //欢迎语
-        if (!TextUtils.equals(aDefault.getWelcomeText(), welcomeText)) {
+        if(!TextUtils.equals(lastStatus.welcomeText,welcomeText)){
             if (TextUtils.isEmpty(welcomeText)) {
                 SpUtils.remove(ThermalConst.Key.WELCOME_TIP_CONTENT);
             } else {
@@ -94,11 +134,23 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //欢迎语开关
-        if (welcomeTextEnabled != aDefault.isWelcomeTextEnabled()) {
+        if(welcomeTextEnabled != lastStatus.welcomeTextEnabled){
             SpUtils.saveBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED, welcomeTextEnabled);
         }
+
+        /*//口罩提示
+        if (!TextUtils.equals(aDefault.getMaskTip(), maskContent)) {
+            if (TextUtils.isEmpty(maskContent)) {
+                SpUtils.remove(ThermalConst.Key.MASK_TIP);
+            } else {
+                SpUtils.saveStr(ThermalConst.Key.MASK_TIP, maskContent);
+            }
+        }
+        //口罩提示开关
+        SpUtils.saveBoolean(ThermalConst.Key.MASK_TIP_ENABLED, maskEnabled);
+*/
         //距离提示
-        if (!TextUtils.equals(aDefault.getDistanceTip(), distanceTip)) {
+        if(!TextUtils.equals(lastStatus.distanceTip,distanceTip)){
             if (TextUtils.isEmpty(distanceTip)) {
                 SpUtils.remove(ThermalConst.Key.DISTANCE_TIP_CONTENT);
             } else {
@@ -106,11 +158,11 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //距离提示开关
-        if(distanceTipEnabled != aDefault.isDistanceTipEnabled()){
+        if(distanceTipEnabled != lastStatus.distanceTipEnbaled){
             SpUtils.saveBoolean(ThermalConst.Key.DISTANCE_TIP_ENABLED, distanceTipEnabled);
         }
         //对框提示
-        if(!TextUtils.equals(aDefault.getFrameTip(),frameTip)){
+        if(!TextUtils.equals(lastStatus.frameTip,frameTip)){
             if (TextUtils.isEmpty(frameTip)) {
                 SpUtils.remove(ThermalConst.Key.FRAME_TIP_CONTENT);
             } else {
@@ -118,11 +170,11 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //对框开关
-        if(frameTipEnabled != aDefault.isFrameTipEnabled()){
+        if(frameTipEnabled != lastStatus.frameTipEnabled){
             SpUtils.saveBoolean(ThermalConst.Key.FRAME_TIP_ENABLED, frameTipEnabled);
         }
         //正常提示
-        if(!TextUtils.equals(aDefault.getNormalContent(),normalContent)){
+        if(!TextUtils.equals(lastStatus.normalContent,normalContent)){
             if (TextUtils.isEmpty(normalContent)) {
                 SpUtils.remove(ThermalConst.Key.NORMAL_BROADCAST);
             } else {
@@ -130,15 +182,15 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //正常提示开关
-        if(normalShow != aDefault.isNormalShow()){
+        if(normalShow != lastStatus.normalShow){
             SpUtils.saveBoolean(ThermalConst.Key.NORMAL_TEMPER_SHOW, normalShow);
         }
         //温度显示
-        if(normalShow == aDefault.isNormalShow()){
+        if(normalEnabled != lastStatus.normalEnabled){
             SpUtils.saveBoolean(ThermalConst.Key.NORMAL_BROADCAST_ENABLED, normalEnabled);
         }
         //异常提示
-        if(!TextUtils.equals(aDefault.getWarningContent(),warningContent)){
+        if(!TextUtils.equals(lastStatus.warningContent,warningContent)){
             if (TextUtils.isEmpty(warningContent)) {
                 SpUtils.remove(ThermalConst.Key.WARNING_BROADCAST);
             } else {
@@ -146,23 +198,23 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //异常温度显示
-        if(warningShow != aDefault.isWarningShow()){
+        if(warningShow != lastStatus.warningShow){
             SpUtils.saveBoolean(ThermalConst.Key.WARNING_TEMPER_SHOW, warningShow);
         }
         //异常开关
-        if(warningEnabled != aDefault.isWarningEnabled()){
+        if(warningEnabled != lastStatus.warningEnabled){
             SpUtils.saveBoolean(ThermalConst.Key.WARNING_BROAD_ENABLED, warningEnabled);
         }
         //正常温度位置
-        if(normalTemperLocation != aDefault.getNormalTemperLocation()){
+        if(normalTemperLocation != lastStatus.normalTemperLocation){
             SpUtils.saveInt(ThermalConst.Key.NORMAL_TEMPER_LOCATION, normalTemperLocation);
         }
         //异常温度位置
-        if(warningTemperLocation != aDefault.getWarningTemperLocation()){
+        if(warningTemperLocation != lastStatus.warningTemperLocation){
             SpUtils.saveInt(ThermalConst.Key.WARNING_TEMPER_LOCATION, warningTemperLocation);
         }
         //摄氏度
-        if(!TextUtils.equals(aDefault.getCentigrade(),centigrade)){
+        if(!TextUtils.equals(lastStatus.centigrade,centigrade)){
             if (TextUtils.isEmpty(centigrade)) {
                 SpUtils.remove(ThermalConst.Key.CENTIGRADE);
             } else {
@@ -170,7 +222,7 @@ public class SpeechContent extends BaseObservable {
             }
         }
         //华氏度
-        if(!TextUtils.equals(aDefault.getFahrenheit(),fahrenheit)){
+        if(!TextUtils.equals(lastStatus.fahrenheit,fahrenheit)){
             if (TextUtils.isEmpty(fahrenheit)) {
                 SpUtils.remove(ThermalConst.Key.FAHRENHEIT);
             } else {
@@ -453,123 +505,48 @@ public class SpeechContent extends BaseObservable {
         notifyPropertyChanged(BR.warningExample);
     }
 
-    class Default {
-        private float speechSpeed;
-
-        private String welcomeText;
-        private boolean welcomeTextEnabled;
-
-        private String distanceTip;
-        private boolean distanceTipEnabled;
-
-        private String frameTip;
-        private boolean frameTipEnabled;
-
-        private String normalContent;
-        private boolean normalShow;
-        private boolean normalEnabled;
-        private int normalTemperLocation;
-
-        private String warningContent;
-        private boolean warningShow;
-        private int warningTemperLocation;
-        private boolean warningEnabled;
-
-        private String centigrade;
-        private String fahrenheit;
-
-        public void init(Context context) {
-            speechSpeed = ThermalConst.Default.VOICE_SPEED;
-
-            welcomeText = context.getResources().getString(R.string.setting_default_welcome_tip);
-            welcomeTextEnabled = ThermalConst.Default.WELCOME_TIP_ENABLED;
-
-            distanceTip = context.getResources().getString(R.string.main_tips_please_close);
-            distanceTipEnabled = ThermalConst.Default.DISTANCE_TIP_ENABLED;
-
-            frameTip = context.getResources().getString(R.string.main_temp_tips_please_in_range);
-            frameTipEnabled = ThermalConst.Default.FRAME_TIP_ENABLED;
-
-            normalContent = context.getResources().getString(R.string.main_temp_normal_tips);
-            normalShow = ThermalConst.Default.NORMAL_TEMPER_SHOW;
-            normalEnabled = ThermalConst.Default.NORMAL_BROADCAST_ENABLED;
-            normalTemperLocation = ThermalConst.Default.NORMAL_TEMPER_LOCATION;
-
-            warningContent = context.getResources().getString(R.string.main_temp_warning_tips);
-            warningShow = ThermalConst.Default.WARNING_TEMPER_SHOW;
-            warningEnabled = ThermalConst.Default.WARNING_BROAD_ENABLED;
-            warningTemperLocation = ThermalConst.Default.WARNING_TEMPER_LOCATION;
-
-            centigrade = context.getResources().getString(R.string.temper_tips_centigrade);
-            fahrenheit = context.getResources().getString(R.string.temper_tips_fahrenheit);
+    public void setMaskExample() {
+        if(maskEnabled){
+            this.maskTipExample = maskContent;
+        } else {
+            this.maskTipExample = "";
         }
-
-        public float getSpeechSpeed() {
-            return speechSpeed;
-        }
-
-        public String getWelcomeText() {
-            return welcomeText;
-        }
-
-        public boolean isWelcomeTextEnabled() {
-            return welcomeTextEnabled;
-        }
-
-        public String getDistanceTip() {
-            return distanceTip;
-        }
-
-        public boolean isDistanceTipEnabled() {
-            return distanceTipEnabled;
-        }
-
-        public String getFrameTip() {
-            return frameTip;
-        }
-
-        public boolean isFrameTipEnabled() {
-            return frameTipEnabled;
-        }
-
-        public String getNormalContent() {
-            return normalContent;
-        }
-
-        public boolean isNormalShow() {
-            return normalShow;
-        }
-
-        public boolean isNormalEnabled() {
-            return normalEnabled;
-        }
-
-        public int getNormalTemperLocation() {
-            return normalTemperLocation;
-        }
-
-        public String getWarningContent() {
-            return warningContent;
-        }
-
-        public boolean isWarningShow() {
-            return warningShow;
-        }
-
-        public int getWarningTemperLocation() {
-            return warningTemperLocation;
-        }
-
-        public boolean isWarningEnabled() {
-            return warningEnabled;
-        }
-
-        public String getCentigrade() {
-            return centigrade;
-        }
-
-        public String getFahrenheit() {
-            return fahrenheit;
-        }
+        notifyPropertyChanged(BR.maskTipExample);
     }
+
+     class LastStatus{
+        float speechSpeed;
+        String maskTip,welcomeText,distanceTip,frameTip,normalContent,warningContent,centigrade,fahrenheit;
+        boolean maskEnabled,welcomeTextEnabled,distanceTipEnbaled,frameTipEnabled,normalShow,normalEnabled,warningShow,warningEnabled;
+        int warningTemperLocation,normalTemperLocation;
+
+         public LastStatus(float speechSpeed,
+                           String maskTip, boolean maskEnabled,
+                           String welcomeText, boolean welcomeTextEnabled,
+                           String distanceTip, boolean distanceTipEnbaled,
+                           String frameTip, boolean frameTipEnabled,
+                           String normalContent, boolean normalShow, boolean normalEnabled, int normalTemperLocation,
+                           String warningContent, boolean warningShow, boolean warningEnabled, int warningTemperLocation,
+                           String centigrade, String fahrenheit) {
+             this.speechSpeed = speechSpeed;
+             this.maskTip = maskTip;
+             this.maskEnabled = maskEnabled;
+             this.welcomeText = welcomeText;
+             this.welcomeTextEnabled = welcomeTextEnabled;
+             this.distanceTip = distanceTip;
+             this.distanceTipEnbaled = distanceTipEnbaled;
+             this.frameTip = frameTip;
+             this.frameTipEnabled = frameTipEnabled;
+             this.normalContent = normalContent;
+             this.normalShow = normalShow;
+             this.normalEnabled = normalEnabled;
+             this.normalTemperLocation = normalTemperLocation;
+             this.warningContent = warningContent;
+             this.warningShow = warningShow;
+             this.warningEnabled = warningEnabled;
+             this.warningTemperLocation = warningTemperLocation;
+             this.centigrade = centigrade;
+             this.fahrenheit = fahrenheit;
+         }
+     }
 }

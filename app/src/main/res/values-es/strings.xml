@@ -15,6 +15,11 @@
     <string name="temper_error_btn_restart">Reiniciar</string>
     <string name="temper_error_btn_cancel">Sin procesamiento</string>
 
+    <!--口罩提示IT-->
+    <string name="no_mask_tip">Si prega di indossare la maschera</string>
+    <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
+    <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
+
     <!--应用名称-->
     <string name="yb_check_in">YBRegistro</string>
     <string name="yb_temper_check_in">YBRegistroDeTemperatura</string>

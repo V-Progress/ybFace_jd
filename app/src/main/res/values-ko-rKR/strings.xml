@@ -15,6 +15,11 @@
     <string name="temper_error_btn_restart">재개</string>
     <string name="temper_error_btn_cancel">잠시 처리하지 않다</string>
 
+    <!--口罩提示-->
+    <string name="no_mask_tip">마스크를 착용하세요</string>
+    <string name="error_mask_tip">마스크를 정확히 착용하세요</string>
+    <string name="please_aim_face_frame">얼굴 액자에 맞추세요.</string>
+
     <!--语音设置-->
     <string name="temper_tips_close">바투 팁</string>
     <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->

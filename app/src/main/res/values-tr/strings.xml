@@ -15,6 +15,16 @@
     <string name="temper_error_btn_restart">Yeni -den başlatın</string>
     <string name="temper_error_btn_cancel">Bununla uğraşma</string>
 
+    <!--口罩提示-->
+    <string name="no_mask_tip">Lütfen maske tak.</string>
+    <string name="error_mask_tip">Lütfen maskeyi doğru takın.</string>
+    <string name="please_aim_face_frame">Lütfen yüz çerçevesini hedefleyin</string>
+    <string name="main_temp_tips_please_in_range">Yüzünüzü tanıma alanına doğrultun</string>
+    <string name="main_tips_please_close">Lütfen yaklaşın</string>
+    <string name="main_temp_tips_so_far_text">Çok uzak, lütfen yaklaşın</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">Lütfen uzak durun</string>
+    <string name="main_temp_tips_so_close_text">Çok yakınsınız lütfen uzaklaşın </string>
+
     <!--语音设置-->
     <string name="temper_tips_close">İpuçlarına yakın</string>
     <string name="setting_broadcast_speed">Ses hızı</string>
@@ -78,15 +88,10 @@
     <string name="main_temp_normal_tips">Vücut ısısı normal</string>
     <string name="main_temp_error_tips">Anormal vücut sıcaklığı</string>
     <string name="main_temp_tips_please_close">Lütfen yaklaşın</string><!--Please approach-->
-    <string name="main_temp_tips_so_far_text">Çok uzak, lütfen yaklaşın</string><!--Please approach-->
-    <string name="main_temp_tips_please_far">Lütfen uzak durun</string>
-    <string name="main_temp_tips_so_close_text">Çok yakınsınız lütfen uzaklaşın </string>
     <string name="main_thermal_temp">Termal görüntüleme sıcaklığı：</string>
     <string name="main_thermal_has_person">Kişiyle termal görüntüleme</string>
     <string name="main_thermal_no_person">Kişisiz termal görüntüleme</string>
     <string name="main_please_waiting">Lütfen bekleyiniz</string>
-    <string name="main_temp_tips_please_in_range">Yüzünüzü tanıma alanına doğrultun</string>
-    <string name="main_tips_please_close">Lütfen yaklaşın</string>
 
     <!--设置-->
     <string name="temp_measuring_setting">Ölçüm sıcaklığı</string>
@@ -310,8 +315,6 @@
     <string name="setting_low_temp_model">Düşük sıcaklık modu</string>
     <string name="setting_portrait_outline">Portre Gölgesi</string>
     <string name="setting_default_welcome_tip">AI Akıllı Katılım Sistemine Hoşgeldiniz</string>
-    <string name="setting_default_welcome_tip2">Hengtong Katılım hoş geldiniz</string>
-    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Düzeltme sıcaklığı</string>
     <string name="setting_broadcast_f">Yayın Fahrenheit</string>
 
