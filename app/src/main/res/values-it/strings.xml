@@ -35,6 +35,7 @@
     <string name="speech_setting_normal_exmaple">Esempi di normale：</string>
     <string name="speech_setting_warning_exmaple">Esempi di anomalie：</string>
     <string name="speech_setting_audition">In onda</string>
+    <string name="setting_camera_vertical_mirror">Montature longitudinali</string>
 
     <!--口罩提示IT-->
     <string name="no_mask_tip">Si prega di indossare la maschera</string>

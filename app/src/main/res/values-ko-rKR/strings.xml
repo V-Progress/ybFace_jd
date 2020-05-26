@@ -39,6 +39,7 @@
     <string name="speech_setting_normal_exmaple">정상적인 예제：</string>
     <string name="speech_setting_warning_exmaple">이상적 예시：</string>
     <string name="speech_setting_audition">오디션</string>
+    <string name="setting_camera_vertical_mirror">수직 반전</string>
 
     <!--温度单位-->
     <string name="temper_tips_centigrade">섭씨 도</string>

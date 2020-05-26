@@ -39,6 +39,10 @@
     <string name="speech_setting_normal_exmaple">体温正常播报示例：</string>
     <string name="speech_setting_warning_exmaple">体温异常播报示例：</string>
     <string name="speech_setting_audition">试听</string>
+    <string name="setting_camera_vertical_mirror">人脸框纵向镜像</string>
+    <string name="setting_picture_rotation">跟随相机</string>
+    <string name="setting_local_priority">本地优先</string>
+    <string name="setting_pic_rotation">照片方向</string>
 
     <!--温度单位-->
     <string name="temper_tips_centigrade">摄氏度</string>

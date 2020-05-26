@@ -43,6 +43,7 @@ public class ThermalConst {
         String MAIN_LOGO_TEXT = "thermalMainLogoText";
         String MAIN_LOGO_IMG = "thermalMainLogoImg";
         String AUTO_TEMPER = "thermalAutoTemper";
+        String LOCAL_PRIORITY = "thermalLocalPriority";
 
         String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";
         //欢迎语
@@ -91,6 +92,7 @@ public class ThermalConst {
         public static String MAIN_LOGO_IMG = "";
         public static boolean AUTO_TEMPER = false;
         public static boolean MASK_DETECT_ENABLED = true;
+        public static boolean LOCAL_PRIORITY = true;
 
         //欢迎语
         public static final boolean WELCOME_TIP_ENABLED = true;

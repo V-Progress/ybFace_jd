@@ -322,13 +322,13 @@ public class FaceView extends FrameLayout {
     private CameraListener cameraListener = new CameraListener() {
         @Override
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
-            boolean isHMirror = SpUtils.isMirror();
-            Log.e(TAG, "onCameraOpened: ---------- " + isHMirror);
+            boolean isHMirror = SpUtils.getBoolean(SpUtils.IS_H_MIRROR, Constants.DEFAULT_H_MIRROR);
+            boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR, Constants.DEFAULT_V_MIRROR);
 
             Camera.Size lastPreviewSize = previewSize;
             previewSize = camera.getParameters().getPreviewSize();
             drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
-                    , cameraId, isMirror, isHMirror, Constants.isVerticalMirror);
+                    , cameraId, isMirror, isHMirror, isVMirror);
             Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
             Log.i(TAG, "CameraDisplayOrientation: " + drawHelper.getCameraDisplayOrientation());
             // 切换相机的时候可能会导致预览尺寸发生变化
@@ -675,12 +675,15 @@ public class FaceView extends FrameLayout {
                     if (width > 0 && height > 0) {
                         Bitmap bitmap = Bitmap.createBitmap(originBitmap, bestRect.left, bestRect.top, width, height);
                         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-                        if(originBitmap != null && !originBitmap.equals(bitmap) && !originBitmap.isRecycled()){
+                        if (originBitmap != null && !originBitmap.equals(bitmap) && !originBitmap.isRecycled()) {
                             originBitmap.recycle();
                         }
 
                         Log.e(TAG, "getCurrCameraFrame: 截人像耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
-                        if (bitmap != null && angle != 0) {
+                        int pictureRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
+                        if (pictureRotation != -1) {
+                            return ImageUtils.rotateBitmap(bitmap, pictureRotation);
+                        } else if (bitmap != null && angle != 0) {
                             return ImageUtils.rotateBitmap(bitmap, angle);
                         } else {
                             return bitmap;
@@ -732,7 +735,7 @@ public class FaceView extends FrameLayout {
         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         if (bitmap != null && angle != 0) {
             Bitmap bitmap1 = ImageUtils.rotateBitmap(bitmap, angle);
-            if(bitmap != null && !bitmap.equals(bitmap1) && !bitmap.isRecycled()){
+            if (bitmap != null && !bitmap.equals(bitmap1) && !bitmap.isRecycled()) {
                 bitmap.recycle();
             }
             Log.e(TAG, "getCurrCameraFrame: 截全屏耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");

@@ -8,7 +8,6 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
@@ -144,20 +143,20 @@ public class SplashActivity extends BaseActivity {
         switch (broadTypeStr) {
             case "SMT":
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
-                Constants.DEFAULT_FACE_MIRROR = false;
+                Constants.DEFAULT_H_MIRROR = false;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
                 ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_16_4;
                 break;
             case "LXR":
                 Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                Constants.DEFAULT_FACE_MIRROR = true;
+                Constants.DEFAULT_H_MIRROR = true;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
                 ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_32_32;
                 break;
             case "HARRIS":
             default:
                 Constants.DEFAULT_CAMERA_ANGLE = 90;
-                Constants.DEFAULT_FACE_MIRROR = false;
+                Constants.DEFAULT_H_MIRROR = false;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
                 ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_MLX_16_4;
                 break;
@@ -178,7 +177,7 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT:
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
                 Constants.DEFAULT_CAMERA_ANGLE = 270;
-                Constants.DEFAULT_FACE_MIRROR = false;
+                Constants.DEFAULT_H_MIRROR = false;
                 startActivity(new Intent(SplashActivity.this, SMTMain2Activity.class));
                 break;
             case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
@@ -202,7 +201,7 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT:
             case Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT:
                 Constants.HORIZONTAL_OFFSET = 4;
-                Constants.DEFAULT_FACE_MIRROR = false;
+                Constants.DEFAULT_H_MIRROR = false;
                 Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));
                 break;

@@ -257,6 +257,11 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btn_upload:
                 UIUtils.showNetLoading(this);
+                if(SpUtils.getCompany().getComid() == Constants.NOT_BIND_COMPANY_ID){
+                    UIUtils.dismissNetLoading();
+                    UIUtils.showShort(ThermalSignActivity.this, "The device is not tied to the company and the data will be saved locally only");
+                    return;
+                }
                 SignManager.instance().uploadSignRecord(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {

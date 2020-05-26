@@ -175,13 +175,16 @@ public class ThermalSettingActivity extends BaseActivity {
                     .setImageLoader(new ImgLoader())//设置自定义图片加载器
                     .start(ThermalSettingActivity.this, REQEST_SELECT_IMAGES_CODE);//REQEST_SELECT_IMAGES_CODE为Intent调用的
         });
-        btnRestore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
-                ivMainLogo.setImageResource(R.mipmap.yb_logo);
-            }
+        btnRestore.setOnClickListener(v -> {
+            SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
+            ivMainLogo.setImageResource(R.mipmap.yb_logo);
         });
+
+        //优先级配置
+        Switch swLocalLogo = findViewById(R.id.sw_local_logo_setting);
+        boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY,ThermalConst.Default.LOCAL_PRIORITY);
+        swLocalLogo.setChecked(localPriority);
+        swLocalLogo.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.LOCAL_PRIORITY,isChecked));
     }
 
     private final int REQEST_SELECT_IMAGES_CODE = 12345;
@@ -806,21 +809,25 @@ public class ThermalSettingActivity extends BaseActivity {
         Button btnAngle = findViewById(R.id.btn_setAngle);
         int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
         btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
+
+        Button btnPicRotation = findViewById(R.id.btn_picture_rotation);
+        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION,Constants.DEFAULT_PICTURE_ROTATION);
+        btnPicRotation.setText(picRotation == -1 ? (getResString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
     }
 
     //初始化人脸框镜像设置
     private void initFaceRectMirrorSetting() {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
-        //人脸框镜像
+        //人脸框横向镜像
         final boolean mirror = SpUtils.isMirror();
         cbMirror.setChecked(mirror);
-        cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(isChecked);
-            }
-        });
+        cbMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.setMirror(isChecked));
 
+        //人脸框纵向镜像
+        CheckBox cbVerticalMirror = findViewById(R.id.cb_vertical_mirror);
+        boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR,Constants.DEFAULT_V_MIRROR);
+        cbVerticalMirror.setChecked(isVMirror);
+        cbVerticalMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.IS_V_MIRROR,isChecked));
     }
 
     //开始自动更新CPU温度
@@ -1005,6 +1012,23 @@ public class ThermalSettingActivity extends BaseActivity {
         ((Button) view).setText(getString(R.string.setting_cam_angle) + ":" + anInt);
         SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
         EventBus.getDefault().post(new DisplayOrientationEvent());
+    }
+
+    public void setPicRotation(View view){
+        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION,Constants.DEFAULT_PICTURE_ROTATION);
+        if(picRotation == -1){
+            picRotation = 0;
+        } else if(picRotation == 0){
+            picRotation = 90;
+        } else if(picRotation == 90){
+            picRotation = 180;
+        } else if(picRotation == 180){
+            picRotation = 270;
+        } else {
+            picRotation = -1;
+        }
+        ((Button)view).setText(picRotation == -1 ? (getResString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
+        SpUtils.saveInt(SpUtils.PICTURE_ROTATION, picRotation);
     }
 
     public void rebootDevice(View view) {

@@ -39,6 +39,7 @@
     <string name="speech_setting_normal_exmaple">體溫正常播報示例：</string>
     <string name="speech_setting_warning_exmaple">體溫異常播報示例：</string>
     <string name="speech_setting_audition">試聽</string>
+    <string name="setting_camera_vertical_mirror">人脸框纵向镜像</string>
 
     <!--溫度單位-->
     <string name="temper_tips_centigrade">攝氏度</string>

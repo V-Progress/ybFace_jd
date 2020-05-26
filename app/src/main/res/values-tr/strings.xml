@@ -44,6 +44,7 @@
     <string name="speech_setting_normal_exmaple">Normal örnek：</string>
     <string name="speech_setting_warning_exmaple">Özel durum örneği：</string>
     <string name="speech_setting_audition">Seçme</string>
+    <string name="setting_camera_vertical_mirror">Portre Yansıtma</string>
 
     <!--温度单位-->
     <string name="temper_tips_centigrade">Santigrat</string>

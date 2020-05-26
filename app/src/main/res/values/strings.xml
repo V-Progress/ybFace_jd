@@ -40,6 +40,10 @@
     <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
     <string name="setting_broadcast_speed">Voice speed</string>
     <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
+    <string name="setting_camera_vertical_mirror">Frame vertical mirror</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
 
     <!--logo设置-->
     <string name="setting_privacy_mode">Privacy Mode</string>
@@ -264,7 +268,7 @@
     <string name="setting_face_similar_threshold">Face similarity threshold</string><!-- 设置人脸相似度阈值 -->
     <string name="setting_enable_dialog">show face infomaction</string><!-- 开启人脸弹框 -->
     <string name="setting_enable_liveness">Turn on live detection</string><!-- 开启活体检测 -->
-    <string name="setting_camera_mirror">Enable face frame mirroring</string><!-- 开启人脸框镜像 -->
+    <string name="setting_camera_mirror">Frame horizontal mirror</string><!-- 开启人脸框镜像 -->
     <string name="setting_select_model">Select mode</string><!--选择模式  -->
     <string name="setting_current_port_path">Current serial port</string><!-- 当前串口 -->
     <string name="setting_baud_rate">Baud rate</string><!-- 波特率 -->

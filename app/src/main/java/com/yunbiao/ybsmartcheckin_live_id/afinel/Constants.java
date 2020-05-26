@@ -133,9 +133,11 @@ public class Constants {
     //人证、考勤跳转默认值
     public static final boolean DEFAULT_JUMP_TAG = false;
     //默认人脸镜像
-    public static boolean DEFAULT_FACE_MIRROR = true;
+    public static boolean DEFAULT_H_MIRROR = true;
     //默认人脸竖镜像
-    public static boolean isVerticalMirror = false;
+    public static boolean DEFAULT_V_MIRROR = false;
+    //截图方向
+    public static int DEFAULT_PICTURE_ROTATION = -1;
     //默认摄像头ID
     public static int CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_BACK;
     //屏幕角度默认值
