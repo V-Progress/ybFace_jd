@@ -37,8 +37,10 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
         dataList = list;
         if (horizontal == RecyclerView.HORIZONTAL) {
             itemId = R.layout.item_multi_thermal_normal;
-        } else {
+        } else if (horizontal == RecyclerView.VERTICAL) {
             itemId = R.layout.item_multi_thermal_warning;
+        } else if (horizontal == 3) {
+            itemId = R.layout.item_multi_thermal_warning_portrait;
         }
     }
 
@@ -94,13 +96,14 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
 
             String temperStr = "";
             float temper = multiTemperBean.getTemper();
+            float afterTreatmentTemp = temper;
             if (MultiThermalActivity.fEnabled) {
-                temper = (float) (Math.round((temper * 1.8f + 32) * 10)) / 10;
+                afterTreatmentTemp = (float) (Math.round((temper * 1.8f + 32) * 10)) / 10;
             }
             if (temper <= 0f || temper >= warningThreshold) {
-                temperStr = mAct.getResources().getString(R.string.main_error_multi_thermal) + "（" + temper + "）";
+                temperStr = mAct.getResources().getString(R.string.main_error_multi_thermal) + "（" + afterTreatmentTemp + "）";
             } else {
-                temperStr = mAct.getResources().getString(R.string.main_normal_multi_thermal) + "（" + temper + "）";
+                temperStr = mAct.getResources().getString(R.string.main_normal_multi_thermal) + "（" + afterTreatmentTemp + "）";
             }
             tvTemper.setText(temperStr);
 

@@ -335,9 +335,16 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     return;
                 }
                 float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
-                if (afterTreatmentF > mCacheTemp + 0.3f || afterTreatmentF < mCacheTemp - 0.3f) {
-                    sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
-                    mCacheTemp = afterTreatmentF;
+                if (ivTracingPoint.getVisibility() == View.GONE) {
+                    if (mTemperFloats.size() >= 5) {
+                        sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
+                        mCacheTemp = afterTreatmentF;
+                    }
+                } else {
+                    if (afterTreatmentF > mCacheTemp + 0.5f || afterTreatmentF < mCacheTemp - 0.5f) {
+                        sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
+                        mCacheTemp = afterTreatmentF;
+                    }
                 }
                 if (!isReport) {
                     if (mTemperFloats.size() < 5) {
@@ -477,6 +484,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
                     break;
                 case 3:
+                    mCacheTemp = 0;
                     ivTracingPoint.setVisibility(View.GONE);
                     break;
             }

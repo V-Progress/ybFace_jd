@@ -45,7 +45,7 @@ public class MultiThermalConst {
 
         boolean MULTI_TRACK = false;//多次抓取
 
-        int BLACK_BODY_PRE_VALUE = 345;//黑体预设值
+        int BLACK_BODY_PRE_VALUE = 365;//黑体预设值
 
         boolean BLACK_BODY_ENABLE = false;//黑体开关
 
