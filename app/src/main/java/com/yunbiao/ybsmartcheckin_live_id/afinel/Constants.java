@@ -152,10 +152,12 @@ public class Constants {
     public interface Key{
         String PRIVACY_MODE = "privacyMode";
         String CLEAR_POLICY = "clearPolicy";
+        String CLEAR_POLICY_CUSTOM = "clearPolicyCustom";
     }
 
     public static class Default{
         public static final boolean PRIVACY_MODE = false;
-        public static final int CLEAR_POLICY = 2;
+        public static final int CLEAR_POLICY = 3;
+        public static final int CLEAR_POLICY_CUSTOM = 30;
     }
 }

@@ -147,8 +147,14 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             tv_server_system.setText(getString(R.string.System_local_service));
         }
 
-        //onResume中加载该加载的东西
-        setLogo(ivLogo,tvAbbName);
+        boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,ThermalConst.Default.SHOW_MAIN_LOGO);
+        ivLogo.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
+        tvAbbName.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
+
+        if(showMainLogo){
+            //onResume中加载该加载的东西
+            setLogo(ivLogo,tvAbbName);
+        }
     }
 
     private void setLogo(ImageView logoView,TextView tvName) {

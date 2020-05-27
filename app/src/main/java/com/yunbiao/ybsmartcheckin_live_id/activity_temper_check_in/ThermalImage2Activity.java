@@ -157,11 +157,8 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         }
         showMainThermal = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, ThermalConst.Default.SHOW_MAIN_THERMAL);
         showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
-        if (showMainLogo) {
-            ivMainLogo.setVisibility(View.VISIBLE);
-        } else {
-            ivMainLogo.setVisibility(View.GONE);
-        }
+        ivMainLogo.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
+        tvMainAbbName.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
         mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         //设置活体开关
@@ -169,12 +166,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (faceView != null) {
             faceView.setLiveness(livenessEnabled);
         }
-
-        if (showMainThermal) {
-            llThermalArea.setVisibility(View.VISIBLE);
-        } else {
-            llThermalArea.setVisibility(View.GONE);
-        }
+        llThermalArea.setVisibility(showMainThermal ? View.VISIBLE :View.GONE);
 
         initAds();
         super.onResume();

@@ -104,62 +104,61 @@ public class SignManager {
         autoUploadThread = Executors.newSingleThreadScheduledExecutor();
         threadPool = Executors.newScheduledThreadPool(5);
 
-        if (Constants.DEVICE_TYPE != Constants.DeviceType.MULTIPLE_THERMAL && Constants.DEVICE_TYPE != Constants.DeviceType.HT_MULTIPLE_THERMAL) {
-            autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 1, 1, TimeUnit.MINUTES);
-        } else {
-            startMultiUploadThread();
-        }
+        startMultiUploadThread();
+        startAutoClear();
+    }
 
-        if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
-            threadPool.scheduleAtFixedRate(() -> {
-                int comid = SpUtils.getCompany().getComid();
-                List<Sign> signs = DaoManager.get().querySignByComId(comid);
-                if (signs == null || signs.size() <= 0) {
-                    d("暂无多余的记录");
-                    return;
+    private void startAutoClear(){
+        threadPool.scheduleAtFixedRate(() -> {
+            autoUploadRunnable.run();
+
+            Log.e(TAG, "startAutoClear: 执行自动清除");
+            int dateOffset;
+            switch (SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY,Constants.Default.CLEAR_POLICY)) {
+                case 0:
+                    dateOffset = 7;
+                    break;
+                case 1:
+                    dateOffset = 15;
+                    break;
+                case 2:
+                    dateOffset = 30;
+                    break;
+                case 3:
+                    dateOffset = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY_CUSTOM,Constants.Default.CLEAR_POLICY_CUSTOM);
+                    break;
+                default:
+                    dateOffset = 30;
+                    break;
+            }
+            Log.e(TAG, "startAutoClear: 清除策略：" + dateOffset);
+            Date date = new Date();
+            List<Sign> signList = DaoManager.get().queryAll(Sign.class);
+            if(signList == null || signList.size() <= 0){
+                Log.e(TAG, "startAutoClear: 暂无数据");
+                return;
+            }
+
+            int total = 0;
+            for (Sign sign : signList) {
+                if (date.getTime() - sign.getTime() <(dateOffset * 24 * 60 * 60 * 1000)) {
+                    continue;
                 }
-                Date date = new Date();
-                int offset = 30;
-                int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY, Constants.Default.CLEAR_POLICY);
-                switch (clearPolicy) {
-                    case 0:
-                        offset = 7;
-                        break;
-                    case 1:
-                        offset = 15;
-                        break;
-                    case 2:
-                        offset = 30;
-                        break;
+                total ++;
+                String headPath = sign.getHeadPath();
+                String hotImgPath = sign.getHotImgPath();
+                File headFile = new File(headPath);
+                File hotImgFile = new File(hotImgPath);
+                if(headFile.exists()){
+                    headFile.delete();
                 }
-                int count = 0;
-                Log.e(TAG, "SignManager: 当前策略：" + offset);
-                for (int i = 0; i < signs.size(); i++) {
-                    Sign sign = signs.get(i);
-                    long time = sign.getTime();
-                    if (date.getTime() - time < (offset * 24 * 60 * 60 * 1000)) {
-                        continue;
-                    }
-                    count++;
-                    String headPath = sign.getHeadPath();
-                    if (!TextUtils.isEmpty(headPath)) {
-                        File file = new File(headPath);
-                        if (file.exists()) {
-                            file.delete();
-                        }
-                    }
-                    String hotImgPath = sign.getHotImgPath();
-                    if (!TextUtils.isEmpty(hotImgPath)) {
-                        File file = new File(hotImgPath);
-                        if (file.exists()) {
-                            file.delete();
-                        }
-                    }
-                    DaoManager.get().deleteSign(sign);
+                if(hotImgFile.exists()){
+                    hotImgFile.delete();
                 }
-                Log.e(TAG, "SignManager: 总共清除：" + count);
-            }, 3, 30, TimeUnit.MINUTES);
-        }
+                DaoManager.get().deleteSign(sign);
+            }
+            Log.e(TAG, "startAutoClear: 总共已清除：" + total);
+        },5,10,TimeUnit.MINUTES);
     }
 
     public List<Sign> getTodaySignData() {
@@ -182,14 +181,11 @@ public class SignManager {
                 passageMap.clear();
             }
 
-            uploadSignRecord(new Consumer<Boolean>() {
-                @Override
-                public void accept(Boolean aBoolean) throws Exception {
-                    if (aBoolean) {
-                        EventBus.getDefault().post(new UpdateSignDataEvent());
-                    }
-                    d("处理情况：" + aBoolean);
+            uploadSignRecord(aBoolean -> {
+                if (aBoolean) {
+                    EventBus.getDefault().post(new UpdateSignDataEvent());
                 }
+                d("处理情况：" + aBoolean);
             });
         }
     };
@@ -198,6 +194,7 @@ public class SignManager {
     public void uploadSignRecord(final Consumer<Boolean> callback) {
         final List<Sign> signs = DaoManager.get().querySignByUpload(false);
         if (signs == null) {
+            Log.e(TAG, "uploadSignRecord: 暂无数据：" + signs.size());
             return;
         }
         Log.e(TAG, "run: ------ 未上传记录：" + signs.size());

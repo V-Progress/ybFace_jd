@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
@@ -24,6 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -184,12 +191,8 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
     public void onResume() {
         super.onResume();
 
-        if(Constants.FLAVOR_TYPE == FlavorType.HT || Constants.FLAVOR_TYPE == FlavorType.SK || Constants.FLAVOR_TYPE == FlavorType.OSIMLE){
-            gifImageView.setVisibility(View.GONE);
-        } else {
-            boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
-            gifImageView.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
-        }
+        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+        gifImageView.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
 
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
         if(rlv != null){
@@ -242,7 +245,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         if (todaySignData != null) {
             mSignList.addAll(todaySignData);
         }
-        Log.e(TAG, "loadSignData: " + mSignList.size());
         if(rlv != null){
             signAdapter.notifyDataSetChanged();
         }
@@ -283,7 +285,12 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         Company company = SpUtils.getCompany();
         String codeUrl = company.getCodeUrl();
         if(!TextUtils.isEmpty(codeUrl)){
-            Glide.with(getActivity()).load(codeUrl).asBitmap().into(gifImageView);
+            Glide.with(getActivity()).load(codeUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    gifImageView.setImageBitmap(resource);
+                }
+            });
         }
 
         if (tvCompanyName != null) {

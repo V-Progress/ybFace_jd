@@ -892,7 +892,6 @@
                 android:text="@string/setting_power_on_off" />
 
             <LinearLayout
-                android:visibility="gone"
                 style="@style/setting_text_child"
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
@@ -930,15 +929,25 @@
                         android:text="30"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+                    <RadioButton
+                        android:layout_marginLeft="20dp"
+                        android:button="@drawable/temper_radio_button"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_clear_policy_custom"
+                        android:text="custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                 </RadioGroup>
 
-                <TextView
-                    android:layout_marginLeft="30dp"
-                    android:id="@+id/tv_clear_policy"
-                    android:text="@string/setting_clear_policy_tip"
-                    android:textColor="@color/white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <EditText
+                    android:id="@+id/edt_policy_custom"
+                    style="@style/style_setting_input_number_edt"
+                    android:layout_width="100dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/shape_system_name"
+                    android:inputType="text"
+                    android:maxLength="20"
+                    android:padding="5dp"/>
             </LinearLayout>
 
             <LinearLayout

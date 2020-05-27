@@ -144,8 +144,8 @@ public class ThermalSettingActivity extends BaseActivity {
         initMainLogoImage();
     }
 
-    public void goSpeechSetting(View view){
-        startActivity(new Intent(this,SpeechContentActivity.class));
+    public void goSpeechSetting(View view) {
+        startActivity(new Intent(this, SpeechContentActivity.class));
     }
 
     private void initMainLogoImage() {
@@ -182,9 +182,9 @@ public class ThermalSettingActivity extends BaseActivity {
 
         //优先级配置
         Switch swLocalLogo = findViewById(R.id.sw_local_logo_setting);
-        boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY,ThermalConst.Default.LOCAL_PRIORITY);
+        boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
         swLocalLogo.setChecked(localPriority);
-        swLocalLogo.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.LOCAL_PRIORITY,isChecked));
+        swLocalLogo.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.LOCAL_PRIORITY, isChecked));
     }
 
     private final int REQEST_SELECT_IMAGES_CODE = 12345;
@@ -242,13 +242,15 @@ public class ThermalSettingActivity extends BaseActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString().trim();
-                if(TextUtils.isEmpty(s1)) {
+                if (TextUtils.isEmpty(s1)) {
                     SpUtils.remove(ThermalConst.Key.MAIN_LOGO_TEXT);
                 } else {
                     SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_TEXT, s1);
@@ -293,7 +295,7 @@ public class ThermalSettingActivity extends BaseActivity {
         alertDialog.show();
     }
 
-    private void initMainThermal(){
+    private void initMainThermal() {
         boolean showMainThermal = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, ThermalConst.Default.SHOW_MAIN_THERMAL);
         Switch swMainThermal = findViewById(R.id.sw_main_thermal_setting);
         swMainThermal.setChecked(showMainThermal);
@@ -305,7 +307,7 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
-    private void initMainInfo(){
+    private void initMainInfo() {
         boolean showMainInfo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_INFO, ThermalConst.Default.SHOW_MAIN_INFO);
         Switch swMainInfo = findViewById(R.id.sw_main_info_setting);
         swMainInfo.setChecked(showMainInfo);
@@ -317,7 +319,7 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
-    private void initMainLogo(){
+    private void initMainLogo() {
         boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
         Switch swMainLogo = findViewById(R.id.sw_main_logo_setting);
         swMainLogo.setChecked(showMainLogo);
@@ -331,49 +333,66 @@ public class ThermalSettingActivity extends BaseActivity {
 
     private void initClearPolicy() {
         RadioGroup rgClear = findViewById(R.id.rg_clear_policy);
-        if (Constants.FLAVOR_TYPE != FlavorType.SOFT_WORK_Z) {
-            rgClear.setVisibility(View.GONE);
-            return;
-        }
-        TextView tvClearPolicy = findViewById(R.id.tv_clear_policy);
-        String str = tvClearPolicy.getText().toString();
+        EditText edtPolicy = findViewById(R.id.edt_policy_custom);
 
-        int date = 0;
+        int customDate = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY_CUSTOM, Constants.Default.CLEAR_POLICY_CUSTOM);
+        edtPolicy.setText(String.valueOf(customDate));
+        edtPolicy.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String content = s.toString();
+                if(TextUtils.isEmpty(content)){
+                    SpUtils.remove(Constants.Key.CLEAR_POLICY_CUSTOM);
+                } else {
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY_CUSTOM,Integer.parseInt(content));
+                }
+            }
+        });
+
         int clearPolicy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY, Constants.Default.CLEAR_POLICY);
         switch (clearPolicy) {
             case 0:
-                date = 7;
                 rgClear.check(R.id.rb_clear_policy_7);
                 break;
             case 1:
-                date = 15;
                 rgClear.check(R.id.rb_clear_policy_15);
                 break;
             case 2:
-                date = 30;
                 rgClear.check(R.id.rb_clear_policy_30);
                 break;
+            case 3:
+                rgClear.check(R.id.rb_clear_policy_custom);
+                break;
         }
-        String format = String.format(str, String.valueOf(date));
-        tvClearPolicy.setText(format);
         rgClear.setOnCheckedChangeListener((group, checkedId) -> {
-            int i = 0;
             switch (checkedId) {
                 case R.id.rb_clear_policy_7:
-                    i = 7;
-                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 0);
+                    edtPolicy.setEnabled(false);
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY,0);
                     break;
                 case R.id.rb_clear_policy_15:
-                    i = 15;
-                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 1);
+                    edtPolicy.setEnabled(false);
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY,1);
                     break;
                 case R.id.rb_clear_policy_30:
-                    i = 30;
-                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY, 2);
+                    edtPolicy.setEnabled(false);
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY,2);
+                    break;
+                case R.id.rb_clear_policy_custom:
+                    edtPolicy.setEnabled(true);
+                    SpUtils.saveInt(Constants.Key.CLEAR_POLICY,3);
                     break;
             }
-            String s = String.format(str, String.valueOf(i));
-            tvClearPolicy.setText(s);
         });
     }
 
@@ -604,7 +623,7 @@ public class ThermalSettingActivity extends BaseActivity {
         swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && swAutoMode.isChecked()){
+                if (isChecked && swAutoMode.isChecked()) {
                     SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
                     swAutoMode.setChecked(false);
                 }
@@ -613,16 +632,16 @@ public class ThermalSettingActivity extends BaseActivity {
         });
 
         //===自动模式=========================================================
-        boolean autoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER,ThermalConst.Default.AUTO_TEMPER);
+        boolean autoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER, ThermalConst.Default.AUTO_TEMPER);
         swAutoMode.setChecked(autoTemper);
         swAutoMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && swLowTempModel.isChecked()){
+                if (isChecked && swLowTempModel.isChecked()) {
                     SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
                     swLowTempModel.setChecked(false);
                 }
-                SpUtils.saveBoolean(ThermalConst.Key.AUTO_TEMPER,isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.AUTO_TEMPER, isChecked);
             }
         });
 
@@ -811,7 +830,7 @@ public class ThermalSettingActivity extends BaseActivity {
         btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
 
         Button btnPicRotation = findViewById(R.id.btn_picture_rotation);
-        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION,Constants.DEFAULT_PICTURE_ROTATION);
+        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
         btnPicRotation.setText(picRotation == -1 ? (getResString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
     }
 
@@ -825,9 +844,9 @@ public class ThermalSettingActivity extends BaseActivity {
 
         //人脸框纵向镜像
         CheckBox cbVerticalMirror = findViewById(R.id.cb_vertical_mirror);
-        boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR,Constants.DEFAULT_V_MIRROR);
+        boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR, Constants.DEFAULT_V_MIRROR);
         cbVerticalMirror.setChecked(isVMirror);
-        cbVerticalMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.IS_V_MIRROR,isChecked));
+        cbVerticalMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.IS_V_MIRROR, isChecked));
     }
 
     //开始自动更新CPU温度
@@ -1014,20 +1033,20 @@ public class ThermalSettingActivity extends BaseActivity {
         EventBus.getDefault().post(new DisplayOrientationEvent());
     }
 
-    public void setPicRotation(View view){
-        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION,Constants.DEFAULT_PICTURE_ROTATION);
-        if(picRotation == -1){
+    public void setPicRotation(View view) {
+        int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
+        if (picRotation == -1) {
             picRotation = 0;
-        } else if(picRotation == 0){
+        } else if (picRotation == 0) {
             picRotation = 90;
-        } else if(picRotation == 90){
+        } else if (picRotation == 90) {
             picRotation = 180;
-        } else if(picRotation == 180){
+        } else if (picRotation == 180) {
             picRotation = 270;
         } else {
             picRotation = -1;
         }
-        ((Button)view).setText(picRotation == -1 ? (getResString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
+        ((Button) view).setText(picRotation == -1 ? (getResString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
         SpUtils.saveInt(SpUtils.PICTURE_ROTATION, picRotation);
     }
 
