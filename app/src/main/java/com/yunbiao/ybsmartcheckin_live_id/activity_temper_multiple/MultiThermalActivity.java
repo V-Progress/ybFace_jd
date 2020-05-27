@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -41,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -52,7 +54,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
-import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
@@ -179,8 +180,13 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private boolean mTempMode = false;
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_multi_thermal;
+    protected int getPortraitLayout() {
+        return R.layout.activity_multi_thermal_portrait;
+    }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_multi_thermal_landscape;
     }
 
     @Override
@@ -222,6 +228,11 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             startCalibrationBox();
             return true;
         });
+
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            InformationFragment informationFragment = new InformationFragment();
+            replaceFragment(R.id.layout_h, informationFragment);
+        }
     }
 
     @Override
@@ -256,7 +267,18 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             }
         });
 
-        warningAdapter = new MultiThermalRecordAdapter(this, warningList, RecyclerView.VERTICAL);
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            rlvWarningList.setLayoutManager(new LinearLayoutManager(this) {
+                @Override
+                public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, 140);
+                    return layoutParams;
+                }
+            });
+            warningAdapter = new MultiThermalRecordAdapter(this, warningList, 3);
+        } else {
+            warningAdapter = new MultiThermalRecordAdapter(this, warningList, RecyclerView.VERTICAL);
+        }
         rlvWarningList.setAdapter(warningAdapter);
     }
 

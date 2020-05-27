@@ -65,18 +65,6 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     public static boolean fEnabled;
 
     @Override
-    protected int getPortraitLayout() {
-        return getLayout();
-    }
-
-    @Override
-    protected int getLandscapeLayout() {
-        return getLayout();
-    }
-
-    protected abstract int getLayout();
-
-    @Override
     protected void initView() {
         super.initView();
         NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(this);

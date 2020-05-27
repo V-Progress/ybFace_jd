@@ -43,7 +43,7 @@ public class ImageF extends BaseF {
         imageView = getView().findViewById(R.id.image_view);
         if (getArguments() != null) {
             mUrl = getArguments().getString(KEY);
-            Glide.with(getActivity()).load(mUrl).asBitmap().into(imageView);
+            Glide.with(getActivity()).load(mUrl).asBitmap().fitCenter().into(imageView);
         }
     }
 

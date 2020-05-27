@@ -18,7 +18,7 @@
             android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             android:src="@mipmap/img_noinfo" />
 
         <ProgressBar
@@ -38,7 +38,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
