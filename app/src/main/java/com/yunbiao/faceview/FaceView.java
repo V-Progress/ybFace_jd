@@ -274,6 +274,10 @@ public class FaceView extends FrameLayout {
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     int faceId = faceIndexInfo.getFaceId();
                     float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
+                    float originalTempF = faceIndexInfo.getOriginalTempF();
+                    if (originalTempF < 33f) {
+                        afterTreatmentF = originalTempF;
+                    }
                     idList.add(faceId);
                     if (!temperHashMap.containsKey(faceId)) {
                         temperHashMap.put(faceId, afterTreatmentF);

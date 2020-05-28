@@ -328,8 +328,8 @@
     <string name="setting_switch_cancel">취소</string>
 
     <!--设置开关机-->
-    <string name="setting_tip_warning_number_reseted">Count cleared</string>
-    <string name="setting_reset_warning_number">Count cleared</string>
+    <string name="setting_tip_warning_number_reseted">카운트가 해제됩니다</string>
+    <string name="setting_reset_warning_number">클리어 카운트</string>
     <string name="setting_power_on_off">절전장치</string>
     <string name="act_power_title">스위치 설정</string>
     <string name="act_power_power_on_strategy">오픈 운영 전략</string>
@@ -505,9 +505,9 @@
     <string name="setting_save_failed_multi_thermal">not changed</string>
     <string name="setting_save_success_multi_thermal">保存成功</string>
     <string name="setting_save_multi_thermal">保存</string>
-    <string name="setting_please_correct_multi_thermal">（请结合体温枪测温和热成像温度填写差值）</string>
+    <string name="setting_please_correct_multi_thermal">（비접촉체온계 측정한 온도와 열화상 온도의 차이 값  기입하십시오）</string>
     <string name="record_export_multi_thermal">导出</string>
-    <string name="main_real_detection">实时监测</string>
+    <string name="main_real_detection">실시간 검사</string>
     <string name="main_data_total">数据统计</string>
     <string name="setting_show_thermal_face_frame">열영상 얼굴 프레임 보이기</string>
     <string name="setting_show_black_body">흑체 조정 상자 보이기</string>
@@ -608,28 +608,29 @@
     <string name="act_certificates_no_this_person">No such person, please input the card number information first</string>
 
 
-    <string name="safety_main_title">AI大通量测温系统</string>
-    <string name="safety_main_real_detection">实时监测</string>
-    <string name="safety_main_temer_area">体温测量</string>
-    <string name="safety_main_warning_number">异常人数</string>
-    <string name="safety_main_device_no">设备编号:</string>
+    <string name="safety_main_title">AI high-flux 온도 측정 시스템</string>
+    <string name="safety_main_real_detection">실시간 검사</string>
+    <string name="safety_main_temer_area">체온 측정</string>
+    <string name="safety_main_warning_number">이상</string>
+    <string name="safety_main_device_no">장치번호:</string>
 
-    <string name="safety_black_body_size_large">大</string>
-    <string name="safety_black_body_size_Middle">中</string>
-    <string name="safety_black_body_size_Small">小</string>
-    <string name="safety_black_body_size_Smaller">更小</string>
-    <string name="safety_balck_body_size">检测区域尺寸</string>
-    <string name="safety_black_body_enable">开启黑体矫正</string>
-    <string name="safety_temperature_threshold">取温阈值</string>
-    <string name="safety_temperature_frame_enable">temperature measuring frame</string><!--开启测温框-->
-    <string name="safety_calibration_main">Calibration</string><!--校准-->
-    <string name="safety_measure_main">measure:</string><!--测温:-->
-    <string name="safety_correct_main">correct:</string><!--校准:-->
-    <string name="safety_temper_main">temper:</string><!--体温:-->
-    <string name="safety_auto_calibration_setting">Automatic Calibration</string>
-    <string name="safety_correct_temper_tip">Please aim the face at the temperature measurement frame,Temperature measurement is about to start</string>
+    <string name="safety_black_body_size_large">대</string>
+    <string name="safety_black_body_size_Middle">중</string>
+    <string name="safety_black_body_size_Small">소</string>
+    <string name="safety_black_body_size_Smaller">더 작은</string>
+    <string name="safety_balck_body_size">감지 영역 크기</string>
+    <string name="safety_black_body_enable">흑체 교정 켜기</string>
+    <string name="safety_temperature_threshold">온도 임계 값</string>
+    <string name="safety_temperature_frame_enable">온도 측정 프레임을 열기</string><!--开启测温框-->
+    <string name="safety_immediate_report_enable">즉시 온도 알림</string><!--立即报温-->
+    <string name="safety_calibration_main">조정</string><!--校准-->
+    <string name="safety_measure_main">온도 측정:</string><!--测温:-->
+    <string name="safety_correct_main">조정:</string><!--校准:-->
+    <string name="safety_temper_main">체온:</string><!--体温:-->
+    <string name="safety_auto_calibration_setting">자동교정</string>
+    <string name="safety_correct_temper_tip">측정 프레임에 얼굴 맞추면 온도 측정이 시작한다</string>
     <string name="safety_correct_temper_ing">Temperature measurement</string><!--正在测温-->
-    <string name="safety_correct_temper_completion">Thermometric completion</string><!--测温结束-->
-    <string name="safety_save_completion">Calibration completion</string><!--保存-->
-    <string name="safety_save_cancel">Cancel calibration</string><!--保存-->
+    <string name="safety_correct_temper_completion">온도 측정 종료</string><!--测温结束-->
+    <string name="safety_save_completion">조정 완료</string><!--保存-->
+    <string name="safety_save_cancel">조정 취소</string><!--保存-->
 </resources>
