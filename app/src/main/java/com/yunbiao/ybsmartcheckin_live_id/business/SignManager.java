@@ -602,7 +602,8 @@ public class SignManager {
 
     //人脸打卡和访客打卡
     public Sign checkSignData(CompareResult compareResult, float temperature) {
-        return checkSignData(compareResult, temperature, true);
+        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
+        return checkSignData(compareResult, temperature, !isPrivacy);
     }
 
     public Sign getTemperatureSign(float temperatureValue) {

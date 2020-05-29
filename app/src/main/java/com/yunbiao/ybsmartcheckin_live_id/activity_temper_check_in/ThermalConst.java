@@ -23,7 +23,7 @@ public class ThermalConst {
         models = APP.getContext().getResources().getStringArray(R.array.models);
     }
 
-    interface Key {
+    public interface Key {
         String MODE = "thermalModelSetting";
         String THERMAL_MIRROR = "thermalMirror";
         String LOW_TEMP_MODE = "lowTempMode";

@@ -20,6 +20,11 @@
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
     <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
 
+    <string name="setting_tab_face">人臉</string>
+    <string name="setting_tab_page">界面</string>
+    <string name="setting_tab_temper">測溫</string>
+    <string name="setting_tab_device">設備</string>
+
     <!--語音設置-->
     <string name="speech_setting_title">語音播報設置</string>
     <string name="setting_broadcast_speed">語音速度</string><!--語音速度-->

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    style="@style/setting_text_child"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_cpu_temp" />
+
+                <TextView
+                    android:id="@+id/tv_cpu_temper"
+                    style="@style/setting_text"
+                    android:text="0℃" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_curr_net" />
+
+                <TextView
+                    android:id="@+id/tv_wifi_state"
+                    style="@style/setting_text"
+                    android:text="@string/setting_net_name" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_enable_ic_card" />
+
+                <Switch
+                    android:id="@+id/sw_readcard_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_relay_delay_time" />
+
+                <EditText
+                    android:id="@+id/edt_delay"
+                    style="@style/style_setting_input_number_edt" />
+
+                <TextView
+                    style="@style/setting_text"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/setting_s" />
+
+                <TextView
+                    style="@style/setting_text"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/auto_close_door_setting"
+                    android:textColor="@android:color/holo_red_light" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/setting_periodic_purge_policy"
+                style="@style/setting_text"/>
+
+            <RadioGroup
+                android:layout_marginLeft="20dp"
+                android:id="@+id/rg_clear_policy"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:button="@drawable/temper_radio_button"
+                    android:textColor="@color/white"
+                    android:id="@+id/rb_clear_policy_7"
+                    android:text="7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:layout_marginLeft="20dp"
+                    android:button="@drawable/temper_radio_button"
+                    android:textColor="@color/white"
+                    android:id="@+id/rb_clear_policy_15"
+                    android:text="15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:layout_marginLeft="20dp"
+                    android:button="@drawable/temper_radio_button"
+                    android:textColor="@color/white"
+                    android:id="@+id/rb_clear_policy_30"
+                    android:text="30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:layout_marginLeft="20dp"
+                    android:button="@drawable/temper_radio_button"
+                    android:textColor="@color/white"
+                    android:id="@+id/rb_clear_policy_custom"
+                    android:text="custom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/edt_policy_custom"
+                style="@style/style_setting_input_number_edt"
+                android:layout_width="100dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/shape_system_name"
+                android:inputType="text"
+                android:maxLength="20"
+                android:padding="5dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_reboot"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/shape_system_name"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/setting_reboot_device" />
+
+        <TextView
+            android:id="@+id/btn_pwd"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/shape_system_name"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/setting_manage_password" />
+
+        <TextView
+            android:id="@+id/tv_power"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/shape_system_name"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/setting_power_on_off" />
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/rg_server_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="30dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rb_yun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/setting_cloud_service"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+
+                <RadioButton
+                    android:id="@+id/rb_ju"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/setting_local_service"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_spinner_drop"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_ip_address"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/edt_ip"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:digits="0123456789."
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/gray_low" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_resource_port"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/edt_res_port"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/gray_low" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_xmpp_port"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/edt_xmpp_port"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/gray_low" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_project_name"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/edt_pro_name"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:digits="abcdefghijklmnopqrstuvwxyz123456789/"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/gray_low" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_save_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/selector_btn_take_photo"
+                    android:text="@string/setting_save_service_info"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

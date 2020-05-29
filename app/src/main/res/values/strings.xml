@@ -20,6 +20,11 @@
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
     <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
 
+    <string name="setting_tab_face">Face</string>
+    <string name="setting_tab_page">Page</string>
+    <string name="setting_tab_temper">Temperature</string>
+    <string name="setting_tab_device">Device</string>
+
     <!--语音设置-->
     <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
     <string name="setting_welcome_speech">Welcome Speech</string><!--Welcome speech-->
