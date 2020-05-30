@@ -172,7 +172,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
+            ivLogo.setImageResource(R.mipmap.icon_logo3);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+        }else {
             ivLogo.setImageResource(R.mipmap.yb_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
         }

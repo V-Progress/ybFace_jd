@@ -85,6 +85,7 @@
 
     <string name="sk_temper_check_in">SKRegistroDeTemperatura</string>
     <string name="sk_multiple">SKAltoRendimiento</string>
+    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">Conectado</string>
