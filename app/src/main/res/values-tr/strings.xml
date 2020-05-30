@@ -25,6 +25,35 @@
     <string name="main_temp_tips_please_far">Lütfen uzak durun</string>
     <string name="main_temp_tips_so_close_text">Çok yakınsınız lütfen uzaklaşın </string>
 
+    <string name="setting_tab_face">Yüz</string>
+    <string name="setting_tab_page">Arabirim</string>
+    <string name="setting_tab_temper">Sıcaklık</string>
+    <string name="setting_tab_device">Ekipman</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
+
+    <!--logo设置-->
+    <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">Display home LOGO</string>
+    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
+    <string name="setting_show_main_info">Display home page information</string>
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Santigrat</string>
+    <string name="temper_tips_fahrenheit">Derece fahrenhayt</string>
+    <string name="app_main_title">Uygulama başlığı</string>
+
+    <string name="select_img_title">Select Image</string>
+    <string name="select_img_failed">Image selection failed</string>
+    <string name="select_img_failed_not_exists">The selected image does not exist</string>
+    <string name="setting_app_logo">APP Logo</string>
+    <string name="setting_select_image">Choose</string>
+    <string name="setting_restore_image">Restore</string>
+    <string name="setting_auto_temper">Otomatik mod</string>
+
     <!--语音设置-->
     <string name="temper_tips_close">İpuçlarına yakın</string>
     <string name="setting_broadcast_speed">Ses hızı</string>
@@ -46,18 +75,6 @@
     <string name="speech_setting_audition">Seçme</string>
     <string name="setting_camera_vertical_mirror">Portre Yansıtma</string>
 
-    <!--温度单位-->
-    <string name="temper_tips_centigrade">Santigrat</string>
-    <string name="temper_tips_fahrenheit">Derece fahrenhayt</string>
-    <string name="app_main_title">Uygulama başlığı</string>
-
-    <string name="select_img_title">Select Image</string>
-    <string name="select_img_failed">Image selection failed</string>
-    <string name="select_img_failed_not_exists">The selected image does not exist</string>
-    <string name="setting_app_logo">APP Logo</string>
-    <string name="setting_select_image">Choose</string>
-    <string name="setting_restore_image">Restore</string>
-    <string name="setting_auto_temper">Otomatik mod</string>
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>

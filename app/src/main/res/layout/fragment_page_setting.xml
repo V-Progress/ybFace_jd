@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/setting_text_child"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_screen_saver" />
+
+            <Switch
+                android:id="@+id/sw_poster_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_show_main_logo" />
+
+            <Switch
+                android:id="@+id/sw_main_logo_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_show_main_thermal" />
+
+            <Switch
+                android:id="@+id/sw_main_thermal_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_show_main_info" />
+
+            <Switch
+                android:id="@+id/sw_main_info_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/ll_qr_code_enable_area"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    style="@style/setting_text"
+                    android:text="@string/setting_show_qr_code" />
+
+                <Switch
+                    android:id="@+id/sw_qrcode_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/setting_app_logo" />
+
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:scaleType="fitCenter"
+                android:id="@+id/iv_main_logo"
+                android:layout_width="120dp"
+                android:layout_height="60dp"/>
+
+            <Button
+                android:layout_marginLeft="20dp"
+                android:id="@+id/btn_save_main_logo"
+                style="@style/style_setting_input_save_button"
+                android:text="@string/setting_select_image" />
+
+            <Button
+                android:layout_marginLeft="20dp"
+                android:id="@+id/btn_restore_main_logo"
+                style="@style/style_setting_input_save_button"
+                android:text="@string/setting_restore_image" />
+
+            <Switch
+                android:text="@string/setting_local_priority"
+                android:switchPadding="10dp"
+                android:id="@+id/sw_local_logo_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:text="@string/app_main_title" />
+
+            <EditText
+                android:id="@+id/edt_main_logo_text"
+                style="@style/style_setting_input_number_edt"
+                android:layout_width="400dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/shape_system_name"
+                android:inputType="text"
+                android:maxLength="20"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_go_speech"
+            android:maxWidth="600dp"
+            android:minWidth="200dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="0dp"
+            style="@style/style_setting_input_save_button"
+            android:text="@string/speech_setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</ScrollView>

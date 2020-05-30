@@ -23,6 +23,11 @@
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
     <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
 
+    <string name="setting_tab_face">顔検出</string>
+    <string name="setting_tab_page">画面</string>
+    <string name="setting_tab_temper">温度測定</string>
+    <string name="setting_tab_device">設備</string>
+
     <!--语音设置-->
     <string name="speech_setting_title">音声放送設定</string>
     <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->
@@ -43,7 +48,17 @@
     <string name="speech_setting_warning_exmaple">体温異常例：</string>
     <string name="speech_setting_audition">试听</string>
     <string name="setting_camera_vertical_mirror">縦の枠の鏡像</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
 
+    <!--logo设置-->
+    <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">Display home LOGO</string>
+    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
+    <string name="setting_show_main_info">Display home page information</string>
 
     <!--温度単位-->
     <string name="temper_tips_centigrade">摂氏度</string>
@@ -322,8 +337,6 @@
     <string name="setting_low_temp_model">低温モード</string>
     <string name="setting_portrait_outline">人物の輪郭</string>
     <string name="setting_default_welcome_tip">AIスマート勤務評定システムをご利用ください</string>
-    <string name="setting_default_welcome_tip2">順番勤務評定システムをご利用ください</string>
-    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">温度を矯正する</string>
     <string name="setting_broadcast_f">放送華氏度</string>
 

@@ -20,6 +20,11 @@
     <string name="error_mask_tip">마스크를 정확히 착용하세요</string>
     <string name="please_aim_face_frame">얼굴 액자에 맞추세요.</string>
 
+    <string name="setting_tab_face">얼굴</string>
+    <string name="setting_tab_page">인터페이스</string>
+    <string name="setting_tab_temper">측정</string>
+    <string name="setting_tab_device">설비</string>
+
     <!--语音设置-->
     <string name="temper_tips_close">바투 팁</string>
     <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->
@@ -53,6 +58,19 @@
     <string name="setting_select_image">Choose</string>
     <string name="setting_restore_image">Restore</string>
     <string name="setting_auto_temper">자동 모드</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
+
+    <!--logo设置-->
+    <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">Display home LOGO</string>
+    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
+    <string name="setting_show_main_info">Display home page information</string>
+
+
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>
@@ -315,8 +333,6 @@
     <string name="setting_low_temp_model">저온 모드</string>
     <string name="setting_portrait_outline">실루엣</string>
     <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
-    <string name="setting_default_welcome_tip2">헨리 출퇴근 시스템 사용 을 환영 합 니 다.</string>
-    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">온 도 를 바로잡다</string>
     <string name="setting_broadcast_f">화 씨 사용 하기</string>
     <string name="setting_switch_to_certificates">인증서로 전환</string><!--Switch to certificate temperature measurement-->

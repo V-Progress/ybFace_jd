@@ -40,63 +40,63 @@ public class SyncDialog {
     private Handler updateHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if (mStep.equals(APP.getContext().getString(R.string.sync_get_failed)) ||
-                    mStep.equals(APP.getContext().getString(R.string.sync_not_bind)) ||
-                    mStep.equals(APP.getContext().getString(R.string.sync_not_depart))) {
-                tvInfo.setTextColor(Color.RED);
-            } else {
-                tvInfo.setTextColor(Color.parseColor("#2d2a2a"));
-            }
-            tvInfo.setText(mStep);
-            if(mProgress == 0 && mTotal == 0){
-                tvProgress.setText("");
-            } else {
-                tvProgress.setText(mProgress + " / " + mTotal);
-            }
-            updateHandler.sendEmptyMessageDelayed(0,2000);
+//            if (mStep.equals(APP.getContext().getString(R.string.sync_get_failed)) ||
+//                    mStep.equals(APP.getContext().getString(R.string.sync_not_bind)) ||
+//                    mStep.equals(APP.getContext().getString(R.string.sync_not_depart))) {
+//                tvInfo.setTextColor(Color.RED);
+//            } else {
+//                tvInfo.setTextColor(Color.parseColor("#2d2a2a"));
+//            }
+//            tvInfo.setText(mStep);
+//            if(mProgress == 0 && mTotal == 0){
+//                tvProgress.setText("");
+//            } else {
+//                tvProgress.setText(mProgress + " / " + mTotal);
+//            }
+//            updateHandler.sendEmptyMessageDelayed(0,2000);
         }
     };
 
     public void init(Activity activity){
-        act = activity;
-        initDialog();
-        initView();
+//        act = activity;
+//        initDialog();
+//        initView();
     }
 
     private void initDialog(){
-        dialog = new SDialog(APP.getContext());
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+//        dialog = new SDialog(APP.getContext());
+//        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
     }
 
     private void initView(){
-        if(dialog == null){
-            return;
-        }
-        rootView = dialog.findViewById(R.id.ll_root);
-        tvInfo = dialog.findViewById(R.id.tv_info);
-        tvProgress = dialog.findViewById(R.id.tv_progress);
+//        if(dialog == null){
+//            return;
+//        }
+//        rootView = dialog.findViewById(R.id.ll_root);
+//        tvInfo = dialog.findViewById(R.id.tv_info);
+//        tvProgress = dialog.findViewById(R.id.tv_progress);
     }
 
     public void show(){
-        if(act == null){
-            Log.e(TAG, "未进行初始化" );
-            return;
-        }
-        if(dialog != null && dialog.isShowing()){
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                }
-            });
-        }
-        act.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dialog.show();
-            }
-        });
-        updateHandler.sendEmptyMessage(RUNNING_MESSAGE);
+//        if(act == null){
+//            Log.e(TAG, "未进行初始化" );
+//            return;
+//        }
+//        if(dialog != null && dialog.isShowing()){
+//            act.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    dialog.dismiss();
+//                }
+//            });
+//        }
+//        act.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                dialog.show();
+//            }
+//        });
+//        updateHandler.sendEmptyMessage(RUNNING_MESSAGE);
     }
 
     public boolean isShown(){
@@ -104,28 +104,28 @@ public class SyncDialog {
     }
 
     public void dismiss(){
-        updateHandler.removeMessages(RUNNING_MESSAGE);
-        if(act == null){
-            Log.e(TAG, "未进行初始化" );
-            return;
-        }
-
-        rootView.post(new Runnable() {
-            @Override
-            public void run() {
-                tvInfo.setText(act.getString(R.string.dialog_sync_tbjs));
-                tvProgress.setText("");
-            }
-        });
-
-        if(dialog != null && dialog.isShowing()){
-            rootView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                }
-            },2 * 1000);
-        }
+//        updateHandler.removeMessages(RUNNING_MESSAGE);
+//        if(act == null){
+//            Log.e(TAG, "未进行初始化" );
+//            return;
+//        }
+//
+//        rootView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                tvInfo.setText(act.getString(R.string.dialog_sync_tbjs));
+//                tvProgress.setText("");
+//            }
+//        });
+//
+//        if(dialog != null && dialog.isShowing()){
+//            rootView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    dialog.dismiss();
+//                }
+//            },2 * 1000);
+//        }
     }
 
     public static void setStep(final String step){

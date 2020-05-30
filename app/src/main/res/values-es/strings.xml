@@ -20,6 +20,57 @@
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
     <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
 
+    <string name="setting_tab_face">Las caras</string>
+    <string name="setting_tab_page">La interfaz</string>
+    <string name="setting_tab_temper">La temperatura</string>
+    <string name="setting_tab_device">El equipo</string>
+
+    <!--语音设置-->
+    <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
+    <string name="temper_tips_close">Close to the tip</string>
+    <string name="speech_setting_open_or_close">On</string>
+    <string name="speech_setting_show_temper">Displays the temperature value</string>
+    <string name="speech_setting_temper_location">Temperature display position</string>
+    <string name="speech_setting_location_start">Before</string>
+    <string name="speech_setting_location_center">Sign position</string>
+    <string name="speech_setting_location_end">behind</string>
+    <string name="speech_setting_alert">The temperature display position is identified by the # symbol, and the temperature number will be automatically completed. For example (36.5℃), only one # character can exist, and when there are multiple # characters, the first one will prevail and the remaining symbols will be deleted automatically</string>
+    <string name="speech_setting_welcome_exmaple">Example of welcome：</string>
+    <string name="speech_setting_distance_exmaple">Distance prompt example：</string>
+    <string name="speech_setting_normal_exmaple">Example of normal temperature：</string>
+    <string name="speech_setting_warning_exmaple">Examples of abnormal temperature：</string>
+    <string name="speech_setting_audition">play</string>
+    <string name="setting_default_welcome_tip">Bienvenido al sistema de asistencia inteligente AI</string><!--欢迎语-->
+    <string name="setting_camera_vertical_mirror">Frame vertical mirror</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Centigrade</string>
+    <string name="temper_tips_fahrenheit">Fahrenheit degree</string>
+    <string name="app_main_title">The application title</string>
+    <string name="select_img_title">Select Image</string>
+    <string name="select_img_failed">Image selection failed</string>
+    <string name="select_img_failed_not_exists">The selected image does not exist</string>
+    <string name="setting_app_logo">APP Logo</string>
+    <string name="setting_select_image">Choose</string>
+    <string name="setting_restore_image">Restore</string>
+    <string name="setting_auto_temper">Automatic mode</string>
+
+    <!--logo设置-->
+    <string name="setting_welcome_speech">Palabras de bienvenida</string><!--Welcome speech--><!--欢迎语  -->
+    <string name="setting_normal_speech_content">Transmisión de temperatura normal:</string><!--普通温度播报-->
+    <string name="setting_warning_speech_content">Transmisión de temperatura anormal</string><!--异常温度播报-->
+    <string name="setting_broadcast_speed">Velocidad de la voz</string>
+
+    <string name="setting_privacy_mode">Modo Privacidad</string>
+    <string name="setting_periodic_purge_policy">Política de depuración periódica</string>
+    <string name="setting_clear_policy_tip">Limpia de datos automática hace %1$s días </string>
+    <string name="setting_show_main_logo">Mostrar logotipo de inicio</string>
+    <string name="setting_show_main_thermal">Mostrar imagen térmica</string>
+    <string name="setting_show_main_info">Mostrar información de la página de inicio</string>
+
     <!--应用名称-->
     <string name="yb_check_in">YBRegistro</string>
     <string name="yb_temper_check_in">YBRegistroDeTemperatura</string>
@@ -216,6 +267,8 @@
     <string name="face_thermal_16_4_model">Cara + imagen térmica（HM-16*4）</string>
     <string name="only_thermal_mlx_16_4_model">Solo imagen térmica（MLX-16*4）</string>
     <string name="face_thermal_mlx_16_4_model">Cara + Imagen térmica（MLX-16*4）</string>
+    <string name="smt_only_thermal">Solo imagen térmica（SMT）</string>
+    <string name="smt_face_thermal">Cara + Imagen térmica（SMT）</string>
 
 
     <!--标签-->
@@ -242,7 +295,6 @@
     <string name="setting_range_highest">máximo</string><!--Highest--><!-- 最高 -->
     <string name="setting_speech_delay">Retraso de transmición</string><!-- 连续播报间隔 -->
     <string name="setting_screen_saver">Salvapantallas</string><!--屏保  -->
-    <string name="setting_welcome_speech">Palabras de bienvenida</string><!--Welcome speech--><!--欢迎语  -->
     <string name="setting_show_qr_code">Mostrar código Qr</string><!-- 显示二维码 -->
     <string name="setting_enable_ic_card">Lector de tarjeta IC</string><!-- IC读卡器 -->
     <string name="setting_relay_delay_time">Retraso de cierre de puerta</string><!-- 开门时间 -->
@@ -282,14 +334,8 @@
     <string name="setting_edit_password_failed">Modificación fallida</string><!-- 修改失败 -->
     <string name="setting_edit_password_success">Modificación exitosa</string><!-- 修改成功 -->
     <string name="setting_current_correct_value">Valor de corrección actual:</string><!--当前补正值-->
-    <string name="setting_normal_speech_content">Transmisión de temperatura normal:</string><!--普通温度播报-->
-    <string name="setting_warning_speech_content">Transmisión de temperatura anormal</string><!--异常温度播报-->
-    <string name="setting_broadcast_speed">Velocidad de la voz</string>
     <string name="setting_low_temp_model">Modo de temperatura baja</string><!--低温模式-->
     <string name="setting_portrait_outline">Esquema de Retrato</string><!--人像轮廓-->
-    <string name="setting_default_welcome_tip">Bienvenido al sistema de asistencia inteligente AI</string><!--欢迎语-->
-    <string name="setting_default_welcome_tip2">Bienvenido al sistema de asistencia inteligente HT</string>
-    <string name="setting_default_welcome_tip3">欢迎使用思库考勤</string>
     <string name="setting_correct_temperature">Temperatura correcta</string>
     <string name="setting_broadcast_f">Habilitar Fahrenheit</string>
 
@@ -312,12 +358,6 @@
     <string name="setting_switch_tip2">¿Estás seguro de cambiar a la asistencia de medición de temperatura？</string><!---->
     <string name="setting_switch_confirm">SÍ</string>
     <string name="setting_switch_cancel">NO</string>
-    <string name="setting_privacy_mode">Modo Privacidad</string>
-    <string name="setting_periodic_purge_policy">Política de depuración periódica</string>
-    <string name="setting_clear_policy_tip">Limpia de datos automática hace %1$s días </string>
-    <string name="setting_show_main_logo">Mostrar logotipo de inicio</string>
-    <string name="setting_show_main_thermal">Mostrar imagen térmica</string>
-    <string name="setting_show_main_info">Mostrar información de la página de inicio</string>
 
 
     <!--开关机设置-->
