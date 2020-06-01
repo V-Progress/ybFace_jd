@@ -75,15 +75,16 @@
 
 
                 <RelativeLayout
-                    android:layout_width="108dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="44dp"
                     android:layout_below="@+id/layout_camera"
                     android:layout_marginRight="15dp"
                     android:layout_toLeftOf="@+id/view_middle">
 
                     <Button
+                        android:drawablePadding="10dp"
                         android:id="@+id/btn_TakePhoto"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:background="@drawable/selector_btn_take_photo"
                         android:drawableLeft="@mipmap/icon_camera"

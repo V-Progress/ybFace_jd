@@ -27,36 +27,36 @@
 
     <!--语音设置-->
     <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
-    <string name="temper_tips_close">Close to the tip</string>
-    <string name="speech_setting_open_or_close">On</string>
-    <string name="speech_setting_show_temper">Displays the temperature value</string>
-    <string name="speech_setting_temper_location">Temperature display position</string>
-    <string name="speech_setting_location_start">Before</string>
-    <string name="speech_setting_location_center">Sign position</string>
-    <string name="speech_setting_location_end">behind</string>
-    <string name="speech_setting_alert">The temperature display position is identified by the # symbol, and the temperature number will be automatically completed. For example (36.5℃), only one # character can exist, and when there are multiple # characters, the first one will prevail and the remaining symbols will be deleted automatically</string>
-    <string name="speech_setting_welcome_exmaple">Example of welcome：</string>
-    <string name="speech_setting_distance_exmaple">Distance prompt example：</string>
-    <string name="speech_setting_normal_exmaple">Example of normal temperature：</string>
-    <string name="speech_setting_warning_exmaple">Examples of abnormal temperature：</string>
-    <string name="speech_setting_audition">play</string>
+    <string name="temper_tips_close">Cerca de la pista</string>
+    <string name="speech_setting_open_or_close">inicio</string>
+    <string name="speech_setting_show_temper">Muestra la temperatura</string>
+    <string name="speech_setting_temper_location">Posición del indicador de temperatura</string>
+    <string name="speech_setting_location_start">Antes de</string>
+    <string name="speech_setting_location_center">En medio</string>
+    <string name="speech_setting_location_end">Después de</string>
+    <string name="speech_setting_alert">Temperatura muestra la ubicación utilizando una notación # logos, a terminación de la temperatura digital, muestra (36,5 ℃), sólo existe UN #, existen múltiples # cuando, a la primera, y se eliminará el resto de símbolos</string>
+    <string name="speech_setting_welcome_exmaple">Ejemplos de bienvenida：</string>
+    <string name="speech_setting_distance_exmaple">Ejemplo de indicador de distancia：</string>
+    <string name="speech_setting_normal_exmaple">Consejos para la difusión normal：</string>
+    <string name="speech_setting_warning_exmaple">Consejos de difusión anormal：</string>
+    <string name="speech_setting_audition">reproducción</string>
     <string name="setting_default_welcome_tip">Bienvenido al sistema de asistencia inteligente AI</string><!--欢迎语-->
-    <string name="setting_camera_vertical_mirror">Frame vertical mirror</string>
-    <string name="setting_picture_rotation">With the camera</string>
-    <string name="setting_local_priority">Local Priority</string>
-    <string name="setting_pic_rotation">Direction of photos</string>
+    <string name="setting_camera_vertical_mirror">Espejo longitudinal de la caja</string>
+    <string name="setting_picture_rotation">Seguir la cámara</string>
+    <string name="setting_local_priority">Prioridad local</string>
+    <string name="setting_pic_rotation">Orientación de la fotografía</string>
 
     <!--温度单位-->
-    <string name="temper_tips_centigrade">Centigrade</string>
-    <string name="temper_tips_fahrenheit">Fahrenheit degree</string>
-    <string name="app_main_title">The application title</string>
-    <string name="select_img_title">Select Image</string>
-    <string name="select_img_failed">Image selection failed</string>
-    <string name="select_img_failed_not_exists">The selected image does not exist</string>
-    <string name="setting_app_logo">APP Logo</string>
-    <string name="setting_select_image">Choose</string>
-    <string name="setting_restore_image">Restore</string>
-    <string name="setting_auto_temper">Automatic mode</string>
+    <string name="temper_tips_centigrade">Grado celsius</string>
+    <string name="temper_tips_fahrenheit">Grados fahrenheit</string>
+    <string name="app_main_title">Título de la solicitud</string>
+    <string name="select_img_title">Selección de imágenes</string>
+    <string name="select_img_failed">Fracaso en la selección de la imagen</string>
+    <string name="select_img_failed_not_exists">La imagen seleccionada no existe</string>
+    <string name="setting_app_logo">Aplicación del Logo</string>
+    <string name="setting_select_image">seleccione</string>
+    <string name="setting_restore_image">La recuperación</string>
+    <string name="setting_auto_temper">Modo automático</string>
 
     <!--logo设置-->
     <string name="setting_welcome_speech">Palabras de bienvenida</string><!--Welcome speech--><!--欢迎语  -->
@@ -99,7 +99,7 @@
 
 
     <!--首页测温提示-->
-    <string name="main_temp_warning_tips">hipertermia</string><!--体温异常-->
+    <string name="main_temp_warning_tips">anomalías</string><!--体温异常-->
     <string name="main_temp_normal_tips">Normal</string><!--体温正常-->
     <string name="main_temp_error_tips">Temperatura Anormal</string>
     <string name="main_temp_tips_please_close">Por favor acerquece</string><!--Please approach--><!--请靠近点-->
@@ -430,7 +430,7 @@
     <string name="fment_sign_bind_code">Código de enlace：</string>
     <string name="fment_sign_net">Rojo：</string>
     <string name="fment_sign_total">Total</string>
-    <string name="fment_sign_already">Arr</string>
+    <string name="fment_sign_already">Que ha</string>
     <!--WebFragment-->
     <string name="fment_Web_back">Atras</string><!--  后退-->
     <string name="fment_Web_refresh">Refresh</string><!-- 刷新 -->

@@ -72,9 +72,11 @@ public class ThermalConst {
     }
 
     public static class Default {
+        public static int DEFAULT_LOGO_ID = R.mipmap.yb_logo;
+
         public static final float VOICE_SPEED = 1.8f;
         public static final boolean SHOW_MAIN_LOGO = true;//LOGO
-        public static final boolean SHOW_MAIN_INFO = true;//主页信息
+        public static final boolean SHOW_MAIN_INFO = false;//主页信息
         public static final boolean SHOW_MAIN_THERMAL = true;//热成像
         public static final boolean SHOW_DIALOG = false;
         public static int MODE = ONLY_THERMAL_MLX_16_4;

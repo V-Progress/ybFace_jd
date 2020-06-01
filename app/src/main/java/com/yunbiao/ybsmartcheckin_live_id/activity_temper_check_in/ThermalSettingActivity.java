@@ -114,22 +114,6 @@ public class ThermalSettingActivity extends BaseActivity {
         });
     }
 
-    public void jumpTag(View view) {
-        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
-        builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip1));
-        builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss());
-        builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
-            dialog.dismiss();
-            SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
-
-            APP.exit2();
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
     private static final int REQEST_SELECT_IMAGES_CODE = 12345;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -143,12 +127,12 @@ public class ThermalSettingActivity extends BaseActivity {
             ImageView ivMainLogo = findViewById(R.id.iv_main_logo);
             if (TextUtils.isEmpty(imgPath)) {
                 UIUtils.showShort(this, getResString(R.string.select_img_failed));
-                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             } else {
                 File file = new File(imgPath);
                 if (!file.exists()) {
                     UIUtils.showShort(this, getResString(R.string.select_img_failed_not_exists));
-                    ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                    ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
                 } else {
                     SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_IMG, imgPath);
                     ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
@@ -360,11 +344,11 @@ public class ThermalSettingActivity extends BaseActivity {
             ImageView ivMainLogo = view.findViewById(R.id.iv_main_logo);
             String mainLogoImg = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
             if (TextUtils.isEmpty(mainLogoImg)) {
-                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             } else {
                 File file = new File(mainLogoImg);
                 if (!file.exists()) {
-                    ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                    ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
                 } else {
                     ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(mainLogoImg));
                 }
@@ -382,7 +366,7 @@ public class ThermalSettingActivity extends BaseActivity {
             });
             btnRestore.setOnClickListener(v -> {
                 SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
-                ivMainLogo.setImageResource(R.mipmap.yb_logo);
+                ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             });
 
             //优先级配置=======================================================================================
@@ -430,26 +414,12 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void initView(View view) {
+            Button btnThermalCorr = view.findViewById(R.id.btn_thermal_corr);
+            btnThermalCorr.setOnClickListener(v -> startActivity(new Intent(getActivity(), TemperatureCorrectActivity.class)));
             //模式==================================================================================
             final TextView tvModelSetting = view.findViewById(R.id.tv_model_setting);
             final String[] items = ThermalConst.models;
             final int model = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
-            //如果是红外模式或人脸模式则隐藏矫正按钮
-            if (model == ThermalConst.FACE_INFRARED || model == ThermalConst.ONLY_INFRARED || model == ThermalConst.ONLY_FACE || model == ThermalConst.ONLY_THERMAL_HM_16_4 || model == ThermalConst.FACE_THERMAL_HM_16_4) {
-                view.findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
-            } else {
-                view.findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
-            }
-            Log.e(TAG, "initView: 当前模式=============== " + model);
-            switch (model) {
-                case 7:
-                case 8:
-                    view.findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
-                    break;
-                default:
-                    view.findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
-                    break;
-            }
             tvModelSetting.setText(items[model]);
             tvModelSetting.setOnClickListener(v -> {
                 final int currModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
@@ -457,26 +427,11 @@ public class ThermalSettingActivity extends BaseActivity {
                 builder.setTitle(getResources().getString(R.string.setting_select_model));
                 builder.setSingleChoiceItems(items, currModel, (dialog, whichModel) -> {
                     Log.e(TAG, "initView: 选中模式=============== " + whichModel);
-                    switch (whichModel) {
-                        case 7:
-                        case 8:
-                            view.findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
-                            break;
-                        default:
-                            view.findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
-                            break;
-                    }
                     Log.e(TAG, "onClick: 模式选择：" + whichModel);
                     //如果模式相同则直接隐藏
                     if (whichModel == currModel) {
                         dialog.dismiss();
                         return;
-                    }
-                    //如果是红外模式则隐藏矫正按钮
-                    if (whichModel == ThermalConst.FACE_INFRARED || whichModel == ThermalConst.ONLY_INFRARED || whichModel == ThermalConst.ONLY_FACE) {
-                        view.findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
-                    } else {
-                        view.findViewById(R.id.btn_thermal_corr).setVisibility(View.VISIBLE);
                     }
                     SpUtils.saveInt(ThermalConst.Key.MODE, whichModel);
                     tvModelSetting.setText(items[whichModel]);
@@ -557,7 +512,6 @@ public class ThermalSettingActivity extends BaseActivity {
             };
             btnCorrectSub.setOnClickListener(correctOnclickListener);
             btnCorrectAdd.setOnClickListener(correctOnclickListener);
-            view.findViewById(R.id.btn_thermal_corr).setOnClickListener(v -> startActivity(new Intent(getActivity(), TemperatureCorrectActivity.class)));
 
             //修改测温阈值==========================================================================================
             Button btnMinSub = view.findViewById(R.id.btn_temp_min_threshold_sub_setting);
@@ -644,7 +598,32 @@ public class ThermalSettingActivity extends BaseActivity {
             initView(getView());
         }
 
+        public void jumpTag() {
+            final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
+            builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip1));
+            builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss());
+            builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
+                dialog.dismiss();
+                SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
+
+                APP.exit2();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+
         private void initView(View view) {
+            Button btnSwitchFunction = view.findViewById(R.id.btn_switch_function);
+            if(Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){
+                btnSwitchFunction.setVisibility(View.GONE);
+            } else {
+                btnSwitchFunction.setVisibility(View.VISIBLE);
+            }
+            //切换功能
+            btnSwitchFunction.setOnClickListener(view1 -> jumpTag());
+
             //CPU状态==================================================================================
             final TextView tvCpuTemper = view.findViewById(R.id.tv_cpu_temper);
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {

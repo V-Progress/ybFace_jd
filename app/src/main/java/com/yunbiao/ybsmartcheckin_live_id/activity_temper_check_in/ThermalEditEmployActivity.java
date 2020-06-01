@@ -298,10 +298,13 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             if (b) {
                 DaoManager.get().add(addUser);
                 UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_add_success));
+                UIUtils.dismissNetLoading();
+
+                finish();
             } else {
                 UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
+                UIUtils.dismissNetLoading();
             }
-            UIUtils.dismissNetLoading();
             return;
         }
 
@@ -565,9 +568,10 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             } else {
                 DaoManager.get().addOrUpdate(user);
                 UIUtils.showShort(this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
-            }
+                UIUtils.dismissNetLoading();
 
-            UIUtils.dismissNetLoading();
+                finish();
+            }
             return;
         }
 

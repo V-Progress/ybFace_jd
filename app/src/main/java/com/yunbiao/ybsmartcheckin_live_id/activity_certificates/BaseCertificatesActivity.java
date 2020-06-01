@@ -650,6 +650,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 KDXFSpeechManager.instance().playPassRing();
                 float temperature = (float) msg.obj;
                 boolean isTempNormal = temperature >= mMinThreshold && temperature < mWarningThreshold;
+                KDXFSpeechManager.instance().playNormal(getResString(isTempNormal ? R.string.act_certificates_temper_normal : R.string.act_certificates_temper_warning));
                 if (viewInterface != null) {
                     viewInterface.updateRealTimeTemper(temperature, isTempNormal);
                 }

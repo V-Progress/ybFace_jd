@@ -10,11 +10,23 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_switch_function" />
+
+                <Button
+                    android:id="@+id/btn_switch_function"
+                    style="@style/style_setting_input_save_button"
+                    android:text="@string/setting_switch_to_certificates" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -97,7 +109,6 @@
                     android:text="@string/auto_close_door_setting"
                     android:textColor="@android:color/holo_red_light" />
             </LinearLayout>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_height="wrap_content"

@@ -5,50 +5,50 @@
     <string name="app_name4">Osmile AI</string>
     <string name="app_name5">SoftWorkz AI</string>
     <string name="app_name6">Scan Temp</string>
-    <string name="used">중고:</string>
-    <string name="no_used">/가능:</string>
+    <string name="used">사용:</string>
+    <string name="no_used">미사용:</string>
     <string name="back">이전</string>
-    <string name="not_support_speech">현재 언어 시스템 에서 지원 하지 않 는 언어:</string>
-    <string name="miss_speech_data">음성 데이터 부재:</string>
+    <string name="not_support_speech">현재 언어 시스템 에서 지원하지 않는 언어:</string>
+    <string name="miss_speech_data">음성 데이터 없음:</string>
     <string name="alert_title_warning">경고</string>
-    <string name="temper_error_tips">측온 데이터를 가져올 수 없습니다. 측온 모듈을 확인하십시오.</string>
-    <string name="temper_error_btn_restart">재개</string>
-    <string name="temper_error_btn_cancel">잠시 처리하지 않다</string>
+    <string name="temper_error_tips">측정온도 데이터를 가져올 수 없습니다. 측정온도 모듈을 확인하십시오.</string>
+    <string name="temper_error_btn_restart">재시작</string>
+    <string name="temper_error_btn_cancel">취소</string>
 
     <!--口罩提示-->
     <string name="no_mask_tip">마스크를 착용하세요</string>
-    <string name="error_mask_tip">마스크를 정확히 착용하세요</string>
-    <string name="please_aim_face_frame">얼굴 액자에 맞추세요.</string>
+    <string name="error_mask_tip">마스크를 올바르게 착용하세요</string>
+    <string name="please_aim_face_frame">얼굴 라인에 맞추세요.</string>
 
     <string name="setting_tab_face">얼굴</string>
-    <string name="setting_tab_page">인터페이스</string>
+    <string name="setting_tab_page">페이지</string>
     <string name="setting_tab_temper">측정</string>
-    <string name="setting_tab_device">설비</string>
+    <string name="setting_tab_device">장비</string>
 
     <!--语音设置-->
-    <string name="temper_tips_close">바투 팁</string>
-    <string name="setting_welcome_speech">환영합니다</string><!--Welcome speech-->
-    <string name="setting_normal_speech_content">체온 이 정상 적 으로 방송 되다:</string>
-    <string name="setting_warning_speech_content">체온 이상 보도:</string>
-    <string name="setting_broadcast_speed">음성 속도</string>
-    <string name="speech_setting_title">음성 뉴스 설정</string>
-    <string name="speech_setting_open_or_close">켜질지 말지</string>
-    <string name="speech_setting_show_temper">온도 보이기</string>
-    <string name="speech_setting_temper_location">온도 표시위치</string>
-    <string name="speech_setting_location_start">첫</string>
-    <string name="speech_setting_location_center">기호 비트</string>
-    <string name="speech_setting_location_end">꼬리</string>
+    <string name="temper_tips_close">측정거리경고 :</string>
+    <string name="setting_welcome_speech">환영 메세지 : </string><!--Welcome speech-->
+    <string name="setting_normal_speech_content">정상체온 :</string>
+    <string name="setting_warning_speech_content">이상체온 :</string>
+    <string name="setting_broadcast_speed">음성 속도 :</string>
+    <string name="speech_setting_title">음성 세부 설정</string>
+    <string name="speech_setting_open_or_close">사용</string>
+    <string name="speech_setting_show_temper">온도표시 사용</string>
+    <string name="speech_setting_temper_location">온도표시 위치</string>
+    <string name="speech_setting_location_start">처음</string>
+    <string name="speech_setting_location_center">수치생략</string>
+    <string name="speech_setting_location_end">마지막</string>
     <string name="speech_setting_alert">온도 표시는 # 기호 표시, 자동 완성 온도 숫자, 예시 (36.5도) 이며, 하나의 # 표시자만 존재하고, 여러 개의 # 표시자가 있을 경우 첫 번째 기호를 기준으로 사용하고, 나머지 기호를 자동으로 삭제합니다.</string>
-    <string name="speech_setting_welcome_exmaple">환영어 예제：</string>
-    <string name="speech_setting_distance_exmaple">거리 표시 예시：</string>
-    <string name="speech_setting_normal_exmaple">정상적인 예제：</string>
-    <string name="speech_setting_warning_exmaple">이상적 예시：</string>
-    <string name="speech_setting_audition">오디션</string>
+    <string name="speech_setting_welcome_exmaple">환영 메세지 미리듣기：</string>
+    <string name="speech_setting_distance_exmaple">측정거리경고 미리듣기：</string>
+    <string name="speech_setting_normal_exmaple">정상체온 미리듣기：</string>
+    <string name="speech_setting_warning_exmaple">이상체온 미리듣기：</string>
+    <string name="speech_setting_audition">재생</string>
     <string name="setting_camera_vertical_mirror">수직 반전</string>
 
     <!--温度单位-->
-    <string name="temper_tips_centigrade">섭씨 도</string>
-    <string name="temper_tips_fahrenheit">화씨 도</string>
+    <string name="temper_tips_centigrade">섭씨(℃)</string>
+    <string name="temper_tips_fahrenheit">화씨(℉)</string>
     <string name="app_main_title">제목 적용</string>
 
     <string name="select_img_title">Select Image</string>
@@ -90,52 +90,52 @@
     <string name="smt_main_net_normal">ON-LINE</string>
     <string name="smt_main_net_normal2">ON-LINE</string>
     <string name="smt_main_net_no">OFF-LINE</string>
-    <string name="smt_main_all">받다</string>
-    <string name="smt_main_already">이미</string>
+    <string name="smt_main_all">Total</string>
+    <string name="smt_main_already">Arr</string>
     <string name="smt_main_ver">Ver:</string>
-    <string name="smt_main_company">회사:</string>
+    <string name="smt_main_company">회사명:</string>
     <string name="smt_main_device_no">No:</string>
     <string name="smt_main_not_bind">연결되지않음</string>
 
 
     <!--首页测温提示-->
-    <string name="main_temp_warning_tips">고열</string>
-    <string name="main_temp_normal_tips">정상</string>
+    <string name="main_temp_warning_tips">고 열</string>
+    <string name="main_temp_normal_tips">정 상</string>
     <string name="main_temp_error_tips">비정상적 체온</string>
-    <string name="main_temp_tips_please_close">가까이 오세요</string><!--Please approach-->
-    <string name="main_temp_tips_so_far_text">너무 멀어요 가까이 오세요</string><!--Please approach-->
-    <string name="main_temp_tips_please_far">멀리있어</string>
+    <string name="main_temp_tips_please_close">가까이 오세요.</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">너무 멀어요! 가까이 오세요</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">멀리있어요</string>
     <string name="main_temp_tips_so_close_text">너무 가까이</string>
-    <string name="main_thermal_temp">열 화상 체온：</string>
+    <string name="main_thermal_temp">열화상 체온：</string>
     <string name="main_thermal_has_person">열이미지:어떤사람</string>
-    <string name="main_thermal_no_person">열이미지:아무도없어요</string>
+    <string name="main_thermal_no_person">열이미지:아무도없음</string>
     <string name="main_please_waiting">기다려주세요</string>
-    <string name="main_temp_tips_please_in_range">인식 영역을 향한 얼굴</string>
-    <string name="main_tips_please_close">가까이 오 세 요</string>
+    <string name="main_temp_tips_please_in_range">인식영역범위</string>
+    <string name="main_tips_please_close">가까이 오세요.</string>
 
     <!--设置-->
-    <string name="temp_measuring_setting">측정중</string>
+    <string name="temp_measuring_setting">온도측정중</string>
     <string name="port_setting">시리얼포트</string>
-    <string name="select_port_setting">시리얼 포트 선택</string>
+    <string name="select_port_setting">시리얼포트 선택</string>
     <string name="auto_close_door_setting">（이 시간이 지나면 자동으로 닫힙니다）</string><!--Automatic closing-->
-    <string name="recommend_valuez_setting">권장 임계 값：80</string>
+    <string name="recommend_valuez_setting">권장값 ： 80</string>
     <string name="current_model_setting">현재 모드</string>
 
     <!--系统信息-->
     <string name="System_title">시스템정보</string>
     <string name="System_deviceNo">설비번호:</string>
-    <string name="System_bindCode">바인딩 코드:</string>
-    <string name="System_Company">회사:</string>
-    <string name="System_Service">서비스 네트워크:</string>
-    <string name="System_ValiDate">유효기간:</string>
-    <string name="System_Manage">인원 관리</string>
-    <string name="System_Add">인원 추가</string>
-    <string name="System_Record">출입기록</string>
+    <string name="System_bindCode">바인딩코드:</string>
+    <string name="System_Company">회사명 :</string>
+    <string name="System_Service">서비스 :</string>
+    <string name="System_ValiDate">유효기간 :</string>
+    <string name="System_Manage">사용자 관리</string>
+    <string name="System_Add">사용자 추가</string>
+    <string name="System_Record">기록</string>
     <string name="System_Setting">시스템 설정</string>
-    <string name="System_Visitor">방문객</string>
-    <string name="System_skin_select">피부 변경</string>
-    <string name="System_update">업그레이드</string>
-    <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string>
+    <string name="System_Visitor">방문자</string>
+    <string name="System_skin_select">Skin Select</string>
+    <string name="System_update">UPGRADE</string>
+    <string name="System_copyright">copyright : TAMTUS Co., Ltd.</string>
     <string name="System_Service_offline">오프라인</string>
     <string name="System_online">온라인</string>
     <string name="System_offline">오프라인</string>
@@ -148,9 +148,9 @@
     <string name="employ_list_depart_sync">동기화</string>
     <string name="employ_List_add_user">추가</string>
     <string name="employ_List_query_button">검색</string>
-    <string name="employ_list_download_failed">아바타를 다운로드하지 못했습니다</string>
-    <string name="employ_list_add_face_failed">얼굴 라이브러리 추가 실패</string>
-    <string name="employ_list_update_head_failed">아바타 업데이트 실패</string>
+    <string name="employ_list_download_failed">정보 다운로드 실패</string>
+    <string name="employ_list_add_face_failed">얼굴 정보 추가 실패</string>
+    <string name="employ_list_update_head_failed">정보 업데이트 실패</string>
     <string name="employ_list_field_index">번호</string>
     <string name="employ_list_field_number">직원번호</string>
     <string name="employ_list_field_name">성명</string>
@@ -160,18 +160,18 @@
     <string name="employ_list_item_delete">삭제</string>
     <string name="employ_list_item_edit">편집</string>
     <string name="employ_list_all_depart">모든 부서</string>
-    <string name="employ_list_please_input_user_name">직원 이름을 입력하십시오</string>
+    <string name="employ_list_please_input_user_name">직원 이름을 입력하십시오.</string>
     <string name="employ_list_confirm_edit">수정 하시겠습니까?</string>
     <string name="employ_list_confirm_delete">삭제 하시겠습니까?</string>
     <string name="employ_list_delete_failed">삭제 실패</string>
     <string name="employ_list_delete_success">성공적으로 삭제되었습니다</string>
-    <string name="employ_list_depart">학과</string>
+    <string name="employ_list_depart">부서</string>
     <string name="employ_list_add_depart">부서 추가</string>
-    <string name="employ_list_please_input_name">이름 을 입력 하 세 요.</string><!--请输入姓名-->
-    <string name="employ_list_no_this_person">이 직원 을 찾 을 수 없습니다</string><!--未搜索到该员工-->
+    <string name="employ_list_please_input_name">이름을 입력하세요.</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">이 직원을 찾을 수 없습니다.</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
-    <string name="act_editEmploy_zjyg">직원 증가</string>
+    <string name="act_editEmploy_zjyg">인원 추가</string>
     <string name="act_editEmploy_xgxx">인원 등록</string>
     <string name="act_editEmploy_pz">사진</string>
     <string name="act_editEmploy_reset">리셋</string>
@@ -186,72 +186,70 @@
     <string name="act_editEmploy_gxqm">별칭:</string>
     <string name="act_editEmploy_tip_qxpz">먼저 사진을 찍어주세요</string>
     <string name="act_editEmploy_tip_qtxxm">이름을 적어주세요</string>
-    <string name="act_editEmploy_tip_qxzxb">성별을 선택하십시오</string>
-    <string name="act_editEmploy_tip_qtxbh">번호를 입력 해주세요</string>
-    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">아바타 파일이 없습니다. 사진을 찍은 후 다시 시도하십시오</string>
+    <string name="act_editEmploy_tip_qxzxb">성별을 선택해주세요</string>
+    <string name="act_editEmploy_tip_qtxbh">번호를 입력해주세요</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">등록된 정보가 없습니다. 사진을 찍은 후 다시 시도하십시오.</string>
     <string name="act_editEmploy_tip_wzrhxg">변경 사항 없음</string>
     <string name="act_editEmploy_tip_tjsb">추가 실패</string>
-    <string name="act_editEmploy_tip_gygbcz">직원이 존재하지 않습니다</string>
-    <string name="act_editEmploy_tip_bczgbm">부서가 존재하지 않습니다</string>
-    <string name="act_editEmploy_tip_gsmyzgbm">회사에는이 부서가 없습니다</string>
-    <string name="act_editEmploy_tip_gsyzwyg">회사에이 직원이 없습니다</string>
+    <string name="act_editEmploy_tip_gygbcz">직원이 존재하지 않습니다.</string>
+    <string name="act_editEmploy_tip_bczgbm">부서가 존재하지 않습니다.</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">회사에는이 부서가 없습니다.</string>
+    <string name="act_editEmploy_tip_gsyzwyg">회사에 이 직원이 없습니다.</string>
     <string name="act_editEmploy_tip_cscw">파라미터 에러</string>
-    <string name="act_editEmploy_tip_qtxbm">부서를 선택하십시오</string><!--请选择部门-->
-    <string name="act_editEmploy_tip_add_success">추가에 성공함</string><!--添加成功-->
-        <string name="act_editEmploy_add_face_failed">기록할 수 없습니다</string><!--添加人脸数据失败-->
-        <string name="act_editEmploy_submit_failed">보내기 실패</string><!--提交失败-->
-    <string name="act_editEmploy_please_set_depart">부서를 설립하십시오</string><!--请设置部门-->
-    <string name="act_editEmploy_update_complete">아바타 업데이트 성공</string><!--更新头像成功-->
-    <string name="act_editEmploy_update_failed">얼굴을 업데이트하지 못했습니다</string><!--更新头像失败-->
+    <string name="act_editEmploy_tip_qtxbm">부서를 선택해주세요.</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">추가 성공</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">기록할 수 없습니다.</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">보내기 실패</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">부서를 설립하십시오.</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">업데이트 완료</string><!--更新头像成功-->
+    <string name="act_editEmploy_update_failed">얼굴을 업데이트하지 못했습니다.</string><!--更新头像失败-->
     <string name="act_editEmploy_update_info_success">업데이트 성공</string><!--更新信息成功-->
-    <string name="act_editEmploy_no_face">얼굴은 볼 수 없지만</string><!--未检测到人脸-->
-    <string name="act_editEmploy_please_face_only_one">이 화면에서 얼굴 한 장을 유지해주세요</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_no_face">얼굴 찾을수 없습니다.</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">이 화면에서 한 얼굴만 유지해주세요.</string><!--请保持屏幕中只有一张人脸-->
     <string name="act_editEmploy_photo_failed_try_again">사진 촬영에 실패했습니다. 다시 시도하십시오</string><!--拍照失败，请重试-->
     <string name="act_editEmploy_unknown_error">알 수 없는 오류</string><!--未知错误-->
 
     <!--离线数据-->
-    <string name="sign_list_title">오프라인 데이터</string>
+    <string name="sign_list_title">출입기록</string>
     <string name="sign_list_all_type">모두</string>
-    <string name="sign_list_sent">보냄</string>
-    <string name="sign_list_unsent">보내지 않음</string>
+    <string name="sign_list_sent">전송자료</string>
+    <string name="sign_list_unsent">미전송자료</string>
     <string name="sign_list_export">데이터 내보내기</string>
-    <string name="sign_list_upload">데이터 업로드</string>
+    <string name="sign_list_upload">업로드</string>
     <string name="sign_list_filed_index">번호</string>
     <string name="sign_list_filed_time">시간</string>
     <string name="sign_list_filed_name">성명</string>
     <string name="sign_list_filed_depart">부서</string>
     <string name="sign_list_filed_job">직위</string>
-    <string name="sign_list_filed_head">아바타</string>
+    <string name="sign_list_filed_head">이미지</string>
     <string name="sign_list_no_data">데이터가 없습니다</string>
-    <string name="sign_list_upload_success">성공적으로 업로드되었습니다</string>
-    <string name="sign_list_upload_failed">업로드에 실패했습니다. 네트워크를 확인하십시오</string>
-    <string name="sign_list_usb_disk">USB 플래시 드라이브를 삽입하십시오</string>
-    <string name="sign_list_tip_usb_disk">USB 장치 가 감지 되 지 않 았 습 니 다. 로 컬 로 내 보 냅 니 다</string>
-    <string name="sign_list_all_data_sent">모든 데이터가 업로드되었습니다</string>
+    <string name="sign_list_upload_success">성공적으로 업로드되었습니다.</string>
+    <string name="sign_list_upload_failed">업로드에 실패했습니다. 네트워크를 확인하십시오.</string>
+    <string name="sign_list_usb_disk">USB 플래시 드라이브를 삽입하십시오.</string>
+    <string name="sign_list_tip_usb_disk">USB 장치가 감지되지 않았습니다. 로컬로 내보냅니다.</string>
+    <string name="sign_list_all_data_sent">모든 데이터가 업로드되었습니다.</string>
     <string name="sign_list_name">성명</string>
     <string name="sign_list_number">일련 번호</string>
-    <string name="sign_list_depart">부문</string>
+    <string name="sign_list_depart">부서</string>
     <string name="sign_list_position">직위</string>
     <string name="sign_list_date">날짜</string>
     <string name="sign_list_time">시간</string>
     <string name="sign_list_temper">체온</string>
     <string name="sign_list_head">두상</string>
     <string name="sign_list_hot">우상</string>
-    <string name="sign_export_record">내 보 내기 레코드</string>
-    <string name="sign_export_no_record">데이터 없 음</string>
-    <string name="sign_export_create_record_failed">내 보 내기 데 이 터 를 만 드 는 데 실 패 했 습 니 다</string>
-    <string name="sign_export_record_success">내 보 내기 성공</string>
+    <string name="sign_export_record">내보내기</string>
+    <string name="sign_export_no_record">데이터 없음</string>
+    <string name="sign_export_create_record_failed">내보내기 데이터를 만드는데 실패했습니다.</string>
+    <string name="sign_export_record_success">내보내기 성공</string>
     <string name="sign_export_record_path">목록：</string>
-    <string name="sign_export_record_failed">내 보 내기 실패</string>
+    <string name="sign_export_record_failed">내보내기 실패</string>
     <string name="sign_list_table_name">기록</string>
-
     <!--访客列表-->
     <string name="visitor_list_title">방문자 목록</string>
     <string name="visitor_list_filed_name">이름</string>
-    <string name="visitor_list_filed_time">액세스 기간</string>
-    <string name="visitor_list_filed_company">단위</string>
-    <string name="visitor_list_filed_reason">원인</string>
-
+    <string name="visitor_list_filed_time">기간</string>
+    <string name="visitor_list_filed_company">회사명</string>
+    <string name="visitor_list_filed_reason">방문사유</string>
 
     <!--系统设置-->
     <!--模式-->
@@ -284,22 +282,22 @@
     <string name="setting_s">s</string>
     <string name="setting_temp_correct_value">온도값 보정</string>
     <string name="setting_amb_correct_value">주변 온도 보정</string>
-    <string name="setting_temperature_threshold">최저 온도 보고서</string>
+    <string name="setting_temperature_threshold">측정최저온도</string>
     <string name="setting_temperature_warning">온도 측정 경보값</string>
     <string name="setting_temp_range">체온 측정 범위</string><!--Temperature measurement range-->
     <string name="setting_range_minimum">최저</string><!--minimum-->
     <string name="setting_range_highest">최고</string><!--Highest-->
     <string name="setting_speech_delay">연속 방송 간격</string>
     <string name="setting_screen_saver">광고화면</string>
-    <string name="setting_show_qr_code">QR 코드 표시</string>
+    <string name="setting_show_qr_code">QR 표시</string>
     <string name="setting_enable_ic_card">IC 카드 리더</string>
-    <string name="setting_relay_delay_time">개관 시간</string>
+    <string name="setting_relay_delay_time">릴레이 동작</string>
     <string name="setting_cpu_temp">CPU 온도:</string>
     <string name="setting_camera_angle">카메라 각도</string>
     <string name="setting_curr_net">현재 네트워크:</string>
     <string name="setting_net_name">【WIFI，네트워크 이름：XXXXX】</string>
-    <string name="setting_reboot_device">장치를 다시 시작</string>
-    <string name="setting_check_update">탐지 업그레이드</string>
+    <string name="setting_reboot_device">장치 재시작</string>
+    <string name="setting_check_update">업그레이드 체크</string>
     <string name="setting_manage_password">비밀번호 변경 관리</string>
     <string name="setting_system_password">시스템 비밀번호</string>
     <string name="setting_please_input_password">6-12 자리 비밀번호 (숫자, 문자)를 입력하십시오</string>
@@ -322,20 +320,20 @@
     <string name="setting_wifi_rssi">，신호 강도:</string>
     <string name="setting_device_will_reboot">기기가 다시 시작됩니다. 계속 하시겠습니까?</string>
     <string name="setting_device_reboot">장치 재시작</string>
-    <string name="setting_3_scond_reboot">기기가 3 초 안에 다시 시작됩니다</string>
-    <string name="setting_password_not_null">비밀번호는 비워 둘 수 없습니다</string>
-    <string name="setting_password_min_6">비밀번호는 6 자 이상이어야합니다</string>
-    <string name="setting_please_input_password_agian">비밀번호를 다시 입력하십시오</string>
-    <string name="setting_password_disaccord">두 번 입력 한 비밀번호가 일치하지 않습니다</string>
-    <string name="setting_edit_password_failed">편집 실패</string>
-    <string name="setting_edit_password_success">성공적으로 수정되었습니다</string>
-    <string name="setting_current_correct_value">당면교정 하 다:</string>
-    <string name="setting_low_temp_model">저온 모드</string>
+    <string name="setting_3_scond_reboot">기기가 3초 안에 다시 시작됩니다.</string>
+    <string name="setting_password_not_null">비밀번호는 비워 둘 수 없습니다.</string>
+    <string name="setting_password_min_6">비밀번호는 6자 이상이어야합니다.</string>
+    <string name="setting_please_input_password_agian">비밀번호를 다시 입력하십시오.</string>
+    <string name="setting_password_disaccord">두 번 입력 한 비밀번호가 일치하지 않습니다.</string>
+    <string name="setting_edit_password_failed">패스워드 편집 실패</string>
+    <string name="setting_edit_password_success">성공적으로 수정되었습니다.</string>
+    <string name="setting_current_correct_value">온도보정:</string>
+    <string name="setting_low_temp_model">저온모드</string>
     <string name="setting_portrait_outline">실루엣</string>
-    <string name="setting_default_welcome_tip">클 라 우 드 마크 스마트 출퇴근 시스템 사용 을 환영 합 니 다</string>
-    <string name="setting_correct_temperature">온 도 를 바로잡다</string>
-    <string name="setting_broadcast_f">화 씨 사용 하기</string>
-    <string name="setting_switch_to_certificates">인증서로 전환</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_default_welcome_tip">바이오파마 스마트 시스템 사용을 환영합니다.</string>
+    <string name="setting_correct_temperature">온도교정설정</string>
+    <string name="setting_broadcast_f">화씨사용</string>
+    <string name="setting_switch_to_certificates">인증모드 전환</string><!--Switch to certificate temperature measurement-->
     <string name="setting_switch_to_temperature_check_in">열측량 근무로 전환</string><!--Switch to temperature measurement attendance-->
     <string name="setting_switch_function">기능 켬/끔</string><!--Function switch-->
     <string name="setting_switch_tip1">인증서로 전환 가능할까요?</string><!--Are you sure to switch to certificate temperature measurement-->
@@ -360,7 +358,7 @@
     <string name="act_power_friday">금요일</string>
     <string name="act_power_saturday">토요일</string>
     <string name="act_power_sunday">일요일</string>
-    <string name="act_power_all_select">총선거</string>
+    <string name="act_power_all_select">모두선택</string>
     <string name="act_power_turn_on_time">부팅 시간</string>
     <string name="act_power_turn_off_time">종료 시간</string>
     <string name="act_power_save">보존 하 다</string>
@@ -378,15 +376,14 @@
     <string name="setting_res_port_error">서비스 포트 형식이 잘못되었습니다. 확인하십시오.</string>
     <string name="setting_xmpp_port_error">통신 포트 형식이 잘못되었습니다. 확인하십시오.</string>
 
-
     <!--温度矫正页面-->
     <string name="act_correct_title">온도 교정</string>
-    <string name="act_correct_tips">체온창 의 실측 온도 에 따라 작성 하 십시오</string>
-    <string name="act_correct_current_value">현재 보상 치</string>
-    <string name="act_correct_thermal_temp">열 이미지 온도：</string>
-    <string name="act_correct_click_get_temperature">클릭 하여 온도 측정</string>
-    <string name="act_correct_thermometer_gun">따뜻 한 총 온도 측정：</string>
-    <string name="act_correct_save">보존 하 다</string>
+    <string name="act_correct_tips">실측 온도에 따라 작성하십시오.</string>
+    <string name="act_correct_current_value">수정값 :</string>
+    <string name="act_correct_thermal_temp">열화상 온도：</string>
+    <string name="act_correct_click_get_temperature">온도받기</string>
+    <string name="act_correct_thermometer_gun">수동 온도 보정치：</string>
+    <string name="act_correct_save">저장</string>
 
 
     <!--通用的  -->
@@ -401,7 +398,7 @@
     <string name="base_day">일</string>
 
     <!--Splash界面  -->
-    <string name="splash_request_permission_failed">권한 신청 실패</string>
+    <string name="splash_request_permission_failed">권한 요청 실패</string>
     <string name="splash_active_failed">활성화 실패</string>
 
     <!--主界面  -->
@@ -429,7 +426,6 @@
     <!--WebFragment-->
     <string name="fment_Web_back">다시</string>
     <string name="fment_Web_refresh">새로 고침</string>
-
 
     <!-- act_set layout_setting.xml -->
     <string name="act_set_xtsz">시스템 설정</string>

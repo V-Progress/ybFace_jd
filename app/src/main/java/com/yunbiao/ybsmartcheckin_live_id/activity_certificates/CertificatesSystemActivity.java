@@ -76,7 +76,6 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
     private TextView tv_bindcode_syetem;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private TextView tvCopyRight;
 
     @Override
     protected int getPortraitLayout() {
@@ -111,7 +110,6 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         tv_server_system = (TextView) findViewById(R.id.tv_server_system);
         tv_version_system = (TextView) findViewById(R.id.tv_version_system);
         tv_online_system = (TextView) findViewById(R.id.tv_online_system);
-        tvCopyRight = findViewById(R.id.tv_copyright_system_certificates);
 
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
@@ -119,12 +117,10 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
-            tvCopyRight.setVisibility(View.GONE);
             appName = getResources().getString(R.string.app_name2);
         } else {
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
             ivLogo.setImageResource(R.mipmap.yb_logo);
-            tvCopyRight.setVisibility(View.VISIBLE);
             appName = getResources().getString(R.string.app_name);
         }
 

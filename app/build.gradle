@@ -96,11 +96,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
-        //云标8寸
+        /*//云标8寸
         flavor(YB_8, "0",
-                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_10",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")*/
         //云标人证
         flavor(YB_RZ, "0",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CERTIFICATES",
@@ -128,11 +128,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN",
                 "@string/ht_temper_check_in", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_10",
                 getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
-        //亨通8寸
+        /*//亨通8寸
         flavor(HT_8, "1",
-                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN",
                 "@string/ht_temper_check_in", "@mipmap/logo_icon2", "5cbe87a60cafb210460006b3", "HT_8",
-                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")
+                getHTFace_APP_ID(), getHTFace_SDK_KEY(), "10", "7")*/
         //亨通人证
         flavor(HT_RZ, "1",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES",
@@ -156,7 +156,7 @@ android {
 
         /*==思库版本============================================================================================*/
         flavor(SK_8, "2",
-                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/sk_temper_check_in", "@mipmap/icon_logo3", "5cbe87a60cafb210460006b3", "SK_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         flavor(SK_DR, "2",
@@ -165,7 +165,7 @@ android {
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
         /*==台湾Osimle============================================================================================*/
         flavor(OSIMLE_8, "3",
-                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name4", "@mipmap/osimle_logo", "5cbe87a60cafb210460006b3", "osimle_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*softworkz=====================================================================================================================*/

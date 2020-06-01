@@ -138,6 +138,33 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void jump() {
+        switch (Constants.FLAVOR_TYPE) {
+            case FlavorType.HT:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.logo_icon_horizontal;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "HT";
+                break;
+            case FlavorType.SK:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.icon_logo3;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                break;
+            case FlavorType.OSIMLE:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.osmile_logo;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                break;
+            case FlavorType.SOFT_WORK_Z:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.softworkz_logo;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                break;
+            case FlavorType.SCAN_TEMP:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.scan_temp;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                break;
+            default:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";
+                break;
+        }
+
         String broadTypeStr = CommonUtils.getBroadType2();
         Log.e(TAG, "jump: 板卡信息：" + broadTypeStr);
         switch (broadTypeStr) {

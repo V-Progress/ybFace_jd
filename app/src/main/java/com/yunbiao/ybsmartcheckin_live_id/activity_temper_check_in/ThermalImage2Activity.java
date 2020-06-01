@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
@@ -102,7 +104,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         faceView.setCallback(this);
         faceView.enableMultiRetry(true);
         faceView.enableMultiCallback(true);
-        faceView.setRetryTime(4);
+        faceView.setRetryTime(1);
         faceView.setRetryDelayTime(4000);
 
         ivMainLogo = findViewById(R.id.iv_main_logo);//LOGO
@@ -120,29 +122,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
-
-        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-            setImageByResId(ivMainLogo, R.mipmap.logo_icon_horizontal);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-            setImageByResId(ivMainLogo, R.mipmap.icon_logo3);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
-            setImageByResId(ivMainLogo, R.mipmap.osimle_logo);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
-            setImageByResId(ivMainLogo, R.mipmap.softworkz_logo);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.BIO) {
-//            ImageFileLoader.setDefaultLogoId(0);
-//            ivMainLogo.setImageBitmap(null);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SCAN_TEMP) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.scan_temp);
-            setImageByResId(ivMainLogo, R.mipmap.scan_temp);
-        } else {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
-            setImageByResId(ivMainLogo, R.mipmap.yb_logo);
-        }
     }
 
     @Override
@@ -179,7 +158,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (localPriority) {
             String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
             if (TextUtils.isEmpty(logoPath)) {
-                logoView.setImageResource(R.mipmap.yb_logo);
+                logoView.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             } else {
                 logoView.setImageBitmap(BitmapFactory.decodeFile(logoPath));
             }
@@ -192,7 +171,12 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
                 logoView.setVisibility(View.GONE);
                 logoView.setImageBitmap(null);
             } else {
-                Glide.with(this).load(comlogo).asBitmap().into(logoView);
+                Glide.with(this).load(comlogo).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        logoView.setImageBitmap(resource);
+                    }
+                });
             }
             tvName.setText(TextUtils.isEmpty(abbname) ? "" : abbname);
         }
@@ -286,7 +270,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         } else {
             //没人时第一次进入只重试两次
             if (faceView != null) {
-                faceView.setRetryTime(2);
+                faceView.setRetryTime(1);
             }
         }
     }
@@ -301,7 +285,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         tvTempTips.setText(tip);
         //在弹出结果后将重试次数置为5
         if (faceView != null) {
-            faceView.setRetryTime(5);
+            faceView.setRetryTime(4);
         }
     }
 

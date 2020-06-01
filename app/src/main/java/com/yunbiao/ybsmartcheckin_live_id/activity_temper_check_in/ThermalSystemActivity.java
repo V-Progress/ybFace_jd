@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
@@ -22,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -115,27 +118,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
-
-        //亨通隐藏版权
-        if (Constants.FLAVOR_TYPE == FlavorType.HT) {
-            ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
-            ivLogo.setImageResource(R.mipmap.icon_logo3);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.OSIMLE) {
-            ivLogo.setImageResource(R.mipmap.osimle_logo);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.osimle_logo);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z) {
-            ivLogo.setImageResource(R.mipmap.softworkz_logo);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.softworkz_logo);
-        } else if (Constants.FLAVOR_TYPE == FlavorType.SCAN_TEMP) {
-            ImageFileLoader.setDefaultLogoId(R.mipmap.scan_temp);
-            setImageByResId(ivLogo, R.mipmap.scan_temp);
-        } else {
-            ivLogo.setImageResource(R.mipmap.yb_logo);
-            ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
-        }
     }
 
     @Override
@@ -162,7 +144,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         if (localPriority) {
             String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
             if (TextUtils.isEmpty(logoPath)) {
-                logoView.setImageResource(R.mipmap.yb_logo);
+                logoView.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             } else {
                 logoView.setImageBitmap(BitmapFactory.decodeFile(logoPath));
             }
@@ -175,7 +157,12 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
                 logoView.setVisibility(View.GONE);
                 logoView.setImageBitmap(null);
             } else {
-                Glide.with(this).load(comlogo).asBitmap().into(logoView);
+                Glide.with(this).load(comlogo).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        logoView.setImageBitmap(resource);
+                    }
+                });
             }
             tvName.setText(TextUtils.isEmpty(abbname) ? "" : abbname);
         }
