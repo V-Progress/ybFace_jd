@@ -72,6 +72,7 @@
 
     <string name="sk_temper_check_in">思庫測溫考勤</string>
     <string name="sk_multiple">思庫大通量測溫</string>
+    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--視美泰-->
     <string name="smt_main_net_normal">正常</string>

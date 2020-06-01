@@ -92,7 +92,6 @@
 
                 <TextView
                     style="@style/setting_text"
-                    android:textSize="18sp"
                     android:text="@string/safety_immediate_report_enable" />
 
                 <Switch

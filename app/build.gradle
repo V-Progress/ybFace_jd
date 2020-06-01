@@ -163,6 +163,10 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
                 "@strinZg/sk_multiple", "@mipmap/icon_logo3", "5cbe87a60cafb210460006b3", "SK_DR",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
+        flavor(SK_SC, "2",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
+                "@string/sk_safety_chceck", "@mipmap/icon_logo3", "5cbe87a60cafb210460006b3", "SK_SC",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*==台湾Osimle============================================================================================*/
         flavor(OSIMLE_8, "3",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",

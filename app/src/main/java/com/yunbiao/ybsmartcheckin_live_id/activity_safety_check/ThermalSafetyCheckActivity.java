@@ -172,7 +172,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
             ivLogo.setImageResource(R.mipmap.logo_icon_horizontal);
             ImageFileLoader.setDefaultLogoId(R.mipmap.logo_icon_horizontal);
-        } else {
+        } else if (Constants.FLAVOR_TYPE == FlavorType.SK) {
+            ivLogo.setImageResource(R.mipmap.icon_logo3);
+            ImageFileLoader.setDefaultLogoId(R.mipmap.icon_logo3);
+        }else {
             ivLogo.setImageResource(R.mipmap.yb_logo);
             ImageFileLoader.setDefaultLogoId(R.mipmap.yb_logo);
         }
@@ -305,6 +308,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
                     }
                 }
+            } else {
+                TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
             }
         }
 
@@ -341,7 +346,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                         mCacheTemp = afterTreatmentF;
                     }
                 } else {
-                    if (afterTreatmentF > mCacheTemp + 0.5f || afterTreatmentF < mCacheTemp - 0.5f) {
+                    if (afterTreatmentF > mCacheTemp + 0.3f || afterTreatmentF < mCacheTemp - 0.3f) {
                         sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
                         mCacheTemp = afterTreatmentF;
                     }
@@ -384,7 +389,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
             }
 
             float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
-            if (afterTreatmentF > mCacheTemp + 0.5f || afterTreatmentF < mCacheTemp - 0.5f) {
+            if (afterTreatmentF > mCacheTemp + 0.3f || afterTreatmentF < mCacheTemp - 0.3f) {
                 sendUpdateMaxIndexMessage(faceIndexInfo.getMaxX(), faceIndexInfo.getMaxY());
                 mCacheTemp = afterTreatmentF;
             }
@@ -471,7 +476,7 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     if (ivHotWidth == 0 || ivHotHeight == 0) {
                         break;
                     }
-                    ivTracingPoint.setVisibility(View.VISIBLE);
+                    ivTracingPoint.setVisibility(View.GONE);
                     int x = msg.arg1;
                     int y = msg.arg2;
                     int adjustX = (int) ((x / 80f) * ivHotWidth);
@@ -575,9 +580,13 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         btnCorrection.setOnClickListener(v -> {
             llCorrectionArea.setVisibility(View.VISIBLE);
             v.setVisibility(View.GONE);
+            tvNetState.setVisibility(View.GONE);
+            tvDeviceNumber.setVisibility(View.GONE);
             initCorrectionArea(() -> {
                 llCorrectionArea.setVisibility(View.GONE);
                 btnCorrection.setVisibility(View.VISIBLE);
+                tvNetState.setVisibility(View.VISIBLE);
+                tvDeviceNumber.setVisibility(View.VISIBLE);
             });
         });
     }

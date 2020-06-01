@@ -21,7 +21,8 @@
         <ImageView
             android:id="@+id/iv_logo_safety_check"
             android:layout_width="120dp"
-            android:layout_height="60dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
             android:src="@mipmap/yb_logo" />
 
         <TextClock
