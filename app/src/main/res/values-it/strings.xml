@@ -650,5 +650,14 @@
     <string name="safety_correct_temper_ing">Temperature measurement</string><!--正在测温-->
     <string name="safety_correct_temper_completion">Thermometric completion</string><!--测温结束-->
     <string name="safety_save_completion">Calibration completion</string><!--保存-->
-    <string name="safety_save_cancel">Cancel calibration</string><!--保存-->
+    <string name="safety_save_cancel">Cancel calibration</string>
+
+    <string name="setting_privacy_prompt">Si esegue solo la temperatura di misura e non si registrano dati di immagine数据</string><!--保存-->
+    <string name="setting_clear_policy_7">7 giorni</string>
+    <string name="setting_clear_policy_15">15 giorni</string>
+    <string name="setting_clear_policy_30">30 giorni</string>
+    <string name="setting_clear_policy_custom">input</string>
+    <string name="setting_clear_policy_unit">giorni</string>
+    <string name="setting_clear_all_data">Eliminazione di tutti i dati</string>
+    <string name="clear_no_data">I dati sono stati raccolti：</string>
 </resources>

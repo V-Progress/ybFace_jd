@@ -738,6 +738,16 @@
     <string name="safety_correct_temper_tip">人の顔を温度測定枠に合わせてください。もうすぐ温度測定が始まります</string>
     <string name="safety_correct_temper_completion">温度測定終了</string><!--温度測定終了-->
     <string name="safety_save_completion">キャリブレーション完了</string><!--キャリブレーション完了-->
-    <string name="safety_save_cancel">キャリブレーションをキャンセル</string><!--セーブ-->
+    <string name="safety_save_cancel">キャリブレーションをキャンセル</string>
+
+
+    <string name="setting_privacy_prompt">測温のみ行い,画像データは記録しない</string><!--セーブ-->
+    <string name="setting_clear_policy_7">7日</string>
+    <string name="setting_clear_policy_15">15日</string>
+    <string name="setting_clear_policy_30">30日</string>
+    <string name="setting_clear_policy_custom">カスタム</string>
+    <string name="setting_clear_policy_unit">日</string>
+    <string name="setting_clear_all_data">データを全て消去する</string>
+    <string name="clear_no_data">データはクリア済みです：</string>
 
 </resources>

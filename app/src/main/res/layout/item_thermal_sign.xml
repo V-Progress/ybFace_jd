@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_No"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text=""
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text=""
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_employName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text=""
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_employDepart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text=""
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_employJob"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text=""
+            android:gravity="center" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+
+            <ImageView
+                android:id="@+id/iv_photo"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/view_middle"
+                android:layout_marginLeft="6dp"
+                android:scaleType="fitXY"
+                android:layout_centerInParent="true"
+
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

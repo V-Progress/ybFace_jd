@@ -645,5 +645,14 @@
     <string name="safety_correct_temper_ing">Temperature measurement</string><!--正在测温-->
     <string name="safety_correct_temper_completion">온도 측정 종료</string><!--测温结束-->
     <string name="safety_save_completion">조정 완료</string><!--保存-->
-    <string name="safety_save_cancel">조정 취소</string><!--保存-->
+    <string name="safety_save_cancel">조정 취소</string>
+
+    <string name="setting_privacy_prompt">온도만 측정하고 그래픽 데이터는 기록하지 않는다</string><!--保存-->
+    <string name="setting_clear_policy_7">7일</string>
+    <string name="setting_clear_policy_15">15일</string>
+    <string name="setting_clear_policy_30">30일</string>
+    <string name="setting_clear_policy_custom">입력</string>
+    <string name="setting_clear_policy_unit">일</string>
+    <string name="setting_clear_all_data">모든 데이터 삭제</string>
+    <string name="clear_no_data">데이터가 모두 삭제되었습니다：</string>
 </resources>

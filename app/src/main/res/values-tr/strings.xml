@@ -642,5 +642,15 @@
     <string name="safety_correct_temper_ing">Temperature measurement</string><!--正在测温-->
     <string name="safety_correct_temper_completion">Thermometric completion</string><!--测温结束-->
     <string name="safety_save_completion">Calibration completion</string><!--保存-->
-    <string name="safety_save_cancel">Cancel calibration</string><!--保存-->
+    <string name="safety_save_cancel">Cancel calibration</string>
+
+
+    <string name="setting_privacy_prompt">Yalnızca sıcaklık ölçümü, görüntü verisi kaydedilmez</string><!--保存-->
+    <string name="setting_clear_policy_7">7 gün</string>
+    <string name="setting_clear_policy_15">15 gün</string>
+    <string name="setting_clear_policy_30">30 gün</string>
+    <string name="setting_clear_policy_custom">Özel</string>
+    <string name="setting_clear_policy_unit">gün</string>
+    <string name="setting_clear_all_data">Tüm verileri temizle</string>
+    <string name="clear_no_data">Veriler temizlendi：</string>
 </resources>

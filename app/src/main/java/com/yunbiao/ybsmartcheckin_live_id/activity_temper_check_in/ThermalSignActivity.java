@@ -19,6 +19,7 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.adapter.ThermalSignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -76,7 +77,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
     private DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
     private DateFormat dateFormat2 = new SimpleDateFormat("HH:mm:ss");
     private Button btnUpload;
-    private SignAdapter adapter;
+    private ThermalSignAdapter adapter;
 
     @Override
     protected int getPortraitLayout() {
@@ -133,8 +134,16 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         queryDate = today;
         initSpinner();
 
+        boolean isFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
-        adapter = new SignAdapter(ThermalSignActivity.this, mShowList, isPrivacy);
+        Float minThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, ThermalConst.Default.TEMP_MIN_THRESHOLD);
+        Float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
+
+        adapter = new ThermalSignAdapter(ThermalSignActivity.this, mShowList, isPrivacy);
+        adapter.setFahrenheit(isFEnabled);
+        adapter.setmTemperMin(minThreshold);
+        adapter.setmWarningMin(warningThreshold);
+
         lv_sign_List.setAdapter(adapter);
     }
 

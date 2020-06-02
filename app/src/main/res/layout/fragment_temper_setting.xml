@@ -34,6 +34,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -51,20 +52,12 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@color/white" />
-
+            
             <TextView
-                android:layout_marginLeft="10dp"
-                style="@style/setting_text"
-                android:text="@string/setting_thermal_imaging_mirror" />
-
-            <Switch
-                android:id="@+id/sw_thermal_imag_mirror_setting"
+                android:textColor="#ff0"
+                android:text="@string/setting_privacy_prompt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <LinearLayout
@@ -86,10 +79,10 @@
             <TextView
                 android:layout_marginLeft="10dp"
                 style="@style/setting_text"
-                android:text="@string/setting_portrait_outline" />
+                android:text="@string/setting_thermal_imaging_mirror" />
 
             <Switch
-                android:id="@+id/sw_person_frame_setting"
+                android:id="@+id/sw_thermal_imag_mirror_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"

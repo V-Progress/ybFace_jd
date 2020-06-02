@@ -33,38 +33,38 @@ public class AutoClean {
     public void startAutoClear(){
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             Log.e(TAG, "startAutoClear: 执行自动清除");
-            int dateOffset;
+            long policy;
             switch (SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY,Constants.Default.CLEAR_POLICY)) {
                 case 0:
-                    dateOffset = 7;
+                    policy = 7;
                     break;
                 case 1:
-                    dateOffset = 15;
-                    break;
-                case 2:
-                    dateOffset = 30;
+                    policy = 15;
                     break;
                 case 3:
-                    dateOffset = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY_CUSTOM,Constants.Default.CLEAR_POLICY_CUSTOM);
+                    policy = SpUtils.getIntOrDef(Constants.Key.CLEAR_POLICY_CUSTOM,Constants.Default.CLEAR_POLICY_CUSTOM);
                     break;
                 default:
-                    dateOffset = 30;
+                    policy = 30;
                     break;
             }
-            Log.e(TAG, "startAutoClear: 清除策略：" + dateOffset);
             Date date = new Date();
             List<Sign> signList = DaoManager.get().queryAll(Sign.class);
             if(signList == null || signList.size() <= 0){
                 Log.e(TAG, "startAutoClear: 暂无数据");
                 return;
             }
+            long offset = policy * 24 * 60 * 60 * 1000;
+
+            Log.e(TAG, "startAutoClear: 清除策略：" + policy);
+            Log.e(TAG, "startAutoClear: 时间差： " + offset);
 
             int total = 0;
             for (Sign sign : signList) {
-                if (date.getTime() - sign.getTime() <(dateOffset * 24 * 60 * 60 * 1000)) {
+                long diffValue = date.getTime() - sign.getTime();
+                if (diffValue < offset) {
                     continue;
                 }
-                total ++;
                 String headPath = sign.getHeadPath();
                 String hotImgPath = sign.getHotImgPath();
                 File headFile = new File(headPath);
@@ -76,6 +76,7 @@ public class AutoClean {
                     hotImgFile.delete();
                 }
                 DaoManager.get().deleteSign(sign);
+                total ++;
             }
             Log.e(TAG, "startAutoClear: 总共已清除：" + total);
         },INITIAL_TIME,PERIOD_TIME, TimeUnit.MINUTES);

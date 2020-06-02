@@ -29,6 +29,20 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@color/white" />
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                style="@style/setting_text"
+                android:text="@string/setting_portrait_outline" />
+
+            <Switch
+                android:id="@+id/sw_person_frame_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout

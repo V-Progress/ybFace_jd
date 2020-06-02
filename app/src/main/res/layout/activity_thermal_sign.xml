@@ -103,7 +103,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:text="@string/sign_list_filed_index"
                 android:textColor="@color/white"
@@ -139,9 +139,9 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="2.5"
                 android:gravity="center"
-                android:text="@string/sign_list_filed_job"
+                android:text="@string/sign_list_temper"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 

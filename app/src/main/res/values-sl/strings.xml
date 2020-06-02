@@ -644,5 +644,15 @@
     <string name="safety_correct_temper_ing">Merjenje temperature</string><!--正在测温-->
     <string name="safety_correct_temper_completion">Termometrična izvedba</string><!--测温结束-->
     <string name="safety_save_completion">Umerjenje zaključeno</string><!--保存-->
-    <string name="safety_save_cancel">Prekliči umerjanje</string><!--保存-->
+    <string name="safety_save_cancel">Prekliči umerjanje</string>
+
+
+    <string name="setting_privacy_prompt">Samo merjenje temperature, ni zabeleženih slikovnih podatkov</string><!--保存-->
+    <string name="setting_clear_policy_7">7 dni</string>
+    <string name="setting_clear_policy_15">15 dni</string>
+    <string name="setting_clear_policy_30">30 dni</string>
+    <string name="setting_clear_policy_custom">Vhodni</string>
+    <string name="setting_clear_policy_unit">dni</string>
+    <string name="setting_clear_all_data">Počisti vse podatke</string>
+    <string name="clear_no_data">Preverjeni podatki：</string>
 </resources>

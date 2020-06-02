@@ -47,6 +47,8 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -68,6 +70,7 @@ import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -270,6 +273,12 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
             });
 
+            //人相框===========================================================================================
+            boolean aBoolean1 = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
+            Switch swPersonFrame = view.findViewById(R.id.sw_person_frame_setting);
+            swPersonFrame.setChecked(aBoolean1);
+            swPersonFrame.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.PERSON_FRAME, isChecked));
+
             //logo设置===========================================================================================
             boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
             Switch swMainLogo = view.findViewById(R.id.sw_main_logo_setting);
@@ -329,7 +338,7 @@ public class ThermalSettingActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    String s1 = s.toString().trim();
+                    String s1 = s.toString();
                     if (TextUtils.isEmpty(s1)) {
                         SpUtils.remove(ThermalConst.Key.MAIN_LOGO_TEXT);
                     } else {
@@ -461,12 +470,6 @@ public class ThermalSettingActivity extends BaseActivity {
             Switch swFEnabled = view.findViewById(R.id.sw_f_enabled_setting);
             swFEnabled.setChecked(fEnabled);
             swFEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.THERMAL_F_ENABLED, isChecked));
-
-            //人相框========================
-            boolean aBoolean1 = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
-            Switch swPersonFrame = view.findViewById(R.id.sw_person_frame_setting);
-            swPersonFrame.setChecked(aBoolean1);
-            swPersonFrame.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.PERSON_FRAME, isChecked));
 
             //===低温模式=========================================================
             Switch swLowTempModel = view.findViewById(R.id.sw_low_temp_model_setting);
@@ -615,14 +618,15 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void initView(View view) {
-            Button btnSwitchFunction = view.findViewById(R.id.btn_switch_function);
+            View llSwitchFunction = view.findViewById(R.id.ll_switch_function);
             if(Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){
-                btnSwitchFunction.setVisibility(View.GONE);
+                llSwitchFunction.setVisibility(View.GONE);
             } else {
-                btnSwitchFunction.setVisibility(View.VISIBLE);
+                llSwitchFunction.setVisibility(View.VISIBLE);
+                //切换功能
+                Button btnSwitchFunction = view.findViewById(R.id.btn_switch_function);
+                btnSwitchFunction.setOnClickListener(view1 -> jumpTag());
             }
-            //切换功能
-            btnSwitchFunction.setOnClickListener(view1 -> jumpTag());
 
             //CPU状态==================================================================================
             final TextView tvCpuTemper = view.findViewById(R.id.tv_cpu_temper);
@@ -758,6 +762,41 @@ public class ThermalSettingActivity extends BaseActivity {
 
             //设置IP=================================================================================
             initSetIp(view);
+
+            //清除所有数据============================================================================
+            view.findViewById(R.id.tv_clear_all).setOnClickListener(view1 -> clearAllData());
+        }
+
+        private void clearAllData(){
+            List<Sign> signList = DaoManager.get().queryAll(Sign.class);
+            if(signList == null || signList.size() == 0){
+                UIUtils.showShort(getActivity(),(getString(R.string.clear_no_data) + "0"));
+                return;
+            }
+
+            int total = 0;
+            Iterator<Sign> iterator = signList.iterator();
+            while (iterator.hasNext()) {
+                Sign next = iterator.next();
+                String headPath = next.getHeadPath();
+                String hotImgPath = next.getHotImgPath();
+                if(!TextUtils.isEmpty(headPath)){
+                    File headFile = new File(headPath);
+                    if(headFile.exists()){
+                        headFile.delete();
+                    }
+                }
+                if(!TextUtils.isEmpty(hotImgPath)){
+                    File hotFile = new File(hotImgPath);
+                    if(hotFile.exists()){
+                        hotFile.delete();
+                    }
+                }
+                DaoManager.get().deleteSign(next);
+                total ++;
+            }
+
+            UIUtils.showShort(getActivity(),(getString(R.string.clear_no_data) + total));
         }
 
         private static class CpuUtils {

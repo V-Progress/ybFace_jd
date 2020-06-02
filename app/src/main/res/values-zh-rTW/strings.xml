@@ -24,6 +24,7 @@
     <string name="setting_tab_page">界面</string>
     <string name="setting_tab_temper">測溫</string>
     <string name="setting_tab_device">設備</string>
+    <string name="setting_privacy_prompt">僅進行測溫，不記錄圖像數據</string><!--保存-->
 
     <!--语音设置-->
     <string name="speech_setting_title">语音播报设置</string>
@@ -322,8 +323,6 @@
     <string name="setting_low_temp_model">低溫模式</string>
     <string name="setting_portrait_outline">人像輪廓</string>
     <string name="setting_default_welcome_tip">歡迎使用AI智能考勤系統</string>
-    <string name="setting_default_welcome_tip2">歡迎使用亨通考勤</string>
-    <string name="setting_default_welcome_tip3">歡迎使用思庫考勤</string>
     <string name="setting_correct_temperature">矯正溫度</string>
     <string name="setting_broadcast_f">播報華氏度</string>
 
@@ -632,5 +631,12 @@
     <string name="safety_correct_temper_ing">正在測溫</string><!--正在测温-->
     <string name="safety_correct_temper_completion">測溫完成</string><!--測溫完成-->
     <string name="safety_save_completion">校準完成</string><!--矯正完成-->
-    <string name="safety_save_cancel">取消校準</string><!--保存-->
+    <string name="safety_save_cancel">取消校準</string>
+    <string name="setting_clear_policy_7">7天</string>
+    <string name="setting_clear_policy_15">15天</string>
+    <string name="setting_clear_policy_30">30天</string>
+    <string name="setting_clear_policy_custom">自定義</string>
+    <string name="setting_clear_policy_unit">天</string>
+    <string name="setting_clear_all_data">清除所有數據</string>
+    <string name="clear_no_data">數據已清除完畢：</string>
 </resources>
