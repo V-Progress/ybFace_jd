@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Camera;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
@@ -56,6 +57,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -179,6 +181,8 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     private float mLastMinT;
     private boolean mTempMode = false;
 
+    public static boolean is1280800 = false;
+
     @Override
     protected int getPortraitLayout() {
         return R.layout.activity_multi_thermal_portrait;
@@ -186,6 +190,11 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
     @Override
     protected int getLandscapeLayout() {
+        if (Utils.getWinWidth(this) == 1280 && Utils.getWinHight(this) == 800) {
+            Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            is1280800 = true;
+            return R.layout.activity_multi_thermal_landscape_1280800;
+        }
         return R.layout.activity_multi_thermal_landscape;
     }
 
@@ -197,15 +206,18 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         }
         APP.setMainActivity(this);
 
+        faceView.setSecondFaceRectView(secondFaceRectView);
+        faceView.setCallback(faceCallback);
+
         //开启多人识别模式
-        faceView.enableMutiple(true);
+        if (!is1280800) {
+            faceView.enableMutiple(true);
+        }
         //关闭多次重试
         faceView.enableMultiRetry(false);
         //设置回调延时
-        faceView.setRetryDelayTime(500);
+        faceView.setRetryDelayTime(100);
 
-        faceView.setSecondFaceRectView(secondFaceRectView);
-        faceView.setCallback(faceCallback);
         startXmpp();
 
         if (Constants.FLAVOR_TYPE == FlavorType.HT) {
@@ -277,7 +289,18 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             });
             warningAdapter = new MultiThermalRecordAdapter(this, warningList, 3);
         } else {
-            warningAdapter = new MultiThermalRecordAdapter(this, warningList, RecyclerView.VERTICAL);
+            if (is1280800) {
+                rlvWarningList.setLayoutManager(new LinearLayoutManager(this) {
+                    @Override
+                    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+                        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, 176);
+                        return layoutParams;
+                    }
+                });
+                warningAdapter = new MultiThermalRecordAdapter(this, warningList, 3);
+            } else {
+                warningAdapter = new MultiThermalRecordAdapter(this, warningList, RecyclerView.VERTICAL);
+            }
         }
         rlvWarningList.setAdapter(warningAdapter);
     }
@@ -480,6 +503,40 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         }
     };
 
+    private void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
+        if (!hasFace) {
+            if (totalMap.size() > 0) {
+                totalMap.clear();
+            }
+            if (temperCache.size() > 0) {
+                temperCache.clear();
+            }
+            return;
+        }
+
+        if (isFirstCorrected) {
+            return;
+        }
+
+        if (isCalibration) {
+            return;
+        }
+
+        setFaceIndex(facePreviewInfoList);
+        if (totalMap.size() > 30) {
+            Iterator<Map.Entry<Integer, MultiTemperBean>> iterator = totalMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                iterator.next();
+                iterator.remove();
+                if (totalMap.size() <= 30) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private Map<Integer, Float> temperCache = new HashMap();
+
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
         @Override
         public void onReady() {
@@ -490,37 +547,15 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
         @Override
         public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
-            if (!hasFace) {
-                if (totalMap.size() > 0) {
-                    totalMap.clear();
-                }
-                return;
-            }
-
-            if (isFirstCorrected) {
-                return;
-            }
-
-            if (isCalibration) {
-                return;
-            }
-
-            setFaceIndex(facePreviewInfoList);
-            if (totalMap.size() > 30) {
-                Iterator<Map.Entry<Integer, MultiTemperBean>> iterator = totalMap.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    iterator.next();
-                    iterator.remove();
-                    if (totalMap.size() <= 30) {
-                        break;
-                    }
-                }
-            }
+            MultiThermalActivity.this.onFaceDetection(hasFace, facePreviewInfoList);
         }
 
         @Override
         public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {
-            return false;
+            List<FacePreviewInfo> facePreviewInfoList = new ArrayList<>();
+            facePreviewInfoList.add(facePreviewInfo);
+            MultiThermalActivity.this.onFaceDetection(hasFace, facePreviewInfoList);
+            return true;
         }
 
         @Override
@@ -528,11 +563,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             if (isFirstCorrected) {
                 return;
             }
-
             if (isCalibration) {
                 return;
             }
-
             int trackId = faceAuth.getTrackId();
             float temperByTrackId = faceView.getTemperByTrackId(trackId);
             if (temperByTrackId <= 0.0f) {
@@ -551,8 +584,20 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             if (bitmapDrawable == null) {
                 return;
             }
-
             temperByTrackId = formatF(temperByTrackId);
+
+            if (temperCache.containsKey(trackId)) {
+                float lastTemp = temperCache.get(trackId);
+                if (lastTemp > 35) {
+                    return;
+                } else if (temperByTrackId > 35) {
+                    temperCache.put(trackId, temperByTrackId);
+                } else {
+                    return;
+                }
+            } else {
+                temperCache.put(trackId, temperByTrackId);
+            }
 
             MultiTemperBean multiTemperBean = new MultiTemperBean();
             //trackId
@@ -833,8 +878,15 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
     //添加条目到记录中
     private void addItemRecord(MultiTemperBean multiTemperBean) {
         float temper = multiTemperBean.getTemper();
+        StringBuffer speechBuffer = new StringBuffer();
+        Runnable speechRunnable = null;
         if (temper <= 0f || temper >= 37.3f) {
-            KDXFSpeechManager.instance().playWaningRingNoStop();
+            speechBuffer.append(getResString(R.string.act_certificates_verify_temper_no));
+            if (!is1280800) {
+                KDXFSpeechManager.instance().playWaningRingNoStop();
+            } else {
+                speechRunnable = () -> KDXFSpeechManager.instance().playWaningRingNoStop();
+            }
             warningList.add(0, multiTemperBean);
             warningAdapter.notifyItemInserted(0);
             if (warningList.size() > 15) {
@@ -846,6 +898,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
             sendWarningMessage(temper);
         } else {
+            speechBuffer.append(getResString(R.string.act_certificates_verify_temper_yes));
             normalList.add(0, multiTemperBean);
             normalAdapter.notifyItemInserted(0);
             if (normalList.size() > 15) {
@@ -854,6 +907,17 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
                 normalAdapter.notifyItemRemoved(index);
             }
             rlvNormalList.scrollToPosition(0);
+        }
+
+        if (is1280800) {
+            if (fEnabled) {
+                speechBuffer.append((float) (Math.round((temper * 1.8f + 32) * 10)) / 10);
+                speechBuffer.append(getResString(R.string.temper_tips_fahrenheit));
+            } else {
+                speechBuffer.append(multiTemperBean.getTemper());
+                speechBuffer.append(getResString(R.string.temper_tips_centigrade));
+            }
+            KDXFSpeechManager.instance().playNormal(speechBuffer.toString(), speechRunnable);
         }
 
         int trackId = multiTemperBean.getTrackId();
