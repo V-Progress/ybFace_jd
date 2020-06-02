@@ -182,6 +182,15 @@
                 android:inputType="text"
                 android:maxLength="20"
                 android:padding="5dp" />
+
+            <Switch
+                android:id="@+id/sw_title_display"
+                android:switchPadding="10dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:text="@string/setting_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <Button

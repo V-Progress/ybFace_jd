@@ -346,6 +346,15 @@ public class ThermalSettingActivity extends BaseActivity {
                     }
                 }
             });
+            boolean titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
+            Switch swTitle = view.findViewById(R.id.sw_title_display);
+            swTitle.setChecked(titleEnabled);
+            swTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SpUtils.saveBoolean(ThermalConst.Key.TITLE_ENABLED,isChecked);
+                }
+            });
 
             //设置首页LOGO================================================================================
             Button btnRestore = view.findViewById(R.id.btn_restore_main_logo);

@@ -8,4 +8,5 @@ public interface FlavorType {
     int SOFT_WORK_Z = 4;
     int BIO = 5;
     int SCAN_TEMP = 6;
+    int PING_TECH = 7;
 }

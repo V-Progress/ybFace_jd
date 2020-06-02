@@ -159,6 +159,10 @@ public class SplashActivity extends BaseActivity {
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.scan_temp;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
                 break;
+            case FlavorType.PING_TECH:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.pingtech_logo;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                break;
             default:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";

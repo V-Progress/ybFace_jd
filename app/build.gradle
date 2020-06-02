@@ -177,7 +177,12 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name5", "@mipmap/softworkz_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
-        /*ScanTemp*/
+        /*PingTech=====================================================================================================================*/
+        flavor(PingTech_10, "7",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/app_name7", "@mipmap/pingtech_logo", "5cbe87a60cafb210460006b3", "PingTech_10",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*ScanTemp============================================================================*/
         flavor(SCAN_TEMP, "6",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name6", "@mipmap/scan_temp", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
@@ -225,6 +230,8 @@ String buildApkName(String param) {
         name = "Osimle AI"
     else if (param.contains("SOFT_WORK"))
         name = "SoftWorkz AI"
+    else if(param.contains("PingTech"))
+        name = "PingTech"
     else
         name = "YB"
 

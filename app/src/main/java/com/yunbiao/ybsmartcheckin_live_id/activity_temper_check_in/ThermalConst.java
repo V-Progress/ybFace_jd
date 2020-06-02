@@ -69,9 +69,11 @@ public class ThermalConst {
         String CENTIGRADE = "centigradeUnit";
         String FAHRENHEIT = "fahrenheitUnit";
         String MASK_TIP = "thermalMaskTip";
+        String TITLE_ENABLED = "thermalTitleEnabled";
     }
 
     public static class Default {
+        public static final boolean TITLE_ENABLED = true;
         public static int DEFAULT_LOGO_ID = R.mipmap.yb_logo;
 
         public static final float VOICE_SPEED = 1.8f;
