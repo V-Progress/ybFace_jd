@@ -76,10 +76,11 @@
             android:layout_height="44dp" />
 
         <Button
+            android:drawablePadding="10dp"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/tv_export_sign_data"
             android:id="@+id/btn_upload"
-            android:layout_width="130dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:background="@drawable/shape_bg_btnsync"
             android:drawableLeft="@mipmap/icon_sync"

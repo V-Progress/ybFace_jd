@@ -26,7 +26,7 @@
     <string name="setting_tab_device">Device</string>
 
     <!--语音设置-->
-    <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
+    <string name="speech_setting_title">Speech</string>
     <string name="setting_welcome_speech">Welcome Speech</string><!--Welcome speech-->
     <string name="temper_tips_close">Close to the tip</string>
     <string name="speech_setting_open_or_close">On</string>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="batchContent"
+            type="com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.BatchImportActivity.BatchContent" />
+        <variable
+            name="actionPresenter"
+            type="com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.BatchImportActivity.ActionPresenter" />
+    </data>
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/skin_main_screen_background"
+        tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.BatchImportActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="批量导入"
+                android:textColor="@color/white"
+                android:textSize="30dp" />
+
+            <ImageButton
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="#00000000"
+                android:paddingLeft="20dp"
+                android:paddingRight="30dp"
+                android:src="@mipmap/back" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:padding="10dp"
+            android:background="@drawable/shape_bg_face_green"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="@color/white"
+                android:textSize="26dp"
+                android:text="@{batchContent.fileName}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Button
+                style="@style/style_setting_input_save_button"
+                android:onClick="@{actionPresenter::chooseFile}"
+                android:layout_marginLeft="20dp"
+                android:textSize="22dp"
+                android:text="选择文件"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="8dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/shape_bg_face_green"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:enabled="@{batchContent.checkedAvailable}"
+                    android:onCheckedChanged="@{actionPresenter::onReverseChecked}"
+                    android:button="@drawable/selector_cb"
+                    android:text="反选"
+                    android:textSize="26dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:enabled="@{batchContent.checkedAvailable}"
+                    android:onCheckedChanged="@{actionPresenter::onAllChecked}"
+                    android:layout_marginLeft="20dp"
+                    android:button="@drawable/selector_cb"
+                    android:text="全选"
+                    android:textSize="26dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rlv_data"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+
+            <Button
+                android:enabled="@{batchContent.checkedAvailable}"
+                android:textColor="@color/white"
+                android:background="@drawable/selector_btn_take_photo"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_marginLeft="0dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:onClick="@{actionPresenter::chooseFile}"
+                android:textSize="24dp"
+                android:text="开始导入"/>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

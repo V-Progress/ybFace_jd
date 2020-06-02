@@ -128,6 +128,10 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             e.printStackTrace();
         }
 
+        if(Constants.FLAVOR_TYPE == FlavorType.SOFT_WORK_Z){
+            gifImageView.setImageResource(R.mipmap.soft_workz_qrcode);
+        }
+
         setModelText(mModel);
 
         //竖屏砖用

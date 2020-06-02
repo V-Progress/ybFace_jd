@@ -399,7 +399,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (mCacheTime != 0) mCacheTime = 0;
             if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
             sendTipsMessage(speechBean.getDistanceContent());
-            if (speechBean.isDistanceEnabled() && distanceTipNumber < 5)
+            if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
+                if(speechBean.isDistanceEnabled() && distanceTipNumber < 5)
+                    KDXFSpeechManager.instance().playApprochSound(() -> distanceTipNumber++);
+            } else if (speechBean.isDistanceEnabled() && distanceTipNumber < 5)
                 KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> distanceTipNumber++);
             return;
         }
@@ -778,42 +781,55 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     String resultText = getResultText(mFEnabled, temperature);
                     viewInterface.showResult(resultText, bgId);
 
-
-                    Runnable resultRunnable = speechCallback(temperature);
-                    String speechText = getSpeechText(mFEnabled, temperature);
-
-                    if (temperature >= HIGHEST_TEMPER) {
-                        if (speechBean.isWarningEnabled()) {
-                            KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
-                        } else {
+                    if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
+                        if(temperature >= mTempWarningThreshold){
                             ledRed();
-                            KDXFSpeechManager.instance().playWaningRing();
-                            sendResetResultMessage();
-                        }
-                    } else if (temperature >= mTempWarningThreshold) {
-                        if (speechBean.isWarningEnabled()) {
-                            if (!TextUtils.isEmpty(name)) {
-                                speechText += "，" + name;
-                            }
-                            KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
-                        } else {
-                            ledRed();
-                            KDXFSpeechManager.instance().playWaningRing();
-                            sendResetResultMessage();
-                        }
-                    } else {
-                        if (speechBean.isNormalEnabled()) {
-                            if (!TextUtils.isEmpty(name)) {
-                                speechText += "，" + name;
-                            }
-                            KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                            KDXFSpeechManager.instance().playWarningSound();
+                            updateUIHandler.postDelayed(()->KDXFSpeechManager.instance().playWaningRing(),2400);
                         } else {
                             ledGreen();
-                            KDXFSpeechManager.instance().playPassRing();
+                            KDXFSpeechManager.instance().playNormalSound();
                             if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
                                 openDoor();
                             }
-                            sendResetResultMessage();
+                        }
+                        sendResetResultMessage();
+                    } else {
+                        Runnable resultRunnable = speechCallback(temperature);
+                        String speechText = getSpeechText(mFEnabled, temperature);
+                        if (temperature >= HIGHEST_TEMPER) {
+                            if (speechBean.isWarningEnabled()) {
+                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                            } else {
+                                ledRed();
+                                KDXFSpeechManager.instance().playWaningRing();
+                                sendResetResultMessage();
+                            }
+                        } else if (temperature >= mTempWarningThreshold) {
+                            if (speechBean.isWarningEnabled()) {
+                                if (!TextUtils.isEmpty(name)) {
+                                    speechText += "，" + name;
+                                }
+                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                            } else {
+                                ledRed();
+                                KDXFSpeechManager.instance().playWaningRing();
+                                sendResetResultMessage();
+                            }
+                        } else {
+                            if (speechBean.isNormalEnabled()) {
+                                if (!TextUtils.isEmpty(name)) {
+                                    speechText += "，" + name;
+                                }
+                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                            } else {
+                                ledGreen();
+                                KDXFSpeechManager.instance().playPassRing();
+                                if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
+                                    openDoor();
+                                }
+                                sendResetResultMessage();
+                            }
                         }
                     }
                     break;

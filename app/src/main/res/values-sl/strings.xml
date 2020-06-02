@@ -1,0 +1,648 @@
+<resources>
+    <string name="app_name">YB Obraz</string>
+    <string name="app_name2">HT Obraz</string>
+    <string name="app_name3">Siku udelezba</string>
+    <string name="app_name4">O nasmeh AL</string>
+    <string name="app_name5">Mehko delovanje AL</string>
+    <string name="used">Rabljen:</string>
+    <string name="no_used">/lahko uporabimo:</string>
+    <string name="back">nazaj</string>
+    <string name="not_support_speech">Jeziki, ki jih trenutna govorna avtomatika ne podpira:</string>
+    <string name="miss_speech_data">manjkajo glasovni podatki:</string>
+    <string name="alert_title_warning">opozorilo</string>
+    <string name="temper_error_tips">Podatkov o meritvah temperature ni bilo mogoče pridobiti, preverite modul za merjenje temperature</string> 
+    <string name="temper_error_btn_restart">ponovno zagnati</string>
+    <string name="temper_error_btn_cancel">Brez obdelave</string>
+
+
+    <!--口罩提示IT-->
+    <string name="no_mask_tip">Prosimo, nosite masko</string>
+    <string name="error_mask_tip">Prosimo, nosite masko pravilno</string>
+    <string name="please_aim_face_frame">Prosimo, da cilj na obrazu okvir</string>
+
+    <string name="setting_tab_face">Obraz</string>
+    <string name="setting_tab_page">Strani</string>
+    <string name="setting_tab_temper">Temperature</string>
+    <string name="setting_tab_device">Opreme</string>
+
+    <!--语音设置-->
+    <string name="speech_setting_title">Glas</string>
+    <string name="setting_welcome_speech">Dobrodošli v aDI Smart udeležba System</string><!--Welcome speech--><!--欢迎语  -->
+    <string name="temper_tips_close">Prosim, približite se točki.</string>
+    <string name="speech_setting_open_or_close">Odprt</string>
+    <string name="speech_setting_show_temper">Pokaži temperaturne vrednosti</string>
+    <string name="speech_setting_temper_location">Položaj prikaza temperature</string>
+    <string name="speech_setting_location_start">Pred</string>
+    <string name="speech_setting_location_center">Bit simbola</string>
+    <string name="speech_setting_location_end">Po tem</string>
+    <string name="speech_setting_alert">Položaj prikaza temperature je identificiran s simbolom, številka temperature se bo samodejno napolnila, primer (36,5 stopinj C), je lahko samo en s-znak, obstaja več kot ena s, prvi bo prevladal, preostali simboli pa bodo samodejno izbrisani</string>
+    <string name="speech_setting_welcome_exmaple">Pozdravni primer：</string>
+    <string name="speech_setting_distance_exmaple">Primer nasvetov za razdaljo：</string>
+    <string name="speech_setting_normal_exmaple">Exampleof običajne radiodifuzije：</string>
+    <string name="speech_setting_warning_exmaple">Primer oddaje izjeme：</string>
+    <string name="speech_setting_audition">Avdicijo</string>
+    <string name="setting_normal_speech_content">Običajna temperature oddaja:</string><!--普通温度播报-->
+    <string name="setting_warning_speech_content">Nenormalana temperatura oddajanja</string><!--异常温度播报-->
+    <string name="setting_broadcast_speed">hitrost glasa</string>
+    <string name="setting_default_welcome_tip">Dobrodošli v AI inteligentnem sistemu udeležbe</string><!--欢迎语-->
+    <string name="setting_camera_vertical_mirror">Frame vertical mirror</string>
+    <string name="setting_picture_rotation">With the camera</string>
+    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_pic_rotation">Direction of photos</string>
+
+    <!--logo设置-->
+    <string name="setting_privacy_mode">Način zasebnosti</string>
+    <string name="setting_periodic_purge_policy">Politika periodičnega čiščenja</string>
+    <string name="setting_clear_policy_tip">Samodejno počisti podatke pred dnevi% 1 $ s</string>
+    <string name="setting_show_main_logo">Prikaži domači Logotip</string>
+    <string name="setting_show_main_thermal">Prikaz toplotnega slikanja</string>
+    <string name="setting_show_main_info">Prikaz podatkov o domači strani</string>
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Centigrade</string>
+    <string name="temper_tips_fahrenheit">Fahrenheit degree</string>
+    <string name="app_main_title">The application title</string>
+    <string name="select_img_title">Select Image</string>
+    <string name="select_img_failed">Image selection failed</string>
+    <string name="select_img_failed_not_exists">The selected image does not exist</string>
+    <string name="setting_app_logo">APP Logo</string>
+    <string name="setting_select_image">Choose</string>
+    <string name="setting_restore_image">Restore</string>
+    <string name="setting_auto_temper">Automatic mode</string>
+
+    <!--应用名称-->
+    <string name="yb_check_in">YB Prijava</string>
+    <string name="yb_temper_check_in">YB Temperatura Prijava</string> 
+    <string name="yb_certificates">YB Potrdila</string> 
+    <string name="yb_multiple">YB Visok pretok</string> 
+    <string name="yb_safety_chceck">YB Varnostno preverjanje temperature</string>
+    <string name="ht_temper_check_in">HT Varnostno preverjanje temperature</string>
+    <string name="ht_certificates">HTT Potrdila</string>
+    <string name="ht_multiple">HT Visok pretok</string>
+    <string name="ht_safety_chceck">HT Varnostno preverjanje temperature</string>
+
+    <string name="sk_temper_check_in">SK Varnostno preverjanje temperature</string> 
+    <string name="sk_multiple">sk Visok pritisk</string>
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">vključeno</string>
+    <string name="smt_main_net_normal2">vključeno</string>
+    <string name="smt_main_net_no">izključeno</string>
+    <string name="smt_main_all">vse</string>
+    <string name="smt_main_already">urejen</string>
+    <string name="smt_main_ver">vsestranski:</string>
+    <string name="smt_main_company">podjetje:</string>
+    <string name="smt_main_device_no">številka.</string>
+    <string name="smt_main_not_bind">ne obvezno</string> 
+
+
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">hipertemija</string><!--体温异常-->
+    <string name="main_temp_normal_tips">normalno</string><!--体温正常-->
+    <string name="main_temp_error_tips">nenormalna temperatura</string>
+    <string name="main_temp_tips_please_close">Prosim, pridite bližje</string><!--Please approach--><!--请靠近点-->
+    <string name="main_temp_tips_so_far_text">Prosim, pridite bližje</string><!--Please approach--><!--距离太远，请靠近-->
+    <string name="main_temp_tips_please_far">Prosim, oddaljite se</string><!--请远一点--> 
+    <string name="main_temp_tips_so_close_text">Prosim, oddaljite se</string><!--距离太近，请远一点-->
+    <string name="main_thermal_has_person">Toplotno slikanje: nekdo</string>
+    <string name="main_thermal_no_person">Toplotno slikanje: nihče</string>
+    <string name="main_thermal_temp">temperatura：</string><!--热成像 体温：-->
+    <string name="main_please_waiting">Prosim počakajte</string><!--请等待-->
+    <string name="main_temp_tips_please_in_range">Prosimo, da svoj obraz usmerite v območje prepoznavanja</string><!--请将面部对准识别区域-->
+    <string name="main_tips_please_close">Prosim, pristopite</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">Merjenje</string><!--正在测温-->
+    <string name="port_setting">Serijsko vrata</string><!--串口-->
+    <string name="select_port_setting">Določi serijsko vrata</string><!--选择串口-->
+    <string name="auto_close_door_setting">（Po tem času vrata samodejno zaprite）</string><!--Automatic closing--><!--（此时间之后自动关门）-->
+    <string name="recommend_valuez_setting">Priporočena vrednost：80</string><!--推荐阈值：80-->
+    <string name="current_model_setting">Trenutni način</string><!--当前模式-->
+
+    <!--系统信息-->
+    <string name="System_title">Informacije</string><!--云标智能考勤系统-->
+    <string name="System_deviceNo">Št. Naprave:</string><!--设备编号:-->
+    <string name="System_bindCode">Šifra datoteke:</string><!--绑定码:-->
+    <string name="System_Company">Podjetje:</string><!--所属公司:-->
+    <string name="System_Service">Storitev:</string><!--服务网络:-->
+    <string name="System_ValiDate">Iztek:</string><!--有效期:-->
+    <string name="System_Manage">Upravljanje uporabnika</string><!--人员管理-->
+    <string name="System_Add">Dodaj uporabnika</string><!--新增员工-->
+    <string name="System_Record">zapis</string><!--考勤记录-->
+    <string name="System_Setting">Nastavitev</string><!--系统设置-->
+    <string name="System_Visitor">Obiskovalec</string><!--访客-->
+    <string name="System_skin_select">Koža</string><!--更换皮肤-->
+    <string name="System_update">Nadgradnja</string><!--升级-->
+    <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string><!--版权所有:北京云标科技有限公司-->
+    <string name="System_Service_offline">nepovezano</string><!--离线-->
+    <string name="System_online">povezano</string><!--在线-->
+    <string name="System_offline">nepovezano</string><!--离线-->
+    <string name="System_validityPeriod">Neomejeno obdobje</string><!--无限期-->
+    <string name="System_cloud_service">Storitev v oblaku</string><!--云服务-->
+    <string name="System_local_service">Storitev lokalno</string><!--本地服务-->
+
+    <!--人员管理-->
+    <string name="employ_list_title">seznam osebja</string><!-- 员工列表 -->
+    <string name="employ_list_depart_sync">uskladitev</string><!-- 同步 -->
+    <string name="employ_List_add_user">dodaj</string><!-- 新增 -->
+    <string name="employ_List_query_button">Poizvedba</string><!-- 搜索 -->
+    <string name="employ_list_download_failed">Prenos slike glave ni uspel</string><!-- 下载头像失败 -->
+    <string name="employ_list_add_face_failed">Prenos slike glave ni veljaven</string><!--  添加人脸库失败-->
+    <string name="employ_list_update_head_failed">Posodobitev slike glave ni uspela</string><!-- 更新头像失败 -->
+    <string name="employ_list_field_index">Ne</string><!-- 序号 -->
+    <string name="employ_list_field_number">Identifikacija</string><!--  员工编号-->
+    <string name="employ_list_field_name">Ime</string><!--员工名 -->
+    <string name="employ_list_field_depart">Oddelek</string><!--部门  -->
+    <string name="employ_list_field_position">Pozicija</string><!-- 职位 -->
+    <string name="employ_list_field_control">Delovanje</string><!--操作  -->
+    <string name="employ_list_item_delete">Izbriši</string><!--  删除-->
+    <string name="employ_list_item_edit">Uredi</string><!--编辑  -->
+    <string name="employ_list_all_depart">Vse</string><!-- 全部部门 -->
+    <string name="employ_list_please_input_user_name">Uporabniško ime</string><!-- 请输入员工姓名 -->
+    <string name="employ_list_confirm_edit">Ali ste prepričani, o spremembi？</string><!-- 确定修改吗？ -->
+    <string name="employ_list_confirm_delete">Are you sure to delete？</string><!-- 确定删除吗？ -->
+    <string name="employ_list_delete_failed">Delete failed</string><!-- 删除失败 -->
+    <string name="employ_list_delete_success">Brisanje uspešno</string><!-- 删除成功 -->
+    <string name="employ_list_depart">Oddelek</string><!-- 部门 -->
+    <string name="employ_list_add_depart">Dodaj oddelek</string><!-- 新增部门 -->
+    <string name="employ_list_please_input_name">Prosim vnesite ime</string><!--请输入姓名-->
+    <string name="employ_list_no_this_person">Zaposlenega niso iskali</string><!--未搜索到该员工-->
+
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">Dodaj uporabnika</string><!-- 增加员工 -->
+    <string name="act_editEmploy_xgxx">Uredi uporabnika</string><!--修改信息  -->
+    <string name="act_editEmploy_pz">Fotografiraj</string><!-- 拍照 -->
+    <string name="act_editEmploy_reset">ponastavi</string><!-- 重置 -->
+    <string name="act_editEmploy_jbxx">Informacija</string><!-- 基本信息 -->
+    <string name="act_editEmploy_name">Uporabniško ime:</string><!-- 姓名: -->
+    <string name="act_editEmploy_sex">Spol:</string><!-- 性别: -->
+    <string name="act_editEmploy_bm">oddelek:</string><!--部门:  -->
+    <string name="act_editEmploy_ygbh">Identifikacija uporabnika:</string><!-- 员工编号 -->
+    <string name="act_editEmploy_kh">identifikacijska kartica:</string><!-- 员工编号 -->
+    <string name="act_editEmploy_zw">pozicija:</string><!-- 职位: -->
+    <string name="act_editEmploy_csrq">Rojstni dan:</string><!--  出生日期-->
+    <string name="act_editEmploy_gxqm">Življenjski moto:</string><!--  个性签名-->
+    <string name="act_editEmploy_tip_qxpz">Najprej fotografirajte.</string><!-- 请先拍照 -->
+    <string name="act_editEmploy_tip_qtxxm">Prosimo, vnesite svoje ime</string><!-- 请填写姓名 -->
+    <string name="act_editEmploy_tip_qxzxb">Prosimo določite spol</string><!--请选择性别  -->
+    <string name="act_editEmploy_tip_qtxbh">prosimo vnesite identifikacijo</string><!-- 请填写编号 -->
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">Nobene avatar datoteke ni mogoče najti, fotografirajte se in poskusite znova</string><!-- 未找到头像文件，请重新拍照后再试 -->
+    <string name="act_editEmploy_tip_wzrhxg">ni sprememb</string><!-- 未做任何修改 -->
+    <string name="act_editEmploy_tip_tjsb">dodajanje neuspešno </string><!-- 添加失败 -->
+    <string name="act_editEmploy_tip_gygbcz">zaposleni ne obstaja</string><!-- 该员工不存在 -->
+    <string name="act_editEmploy_tip_bczgbm">Oddelek ne obstaja</string><!-- 不存在该部门 -->
+    <string name="act_editEmploy_tip_gsmyzgbm">Podjetje nima tega oddelka</string><!-- 公司没有这个部门 -->
+    <string name="act_editEmploy_tip_gsyzwyg">podjeteje nima tega zaposlenega</string><!--公司没有这位员工  -->
+    <string name="act_editEmploy_tip_cscw">Napačen parameter</string><!--参数错误  -->
+    <string name="act_editEmploy_tip_qtxbm">Prosimo določite oddelek</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">Dodajanje popolno</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">Ni bilo mogoče dodati podatkov o obrazu</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">Pošiljanje neuspešno</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">Prosimo, ustanovite oddelek</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">Fotografija profila je uspešno posodobljena</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">posodabljanje profila je neuspešno</string> 
+    <string name="act_editEmploy_update_info_success">posobabljanje informacij je uspešno</string>
+    <string name="act_editEmploy_no_face">Ni zaznan obraz</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">Prosimo, imejte na zaslonu samo en obraz</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">Fotografija ni uspela. Poskusite znova</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">Neznana napaka</string><!--未知错误-->
+
+    <!--离线数据-->
+    <string name="sign_list_title">Zapis</string><!--离线记录-->
+    <string name="sign_list_all_type">Vse</string><!-- 全部 -->
+    <string name="sign_list_sent">Poslano</string><!-- 已发送 -->
+    <string name="sign_list_unsent">Neposlano</string><!-- 未发送 -->
+    <string name="sign_list_export">Izvozni zapis</string><!-- 导出数据 -->
+    <string name="sign_list_upload">naložite zapis</string><!--  上传数据-->
+    <string name="sign_list_filed_index">kazalo</string><!--  序号-->
+    <string name="sign_list_filed_time">čas</string><!-- 时间 -->
+    <string name="sign_list_filed_name">Uporabniško ime</string><!-- 员工名 -->
+    <string name="sign_list_filed_depart">Oddelek</string><!-- 部门 -->
+    <string name="sign_list_filed_job">pozicija</string><!--职位  -->
+    <string name="sign_list_filed_head">glava</string><!-- 头像 -->
+    <string name="sign_list_no_data">Ni datoteke</string><!-- 暂无数据 -->
+    <string name="sign_list_upload_success">Nalaganje uspešno</string><!-- 上传成功 -->
+    <string name="sign_list_upload_failed">Nalaganje neuspešno, prosimo preverite omrežje</string>
+    <string name="sign_list_table_name">Zapis</string>
+
+    ><!-- 上传失败，请检查网络 -->
+    <string name="sign_list_usb_disk">Prosimo vstavite U disk</string><!--  请插入U盘-->
+    <string name="sign_list_tip_usb_disk">Ni zaznan USB, izvozite na lokalni</string>
+    <string name="sign_list_all_data_sent">Vse datoteke naložene</string><!-- 数据已全部上传 -->
+    <string name="sign_list_name">ime</string>
+    <string name="sign_list_number">številka</string>
+    <string name="sign_list_depart">oddelek</string>
+    <string name="sign_list_position">pozicija</string>
+    <string name="sign_list_date">datum</string>
+    <string name="sign_list_time">čas</string>
+    <string name="sign_list_temper">temperatura</string>
+    <string name="sign_list_head">glava</string>
+    <string name="sign_list_hot">vroče</string>
+    <string name="sign_export_record">zapis</string>
+    <string name="sign_export_no_record">Ni podatkov</string>
+    <string name="sign_export_create_record_failed">kreiranje podatkov neuspešno</string>
+    <string name="sign_export_record_success">izvoz uspešen</string>
+    <string name="sign_export_record_path">Pot：</string>
+    <string name="sign_export_record_failed">izvoz neuspešen</string>
+
+
+    <!--访客列表-->
+    <string name="visitor_list_title">seznam obiskovalcev</string><!-- 访客列表 -->
+    <string name="visitor_list_filed_name">ime</string><!--  姓名-->
+    <string name="visitor_list_filed_time">čas obiska</string><!-- 访问时间段 -->
+    <string name="visitor_list_filed_company">podjetje</string><!-- 单位 -->
+    <string name="visitor_list_filed_reason">vzrok</string><!-- 事由 -->
+
+
+    <!--系统设置-->
+    <!--模式-->
+    <string name="face_only_model">Udeležba na prepoznavanju obraza</string>
+    <string name="face_infared_model">Obrazno + termično slikanje (majhno)</string>
+    <string name="infared_only_model">samo termično slikanje (majhno)</string>
+	<string name="thermal_only_model">samo termično slikanje (HM-32*32）</string>
+    <string name="face_thermal_model">Obrazno + termično slikanje(HM-32*32）</string>
+    <string name="thermal_16_4_model">samo termično slikanje (HM-16*4）</string>
+    <string name="face_thermal_16_4_model">Obrazno + termično slikanje(HM-16*4）</string>
+    <string name="only_thermal_mlx_16_4_model">samo termično slikanje (MLX-16*4）</string>
+    <string name="face_thermal_mlx_16_4_model">Obrazno + termično slikanje(MLX-16*4）</string>
+
+
+    <!--标签-->
+    <string name="setting_face_similar_threshold">Prag podobnosti obraza</string><!-- 设置人脸相似度阈值 -->
+    <string name="setting_enable_dialog">pokaži obrazno infomacijo</string><!-- 开启人脸弹框 -->
+    <string name="setting_enable_liveness">Vklopite zaznavanje v živo</string><!-- 开启活体检测 -->
+    <string name="setting_camera_mirror">Omogoči zrcaljenje obraznega okvirja</string><!-- 开启人脸框镜像 -->
+    <string name="setting_select_model">Izberite način</string><!--选择模式  -->
+    <string name="setting_current_port_path">Trenutno serijsko vrata</string><!-- 当前串口 -->
+    <string name="setting_baud_rate">Hitrost prenosa</string><!-- 波特率 -->
+    <string name="setting_open">vključeno</string><!-- 开启 -->
+    <string name="setting_enable_distance_tips">Opomnik na daljavo</string><!-- 开启距离提示 -->
+    <string name="setting_thermal_imaging_mirror">Toplotno zrcaljenje slike</string><!-- 热成像画面镜像 -->
+    <string name="setting_open_temperature_delay">Zakasnitev pri merjenju temperature</string><!--开启测温延时  -->
+    <string name="setting_temperature_delay_time">Zakasnitev</string><!-- 测温延时 -->
+    <string name="setting_ms">ms</string><!-- 毫秒 -->
+    <string name="setting_s">s</string><!-- 秒 -->
+    <string name="setting_temp_correct_value">Temperatura pravilna vrednost</string><!-- 测温矫正值 -->
+    <string name="setting_amb_correct_value">Pravilna vrednost okolice</string><!-- 环境温矫正值 -->
+    <string name="setting_temperature_threshold">Prag hipotermije</string><!-- 最低体温播报 -->
+    <string name="setting_temperature_warning">Normahmični prag</string><!-- 测温报警值 -->
+    <string name="setting_temp_range">Območje merjenja temperature</string><!--Temperature measurement range--><!-- 体温测温范围 -->
+    <string name="setting_range_minimum">minimalna</string><!--minimum--><!-- 最低 -->
+    <string name="setting_range_highest">Najvišja</string><!--Highest--><!-- 最高 -->
+    <string name="setting_speech_delay">Zakasnitev pri oddajanju</string><!-- 连续播报间隔 -->
+    <string name="setting_screen_saver">Ohranjevalnik zaslona</string><!--屏保  -->
+    <string name="setting_show_qr_code">pokaži Qr kodo</string><!-- 显示二维码 -->
+    <string name="setting_enable_ic_card">čitalec IC kartic</string><!-- IC读卡器 -->
+    <string name="setting_relay_delay_time">zakasnitev zapiranja vrat</string><!-- 开门时间 -->
+    <string name="setting_cpu_temp">CPU Temperatura:</string><!-- CPU温度 -->
+    <string name="setting_camera_angle">Kot kamere</string><!--  摄像头角度-->
+    <string name="setting_curr_net">omrežje:</string><!-- 当前网络 -->
+    <string name="setting_net_name">【WIFI，Omrežje:XXXXX】</string><!-- 【WIFI，网络名称：XXXXX】 -->
+    <string name="setting_reboot_device">zaženite znova</string><!-- 重启设备 -->
+    <string name="setting_check_update">Nadgradnja</string><!--  检测升级-->
+    <string name="setting_manage_password">Spremenite Upravljanje gesla</string><!--管理密码修改  -->
+    <string name="setting_system_password">Sistem gesel</string><!-- 系统密码 -->
+    <string name="setting_please_input_password">Vnesite 6-12 mestno geslo (številka, črka)</string><!-- 请输入6-12位密码（数字、字母） --> 
+    <string name="setting_please_input_again">Prosimo vpišite geslo ponovno</string><!-- 请再次输入密码 -->
+    <string name="setting_cloud_service">oblak</string><!--云端  -->
+    <string name="setting_local_service">LAN</string><!-- 局域网 -->
+    <string name="setting_ip_address">IP naslov</string><!-- IP地址 -->
+    <string name="setting_xmpp_port">komunikacijska vrata</string><!-- 通信端口 -->
+    <string name="setting_resource_port">servisna vrata</string><!-- 服务端口 -->
+    <string name="setting_project_name">Ime projekta</string><!--项目名  -->
+    <string name="setting_save_service_info">shrani</string><!-- 保存服务 -->
+    <string name="setting_total_one">vse od 1</string><!-- 共1个 -->
+    <string name="setting_current_used">【trenutna：】</string><!-- 【当前使用：】 -->
+    <string name="setting_cam_angle">kot</string><!-- 角度 -->
+    <string name="setting_net_prefix">【Ethernet，IP naslov:</string><!-- 【以太网络，IP地址: -->
+    <string name="setting_ip_info">，IP naslov:</string><!--，IP地址:  -->
+    <string name="setting_best_camera_size">Najboljši</string><!-- 最佳 -->
+    <string name="setting_max_camera_size">maksimalen</string><!-- 最大 -->
+    <string name="setting_wifi_name">ime:</string><!-- 名称: -->
+    <string name="setting_wifi_rssi">，Signal strength:</string><!-- ，信号强度: -->
+    <string name="setting_device_will_reboot">Naprava se bo znova zagnala. Ali želite nadaljevati?</string><!-- 设备将重启，是否继续？ -->
+    <string name="setting_device_reboot">Ponovni zagon naprave</string><!--设备重启  -->
+    <string name="setting_3_scond_reboot">Naprava se bo Ponovno zagnala v 3 sekundah</string><!--  3秒后将重启设备-->
+    <string name="setting_password_not_null">Geslo ne more biti prazno</string><!-- 密码不可为空 -->
+    <string name="setting_password_min_6">Geslo mora biti vsaj 6 znakov</string><!-- 密码最少输入6位 -->
+    <string name="setting_please_input_password_agian">Ponovno vnesite geslo</string><!-- 请再次输入密码 -->
+    <string name="setting_password_disaccord">Dvakrat vnesena gesla so neskladna</string><!-- 两次输入的密码不一致 -->
+    <string name="setting_edit_password_failed">Sprememba ni uspela</string><!-- 修改失败 -->
+    <string name="setting_edit_password_success">Sprememba je uspela</string><!-- 修改成功 -->
+    <string name="setting_low_temp_model">Način nizke temperature</string><!--低温模式-->
+    <string name="setting_portrait_outline">Portretni oris</string><!--人像轮廓-->
+    <string name="setting_current_correct_value">Trenutna korekcijska vrednost:</string><!--当前补正值-->
+    <string name="setting_correct_temperature">Pravilna temperatura</string>
+    <string name="setting_broadcast_f">Omogoči Fahrenheit</string>
+
+    <string name="setting_show_thermal_face_frame">Omogoči toplotno slikanje okvirja za obraz</string>
+    <string name="setting_show_black_body">Omogoči korekcijski okvir BlackBody</string>
+    <string name="setting_multi_track">Omogoči večkratno odkrivanje</string>
+    <string name="setting_save_success">Shrani popolno</string>
+    <string name="setting_save_succ_please_restart">Shrani popolno, znova zaženite APP</string>
+    <string name="setting_please_set_ip">Prosimo, nastavite IP naslov</string>
+    <string name="setting_please_set_res">Nastavite servisna vrata</string>
+    <string name="setting_please_set_xmpp">Nastavite komunikacijska vrata</string>
+    <string name="setting_res_port_error">Oblika servisnih vrat ni pravilna,prosimo preverite</string>
+    <string name="setting_xmpp_port_error">Oblika komunikacijskih vrat ni pravilna,prosimo preverite</string>
+    <string name="setting_switch_to_certificates">Preklopite na certificirano merjenje temperature</string><!----> 
+    <string name="setting_switch_to_temperature_check_in">Preklopite na prisotnost na merjenje temperature</string><!---->
+    <string name="setting_switch_function">Funkcijsko stikalo</string><!---->
+    <string name="setting_switch_tip1">Ali ste prepričani, da ste prešli na certificirano merjenje temperature？</string><!---->
+    <string name="setting_switch_tip2">Ali ste prepričani, da ste prešli na prisotnost na merjenje temperature？</string><!---->
+    <string name="setting_switch_confirm">da</string>
+    <string name="setting_switch_cancel">ne</string>
+
+
+    <!--开关机设置-->
+    <string name="setting_tip_warning_number_reseted">Štetje očiščeno</string>
+    <string name="setting_reset_warning_number">Štetje očiščeno</string>
+    <string name="setting_power_on_off">Časovno stikalo</string>
+    <string name="act_power_title">Časovno stikalo</string>
+    <string name="act_power_power_on_strategy">Strategija zagona</string>
+    <string name="act_power_power_off_strategy">Strategija zaustavitve</string>
+    <string name="act_power_power_on_strategy2">Strategija zagona</string>
+    <string name="act_power_power_off_strategy2">Strategija zaustavitve</string>
+    <string name="act_power_none">Noben</string>
+    <string name="act_power_monday">ponedeljek</string>
+    <string name="act_power_tuesday">torek</string>
+    <string name="act_power_wednesday">sreda</string>
+    <string name="act_power_thursday">četrtek</string>
+    <string name="act_power_friday">petek</string>
+    <string name="act_power_saturday">sobota</string>
+    <string name="act_power_sunday">nedelja</string>
+    <string name="act_power_all_select">vse</string>
+    <string name="act_power_turn_on_time">vključi čas</string>
+    <string name="act_power_turn_off_time">izključi čas</string>
+    <string name="act_power_save">shrani</string>
+    <string name="act_power_set_success">Nastavitev uspešna!</string>
+    <string name="act_power_set_failed_not_check_on">Nastavitev ni uspela. V pravilniku o zagonu izberite datum začetka veljavnosti</string>
+    <string name="act_power_set_failed_not_check_off">Nastavitev ni uspela. V pravilniku o zaustavitvi izberite datum veljavnosti</string>
+
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">Korekcija temperature</string>
+    <string name="act_correct_tips">Izpolnite jih glede na pištolo za merjenje temperature</string>
+    <string name="act_correct_current_value">Trenutna vrednost korekcije:</string>
+    <string name="act_correct_thermal_temp">Temperatura toplotnega slikanja：</string>
+    <string name="act_correct_click_get_temperature">dobite temperaturo</string>
+    <string name="act_correct_thermometer_gun">temperatura pištole termometra：</string>
+    <string name="act_correct_save">shrani</string>
+
+    <!--通用的  -->
+    <string name="base_tip">nasveti</string><!-- 提示 -->
+    <string name="base_ensure">potrdi</string><!--确定  -->
+    <string name="base_cancel">Prekličii</string><!--  取消-->
+    <string name="base_male">moški</string><!--  男-->
+    <string name="base_female">ženska</string><!-- 女 -->
+    <string name="base_people"> </string><!-- 人  ppls-->
+    <string name="base_year">-</string><!-- 年 -->
+    <string name="base_month">-</string><!-- 月 -->
+    <string name="base_day">""</string><!-- 日 -->
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">Vloga za dovoljenje ni uspela</string><!-- 权限申请失败 -->
+    <string name="splash_active_failed">aktivacija zavrnjena</string><!-- 激活失败 -->
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">YB Inteligentna udeležba</string><!--  云标智能考勤--> 
+    <string name="act_wel_bottomTitle">YB Inteligentna udeležba</string><!-- 云标智能考勤 -->
+    <string name="act_wel_error_bywjsrmmo">Ne pozabite vnesti gesla</string><!--  不要忘记输入密码哦-->
+    <string name="act_wel_error_mmclqcxsrb">Geslo je napačno, vnesite ga znova</string><!-- 密码错了，重新输入吧 -->
+    <string name="act_wel_glmm">Upravljanje gesla</string><!--管理密码  -->
+    <string name="act_wel_qsrglmm">Vnesite geslo za upravljanje</string><!--  请输入管理密码--> 
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">Pametna prijava obraza podjetjem omogoča večjo varnost~</string><!-- 智能人脸签到，让企业更放心~-->
+
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">Vpisano</string><!-- 已签到 -->
+    <string name="fment_sign_bl">Pobotati se</string><!--补录  -->
+    <string name="fment_sign_jrqd">Vpisano danes:</string><!-- 今日签到: -->
+    <string name="fment_sign_visitor_name">obiskovalec</string>
+    <string name="fment_sign_company">podjetje：</string>
+    <string name="fment_sign_device_no">ne：</string>
+    <string name="fment_sign_version">vsestransko：</string>
+    <string name="fment_sign_bind_code">Bind koda：</string>
+    <string name="fment_sign_net">omrežje：</string>
+    <string name="fment_sign_total">Skupaj</string>
+    <string name="fment_sign_already">ureditev</string>
+    <!--WebFragment-->
+    <string name="fment_Web_back">nazaj</string><!--  后退-->
+    <string name="fment_Web_refresh">osveži</string><!-- 刷新 -->
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">Sistemske nastavitve</string><!-- 系统设置 -->
+    <string name="act_set_xtmm">Sistemsko geslo</string><!-- 系统密码 -->
+    <string name="act_set_qchc">Počisti predpomnilnik</string><!-- 清除缓存 -->
+    <string name="act_set_qcsj">Počisti podatke</string><!--清除数据  -->
+    <string name="act_set_jcsxt">Kamera za zaznavanje</string><!-- 检测摄像头 -->
+    <string name="act_set_sfjx">Zrcaljenje</string><!-- 是否镜像   Mirroring:Yes   No--> 
+    <string name="act_set_wlzt">Stanje omrežjaja</string><!--网络状态  --> 
+    <string name="act_set_gb">zapri</string><!-- 关闭 -->
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">Prosimo vnesite ime oddelka</string><!-- 请输入部门名称 -->  
+    <string name="act_departList_tip_qdscm">Želite potrditi izbris?</string><!-- 确定删除吗？ -->
+    <string name="act_departList_bmlb">Seznam oddelkov</string><!-- 部门列表 -->
+    <string name="act_departList_add">dodaj</string><!-- 新增 -->
+    <string name="act_departList_xh">ne</string><!--  序号-->
+    <string name="act_departList_bmmc">Ime oddelka</string><!-- 部门名称 -->
+    <string name="act_departList_cz">Operacija</string><!-- 操作 -->
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">Prosimo vnesite ime oddelka</string><!--请输入部门名称  --> 
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">sinhroniziraj</string><!-- 同步 -->
+    <string name="lay_loadPop_zlxsxx">Prikaži infomacijo tukaj</string><!-- 这里显示信息 -->
+    <string name="uiUtils_tip_notice">opomin</string><!-- 通知 -->
+    <string name="uiUtils_tip_zzazxgyyqnxdd">Nameščanje povezanih aplikacij, bodite potrpežljivi!</string><!-- 正在安装相关应用，请耐心等待！ --> 
+    <string name="dialog_sync_tbjs">Končaj sinhrono</string><!-- 同步结束 -->
+    <string name="sync_company_1">Dostop do informacij podjetja</string><!-- 获取公司信息 --> 
+    <string name="sync_staff_2">Pridobite podatke o osebju</string><!-- 获取人员信息 -->
+    <string name="sync_database_3">Sinhronizacija baze podatkov</string><!-- 同步数据库 -->
+    <string name="sync_head_4">Prenesite avatar</string><!--  下载头像-->
+    <string name="sync_face_5">Sinhroniziraj bazo obrazov</string><!--同步人脸库  -->
+    <string name="sync_get_failed">Ni bilo mogoče dobiti, poskusi ponovno kmalu</string><!-- 获取失败，即将重试 -->
+    <string name="sync_not_bind">Naprava ni vezana</string><!--  设备未绑定-->
+    <string name="sync_data_resolve_failed">Razrešite podatkovno polje</string>
+    <string name="sync_not_depart">V podjetju ni ustanovljen noben oddelek</string><!--  公司未设置部门-->
+    <string name="sync_params_error">Napaka parametra</string><!--  参数错误-->
+    <string name="edit_not_edit">Ni sprememb</string><!-- 未做任何修改 -->
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">Zapustite aplikacijo?</string><!-- 是否退出应用？ --> 
+    <string name="restartAPPTool_ycdht">Skrij v ozadje</string><!--  隐藏到后台-->
+    <string name="restartAPPTool_exit">Prenehati</string><!--  退出-->
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">Trenutna različica je zadnja različica</string><!-- 当前版本为最新版本 -->
+
+    <string name="updateManager_wlljsbqjcwl">Omrežna povezava ni uspela. Preverite omrežje</string><!--网络连接失败，请检查网络  --> 
+    <string name="updateManager_xzsb">prenos ni uspel</string><!--下载失败  -->
+    <string name="update_version_title">Informacije o različici</string> 
+    <string name="update_lable_new">zadnja različica：</string>
+    <string name="update_lable_current">current version：</string>
+
+    <string name="update_check_failed">Posodobitve ni bilo mogoče zaznati. Preverite omrežje</string>
+    <string name="update_check_ing">Preverjanje najnovejše različice</string>
+    <string name="update_have_new">Zaznana je bila nova različica. Preverite podrobnosti</string>
+    <string name="update_no_description">Brez podrobnosti</string> 
+
+    <!--其他-->
+    <string name="recognize_failed_notice">zanikano:%s</string><!-- DENIED:%s -->
+    <string name="low_confidence_level">soočeni z nizko stopnjo zaupanja</string><!--face low confidence level  -->
+    <string name="accessibility_description">Storitev pomoči za dostopnost za nadzor gumbov xxx</string><!-- xxx按键监听的无障碍辅助服务 --> 
+    <string name="System_Setting_save_threshold">shrani</string><!--保存  -->
+
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI merjenje temperature</string>
+    <string name="main_permission_failed_multi_thermal">Pridobitev dovoljenja USB ni uspela</string>
+    <string name="main_not_found_usb_multi_thermal">Ciljne naprave ni mogoče najti</string>
+    <string name="main_exception_record_multi_thermal">Nenormalni zapis</string>
+    <string name="main_normal_record_multi_thermal">Zapis o gibanju</string>
+    <string name="main_total_passage_multi_thermal">Številka</string>
+    <string name="main_normal_multi_thermal">normalno</string>
+    <string name="main_error_multi_thermal">nenormalno</string>
+    <string name="main_company_multi_thermal">osebje</string>
+    <string name="main_visitor_multi_thermal">Obisk</string>
+    <string name="main_real_detection">Spremljanje</string><!--实时监测-->
+    <string name="main_data_total">Statistični podatki</string><!--数据统计-->
+    <string name="system_net_status_multi_thermal">omrežje:</string>
+    <string name="system_record_multi_thermal">Zapis temperature</string>
+    <string name="record_index_multi_thermal">Kazalo</string>
+    <string name="record_date_multi_thermal">Datum</string>
+    <string name="record_pass_time_multi_thermal">Čas</string>
+    <string name="record_temper_multi_thermal">Temperatura</string>
+    <string name="record_head_multi_thermal"> Portret glave</string>
+    <string name="record_hot_multi_thermal">Toplotno slikanje</string>
+    <string name="setting_black_body_rect_multi_thermal">Umerjanje območja zaznavanja Blackbody</string>
+    <string name="setting_save_failed_multi_thermal">ni spremenjeno</string>
+    <string name="setting_save_success_multi_thermal">Uspešno shranjeno</string>
+    <string name="setting_save_multi_thermal">shrani</string> 
+    <string name="setting_please_correct_multi_thermal">(Prosimo vnesite razliko glede na temperaturo, izmerjeno s pištolo in temperaturo termičnega slikanja）</string> 
+    <string name="record_export_multi_thermal">Izvoz</string>
+
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">Način primerjave prič</string>
+    <string name="act_certificates_idcard_thermal">Preverjanje + temperatura (32 * 32)</string>
+    <string name="act_certificates_idcard_thermal_16_4">Preverjanje + temperatura (16*4)</string>
+    <string name="act_certificates_idcard_infared">Preverjanje ID-ja + način merjenja temperature infrardeče</string>
+    <string name="act_certificates_title">AI Sistem za preverjanje pristnosti</string>  
+    <string name="act_certificates_please_get_hat">Prosim, snemite očala in klobuk</string>
+    <string name="act_certificates_no_idcard_temper">Nelicencirano merjenje temperature</string>
+    <string name="act_certificates_face_picture">Fotografije obraza</string>
+    <string name="act_certificates_card_picture">ID fotografija</string>
+    <string name="act_certificates_name">Ime:</string>
+    <string name="act_certificates_depart">Oddelek:</string>
+    <string name="act_certificates_native_place">Domači kraj:</string>
+    <string name="act_certificates_temperature">Temperatura：</string>
+    <string name="act_certificates_status">Država：</string>
+    <string name="act_certificates_health_code">H-Koda</string> 
+    <string name="act_certificates_can_go">lahko gre mimo</string>
+    <string name="act_certificates_not_pass">ne more mimo</string>
+    <string name="act_certificates_ensure_pass">Potrdi</string>
+    <string name="act_certificates_please_set_id_card">Prosimo, da svojo kartico ic postavite na območje in povlečete</string>
+    <string name="act_certificates_testing">Prosimo počakajte...</string> 
+    <string name="act_certificates_please_wait">Prosimo počakajte...</string> 
+    <string name="act_certificates_idcard_failed">branje kartice ni uspelo. Poskusite znova</string>
+    <string name="act_certificates_please_look_camera">Prosimo poglejte naravnost v kamero</string>
+    <string name="act_certificates_verify_ing">Potrjeno</string>
+    <string name="act_certificates_verify_pass">Preverjanje s strani，</string>
+    <string name="act_certificates_verify_not_pass">Ljudje se ne ujemajo，</string> 
+    <string name="act_certificates_temper_normal">Temperatura je normalna</string>
+    <string name="act_certificates_temper_warning">Temperaturne anomalije</string>
+    <string name="act_certificates_normal">Normalano</string>
+    <string name="act_certificates_warning">Nenormalano</string>
+    <string name="act_certificates_similar">podobnost</string>
+    <string name="act_certificates_please_pass">，Prosim, prehod</string>
+    <string name="act_certificates_please_can_pass">lahko greste mimo</string>
+    <string name="act_certificates_please_not_pass">ne morete mimo</string>
+    <string name="act_certificates_visitor">Obiskovalci</string>
+    <string name="act_certificates_temper">temperatura：</string>
+    <string name="act_certificates_temper_failed">Okvara pri merjenju temperature</string>
+    <string name="act_certificates_green">Zelena</string>
+    <string name="act_certificates_yellow">Rumena</string>
+    <string name="act_certificates_no_printer">Tiskalnik ni zaznan</string>
+    <string name="act_certificates_warning_printer">Opozorilo: tiskalnik</string>
+    <string name="act_certificates_printer_name">Ime：</string>
+    <string name="act_certificates_printer_depart">Oddelek：</string>
+    <string name="act_certificates_printer_native_place">Domači kraj：</string>
+    <string name="act_certificates_printer_temper">Temperatura：</string>
+    <string name="act_certificates_printer_error">  (nenormalna)</string>
+    <string name="act_certificates_printer_time">Čas：</string>
+    <string name="act_certificates_printer_white">Beli seznam：</string>
+    <string name="act_certificates_printer_white_yes">Da</string>
+    <string name="act_certificates_printer_white_no">Ne</string>
+    <string name="act_certificates_printer_tips">Prosimo, da imate natisnjeni bon za preverjanje</string><!--Please keep the printed voucher for checking--> 
+    <string name="act_certificates_card_read_failed">Branje certifikata ni uspelo. Pripnite kartico</string>
+    <string name="act_certificates_verifing">Preverjanje v teku, obrnite obraz proti kamer</string>
+    <string name="act_certficates_check_outtime">Zaznana časovna omejitev, pripnite kartico</string>
+    <string name="act_certficates_check_failed">Meritev temperature ni uspela. Prosimo, pripnite kartico</string>
+    <string name="act_certficates_feature_outtime">Potekel je čas za ekstrakcijo, prosimo pripnite si kartico</string>
+    <string name="act_certificates_verify_pass_yes">Preverjanje s strani</string>
+    <string name="act_certificates_verify_pass_no">Ni zadetkov</string>
+    <string name="act_certificates_verify_temper_yes">Temperatura je normalna</string>
+    <string name="act_certificates_verify_temper_no">Temperaturne anomalije</string>
+    <string name="act_certificates_verify_passage_no">Brez prometnih poti</string>
+    <string name="act_certificates_verify_passage_yes">Prosim pojdite mimo</string> 
+    <string name="act_certificates_verify_passage_ensure">Prosimo, potrdite prehod.</string>
+    <string name="act_certificates_speech_pass_yes">Temperatura je normalna prosimo pojdite mimo</string> 
+    <string name="act_certificates_speech_pass_no">Telesna temperatura je nenormalna, ne prehajajte</string>
+    <string name="act_certificates_get_info_failed">Ni bilo mogoče dobiti informacij, poskusite znova</string>
+    <string name="act_certificates_check_outtime_scan_code">Zaznana časovna omejitev, prosim skenirajte znova</string>
+    <string name="act_certificates_temper_outtime_scan_code">Temperatura je izven časa, prosimo, ponovno skenirajte kodo</string>
+    <string name="act_certificates_white_list">Beli seznam</string>
+    <string name="act_certificates_verify_record">Zapis</string>
+    <string name="act_certificates_user_manage">Upravljanje</string>
+    <string name="certificates_record_title">Preverite zapis</string>
+    <string name="certificates_record_export_all">Izvozi vse</string>
+    <string name="certificates_record_index">Kazalo</string>
+    <string name="certificates_record_time">Ćas</string>
+    <string name="certificates_record_name">Ime</string>
+    <string name="certificates_record_native">Domači kraj</string>
+    <string name="certificates_record_depart">Oddelek</string>
+    <string name="certificates_record_temper">Temperatura</string>
+    <string name="certificates_record_similar">Podoben</string>
+    <string name="certificates_record_id_photo">Id fotografija</string>
+    <string name="certificates_record_face_photo">Fotografija obraza</string>
+    <string name="certificates_user_list_card_number">Kartica št</string>
+    <string name="act_certificates_someone">Termično nekdo</string>
+    <string name="act_certificates_noone">Termično nihče</string>
+    <string name="certificates_add_user_card_tips">Povlecite ali vnesite številko kartice</string>
+    <string name="certificates_setting_printer_enable">Omogoči tiskalnik USB</string>
+    <string name="certificates_setting_id_card_mode">Omogoči način IC kartice</string>
+    <string name="act_certificates_tech_support">Beijing YUNBIAO tehnična podpora</string>
+    <string name="act_certificates_no_this_person">Ni te osebe, najprej vnesite podatke o številki kartice</string>
+
+    <!--安检门-->
+    <string name="safety_main_title">AI merjenje temperature</string>
+    <string name="safety_main_real_detection">Spremljanje</string>
+    <string name="safety_main_temer_area">Temperatura</string>
+    <string name="safety_main_warning_number">Nenormalana</string>
+    <string name="safety_main_device_no">Naprava št.</string>
+    <string name="safety_black_body_size_large">Velik</string>
+    <string name="safety_black_body_size_Middle">Srednji</string>
+    <string name="safety_black_body_size_Small">Majhen</string>
+    <string name="safety_black_body_size_Smaller">Manjši</string>
+    <string name="safety_balck_body_size">Velikost temperaturnega območja</string>
+    <string name="safety_black_body_enable">Vklopite popravek BlackBody</string><!--开启黑体矫正-->
+    <string name="safety_temperature_threshold">Temperaturni prag</string><!--取温阈值-->
+    <string name="safety_temperature_frame_enable">okvir za merjenje temperature</string><!--开启测温框-->
+    <string name="safety_calibration_main">Umerjanje</string><!--校准-->
+    <string name="safety_measure_main">merjenje:</string><!--测温:-->
+    <string name="safety_correct_main">pravilno:</string><!--校准:-->
+    <string name="safety_temper_main">temperatura:</string><!--体温:-->
+    <string name="safety_auto_calibration_setting">Avtomatsko umerjanje</string>
+    <string name="safety_correct_temper_tip">Prosimo, usmerite obraz v okvir za merjenje temperature. Merjenje temperature se bo kmalu začelo</string> 
+    <string name="safety_correct_temper_ing">Merjenje temperature</string><!--正在测温-->
+    <string name="safety_correct_temper_completion">Termometrična izvedba</string><!--测温结束-->
+    <string name="safety_save_completion">Umerjenje zaključeno</string><!--保存-->
+    <string name="safety_save_cancel">Prekliči umerjanje</string><!--保存-->
+</resources>

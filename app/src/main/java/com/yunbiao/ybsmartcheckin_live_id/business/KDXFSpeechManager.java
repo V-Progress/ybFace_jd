@@ -71,6 +71,10 @@ public class KDXFSpeechManager {
         return instance;
     }
 
+    private String mCurrentLanguage = "";
+    private int mNormalSpeech = -1;
+    private int mWarningSpeech = -1;
+
     private KDXFSpeechManager() {
         AudioAttributes.Builder ab = new AudioAttributes.Builder();
         ab.setLegacyStreamType(AudioManager.STREAM_MUSIC);
@@ -79,11 +83,54 @@ public class KDXFSpeechManager {
         mVoiceId = mSoundPool.load(APP.getContext(), R.raw.warning_ring, 1);
         mPassId = mSoundPool.load(APP.getContext(), R.raw.pass, 1);
         mDingDongId = mSoundPool.load(APP.getContext(),R.raw.dingdong,1);
-        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                soundPoolLoadCompleted = true;
-                Log.e(TAG, "onLoadComplete: 提示音加载结束：" + sampleId + "，状态：" + status);
+
+        if(TextUtils.equals("sl",getCurrentLanguage())){
+            mNormalSpeech = mSoundPool.load(APP.getContext(),R.raw.normal_speech,1);
+            mWarningSpeech = mSoundPool.load(APP.getContext(),R.raw.warning_speech,1);
+        }
+
+        mSoundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> soundPoolLoadCompleted = true);
+    }
+
+    public String getCurrentLanguage(){
+        if(TextUtils.isEmpty(mCurrentLanguage)){
+            mCurrentLanguage = Locale.getDefault().getLanguage();
+        }
+        return mCurrentLanguage;
+    }
+
+    public void playNormalSound(){
+        if(mSoundPool == null || mNormalSpeech == -1){
+            return;
+        }
+        mSoundPool.play(mNormalSpeech, 1, 1, 1, 0, 1);
+    }
+
+    public void playWarningSound(){
+        if(mSoundPool == null || mWarningSpeech == -1){
+            return;
+        }
+        mSoundPool.play(mWarningSpeech, 1, 1, 1, 0, 1);
+    }
+
+    private MediaPlayer mediaPlayer;
+    private boolean isApprochSoundPlaying = false;
+    public void playApprochSound(Runnable runnable){
+        if(isApprochSoundPlaying){
+            return;
+        }
+        isApprochSoundPlaying = true;
+        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        mediaPlayer = MediaPlayer.create(APP.getContext(), R.raw.please_approch);
+        mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(mp -> {
+            isApprochSoundPlaying = false;
+            if(runnable != null){
+                runnable.run();
             }
         });
     }
@@ -149,7 +196,8 @@ public class KDXFSpeechManager {
     private void playNormalAddCallback(int queueMode, final String message, final Runnable runnable) {
         if ((mTTSSupport != TextToSpeech.LANG_AVAILABLE)
                 && (mTTSSupport != TextToSpeech.LANG_COUNTRY_AVAILABLE)) {
-            playPassRing();
+//            playPassRing();
+            Log.e(TAG, "playNormalAddCallback: 当前语言不支持：" + getCurrentLanguage());
             return;
         }
 

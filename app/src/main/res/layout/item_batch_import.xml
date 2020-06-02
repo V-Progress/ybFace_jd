@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_height="wrap_content">
+    <TextView
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="姓名"
+        android:id="@+id/tv_name"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_depart"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="部门"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_sex"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="性别"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_position"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="职位"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_head"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="头像"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="80dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_checked"
+        android:button="@drawable/selector_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
