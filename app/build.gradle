@@ -182,6 +182,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name6", "@mipmap/scan_temp", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*韩国 测温安检门*/
+        flavor(HG_SC, "7",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
+                "@string/yb_safety_chceck", "@mipmap/icon_logo4", "5cbe87a60cafb210460006b3", "HG_SC",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8

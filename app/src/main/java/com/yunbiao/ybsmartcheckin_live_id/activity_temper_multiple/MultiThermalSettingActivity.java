@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.hardware.Camera;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 
 import java.util.ArrayList;
 
@@ -51,7 +54,13 @@ public class MultiThermalSettingActivity extends BaseActivity {
     @BindView(R.id.sw_privacy_mode)
     Switch swPrivacyMode;
 
+    @BindView(R.id.sv_multi_setting)
+    ScrollView svMultiSetting;
+
     private ImageView ivHotImage;
+
+    private boolean is1280800 = false;
+    private View rlCorrectArea;
 
     @Override
     protected int getPortraitLayout() {
@@ -60,6 +69,10 @@ public class MultiThermalSettingActivity extends BaseActivity {
 
     @Override
     protected int getLandscapeLayout() {
+        if (Utils.getWinWidth(this) == 1280 && Utils.getWinHight(this) == 800) {
+            is1280800 = true;
+            return R.layout.activity_multi_thermal_setting_1280800;
+        }
         return R.layout.activity_multi_thermal_setting;
     }
 
@@ -354,12 +367,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
 
     public void setBlackBody(View view) {
         ivHotImage = findViewById(R.id.iv_hot_image);
-        View rlCorrectArea = findViewById(R.id.rl_correct_area);
+        rlCorrectArea = findViewById(R.id.rl_correct_area);
         if (rlCorrectArea.isShown()) {
+            if (is1280800) {
+                svMultiSetting.setVisibility(View.VISIBLE);
+            }
             rlCorrectArea.setVisibility(View.GONE);
             handler.removeCallbacks(runnable);
             TemperatureModule.getIns().closeHotImageK6080();
         } else {
+            if (is1280800) {
+                svMultiSetting.setVisibility(View.GONE);
+            }
             rlCorrectArea.setVisibility(View.VISIBLE);
             handler.removeCallbacks(runnable);
             handler.postDelayed(runnable, 1000);
@@ -392,6 +411,11 @@ public class MultiThermalSettingActivity extends BaseActivity {
         L.e("MultiThermalSettingActivity", "saveRect:保存的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
 
         UIUtils.showShort(this, getResources().getString(R.string.setting_save_success_multi_thermal));
+
+        if (is1280800 && rlCorrectArea != null) {
+            svMultiSetting.setVisibility(View.VISIBLE);
+            rlCorrectArea.setVisibility(View.GONE);
+        }
     }
 
     private Rect getCacheRect() {

@@ -269,7 +269,7 @@ public class FaceView extends FrameLayout {
             temperTimeMap.clear();
         } else {
             timeMillis = System.currentTimeMillis();
-            if (!isMultiCallback) {
+            if (true) {
                 idList.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     int faceId = faceIndexInfo.getFaceId();

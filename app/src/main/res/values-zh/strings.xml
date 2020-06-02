@@ -326,6 +326,7 @@
     <string name="setting_portrait_outline">人像轮廓</string>
     <string name="setting_default_welcome_tip">欢迎使用 A I 智能考勤系统</string>
     <string name="setting_correct_temperature">矫正温度</string>
+    <string name="setting_default_welcome_tip4">欢迎使用大通量体温筛查系统</string>
     <string name="setting_broadcast_f">播报华氏度</string>
 
     <string name="setting_save_success">保存成功</string>
@@ -636,6 +637,6 @@
     <string name="safety_auto_calibration_setting">自动校准</string>
     <string name="safety_correct_temper_tip">请将人脸对准测温框，即将开始测温</string>
     <string name="safety_correct_temper_completion">测温结束</string><!--測溫完成-->
-    <string name="safety_save_completion">校準完成</string><!--矯正完成-->
+    <string name="safety_save_completion">校准完成</string><!--矯正完成-->
     <string name="safety_save_cancel">取消校准</string><!--保存-->
 </resources>
