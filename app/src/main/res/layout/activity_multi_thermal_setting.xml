@@ -9,6 +9,13 @@
     android:gravity="center"
     android:focusableInTouchMode="true">
 
+    <ScrollView
+        android:id="@+id/sv_multi_setting"
+        android:layout_width="1400dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
     <LinearLayout
         android:background="@drawable/selector_btn_take_photo"
         android:orientation="vertical"
@@ -613,6 +620,8 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:visibility="gone"
