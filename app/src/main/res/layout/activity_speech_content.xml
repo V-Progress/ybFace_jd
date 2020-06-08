@@ -103,39 +103,45 @@
                 <LinearLayout
                     style="@style/setting_text_child"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
                     <TextView
                         style="@style/setting_text"
                         android:text="@string/setting_welcome_speech" />
 
-                    <EditText
-                        android:enabled="@{speechContent.welcomeTextEnabled}"
-                        android:text="@{speechContent.welcomeText}"
-                        android:onTextChanged="@{actionPresenter::onWelcomTextChanged}"
-                        android:maxLines="3"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="20dp"
-                        android:textColorHint="@color/gray_low"
-                        android:textColor="@color/white"
-                        android:background="@drawable/shape_system_name"
-                        android:layout_marginLeft="10dp"
-                        android:singleLine="false"
-                        android:scrollHorizontally="true"
-                        android:id="@+id/edt_welcome_tips"
-                        android:layout_width="400dp"
-                        android:inputType="text|textMultiLine"
-                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:enabled="@{speechContent.welcomeTextEnabled}"
+                            android:text="@{speechContent.welcomeText}"
+                            android:onTextChanged="@{actionPresenter::onWelcomTextChanged}"
+                            android:maxLines="3"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="20dp"
+                            android:textColorHint="@color/gray_low"
+                            android:textColor="@color/white"
+                            android:background="@drawable/shape_system_name"
+                            android:singleLine="false"
+                            android:scrollHorizontally="true"
+                            android:id="@+id/edt_welcome_tips"
+                            android:layout_width="400dp"
+                            android:inputType="text|textMultiLine"
+                            android:layout_height="wrap_content" />
 
-                    <Switch
-                        style="@style/setting_text"
-                        android:checked="@{speechContent.welcomeTextEnabled}"
-                        android:onCheckedChanged="@{actionPresenter::onWelcomeEnableChanged}"
-                        android:layout_marginLeft="10dp"
-                        android:id="@+id/sw_welcome_enable"
-                        android:text="@string/speech_setting_open_or_close"
-                        android:switchPadding="10dp"/>
+                        <Switch
+                            style="@style/setting_text"
+                            android:checked="@{speechContent.welcomeTextEnabled}"
+                            android:onCheckedChanged="@{actionPresenter::onWelcomeEnableChanged}"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/sw_welcome_enable"
+                            android:text="@string/speech_setting_open_or_close"
+                            android:switchPadding="10dp"/>
+                    </LinearLayout>
                 </LinearLayout>
                 <!--靠近提示，间隔时间-->
 
@@ -180,37 +186,40 @@
                     android:layout_height="match_parent">
 
                     <LinearLayout
-                        android:visibility="@{speechContent.showDetaile ? View.VISIBLE : View.GONE}"
                         style="@style/setting_text_child"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
                         <TextView
                             android:text="@string/temper_tips_close"
                             style="@style/setting_text"/>
-                        <EditText
-                            android:enabled="@{speechContent.distanceTipEnabled}"
-                            android:layout_marginLeft="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:paddingRight="20dp"
-                            android:paddingLeft="10dp"
+                        <LinearLayout
                             android:gravity="center_vertical"
-                            android:textColor="@color/white"
-                            android:background="@drawable/shape_system_name"
-                            android:text="@{speechContent.distanceTip}"
-                            android:onTextChanged="@{actionPresenter::onDistanceTextChanged}"
-                            android:id="@+id/edt_please_close"
-                            android:layout_width="400dp"
-                            android:layout_height="wrap_content"/>
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:enabled="@{speechContent.distanceTipEnabled}"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/white"
+                                android:background="@drawable/shape_system_name"
+                                android:text="@{speechContent.distanceTip}"
+                                android:onTextChanged="@{actionPresenter::onDistanceTextChanged}"
+                                android:id="@+id/edt_please_close"
+                                android:layout_width="400dp"
+                                android:layout_height="wrap_content"/>
 
-                        <Switch
-                            style="@style/setting_text"
-                            android:checked="@{speechContent.distanceTipEnabled}"
-                            android:onCheckedChanged="@{actionPresenter::onDistanceEnableChanged}"
-                            android:layout_marginLeft="10dp"
-                            android:id="@+id/sw_distance_enable"
-                            android:text="@string/speech_setting_open_or_close"
-                            android:switchPadding="10dp"/>
+                            <Switch
+                                style="@style/setting_text"
+                                android:checked="@{speechContent.distanceTipEnabled}"
+                                android:onCheckedChanged="@{actionPresenter::onDistanceEnableChanged}"
+                                android:layout_marginLeft="10dp"
+                                android:id="@+id/sw_distance_enable"
+                                android:text="@string/speech_setting_open_or_close"
+                                android:switchPadding="10dp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <!--口罩提示，间隔时间-->
@@ -256,34 +265,40 @@
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
                                 android:text="@string/setting_normal_speech_content"
                                 style="@style/setting_text"/>
-                            <EditText
-                                android:enabled="@{speechContent.normalEnabled}"
-                                android:layout_marginLeft="10dp"
-                                android:paddingTop="5dp"
-                                android:paddingBottom="5dp"
-                                android:paddingRight="20dp"
+                            <LinearLayout
                                 android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:textColor="@color/white"
-                                android:background="@drawable/shape_system_name"
-                                android:text="@{speechContent.normalContent}"
-                                android:onTextChanged="@{actionPresenter::onNormalTextChanged}"
-                                android:id="@+id/edt_content_normal"
-                                android:layout_width="400dp"
-                                android:layout_height="wrap_content"/>
-                            <Switch
-                                style="@style/setting_text"
-                                android:checked="@{speechContent.normalEnabled}"
-                                android:onCheckedChanged="@{actionPresenter::onNormalEnableChanged}"
-                                android:layout_marginLeft="10dp"
-                                android:text="@string/speech_setting_open_or_close"
-                                android:switchPadding="10dp"/>
+                                android:layout_marginTop="10dp"
+                                android:layout_width="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_height="wrap_content">
+                                <EditText
+                                    android:enabled="@{speechContent.normalEnabled}"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingRight="20dp"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="10dp"
+                                    android:textColor="@color/white"
+                                    android:background="@drawable/shape_system_name"
+                                    android:text="@{speechContent.normalContent}"
+                                    android:onTextChanged="@{actionPresenter::onNormalTextChanged}"
+                                    android:id="@+id/edt_content_normal"
+                                    android:layout_width="400dp"
+                                    android:layout_height="wrap_content"/>
+                                <Switch
+                                    style="@style/setting_text"
+                                    android:checked="@{speechContent.normalEnabled}"
+                                    android:onCheckedChanged="@{actionPresenter::onNormalEnableChanged}"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="@string/speech_setting_open_or_close"
+                                    android:switchPadding="10dp"/>
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -333,7 +348,7 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
                         <LinearLayout
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
@@ -341,28 +356,33 @@
                                 android:text="@string/setting_warning_speech_content"
                                 style="@style/setting_text"/>
 
-                            <EditText
-                                android:enabled="@{speechContent.warningEnabled}"
-                                android:layout_marginLeft="10dp"
-                                android:paddingTop="5dp"
-                                android:paddingBottom="5dp"
-                                android:paddingRight="20dp"
+                            <LinearLayout
                                 android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:textColor="@color/white"
-                                android:background="@drawable/shape_system_name"
-                                android:text="@{speechContent.warningContent}"
-                                android:onTextChanged="@{actionPresenter::onWarningTextChanged}"
-                                android:id="@+id/edt_content_warning"
-                                android:layout_width="400dp"
-                                android:layout_height="wrap_content"/>
-                            <Switch
-                                style="@style/setting_text"
-                                android:checked="@{speechContent.warningEnabled}"
-                                android:onCheckedChanged="@{actionPresenter::onWarningEnableChanged}"
-                                android:layout_marginLeft="10dp"
-                                android:text="@string/speech_setting_open_or_close"
-                                android:switchPadding="10dp"/>
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <EditText
+                                    android:enabled="@{speechContent.warningEnabled}"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="10dp"
+                                    android:textColor="@color/white"
+                                    android:background="@drawable/shape_system_name"
+                                    android:text="@{speechContent.warningContent}"
+                                    android:onTextChanged="@{actionPresenter::onWarningTextChanged}"
+                                    android:id="@+id/edt_content_warning"
+                                    android:layout_width="400dp"
+                                    android:layout_height="wrap_content"/>
+                                <Switch
+                                    style="@style/setting_text"
+                                    android:checked="@{speechContent.warningEnabled}"
+                                    android:onCheckedChanged="@{actionPresenter::onWarningEnableChanged}"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="@string/speech_setting_open_or_close"
+                                    android:switchPadding="10dp"/>
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -457,49 +477,64 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:paddingRight="10dp"
                         style="@style/setting_text_child"
                         android:gravity="center_vertical"
                         android:orientation="vertical">
-                        <LinearLayout
-                            android:gravity="center_vertical"
+                        <RelativeLayout
                             android:layout_marginTop="15dp"
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="@string/speech_setting_welcome_exmaple"
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.welcomeTextExample}"
-                                style="@style/setting_text"/>
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onWelcomePlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_marginTop="10dp"
+                        </RelativeLayout>
+
+                        <TextView
+                            android:textSize="20dp"
+                            android:text="@{speechContent.welcomeTextExample}"
+                            style="@style/setting_text"/>
+
+                        <View
+                            android:background="#C3FFFFFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <RelativeLayout
+                            android:layout_marginTop="15dp"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="@string/speech_setting_distance_exmaple"
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.distanceTipExample}"
-                                style="@style/setting_text"/>
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onClosePlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
-                        <LinearLayout
+                        </RelativeLayout>
+
+                        <TextView
+                            android:textSize="20dp"
+                            android:text="@{speechContent.distanceTipExample}"
+                            style="@style/setting_text"/>
+
+                        <View
+                            android:background="#C3FFFFFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <RelativeLayout
                             android:visibility="gone"
                             android:layout_marginTop="10dp"
                             android:gravity="center_vertical"
@@ -508,19 +543,28 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="口罩提示示例："
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.maskTipExample}"
-                                style="@style/setting_text"/>
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onMaskPlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
-                        <LinearLayout
+                        </RelativeLayout>
+                        <TextView
+                            android:visibility="gone"
+                            android:textSize="20dp"
+                            android:text="@{speechContent.maskTipExample}"
+                            style="@style/setting_text"/>
+                        <View
+                            android:visibility="gone"
+                            android:background="#C3FFFFFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <RelativeLayout
                             android:visibility="gone"
                             android:layout_marginTop="10dp"
                             android:gravity="center_vertical"
@@ -529,58 +573,76 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="对框提示示例："
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.frameTipExample}"
-                                style="@style/setting_text"/>
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onFramePlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_marginTop="10dp"
+                        </RelativeLayout>
+                        <TextView
+                            android:visibility="gone"
+                            android:textSize="20dp"
+                            android:text="@{speechContent.frameTipExample}"
+                            style="@style/setting_text"/>
+                        <View
+                            android:visibility="gone"
+                            android:background="#C3FFFFFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <RelativeLayout
+                            android:layout_marginTop="15dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="@string/speech_setting_normal_exmaple"
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.normalExample}"
-                                style="@style/setting_text"/>
-
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onNormalPlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_marginTop="10dp"
+                        </RelativeLayout>
+                        <TextView
+                            android:textSize="20dp"
+                            android:text="@{speechContent.normalExample}"
+                            style="@style/setting_text"/>
+                        <View
+                            android:background="#C3FFFFFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <RelativeLayout
+                            android:layout_marginTop="15dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:text="@string/speech_setting_warning_exmaple"
                                 style="@style/setting_text"/>
-                            <TextView
-                                android:textSize="20dp"
-                                android:text="@{speechContent.warningExample}"
-                                style="@style/setting_text"/>
-
                             <Button
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentRight="true"
                                 android:onClick="@{actionPresenter::onWarningPlay}"
                                 android:layout_marginLeft="10dp"
                                 style="@style/style_setting_input_save_button"
                                 android:text="@string/speech_setting_audition" />
-                        </LinearLayout>
+                        </RelativeLayout>
+                        <TextView
+                            android:textSize="20dp"
+                            android:text="@{speechContent.warningExample}"
+                            style="@style/setting_text"/>
+
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
