@@ -323,6 +323,7 @@
     <string name="setting_current_correct_value">当前矫正值：</string>
     <string name="setting_low_temp_model">低温模式</string>
     <string name="setting_portrait_outline">人像轮廓</string>
+    <string name="setting_default_welcome_tip4">欢迎使用 A I 高通量体温筛查系统</string>
     <string name="setting_default_welcome_tip">欢迎使用 A I 智能考勤系统</string>
     <string name="setting_correct_temperature">矫正温度</string>
     <string name="setting_broadcast_f">播报华氏度</string>

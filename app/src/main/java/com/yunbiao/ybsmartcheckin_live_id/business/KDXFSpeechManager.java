@@ -77,8 +77,8 @@ public class KDXFSpeechManager {
 
     private KDXFSpeechManager() {
         AudioAttributes.Builder ab = new AudioAttributes.Builder();
-        ab.setLegacyStreamType(AudioManager.STREAM_MUSIC);
-        ab.setUsage(AudioAttributes.USAGE_MEDIA);
+        ab.setLegacyStreamType(AudioManager.STREAM_ALARM);
+        ab.setUsage(AudioAttributes.USAGE_ALARM);
         mSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(ab.build()).build();
         mVoiceId = mSoundPool.load(APP.getContext(), R.raw.warning_ring, 1);
         mPassId = mSoundPool.load(APP.getContext(), R.raw.pass, 1);
@@ -317,13 +317,7 @@ public class KDXFSpeechManager {
     }
 
     public void playWaningRingNoStop() {
-        /*if (soundPoolLoadCompleted && mVoiceId != -1) {
-            mPlayId = mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
-        }*/
-        if(mSoundPool == null){
-            return;
-        }
-        mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
+        playWaningRing();
     }
 
     public void stopWarningRing() {
