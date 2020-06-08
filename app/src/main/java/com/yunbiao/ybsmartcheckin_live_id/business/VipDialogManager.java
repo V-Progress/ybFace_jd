@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -93,12 +94,13 @@ public class VipDialogManager {
                 TextView tvSign = vipDialog.findViewById(R.id.tv_sign);
 
                 Glide.with(activity).load(sign.getHeadPath()).asBitmap().into(ivHead);
-                tvName.setText(sign.getName());
                 int type = sign.getType();
                 if (type == -2) {
+                    tvName.setText(sign.getName());
                     tvSign.setTextColor(Color.RED);
                     tvSign.setText("\n" + sign.getAutograph());
                 } else if (type == -1) {
+                    tvName.setText(sign.getName());
                     tvSign.setTextColor(Color.GREEN);
                     long visEntryId = sign.getVisEntryId();
                     String signText = "\n" + sign.getAutograph();
@@ -107,6 +109,9 @@ public class VipDialogManager {
                         signText += "\n访问：" + user.getName();
                     }
                     tvSign.setText(signText);
+                }else if(type == -9){
+                    tvName.setText(APP.getContext().getResources().getString(R.string.System_Visitor));
+                    tvSign.setText("");
                 } else {
                     tvSign.setTextColor(Color.WHITE);
                     int isShowJob = SpUtils.getInt(SpUtils.DISPLAYPOSITION);

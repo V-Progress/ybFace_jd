@@ -260,17 +260,11 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Face recognition attendance</string><!--  人脸识别考勤-->
-    <string name="face_infared_model">Face + Thermal imaging (small)</string><!-- 人脸识别+红外测温模式 -->
-    <string name="infared_only_model">Only Thermal imaging (small)</string><!--  红外测温模式（不考勤）-->
-    <string name="thermal_only_model">Only Thermal imaging (32*32)</string><!-- 热成像测温模式（不考勤） -->
-    <string name="face_thermal_model">Face + Thermal imaging (32*32)</string><!-- 人脸识别+热成像测温模式 -->
-    <string name="thermal_16_4_model">Only Thermal imaging (16*4)</string><!--16*4模块-->
-    <string name="face_thermal_16_4_model">Face + Thermal imaging (16*4)</string><!--16*4模块-->
-    <string name="only_thermal_mlx_16_4_model">Only Thermal imaging（MLX-16*4）</string>
-    <string name="face_thermal_mlx_16_4_model">Face + Thermal imaging（MLX-16*4）</string>
-    <string name="smt_only_thermal">Only Thermal imaging（SMT）</string>
-    <string name="smt_face_thermal">Face + Thermal imaging（SMT）</string>
+    <string name="only_label">Solo</string>
+    <string name="face_label">frequenza</string>
+    <string name="temper_label">Immagini termiche</string>
+    <string name="model_tip">La temperatura misurata non viene misurata durante la frequenza</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">Scegliete almeno un modello</string><!--至少选择一种模式-->
 
     <!--标签-->
     <string name="setting_face_similar_threshold">Face similarity threshold</string><!-- 设置人脸相似度阈值 -->

@@ -254,17 +254,11 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Yüz Tanıma Katılım</string>
-    <string name="infared_only_model">Yalnızca sıcaklık modu (küçük)</string>
-    <string name="face_infared_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (Küçük)</string>
-    <string name="thermal_only_model">Yalnızca sıcaklık modu (HM-32 x 32)</string>
-    <string name="face_thermal_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (HM-32 x 32)</string>
-    <string name="thermal_16_4_model">Yalnızca sıcaklık modu (HM-16 x 4)</string>
-    <string name="face_thermal_16_4_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (HM-16 x 4)</string>
-    <string name="only_thermal_mlx_16_4_model">Yalnızca sıcaklık modu (MLX-16x4)</string>
-    <string name="face_thermal_mlx_16_4_model">Yüz Tanıma ve Sıcaklık Ölçüm Modu (MLX-16 x 4)</string>
-    <string name="smt_only_thermal">Yalnızca sıcaklık modu (SMT)</string>
-    <string name="smt_face_thermal">Yüz Tanıma ve Sıcaklık Ölçüm Modu (SMT)</string>
+    <string name="only_label">Yalnızca</string>
+    <string name="face_label">Udeležba</string>
+    <string name="temper_label">Yüz Tanıma</string>
+    <string name="model_tip">Tek seçimli katılım sırasında sıcaklık ölçümü yok</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">En az bir mod seçin</string><!--至少选择一种模式-->
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">Count cleared</string>

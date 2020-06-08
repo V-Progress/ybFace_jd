@@ -249,7 +249,7 @@ public class SafetyDoubleLightSettingActivity extends BaseActivity {
 
         Button btnSave = findViewById(R.id.btn_save_address);
 
-        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+        if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == Constants.serverModel.YUN) {
             rbYun.setChecked(true);
             setServerInfo(Constants.serverModel.YUN);
         } else {
@@ -306,13 +306,13 @@ public class SafetyDoubleLightSettingActivity extends BaseActivity {
                 }
 
                 if (rbYun.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
-                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
-                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
-                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
                 UIUtils.showTitleTip(SafetyDoubleLightSettingActivity.this, "保存成功,重启APP后生效");
             }
@@ -334,10 +334,10 @@ public class SafetyDoubleLightSettingActivity extends BaseActivity {
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
             edtIp.setEnabled(true);
             edtResPort.setEnabled(true);
             edtXmppPort.setEnabled(true);

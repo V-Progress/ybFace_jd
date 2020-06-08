@@ -95,7 +95,7 @@ public class SettingActivity extends BaseActivity {
     private void initUISetting() {
         String welcomeTips = "";
         if(Constants.FLAVOR_TYPE == FlavorType.YB){
-            welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+            welcomeTips = SpUtils.getStr(Constants.Key.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         }
 
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
@@ -114,17 +114,17 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String inputWelcome = s.toString();
-                SpUtils.saveStr(SpUtils.WELCOM_TIPS, inputWelcome);
+                SpUtils.saveStr(Constants.Key.WELCOM_TIPS, inputWelcome);
             }
         });
 
-        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+        boolean qrCodeEnabled = SpUtils.getBoolean(Constants.Key.QRCODE_ENABLED, Constants.Default.QRCODE_ENABLED);
         Switch swQrCode = findViewById(R.id.sw_qrcode_setting);
         swQrCode.setChecked(qrCodeEnabled);
         swQrCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.QRCODE_ENABLED, isChecked);
+                SpUtils.saveBoolean(Constants.Key.QRCODE_ENABLED, isChecked);
             }
         });
     }
@@ -159,25 +159,25 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initReadCardSetting() {
-        boolean readCardEnabled = SpUtils.getBoolean(SpUtils.READ_CARD_ENABLED, Constants.DEFAULT_READ_CARD_ENABLED);
+        boolean readCardEnabled = SpUtils.getBoolean(Constants.Key.READ_CARD_ENABLED, Constants.Default.READ_CARD_ENABLED);
         Switch swReadCard = findViewById(R.id.sw_readcard_setting);
         swReadCard.setChecked(readCardEnabled);
         swReadCard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.READ_CARD_ENABLED, isChecked);
+                SpUtils.saveBoolean(Constants.Key.READ_CARD_ENABLED, isChecked);
             }
         });
     }
 
     private void initPosterSetting() {
-        boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);
+        boolean isEnabled = SpUtils.getBoolean(Constants.Key.POSTER_ENABLED, Constants.Default.POSTER_ENABLED);
         Switch swPoster = findViewById(R.id.sw_poster_setting);
         swPoster.setChecked(isEnabled);
         swPoster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.POSTER_ENABLED, isChecked);
+                SpUtils.saveBoolean(Constants.Key.POSTER_ENABLED, isChecked);
             }
         });
     }
@@ -202,12 +202,12 @@ public class SettingActivity extends BaseActivity {
 
     private void initLivenessSetting() {
         Switch swLiveness = findViewById(R.id.sw_liveness_setting);
-        boolean liveness = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+        boolean liveness = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
         swLiveness.setChecked(liveness);
         swLiveness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, isChecked);
+                SpUtils.saveBoolean(Constants.Key.LIVENESS_ENABLED, isChecked);
             }
         });
     }
@@ -230,7 +230,7 @@ public class SettingActivity extends BaseActivity {
 
         Button btnSave = findViewById(R.id.btn_save_address);
 
-        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+        if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == Constants.serverModel.YUN) {
             rbYun.setChecked(true);
             setServerInfo(Constants.serverModel.YUN);
         } else {
@@ -271,13 +271,13 @@ public class SettingActivity extends BaseActivity {
                 }
 
                 if (rbYun.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
-                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
-                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
-                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
             }
@@ -299,10 +299,10 @@ public class SettingActivity extends BaseActivity {
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
             edtIp.setEnabled(true);
             edtResPort.setEnabled(true);
             edtXmppPort.setEnabled(true);
@@ -318,12 +318,12 @@ public class SettingActivity extends BaseActivity {
     //初始化人脸弹窗开关
     private void initFaceVipDialogSetting() {
         Switch switchFaceDialog = findViewById(R.id.sw_face_dialog);
-        boolean faceDialog = SpUtils.getBoolean(SpUtils.FACE_DIALOG, false);
+        boolean faceDialog = SpUtils.getBoolean(Constants.Key.FACE_DIALOG, Constants.Default.FACE_DIALOG);
         switchFaceDialog.setChecked(faceDialog);
         switchFaceDialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(SpUtils.FACE_DIALOG, isChecked);
+                SpUtils.saveBoolean(Constants.Key.FACE_DIALOG, isChecked);
             }
         });
 
@@ -336,7 +336,7 @@ public class SettingActivity extends BaseActivity {
 //        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
         //摄像头角度
         Button btnAngle = findViewById(R.id.btn_setAngle);
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE,Constants.Default.CAMERA_ANGLE);
         btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
     }
 
@@ -344,12 +344,12 @@ public class SettingActivity extends BaseActivity {
     private void initFaceRectMirrorSetting() {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
-        final boolean mirror = SpUtils.isMirror();
+        final boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
         cbMirror.setChecked(!mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(!isChecked);
+                SpUtils.saveBoolean(Constants.Key.IS_H_MIRROR,isChecked);
             }
         });
 
@@ -377,7 +377,7 @@ public class SettingActivity extends BaseActivity {
     //初始化继电器设置
     private void initRelayDelay() {
         final EditText edtDelay = findViewById(R.id.edt_delay);
-        int cacheDelay = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
+        int cacheDelay = SpUtils.getIntOrDef(Constants.Key.GPIO_DELAY, Constants.Default.GPIO_DELAY);
         edtDelay.setText(cacheDelay + "");
         edtDelay.addTextChangedListener(new TextWatcher() {
             @Override
@@ -395,7 +395,7 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
                 int delay = Integer.parseInt(s1);
-                SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
+                SpUtils.saveInt(Constants.Key.GPIO_DELAY, delay);
                 UIUtils.showShort(SettingActivity.this, getString(R.string.setting_edit_password_success));
             }
         });
@@ -404,7 +404,7 @@ public class SettingActivity extends BaseActivity {
     //初始化相似度阈值设置
     private void initSimilarSetting() {
         final EditText edtSimilar = findViewById(R.id.edt_similar_threshold);
-        int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        int similar = SpUtils.getIntOrDef(Constants.Key.SIMILAR_THRESHOLD, Constants.Default.SIMILAR_THRESHOLD);
         edtSimilar.setText(similar + "");
 
         findViewById(R.id.btn_set_similar_threshold).setOnClickListener(new View.OnClickListener() {
@@ -426,7 +426,7 @@ public class SettingActivity extends BaseActivity {
                     UIUtils.showTitleTip(SettingActivity.this, "设置成功");
                 }
 
-                SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
+                SpUtils.saveInt(Constants.Key.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
                     if (activity instanceof WelComeActivity) {//普通主页
@@ -541,7 +541,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void setAngle(final View view) {
-        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int anInt = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         if (anInt == 0) {
             anInt = 90;
         } else if (anInt == 90) {
@@ -552,7 +552,7 @@ public class SettingActivity extends BaseActivity {
             anInt = 0;
         }
         ((Button) view).setText(getString(R.string.setting_cam_angle) + ":" + anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
+        SpUtils.saveInt(Constants.Key.CAMERA_ANGLE, anInt);
         EventBus.getDefault().post(new DisplayOrientationEvent());
     }
 

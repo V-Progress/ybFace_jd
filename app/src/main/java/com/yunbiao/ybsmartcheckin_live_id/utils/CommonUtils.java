@@ -507,8 +507,6 @@ public class CommonUtils {
         }
         if (broad_info.contains("lxr")) {//视美泰
             return 5;
-        } else if (broad_info.contains("lxr")) {
-            return 5;
         } else if (broad_info.contains("HARRIS") || broad_info.contains("silence")) {//亿晟
             return 4;
         } else {

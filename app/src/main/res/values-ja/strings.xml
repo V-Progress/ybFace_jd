@@ -35,18 +35,20 @@
     <string name="temper_tips_close">ヒントに近づく</string>
     <string name="setting_normal_speech_content">体温正常</string>
     <string name="setting_warning_speech_content">体温異常</string>
-    <string name="speech_setting_open_or_close">開くかどうか</string>
-    <string name="speech_setting_show_temper">表示温度</string>
-    <string name="speech_setting_temper_location">温度表示位置</string>
-    <string name="speech_setting_location_start">初の</string>
-    <string name="speech_setting_location_center">符号ビット</string>
-    <string name="speech_setting_location_end">尾部</string>
+    <string name="speech_setting_open_or_close">ON/OFF</string>
+
+    <string name="speech_setting_show_temper">Displays the temperature value</string>
+    <string name="speech_setting_temper_location">Temperature display position</string>
+    <string name="speech_setting_location_start">Before</string>
+    <string name="speech_setting_location_center">Sign position</string>
+    <string name="speech_setting_location_end">behind</string>
+
     <string name="speech_setting_alert">温度表示位置#记号使用表示、自動的に補完温度数字を例示(36.5℃)、お守りを一つしか存在#あまりの#符の時、存在する初の基準で、自動削除し、残りの符号</string>
     <string name="speech_setting_welcome_exmaple">歓迎語例：</string>
     <string name="speech_setting_distance_exmaple">距離提示例：</string>
     <string name="speech_setting_normal_exmaple">体温正常例：</string>
     <string name="speech_setting_warning_exmaple">体温異常例：</string>
-    <string name="speech_setting_audition">试听</string>
+    <string name="speech_setting_audition">試し</string>
     <string name="setting_camera_vertical_mirror">縦の枠の鏡像</string>
     <string name="setting_picture_rotation">With the camera</string>
     <string name="setting_local_priority">Local Priority</string>
@@ -135,9 +137,9 @@
     <string name="System_Add">新規従業員</string>
     <string name="System_Record">勤務評定記録</string>
     <string name="System_Setting">システム設定</string>
-    <string name="System_Visitor">訪客</string>
+    <string name="System_Visitor">訪問客</string>
     <string name="System_skin_select">皮膚をとりかえる</string>
-    <string name="System_update">昇級</string>
+    <string name="System_update">アップグレード</string>
     <string name="System_copyright">著作権所有：北京雲標科技有限公司</string>
     <string name="System_Service_offline">オフライン</string>
     <string name="System_online">オンライン</string>
@@ -182,7 +184,7 @@
     <string name="act_editEmploy_kh">ナンバー:</string><!-- 员工编号 -->
     <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
     <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
-    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门:</string>
+    <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;署:</string>
     <string name="act_editEmploy_ygbh">従業員番号:</string>
     <string name="act_editEmploy_zw">職&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
     <string name="act_editEmploy_csrq">誕生日:</string>
@@ -215,14 +217,14 @@
     <!--离线数据-->
     <string name="sign_list_title">オフライン記録</string>
     <string name="sign_list_all_type">全部</string>
-    <string name="sign_list_sent">已发送</string>
+    <string name="sign_list_sent">送信済み</string>
     <string name="sign_list_unsent">未送信</string>
     <string name="sign_list_export">データをエクスポート</string>
     <string name="sign_list_upload">データをアップロード</string>
     <string name="sign_list_filed_index">序号</string>
     <string name="sign_list_filed_time">時間</string>
     <string name="sign_list_filed_name">姓名</string>
-    <string name="sign_list_filed_depart">部门</string>
+    <string name="sign_list_filed_depart">部署</string>
     <string name="sign_list_filed_job">职位</string>
     <string name="sign_list_filed_head">顔写真</string>
     <string name="sign_list_no_data">データがありません</string>
@@ -253,22 +255,16 @@
     <string name="visitor_list_title">訪問者リスト</string>
     <string name="visitor_list_filed_name">姓名</string>
     <string name="visitor_list_filed_time">訪問期間</string>
-    <string name="visitor_list_filed_company">单位</string>
+    <string name="visitor_list_filed_company">所属</string>
     <string name="visitor_list_filed_reason">事由</string>
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">顔の識別勤務</string>
-    <string name="face_infared_model">顔の識別+熱画像（小さい）</string>
-    <string name="infared_only_model">熱画像（小さい）（勤務評定をしない）</string>
-    <string name="thermal_only_model">熱画像モード（32*32）（勤務評定をしない）</string>
-    <string name="face_thermal_model">顔の識別+熱画像（32*32）</string>
-    <string name="thermal_16_4_model">熱画像モード（16*4）（勤務評定をしない）</string>
-    <string name="face_thermal_16_4_model">顔の識別+熱画像（16*4）</string>
-    <string name="only_thermal_mlx_16_4_model">熱画像モード（MLX-16*4）</string>
-    <string name="face_thermal_mlx_16_4_model">顔の識別+熱画像（MLX-16*4）</string>
-    <string name="smt_only_thermal">熱画像モード（SMT）</string>
-    <string name="smt_face_thermal">顔の識別+熱画像（SMT）</string>
+    <string name="only_label"></string>
+    <string name="face_label">勤務</string>
+    <string name="temper_label">熱画像</string>
+    <string name="model_tip">職場での温度測定は行わない</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">少なくとも1つのパターンを選択する</string><!--至少选择一种模式-->
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">カウントがクリアされました</string>
@@ -357,7 +353,7 @@
     <string name="setting_switch_function">機能の切り替えます</string><!--Function switch-->
     <string name="setting_switch_tip1">人証の温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
     <string name="setting_switch_tip2">温度測定に切り替えますか？</string><!--Are you sure to switch to certificate temperature measurement-->
-    <string name="setting_switch_confirm">确定</string>
+    <string name="setting_switch_confirm">確定</string>
     <string name="setting_switch_cancel">取消</string>
 
     <!--设置开关机-->
@@ -417,7 +413,7 @@
     <!--通用的  -->
     <string name="base_tip">ヒント
 </string>
-    <string name="base_ensure">确定</string>
+    <string name="base_ensure">確定</string>
     <string name="base_cancel">取消</string>
     <string name="base_male">男
 </string>
@@ -455,7 +451,7 @@
     <string name="fment_sign_bl">追録する
 </string>
     <string name="fment_sign_jrqd">今日はサインします:</string>
-    <string name="fment_sign_visitor_name">访客</string>
+    <string name="fment_sign_visitor_name">訪問者</string>
     <string name="fment_sign_company">公司：</string>
     <string name="fment_sign_device_no">编号：</string>
     <string name="fment_sign_version">版本：</string>

@@ -4,6 +4,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.ys.rkapi.MyManager;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.cache.ACache;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
@@ -214,14 +216,14 @@ public class PowerOffTool {
      * 机器重启
      */
     public void restart() {
-//        OnOffTool.setEnabled((byte) 0, (byte) 1, (byte) 0, (byte) 1);
-        Integer type = CommonUtils.getBroadType();
-        switch (type) {
-            case 0:
-            case 2:
-            case 3:
-            case 5:
+        String broadType2 = CommonUtils.getBroadType2();
+        switch (broadType2) {
+            case "SMT":
+            case "LXR":
                 execSuCmd("reboot");
+                break;
+            case "HARRIS":
+                MyManager.getInstance(APP.getContext()).reboot();
                 break;
         }
     }

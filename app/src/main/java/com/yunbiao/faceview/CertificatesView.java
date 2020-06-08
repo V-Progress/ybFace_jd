@@ -75,7 +75,7 @@ public class CertificatesView extends FrameLayout {
     }
 
     public void setSimilarThreshold() {
-        int intOrDef = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        int intOrDef = SpUtils.getIntOrDef(Constants.Key.SIMILAR_THRESHOLD, Constants.Default.SIMILAR_THRESHOLD);
         Log.e(TAG, "initView: 即将设置阈值为：" + ((float) intOrDef / 100));
         SIMILAR_THRESHOLD = ((float) intOrDef / 100);
     }
@@ -111,7 +111,7 @@ public class CertificatesView extends FrameLayout {
     };
 
     private void initCamera() {
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
                 .rotation(angle)
@@ -200,7 +200,7 @@ public class CertificatesView extends FrameLayout {
                     return null;
                 }
                 bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
-                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
                 if (bmp != null && angle != 0) {
                     bitmap = ImageUtils.rotateBitmap(bmp, angle);
                 }
@@ -307,7 +307,7 @@ public class CertificatesView extends FrameLayout {
 
         @Override
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
-            boolean isHMirror = SpUtils.isMirror();
+            boolean isHMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
             Log.e(TAG, "onCameraOpened: ---------- " + isHMirror);
 
             Camera.Size lastPreviewSize = previewSize;
@@ -366,7 +366,7 @@ public class CertificatesView extends FrameLayout {
     }
 
     public void changeAngle() {
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         Log.e(TAG, "changeAngle111: " + angle);
         if (cameraHelper != null) {
             Log.e(TAG, "changeAngle222: " + angle);
@@ -375,7 +375,7 @@ public class CertificatesView extends FrameLayout {
     }
 
     public void resume() {
-        boolean mirror = SpUtils.isMirror();
+        boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
         if (drawHelper != null) {
             Log.e(TAG, "resume: ---------- " + mirror);
             drawHelper.setMirrorHorizontal(mirror);
@@ -417,7 +417,7 @@ public class CertificatesView extends FrameLayout {
                 image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
                 Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
 
-                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
                 if (bmp != null && angle != 0) {
                     Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
                     return bitmap1;
@@ -455,7 +455,7 @@ public class CertificatesView extends FrameLayout {
                     if (faceInfo != null) {
                         Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
                         Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, bestRect.right - bestRect.left, bestRect.bottom - bestRect.top);
-                        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
                         if (bmp != null && angle != 0) {
                             Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
                             return bitmap1;

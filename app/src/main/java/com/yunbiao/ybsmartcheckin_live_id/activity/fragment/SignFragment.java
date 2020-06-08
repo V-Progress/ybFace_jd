@@ -157,7 +157,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
 
         Log.e(TAG, "onResume: 重加载数据");
         loadSignData();
-        boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+        boolean qrCodeEnabled = SpUtils.getBoolean(Constants.Key.QRCODE_ENABLED, Constants.Default.QRCODE_ENABLED);
         ivQRCode.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
     }
 

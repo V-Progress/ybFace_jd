@@ -19,9 +19,8 @@ public interface ThermalViewInterface {
      * */
     /***
      * 模式发生改变
-     * @param mode
      */
-    void onModeChanged(int mode);
+    void onModeChanged(boolean temperEnabled, boolean faceEnabled, int temperModule);
 
     /***
      * 更新热成像信息

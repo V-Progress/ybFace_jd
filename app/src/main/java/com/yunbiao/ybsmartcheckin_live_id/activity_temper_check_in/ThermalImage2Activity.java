@@ -26,14 +26,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
-import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
-import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.AdsFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
@@ -44,7 +42,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -141,7 +138,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         //设置活体开关
-        boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+        boolean livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
         if (faceView != null) {
             faceView.setLiveness(livenessEnabled);
         }
@@ -193,49 +190,51 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     }
 
     @Override
-    public void onModeChanged(int mode) {
+    public void onModeChanged(boolean temperEnabled,boolean faceEnabled ,int temperModule) {
+        //设置人脸间隔
+        SignManager.instance().setVerifyDelay(faceEnabled && !temperEnabled ? 10000 : 0);
+
+        //显示模式
         if (signListFragment != null) {
-            signListFragment.setModelText(ThermalConst.models[mode]);
+            String[] modules = getResources().getStringArray(R.array.temper_module);
+            StringBuffer stringBuffer = new StringBuffer();
+            if(faceEnabled && !temperEnabled){
+                stringBuffer.append(getResString(R.string.only_label)).append("  ").append(getResString(R.string.face_label));
+            } else if(temperEnabled && !faceEnabled){
+                stringBuffer.append(getResString(R.string.only_label)).append("  ").append(getResString(R.string.temper_label));
+            } else {
+                stringBuffer.append(getResString(R.string.face_label)).append(" + ").append(getResString(R.string.temper_label));
+            }
+            stringBuffer.append("  ").append("(").append(modules[temperModule]).append(")");
+            signListFragment.setModelText(stringBuffer.toString());
         }
 
-        //设置人脸间隔
-        SignManager.instance().setVerifyDelay(mode == ThermalConst.ONLY_FACE ? 10000 : 0);
-
-        if (showMainThermal) {
-            Log.e(TAG, "onModeChanged: 显示热成像");
-            switch (mode) {
-                case ThermalConst.ONLY_FACE:
-                    flDotFrame.setVisibility(View.GONE);
-                    tvTempTips.setVisibility(View.GONE);
-                    llThermalArea.setVisibility(View.GONE);
-                    ivBigHead.setVisibility(View.GONE);
-                    break;
-                case ThermalConst.ONLY_THERMAL_HM_32_32:
-                case ThermalConst.FACE_THERMAL_HM_32_32:
-                    Log.e(TAG, "onModeChanged: 显示大热成像画面");
+        //仅人脸或不显示的时候隐藏全部
+        if(!showMainThermal || (faceEnabled && !temperEnabled)){
+            flDotFrame.setVisibility(View.GONE);
+            tvTempTips.setVisibility(View.GONE);
+            llThermalArea.setVisibility(View.GONE);
+            ivBigHead.setVisibility(View.GONE);
+        } else {
+            switch (temperModule) {
+                case TemperModuleType.HM_32_32:
                     ivInfaredImaging.setVisibility(View.GONE);
                     llThermalArea.setVisibility(View.VISIBLE);
                     ivThermalImaging.setVisibility(View.VISIBLE);
                     break;
-                case ThermalConst.ONLY_INFRARED:
-                case ThermalConst.FACE_INFRARED:
-                case ThermalConst.ONLY_THERMAL_HM_16_4:
-                case ThermalConst.FACE_THERMAL_HM_16_4:
-                case ThermalConst.ONLY_THERMAL_MLX_16_4:
-                case ThermalConst.FACE_THERMAL_MLX_16_4:
-                    Log.e(TAG, "onModeChanged: 显示小热成像画面");
+                case TemperModuleType.HM_16_4:
+                case TemperModuleType.MLX_16_4:
                     ivThermalImaging.setVisibility(View.GONE);
                     llThermalArea.setVisibility(View.VISIBLE);
                     ivInfaredImaging.setVisibility(View.VISIBLE);
                     break;
-                case ThermalConst.ONLY_THERMAL_SMT:
-                case ThermalConst.FACE_THERMAL_SMT:
+                case TemperModuleType.SMT_32_32:
                     llThermalArea.setVisibility(View.GONE);
                     break;
             }
         }
 
-        if (mCurrMode != ThermalConst.ONLY_FACE) {
+        if (!(faceEnabled && !temperEnabled)) {
             if (personFrameEnable) {
                 ivBigHead.setVisibility(View.VISIBLE);
                 flDotFrame.setVisibility(View.GONE);
@@ -393,7 +392,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
      *
      **************************************************************************************************/
     private void initAds() {
-        boolean isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
+        boolean isPosterEnabled = SpUtils.getBoolean(Constants.Key.POSTER_ENABLED, Constants.Default.POSTER_ENABLED);//大屏海报开关
         if (isPosterEnabled) {
             if (adsFragment != null && adsFragment.isAdded()) {
                 return;

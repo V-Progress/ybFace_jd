@@ -96,14 +96,14 @@ public class CertificatesSettingActivity extends BaseActivity {
     }
 
     public void jumpTag(View view) {
-        final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
+        final boolean jumpTag = SpUtils.getBoolean(Constants.Key.JUMP_TAG, Constants.Default.JUMP_TAG);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
         builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip2));
         builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss());
         builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
             dialog.dismiss();
-            SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
+            SpUtils.saveBoolean(Constants.Key.JUMP_TAG, !jumpTag);
 
             APP.exit2();
         });
@@ -336,7 +336,7 @@ public class CertificatesSettingActivity extends BaseActivity {
 
         Button btnSave = findViewById(R.id.btn_save_address);
 
-        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+        if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == Constants.serverModel.YUN) {
             rbYun.setChecked(true);
             setServerInfo(Constants.serverModel.YUN);
         } else {
@@ -381,13 +381,13 @@ public class CertificatesSettingActivity extends BaseActivity {
                 }
 
                 if (rbYun.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
-                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
-                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
-                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
                 UIUtils.showTitleTip(CertificatesSettingActivity.this, "保存成功,重启APP后生效");
             }
@@ -409,10 +409,10 @@ public class CertificatesSettingActivity extends BaseActivity {
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+            xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+            proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
             edtIp.setEnabled(true);
             edtResPort.setEnabled(true);
             edtXmppPort.setEnabled(true);
@@ -432,7 +432,7 @@ public class CertificatesSettingActivity extends BaseActivity {
 //        tvCamera.setText("【" + (Config.getCameraType() == Config.CAMERA_AUTO ? getString(R.string.act_set_tip_auto) : Config.getCameraType() == Config.CAMERA_BACK ? getString(R.string.act_set_tip_back) : getString(R.string.act_set_tip_front)) + getString(R.string.act_set_tip_fbl) + CameraSettings.getCameraPreviewWidth() + "*" + CameraSettings.getCameraPreviewHeight() + "】");
         //摄像头角度
         Button btnAngle = findViewById(R.id.btn_setAngle);
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
     }
 
@@ -440,12 +440,12 @@ public class CertificatesSettingActivity extends BaseActivity {
     private void initFaceRectMirrorSetting() {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
-        final boolean mirror = SpUtils.isMirror();
+        final boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
         cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.setMirror(isChecked);
+                SpUtils.saveBoolean(Constants.Key.IS_H_MIRROR, isChecked);
             }
         });
 
@@ -473,7 +473,7 @@ public class CertificatesSettingActivity extends BaseActivity {
     //初始化继电器设置
     private void initRelayDelay() {
         final EditText edtDelay = findViewById(R.id.edt_delay);
-        int cacheDelay = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
+        int cacheDelay = SpUtils.getIntOrDef(Constants.Key.GPIO_DELAY, Constants.Default.GPIO_DELAY);
         edtDelay.setText(cacheDelay + "");
         edtDelay.addTextChangedListener(new TextWatcher() {
             @Override
@@ -491,7 +491,7 @@ public class CertificatesSettingActivity extends BaseActivity {
                     return;
                 }
                 int delay = Integer.parseInt(s1);
-                SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
+                SpUtils.saveInt(Constants.Key.GPIO_DELAY, delay);
                 UIUtils.showShort(CertificatesSettingActivity.this, getString(R.string.setting_edit_password_success));
             }
         });
@@ -614,7 +614,7 @@ public class CertificatesSettingActivity extends BaseActivity {
     }
 
     public void setAngle(final View view) {
-        int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int anInt = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         if (anInt == 0) {
             anInt = 90;
         } else if (anInt == 90) {
@@ -625,7 +625,7 @@ public class CertificatesSettingActivity extends BaseActivity {
             anInt = 0;
         }
         ((Button) view).setText(getString(R.string.setting_cam_angle) + ":" + anInt);
-        SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
+        SpUtils.saveInt(Constants.Key.CAMERA_ANGLE, anInt);
         EventBus.getDefault().post(new DisplayOrientationEvent());
     }
 

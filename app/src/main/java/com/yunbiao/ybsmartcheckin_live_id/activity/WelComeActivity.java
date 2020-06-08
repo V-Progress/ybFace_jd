@@ -116,13 +116,13 @@ public class WelComeActivity extends BaseGpioActivity {
     protected void onResume() {
         super.onResume();
         ivMainLogo.setClickable(true);
-        isPosterEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);//大屏海报开关
+        isPosterEnabled = SpUtils.getBoolean(Constants.Key.POSTER_ENABLED, Constants.Default.POSTER_ENABLED);//大屏海报开关
 
         //设置人脸间隔
         SignManager.instance().setVerifyDelay(10000);
 
         //设置活体开关
-        boolean livenessEnabled = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+        boolean livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
         faceView.setLiveness(livenessEnabled);
 
         faceView.resume();
@@ -169,7 +169,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 signListFragment.addSignData(sign);
             }
 
-            if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
+            if (SpUtils.getBoolean(Constants.Key.FACE_DIALOG, Constants.Default.FACE_DIALOG)) {
                 VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
 
@@ -193,7 +193,7 @@ public class WelComeActivity extends BaseGpioActivity {
                 signListFragment.addSignData(sign);
             }
 
-            if (SpUtils.getBoolean(SpUtils.FACE_DIALOG, false)) {
+            if (SpUtils.getBoolean(Constants.Key.FACE_DIALOG, false)) {
                 VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
 

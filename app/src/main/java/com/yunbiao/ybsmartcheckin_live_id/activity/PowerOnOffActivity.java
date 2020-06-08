@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTBaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PowerOnOffActivity extends SMTBaseActivity {
+public class PowerOnOffActivity extends BaseActivity {
     private static final String TAG = "SMTPowerOnOffActivity";
 
     private List<CheckBox> onBoxs=new ArrayList<>();
@@ -37,10 +37,17 @@ public class PowerOnOffActivity extends SMTBaseActivity {
 
     private List<Integer> onWeek;
     private List<Integer> offWeek;
+
     @Override
-    protected int getLayout() {
+    protected int getPortraitLayout() {
         return R.layout.activity_power_on_off;
     }
+
+    @Override
+    protected int getLandscapeLayout() {
+        return R.layout.activity_power_on_off;
+    }
+
     private String switchDay(String i){
         String day = "";
         switch (i) {

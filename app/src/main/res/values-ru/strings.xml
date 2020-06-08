@@ -1,0 +1,644 @@
+<resources>
+    <string name="app_name">YBFace</string>
+    <string name="app_name2">Hengtong табельный счет</string>
+    <string name="app_name3">SK табельный счет</string>
+    <string name="app_name4">Osmile AI</string>
+    <string name="app_name5">SoftWorkz AI</string>
+    <string name="app_name6">Scan Temp</string>
+    <string name="used">Использованный:</string>
+    <string name="no_used">/Доступный:</string>
+    <string name="back">Назад</string>
+    <string name="not_support_speech">Язык, не поддерживаемой текущей голосовой системой:</string>
+    <string name="miss_speech_data">Отсутствуют голосовые данные:</string>
+    <string name="alert_title_warning">Предупреждение</string>
+    <string name="temper_error_tips">Не удалось получить данные измерения температуры, проверьте модуль измерения температуры</string>
+    <string name="temper_error_btn_restart">Перезагрузка</string>
+    <string name="temper_error_btn_cancel">Не обрабатывается</string>
+
+    <!--口罩提示IT-->
+    <string name="no_mask_tip">Si prega di indossare la maschera</string>
+    <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
+    <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
+
+    <string name="setting_tab_face">Лицо человека</string>
+    <string name="setting_tab_page">Граница</string>
+    <string name="setting_tab_temper">Измерение температура</string>
+    <string name="setting_tab_device">Оборудование</string>
+
+    <!--语音设置-->
+    <string name="speech_setting_title">Настройка голосовой трансляции</string>
+    <string name="setting_broadcast_speed">Скорость голоса</string><!--語音速度-->
+    <string name="setting_welcome_speech">Приветствие</string><!--Welcome speech-->
+    <string name="temper_tips_close">Напоминание о расстоянии</string>
+    <string name="setting_normal_speech_content">Содержание трансляции о "нормальной температуре тела"</string>
+    <string name="setting_warning_speech_content">Содержание трансляции о "ненормальной температуре тела"</string>
+    <string name="speech_setting_open_or_close">Открыть или нет</string>
+    <string name="speech_setting_show_temper">Дисплей температуры</string>
+    <string name="speech_setting_temper_location">Положение дисплей температура</string>
+    <string name="speech_setting_location_start">Голова</string>
+    <string name="speech_setting_location_center">Центр</string>
+    <string name="speech_setting_location_end">Хвост</string>
+    <string name="speech_setting_alert">Положение отображения температуры обозначено символом #. Будет автоматически заполнять цифры температуры, образец( 36.5℃ ). Может только один символ # оставить. При наличии нескольких символов #, первый будет оставить, а остальные символы будет удалены автоматически</string>
+    <string name="speech_setting_welcome_exmaple">Образец на приветствия：</string>
+    <string name="speech_setting_distance_exmaple">Образец на напоминание росстояние：</string>
+    <string name="speech_setting_normal_exmaple">Образец трансляции о "нормальной температуре тела"：</string>
+    <string name="speech_setting_warning_exmaple">Образец трансляции о "ненормальной температуре тела"：</string>
+    <string name="speech_setting_audition">Прослушивание</string>
+    <string name="setting_camera_vertical_mirror">Вертикальная камера рамки</string>
+    <string name="setting_picture_rotation">С камерой</string>
+    <string name="setting_local_priority">Местный первый</string>
+    <string name="setting_pic_rotation">Направление фото</string>
+
+    <!--温度单位-->
+    <string name="temper_tips_centigrade">Цельсий</string>
+    <string name="temper_tips_fahrenheit">Фаренгейт</string>
+    <string name="app_main_title">Основное заглавие</string>
+
+    <string name="select_img_title">Быбрать фото</string>
+    <string name="select_img_failed">Не удалось выбрать фото</string>
+    <string name="select_img_failed_not_exists">Выбранная фото не существует</string>
+    <string name="setting_app_logo">Логотип в доме</string>
+    <string name="setting_select_image">Выбрать</string>
+    <string name="setting_restore_image">Восстановить</string>
+    <string name="setting_auto_temper">Автоматический режим</string>
+    <!--应用名称-->
+    <string name="yb_check_in">YBFace</string>
+    <string name="yb_temper_check_in">YBFace</string>
+    <string name="yb_certificates">YBFace</string>
+    <string name="yb_multiple">YB измерение температуры большего потока</string>
+    <string name="yb_safety_chceck">YB измерение температура и безопасность</string>
+
+    <string name="ht_temper_check_in">Hengtong измерение температуры и табельный счет</string>
+    <string name="ht_certificates">Hengtong измерение температуры с ID-картой</string>
+    <string name="ht_multiple">Hengtong измерение температуры большего потока</string>
+    <string name="ht_safety_chceck">Hengtong измерение температуры и безопасность</string>
+
+    <string name="sk_temper_check_in">SK измерение температуры и табельный счет</string>
+    <string name="sk_multiple">SK измерение температуры большего потока</string>
+
+    <!--视美泰-->
+    <string name="smt_main_net_normal">нормальное</string>
+    <string name="smt_main_net_normal2">Интернет нормальный</string>
+    <string name="smt_main_net_no">Без интернета</string>
+    <string name="smt_main_all">Все</string>
+    <string name="smt_main_already">Уже</string>
+    <string name="smt_main_ver">Версия:</string>
+    <string name="smt_main_company">Компания:</string>
+    <string name="smt_main_device_no">№:</string>
+    <string name="smt_main_not_bind">Еще не связанный</string>
+
+    <!--首页测温提示-->
+    <string name="main_temp_warning_tips">Ненормальная температура</string>
+    <string name="main_temp_normal_tips">Нормальная темперетура</string>
+    <string name="main_temp_error_tips">Ошибочная температура</string>
+    <string name="main_temp_tips_please_close">Пожалуйста, подойди ближе</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">Слишком далеко, подойти ближе</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">Пожалуйста, встаньте подальше</string>
+    <string name="main_temp_tips_so_close_text">Слишком близко, встаньте подальше</string>
+    <string name="main_thermal_temp">Тепловизор, температура：</string>
+    <string name="main_thermal_has_person">Тепловизор, с человеком</string>
+    <string name="main_thermal_no_person">Тепловизор, Без человека</string>
+    <string name="main_please_waiting">подождите пожалуйста</string>
+    <string name="main_temp_tips_please_in_range">Пожалуйста, нацельтесь на рамку лиц</string>
+    <string name="main_tips_please_close">подойти ближе пожалуйста</string>
+
+    <!--设置-->
+    <string name="temp_measuring_setting">Измеряем температуру</string>
+    <string name="port_setting">Последовательный порт</string>
+    <string name="select_port_setting">Выберите последовательный порт</string>
+    <string name="auto_close_door_setting">дверь закрывается автоматически за этого времени</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">рекомендуемый предел：80</string>
+    <string name="current_model_setting">Текущий режим</string>
+
+    <!--系统信息-->
+    <string name="System_title">Инфо о системе</string>
+    <string name="System_deviceNo">№ оборудования:</string>
+    <string name="System_bindCode">Связанный код:</string>
+    <string name="System_Company">Комания:</string>
+    <string name="System_Service">Сервисная сеть:</string>
+    <string name="System_ValiDate">Дата окончания срока:</string>
+    <string name="System_Manage">Управление персоналом</string>
+    <string name="System_Add">Добавление персоналов</string>
+    <string name="System_Record">Запись посещений</string>
+    <string name="System_Setting">Настройка системы</string>
+    <string name="System_Visitor">посетитель</string>
+    <string name="System_skin_select">Выбор кожи</string>
+    <string name="System_update">Обновление</string>
+    <string name="System_copyright">Copyright:Beijing Yunbiao Technology Co., Ltd</string>
+    <string name="System_Service_offline">Не в сети</string>
+    <string name="System_online">Онлайн</string>
+    <string name="System_offline">Не в Сети</string>
+    <string name="System_validityPeriod">Нет органичений</string>
+    <string name="System_cloud_service">Облачный сервис</string>
+    <string name="System_local_service">Местный сервис</string>
+
+    <!--人员管理-->
+    <string name="employ_list_title">Перечень персонала</string>
+    <string name="employ_list_depart_sync">Синхронизировать</string>
+    <string name="employ_List_add_user">Добавить</string>
+    <string name="employ_List_query_button">Искать</string>
+    <string name="employ_list_download_failed">Неудалось скачать аватар</string>
+    <string name="employ_list_add_face_failed">Неудалось добавить в библиотеку лиц</string>
+    <string name="employ_list_update_head_failed">Неудалось обновить аватар</string>
+    <string name="employ_list_field_index">№</string>
+    <string name="employ_list_field_number">№ сотрудника</string>
+    <string name="employ_list_field_name">И.Ф.О</string>
+    <string name="employ_list_field_depart">Отдел</string>
+    <string name="employ_list_field_position">Дожность</string>
+    <string name="employ_list_field_control">Операция</string>
+    <string name="employ_list_item_delete">Удалить</string>
+    <string name="employ_list_item_edit">Редактировать</string>
+    <string name="employ_list_all_depart">Все отделы</string>
+    <string name="employ_list_please_input_user_name">Пожалуйста, введите И.Ф.О сотрудника</string>
+    <string name="employ_list_confirm_edit">Подтвердите исправление?</string>
+    <string name="employ_list_confirm_delete">Подтвердите удаление?</string>
+    <string name="employ_list_delete_failed">Не удалось удалить</string>
+    <string name="employ_list_delete_success">Успешно улалил</string>
+    <string name="employ_list_depart">Отдел</string>
+    <string name="employ_list_add_depart">Добавленный отдел</string>
+    <string name="employ_list_please_input_name">Пожалуйста, введите И.Ф.О сотрудника</string><!--请输入И.Ф.О-->
+    <string name="employ_list_no_this_person">Сотрудник не найден</string><!--未搜索到该员工-->
+
+    <!--编辑信息-->
+    <string name="act_editEmploy_zjyg">Добавить сотрудника</string>
+    <string name="act_editEmploy_xgxx">Исправить инфо</string>
+    <string name="act_editEmploy_pz">фотографировать</string>
+    <string name="act_editEmploy_reset">Сброс</string>
+    <string name="act_editEmploy_jbxx">Основная инфо</string>
+    <string name="act_editEmploy_name">И.Ф.О:</string>
+    <string name="act_editEmploy_sex">Пол:</string>
+    <string name="act_editEmploy_bm">Отдел:</string>
+    <string name="act_editEmploy_ygbh">№ сотрудника:</string>
+    <string name="act_editEmploy_zw">должность:</string>
+    <string name="act_editEmploy_csrq">День Рождения:</string>
+    <string name="act_editEmploy_gxqm">Подпись:</string>
+    <string name="act_editEmploy_kh">№ карты:</string><!-- 员工编号 -->
+    <string name="act_editEmploy_tip_qxpz">Пожалуйста, сделайте снимок сначала</string>
+    <string name="act_editEmploy_tip_qtxxm">Пожалуйста, введите И.Ф.О</string>
+    <string name="act_editEmploy_tip_qxzxb">Пожалуйста, виберите пол</string>
+    <string name="act_editEmploy_tip_qtxbh">Пожалуйста, введите №</string>
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">Аватарв не найден. Сделайте снимок снова пожалуйста!</string>
+    <string name="act_editEmploy_tip_wzrhxg">Без изменений</string>
+    <string name="act_editEmploy_tip_tjsb">Не удалось добавить</string>
+    <string name="act_editEmploy_tip_gygbcz">Не существует это сотрудник</string>
+    <string name="act_editEmploy_tip_bczgbm">Не существует это отдел</string>
+    <string name="act_editEmploy_tip_gsmyzgbm">В компании нет этого отдела</string>
+    <string name="act_editEmploy_tip_gsyzwyg">В компании нет этого сотрудника</string>
+    <string name="act_editEmploy_tip_cscw">Ошибка с параметрами</string>
+    <string name="act_editEmploy_tip_qtxbm">Пожалуйста, виберите отдел</string><!--请选择部门-->
+    <string name="act_editEmploy_tip_add_success">Удалось добавить</string><!--添加成功-->
+    <string name="act_editEmploy_add_face_failed">Не удалось добавить данные лиц</string><!--添加人脸数据失败-->
+    <string name="act_editEmploy_submit_failed">Не удалось отправить данные</string><!--提交失败-->
+    <string name="act_editEmploy_please_set_depart">Пожалуйста, создайте отдел</string><!--请设置部门-->
+    <string name="act_editEmploy_update_complete">Удалось обновить</string><!--更新成功-->
+    <string name="act_editEmploy_update_failed">Не удалось обновить аватар</string>
+    <string name="act_editEmploy_update_info_success">Удалось обновить инфо</string>
+    <string name="act_editEmploy_no_face">Лицо не обнаружено</string><!--未检测到人脸-->
+    <string name="act_editEmploy_please_face_only_one">Пожалуйста, Оставйте только 1 лицо в экране</string><!--请保持屏幕中只有一张人脸-->
+    <string name="act_editEmploy_photo_failed_try_again">Не удалось. Пожалуйста, сделайте снимок снова</string><!--拍照失败，请重试-->
+    <string name="act_editEmploy_unknown_error">Неизвестная ошибка</string><!--未知错误-->
+
+    <!--离线数据-->
+    <string name="sign_list_title">Запись без сети</string>
+    <string name="sign_list_all_type">Все</string>
+    <string name="sign_list_sent">Уже отправил</string>
+    <string name="sign_list_unsent">еще не отправит</string>
+    <string name="sign_list_export">Экспорт данных</string>
+    <string name="sign_list_upload">загрузка данных</string>
+    <string name="sign_list_filed_index">№</string>
+    <string name="sign_list_filed_time">Время</string>
+    <string name="sign_list_filed_name">И.Ф.О</string>
+    <string name="sign_list_filed_depart">Отдел</string>
+    <string name="sign_list_filed_job">Должность</string>
+    <string name="sign_list_filed_head">Аватарв</string>
+    <string name="sign_list_no_data">Данные временно отсутствуют</string>
+    <string name="sign_list_upload_success">Удалось загрузить</string>
+    <string name="sign_list_upload_failed">Не удалось загрузить. Пожалуйста, проверйте интернет</string>
+    <string name="sign_list_usb_disk">Пожалуйста, вставьте флешку</string>
+    <string name="sign_list_tip_usb_disk">Флешка не обнаружена, данные будет экспортируюся в местные</string>
+    <string name="sign_list_all_data_sent">Все данные успешно загружены</string>
+    <string name="sign_list_name">И.Ф.О</string>
+    <string name="sign_list_number">№</string>
+    <string name="sign_list_depart">Отдел</string>
+    <string name="sign_list_position">Должность</string>
+    <string name="sign_list_date">Срок</string>
+    <string name="sign_list_time">Время</string>
+    <string name="sign_list_temper">Температура тела</string>
+    <string name="sign_list_head">Аватарв</string>
+    <string name="sign_list_hot">Тепловое изображение</string>
+    <string name="sign_export_record">Экспорт записи</string>
+    <string name="sign_export_no_record">Данные отсутствуют</string>
+    <string name="sign_export_create_record_failed">Не удалось создать запись</string>
+    <string name="sign_export_record_success">Удалось экспортировать данные</string>
+    <string name="sign_export_record_path">Каталог</string>
+    <string name="sign_export_record_failed">Не удалось экспортировать данные</string>
+    <string name="sign_list_table_name">запись</string>
+
+
+    <!--访客列表-->
+    <string name="visitor_list_title">Перечень посетителей</string>
+    <string name="visitor_list_filed_name">И.Ф.О</string>
+    <string name="visitor_list_filed_time">Период посещения</string>
+    <string name="visitor_list_filed_company">Отдел</string>
+    <string name="visitor_list_filed_reason">Причина посещения</string>
+
+    <!--系统设置-->
+    <!--模式-->
+    <string name="only_label">Только</string>
+    <string name="face_label">распознаванием лиц</string>
+    <string name="temper_label">измерение температуры</string>
+    <string name="model_tip">Индивидуальная посещаемость без измерения температуры</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">Выбери хотя бы одну модель</string><!--至少选择一种模式-->
+
+
+    <!--标签-->
+    <string name="setting_tip_warning_number_reseted">Счет очищен</string>
+    <string name="setting_reset_warning_number">Очистить счет</string>
+    <string name="setting_face_similar_threshold">Установить порог сходства лиц</string>
+    <string name="setting_enable_dialog">Всключить рамку лиц</string>
+    <string name="setting_enable_liveness">Всключить определение живым телом</string>
+    <string name="setting_camera_mirror">Включить зеркальное изображение рамки лиц</string>
+    <string name="setting_select_model">Быбрать рыжимы</string>
+    <string name="setting_current_port_path">Текущий последовательный порт</string>
+    <string name="setting_baud_rate">Битрейт</string>
+    <string name="setting_open">Всключить</string>
+    <string name="setting_enable_distance_tips">Всключть напоминание о расстоянии</string>
+    <string name="setting_thermal_imaging_mirror">Зеркальное изображение тепловизионной картины</string>
+    <string name="setting_open_temperature_delay">Включить задержку измерения температуры</string>
+    <string name="setting_temperature_delay_time">Задержку измерения температуры</string>
+    <string name="setting_ms">Миллисекунда</string>
+    <string name="setting_s">Секунда</string>
+    <string name="setting_temp_correct_value">Величина коррекционной температуры</string>
+    <string name="setting_amb_correct_value">Величина коррекционной температуры среды</string>
+    <string name="setting_temperature_threshold">трансляция мин. температуры тела</string>
+    <string name="setting_temperature_warning">Величина тревоги температуры</string>
+    <string name="setting_temp_range">Диапазон измерения температуры тела</string><!--Temperature measurement range-->
+    <string name="setting_range_minimum">Мин.</string><!--minimum-->
+    <string name="setting_range_highest">Макс.</string><!--Highest-->
+    <string name="setting_speech_delay">Интервал трансляций</string>
+    <string name="setting_screen_saver">Охранение экрана</string>
+    <string name="setting_show_qr_code">Показать QR-код</string>
+    <string name="setting_enable_ic_card">Считыватель карт IC</string>
+    <string name="setting_relay_delay_time">Время отрытия двери</string>
+    <string name="setting_cpu_temp">Температура CPU:</string>
+    <string name="setting_camera_angle">Угол камеры</string>
+    <string name="setting_curr_net">Текущий интернет:</string>
+    <string name="setting_net_name">【WIFI, название интернета：XXXXX】</string>
+    <string name="setting_reboot_device">перезагрузка оборудования</string>
+    <string name="setting_check_update">Обновление</string>
+    <string name="setting_manage_password">Изменить администротивный пароль</string>
+    <string name="setting_system_password">Пароль системы</string>
+    <string name="setting_please_input_password">Пожалуйста, введите пароль(6-12 цифров, букв)</string>
+    <string name="setting_please_input_again">Пожалуйста, введите пароль снова</string>
+    <string name="setting_cloud_service">Облака</string>
+    <string name="setting_local_service">Локальная сеть</string>
+    <string name="setting_ip_address">IP адресс</string>
+    <string name="setting_xmpp_port">Порт телекоммуникационный</string>
+    <string name="setting_resource_port">Порт услуги</string>
+    <string name="setting_project_name">Название проекта</string>
+    <string name="setting_save_service_info">охранить услугу</string>
+    <string name="setting_total_one">Итого 1</string>
+    <string name="setting_current_used">【Текущий:】</string>
+    <string name="setting_cam_angle">Угол</string>
+    <string name="setting_net_prefix">【Интернет, IP адресс:</string>
+    <string name="setting_ip_info">，IP Адресс:</string>
+    <string name="setting_best_camera_size">Оптимальный</string>
+    <string name="setting_max_camera_size">Макс.</string>
+    <string name="setting_wifi_name">Название:</string>
+    <string name="setting_wifi_rssi">，Сила сигнала:</string>
+    <string name="setting_device_will_reboot">Оборудование перезагрузится, продолжите?</string>
+    <string name="setting_device_reboot">Перезагрузка оборудования</string>
+    <string name="setting_3_scond_reboot">Оборудование перезагрузится после 3с</string>
+    <string name="setting_password_not_null">пароль не может быть пустым</string>
+    <string name="setting_password_min_6">Пароль состоит из мин. 6 цифров и букв</string>
+    <string name="setting_please_input_password_agian">Пожалуйста, введите пароль снова</string>
+    <string name="setting_password_disaccord">Пароли, введенные дважды, отличаются</string>
+    <string name="setting_edit_password_failed">Не удалось исправить</string>
+    <string name="setting_edit_password_success">Успешно исправил</string>
+    <string name="setting_current_correct_value">Текущая коррекционная величина</string>
+    <string name="setting_low_temp_model">Режим "низкая температура"</string>
+    <string name="setting_portrait_outline">Профиль лиц</string>
+    <string name="setting_default_welcome_tip">Добро пожаловать использовать AI интеллектуальную систему табельного учета</string>
+    <string name="setting_correct_temperature">Коррекция температуры</string>
+    <string name="setting_broadcast_f">Трансляция по фаренгейту</string>
+
+    <string name="setting_save_success">Успешно сохранил</string>
+    <string name="setting_save_succ_please_restart">Успешно сохранил, вступает в силу после перезагрузки приложения</string>
+    <string name="setting_please_set_ip">Пожалуйста, создать IP адресс</string>
+    <string name="setting_please_set_res">Пожалуйста, создать сервисный порт</string>
+    <string name="setting_please_set_xmpp">Пожалуйста, создать телекомм. порт</string>
+    <string name="setting_res_port_error">Неверный формат сервисного порта. Пожалуйста, проверйте</string>
+    <string name="setting_xmpp_port_error">Неверный формат телекомм. порта. Пожалуйста, проверйте</string>
+
+    <string name="setting_show_thermal_face_frame">Показать тепловизионную рамку лиц</string>
+    <string name="setting_show_black_body">Показать коррекционную рамку черного тела</string>
+    <string name="setting_multi_track">Всключить многоразовое следование</string>
+    <string name="setting_switch_to_certificates">Переключить на измерение температуры с ID-картой</string><!--Switch to certificate temperature measurement-->
+    <string name="setting_switch_to_temperature_check_in">Переключить на измерение температуры и табельный счет</string><!--Switch to temperature measurement attendance-->
+    <string name="setting_switch_function">Переключить функции</string><!--Function switch-->
+    <string name="setting_switch_tip1">Вы уверены, что переключитесь на измерение температуры с ID-карты?</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_tip2">Вы уверены, что переключитесь на измерение температуры и табельный счет?</string><!--Are you sure to switch to certificate temperature measurement-->
+    <string name="setting_switch_confirm">Подтвертить</string>
+    <string name="setting_switch_cancel">Отменить</string>
+    <string name="setting_privacy_mode">Режим конфиденциальности</string>
+    <string name="setting_periodic_purge_policy">Тактика удаления</string>
+    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
+    <string name="setting_show_main_logo">Показать логотип дома</string>
+    <string name="setting_show_main_thermal">Показать тепловизионную картину</string>
+    <string name="setting_show_main_info">Показать инфо о дома</string>
+
+    <!--设置开关机-->
+    <string name="setting_power_on_off">Таймер</string>
+    <string name="act_power_title">Настройка таймера</string>
+    <string name="act_power_power_on_strategy">Тактика работы включения</string>
+    <string name="act_power_power_off_strategy">Тактика работы выключения</string>
+    <string name="act_power_power_on_strategy2">Стратегия включения</string>
+    <string name="act_power_power_off_strategy2">Стратегия выключения</string>
+    <string name="act_power_none">Нет</string>
+    <string name="act_power_monday">Понедельник</string>
+    <string name="act_power_tuesday">Вторние</string>
+    <string name="act_power_wednesday">Среда</string>
+    <string name="act_power_thursday">Четверк</string>
+    <string name="act_power_friday">Пятница</string>
+    <string name="act_power_saturday">Суббота</string>
+    <string name="act_power_sunday">Воскресенье</string>
+    <string name="act_power_all_select">Выбрать все</string>
+    <string name="act_power_turn_on_time">Время включения</string>
+    <string name="act_power_turn_off_time">Время выключения</string>
+    <string name="act_power_save">Сохранить</string>
+    <string name="act_power_set_success">Успешно сохранил!</string>
+    <string name="act_power_set_failed_not_check_on">Не успешно настроить. Пожалуйста, выбрать дату вступления в силу в тактике работы включения</string>
+    <string name="act_power_set_failed_not_check_off">Не успешно настроить. Пожалуйста, выбрать дату вступления в силу в тактике работы выключения</string>
+
+    <!--温度矫正页面-->
+    <string name="act_correct_title">Коррекция температуры</string>
+    <string name="act_correct_tips">Пожалуйста, заполните в соответствии с измеренной температурой обычного термометра</string>
+    <string name="act_correct_current_value">Величина текущей коррекции</string>
+    <string name="act_correct_thermal_temp">Температура по тепловизору：</string>
+    <string name="act_correct_click_get_temperature">Нажмить, чтобы измерить температуру</string>
+    <string name="act_correct_thermometer_gun">Температура по обычному термометру：</string>
+    <string name="act_correct_save">Сохранить</string>
+
+    <!--通用的  -->
+    <string name="base_tip">Отметка</string>
+    <string name="base_ensure">Подтверждение</string>
+    <string name="base_cancel">Отменить</string>
+    <string name="base_male">Муж</string>
+    <string name="base_female">Жина</string>
+    <string name="base_people">Человека</string>
+    <string name="base_year">Год</string>
+    <string name="base_month">Месяц</string>
+    <string name="base_day">День</string>
+
+    <!--Splash界面  -->
+    <string name="splash_request_permission_failed">Приложение разрешения не удалось</string>
+    <string name="splash_active_failed">Не удалось активировать</string>
+
+    <!--主界面  -->
+    <string name="act_wel_topTitle">YB умный табельный счет</string>
+    <string name="act_wel_bottomTitle">YB умный табельный счет</string>
+    <string name="act_wel_error_bywjsrmmo">Не забыйте введить пароль</string>
+    <string name="act_wel_error_mmclqcxsrb">Пароль неверный. Пожалуйста, введите снова</string>
+    <string name="act_wel_glmm">Котроль пароль</string>
+    <string name="act_wel_qsrglmm">Пожалуйста, введите администротивный пароль</string>
+    <!--AdsFragment-->
+    <string name="fment_ads_slogan">Надежность, работа, безопасность</string>
+    <!--SignFragment-->
+    <string name="fment_sign_tip_yqd">Табелировались</string>
+    <string name="fment_sign_bl">Дополнение</string>
+    <string name="fment_sign_jrqd">Табелироваться сегодня:</string>
+    <string name="fment_sign_visitor_name">Посетитель</string>
+    <string name="fment_sign_company">Компания:</string>
+    <string name="fment_sign_device_no">№:</string>
+    <string name="fment_sign_version">Версия:</string>
+    <string name="fment_sign_bind_code">Связанный код:</string>
+    <string name="fment_sign_net">Интернет:</string>
+    <string name="fment_sign_total">Должно табелироваться</string>
+    <string name="fment_sign_already">уже табелровались</string>
+
+    <!--WebFragment-->
+    <string name="fment_Web_back">Назад</string>
+    <string name="fment_Web_refresh">Обновление</string>
+
+
+    <!-- act_set layout_setting.xml -->
+    <string name="act_set_xtsz">Настройка системы</string>
+    <string name="act_set_xtmm">Пароль системы</string>
+    <string name="act_set_qchc">Очистить Кэш</string>
+    <string name="act_set_qcsj">Очистить данные</string>
+    <string name="act_set_jcsxt">Определить камеру</string>
+    <string name="act_set_sfjx">Включить ли зеркальное изображение</string>
+    <string name="act_set_wlzt">Положение Интернета</string>
+    <string name="act_set_gb">Закрыть</string>
+
+
+    <!--activity_DepartList-->
+    <string name="act_departList_tip_qsrbmmc">Пожалуйста, введите название отдела</string>
+    <string name="act_departList_tip_qdscm">Подтвердите удалить?</string>
+    <string name="act_departList_bmlb">Перечень отделов</string>
+    <string name="act_departList_add">Добавить</string>
+    <string name="act_departList_xh">№</string>
+    <string name="act_departList_bmmc">Название отдела</string>
+    <string name="act_departList_cz">Операция</string>
+
+    <!--InformationFragment-->
+
+    <!--dialog_depart-->
+    <string name="dialog_depart_qsrbmmc">Пожалуйста, введите название отдела</string>
+
+    <!-- 同步 -->
+    <string name="lay_loadPop_sync">Синхронизация</string>
+    <string name="lay_loadPop_zlxsxx">Здесь показана инфо</string>
+    <string name="uiUtils_tip_notice">Уведомление</string>
+    <string name="uiUtils_tip_zzazxgyyqnxdd">Устанавливаем приложение. Пожалуйста, подождите!</string>
+    <string name="dialog_sync_tbjs">Синхронизация завершена</string>
+    <string name="sync_company_1">Собрать инфо о компании</string>
+    <string name="sync_staff_2">Собрать инфо о личности</string>
+    <string name="sync_database_3">Синхронизировать библиотеку данных</string>
+    <string name="sync_head_4">Скачать аватар</string>
+    <string name="sync_face_5">Синхронизировать библиотеку лиц</string>
+    <string name="sync_get_failed">Не удалось получить, попробуем вскоре</string>
+    <string name="sync_not_bind">Оборудование не связано</string>
+    <string name="sync_data_resolve_failed">Не удалось анализировать</string>
+    <string name="sync_not_depart">Компания не создает отдел</string>
+    <string name="sync_params_error">Ошибка с данными</string>
+    <string name="edit_not_edit">Без изменений</string>
+
+    <!-- RestartAPPTool -->
+    <string name="restartAPPTool_sftcyy">Выходить ли из приложения?</string>
+    <string name="restartAPPTool_ycdht">Скрыть на заднем плане</string>
+    <string name="restartAPPTool_exit">Выйти</string>
+
+    <!-- UpdateManager -->
+    <string name="updateManager_dqbbwzxbb">На данный момент последняя версия</string>
+    <string name="updateManager_wlljsbqjcwl">Не удалось всключить в интернет. Пожалуйста, определите интернет</string>
+    <string name="updateManager_xzsb">Не удалось скачать</string>
+    <string name="update_version_title">Инфо о версии</string>
+    <string name="update_lable_new">Последняя версия：</string>
+    <string name="update_lable_current">Текущая версия：</string>
+    <string name="update_check_failed">Не удалось определить версию. Пожалуйста, определите интернет</string>
+    <string name="update_check_ing">Определяем версию</string>
+    <string name="update_have_new">Новая версия обнаружена. Пожалуйста, нажмите, чтобы обновить версию</string>
+    <string name="update_no_description">Подробная инфо временно не обнаружена</string>
+
+    <!--其他-->
+    <string name="recognize_failed_notice">DENIED:%s</string>
+    <string name="low_confidence_level">face low confidence level</string>
+    <string name="accessibility_description">xxx Услуги по обеспечению доступности для ключевых мониторинга</string>
+    <string name="System_Setting_save_threshold">Сохранить</string>
+
+    <!--人证测温系统-->
+    <string name="act_certificates_idcard_only">Сравнение личности и ID-карты</string>
+    <string name="act_certificates_idcard_thermal">Сравнение личности и + тепловизор(32*32)</string>
+    <string name="act_certificates_idcard_thermal_16_4">Сравнение личности и ID-карты + тепловизор(16*4)</string>
+    <string name="act_certificates_idcard_infared">Сравнение личности и ID-карты + инфракрасное измерения температуры</string>
+    <string name="act_certificates_title">AI Система измерения температуры сравнением личности и ID-карты</string>
+    <string name="act_certificates_please_get_hat">Пожалуйста, снимите очки и шляпу и посмотрите прямо на камеру</string>
+    <string name="act_certificates_no_idcard_temper">Измерение температуры без ID-карты</string>
+    <string name="act_certificates_face_picture">Фото лица личности</string>
+    <string name="act_certificates_card_picture">Фото ID-карты </string>
+    <string name="act_certificates_name">И.Ф.О：</string>
+    <string name="act_certificates_depart">Отдел：</string>
+    <string name="act_certificates_native_place">Родный город：</string>
+    <string name="act_certificates_temperature">Температура тела：</string>
+    <string name="act_certificates_status">Положение：</string>
+    <string name="act_certificates_health_code">Код здоровья</string>
+    <string name="act_certificates_can_go">Проход разрешен</string>
+    <string name="act_certificates_not_pass">Проход запрещен</string>
+    <string name="act_certificates_ensure_pass">Проход подтвержден</string>
+    <string name="act_certificates_please_set_id_card">Пожалуйста, поместите ID-карту в зону смахивания</string>
+    <string name="act_certificates_testing">Температуру измеряем. Пожалуйста, подождите</string>
+    <string name="act_certificates_please_wait">Пожалуйста, подождите</string>
+    <string name="act_certificates_idcard_failed">Неудалось Прочитать ID-карту. Пожалуйста, попробуйте снова</string>
+    <string name="act_certificates_please_look_camera">Пожалуйста, посмотрите прямо на камеру</string>
+    <string name="act_certificates_verify_ing">Проверяем</string>
+    <string name="act_certificates_verify_pass">Проверка удалась</string>
+    <string name="act_certificates_verify_not_pass">Личность и ID-карта не совпадают, </string>
+    <string name="act_certificates_temper_normal">Температура нормальная</string>
+    <string name="act_certificates_temper_warning">Температура ненормальная</string>
+    <string name="act_certificates_normal">Нормальная</string>
+    <string name="act_certificates_warning">Ненормальная</string>
+    <string name="act_certificates_similar">Сходство</string>
+    <string name="act_certificates_please_pass">Пожалуйста, пройдите</string>
+    <string name="act_certificates_please_can_pass">Проход разрешен</string>
+    <string name="certificates_record_depart">Отдел</string>
+    <string name="act_certificates_please_not_pass">Проход запрещен</string>
+    <string name="act_certificates_visitor">посетитель</string>
+    <string name="act_certificates_temper">Температура：</string>
+    <string name="act_certificates_temper_failed">Не удалось измерение температуры</string>
+    <string name="act_certificates_green">Зеленный</string>
+    <string name="act_certificates_yellow">желтый</string>
+
+    <string name="act_certificates_no_printer">Принтер не обнаружен</string>
+    <string name="act_certificates_warning_printer">Предостережение: принтер</string>
+    <string name="act_certificates_printer_name">И.Ф.О：</string>
+    <string name="act_certificates_printer_depart">Отдел：</string>
+    <string name="act_certificates_printer_native_place">Родный город: </string>
+    <string name="act_certificates_printer_temper">Температура тела: </string>
+    <string name="act_certificates_printer_error">  (Ненормальная)</string>
+    <string name="act_certificates_printer_time">Время посещения：</string>
+    <string name="act_certificates_printer_white">Белый список：</string>
+    <string name="act_certificates_printer_white_yes">Да</string>
+    <string name="act_certificates_printer_white_no">Нет</string>
+    <string name="act_certificates_printer_tips">Пожалуйста, сохраните распечатанный баучер для проверки</string><!--Please keep the printed voucher for checking-->
+    <string name="act_certificates_card_read_failed">Не удалось считать ID карту. Пожалуйста, положить карту снова</string>
+    <string name="act_certificates_verifing">Проверяем. Пожалуйста, посмотрите на камеру</string>
+    <string name="act_certficates_check_outtime">Время обнаружения истекло. Пожалуйста, положить карту снова</string>
+    <string name="act_certficates_check_failed">Не удалось измерить температуру. Пожалуйста, положить карту снова</string>
+    <string name="act_certficates_feature_outtime">Время извлечения особенности истекло.Пожалуйста, положить карту снова</string>
+    <string name="act_certificates_verify_pass_yes">Проверка удалась</string>
+    <string name="act_certificates_verify_pass_no">Проверка не удалась</string>
+    <string name="act_certificates_verify_temper_yes">Температура нормальная</string>
+    <string name="act_certificates_verify_temper_no">Температура ненормальная</string>
+    <string name="act_certificates_verify_passage_no">Проход запрещен</string>
+    <string name="act_certificates_verify_passage_yes">Пожалуйста, пройдите</string>
+    <string name="act_certificates_verify_passage_ensure">Пожалуйста, подтвердите доступ</string>
+    <string name="act_certificates_speech_pass_yes">Температура нормальная. Пожалуйста, пройдите</string>
+    <string name="act_certificates_speech_pass_no">Температура ненормальная. проход запрещен</string>
+    <string name="act_certificates_get_info_failed">Не удалось извлечение инфо. Пожалуйста, попробуйте снова</string>
+    <string name="act_certificates_check_outtime_scan_code">Время проверки истекло. Пожалуйста, отсканируйте код снова</string>
+    <string name="act_certificates_temper_outtime_scan_code">Время измерения температуры истекло. Пожалуйста, отсканируйте код снова</string>
+    <string name="act_certificates_white_list">Белый перечень</string>
+    <string name="act_certificates_verify_record">Контрольная запись</string>
+    <string name="act_certificates_user_manage">Управление персоналом</string>
+    <string name="certificates_record_title">Контрольная запись</string>
+    <string name="certificates_record_export_all">Экспортировать все</string>
+    <string name="certificates_record_index">Очередь</string>
+    <string name="certificates_record_time">Время</string>
+    <string name="certificates_record_name">И.Ф.О</string>
+    <string name="certificates_record_native">Родный город</string>
+    <string name="certificates_record_temper">Температура</string>
+    <string name="certificates_record_similar">Сбросходство</string>
+    <string name="certificates_record_id_photo">Фото в ID</string>
+    <string name="certificates_record_face_photo">Аватарв</string>
+    <string name="certificates_user_list_card_number">№ карты</string>
+    <string name="act_certificates_someone">Тепловизор, с человеком</string>
+    <string name="act_certificates_noone">Тепловизор, без человека</string>
+    <string name="certificates_add_user_card_tips">Пожалуйста, проведите карту, либо введите номер карты</string>
+    <string name="certificates_setting_printer_enable">Всключить USB принтер</string>
+    <string name="certificates_setting_id_card_mode">Всключить режим "IC карта"</string>
+    <string name="act_certificates_tech_support">Support by Beijing YB</string>
+    <string name="act_certificates_no_this_person">Такой человек не найден. Пожалуйста, сначала введите номер карты</string>
+
+    <!--多人测温-->
+    <string name="main_title_multi_thermal">AI измерение температуры тела</string>
+    <string name="main_permission_failed_multi_thermal">Не удалось получить разрешение USB</string>
+    <string name="main_not_found_usb_multi_thermal">Целевое оборудование не найдено</string>
+    <string name="main_exception_record_multi_thermal">Запись ненормальных людей</string>
+    <string name="main_normal_record_multi_thermal">Запись потока людей</string>
+    <string name="main_total_passage_multi_thermal">Количество проходных людей</string>
+    <string name="main_normal_multi_thermal">Нормальная температура</string>
+    <string name="main_error_multi_thermal">Ненормальная темперетура</string>
+    <string name="main_company_multi_thermal">сотрудник</string>
+    <string name="main_visitor_multi_thermal">посетитель</string>
+    <string name="system_net_status_multi_thermal">Положение сети:</string>
+    <string name="system_record_multi_thermal">Запись измерения температуры</string>
+    <string name="record_index_multi_thermal">№</string>
+    <string name="record_date_multi_thermal">Срок</string>
+    <string name="record_pass_time_multi_thermal">Время прохода</string>
+    <string name="record_temper_multi_thermal">Температура тела</string>
+    <string name="record_head_multi_thermal">Аватарв</string>
+    <string name="record_hot_multi_thermal">Тепловизор</string>
+    <string name="setting_black_body_rect_multi_thermal">Коррекция области измерения черного тела</string>
+    <string name="setting_save_failed_multi_thermal">Без изменений</string>
+    <string name="setting_save_success_multi_thermal">Успешно Сохранено</string>
+    <string name="setting_save_multi_thermal">Сохранить</string>
+    <string name="setting_please_correct_multi_thermal">(Пожалуйста, введите разница между температурами, измеренными обычным термометром и тепловизором)</string>
+    <string name="record_export_multi_thermal">Экспорт</string>
+    <string name="main_real_detection">Мониторинг в реальном времени</string>
+    <string name="main_data_total">Статистика данных</string>
+
+    <string name="safety_main_title">AI измерение температуры тела</string>
+    <string name="safety_main_real_detection">Мониторинг в реальном времени</string>
+    <string name="safety_main_temer_area">Измерение температуры тела</string>
+    <string name="safety_main_warning_number">Необычайно</string>
+    <string name="safety_main_device_no">№ оборудования:</string>
+
+    <string name="safety_black_body_size_large">Большой</string>
+    <string name="safety_black_body_size_Middle">Средний</string>
+    <string name="safety_black_body_size_Small">Маленький</string>
+    <string name="safety_black_body_size_Smaller">Меньше</string>
+    <string name="safety_balck_body_size">Определить размер области</string>
+    <string name="safety_black_body_enable">Всключить коррекцию черного тела</string>
+    <string name="safety_temperature_threshold">Отменить корог</string>
+    <string name="safety_temperature_frame_enable">Всключить рамку измерения температуры</string><!--开启测温框-->
+    <string name="safety_immediate_report_enable">Сообщить температуру немедленно</string><!--立即报温-->
+    <string name="safety_calibration_main">Коррекция</string><!--校准-->
+    <string name="safety_measure_main">Измерение температуры:</string><!--测温:-->
+    <string name="safety_correct_main">Коррекция:</string><!--校准:-->
+    <string name="safety_temper_main">Температура тела:</string><!--体温:-->
+    <string name="safety_auto_calibration_setting">Автоматическая коррекция</string>
+    <string name="safety_correct_temper_tip">Пожалуйста, нацельтесь на рамку лиц. Скоро начнется измерение температуры</string>
+    <string name="safety_correct_temper_completion">Измерение температуры завершено</string><!--測溫完成-->
+    <string name="safety_save_completion">Коррекция завершена</string><!--矯正完成-->
+    <string name="safety_save_cancel">Отменить коррекцию</string><!--保存-->
+
+    <string name="setting_privacy_prompt">Измерьте температуру, не записывайте данные</string>
+    <string name="setting_clear_policy_7">7дне</string>
+    <string name="setting_clear_policy_15">15дне</string>
+    <string name="setting_clear_policy_30">30дне</string>
+    <string name="setting_clear_policy_custom">Самоопределение.</string>
+    <string name="setting_clear_policy_unit">дне</string>
+    <string name="setting_clear_all_data">Стереть все данные.</string>
+    <string name="clear_no_data">Данные были удалены：</string><!--保存-->
+</resources>

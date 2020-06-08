@@ -5,84 +5,60 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 
 public class ThermalConst {
 
-    public static final int ONLY_FACE = 0;//ONLY FACE
-    public static final int ONLY_INFRARED = 1;//ONLY SMALL
-    public static final int FACE_INFRARED = 2;//FACE + SMALL
-    public static final int ONLY_THERMAL_HM_32_32 = 3;//ONLY HM-32*32
-    public static final int FACE_THERMAL_HM_32_32 = 4;//FACE + HM-32*32
-    public static final int ONLY_THERMAL_HM_16_4 = 5;//ONLY HM-16*4
-    public static final int FACE_THERMAL_HM_16_4 = 6;//FACE HM-16*4
-    public static final int ONLY_THERMAL_MLX_16_4 = 7;//ONLY MLX-16*4
-    public static final int FACE_THERMAL_MLX_16_4 = 8;//FACE MLX-16*4
-    public static final int ONLY_THERMAL_SMT = 9;
-    public static final int FACE_THERMAL_SMT = 10;
-
-    public static String[] models;
-
-    static {
-        models = APP.getContext().getResources().getStringArray(R.array.models);
-    }
-
     public interface Key {
-        String MODE = "thermalModelSetting";
-        String THERMAL_MIRROR = "thermalMirror";
-        String LOW_TEMP_MODE = "lowTempMode";
-        String AMBIENT_CORRECT = "ambientCorrect";
-        String THERMAL_CORRECT = "thermalCorrect";
-        String PERSON_FRAME = "personFrame";
-        String SPEECH_DELAY = "speechDelay";
-        String TEMP_MIN_THRESHOLD = "tempMinThreshold";
-        String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";
-        String THERMAL_IMAGE_MIRROR = "thermalImageMirror";
-        String THERMAL_F_ENABLED = "fEnabled";
-        String SHOW_DIALOG = "thermalShowDialog";
-        String VOICE_SPEED = "thermalVoiceSpeed";
-        String SHOW_MAIN_LOGO = "thermalShowMainLogo";
-        String SHOW_MAIN_INFO = "thermalShowMainInfo";
-        String SHOW_MAIN_THERMAL = "thermalShowMainThermal";
-        String MAIN_LOGO_TEXT = "thermalMainLogoText";
-        String MAIN_LOGO_IMG = "thermalMainLogoImg";
-        String AUTO_TEMPER = "thermalAutoTemper";
-        String LOCAL_PRIORITY = "thermalLocalPriority";
-
-        String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";
-        //欢迎语
-        String WELCOME_TIP_CONTENT = "welcomeTips";
-        String WELCOME_TIP_ENABLED = "welcomeTipEnabled";
-        //距离提示
-        String DISTANCE_TIP_CONTENT = "thermalCloseTips";
-        String DISTANCE_TIP_ENABLED = "distanceTip";
-        //对框提示
-        String FRAME_TIP_CONTENT = "frameTipContent";
-        String FRAME_TIP_ENABLED = "frameTipEnabled";
-        //正常播报
-        String NORMAL_BROADCAST = "normalBroadcast";
-        String NORMAL_TEMPER_SHOW = "normalTemperShow";
-        String NORMAL_TEMPER_LOCATION = "normalTemperLocation";
-        String NORMAL_BROADCAST_ENABLED = "normalBroadcastEnabled";
-        //异常播报
-        String WARNING_BROADCAST = "warningBroadcast";
-        String WARNING_TEMPER_SHOW = "warningTemperShow";
-        String WARNING_TEMPER_LOCATION = "warningTemperLocation";
-        String WARNING_BROAD_ENABLED = "warningBroadcastEnabled";
-        //单位
-        String CENTIGRADE = "centigradeUnit";
-        String FAHRENHEIT = "fahrenheitUnit";
-        String MASK_TIP = "thermalMaskTip";
-        String TITLE_ENABLED = "thermalTitleEnabled";
+        String FACE_ENABLED = "thermalFaceEnabled"; //启用人脸识别
+        String TEMPER_ENABLED = "thermalTemperEnabled";//启用测温
+        String TEMPER_MODULE = "thermalTemperatureModule";//测温模块
+        String LOW_TEMP_MODE = "lowTempMode";//低温模式
+        String AMBIENT_CORRECT = "ambientCorrect";//环境温度补偿
+        String THERMAL_CORRECT = "thermalCorrect";//测温补偿
+        String PERSON_FRAME = "personFrame";//人像
+        String SPEECH_DELAY = "speechDelay";//播报延时
+        String TEMP_MIN_THRESHOLD = "tempMinThreshold";//低温阈值
+        String TEMP_WARNING_THRESHOLD = "tempWarningThreshold";//高温阈值
+        String THERMAL_IMAGE_MIRROR = "thermalImageMirror";//热成像镜像
+        String THERMAL_F_ENABLED = "fEnabled";//华氏度
+        String SHOW_DIALOG = "thermalShowDialog";//识别弹窗
+        String VOICE_SPEED = "thermalVoiceSpeed";//语音播报
+        String SHOW_MAIN_LOGO = "thermalShowMainLogo";//首页Logo开关
+        String SHOW_MAIN_INFO = "thermalShowMainInfo";//首页信息开关
+        String SHOW_MAIN_THERMAL = "thermalShowMainThermal";//首页热成像开关
+        String MAIN_LOGO_TEXT = "thermalMainLogoText";//首页Logo文字设置
+        String MAIN_LOGO_IMG = "thermalMainLogoImg";//首页LOGO图片设置
+        String AUTO_TEMPER = "thermalAutoTemper";//自动模式
+        String LOCAL_PRIORITY = "thermalLocalPriority";//本地优先级
+        String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";//口罩检测
+        String WELCOME_TIP_CONTENT = "welcomeTips";//欢迎语设置
+        String WELCOME_TIP_ENABLED = "welcomeTipEnabled";//欢迎语开关
+        String DISTANCE_TIP_CONTENT = "thermalCloseTips";//距离提示设置
+        String DISTANCE_TIP_ENABLED = "distanceTip";//距离提示开关
+        String FRAME_TIP_CONTENT = "frameTipContent";//对框提示设置
+        String FRAME_TIP_ENABLED = "frameTipEnabled";//对框提示开关
+        String NORMAL_BROADCAST = "normalBroadcast";//正常播报设置
+        String NORMAL_TEMPER_SHOW = "normalTemperShow";//正常播报温度开关
+        String NORMAL_TEMPER_LOCATION = "normalTemperLocation";//温度位置
+        String NORMAL_BROADCAST_ENABLED = "normalBroadcastEnabled";//正常播报开关
+        String WARNING_BROADCAST = "warningBroadcast";//异常播报设置
+        String WARNING_TEMPER_SHOW = "warningTemperShow";//异常播报温度开关
+        String WARNING_TEMPER_LOCATION = "warningTemperLocation";//温度位置
+        String WARNING_BROAD_ENABLED = "warningBroadcastEnabled";//异常播报开关
+        String CENTIGRADE = "centigradeUnit";//摄氏度单位
+        String FAHRENHEIT = "fahrenheitUnit";//华氏度单位
+        String MASK_TIP = "thermalMaskTip";//口罩提示开关
+        String TITLE_ENABLED = "thermalTitleEnabled";//标题显示
     }
 
     public static class Default {
+        public static boolean FACE_ENABLED = false;
+        public static boolean TEMPER_ENABLED = true;
+        public static int TEMPER_MODULE = TemperModuleType.MLX_16_4;
         public static final boolean TITLE_ENABLED = true;
         public static int DEFAULT_LOGO_ID = R.mipmap.yb_logo;
-
         public static final float VOICE_SPEED = 1.8f;
         public static final boolean SHOW_MAIN_LOGO = true;//LOGO
         public static final boolean SHOW_MAIN_INFO = false;//主页信息
         public static final boolean SHOW_MAIN_THERMAL = true;//热成像
         public static final boolean SHOW_DIALOG = false;
-        public static int MODE = ONLY_THERMAL_MLX_16_4;
-        public static boolean THERMAL_MIRROR = true;
         public static boolean LOW_TEMP = true;
         public static float AMBIENT_CORRECT = 25.0f;
         public static float THERMAL_CORRECT = 0.0f;
@@ -97,18 +73,12 @@ public class ThermalConst {
         public static boolean AUTO_TEMPER = false;
         public static boolean MASK_DETECT_ENABLED = true;
         public static boolean LOCAL_PRIORITY = true;
-
-        //欢迎语
         public static final boolean WELCOME_TIP_ENABLED = true;
-        //距离提示
         public static final boolean DISTANCE_TIP_ENABLED = true;
-        //对框提示
         public static final boolean FRAME_TIP_ENABLED = true;
-        //正常播报
         public static final boolean NORMAL_TEMPER_SHOW = true;
         public static final int NORMAL_TEMPER_LOCATION = 2;
         public static final boolean NORMAL_BROADCAST_ENABLED = true;
-        //异常播报
         public static final boolean WARNING_TEMPER_SHOW = true;
         public static final int WARNING_TEMPER_LOCATION = 2;
         public static final boolean WARNING_BROAD_ENABLED = true;

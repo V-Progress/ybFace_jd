@@ -149,7 +149,7 @@ public class FaceView extends FrameLayout {
     }
 
     public void setSimilarThreshold() {
-        int intOrDef = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+        int intOrDef = SpUtils.getIntOrDef(Constants.Key.SIMILAR_THRESHOLD, Constants.Default.SIMILAR_THRESHOLD);
         Log.e(TAG, "initView: 即将设置阈值为：" + ((float) intOrDef / 100));
         SIMILAR_THRESHOLD = ((float) intOrDef / 100);
     }
@@ -187,7 +187,7 @@ public class FaceView extends FrameLayout {
 
     private void initCamera() {
         Log.e(TAG, "initCamera: 打开摄像头：" + Constants.CAMERA_ID);
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
                 .rotation(angle)
@@ -326,8 +326,8 @@ public class FaceView extends FrameLayout {
     private CameraListener cameraListener = new CameraListener() {
         @Override
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
-            boolean isHMirror = SpUtils.getBoolean(SpUtils.IS_H_MIRROR, Constants.DEFAULT_H_MIRROR);
-            boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR, Constants.DEFAULT_V_MIRROR);
+            boolean isHMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR, Constants.Default.IS_H_MIRROR);
+            boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR, Constants.Default.IS_V_MIRROR);
 
             Camera.Size lastPreviewSize = previewSize;
             previewSize = camera.getParameters().getPreviewSize();
@@ -562,7 +562,7 @@ public class FaceView extends FrameLayout {
     };
 
     public void changeAngle() {
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         Log.e(TAG, "changeAngle111: " + angle);
         if (cameraHelper != null) {
             Log.e(TAG, "changeAngle222: " + angle);
@@ -571,7 +571,7 @@ public class FaceView extends FrameLayout {
     }
 
     public void resume() {
-        boolean mirror = SpUtils.isMirror();
+        boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
         if (drawHelper != null) {
             Log.e(TAG, "resume: ---------- " + mirror);
             drawHelper.setMirrorHorizontal(mirror);
@@ -653,9 +653,9 @@ public class FaceView extends FrameLayout {
 
             byte[] clone = mCurrBytes.clone();
 //            Bitmap bmp = NV21ToBitmap.nv21ToBitmap2(clone, cameraHelper.getWidth(), cameraHelper.getHeight());
-            Bitmap bmp = nv21ToBitmap.nv21ToBitmap(clone, cameraHelper.getWidth(), cameraHelper.getHeight());
+            Bitmap bmp = nv21ToBitmap.nv21ToBitmap2(clone, cameraHelper.getWidth(), cameraHelper.getHeight());
             Bitmap bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
-            int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+            int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
             if (bmp != null && angle != 0) {
                 Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
                 return bitmap1;
@@ -678,13 +678,13 @@ public class FaceView extends FrameLayout {
                     int height = bestRect.bottom - bestRect.top;
                     if (width > 0 && height > 0) {
                         Bitmap bitmap = Bitmap.createBitmap(originBitmap, bestRect.left, bestRect.top, width, height);
-                        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
                         if (originBitmap != null && !originBitmap.equals(bitmap) && !originBitmap.isRecycled()) {
                             originBitmap.recycle();
                         }
 
                         Log.e(TAG, "getCurrCameraFrame: 截人像耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
-                        int pictureRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
+                        int pictureRotation = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
                         if (pictureRotation != -1) {
                             return ImageUtils.rotateBitmap(bitmap, pictureRotation);
                         } else if (bitmap != null && angle != 0) {
@@ -735,8 +735,8 @@ public class FaceView extends FrameLayout {
 
     public Bitmap getCurrCameraFrame() {
         long start = System.currentTimeMillis();
-        Bitmap bitmap = NV21ToBitmap.nv21ToBitmap(mCurrBytes, cameraHelper.getWidth(), cameraHelper.getHeight());
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        Bitmap bitmap = NV21ToBitmap.nv21ToBitmap2(mCurrBytes, cameraHelper.getWidth(), cameraHelper.getHeight());
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         if (bitmap != null && angle != 0) {
             Bitmap bitmap1 = ImageUtils.rotateBitmap(bitmap, angle);
             if (bitmap != null && !bitmap.equals(bitmap1) && !bitmap.isRecycled()) {
@@ -782,7 +782,7 @@ public class FaceView extends FrameLayout {
      * 初始化引擎
      */
     private void initEngine() {
-        int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         DetectFaceOrientPriority orientPriority;
         if (angle == 0) {
             orientPriority = DetectFaceOrientPriority.ASF_OP_0_ONLY;

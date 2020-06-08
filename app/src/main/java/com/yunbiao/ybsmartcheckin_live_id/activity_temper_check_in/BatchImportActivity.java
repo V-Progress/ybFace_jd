@@ -1,17 +1,24 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -20,13 +27,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.lcw.library.imagepicker.ImagePicker;
 import com.yunbiao.ybsmartcheckin_live_id.BR;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.databinding.ActivityBatchImportBinding;
-import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
+import jxl.Cell;
+import jxl.CellFeatures;
+import jxl.CellType;
+import jxl.CellView;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
 
 /***
  * 导入流程
@@ -49,11 +75,103 @@ public class BatchImportActivity extends Activity {
         rlvData.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         BatchImportAdapter batchImportAdapter = new BatchImportAdapter(this,userCheckList);
         batchImportAdapter.setOnItemCheckedListener((position, checked) -> {
-            userCheckList.get(position).setCheckked(checked);
+            userCheckList.get(position).setChecked(checked);
         });
         rlvData.setAdapter(batchImportAdapter);
+
+        batchContent.setFileName("请选择导入文件(.xls)、(.xlsx)");
+        batchContent.setCheckedAvailable(true);
     }
 
+    final String XLSX = "application/x-excel";
+    final String XLSX1 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    final String XLS = "application/vnd.ms-excel";
+
+    public class ActionPresenter{
+        public void chooseFile(View view){
+            //调用系统文件管理器打开指定路径目录
+            //intent.setDataAndType(Uri.fromFile(dir.getParentFile()), "file/*.txt");
+//            intent.setType("application/vnd.ms-excel"); //华为手机mate7不支持
+//            intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //华为手机mate7不支持
+//            intent.setType("text/plain");
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            String[] mimeTypes = {XLS, XLSX1, XLSX};
+            intent.setType("application/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+            startActivityForResult(intent, 1111);
+        }
+
+        public void onAllChecked(CompoundButton buttonView, boolean isChecked) {
+
+        }
+
+        public void onReverseChecked(CompoundButton buttonView, boolean isChecked) {
+
+        }
+    }
+
+    private static final String TAG = "BatchImportActivity";
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1111 && resultCode == RESULT_OK){
+            Uri xls = data.getData();
+            batchContent.setFileName(getFileRealNameFromUri(this, xls));
+
+
+
+//            DocumentFile documentFile = DocumentFile.fromSingleUri(this,xls);
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(xls);
+                WorkbookSettings workbookSettings = new WorkbookSettings();
+                workbookSettings.setEncoding("UTF-8");
+                Workbook workbook = Workbook.getWorkbook(inputStream,workbookSettings);
+                String[] sheetNames = workbook.getSheetNames();
+                if (sheetNames.length <= 0) {
+                    Log.e(TAG, "onActivityResult: 文件内没有表格");
+                    return;
+                }
+                for (String sheetName : sheetNames) {
+                    Log.e(TAG, "表名：" + sheetName);
+                }
+
+                Sheet sheet = workbook.getSheet(sheetNames[0]);
+                int rows = sheet.getRows();
+                if(rows <= 0){
+                    Log.e(TAG, "onActivityResult: 该表格内没有数据");
+                    return;
+                }
+
+
+                StringBuffer stringBuffer = new StringBuffer();
+                for (int i = 1; i < rows; i++) {
+                    Cell[] row = sheet.getRow(i);
+                    for (Cell cell : row) {
+                        stringBuffer.append(cell.getContents()).append("(").append(cell.getType()).append(")").append(",");
+                    }
+                    Log.e(TAG, i + "行：" + stringBuffer.toString());
+                    stringBuffer.setLength(0);
+                }
+                inputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (BiffException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public static String getFileRealNameFromUri(Context context, Uri fileUri) {
+        if (context == null || fileUri == null) return null;
+        DocumentFile documentFile = DocumentFile.fromSingleUri(context, fileUri);
+        if (documentFile == null) return null;
+        return documentFile.getName();
+    }
 
     private class BatchImportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<UserCheckBean> datas;
@@ -109,7 +227,7 @@ public class BatchImportActivity extends Activity {
                 tvSex.setText(userCheckBean.getSexStr());
                 tvPosition.setText(userCheckBean.getPosition());
                 Glide.with(mContext).load(userCheckBean.getImageBytes()).asBitmap().into(ivHead);
-                checkBox.setChecked(userCheckBean.isCheckked());
+                checkBox.setChecked(userCheckBean.isChecked());
                 checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if(onItemCheckedListener != null){
                         onItemCheckedListener.onItemChecked(position,isChecked);
@@ -159,27 +277,13 @@ public class BatchImportActivity extends Activity {
         }
     }
 
-    public class ActionPresenter{
-        public void chooseFile(View view){
-
-        }
-
-        public void onAllChecked(CompoundButton buttonView, boolean isChecked) {
-
-        }
-
-        public void onReverseChecked(CompoundButton buttonView, boolean isChecked) {
-
-        }
-    }
-
     public class UserCheckBean{
         private String name;
         private String depart;
         private String sexStr;
         private String position;
         private byte[] imageBytes;
-        private boolean isCheckked;
+        private boolean isChecked;
 
         public String getName() {
             return name;
@@ -221,12 +325,12 @@ public class BatchImportActivity extends Activity {
             this.imageBytes = imageBytes;
         }
 
-        public boolean isCheckked() {
-            return isCheckked;
+        public boolean isChecked() {
+            return isChecked;
         }
 
-        public void setCheckked(boolean checkked) {
-            isCheckked = checkked;
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }

@@ -42,6 +42,7 @@ import com.bumptech.glide.Glide;
 import com.lcw.library.imagepicker.ImagePicker;
 import com.lcw.library.imagepicker.utils.ImageLoader;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
@@ -162,7 +163,7 @@ public class ThermalSettingActivity extends BaseActivity {
         private void initView(View view){
             //设置对比度======================================================================
             final EditText edtSimilar = view.findViewById(R.id.edt_similar_threshold);
-            int similar = SpUtils.getIntOrDef(SpUtils.SIMILAR_THRESHOLD, 80);
+            int similar = SpUtils.getIntOrDef(Constants.Key.SIMILAR_THRESHOLD, Constants.Default.SIMILAR_THRESHOLD);
             edtSimilar.setText(similar + "");
             view.findViewById(R.id.btn_set_similar_threshold).setOnClickListener(v -> {
                 String similar1 = edtSimilar.getText().toString();
@@ -171,7 +172,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     return;
                 }
                 int sml = Integer.parseInt(similar1);
-                SpUtils.saveInt(SpUtils.SIMILAR_THRESHOLD, sml);
+                SpUtils.saveInt(Constants.Key.SIMILAR_THRESHOLD, sml);
                 Activity activity = APP.getMainActivity();
                 if (activity != null) {
                     if (activity instanceof ThermalImage2Activity) {
@@ -182,21 +183,21 @@ public class ThermalSettingActivity extends BaseActivity {
 
             //设置活体=========================================================================
             Switch swLiveness = view.findViewById(R.id.sw_liveness_setting);
-            boolean liveness = SpUtils.getBoolean(SpUtils.LIVENESS_ENABLED, false);
+            boolean liveness = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
             swLiveness.setChecked(liveness);
-            swLiveness.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.LIVENESS_ENABLED, isChecked));
+            swLiveness.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.LIVENESS_ENABLED, isChecked));
 
             //人脸框=========================================================================
             //人脸框横向镜像
             CheckBox cbMirror = view.findViewById(R.id.cb_mirror);
-            final boolean mirror = SpUtils.isMirror();
+            final boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
             cbMirror.setChecked(mirror);
-            cbMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.setMirror(isChecked));
+            cbMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.IS_H_MIRROR,isChecked));
             //人脸框纵向镜像
             CheckBox cbVerticalMirror = view.findViewById(R.id.cb_vertical_mirror);
-            boolean isVMirror = SpUtils.getBoolean(SpUtils.IS_V_MIRROR, Constants.DEFAULT_V_MIRROR);
+            boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR, Constants.Default.IS_V_MIRROR);
             cbVerticalMirror.setChecked(isVMirror);
-            cbVerticalMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.IS_V_MIRROR, isChecked));
+            cbVerticalMirror.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.IS_V_MIRROR, isChecked));
 
             //人脸弹窗=========================================================================
             Switch switchFaceDialog = view.findViewById(R.id.sw_face_dialog);
@@ -207,10 +208,10 @@ public class ThermalSettingActivity extends BaseActivity {
             //摄像头设置=========================================================================
             //摄像头角度
             Button btnAngle = view.findViewById(R.id.btn_setAngle);
-            int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+            int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
             btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
             btnAngle.setOnClickListener(v -> {
-                int anInt = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
+                int anInt = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
                 if (anInt == 0) {
                     anInt = 90;
                 } else if (anInt == 90) {
@@ -221,15 +222,15 @@ public class ThermalSettingActivity extends BaseActivity {
                     anInt = 0;
                 }
                 btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + anInt);
-                SpUtils.saveInt(SpUtils.CAMERA_ANGLE, anInt);
+                SpUtils.saveInt(Constants.Key.CAMERA_ANGLE, anInt);
                 EventBus.getDefault().post(new DisplayOrientationEvent());
             });
 
             Button btnPicRotation = view.findViewById(R.id.btn_picture_rotation);
-            int picRotation = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
+            int picRotation = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
             btnPicRotation.setText(picRotation == -1 ? (getResources().getString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
             btnPicRotation.setOnClickListener(v -> {
-                int picRotation1 = SpUtils.getIntOrDef(SpUtils.PICTURE_ROTATION, Constants.DEFAULT_PICTURE_ROTATION);
+                int picRotation1 = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
                 if (picRotation1 == -1) {
                     picRotation1 = 0;
                 } else if (picRotation1 == 0) {
@@ -242,7 +243,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     picRotation1 = -1;
                 }
                 btnPicRotation.setText(picRotation1 == -1 ? (getResources().getString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation1));
-                SpUtils.saveInt(SpUtils.PICTURE_ROTATION, picRotation1);
+                SpUtils.saveInt(Constants.Key.PICTURE_ROTATION, picRotation1);
             });
         }
     }
@@ -263,13 +264,13 @@ public class ThermalSettingActivity extends BaseActivity {
 
         private void initView(View view){
             //屏保===========================================================================================
-            boolean isEnabled = SpUtils.getBoolean(SpUtils.POSTER_ENABLED, Constants.DEFAULT_POSTER_ENABLED);
+            boolean isEnabled = SpUtils.getBoolean(Constants.Key.POSTER_ENABLED, Constants.Default.POSTER_ENABLED);
             Switch swPoster = view.findViewById(R.id.sw_poster_setting);
             swPoster.setChecked(isEnabled);
             swPoster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    SpUtils.saveBoolean(SpUtils.POSTER_ENABLED, isChecked);
+                    SpUtils.saveBoolean(Constants.Key.POSTER_ENABLED, isChecked);
                 }
             });
 
@@ -313,13 +314,13 @@ public class ThermalSettingActivity extends BaseActivity {
             });
 
             //二维码设置=============================================================================================
-            boolean qrCodeEnabled = SpUtils.getBoolean(SpUtils.QRCODE_ENABLED, Constants.DEFAULT_QRCODE_ENABLED);
+            boolean qrCodeEnabled = SpUtils.getBoolean(Constants.Key.QRCODE_ENABLED, Constants.Default.QRCODE_ENABLED);
             Switch swQrCode = view.findViewById(R.id.sw_qrcode_setting);
             swQrCode.setChecked(qrCodeEnabled);
             swQrCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    SpUtils.saveBoolean(SpUtils.QRCODE_ENABLED, isChecked);
+                    SpUtils.saveBoolean(Constants.Key.QRCODE_ENABLED, isChecked);
                 }
             });
 
@@ -397,24 +398,6 @@ public class ThermalSettingActivity extends BaseActivity {
             view.findViewById(R.id.btn_go_speech).setOnClickListener(v -> startActivity(new Intent(getActivity(), SpeechContentActivity.class)));
 
         }
-        class ImgLoader implements ImageLoader {
-
-            @Override
-            public void loadImage(ImageView imageView, String imagePath) {
-                Glide.with(APP.getContext()).load(imagePath).asBitmap().override(50, 50).into(imageView);
-            }
-
-            @Override
-            public void loadPreImage(ImageView imageView, String imagePath) {
-                Glide.with(APP.getContext()).load(imagePath).asBitmap().override(50, 50).into(imageView);
-            }
-
-            @Override
-            public void clearMemoryCache() {
-                //清理缓存
-                Glide.get(APP.getContext()).clearMemory();
-            }
-        }
     }
 
     public static class TemperSettingFragment extends Fragment {
@@ -432,33 +415,57 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void initView(View view) {
-            Button btnThermalCorr = view.findViewById(R.id.btn_thermal_corr);
-            btnThermalCorr.setOnClickListener(v -> startActivity(new Intent(getActivity(), TemperatureCorrectActivity.class)));
-            //模式==================================================================================
             final TextView tvModelSetting = view.findViewById(R.id.tv_model_setting);
-            final String[] items = ThermalConst.models;
-            final int model = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
-            tvModelSetting.setText(items[model]);
-            tvModelSetting.setOnClickListener(v -> {
-                final int currModel = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);
+            CheckBox cbFace = view.findViewById(R.id.cb_face);
+            CheckBox cbTemper = view.findViewById(R.id.cb_temper);
+
+            String[] temperModuleArray = getResources().getStringArray(R.array.temper_module);
+            int currTemperModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE,ThermalConst.Default.TEMPER_MODULE);
+            boolean faceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
+            boolean temperEnabled = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED,ThermalConst.Default.TEMPER_ENABLED);
+
+            tvModelSetting.setText(temperModuleArray[currTemperModule]);
+            cbFace.setChecked(faceEnabled);
+            cbTemper.setChecked(temperEnabled);
+
+            tvModelSetting.setOnClickListener(view1 -> {
+                int currModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE,ThermalConst.Default.TEMPER_MODULE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(getResources().getString(R.string.setting_select_model));
-                builder.setSingleChoiceItems(items, currModel, (dialog, whichModel) -> {
-                    Log.e(TAG, "initView: 选中模式=============== " + whichModel);
-                    Log.e(TAG, "onClick: 模式选择：" + whichModel);
+                builder.setSingleChoiceItems(temperModuleArray, currModule, (dialog, whichModel) -> {
                     //如果模式相同则直接隐藏
-                    if (whichModel == currModel) {
+                    if (whichModel == currModule) {
                         dialog.dismiss();
                         return;
                     }
-                    SpUtils.saveInt(ThermalConst.Key.MODE, whichModel);
-                    tvModelSetting.setText(items[whichModel]);
-
+                    SpUtils.saveInt(ThermalConst.Key.TEMPER_MODULE, whichModel);
+                    tvModelSetting.setText(temperModuleArray[whichModel]);
                     dialog.dismiss();
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             });
+            CompoundButton.OnCheckedChangeListener onCheckedChangeListener = (buttonView, isChecked) -> {
+                if(buttonView.getId() == R.id.cb_face){
+                    boolean temperE = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED, ThermalConst.Default.TEMPER_ENABLED);
+                    if(!isChecked && !temperE){
+                        cbFace.setChecked(true);
+                        UIUtils.showShort(getActivity(),getString(R.string.model_check_tip));
+                        return;
+                    }
+                    SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED,isChecked);
+                } else {
+                    boolean faceE = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED, ThermalConst.Default.FACE_ENABLED);
+                    if(!isChecked && !faceE){
+                        cbTemper.setChecked(true);
+                        UIUtils.showShort(getActivity(),getString(R.string.model_check_tip));
+                        return;
+                    }
+                    SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED,isChecked);
+                }
+            };
+            cbFace.setOnCheckedChangeListener(onCheckedChangeListener);
+            cbTemper.setOnCheckedChangeListener(onCheckedChangeListener);
 
             //隐私模式=====================================================================================================
             boolean isPrivacyModeEnabled = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
@@ -611,14 +618,14 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         public void jumpTag() {
-            final boolean jumpTag = SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG);
+            final boolean jumpTag = SpUtils.getBoolean(Constants.Key.JUMP_TAG, Constants.Default.JUMP_TAG);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(APP.getContext().getResources().getString(R.string.setting_switch_function));
             builder.setMessage(APP.getContext().getResources().getString(R.string.setting_switch_tip1));
             builder.setNegativeButton(APP.getContext().getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss());
             builder.setPositiveButton(APP.getContext().getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
                 dialog.dismiss();
-                SpUtils.saveBoolean(Constants.JUMP_TAG, !jumpTag);
+                SpUtils.saveBoolean(Constants.Key.JUMP_TAG, !jumpTag);
 
                 APP.exit2();
             });
@@ -628,7 +635,7 @@ public class ThermalSettingActivity extends BaseActivity {
 
         private void initView(View view) {
             View llSwitchFunction = view.findViewById(R.id.ll_switch_function);
-            if(Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){
+            if(Constants.FLAVOR_TYPE != FlavorType.HT){
                 llSwitchFunction.setVisibility(View.GONE);
             } else {
                 llSwitchFunction.setVisibility(View.VISIBLE);
@@ -656,14 +663,14 @@ public class ThermalSettingActivity extends BaseActivity {
             tvNetState.setText(net);
 
             //IC读卡器===============================================================================
-            boolean readCardEnabled = SpUtils.getBoolean(SpUtils.READ_CARD_ENABLED, Constants.DEFAULT_READ_CARD_ENABLED);
+            boolean readCardEnabled = SpUtils.getBoolean(Constants.Key.READ_CARD_ENABLED, Constants.Default.READ_CARD_ENABLED);
             Switch swReadCard = view.findViewById(R.id.sw_readcard_setting);
             swReadCard.setChecked(readCardEnabled);
-            swReadCard.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(SpUtils.READ_CARD_ENABLED, isChecked));
+            swReadCard.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.READ_CARD_ENABLED, isChecked));
 
             //开门时间===================================================================================
             final EditText edtDelay = view.findViewById(R.id.edt_delay);
-            int cacheDelay = SpUtils.getIntOrDef(SpUtils.GPIO_DELAY, 5);
+            int cacheDelay = SpUtils.getIntOrDef(Constants.Key.GPIO_DELAY, Constants.Default.GPIO_DELAY);
             edtDelay.setText(cacheDelay + "");
             edtDelay.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -681,7 +688,7 @@ public class ThermalSettingActivity extends BaseActivity {
                         return;
                     }
                     int delay = Integer.parseInt(s1);
-                    SpUtils.saveInt(SpUtils.GPIO_DELAY, delay);
+                    SpUtils.saveInt(Constants.Key.GPIO_DELAY, delay);
                     UIUtils.showShort(getActivity(), getString(R.string.setting_edit_password_success));
                 }
             });
@@ -896,7 +903,7 @@ public class ThermalSettingActivity extends BaseActivity {
             final RadioButton rbYun = view.findViewById(R.id.rb_yun);
             final RadioButton rbJu = view.findViewById(R.id.rb_ju);
             Button btnSave = view.findViewById(R.id.btn_save_address);
-            if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+            if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == Constants.serverModel.YUN) {
                 rbYun.setChecked(true);
                 setServerInfo(Constants.serverModel.YUN);
             } else {
@@ -947,13 +954,13 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
 
                 if (rbYun.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.YUN);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
-                    SpUtils.saveInt(SpUtils.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(SpUtils.JU_IP_CACHE, mIp);
-                    SpUtils.saveStr(SpUtils.JU_RESOURCE_PORT_CACHE, mResPort);
-                    SpUtils.saveStr(SpUtils.JU_XMPP_PORT_CACHE, mXmppPort);
-                    SpUtils.saveStr(SpUtils.JU_PROJECT_NAME_SUFFIX, mProName);
+                    SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
+                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
                 UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_save_succ_please_restart));
             });
@@ -974,10 +981,10 @@ public class ThermalSettingActivity extends BaseActivity {
                 edtXmppPort.setEnabled(false);
                 edtProName.setEnabled(false);
             } else {
-                ip = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-                resPort = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
-                xmppPort = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-                proName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+                ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+                resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+                xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+                proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
                 edtIp.setEnabled(true);
                 edtResPort.setEnabled(true);
                 edtXmppPort.setEnabled(true);
@@ -1181,5 +1188,11 @@ public class ThermalSettingActivity extends BaseActivity {
             window.setWindowAnimations(R.style.mystyle);  //添加动画
             window.setBackgroundDrawableResource(android.R.color.transparent);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ConfigLoader.save();
     }
 }

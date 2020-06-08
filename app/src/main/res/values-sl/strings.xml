@@ -256,15 +256,11 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Udeležba na prepoznavanju obraza</string>
-    <string name="face_infared_model">Obrazno + termično slikanje (majhno)</string>
-    <string name="infared_only_model">samo termično slikanje (majhno)</string>
-	<string name="thermal_only_model">samo termično slikanje (HM-32*32）</string>
-    <string name="face_thermal_model">Obrazno + termično slikanje(HM-32*32）</string>
-    <string name="thermal_16_4_model">samo termično slikanje (HM-16*4）</string>
-    <string name="face_thermal_16_4_model">Obrazno + termično slikanje(HM-16*4）</string>
-    <string name="only_thermal_mlx_16_4_model">samo termično slikanje (MLX-16*4）</string>
-    <string name="face_thermal_mlx_16_4_model">Obrazno + termično slikanje(MLX-16*4）</string>
+    <string name="only_label">Samo</string>
+    <string name="face_label">Udeležba</string>
+    <string name="temper_label">Termično slikanje</string>
+    <string name="model_tip">Meritev temperature med enim samim izbirajte</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">Izberite vsaj en način</string><!--至少选择一种模式-->
 
 
     <!--标签-->

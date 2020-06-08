@@ -8,14 +8,18 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.xhapimanager.XHApiManager;
 import com.example.elcapi.jnielc;
 import com.example.yfaceapi.GPIOManager;
 import com.example.yfaceapi.GpioUtils;
 import com.intelligence.hardware.temperature.TemperatureModule;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 
 public abstract class LedControlActivity extends BaseActivity {
+    private static final String TAG = "LedControlActivity";
 
     //右边灯
     private static final int seek_red_r = 0xa1;//红
@@ -38,6 +42,7 @@ public abstract class LedControlActivity extends BaseActivity {
     private int brightness = 15;//亮度：范围0-15
     protected SmdtManager mSmdtManager;
     protected GPIOManager gpioManager;
+    private XHApiManager xhApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +52,73 @@ public abstract class LedControlActivity extends BaseActivity {
 
         if (TextUtils.equals("SMT", broadType)) {
             mSmdtManager = SmdtManager.create(this);
+            try {
+                //设置继电器为非自动模式
+                mSmdtManager.setRelayIoMode(0, 0);
+            } catch (Exception e) {
+                L.e("BaseGpioActivity", "onCreate:" + (e == null ? "NULL" : e.getMessage()));
+            }
         } else if(TextUtils.equals("HARRIS",broadType)){
             gpioManager = GPIOManager.getInstance(this);
         }
-        resetLedDelay(1000);
     }
 
-    protected void resetLedDelay(int delay) {
-        handler.removeMessages(0);
-        handler.sendEmptyMessageDelayed(0, delay + 100);
+    protected void open() {
+        TemperatureModule.getIns().controlExpandRelay(true);
+
+        if (!(this instanceof WelComeActivity)) {
+            if (mSmdtManager != null) {
+                mSmdtManager.setRelayIoValue(1);
+            }
+        }
+
+        if (mSmdtManager != null) {
+            for (int i = 0; i < 3; i++) {
+                int result = mSmdtManager.smdtSetExtrnalGpioValue(1, false);
+            }
+        }
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(5, 0);
+        }
+        if(gpioManager!= null){
+            gpioManager.pullUpRelay();
+        }
     }
 
-    private static final String TAG = "LedControlActivity";
-    private Handler handler = new Handler(msg -> {
-        Log.e(TAG, "handleMessage: --------- 已重置灯光");
-        ledInit();
-        return true;
-    });
+    private boolean isOpened = false;//是否已开锁
+    protected void close() {
+        TemperatureModule.getIns().controlExpandRelay(false);
+
+        if (!(this instanceof WelComeActivity)) {
+            if (mSmdtManager != null) {
+                mSmdtManager.setRelayIoValue(0);
+            }
+        }
+        if (mSmdtManager != null) {
+            for (int i = 0; i < 3; i++) {
+                int result = mSmdtManager.smdtSetExtrnalGpioValue(1, true);
+                isOpened = result == 0;
+            }
+        }
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(5, 1);
+        }
+        if(gpioManager!= null){
+            gpioManager.pullDownRelay();
+        }
+    }
+
+    protected void xhapiLedOpen() {
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(4, 1);
+        }
+    }
+
+    protected void xhapiLedClose() {
+        if (xhApi != null) {
+            xhApi.XHSetGpioValue(4, 0);
+        }
+    }
 
     protected void ledGreen() {
         smdtLedGreen();
@@ -206,13 +261,9 @@ public abstract class LedControlActivity extends BaseActivity {
         if(gpioManager == null){
             return;
         }
-        String greenLightStatus = gpioManager.getGreenLightStatus();
-        String redLightStatus = gpioManager.getRedLightStatus();
-        String whiteLightStatus = gpioManager.getWhiteLightStatus();
-        if(TextUtils.equals("1",greenLightStatus) || TextUtils.equals("1",redLightStatus)){
-            return;
-        }
-        if(!TextUtils.equals("1",whiteLightStatus)){
+        if(ledTag == -1){
+            Log.e(TAG, "ysLedWhite: 当前状态为默认，白灯亮");
+            ledTag = 0;
             gpioManager.pullUpWhiteLight();
         }
     }
@@ -222,16 +273,15 @@ public abstract class LedControlActivity extends BaseActivity {
         if(gpioManager == null){
             return;
         }
-        String redLightStatus = gpioManager.getRedLightStatus();
-        String whiteLightStatus = gpioManager.getWhiteLightStatus();
-        String greenLightStatus = gpioManager.getGreenLightStatus();
-        if(TextUtils.equals("1",redLightStatus)){
-            gpioManager.pullDownRedLight();
-        }
-        if(TextUtils.equals("1",whiteLightStatus)){
-            gpioManager.pullDownWhiteLight();
-        }
-        if(!TextUtils.equals("1",greenLightStatus)){
+
+        if(ledTag != 1){
+            Log.e(TAG, "ysLedGreen: 当前状态为" + ledTag + "，绿灯亮");
+            if(ledTag == 0){
+                gpioManager.pullDownWhiteLight();
+            } else if(ledTag == 2){
+                gpioManager.pullDownRedLight();
+            }
+            ledTag = 1;
             gpioManager.pullUpGreenLight();
         }
     }
@@ -241,27 +291,38 @@ public abstract class LedControlActivity extends BaseActivity {
         if(gpioManager == null){
             return;
         }
-        String whiteLightStatus = gpioManager.getWhiteLightStatus();
-        String redLightStatus = gpioManager.getRedLightStatus();
-        String greenLightStatus = gpioManager.getGreenLightStatus();
-        if(TextUtils.equals("1",whiteLightStatus)){
-            gpioManager.pullDownWhiteLight();
-        }
-        if(TextUtils.equals("1",greenLightStatus)){
-            gpioManager.pullDownGreenLight();
-        }
-        if(!TextUtils.equals("1",redLightStatus)){
+        if(ledTag != 2){
+            Log.e(TAG, "ysLedRed: 当前状态为" + ledTag + "，红灯亮");
+            if(ledTag == 0){
+                gpioManager.pullDownWhiteLight();
+            } else if(ledTag == 1){
+                gpioManager.pullDownGreenLight();
+            }
+            ledTag = 2;
             gpioManager.pullUpRedLight();
         }
     }
+
+    /*
+     * -1初始化状态，三灯都可以亮
+     * 0白灯亮，白灯不可亮，红绿可亮
+     * 1绿灯亮，白灯不可亮，绿灯不可亮，红灯可亮
+     * 2红灯亮，白灯不可亮，红灯不可亮，绿灯可亮
+     */
+    private int ledTag = -1;
 
     protected void ysLedOff(){
         TemperatureModule.getIns().controlExpandLight(-1);
         if(gpioManager == null){
             return;
         }
-        gpioManager.pullDownRedLight();
-        gpioManager.pullDownWhiteLight();
-        gpioManager.pullDownGreenLight();
+        if(ledTag == 0){
+            gpioManager.pullDownWhiteLight();
+        } else if(ledTag == 1){
+            gpioManager.pullDownGreenLight();
+        } else if(ledTag == 2){
+            gpioManager.pullDownRedLight();
+        }
+        ledTag = -1;
     }
 }

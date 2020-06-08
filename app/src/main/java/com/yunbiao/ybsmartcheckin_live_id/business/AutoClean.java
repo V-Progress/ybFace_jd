@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class AutoClean {
     private static final String TAG = "AutoClean";
     private final ScheduledExecutorService scheduledExecutorService;
-    private int INITIAL_TIME = 2;
-    private int PERIOD_TIME = 5;
+    private int INITIAL_TIME = 30;
+    private int PERIOD_TIME = 60;
 
     public AutoClean(){
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

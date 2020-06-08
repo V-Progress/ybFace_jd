@@ -15,9 +15,10 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check.ThermalSafetyCheckActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light.SafetyCheckDoubleLightActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ConfigLoader;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.TemperModuleType;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in_smt.SMTMain2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -106,8 +107,9 @@ public class SplashActivity extends BaseActivity {
             Constants.checkSetIp();
             Constants.initStorage();
             OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
-
             ThreadUitls.runInThread(() -> PowerOffTool.getPowerOffTool().machineStart());
+
+            ConfigLoader.load();
 
             uploadException(nextRunnable);
         }
@@ -141,14 +143,14 @@ public class SplashActivity extends BaseActivity {
         switch (Constants.FLAVOR_TYPE) {
             case FlavorType.HT:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.logo_icon_horizontal;
-                ThermalConst.Default.MAIN_LOGO_TEXT = "HT";
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
                 break;
             case FlavorType.SK:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.icon_logo3;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
                 break;
             case FlavorType.OSIMLE:
-                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.osmile_logo;
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.osimle_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
                 break;
             case FlavorType.SOFT_WORK_Z:
@@ -173,24 +175,35 @@ public class SplashActivity extends BaseActivity {
         Log.e(TAG, "jump: 板卡信息：" + broadTypeStr);
         switch (broadTypeStr) {
             case "SMT":
-                Constants.DEFAULT_CAMERA_ANGLE = 270;
-                Constants.DEFAULT_H_MIRROR = false;
+                Constants.Default.CAMERA_ANGLE = 270;
+                Constants.Default.IS_H_MIRROR = false;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_16_4;
+                ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_16_4;
                 break;
             case "LXR":
-                Constants.DEFAULT_CAMERA_ANGLE = 0;//横屏
-                Constants.DEFAULT_H_MIRROR = true;
+                Constants.Default.CAMERA_ANGLE = 0;//横屏
+                Constants.Default.IS_H_MIRROR = true;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_HM_32_32;
+                ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_32_32;
                 break;
             case "HARRIS":
             default:
-                Constants.DEFAULT_CAMERA_ANGLE = 90;
-                Constants.DEFAULT_H_MIRROR = false;
+                Constants.Default.CAMERA_ANGLE = 90;
+                Constants.Default.IS_H_MIRROR = false;
                 CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                ThermalConst.Default.MODE = ThermalConst.ONLY_THERMAL_MLX_16_4;
+                ThermalConst.Default.TEMPER_MODULE = TemperModuleType.MLX_16_4;
                 break;
+        }
+
+        int lastModel = SpUtils.getIntOrDef("thermalModelSetting", -1);
+        if(lastModel != -1){
+            Log.e(TAG, "jump: 检测到旧模式：" + lastModel);
+            NewModuleType newModuleType = oldModelToModuleType(lastModel);
+            Log.e(TAG, "jump: 转换为新模式：" + newModuleType.toString());
+            SpUtils.saveInt(ThermalConst.Key.TEMPER_MODULE,newModuleType.module);
+            SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED,newModuleType.faceEnabled);
+            SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED,newModuleType.temperEnabled);
+            SpUtils.remove("thermalModelSetting");
         }
 
         switch (Constants.DEVICE_TYPE) {
@@ -199,22 +212,16 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.TEMPERATURE_CHECK_IN:
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
-                if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
+                if (SpUtils.getBoolean(Constants.Key.JUMP_TAG, Constants.Default.JUMP_TAG)) {
                     startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
                 } else {
                     startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
                 }
                 break;
-            case Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT:
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
-                Constants.DEFAULT_CAMERA_ANGLE = 270;
-                Constants.DEFAULT_H_MIRROR = false;
-                startActivity(new Intent(SplashActivity.this, SMTMain2Activity.class));
-                break;
             case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
             case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
                 //判断，如果不跳转则默认进入人证
-                if (SpUtils.getBoolean(Constants.JUMP_TAG, Constants.DEFAULT_JUMP_TAG)) {
+                if (SpUtils.getBoolean(Constants.Key.JUMP_TAG, Constants.Default.JUMP_TAG)) {
                     startActivity(new Intent(SplashActivity.this, ThermalImage2Activity.class));
                 } else {
                     startActivity(new Intent(this, CertificatesActivity.class));
@@ -222,7 +229,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.MULTIPLE_THERMAL:
             case Constants.DeviceType.HT_MULTIPLE_THERMAL:
-                Constants.DEFAULT_CAMERA_ANGLE = 0;
+                Constants.Default.CAMERA_ANGLE = 0;
                 startActivity(new Intent(this, MultiThermalActivity.class));
                 break;
             case Constants.DeviceType.TEMPER_SAFETY_CHECK:
@@ -232,10 +239,98 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT:
             case Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT:
                 Constants.HORIZONTAL_OFFSET = 4;
-                Constants.DEFAULT_H_MIRROR = false;
+                Constants.Default.IS_H_MIRROR = false;
                 Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));
                 break;
+        }
+    }
+
+    private NewModuleType oldModelToModuleType(int model){
+        NewModuleType newModuleType = new NewModuleType();
+        switch (model) {
+            case 0:
+                newModuleType.module = -1;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = false;
+                break;
+            case 1:
+                newModuleType.module = -1;
+                newModuleType.faceEnabled = false;
+                newModuleType.temperEnabled = true;
+                break;
+            case 2:
+                newModuleType.module = -1;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = true;
+                break;
+            case 3:
+                newModuleType.module = TemperModuleType.HM_32_32;
+                newModuleType.faceEnabled = false;
+                newModuleType.temperEnabled = true;
+                break;
+            case 4:
+                newModuleType.module = TemperModuleType.HM_32_32;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = true;
+                break;
+            case 5:
+                newModuleType.module = TemperModuleType.HM_16_4;
+                newModuleType.faceEnabled = false;
+                newModuleType.temperEnabled = true;
+                break;
+            case 6:
+                newModuleType.module = TemperModuleType.HM_16_4;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = true;
+                break;
+            case 7:
+                newModuleType.module = TemperModuleType.MLX_16_4;
+                newModuleType.faceEnabled = false;
+                newModuleType.temperEnabled = true;
+                break;
+            case 8:
+                newModuleType.module = TemperModuleType.MLX_16_4;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = true;
+                break;
+            case 9:
+                newModuleType.module = TemperModuleType.SMT_32_32;
+                newModuleType.faceEnabled = false;
+                newModuleType.temperEnabled = true;
+                break;
+            case 10:
+                newModuleType.module = TemperModuleType.SMT_32_32;
+                newModuleType.faceEnabled = true;
+                newModuleType.temperEnabled = true;
+                break;
+        }
+
+        if(newModuleType.module == -1){
+            String broadTypeStr = CommonUtils.getBroadType2();
+            if(TextUtils.equals("SMT",broadTypeStr)){
+                newModuleType.module = TemperModuleType.HM_16_4;
+            } else if(TextUtils.equals("LXR",broadTypeStr)){
+                newModuleType.module = TemperModuleType.HM_32_32;
+            } else if(TextUtils.equals("HARRIS",broadTypeStr)){
+                newModuleType.module = TemperModuleType.MLX_16_4;
+            }
+        }
+        return newModuleType;
+    }
+
+    class NewModuleType{
+        int module;
+        boolean faceEnabled;
+        boolean temperEnabled;
+
+        @Override
+        public String toString() {
+            return "NewModuleType{" +
+                    "module=" + module +
+                    ", faceEnabled=" + faceEnabled +
+                    ", temperEnabled=" + temperEnabled +
+                    '}';
         }
     }
 

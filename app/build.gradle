@@ -8,8 +8,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 47
-        versionName "1.4.8"
+        versionCode 50
+        versionName "1.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -431,6 +431,6 @@ dependencies {
     implementation files('libs/PrintUtils1114.jar')
     implementation files('libs/arcsoft_face.jar')
     implementation files('libs/poweronoff.jar')
-
     implementation 'com.lcw.library:imagepicker:2.1.2'
+    implementation files('libs/ysapi.jar')
 }

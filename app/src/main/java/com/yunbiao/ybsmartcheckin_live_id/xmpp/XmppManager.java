@@ -341,7 +341,6 @@ public class XmppManager {
 
                 switch (com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DEVICE_TYPE) {
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
-                    case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_MULTIPLE_THERMAL:
                     case com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.HT_TEMPER_SAFETY_CHECK:

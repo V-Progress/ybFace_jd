@@ -168,7 +168,7 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
-        String welcomeTips = SpUtils.getStr(SpUtils.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+        String welcomeTips = SpUtils.getStr(Constants.Key.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
         if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL) {
             welcomeTips = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip4);
             mSpeed = 2.0f;

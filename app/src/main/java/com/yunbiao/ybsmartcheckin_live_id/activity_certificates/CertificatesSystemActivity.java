@@ -164,7 +164,7 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
     @Override
     protected void onResume() {
         super.onResume();
-        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, Constants.serverModel.YUN) == Constants.serverModel.YUN) {
+        if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == Constants.serverModel.YUN) {
             tv_server_system.setText(getString(R.string.System_cloud_service));
         } else {
             tv_server_system.setText(getString(R.string.System_local_service));

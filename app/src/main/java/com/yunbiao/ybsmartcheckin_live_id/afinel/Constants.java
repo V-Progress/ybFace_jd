@@ -8,6 +8,8 @@ import android.util.Log;
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
+import timber.log.Timber;
+
 public class Constants {
     public static final String API_KEY = "1234567890";
 
@@ -19,7 +21,6 @@ public class Constants {
     public static String RESOURCE_HOST = NetConfig.PRO_URL;
     public static String RESOURCE_PORT = NetConfig.PRO_RES_PORT;
     public static String RESOURCE_SUFFIX = NetConfig.PRO_SUFFIX;
-    //生成主地址
     public static String RESOURCE_URL = PRE + RESOURCE_HOST + COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
 
     //资源路径
@@ -27,7 +28,6 @@ public class Constants {
     public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
-
     public static String TEMP_PATH = CACHE_PATH + "temp/";//临时路径（未初始化公司时创建）
     public static String DATA_PATH = TEMP_PATH + "data/";//公司数据
     public static String INFO_PATH = TEMP_PATH + "info/";//公司简介
@@ -53,12 +53,12 @@ public class Constants {
 
     private static final String TAG = "Constants";
     public static void checkSetIp() {
-        if (SpUtils.getIntOrDef(SpUtils.SERVER_MODEL, serverModel.YUN) == serverModel.JU) {
-            Constants.XMPP_HOST = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            Constants.XMPP_PORT = SpUtils.getStr(SpUtils.JU_XMPP_PORT_CACHE);
-            Constants.RESOURCE_HOST = SpUtils.getStr(SpUtils.JU_IP_CACHE);
-            Constants.RESOURCE_PORT = SpUtils.getStr(SpUtils.JU_RESOURCE_PORT_CACHE);
-            String projectName = SpUtils.getStr(SpUtils.JU_PROJECT_NAME_SUFFIX);
+        if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == serverModel.JU) {
+            Constants.XMPP_HOST = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            Constants.XMPP_PORT = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+            Constants.RESOURCE_HOST = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            Constants.RESOURCE_PORT = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+            String projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
             Constants.RESOURCE_URL = PRE + Constants.RESOURCE_HOST + COLON + Constants.RESOURCE_PORT + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
             ResourceUpdate.refreshAddress();
         }
@@ -66,11 +66,11 @@ public class Constants {
     }
 
     public static void logNetConfig(String TAG){
-        Log.e(TAG, "checkSetIp: IP地址：" + Constants.XMPP_HOST);
-        Log.e(TAG, "checkSetIp: 通信端口：" + Constants.XMPP_PORT);
-        Log.e(TAG, "checkSetIp: 服务地址：" + Constants.RESOURCE_HOST);
-        Log.e(TAG, "checkSetIp: 服务端口：" + Constants.RESOURCE_PORT);
-        Log.e(TAG, "checkSetIp: 服务地址：" + Constants.RESOURCE_URL);
+        Timber.e("IP地址：%s", Constants.XMPP_HOST);
+        Timber.e("通信端口：%s", Constants.XMPP_PORT);
+        Timber.e("服务地址：%s", Constants.RESOURCE_HOST);
+        Timber.e("服务端口：%s", Constants.RESOURCE_PORT);
+        Timber.e("服务地址：%s", Constants.RESOURCE_URL);
     }
 
     //修改设备类型
@@ -112,8 +112,8 @@ public class Constants {
         int TEMPERATURE_CHECK_IN = 7;//测温考勤机
         int HT_TEMPERATURE_CHECK_IN = 11;//亨通考勤
 
-        int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
-        int HT_TEMPERATURE_CHECK_IN_SMT = 12;//亨通通行
+//        int TEMPERATURE_CHECK_IN_SMT = 8;//测温通行机（视美泰考勤版）
+//        int HT_TEMPERATURE_CHECK_IN_SMT = 12;//亨通通行
 
         int TEMPERATURE_CERTIFICATES = 9;//人证测温机
         int HT_TEMPERATURE_CERTIFICATES = 13;//亨通人证
@@ -128,36 +128,59 @@ public class Constants {
         int HT_SAFETY_CHECK_DOUBLE_LIGHT = 18;//亨通双光安检
     }
 
-    //人证、考勤跳转标识
-    public static final String JUMP_TAG = "jumpTag";
-    //人证、考勤跳转默认值
-    public static final boolean DEFAULT_JUMP_TAG = false;
-    //默认人脸镜像
-    public static boolean DEFAULT_H_MIRROR = true;
-    //默认人脸竖镜像
-    public static boolean DEFAULT_V_MIRROR = false;
-    //截图方向
-    public static int DEFAULT_PICTURE_ROTATION = -1;
     //默认摄像头ID
     public static int CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_BACK;
-    //屏幕角度默认值
-    public static int DEFAULT_CAMERA_ANGLE = 0;
-    //大屏海报开启状态
-    public static final boolean DEFAULT_POSTER_ENABLED = false;
-    //默认二维码
-    public static final boolean DEFAULT_QRCODE_ENABLED = true;
-    //默认读卡器
-    public static final boolean DEFAULT_READ_CARD_ENABLED = false;
 
     public interface Key{
-        String PRIVACY_MODE = "privacyMode";
-        String CLEAR_POLICY = "clearPolicy";
-        String CLEAR_POLICY_CUSTOM = "clearPolicyCustom";
+        String PRIVACY_MODE = "privacyMode";//隐私模式
+        String CLEAR_POLICY = "clearPolicy";//清理策略
+        String CLEAR_POLICY_CUSTOM = "clearPolicyCustom";//自定义清理策略
+        String SIMILAR_THRESHOLD = "similarThreshold";//相似度阈值
+
+        String FACE_DIALOG = "faceDialog";//人脸弹窗
+        String LIVENESS_ENABLED = "livenessEnabled";//活体开关
+        String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
+        String READ_CARD_ENABLED = "readCardEnabled";//读卡模块
+        String WELCOM_TIPS = "welcomeTips";//欢迎语
+        String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
+
+        String DOOR_STATE = "doorState";//门禁常开模式
+        String GPIO_DELAY = "doorDelay";//继电器延时
+        String IS_H_MIRROR = "isMirror";//是否镜像
+        String IS_V_MIRROR = "isVerticalMirror";//纵向镜像
+        String PICTURE_ROTATION = "pictureRotation";//照片方向
+        String CAMERA_ANGLE = "cameraAngle";//摄像头角度
+        String CAMERA_SIZE = "cameraSize";
+
+        String SERVER_MODEL = "serverModel";//服务模式
+        String JU_IP_CACHE = "juIpCache";//IP
+        String JU_RESOURCE_PORT_CACHE = "juResourcePortCache";//端口
+        String JU_XMPP_PORT_CACHE = "juXmppPortCache";//XMPP端口
+        String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
+
+        String JUMP_TAG = "jumpTag";//跳转标签
     }
 
     public static class Default{
         public static final boolean PRIVACY_MODE = false;
         public static final int CLEAR_POLICY = 3;
         public static final int CLEAR_POLICY_CUSTOM = 30;
+        public static final int SIMILAR_THRESHOLD = 80;
+        public static final boolean QRCODE_ENABLED = true;
+        public static final boolean READ_CARD_ENABLED = false;
+        public static final boolean POSTER_ENABLED = false;
+        public static final boolean LIVENESS_ENABLED = false;
+        public static final boolean FACE_DIALOG = false;
+        public static boolean IS_H_MIRROR = true;
+        public static final boolean IS_V_MIRROR = false;
+        //屏幕角度默认值
+        public static int CAMERA_ANGLE = 0;
+        //截图方向
+        public static int PICTURE_ROTATION = -1;
+        public static int GPIO_DELAY = 5;
+
+        public static int SERVER_MODEL = serverModel.YUN;
+
+        public static final boolean JUMP_TAG = false;
     }
 }

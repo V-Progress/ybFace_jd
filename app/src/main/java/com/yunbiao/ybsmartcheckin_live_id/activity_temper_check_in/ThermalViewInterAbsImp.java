@@ -14,7 +14,7 @@ public class ThermalViewInterAbsImp implements ThermalViewInterface {
     }
 
     @Override
-    public void onModeChanged(int mode) {
+    public void onModeChanged(boolean temperEnabled, boolean faceEnabled, int temperModule) {
 
     }
 

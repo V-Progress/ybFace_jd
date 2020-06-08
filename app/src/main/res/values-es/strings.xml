@@ -259,17 +259,11 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Asistencia de reconocimiento facial</string>
-    <string name="face_infared_model">Cara + Imagen térmica (pequeño)</string>
-    <string name="infared_only_model">Solo imagen térmica (pequeño)</string>
-    <string name="thermal_only_model">Solo imagen térmica （HM-32*32）</string>
-    <string name="face_thermal_model">Cara + Imagen térmica（HM-32*32）</string>
-    <string name="thermal_16_4_model">Solo imagen térmica（HM-16*4）</string>
-    <string name="face_thermal_16_4_model">Cara + imagen térmica（HM-16*4）</string>
-    <string name="only_thermal_mlx_16_4_model">Solo imagen térmica（MLX-16*4）</string>
-    <string name="face_thermal_mlx_16_4_model">Cara + Imagen térmica（MLX-16*4）</string>
-    <string name="smt_only_thermal">Solo imagen térmica（SMT）</string>
-    <string name="smt_face_thermal">Cara + Imagen térmica（SMT）</string>
+    <string name="only_label">Solo</string>
+    <string name="face_label">El computo</string>
+    <string name="temper_label">imagen térmica</string>
+    <string name="model_tip">La medición de la temperatura no se lleva a cabo en la asistencia por radio</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">Seleccione al menos UN modo</string><!--至少选择一种模式-->
 
 
     <!--标签-->

@@ -191,9 +191,6 @@ public class APP extends Application {
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
                 channel = "ht_10";
                 break;
-            case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN_SMT:
-                channel = "ht_8";
-                break;
             case Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES:
                 channel = "ht_rz";
                 break;
@@ -202,9 +199,6 @@ public class APP extends Application {
                 break;
             case Constants.DeviceType.TEMPERATURE_CHECK_IN:
                 channel = "YB_10";
-                break;
-            case Constants.DeviceType.TEMPERATURE_CHECK_IN_SMT:
-                channel = "YB_8";
                 break;
             case Constants.DeviceType.TEMPERATURE_CERTIFICATES:
                 channel = "YB_rz";

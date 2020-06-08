@@ -42,7 +42,6 @@ import timber.log.Timber;
 public abstract class BaseThermal2Activity extends BaseGpioActivity implements FaceView.FaceCallback {
     private static final String TAG = "BaseThermalActivity";
     private long mSpeechDelay;//播报延迟
-    protected int mCurrMode = -99;//当前模式
     private final float HIGHEST_TEMPER = 45.0f;//最高提示温度值
     private Float mTempMinThreshold;//温度播报阈值
     private Float mTempWarningThreshold;//温度报警阈值
@@ -75,6 +74,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     private ThermalViewInterface viewInterface;
     private SpeechBean speechBean = new SpeechBean();
+    private boolean mFaceEnabled;
+    private boolean mTemperEnabled;
+    private int temperModule;
 
     @Override
     protected void initData() {
@@ -115,43 +117,28 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         //初始化播报
         speechBean.initContent();
         KDXFSpeechManager.instance().setSpeed(speechBean.getSpeechSpeed());
-        //模式切换
-        mCurrMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
-        viewInterface.onModeChanged(mCurrMode);
+
+        temperModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE, ThermalConst.Default.TEMPER_MODULE);
+        mFaceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
+        mTemperEnabled = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED,ThermalConst.Default.TEMPER_ENABLED);
+
+        viewInterface.onModeChanged(mTemperEnabled, mFaceEnabled, temperModule);
 
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
         String broadType = CommonUtils.getBroadType2();
-        switch (mCurrMode) {
-            //NO_Temper
-            case ThermalConst.ONLY_FACE:
-                isMLXRunning = false;
-                TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
-                break;
-            //红外
-            case ThermalConst.ONLY_INFRARED:
-            case ThermalConst.FACE_INFRARED:
-                isMLXRunning = false;
-                TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
-                TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
-                break;
-            //32*32
-            case ThermalConst.ONLY_THERMAL_HM_32_32:
-            case ThermalConst.FACE_THERMAL_HM_32_32:
+        switch (temperModule) {
+            case TemperModuleType.HM_32_32:
                 isMLXRunning = false;
                 TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, imageK3232CallBack), 2000);
                 break;
-            //HM_16*4
-            case ThermalConst.ONLY_THERMAL_HM_16_4:
-            case ThermalConst.FACE_THERMAL_HM_16_4:
+            case TemperModuleType.HM_16_4:
                 isMLXRunning = false;
                 portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
                 TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack), 2000);
                 break;
-            //MLX_16*4
-            case ThermalConst.ONLY_THERMAL_MLX_16_4:
-            case ThermalConst.FACE_THERMAL_MLX_16_4:
+            case TemperModuleType.MLX_16_4:
                 if (!isMLXRunning) {
                     //亿莱顿则开启串口
                     if (TextUtils.equals("LXR", broadType)) {
@@ -166,13 +153,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     }
                 }
                 break;
-            //SMT
-            case ThermalConst.ONLY_THERMAL_SMT:
-            case ThermalConst.FACE_THERMAL_SMT:
+            case TemperModuleType.SMT_32_32:
                 isMLXRunning = false;
                 Timber.e("onResume: 开启测温模块");
                 TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 115200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startSmt3232Temp(lowTempModel, smt3232TempCallBack), 2000);
+                break;
+            default:
+                isMLXRunning = false;
+                TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
+                TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
                 break;
         }
 
@@ -184,20 +174,19 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
             TemperatureModule.getIns().setHotImageHotMode(false, 45.0f);
         }
+        mCacheTemperSize = temperModule == TemperModuleType.MLX_16_4 || temperModule == TemperModuleType.HM_16_4 ? 3 : 4;
+    }
 
-        switch (mCurrMode) {
-            case ThermalConst.ONLY_INFRARED:
-            case ThermalConst.FACE_INFRARED:
-            case ThermalConst.ONLY_THERMAL_HM_16_4:
-            case ThermalConst.FACE_THERMAL_HM_16_4:
-            case ThermalConst.ONLY_THERMAL_MLX_16_4:
-            case ThermalConst.FACE_THERMAL_MLX_16_4:
-                mCacheTemperSize = 3;
-                break;
-            default:
-                mCacheTemperSize = 4;
-                break;
-        }
+    private boolean isOnlyFace(){
+        return mFaceEnabled && !mTemperEnabled;
+    }
+
+    private boolean isOnlyTemper(){
+        return mTemperEnabled && !mFaceEnabled;
+    }
+
+    private boolean isTemperAndFace(){
+        return mFaceEnabled && mTemperEnabled;
     }
 
     private int mCacheTemperSize  = 4;
@@ -322,7 +311,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         if (isActivityPaused) {
             return;
         }
-        if (mCurrMode == ThermalConst.ONLY_FACE) {
+        if (isOnlyFace()) {
             return;
         }
 
@@ -351,7 +340,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             // TODO: 2020/5/14  无人无脸播报
             //如果模式不为高温模式，且模式为MLX164
-            if (currTemperMode != 2 && mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
+            if (currTemperMode != 2 && temperModule != TemperModuleType.HM_32_32) {
                 if (originT - mCacheBeforeTemper >= 5.0f) {
                     if (mNoBodyTemperList.size() < 8) {
                         mNoBodyTemperList.add(afterT);
@@ -407,7 +396,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
+        /*if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
             if (speechBean.isFrameEnabled() && !isFaceInsideRange) {
                 mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) {
@@ -416,7 +405,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 sendTipsMessage(speechBean.getFrameContent());
                 return;
             }
-        }
+        }*/
         //全部通过后清除提示框
         sendResetTipsMessage(0);
 
@@ -432,7 +421,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        if (mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32 || mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
+        if (isOnlyTemper()) {
             long currentTimeMillis = System.currentTimeMillis();
             if (mCacheTime != 0 && currentTimeMillis - mCacheTime < mSpeechDelay) {
                 return;
@@ -449,14 +438,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             float resultTemper = max;
             if (resultTemper < mTempWarningThreshold) {
-                if (mCurrMode != ThermalConst.ONLY_THERMAL_HM_16_4
-                        && mCurrMode != ThermalConst.FACE_THERMAL_HM_16_4
-                        && mCurrMode != ThermalConst.ONLY_THERMAL_MLX_16_4
-                        && mCurrMode != ThermalConst.FACE_THERMAL_MLX_16_4) {
+                if (temperModule == TemperModuleType.HM_32_32 || temperModule == TemperModuleType.SMT_32_32) {
                     resultTemper += mTempCorrect;
                 }
 
-                if (mCurrMode != ThermalConst.ONLY_INFRARED && mCurrMode != ThermalConst.FACE_INFRARED && mCacheBeforeTemper != 0.0f) {
+                if (mCacheBeforeTemper != 0.0f) {
                     float currDiffValue = originT - mCacheBeforeTemper - 3.0f;
                     mCacheDiffValue = mCacheDiffValue == 2.0f
                             //判断当前差值是否大于2.0f，如果是则存值
@@ -478,7 +464,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     sendUpdateSignMessage(sign);//发送列表更新事件
                 });
             }
-        } else if (mCurrMode == ThermalConst.FACE_THERMAL_HM_32_32 || mCurrMode == ThermalConst.FACE_INFRARED || mCurrMode == ThermalConst.FACE_THERMAL_HM_16_4 || mCurrMode == ThermalConst.FACE_THERMAL_MLX_16_4) {
+        } else if (isTemperAndFace()) {
             mCacheTemperList.add(afterT);
         }
     }
@@ -489,7 +475,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (isActivityPaused) {
                 return;
             }
-            if (mCurrMode == ThermalConst.ONLY_FACE) {
+            if (isOnlyFace()) {
                 return;
             }
 
@@ -521,7 +507,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 return;
             }
 
-            if (mCurrMode == ThermalConst.ONLY_THERMAL_SMT) {
+            if (isOnlyTemper()) {
                 if (mCacheTime == 0 || System.currentTimeMillis() - mCacheTime > mSpeechDelay) {
                     mCacheTemperList.add(afterF);
                     if (mCacheTemperList.size() < 3) {
@@ -596,7 +582,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return false;
         }
         //如果是人脸模式
-        if (mCurrMode == ThermalConst.ONLY_FACE) {
+        if (isOnlyFace()) {
             return true;
         }
         //如果限制View为null
@@ -612,18 +598,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return false;
         }
         //如果是红外模式则判断人脸区域
-        if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
+        /*if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
             Rect realRect = viewInterface.getRealRect(rect);
             isFaceInsideRange = checkFaceInFrame(realRect, mDistanceView);
             if (!isFaceInsideRange) {
                 return false;
             }
-        }
+        }*/
         //判断是否仅测温模式
-        if (mCurrMode == ThermalConst.ONLY_INFRARED
-                || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32
-                || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4
-                || mCurrMode == ThermalConst.ONLY_THERMAL_MLX_16_4) {
+        if (isOnlyTemper()) {
             return false;
         }
         //判断集合中的温度数据
@@ -635,7 +618,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     @Override
     public void onFaceVerify(CompareResult faceAuth) {
-        if (mCurrMode == ThermalConst.ONLY_FACE) {
+        if (isOnlyFace()) {
             if (faceAuth == null || faceAuth.getSimilar() == -1) {
                 return;
             }
@@ -780,7 +763,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     int bgId = getBgId(temperature);
                     String resultText = getResultText(mFEnabled, temperature);
                     viewInterface.showResult(resultText, bgId);
-
                     if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
                         if(temperature >= mTempWarningThreshold){
                             ledRed();
@@ -789,7 +771,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         } else {
                             ledGreen();
                             KDXFSpeechManager.instance().playNormalSound();
-                            if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
+                            if (isOnlyTemper()) {
                                 openDoor();
                             }
                         }
@@ -825,7 +807,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                             } else {
                                 ledGreen();
                                 KDXFSpeechManager.instance().playPassRing();
-                                if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
+                                if (isOnlyTemper()) {
                                     openDoor();
                                 }
                                 sendResetResultMessage();
@@ -847,7 +829,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     isResultShown = false;
                     viewInterface.dismissResult();
                     KDXFSpeechManager.instance().stopWarningRing();
-                    resetLedDelay(0);//5秒后重置灯光为蓝色
+//                    resetLedDelay(0);//5秒后重置灯光为蓝色
+                    ledOff();
                     break;
                 case 4://重置提示
                     viewInterface.dismissTips();
@@ -874,7 +857,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             };
         } else {
             ledGreen();
-            if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.ONLY_THERMAL_HM_16_4 || mCurrMode == ThermalConst.ONLY_THERMAL_HM_32_32) {
+            if (isOnlyTemper()) {
                 openDoor();
             }
             return () -> sendResetResultMessage();
