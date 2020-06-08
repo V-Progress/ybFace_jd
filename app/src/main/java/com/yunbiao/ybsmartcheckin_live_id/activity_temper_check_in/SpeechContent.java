@@ -9,6 +9,7 @@ import androidx.databinding.Bindable;
 
 import com.yunbiao.ybsmartcheckin_live_id.BR;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 public class SpeechContent extends BaseObservable {
@@ -18,6 +19,8 @@ public class SpeechContent extends BaseObservable {
 
     private String welcomeText;
     private boolean welcomeTextEnabled;
+
+    private boolean isShowDetaile = true;
 
     private String maskContent;
     private boolean maskEnabled;
@@ -49,6 +52,8 @@ public class SpeechContent extends BaseObservable {
     private LastStatus lastStatus;
 
     public void init(Context context) {
+        isShowDetaile = Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN;
+
         speechSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
 
         welcomeText = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, context.getResources().getString(R.string.setting_default_welcome_tip));
@@ -93,6 +98,16 @@ public class SpeechContent extends BaseObservable {
         setWarningExample();
 
         notifyChange();
+    }
+
+    @Bindable
+    public boolean isShowDetaile() {
+        return isShowDetaile;
+    }
+
+    public void setShowDetaile(boolean showDetaile) {
+        isShowDetaile = showDetaile;
+        notifyPropertyChanged(BR.showDetaile);
     }
 
     @Bindable

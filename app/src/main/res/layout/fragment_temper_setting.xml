@@ -48,19 +48,17 @@
                 android:button="@drawable/selector_cb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
-            <TextView
-                android:paddingRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:textSize="14dp"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:textColor="#ff0"
-                android:text="@string/model_tip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
         </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textSize="14dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textColor="#ff0"
+            android:text="@string/model_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:gravity="center_vertical"
@@ -209,79 +207,91 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/setting_text"
-                android:text="@string/setting_temperature_threshold" />
-
-            <Button
-                android:id="@+id/btn_temp_min_threshold_sub_setting"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/icon_jian" />
+            android:orientation="vertical">
 
             <LinearLayout
-                style="@style/style_setting_input_save_button"
-                android:layout_marginLeft="0dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp">
-
-                <EditText
-                    android:id="@+id/edt_temp_min_threshold_setting"
-                    style="@style/style_setting_input_number_decimal_signed_edt"
-                    android:enabled="false" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     style="@style/setting_text"
-                    android:text="℃" />
+                    android:text="@string/setting_temperature_threshold" />
+
+                <Button
+                    android:id="@+id/btn_temp_min_threshold_sub_setting"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@mipmap/icon_jian" />
+
+                <LinearLayout
+                    style="@style/style_setting_input_save_button"
+                    android:layout_marginLeft="0dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <EditText
+                        android:id="@+id/edt_temp_min_threshold_setting"
+                        style="@style/style_setting_input_number_decimal_signed_edt"
+                        android:enabled="false" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="℃" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_temp_min_threshold_add_setting"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@mipmap/icon_jia" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_temp_min_threshold_add_setting"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/icon_jia" />
-
-            <TextView
-                style="@style/setting_text"
-                android:layout_marginLeft="30dp"
-                android:text="@string/setting_temperature_warning" />
-
-            <Button
-                android:id="@+id/btn_temp_warning_threshold_sub_setting"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/icon_jian" />
 
             <LinearLayout
-                style="@style/style_setting_input_save_button"
-                android:layout_marginLeft="0dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp">
-
-                <EditText
-                    android:id="@+id/edt_temp_warning_threshold_setting"
-                    style="@style/style_setting_input_number_decimal_signed_edt"
-                    android:enabled="false" />
-
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     style="@style/setting_text"
-                    android:text="℃" />
-            </LinearLayout>
+                    android:text="@string/setting_temperature_warning" />
 
-            <Button
-                android:id="@+id/btn_temp_warning_threshold_add_setting"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/icon_jia" />
+                <Button
+                    android:id="@+id/btn_temp_warning_threshold_sub_setting"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@mipmap/icon_jian" />
+
+                <LinearLayout
+                    style="@style/style_setting_input_save_button"
+                    android:layout_marginLeft="0dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <EditText
+                        android:id="@+id/edt_temp_warning_threshold_setting"
+                        style="@style/style_setting_input_number_decimal_signed_edt"
+                        android:enabled="false" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="℃" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_temp_warning_threshold_add_setting"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@mipmap/icon_jia" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
