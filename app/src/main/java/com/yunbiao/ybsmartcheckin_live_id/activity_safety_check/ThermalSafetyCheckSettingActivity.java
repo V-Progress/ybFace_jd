@@ -15,6 +15,7 @@ import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.SpeechContentActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -125,6 +126,10 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
     public void resetWarningNumber(View view){
         SpUtils.saveLong(ThermalSafetyCheckConst.Key.WARNING_NUMBER, 0l);
         UIUtils.showShort(this,APP.getContext().getResources().getString(R.string.setting_tip_warning_number_reseted));
+    }
+
+    public void gotoSpeech(View view){
+        startActivity(new Intent(this, SpeechContentActivity.class));
     }
 
     private void initTemperFrame(){

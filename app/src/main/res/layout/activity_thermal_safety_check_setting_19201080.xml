@@ -319,6 +319,13 @@
                 android:onClick="resetWarningNumber"
                 android:text="@string/setting_reset_warning_number" />
 
+            <TextView
+                style="@style/setting_text_child"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:onClick="gotoSpeech"
+                android:text="@string/speech_setting_title" />
+
             <LinearLayout
                 android:id="@+id/ll_black_body_pre_value"
                 android:visibility="gone"
