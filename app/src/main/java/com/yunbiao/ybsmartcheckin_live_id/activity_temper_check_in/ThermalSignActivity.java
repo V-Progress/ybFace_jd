@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -13,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -318,8 +321,20 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
     private boolean isExporting = false;
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FileSelectActivity.SELECT_DIRECTORY && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.SELECT_FILE_PATH);
+            Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
+            export(new File(stringExtra));
+        }
+    }
+
     public void exportToUD(final View view) {
-        //获取U盘地址
+        startActivityForResult(new Intent(this,FileSelectActivity.class),FileSelectActivity.SELECT_DIRECTORY);
+
+        /*//获取U盘地址
         String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
         File file = new File(usbDiskPath);
         if (!file.exists()) {
@@ -328,13 +343,10 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
             usbDiskPath = Environment.getExternalStorageDirectory().getPath();
             file = new File(usbDiskPath);
         }
-       /* String[] list = file.list();
-        for (String s : list) {
-            File usbFile = new File(file, s);
-            if (usbFile.isDirectory()) {
-                file = usbFile;
-            }
-        }*/
+        export(file);*/
+    }
+
+    private void export(File file){
         //创建记录最外层目录
         final File dirFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record));
         if (!dirFile.exists()) {
@@ -372,7 +384,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
             return;
         }
         UIUtils.showNetLoading(this);
-        view.setEnabled(false);
+//        view.setEnabled(false);
         //开始导出
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
@@ -402,17 +414,14 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 ExcelUtils.initExcel(excelFile.getPath(),getResString(R.string.sign_list_table_name) , title);
                 final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
                 Log.e(TAG, "run: excel，导出结果：" + result);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        view.setEnabled(true);
-                        UIUtils.dismissNetLoading();
-                        UIUtils.showShort(ThermalSignActivity.this, result
-                                ? (getResources().getString(R.string.sign_export_record_success) +
-                                "\n" +
-                                getResources().getString(R.string.sign_export_record_path) + dirFile.getPath())
-                                : getResources().getString(R.string.sign_export_record_failed));
-                    }
+                runOnUiThread(() -> {
+//                        view.setEnabled(true);
+                    UIUtils.dismissNetLoading();
+                    UIUtils.showShort(ThermalSignActivity.this, result
+                            ? (getResources().getString(R.string.sign_export_record_success) +
+                            "\n" +
+                            getResources().getString(R.string.sign_export_record_path) + dirFile.getPath())
+                            : getResources().getString(R.string.sign_export_record_failed));
                 });
             }
         });

@@ -41,7 +41,7 @@ public class FaceManager {
     private static FaceManager faceManager = new FaceManager();
     private FaceEngine compareEngin;
     private List<FaceRegisterInfo> faceRegisterInfos = new ArrayList<>();
-    private int MAX_FACE_NUM = 2000;
+    private int MAX_FACE_NUM = 3000;
 
     private String FEATURES_PATH;
 
@@ -118,7 +118,7 @@ public class FaceManager {
             return;
         }
 
-        List<File> fileList = Arrays.asList(featureFiles);
+        List<File> fileList = new ArrayList<>(Arrays.asList(featureFiles));
         if (fileList.size() >= MAX_FACE_NUM) {
             //清除逻辑(先把数据翻转，然后挨个删除，直到小鱼当前设置的最大值)
             Collections.reverse(fileList);

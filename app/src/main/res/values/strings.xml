@@ -16,6 +16,14 @@
     <string name="temper_error_btn_restart">Reboot</string>
     <string name="temper_error_btn_cancel">No processing</string>
 
+    <!--文件选择-->
+    <string name="local_directory">Internal Flash</string>
+    <string name="usb_directory">USB Disk</string>
+    <string name="no_can_used_directory">Directory unavailable, please check permissions</string>
+    <string name="confirm_directore_tips">Are you sure to use this directory？</string>
+    <string name="select_directory_title">Select the directory</string>
+    <string name="click_select_this_directory">Click to select this directory</string>
+
     <!--口罩提示IT-->
     <string name="no_mask_tip">Si prega di indossare la maschera</string>
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>

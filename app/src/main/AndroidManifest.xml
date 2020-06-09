@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity_temper_check_in.BatchImportActivity"></activity>
+        <activity android:name=".activity_temper_check_in.FileSelectActivity"/>
+        <activity android:name=".activity_temper_check_in.BatchImportActivity" />
         <activity android:name=".activity_temper_check_in.SpeechContentActivity" />
         <activity android:name=".activity_certificates.CertificatesAddUserActivity" />
         <activity android:name=".activity_certificates.VertifyRecordActivity" />
@@ -66,15 +67,7 @@
         <activity android:name=".activity_temper_check_in.ThermalSignActivity" />
         <activity android:name=".activity_temper_check_in.ThermalVisitorActivity" />
         <activity android:name=".activity_temper_check_in.TemperatureCorrectActivity" /> <!-- 视美泰竖屏闸机 -->
-        <activity
-            android:name=".activity_temper_check_in_smt.SMTMain2Activity"
-            android:launchMode="singleTask" />
-        <activity android:name=".activity_temper_check_in_smt.SMTSystemActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTEmployListActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTEditEmployActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTRecordActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTSettingActivity" />
-        <activity android:name=".activity_temper_check_in_smt.SMTVisitorActivity" /> <!-- 人证 -->
+        <!-- 人证 -->
         <activity
             android:name=".activity_certificates.CertificatesActivity"
             android:launchMode="singleTask">
@@ -178,14 +171,14 @@
     <uses-feature android:name="android.hardware.usb.host" />
     <uses-feature android:name="android.hardware.camera" />
 
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.GET_TASKS" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.hardware.usb.accessory" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.hardware.usb.accessory" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

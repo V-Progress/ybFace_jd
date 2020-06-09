@@ -15,6 +15,14 @@
     <string name="temper_error_btn_restart">重启</string>
     <string name="temper_error_btn_cancel">暂不处理</string>
 
+    <!--文件选择-->
+    <string name="local_directory">本地存储</string>
+    <string name="usb_directory">USB Disk</string>
+    <string name="no_can_used_directory">暂无可用目录，请检查权限</string>
+    <string name="confirm_directore_tips">确定使用这个目录吗？</string>
+    <string name="select_directory_title">选择目录</string>
+    <string name="click_select_this_directory">点击选择此目录</string>
+
     <!--口罩提示IT-->
     <string name="no_mask_tip">Si prega di indossare la maschera</string>
     <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>

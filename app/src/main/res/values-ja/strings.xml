@@ -8,8 +8,8 @@
     <string name="app_name5">SoftWorkz AI</string>
     <string name="app_name6">Scan Temp</string>
     <string name="app_name4">Osmile AI</string>
-    <string name="used">使用済み:</string>
-    <string name="no_used">/利用できる:</string>
+    <string name="used">使用済:</string>
+    <string name="no_used">/利用可能:</string>
     <string name="back">戻る</string>
     <string name="not_support_speech">現在の言語システムではサポートされていない言語</string>
     <string name="miss_speech_data">音声データがありません:</string>
@@ -33,7 +33,7 @@
     <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->
     <string name="setting_welcome_speech">歓迎のことば</string><!--Welcome speech-->
     <string name="temper_tips_close">ヒントに近づく</string>
-    <string name="setting_normal_speech_content">体温正常</string>
+    <string name="setting_normal_speech_content">正常体温</string>
     <string name="setting_warning_speech_content">体温異常</string>
     <string name="speech_setting_open_or_close">ON/OFF</string>
 
@@ -46,7 +46,7 @@
     <string name="speech_setting_alert">温度表示位置#记号使用表示、自動的に補完温度数字を例示(36.5℃)、お守りを一つしか存在#あまりの#符の時、存在する初の基準で、自動削除し、残りの符号</string>
     <string name="speech_setting_welcome_exmaple">歓迎語例：</string>
     <string name="speech_setting_distance_exmaple">距離提示例：</string>
-    <string name="speech_setting_normal_exmaple">体温正常例：</string>
+    <string name="speech_setting_normal_exmaple">正常体温例：</string>
     <string name="speech_setting_warning_exmaple">体温異常例：</string>
     <string name="speech_setting_audition">試し</string>
     <string name="setting_camera_vertical_mirror">縦の枠の鏡像</string>
@@ -77,13 +77,13 @@
     <string name="main_temp_warning_tips">体温が異常であるである</string>
     <string name="main_temp_normal_tips">通常の体温</string>
     <string name="main_temp_error_tips">異常な体温</string>
-    <string name="main_temp_tips_please_close">ちょっと近くに来てください</string><!--Please approach-->
-    <string name="main_temp_tips_so_far_text">距離が遠すぎるので、近づいてください</string><!--Please approach-->
-    <string name="main_temp_tips_please_far">ちょっと遠くしてください</string>
-    <string name="main_temp_tips_so_close_text">距離が近すぎますので、ちょっと遠くしてください。</string>
-    <string name="main_thermal_temp">熱画像体温：</string>
-    <string name="main_thermal_has_person">熱画像誰か</string>
-    <string name="main_thermal_no_person">熱画像無人</string>
+    <string name="main_temp_tips_please_close">近づいてください</string><!--Please approach-->
+    <string name="main_temp_tips_so_far_text">近づいてください</string><!--Please approach-->
+    <string name="main_temp_tips_please_far">離れてください</string>
+    <string name="main_temp_tips_so_close_text">離れてください。</string>
+    <string name="main_thermal_temp">サーモグラフィ：</string>
+    <string name="main_thermal_has_person">サーモ画像</string>
+    <string name="main_thermal_no_person">サーモ画像なし</string>
     <string name="main_please_waiting">お待ちください</string>
     <string name="main_temp_tips_please_in_range">顔を識別エリアに合わせてください。</string>
     <string name="main_tips_please_close">ちょっと近くに来てください
@@ -114,17 +114,17 @@
     <string name="smt_main_ver">バージョン:</string>
     <string name="smt_main_company">会社:</string>
     <string name="smt_main_device_no">番号:</string>
-    <string name="smt_main_not_bind">バインディングされていません</string>
+    <string name="smt_main_not_bind">Unbound</string>
 
     <!--首页测温提示-->
 
     <!--设置-->
-    <string name="temp_measuring_setting">温度を測っています</string>
+    <string name="temp_measuring_setting">測定中</string>
     <string name="port_setting">シリアル</string>
     <string name="select_port_setting">シリアル選択</string>
-    <string name="auto_close_door_setting">（この時間以降は自動的に閉店します）</string><!--Automatic closing-->
-    <string name="recommend_valuez_setting">推奨しきい値：８０</string>
-    <string name="current_model_setting">現在のモード</string>
+    <string name="auto_close_door_setting">（この時間以降は自動的にシャットダウンします）</string><!--Automatic closing-->
+    <string name="recommend_valuez_setting">推奨境界値：８０</string>
+    <string name="current_model_setting">現在モード</string>
 
     <!--系统信息-->
     <string name="System_title">システム情報</string>
@@ -133,7 +133,7 @@
     <string name="System_Company">所属会社:</string>
     <string name="System_Service">サービスネットワーク:</string>
     <string name="System_ValiDate">有効期間:</string>
-    <string name="System_Manage">人員管理</string>
+    <string name="System_Manage">社員管理</string>
     <string name="System_Add">新規従業員</string>
     <string name="System_Record">勤務評定記録</string>
     <string name="System_Setting">システム設定</string>
@@ -613,7 +613,7 @@
     <string name="act_certificates_verify_not_pass">人証が一致しない，</string>
     <string name="act_certificates_temper_normal">体温が正常である
 </string>
-    <string name="act_certificates_temper_warning">体温が異常である
+    <string name="act_certificates_temper_warning">異常体温
 </string>
     <string name="act_certificates_normal">正常
 </string>
@@ -716,7 +716,7 @@
     <string name="safety_main_real_detection">リアルタイムモニタリング</string>
     <string name="safety_main_temer_area">体温測定</string>
     <string name="safety_main_warning_number">異常人数</string>
-    <string name="safety_main_device_no">デバイス番号:</string>
+    <string name="safety_main_device_no">シリアル番号:</string>
 
     <string name="safety_black_body_size_large">大きい</string>
     <string name="safety_black_body_size_Middle">中</string>
