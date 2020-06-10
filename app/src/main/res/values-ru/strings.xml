@@ -633,7 +633,7 @@
     <string name="safety_save_completion">Коррекция завершена</string><!--矯正完成-->
     <string name="safety_save_cancel">Отменить коррекцию</string><!--保存-->
 
-    <string name="setting_privacy_prompt">Измерьте температуру, не записывайте данные</string>
+    <string name="setting_privacy_prompt">Измерить температуру, не записать данные</string>
     <string name="setting_clear_policy_7">7д</string>
     <string name="setting_clear_policy_15">15д</string>
     <string name="setting_clear_policy_30">30д</string>
