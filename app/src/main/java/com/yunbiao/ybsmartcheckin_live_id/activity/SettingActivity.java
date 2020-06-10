@@ -35,6 +35,7 @@ import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -95,7 +96,7 @@ public class SettingActivity extends BaseActivity {
     private void initUISetting() {
         String welcomeTips = "";
         if(Constants.FLAVOR_TYPE == FlavorType.YB){
-            welcomeTips = SpUtils.getStr(Constants.Key.WELCOM_TIPS, APP.getContext().getResources().getString(R.string.setting_default_welcome_tip));
+            welcomeTips = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, ThermalConst.Default.WELCOME_TIP_CONTENT);
         }
 
         EditText edtWelComeTips = findViewById(R.id.edt_welcome_tips);
@@ -114,7 +115,7 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String inputWelcome = s.toString();
-                SpUtils.saveStr(Constants.Key.WELCOM_TIPS, inputWelcome);
+                SpUtils.saveStr(ThermalConst.Key.WELCOME_TIP_CONTENT, inputWelcome);
             }
         });
 

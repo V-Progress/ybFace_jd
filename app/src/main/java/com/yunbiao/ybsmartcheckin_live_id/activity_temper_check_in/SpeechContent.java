@@ -56,7 +56,7 @@ public class SpeechContent extends BaseObservable {
 
         speechSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
 
-        welcomeText = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, context.getResources().getString(R.string.setting_default_welcome_tip));
+        welcomeText = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, ThermalConst.Default.WELCOME_TIP_CONTENT);
         welcomeTextEnabled = SpUtils.getBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED, ThermalConst.Default.WELCOME_TIP_ENABLED);
 
         maskContent = SpUtils.getStr(ThermalConst.Key.MASK_TIP, context.getResources().getString(R.string.no_mask_tip));

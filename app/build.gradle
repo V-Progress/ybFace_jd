@@ -177,20 +177,25 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name5", "@mipmap/softworkz_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
-        /*PingTech=====================================================================================================================*/
-        flavor(PingTech_10, "7",
-                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
-                "@string/app_name7", "@mipmap/pingtech_logo", "5cbe87a60cafb210460006b3", "PingTech_10",
-                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*ScanTemp============================================================================*/
         flavor(SCAN_TEMP, "6",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name6", "@mipmap/scan_temp", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*PingTech=====================================================================================================================*/
+        flavor(PingTech_10, "7",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/app_name7", "@mipmap/pingtech_logo", "5cbe87a60cafb210460006b3", "PingTech_10",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*韩国 测温安检门*/
         flavor(HG_SC, "7",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
                 "@string/yb_safety_chceck", "@mipmap/icon_logo4", "5cbe87a60cafb210460006b3", "HG_SC",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*=====================================================================================*/
+        flavor(XENON_10, "8",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/app_name8", "@mipmap/xenon_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
@@ -222,29 +227,26 @@ android {
 String buildApkName(String param) {
     //确定前缀名
     String name
-    if (param.contains("SK"))
+    if (param.contains("SK")){
         name = "SK"
-    else if (param.contains("HT"))
+    } else if (param.contains("HT")) {
         name = "HT"
-    else if (param.contains("OSIMLE"))
+    }else if (param.contains("OSIMLE")){
         name = "Osimle AI"
-    else if (param.contains("SOFT_WORK"))
+    }else if (param.contains("SOFT_WORK")){
         name = "SoftWorkz AI"
-    else if(param.contains("PingTech"))
+    }else if (param.contains("PingTech")){
         name = "PingTech"
-    else
+    }else if (param.contains("XENON")){
+        name = "Xenon"
+    }else{
         name = "YB"
+    }
 
     if (!param.contains("OSIMLE") && !param.contains("SOFT_WORK")) {
         //确定后缀名
         if (param.contains("10")) {
-            name += "Face"
-        } else if (param.contains("8")) {
-            if (name.contains("SK")) {//判断思库版本
-                name += "TemperatureCheckingAttendance"
-            } else {
-                name += "测温通行"
-            }
+            name += " Face"
         } else if (param.contains("RZ")) {
             name += "人证测温"
         } else if (param.contains("DR")) {

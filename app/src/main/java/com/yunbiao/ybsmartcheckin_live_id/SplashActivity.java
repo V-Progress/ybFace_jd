@@ -144,30 +144,45 @@ public class SplashActivity extends BaseActivity {
             case FlavorType.HT:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.logo_icon_horizontal;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.SK:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.icon_logo3;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.OSIMLE:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.osimle_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.SOFT_WORK_Z:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.softworkz_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.SCAN_TEMP:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.scan_temp;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.PING_TECH:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.pingtech_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
+                break;
+            case FlavorType.XENON:
+                ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.xenon_logo;
+                ThermalConst.Default.MAIN_LOGO_TEXT = "";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.xenon_welcome_tip);
+                ThermalConst.Default.SHOW_MAIN_LOGO = true;
+                ThermalConst.Default.SHOW_MAIN_INFO = true;
+                Constants.Default.QRCODE_ENABLED = false;
                 break;
             default:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";
+                ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
         }
 

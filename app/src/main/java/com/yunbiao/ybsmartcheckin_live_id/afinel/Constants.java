@@ -141,7 +141,6 @@ public class Constants {
         String LIVENESS_ENABLED = "livenessEnabled";//活体开关
         String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
         String READ_CARD_ENABLED = "readCardEnabled";//读卡模块
-        String WELCOM_TIPS = "welcomeTips";//欢迎语
         String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
 
         String DOOR_STATE = "doorState";//门禁常开模式
@@ -166,7 +165,7 @@ public class Constants {
         public static final int CLEAR_POLICY = 3;
         public static final int CLEAR_POLICY_CUSTOM = 30;
         public static final int SIMILAR_THRESHOLD = 80;
-        public static final boolean QRCODE_ENABLED = true;
+        public static boolean QRCODE_ENABLED = true;
         public static final boolean READ_CARD_ENABLED = false;
         public static final boolean POSTER_ENABLED = false;
         public static final boolean LIVENESS_ENABLED = false;

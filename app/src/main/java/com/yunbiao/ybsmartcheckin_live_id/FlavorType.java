@@ -9,4 +9,5 @@ public interface FlavorType {
     int BIO = 5;
     int SCAN_TEMP = 6;
     int PING_TECH = 7;
+    int XENON = 8;
 }

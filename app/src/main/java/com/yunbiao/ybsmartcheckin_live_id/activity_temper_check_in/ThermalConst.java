@@ -55,9 +55,9 @@ public class ThermalConst {
         public static final boolean TITLE_ENABLED = true;
         public static int DEFAULT_LOGO_ID = R.mipmap.yb_logo;
         public static final float VOICE_SPEED = 1.8f;
-        public static final boolean SHOW_MAIN_LOGO = true;//LOGO
-        public static final boolean SHOW_MAIN_INFO = false;//主页信息
-        public static final boolean SHOW_MAIN_THERMAL = true;//热成像
+        public static boolean SHOW_MAIN_LOGO = true;//LOGO
+        public static boolean SHOW_MAIN_INFO = false;//主页信息
+        public static boolean SHOW_MAIN_THERMAL = true;//热成像
         public static final boolean SHOW_DIALOG = false;
         public static boolean LOW_TEMP = true;
         public static float AMBIENT_CORRECT = 25.0f;
@@ -82,6 +82,8 @@ public class ThermalConst {
         public static final boolean WARNING_TEMPER_SHOW = true;
         public static final int WARNING_TEMPER_LOCATION = 2;
         public static final boolean WARNING_BROAD_ENABLED = true;
+
+        public static String WELCOME_TIP_CONTENT = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip);
     }
 
 }

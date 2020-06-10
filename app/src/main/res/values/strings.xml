@@ -6,6 +6,7 @@
     <string name="app_name5">SoftWorkz AI</string>
     <string name="app_name6">Scan Temp</string>
     <string name="app_name7">Ping Tech</string>
+    <string name="app_name8">Fever Defence</string>
     <string name="used">used:</string>
     <string name="no_used">/can use:</string>
     <string name="back">Back</string>
@@ -15,6 +16,8 @@
     <string name="temper_error_tips">The temperature measurement data failed to be retrieved, please check the temperature measurement module</string>
     <string name="temper_error_btn_restart">Reboot</string>
     <string name="temper_error_btn_cancel">No processing</string>
+
+    <string name="xenon_welcome_tip">Welcome to Xenon Fever Defence</string>
 
     <!--文件选择-->
     <string name="local_directory">Internal Flash</string>
@@ -97,9 +100,9 @@
     <string name="sk_multiple">SKHighThroughput</string>
 
     <!--视美泰-->
-    <string name="smt_main_net_normal">ON-LINE</string>
-    <string name="smt_main_net_normal2">ON-LINE</string>
-    <string name="smt_main_net_no">OFF-LINE</string>
+    <string name="smt_main_net_normal">online</string>
+    <string name="smt_main_net_normal2">online</string>
+    <string name="smt_main_net_no">offline</string>
     <string name="smt_main_all">All</string>
     <string name="smt_main_already">Arr</string>
     <string name="smt_main_ver">Ver:</string>
@@ -109,7 +112,7 @@
 
 
     <!--首页测温提示-->
-    <string name="main_temp_warning_tips">hyperthemia</string><!--体温异常-->
+    <string name="main_temp_warning_tips">Abnormal temperature</string><!--体温异常-->
     <string name="main_temp_normal_tips">Normal</string><!--体温正常-->
     <string name="main_temp_error_tips">Abnormal temperature</string>
     <string name="main_temp_tips_please_close">Please come closer</string><!--Please approach--><!--请靠近点-->
@@ -146,9 +149,9 @@
     <string name="System_skin_select">Skin</string><!--更换皮肤-->
     <string name="System_update">Upgrade</string><!--升级-->
     <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string><!--版权所有:北京云标科技有限公司-->
-    <string name="System_Service_offline">off-line</string><!--离线-->
-    <string name="System_online">on-line</string><!--在线-->
-    <string name="System_offline">off-line</string><!--离线-->
+    <string name="System_Service_offline">offline</string><!--离线-->
+    <string name="System_online">online</string><!--在线-->
+    <string name="System_offline">offline</string><!--离线-->
     <string name="System_validityPeriod">Indefinite period</string><!--无限期-->
     <string name="System_cloud_service">Cloud services</string><!--云服务-->
     <string name="System_local_service">Local services</string><!--本地服务-->
