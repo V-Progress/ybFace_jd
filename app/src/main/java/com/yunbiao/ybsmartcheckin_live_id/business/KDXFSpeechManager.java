@@ -177,6 +177,7 @@ public class KDXFSpeechManager {
         if (TextUtils.isEmpty(welcomeTips)) {
             return;
         }
+        mSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
         playNormal(welcomeTips);
     }
 
