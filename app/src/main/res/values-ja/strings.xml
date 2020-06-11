@@ -454,11 +454,11 @@
     <string name="fment_sign_visitor_name">訪問者</string>
     <string name="fment_sign_company">公司：</string>
     <string name="fment_sign_device_no">编号：</string>
-    <string name="fment_sign_version">版本：</string>
+    <string name="fment_sign_version">版番：</string>
     <string name="fment_sign_bind_code">バインディングコード：</string>
     <string name="fment_sign_net">网络：</string>
-    <string name="fment_sign_total">应到</string>
-    <string name="fment_sign_already">已到</string>
+    <string name="fment_sign_total">総人数</string>
+    <string name="fment_sign_already">出席</string>
 
     <!--WebFragment-->
     <string name="fment_Web_back">後退
@@ -552,7 +552,7 @@
 </string>
     <string name="update_version_title">バージョン情報</string>
     <string name="update_lable_new">最新版：</string>
-    <string name="update_lable_current">当前版本：</string>
+    <string name="update_lable_current">現行版：</string>
     <string name="update_check_failed">検出の更新に失敗し、インターネットをチェックしてください</string>
     <string name="update_check_ing">バージョン情報を検知しています</string>
     <string name="update_have_new">新しいバージョンが検出されたので詳細を見てください</string>

@@ -319,7 +319,7 @@
                                 android:text="@string/speech_setting_temper_location"
                                 style="@style/setting_text"/>
                             <RadioGroup
-                                android:onCheckedChanged="@{actionPresenter.onNormalLocationCheckedChanged}"
+                                android:onCheckedChanged="@{actionPresenter::onNormalLocationCheckedChanged}"
                                 android:checkedButton="@{speechContent.normalTemperLocation == 0 ? @id/rb_start_normal : speechContent.normalTemperLocation == 1 ? @id/rb_center_normal : @id/rb_end_normal}"
                                 android:layout_marginLeft="10dp"
                                 android:orientation="horizontal"
@@ -404,7 +404,7 @@
                                 android:text="@string/speech_setting_temper_location"
                                 style="@style/setting_text"/>
                             <RadioGroup
-                                android:onCheckedChanged="@{actionPresenter.onWarningLocationCheckedChanged}"
+                                android:onCheckedChanged="@{actionPresenter::onWarningLocationCheckedChanged}"
                                 android:checkedButton="@{speechContent.warningTemperLocation == 0 ? @id/rb_start_warning : speechContent.warningTemperLocation == 1 ? @id/rb_center_warning : @id/rb_end_warning}"
                                 android:id="@+id/rg_location_warning"
                                 android:layout_marginLeft="10dp"

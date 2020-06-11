@@ -164,7 +164,7 @@ public class AutoUpload {
         }
         List<TemperSignBean> temperSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature()));
+            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(),sign.getEmpId()));
         }
         String json = new Gson().toJson(temperSignBeans);
 
@@ -511,10 +511,12 @@ public class AutoUpload {
     class TemperSignBean {
         long createTime;
         float temper;
+        long entryId;
 
-        public TemperSignBean(long createTime, float temper) {
+        public TemperSignBean(long createTime, float temper, long empId) {
             this.createTime = createTime;
             this.temper = temper;
+            this.entryId = empId;
         }
     }
 
