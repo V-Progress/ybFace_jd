@@ -35,12 +35,17 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -359,6 +364,38 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_MIRROR, isChecked);
             }
         });
+    }
+
+    public void clearData(View view){
+        List<Sign> signList = DaoManager.get().queryAll(Sign.class);
+        if(signList == null || signList.size() == 0){
+            UIUtils.showShort(this,(getString(R.string.clear_no_data) + "0"));
+            return;
+        }
+
+        int total = 0;
+        Iterator<Sign> iterator = signList.iterator();
+        while (iterator.hasNext()) {
+            Sign next = iterator.next();
+            String headPath = next.getHeadPath();
+            String hotImgPath = next.getHotImgPath();
+            if(!TextUtils.isEmpty(headPath)){
+                File headFile = new File(headPath);
+                if(headFile.exists()){
+                    headFile.delete();
+                }
+            }
+            if(!TextUtils.isEmpty(hotImgPath)){
+                File hotFile = new File(hotImgPath);
+                if(hotFile.exists()){
+                    hotFile.delete();
+                }
+            }
+            DaoManager.get().deleteSign(next);
+            total ++;
+        }
+
+        UIUtils.showShort(this,(getString(R.string.clear_no_data) + total));
     }
 
     public void powerOnOff(View view) {

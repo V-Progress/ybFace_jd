@@ -341,6 +341,12 @@
         <TextView
             style="@style/setting_text_child"
             android:layout_marginTop="10dp"
+            android:onClick="clearData"
+            android:text="@string/act_set_qcsj" />
+
+        <TextView
+            style="@style/setting_text_child"
+            android:layout_marginTop="10dp"
             android:onClick="powerOnOff"
             android:text="@string/setting_power_on_off" />
 
