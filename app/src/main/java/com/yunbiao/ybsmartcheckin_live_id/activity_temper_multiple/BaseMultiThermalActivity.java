@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.FileSelectActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
@@ -53,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import androidx.annotation.Nullable;
 import io.reactivex.functions.Consumer;
 
 public abstract class BaseMultiThermalActivity extends BaseGpioActivity implements NetWorkChangReceiver.NetWorkChangeListener {
@@ -244,6 +246,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     private PopupWindow signListPopupWindow;
     private CountDownTimer signListCountDownTimer;
 
+    private View rootView;
     private void showSignListPopup() {
         if (signListPopupWindow != null && signListPopupWindow.isShowing()) {
             return;
@@ -256,7 +259,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
             signListPopupWindow.setAnimationStyle(R.style.multi_thermal_system_info_anim_style);
         }
 
-        final View rootView = signListPopupWindow.getContentView();
+        rootView = signListPopupWindow.getContentView();
         final TextView tvNoData = rootView.findViewById(R.id.tv_no_date_record);
         final Spinner spinner = rootView.findViewById(R.id.spn_date);
         final ProgressBar progressBar = rootView.findViewById(R.id.pb_load_data_record);
@@ -265,7 +268,8 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         rootView.findViewById(R.id.iv_export).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exportToUD(v);
+                startActivityForResult(new Intent(BaseMultiThermalActivity.this, FileSelectActivity.class), FileSelectActivity.SELECT_DIRECTORY);
+//                exportToUD(v);
             }
         });
         rootView.findViewById(R.id.iv_hidden_record_multi_thermal).setOnClickListener(new View.OnClickListener() {
@@ -422,12 +426,21 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FileSelectActivity.SELECT_DIRECTORY && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.SELECT_FILE_PATH);
+            Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
+            exportToUD(rootView.findViewById(R.id.iv_export), new File(stringExtra));
+        }
+    }
 
     private boolean isExporting = false;
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private String[] title;
 
-    private void exportToUD(final View view) {
+    private void exportToUD(final View view, File file) {
         title = new String[]{
                 getResources().getString(R.string.sign_list_name),
                 getResources().getString(R.string.sign_list_number),
@@ -440,14 +453,14 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
                 getResources().getString(R.string.sign_list_hot)};
 
         //获取U盘地址
-        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        File file = new File(usbDiskPath);
-        if (!file.exists()) {
-            isExporting = false;
-            UIUtils.showTitleTip(BaseMultiThermalActivity.this, getString(R.string.sign_list_tip_usb_disk));
-            usbDiskPath = Environment.getExternalStorageDirectory().getPath();
-            file = new File(usbDiskPath);
-        }
+//        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
+//        File file = new File(usbDiskPath);
+//        if (!file.exists()) {
+//            isExporting = false;
+//            UIUtils.showTitleTip(BaseMultiThermalActivity.this, getString(R.string.sign_list_tip_usb_disk));
+//            usbDiskPath = Environment.getExternalStorageDirectory().getPath();
+//            file = new File(usbDiskPath);
+//        }
         //创建记录最外层目录
         final File dirFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record));
         if (!dirFile.exists()) {

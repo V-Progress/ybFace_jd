@@ -437,7 +437,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
                         android:text="@string/main_normal_multi_thermal"
@@ -451,7 +451,7 @@
                         android:gravity="center"
                         android:text="0"
                         android:textSize="30dp"
-                        android:layout_weight="2"
+                        android:layout_weight="1.7"
                         android:textColor="#00ff00"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"/>
@@ -466,7 +466,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:textColor="#00FFFF"
@@ -477,7 +477,7 @@
                         android:paddingBottom="10dp"
                         android:background="@mipmap/multi_thermal_record_num_bg"
                         android:id="@+id/tv_warning_num_multi_normal"
-                        android:layout_weight="2"
+                        android:layout_weight="1.7"
                         android:gravity="center"
                         android:text="0"
                         android:textSize="30dp"
@@ -527,7 +527,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
                     <TextView
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:gravity="center"
                         android:textColor="#00FFFF"
                         android:text="@string/main_visitor_multi_thermal"
@@ -541,7 +541,7 @@
                         android:gravity="center"
                         android:text="0"
                         android:textSize="30dp"
-                        android:layout_weight="2"
+                        android:layout_weight="1.7"
                         android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"/>

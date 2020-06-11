@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="3dp"
     android:background="@mipmap/multi_thermal_camera">
 
@@ -131,17 +132,22 @@
                 <FrameLayout
                     android:layout_marginBottom="10dp"
                     android:background="@mipmap/circle_bg"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp">
+                    android:layout_width="70dp"
+                    android:layout_height="70dp">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/iv_export"
                         android:textColor="@color/white"
                         android:gravity="center"
+                        android:layout_gravity="center"
+                        app:autoSizeMaxTextSize="20sp"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeTextType="uniform"
+                        android:maxLines="1"
                         android:textSize="20dp"
                         android:text="@string/record_export_multi_thermal"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"/>
+                        android:layout_width="68dp"
+                        android:layout_height="68dp"/>
                 </FrameLayout>
 
                 <ImageView

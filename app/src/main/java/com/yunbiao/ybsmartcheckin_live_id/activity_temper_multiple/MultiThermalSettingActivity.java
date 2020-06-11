@@ -599,28 +599,28 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 String mXmppPort = edtXmppPort.getText().toString();
                 String mProName = edtProName.getText().toString();
                 if (TextUtils.isEmpty(mIp)) {
-                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置IP地址");
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_please_set_ip));
                     return;
                 }
 
 
                 if (TextUtils.isEmpty(mResPort)) {
-                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置接口端口");
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_please_set_res));
                     return;
                 }
                 int intResPort = Integer.parseInt(mResPort);
                 if(intResPort > 65535){
-                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "服务端口格式不正确，请检查");
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_res_port_error));
                     return;
                 }
 
                 if (TextUtils.isEmpty(mXmppPort)) {
-                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "请设置XMPP端口");
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_please_set_xmpp));
                     return;
                 }
                 int intXmppPort = Integer.parseInt(mXmppPort);
                 if(intXmppPort > 65535){
-                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, "通信端口格式不正确，请检查");
+                    UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_xmpp_port_error));
                     return;
                 }
 
@@ -636,7 +636,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
                     SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
-                UIUtils.showTitleTip(MultiThermalSettingActivity.this, "保存成功,重启APP后生效");
+                UIUtils.showTitleTip(MultiThermalSettingActivity.this, getResString(R.string.setting_save_succ_please_restart));
             }
         });
     }
