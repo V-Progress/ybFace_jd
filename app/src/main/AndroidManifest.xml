@@ -9,7 +9,7 @@
         android:icon="${app_icon}"
         android:label="${app_name}"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="${app_icon}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">

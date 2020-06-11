@@ -109,7 +109,10 @@ public class SplashActivity extends BaseActivity {
             OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
             ThreadUitls.runInThread(() -> PowerOffTool.getPowerOffTool().machineStart());
 
-            ConfigLoader.load();
+            if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
+             || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
+                ConfigLoader.load();
+            }
 
             uploadException(nextRunnable);
         }
