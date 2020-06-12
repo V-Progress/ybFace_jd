@@ -22,7 +22,7 @@
 
     <string name="setting_tab_face">Лицо человека</string>
     <string name="setting_tab_page">Граница</string>
-    <string name="setting_tab_temper">Измерение температура</string>
+    <string name="setting_tab_temper">Измерение температуры</string>
     <string name="setting_tab_device">Оборудование</string>
 
     <!--语音设置-->
@@ -44,6 +44,7 @@
     <string name="speech_setting_normal_exmaple">Образец трансляции о "нормальной температуре тела"：</string>
     <string name="speech_setting_warning_exmaple">Образец трансляции о "ненормальной температуре тела"：</string>
     <string name="speech_setting_audition">Прослушивание</string>
+    <string name="setting_camera_vertical_mirror">Вертикальная камера рамки</string>
     <string name="setting_picture_rotation">С камерой</string>
     <string name="setting_local_priority">Местный первый</string>
     <string name="setting_pic_rotation">Направление фото</string>
@@ -65,7 +66,7 @@
     <string name="yb_temper_check_in">YBFace</string>
     <string name="yb_certificates">YBFace</string>
     <string name="yb_multiple">YB измерение температуры большего потока</string>
-    <string name="yb_safety_chceck">YB измерение температура и безопасность</string>
+    <string name="yb_safety_chceck">YB измерение температуры и безопасность</string>
 
     <string name="ht_temper_check_in">Hengtong измерение температуры и табельный счет</string>
     <string name="ht_certificates">Hengtong измерение температуры с ID-картой</string>
@@ -122,7 +123,7 @@
     <string name="System_Setting">Настройка системы</string>
     <string name="System_Visitor">посетитель</string>
     <string name="System_skin_select">Выбор кожи</string>
-    <string name="System_update">Обновление</string>
+    <string name="System_update">Обновить</string>
     <string name="System_copyright">Copyright:Beijing Yunbiao Technology Co., Ltd</string>
     <string name="System_Service_offline">Не в сети</string>
     <string name="System_online">Онлайн</string>
@@ -243,12 +244,17 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="only_label">Только</string>
-    <string name="face_label">распознаванием лиц</string>
-    <string name="temper_label">измерение температуры</string>
-    <string name="model_tip">Индивидуальная посещаемость без измерения температуры</string><!--单选考勤时不进行测温-->
-    <string name="model_check_tip">Выбери хотя бы одну модель</string><!--至少选择一种模式-->
-
+    <string name="face_only_model">Табельный учет с распознаванием лиц</string>
+    <string name="infared_only_model">Только измерение температуры (маленький)</string>
+    <string name="face_infared_model">распознаванием лиц + измерение температуры (маленький)</string>
+    <string name="thermal_only_model">Только измерение температуры (HM-32*32)</string>
+    <string name="face_thermal_model">распознаванием лиц + измерение температуры(HM-32*32)</string>
+    <string name="thermal_16_4_model">Только измерение температуры (HM-16*4)</string>
+    <string name="face_thermal_16_4_model">распознаванием лиц + измерение температуры (HM-16*4)</string>
+    <string name="only_thermal_mlx_16_4_model">Только измерение температуры (MLX-16*4)</string>
+    <string name="face_thermal_mlx_16_4_model">распознаванием лиц + измерение температуры (MLX-16*4)</string>
+    <string name="smt_only_thermal">Только измерение температуры (SMT)</string>
+    <string name="smt_face_thermal">распознаванием лиц + измерение температуры (SMT)</string>
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">Счет очищен</string>
@@ -256,8 +262,7 @@
     <string name="setting_face_similar_threshold">Установить порог сходства лиц</string>
     <string name="setting_enable_dialog">Всключить рамку лиц</string>
     <string name="setting_enable_liveness">Всключить определение живым телом</string>
-    <string name="setting_camera_mirror">Включить зеркальное изображение рамки лиц</string>
-    <string name="setting_camera_vertical_mirror">Вертикальная камера рамки</string>
+    <string name="setting_camera_mirror">Включить зеркальное изображение рамки лица</string>
     <string name="setting_select_model">Быбрать рыжимы</string>
     <string name="setting_current_port_path">Текущий последовательный порт</string>
     <string name="setting_baud_rate">Битрейт</string>
@@ -285,10 +290,10 @@
     <string name="setting_curr_net">Текущий интернет:</string>
     <string name="setting_net_name">【WIFI, название интернета：XXXXX】</string>
     <string name="setting_reboot_device">перезагрузка оборудования</string>
-    <string name="setting_check_update">Обновление</string>
+    <string name="setting_check_update">Обновить</string>
     <string name="setting_manage_password">Изменить администротивный пароль</string>
     <string name="setting_system_password">Пароль системы</string>
-    <string name="setting_please_input_password">Пожалуйста, введите пароль(6–12 цифров, букв)</string>
+    <string name="setting_please_input_password">Пожалуйста, введите пароль(6-12 цифров, букв)</string>
     <string name="setting_please_input_again">Пожалуйста, введите пароль снова</string>
     <string name="setting_cloud_service">Облака</string>
     <string name="setting_local_service">Локальная сеть</string>
@@ -319,6 +324,8 @@
     <string name="setting_low_temp_model">Режим "низкая температура"</string>
     <string name="setting_portrait_outline">Профиль лиц</string>
     <string name="setting_default_welcome_tip">Добро пожаловать использовать AI интеллектуальную систему табельного учета</string>
+    <string name="setting_default_welcome_tip2">Добро пожаловать использовать Hengtong систему табельного учета</string>
+    <string name="setting_default_welcome_tip3">добро пожаловать использовать SIKU систему табельного учета</string>
     <string name="setting_correct_temperature">Коррекция температуры</string>
     <string name="setting_broadcast_f">Трансляция по фаренгейту</string>
 
@@ -341,7 +348,7 @@
     <string name="setting_switch_confirm">Подтвертить</string>
     <string name="setting_switch_cancel">Отменить</string>
     <string name="setting_privacy_mode">Режим конфиденциальности</string>
-    <string name="setting_periodic_purge_policy">Тактика удаления</string>
+    <string name="setting_periodic_purge_policy">Тактика очистки</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
     <string name="setting_show_main_logo">Показать логотип дома</string>
     <string name="setting_show_main_thermal">Показать тепловизионную картину</string>
@@ -418,7 +425,7 @@
 
     <!--WebFragment-->
     <string name="fment_Web_back">Назад</string>
-    <string name="fment_Web_refresh">Обновление</string>
+    <string name="fment_Web_refresh">Обновить</string>
 
 
     <!-- act_set layout_setting.xml -->
@@ -603,7 +610,7 @@
     <string name="setting_save_failed_multi_thermal">Без изменений</string>
     <string name="setting_save_success_multi_thermal">Успешно Сохранено</string>
     <string name="setting_save_multi_thermal">Сохранить</string>
-    <string name="setting_please_correct_multi_thermal">(Пожалуйста, введите разница между температурами, измеренными обычным термометром и тепловизором)</string>
+    <string name="setting_please_correct_multi_thermal">(Пожалуйста, введите разницу между температурами, измеренными обычным термометром и тепловизором)</string>
     <string name="record_export_multi_thermal">Экспорт</string>
     <string name="main_real_detection">Мониторинг в реальном времени</string>
     <string name="main_data_total">Статистика данных</string>
@@ -632,13 +639,4 @@
     <string name="safety_correct_temper_completion">Измерение температуры завершено</string><!--測溫完成-->
     <string name="safety_save_completion">Коррекция завершена</string><!--矯正完成-->
     <string name="safety_save_cancel">Отменить коррекцию</string><!--保存-->
-
-    <string name="setting_privacy_prompt">Измерить температуру, не записать данные</string>
-    <string name="setting_clear_policy_7">7д</string>
-    <string name="setting_clear_policy_15">15д</string>
-    <string name="setting_clear_policy_30">30д</string>
-    <string name="setting_clear_policy_custom">Самоопределение.</string>
-    <string name="setting_clear_policy_unit">д</string>
-    <string name="setting_clear_all_data">Стереть все данные.</string>
-    <string name="clear_no_data">Данные были удалены：</string><!--保存-->
 </resources>
