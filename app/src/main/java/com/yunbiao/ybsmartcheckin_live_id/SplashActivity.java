@@ -129,7 +129,8 @@ public class SplashActivity extends BaseActivity {
             }
             int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
             Log.e(TAG, "激活结果: " + code);
-            if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+            if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED
+                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
