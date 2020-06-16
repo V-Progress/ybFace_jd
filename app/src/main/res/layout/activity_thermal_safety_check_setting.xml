@@ -29,6 +29,7 @@
             android:textColor="#1296DB"
             android:id="@+id/iv_back"
             android:padding="15dp"
+            android:layout_marginTop="-8dp"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
@@ -44,7 +45,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="160dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
@@ -152,6 +153,24 @@
 
                 <Switch
                     android:id="@+id/sw_thermal_imag_mirror_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    style="@style/setting_text"
+                    android:text="@string/setting_broadcast_f" />
+
+                <Switch
+                    android:id="@+id/sw_f_enabled_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

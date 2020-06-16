@@ -32,6 +32,8 @@ public class ThermalSafetyCheckConst {
         String LAST_MINT = "thermalSafetyCheckDateAndMinT";
 
         String IMMEDIATE_REPORT_MODE = "thermalImmediateReportMode";
+
+        String THERMAL_F_ENABLED = "thermalSafetyCheckFEnabled";
     }
 
     public interface Default{
@@ -60,6 +62,8 @@ public class ThermalSafetyCheckConst {
         float LAST_MINT = 0.0f;
 
         boolean IMMEDIATE_REPORT_MODE = false;
+
+        boolean THERMAL_F_ENABLED = false;
     }
 
     public interface Size{

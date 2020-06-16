@@ -104,6 +104,8 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
     private int ivHotWidth = 0;
     private int ivHotHeight = 0;
 
+    private static boolean fEnabled;
+
     @Override
     protected int getPortraitLayout() {
         if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
@@ -201,6 +203,12 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
         mAutoCalibration = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.AUTO_CALIBRATION, ThermalSafetyCheckConst.Default.AUTO_CALIBRATION);
         mLastMinT = SpUtils.getFloat(ThermalSafetyCheckConst.Key.LAST_MINT, ThermalSafetyCheckConst.Default.LAST_MINT);
         mImmediateReportModeEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.IMMEDIATE_REPORT_MODE, ThermalSafetyCheckConst.Default.IMMEDIATE_REPORT_MODE);
+        fEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_F_ENABLED, ThermalSafetyCheckConst.Default.THERMAL_F_ENABLED);
+        if (fEnabled) {
+            tvSsdSafetyCheck.setText("℉");
+        } else {
+            tvSsdSafetyCheck.setText("℃");
+        }
 
         int temperAreaSize = SpUtils.getIntOrDef(ThermalSafetyCheckConst.Key.TEMPER_AREA_SIZE, ThermalSafetyCheckConst.Default.TEMPER_AREA_SIZE);
         if (temperAreaSize == ThermalSafetyCheckConst.Size.TOO_SMALL) {
@@ -447,7 +455,14 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                 case 1:
                     float finalTemper = (float) msg.obj;
 
-                    tsTemper.setText(finalTemper + "");
+                    if (fEnabled) {
+                        float fTemper = (float) (Math.round((finalTemper * 1.8f + 32) * 10)) / 10;
+                        tsTemper.setText(fTemper + "");
+                        tvSsdSafetyCheck.setText("℉");
+                    } else {
+                        tsTemper.setText(finalTemper + "");
+                        tvSsdSafetyCheck.setText("℃");
+                    }
                     TextView currTextView = (TextView) tsTemper.getCurrentView();
                     String tip;
                     //体温正常

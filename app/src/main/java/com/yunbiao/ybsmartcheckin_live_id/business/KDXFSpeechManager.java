@@ -315,7 +315,7 @@ public class KDXFSpeechManager {
         if(mSoundPool == null){
             return;
         }
-        mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
+        mPlayId = mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
     }
 
     public void playWaningRingNoStop() {

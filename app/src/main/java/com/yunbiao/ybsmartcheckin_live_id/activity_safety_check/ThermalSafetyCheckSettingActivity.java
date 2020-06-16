@@ -69,6 +69,8 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
         initAutoCalibration();
 
         initImmediateReportMode();
+
+        initFEnable();
     }
 
     @Override
@@ -240,6 +242,18 @@ public class ThermalSafetyCheckSettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.IMMEDIATE_REPORT_MODE, isChecked);
+            }
+        });
+    }
+
+    private void initFEnable() {
+        boolean fEnabled = SpUtils.getBoolean(ThermalSafetyCheckConst.Key.THERMAL_F_ENABLED, ThermalSafetyCheckConst.Default.THERMAL_F_ENABLED);
+        Switch swFEnabled = findViewById(R.id.sw_f_enabled_setting);
+        swFEnabled.setChecked(fEnabled);
+        swFEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(ThermalSafetyCheckConst.Key.THERMAL_F_ENABLED, isChecked);
             }
         });
     }
