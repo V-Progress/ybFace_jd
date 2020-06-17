@@ -43,6 +43,7 @@ import java.util.Map;
 import okhttp3.Call;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
@@ -79,6 +80,13 @@ public class SplashActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String deviceSN = HeartBeatClient.getDeviceSN();
+        Timber.e("initView: 当前设备的DeviceSN是：%s", deviceSN);
+        String localMac = CommonUtils.getLocalMac();
+        String wifiMac = CommonUtils.getWifiMac();
+        Timber.e("initView: 当前wifiMac：%s", wifiMac);
+        Timber.e("initView: 当前localMac：%s", localMac);
     }
 
     @Override

@@ -9,6 +9,8 @@ import android.util.Log;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
+import java.lang.reflect.Method;
+
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class HeartBeatClient {
     /**
@@ -23,5 +25,22 @@ public class HeartBeatClient {
             SpUtils.saveStr(SpUtils.DEVICE_UNIQUE_NO,sbDeviceId);
         }
         return sbDeviceId;
+    }
+
+    public static String getDeviceSN(){
+        String serialNumber = android.os.Build.SERIAL;
+        if(!TextUtils.isEmpty(serialNumber)){
+            return serialNumber;
+        }
+
+        String serial = null;
+        try {
+            Class<?> c =Class.forName("android.os.SystemProperties");
+            Method get =c.getMethod("get", String.class);
+            serial = (String)get.invoke(c, "ro.serialno");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serial;
     }
 }
