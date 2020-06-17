@@ -187,17 +187,15 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        tv_version_system.setText(appName);
+        String additional = "";
+        if(Constants.FLAVOR_TYPE == FlavorType.XENON){
+            additional = "Xenon Fever Defence ";
+        }
+        tv_version_system.setText(additional + appName);
 
         setInfo();
 
-        com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.getDataSize(new com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.OnSizeCallback() {
-            @Override
-            public void getSize(long size) {
-                Log.e("123", "getSize: -----------" + size);
-            }
-        });
-
+        com.yunbiao.ybsmartcheckin_live_id.utils.FileUtils.getDataSize(size -> Log.e("123", "getSize: -----------" + size));
 
         checkUpgrade(new CheckUpgradeCallback() {
             @Override

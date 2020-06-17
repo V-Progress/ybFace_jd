@@ -224,6 +224,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
                     break;
                 case TemperModuleType.HM_16_4:
                 case TemperModuleType.MLX_16_4:
+                case TemperModuleType.INFRARED:
                     ivThermalImaging.setVisibility(View.GONE);
                     llThermalArea.setVisibility(View.VISIBLE);
                     ivInfaredImaging.setVisibility(View.VISIBLE);

@@ -511,6 +511,12 @@ public class ThermalSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(ThermalConst.Key.AUTO_TEMPER, isChecked);
             });
 
+            //===无人脸报温=======================================================
+            boolean noFaceTemper = SpUtils.getBoolean(ThermalConst.Key.NO_FACE_TEMPER,ThermalConst.Default.NO_FACE_TEMPER);
+            Switch swNoFaceTemper = view.findViewById(R.id.sw_no_face_temper);
+            swNoFaceTemper.setChecked(noFaceTemper);
+            swNoFaceTemper.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.NO_FACE_TEMPER,isChecked));
+
             //进入矫正=======================================================================================================
             float thermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
             Button btnCorrectSub = view.findViewById(R.id.btn_correct_sub_setting);
@@ -780,7 +786,19 @@ public class ThermalSettingActivity extends BaseActivity {
             initSetIp(view);
 
             //清除所有数据============================================================================
-            view.findViewById(R.id.tv_clear_all).setOnClickListener(view1 -> clearAllData());
+            view.findViewById(R.id.tv_clear_all).setOnClickListener(view1 -> showDialog());
+        }
+
+        private void showDialog(){
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    .setTitle(getResources().getString(R.string.clear_all_data_dialog_title))
+                    .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
+                    .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
+                        clearAllData();
+                    }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
+                        dialog.dismiss();
+                    }).create();
+            alertDialog.show();
         }
 
         private void clearAllData(){
@@ -952,6 +970,8 @@ public class ThermalSettingActivity extends BaseActivity {
 
                 if (TextUtils.isEmpty(mProName)) {
                 }
+
+                ConfigLoader.save();
 
                 if (rbYun.isChecked()) {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);

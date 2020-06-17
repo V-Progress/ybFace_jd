@@ -32,6 +32,10 @@ import com.yunbiao.ybsmartcheckin_live_id.BR;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.PictureData;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -142,6 +146,30 @@ public class BatchImportActivity extends Activity {
                 if(rows <= 0){
                     Log.e(TAG, "onActivityResult: 该表格内没有数据");
                     return;
+                }
+
+                InputStream is = getContentResolver().openInputStream(xls);
+                try {
+                    org.apache.poi.ss.usermodel.Workbook wb = WorkbookFactory.create(is);
+                    int numberOfSheets = wb.getNumberOfSheets();
+                    org.apache.poi.ss.usermodel.Sheet sheetA = wb.getSheetAt(numberOfSheets);
+
+                    List<? extends PictureData> allPictures = wb.getAllPictures();
+                    for (PictureData allPicture : allPictures) {
+
+                    }
+
+
+                    org.apache.poi.ss.usermodel.Cell cell;
+                    for (Row row : sheetA) {
+                        cell = row.getCell(0);
+
+
+                    }
+
+
+                } catch (InvalidFormatException e) {
+                    e.printStackTrace();
                 }
 
 

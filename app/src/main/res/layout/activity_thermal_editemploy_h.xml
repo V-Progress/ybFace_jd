@@ -161,6 +161,8 @@
                     android:text="@string/act_editEmploy_name" />
 
                 <EditText
+                    android:paddingRight="6dp"
+                    android:drawableRight="@mipmap/edit_avaliable"
                     android:id="@+id/et_name"
                     style="@style/edt_style_edt_emp"/>
             </LinearLayout>
@@ -210,10 +212,19 @@
                     android:text="@string/act_editEmploy_bm"/>
 
                 <Spinner
+                    android:background="@drawable/shape_spinner_background"
                     android:id="@+id/sp_depart"
                     style="@style/edt_style_edt_emp"
                     android:drawableRight="@mipmap/icon_arrow_down"/>
 
+                <Button
+                    android:id="@+id/btn_add_depart"
+                    android:background="@mipmap/icon_add"
+                    android:layout_below="@+id/rg_sex"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/sp_depart"/>
             </LinearLayout>
 
             <LinearLayout
@@ -223,6 +234,8 @@
                     android:text="@string/act_editEmploy_ygbh"/>
 
                 <EditText
+                    android:paddingRight="6dp"
+                    android:drawableRight="@mipmap/edit_avaliable"
                     android:id="@+id/et_num"
                     style="@style/edt_style_edt_emp" />
 
@@ -236,6 +249,8 @@
                     android:text="@string/act_editEmploy_zw" />
 
                 <EditText
+                    android:paddingRight="6dp"
+                    android:drawableRight="@mipmap/edit_avaliable"
                     android:id="@+id/et_job"
                     style="@style/edt_style_edt_emp"  />
 
@@ -248,6 +263,8 @@
                     android:text="@string/act_editEmploy_csrq" />
 
                 <TextView
+                    android:paddingRight="6dp"
+                    android:drawableRight="@mipmap/date_select"
                     android:id="@+id/tv_birth"
                     style="@style/edt_style_edt_emp" />
 
@@ -261,6 +278,8 @@
                     android:text="@string/act_editEmploy_gxqm"/>
 
                 <EditText
+                    android:paddingRight="6dp"
+                    android:drawableRight="@mipmap/edit_avaliable"
                     android:id="@+id/et_sign"
                     android:layout_height="100dp"
                     style="@style/edt_style_edt_emp"

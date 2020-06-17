@@ -46,11 +46,13 @@ public class ThermalConst {
         String FAHRENHEIT = "fahrenheitUnit";//华氏度单位
         String MASK_TIP = "thermalMaskTip";//口罩提示开关
         String TITLE_ENABLED = "thermalTitleEnabled";//标题显示
+        String NO_FACE_TEMPER = "thermalNoFaceThermal";
     }
 
     public static class Default {
-        public static boolean FACE_ENABLED = false;
-        public static boolean TEMPER_ENABLED = true;
+        public static final boolean NO_FACE_TEMPER = false;//无人脸测温
+        public static boolean FACE_ENABLED = false;//启用人脸识别
+        public static boolean TEMPER_ENABLED = true;//启用测温
         public static int TEMPER_MODULE = TemperModuleType.MLX_16_4;
         public static final boolean TITLE_ENABLED = true;
         public static int DEFAULT_LOGO_ID = R.mipmap.yb_logo;

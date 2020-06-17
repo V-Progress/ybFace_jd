@@ -135,6 +135,15 @@ public class CertificatesSettingActivity extends BaseActivity {
         initUsbPrinter();
         //初始化读卡模式
         initICCardModel();
+        //收集手机号码
+        initCollectPhone();
+    }
+
+    private void initCollectPhone(){
+        boolean collectPhone = SpUtils.getBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, CertificatesConst.Default.COLLECT_PHONE_ENABLED);
+        Switch swCollectPhone = findViewById(R.id.sw_collect_phone);
+        swCollectPhone.setChecked(collectPhone);
+        swCollectPhone.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, isChecked));
     }
 
     private void initICCardModel(){

@@ -734,39 +734,28 @@ public class FaceView extends FrameLayout {
     }
 
     public Bitmap getCurrCameraFrame() {
-        long start = System.currentTimeMillis();
-        Bitmap bitmap = NV21ToBitmap.nv21ToBitmap2(mCurrBytes, cameraHelper.getWidth(), cameraHelper.getHeight());
-        int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
-        if (bitmap != null && angle != 0) {
-            Bitmap bitmap1 = ImageUtils.rotateBitmap(bitmap, angle);
-            if (bitmap != null && !bitmap.equals(bitmap1) && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-            Log.e(TAG, "getCurrCameraFrame: 截全屏耗时：" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
-            return bitmap1;
-        } else {
-            return bitmap;
-        }
-        /*if (mCurrBytes != null) {
+        if (mCurrBytes != null) {
             try {
-                YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
-                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-
-                int angle = SpUtils.getIntOrDef(SpUtils.CAMERA_ANGLE, Constants.DEFAULT_CAMERA_ANGLE);
-                if (bmp != null && angle != 0) {
-                    Bitmap bitmap1 = ImageUtils.rotateBitmap(bmp, angle);
-                    return bitmap1;
+                Bitmap bitmap = NV21ToBitmap.nv21ToBitmap2(mCurrBytes.clone(), cameraHelper.getWidth(), cameraHelper.getHeight());
+                int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
+                if (bitmap != null) {
+                    int pictureRotation = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
+                    Log.e(TAG, "getCurrCameraFrame: 照片方向：" + pictureRotation );
+                    if (pictureRotation != -1) {
+                        return ImageUtils.rotateBitmap(bitmap, pictureRotation);
+                    } else if (bitmap != null && angle != 0) {
+                        return ImageUtils.rotateBitmap(bitmap, angle);
+                    } else {
+                        return bitmap;
+                    }
                 }
-                stream.close();
-                return bmp;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return null;*/
+        return null;
     }
+
 
     public interface FaceCallback {
         void onReady();

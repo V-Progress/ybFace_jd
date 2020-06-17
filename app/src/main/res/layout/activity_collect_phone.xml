@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/skin_main_screen_background"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CollectPhoneActivity">
+
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请输入手机号"
+        android:textColor="@color/white"
+        android:textSize="38dp" />
+
+    <EditText
+        android:id="@+id/edt_phone"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_system_name"
+        android:gravity="center"
+        android:inputType="number"
+        android:maxLength="11"
+        android:maxLines="1"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
+        android:scrollHorizontally="true"
+        android:singleLine="false"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_low"
+        android:textSize="34dp" />
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@mipmap/confirm_icon"
+        android:textColor="#64DCFE"
+        android:textSize="38dp" />
+    </LinearLayout>
+</RelativeLayout>

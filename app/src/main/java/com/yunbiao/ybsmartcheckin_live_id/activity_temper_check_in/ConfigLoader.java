@@ -60,7 +60,7 @@ public class ConfigLoader {
      * 读取的时候获取Map中的所有数据，然后检查类型，调用不同的方法
      */
     public static void load() {
-        try {
+        /*try {
             File configFile = checkConfigFile();
             if(configFile == null){
                 Timber.d("save: 未检测到配置文件");
@@ -122,11 +122,11 @@ public class ConfigLoader {
             Timber.d( "load: 写入缓存完毕");
         } catch (IOException e) {
             Timber.d( "load: 读取配置文件异常：%s", e.getMessage());
-        }
+        }*/
     }
 
-    public static void save(){
-        File file = checkConfigFile();
+    public synchronized static void save(){
+        /*File file = checkConfigFile();
         if(file == null){
             Timber.d( "save: 未检测到配置文件");
             return;
@@ -177,7 +177,7 @@ public class ConfigLoader {
             Timber.d( "save: 写入成功：%s", file.length());
         } catch (IOException e) {
             Timber.d( "save: 写入失败：%s", e.getMessage());
-        }
+        }*/
     }
 
     static class ConfigBean{

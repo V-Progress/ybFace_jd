@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/bg_edit"/>
+    //第二组item 插入图片(替换spinner默认箭头)
+    <item android:right="6dp">
+        <bitmap
+            android:gravity="end"
+            android:src="@mipmap/down_arrow_icon" />
+    </item>
+</layer-list>

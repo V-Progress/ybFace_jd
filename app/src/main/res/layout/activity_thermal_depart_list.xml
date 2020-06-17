@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/skin_main_screen_background"
+    tools:context="com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalDepartListActivity">
+
+    <RelativeLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:id="@+id/rl_title_Area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_ads_addname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32dp"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:text="部门管理" />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:drawableLeft="@mipmap/back"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/shape_employ_list"
+        android:padding="15dp"
+        android:layout_below="@+id/rl_title_Area">
+
+        <RelativeLayout
+            android:id="@+id/rl_control_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:drawablePadding="10dp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_addDepart"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:background="@drawable/shape_employ_button"
+                android:drawableLeft="@mipmap/icon_add"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/employ_List_add_user"
+                android:textColor="#64DCFE"
+                android:textSize="20dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_employ_list"
+            android:layout_below="@+id/rl_control_area"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_index"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_depart"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_control"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="5dp"
+            android:id="@+id/rlv_depart_List"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</LinearLayout>

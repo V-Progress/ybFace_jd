@@ -15,6 +15,9 @@
     <string name="temper_error_btn_restart">重启</string>
     <string name="temper_error_btn_cancel">暂不处理</string>
 
+    <string name="clear_all_data_dialog_title">警告</string>
+    <string name="clear_all_data_dialog_message">您确定要删除设备中的所有数据吗？</string><!--您确定要删除设备中的所有数据吗?-->
+
     <!--文件选择-->
     <string name="local_directory">本地存储</string>
     <string name="usb_directory">USB Disk</string>
@@ -648,5 +651,6 @@
     <string name="setting_clear_policy_custom">自定义</string>
     <string name="setting_clear_policy_unit">天</string>
     <string name="setting_clear_all_data">清除所有数据</string>
-    <string name="clear_no_data">数据已清除完毕：</string><!--保存-->
+    <string name="clear_no_data">数据已清除完毕：</string>
+    <string name="setting_no_face_temper">无人脸报温</string><!--保存-->
 </resources>

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.yunbiao.faceview.CompareResult;
@@ -29,7 +31,7 @@ import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
+import com.yunbiao.ybsmartcheckin_live_id.adapter.ThermalSpinnerDepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.bean.AddStaffResponse;
@@ -53,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Request;
 import timber.log.Timber;
@@ -87,11 +90,13 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private FaceView faceView;
     private RadioGroup rgSex;
 
-    private List<String> departNames = new ArrayList<>();
-    private List<Long> departIds = new ArrayList<>();
+    @BindView(R.id.btn_add_depart)
+    Button btnAddDepart;
 
+    private List<Depart> departList = new ArrayList<>();
     private int type;
     private TextView tvTitle;
+    private ThermalSpinnerDepartAdapter departAdapter;
 
     @Override
     protected int getPortraitLayout() {
@@ -128,7 +133,91 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         btn_cancle.setOnClickListener(this);
 
         faceView.setCallback(faceCallback);
+
+        btnAddDepart.setOnClickListener(view -> addDepartDialog());
     }
+
+    private void addDepartDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.act_departList_tip_qsrbmmc));
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_depart, null);
+        builder.setView(inflate);
+        EditText edtDepartName = inflate.findViewById(R.id.et_departName);
+
+        builder.setPositiveButton(getString(R.string.base_ensure), (dialog, which) -> {
+            String departName = edtDepartName.getText().toString();
+            if(TextUtils.isEmpty(departName)){
+                edtDepartName.setError("请输入部门名称");
+                return;
+            }
+            int comid = SpUtils.getCompany().getComid();
+            if(comid == Constants.NOT_BIND_COMPANY_ID){
+                List<Depart> departs = DaoManager.get().queryDepartByCompId(comid);
+                long departId = 0l;
+                if(departs != null){
+                    for (Depart depart1 : departs) {
+                        long depId = depart1.getDepId();
+                        if(departId <= depId){
+                            departId = depId;
+                        }
+                    }
+                }
+                departId += 1l;
+                Depart depart = new Depart();
+                depart.setId(departId);
+                depart.setDepId(departId);
+                depart.setDepName(departName);
+                DaoManager.get().add(depart);
+
+                departList.add(depart);
+                if(departAdapter != null){
+                    departAdapter.notifyDataSetChanged();
+                }
+            } else {
+                OkHttpUtils.post()
+                        .addParams("name", departName)
+                        .addParams("comId", String.valueOf(comid))
+                        .build().execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb) + "(" + e == null ?"NULL" : e.getMessage() +")");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if(TextUtils.isEmpty(response)){
+                            UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
+                            return;
+                        }
+
+                        com.alibaba.fastjson.JSONObject jsonObject = JSONObject.parseObject(response);
+                        Integer status = jsonObject.getInteger("status");
+                        if(status == 1){
+                            UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
+                            return;
+                        }
+
+                        Integer depId = jsonObject.getInteger("depId");
+                        Depart de = new Depart();
+                        de.setId(depId);
+                        de.setDepId(depId);
+                        de.setDepName(departName);
+                        DaoManager.get().addOrUpdate(de);
+
+                        departList.add(de);
+                        if(departAdapter != null){
+                            departAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton(getString(R.string.base_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
 
     private int mHasFace = -1;
     private FaceView.FaceCallback faceCallback = new FaceView.FaceCallback() {
@@ -197,16 +286,16 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         }
     }
 
-    private String departName = "";
-    private long departId = -1;
+    private Depart mCurrAddDepart;
+
+    private boolean isNumberExists(String number){
+        return DaoManager.get().queryNumberExists(SpUtils.getCompany().getComid(),number);
+    }
 
     //初始化新增逻辑
     private void initAddLogic() {
-        if (departNames.size() > 0) {
-            departName = departNames.get(0);
-        }
-        if (departIds.size() > 0) {
-            departId = departIds.get(0);
+        if(departList.size() > 0){
+            mCurrAddDepart = departList.get(0);
         }
         rgSex.check(R.id.rb_male);
     }
@@ -226,7 +315,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         // TODO: 2020/3/18 离线功能
         int comid = SpUtils.getCompany().getComid();
         if(comid != Constants.NOT_BIND_COMPANY_ID){
-            if (departId == -1) {
+            if (mCurrAddDepart == null) {
                 UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
@@ -246,21 +335,28 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
             return;
         }
 
+        if(isNumberExists(number)){
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.user_number_is_exists));
+            return;
+        }
+
         String birthday = tv_birth.getText().toString();
         String position = et_job.getText().toString();
         String signature = et_sign.getText().toString();
 
         final User addUser = new User();
-        addUser.setDepartId(departId);
+        addUser.setDepartId(mCurrAddDepart == null ? -1 : mCurrAddDepart.getDepId());
         addUser.setNumber(number);
         addUser.setSex(sex);
-        addUser.setDepartName(departName);
+        addUser.setDepartName(mCurrAddDepart == null ? "" : mCurrAddDepart.getDepName());
         addUser.setName(name);
         addUser.setHeadPath(mCurrPhotoPath);
         addUser.setCompanyId(comid);
         addUser.setBirthday(birthday);
         addUser.setPosition(position);
         addUser.setAutograph(signature);
+
+        Log.e(TAG, "submitAddUser: 头像路径名称：" + addUser.getHeadPath() );
 
         // TODO: 2020/3/18 离线功能 
         if (comid == Constants.NOT_BIND_COMPANY_ID) {
@@ -399,20 +495,17 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     }
 
     private void initDepart() {
-        departNames.clear();
-        departIds.clear();
+        departList.clear();
 
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
             UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_set_depart));
+        } else {
+            departList.addAll(departs);
         }
 
-        for (Depart depart : departs) {
-            departNames.add(depart.getDepName());
-            departIds.add(depart.getDepId());
-        }
-        DepartAdapter departAdapter = new DepartAdapter(this, departNames);
+        departAdapter = new ThermalSpinnerDepartAdapter(this, departList);
         sp_depart.setAdapter(departAdapter);
         Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
         sp_depart.setPopupBackgroundDrawable(drawable);
@@ -422,11 +515,8 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            departId = departIds.get(position);
-            departName = departNames.get(position);
-
-            mUpdateDepartId = departIds.get(position);
-            mUpdateDepartName = departNames.get(position);
+            mCurrAddDepart = departList.get(position);
+            mCurrUpdateDepart = departList.get(position);
         }
 
         @Override
@@ -473,8 +563,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
     private String mUpdatePhotoPath;
     private User user;
-    private long mUpdateDepartId = -1;
-    private String mUpdateDepartName;
+    private Depart mCurrUpdateDepart;
 
     private void initEditLogic() {
         long userId = getIntent().getLongExtra(ThermalEditEmployActivity.KEY_ID, -1);
@@ -500,8 +589,15 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         mUpdatePhotoPath = user.getHeadPath();
 
         long departId = user.getDepartId();
-        mUpdateDepartId = departId;
-        int index = departIds.indexOf(departId);
+
+        int index = 0;
+        for (int i = 0; i < departList.size(); i++) {
+            Depart depart = departList.get(i);
+            if (depart.getDepId() == departId) {
+                index = i;
+                mCurrUpdateDepart = depart;
+            }
+        }
         sp_depart.setSelection(index);
     }
 
@@ -518,17 +614,14 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
         int checkedRadioButtonId = rgSex.getCheckedRadioButtonId();
         final int sex = checkedRadioButtonId == R.id.rb_male ? 1 : 0;
 
-        // TODO: 2020/3/18 离线功能
-        if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
-            if (departId == -1) {
-                UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbm));
-                return;
-            }
-        }
-
         final String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
             UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbh));
+            return;
+        }
+
+        if(!TextUtils.equals(number,user.getNumber()) && isNumberExists(number)){
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.user_number_is_exists));
             return;
         }
 
@@ -544,11 +637,10 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
         // TODO: 2020/3/18 离线功能
         if(user.getCompanyId() == Constants.NOT_BIND_COMPANY_ID){
-            UIUtils.showNetLoading(this);
             user.setName(name);
             user.setSex(sex);
-            user.setDepartId(mUpdateDepartId);
-            user.setDepartName(mUpdateDepartName);
+            user.setDepartId(mCurrUpdateDepart == null ? -1 : mCurrUpdateDepart.getDepId());
+            user.setDepartName(mCurrUpdateDepart == null ? "" :mCurrUpdateDepart.getDepName());
             user.setNumber(number);
             user.setPosition(position);
             user.setBirthday(birthday);
@@ -577,7 +669,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
         Map<String, String> params = new HashMap<>();
         params.put("id", user.getId() + "");
-        params.put("depId", mUpdateDepartId + "");
+        params.put("depId", mCurrUpdateDepart.getDepId() + "");
 
         if (!TextUtils.equals(name, user.getName())) {
             params.put("name", name);
@@ -662,8 +754,8 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 user.setHeadPath(currFile.getPath());
                 user.setName(name);
                 user.setSex(sex);
-                user.setDepartId(mUpdateDepartId);
-                user.setDepartName(mUpdateDepartName);
+                user.setDepartId(mCurrUpdateDepart.getDepId());
+                user.setDepartName(mCurrUpdateDepart.getDepName());
                 user.setNumber(number);
                 user.setPosition(position);
                 user.setBirthday(birthday);
@@ -700,19 +792,24 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (mHasFace == -1) {
+            /*if (mHasFace == -1) {
                 UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_no_face));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
-            } else if (mHasFace == -2) {
+            } else */if (mHasFace == -2) {
                 UIUtils.showTitleTip(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_face_only_one));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             }
 
-            Bitmap bitmap = faceView.takePicture();
+            Bitmap bitmap;
+            if(mHasFace == -1){
+                bitmap = faceView.getCurrCameraFrame();
+            } else {
+                bitmap = faceView.takePicture();
+            }
             if (bitmap != null) {
                 mCurrPhotoPath = saveBitmap(bitmap);
                 mUpdatePhotoPath = mCurrPhotoPath;

@@ -651,4 +651,5 @@
     <string name="setting_clear_policy_unit">dni</string>
     <string name="setting_clear_all_data">Počisti vse podatke</string>
     <string name="clear_no_data">Preverjeni podatki：</string>
+    <string name="setting_no_face_temper">Nihče nima obraza, da bi poročal o temperaturi</string>
 </resources>

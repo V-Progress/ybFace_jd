@@ -5,4 +5,5 @@ public interface TemperModuleType {
     int HM_16_4 = 1;
     int MLX_16_4 = 2;
     int SMT_32_32 = 3;
+    int INFRARED = 4;
 }

@@ -248,6 +248,13 @@ public class DaoManager {
         return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(compId)).list();
     }
 
+    public boolean queryNumberExists(int comId,String number){
+        if(daoSession == null){
+            return false;
+        }
+        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(comId),UserDao.Properties.Number.eq(number)).unique() != null;
+    }
+
     public List<Depart> queryDepartByCompId(int compId) {
         if (daoSession == null) {
             return null;

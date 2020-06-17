@@ -103,7 +103,6 @@
 
     <string name="sk_temper_check_in">思库測温勤務</string>
     <string name="sk_multiple">思库大フラックス測温</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">正常</string>
@@ -745,5 +744,6 @@
     <string name="setting_clear_policy_unit">日</string>
     <string name="setting_clear_all_data">データを全て消去する</string>
     <string name="clear_no_data">データはクリア済みです：</string>
+    <string name="setting_no_face_temper">顔の温度を報告しなかった</string>
 
 </resources>

@@ -26,10 +26,12 @@ public class CertificatesConst {
         String WHITE_LIST = "certificatesWhiteList";
         String USB_PRINTER_ENABLED = "certificatesPrinterEnabled";
         String IC_CARD_MODE = "certificatesICCardMode";
+        String COLLECT_PHONE_ENABLED = "certificatesCollectPhoneEnabled";
     }
 
     public static class Default{
-        public static final boolean USB_PRINTER_ENABLED = true;
+        public static final boolean USB_PRINTER_ENABLED = false;//打印机
+        public static final boolean COLLECT_PHONE_ENABLED = false;//收集手机号
         public static int MODE = Mode.CERTIFICATES_THERMAL;
         public static boolean LOW_TEMP = true;
         public static float MIN_THRESHOLD = 35.5f;

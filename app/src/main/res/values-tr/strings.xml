@@ -647,4 +647,5 @@
     <string name="setting_clear_policy_unit">gün</string>
     <string name="setting_clear_all_data">Tüm verileri temizle</string>
     <string name="clear_no_data">Veriler temizlendi：</string>
+    <string name="setting_no_face_temper">Sıcaklığı bildirecek kimsenin yüzü yok</string>
 </resources>

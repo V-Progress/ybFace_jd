@@ -635,4 +635,5 @@
     <string name="setting_clear_policy_unit">天</string>
     <string name="setting_clear_all_data">清除所有數據</string>
     <string name="clear_no_data">數據已清除完畢：</string>
+    <string name="setting_no_face_temper">無人臉報溫</string>
 </resources>

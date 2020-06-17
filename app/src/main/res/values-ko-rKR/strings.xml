@@ -85,7 +85,6 @@
 
     <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
     <string name="sk_multiple">SKHighThroughput</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">ON-LINE</string>
@@ -649,4 +648,5 @@
     <string name="setting_clear_policy_unit">일</string>
     <string name="setting_clear_all_data">모든 데이터 삭제</string>
     <string name="clear_no_data">데이터가 모두 삭제되었습니다：</string>
+    <string name="setting_no_face_temper">온정한 정을 보고할 사람이 없다</string>
 </resources>

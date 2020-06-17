@@ -104,6 +104,13 @@ public class SplashActivity extends BaseActivity {
 
             SpUtils.init();
             DaoManager.get().initDb();
+
+            switch (Constants.FLAVOR_TYPE) {
+                case FlavorType.XENON:
+                    setIp("34.247.168.20","5222","8080","");
+                    break;
+            }
+
             Constants.checkSetIp();
             Constants.initStorage();
             OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
@@ -265,6 +272,21 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
+    private void setIp(String ip,String xPort,String rPort,String pName){
+            int intOrDef = SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, -99);
+            if(intOrDef == -99) SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+            String xmppIp = SpUtils.getStr(Constants.Key.JU_IP_CACHE,"");
+            if(TextUtils.isEmpty(xmppIp)) SpUtils.saveStr(Constants.Key.JU_IP_CACHE,ip);
+            String xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE,"");
+            if(TextUtils.isEmpty(xmppPort)) SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE,xPort);
+            String resIp = SpUtils.getStr(Constants.Key.JU_IP_CACHE,"");
+            if(TextUtils.isEmpty(resIp)) SpUtils.saveStr(Constants.Key.JU_IP_CACHE,ip);
+            String resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE,"");
+            if(TextUtils.isEmpty(resPort)) SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE,rPort);
+            String projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX,"");
+            if(TextUtils.isEmpty(projectName)) SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX,pName);
+    }
+
     private NewModuleType oldModelToModuleType(int model){
         NewModuleType newModuleType = new NewModuleType();
         switch (model) {
@@ -412,9 +434,6 @@ public class SplashActivity extends BaseActivity {
                     .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
                     .params(params)
                     .build()
-                    .connTimeOut(5000)
-                    .readTimeOut(5000)
-                    .writeTimeOut(5000)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, java.lang.Exception e, int id) {

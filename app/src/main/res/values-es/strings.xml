@@ -85,7 +85,6 @@
 
     <string name="sk_temper_check_in">SKRegistroDeTemperatura</string>
     <string name="sk_multiple">SKAltoRendimiento</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">Conectado</string>
@@ -652,4 +651,5 @@
     <string name="setting_clear_policy_unit">días</string>
     <string name="setting_clear_all_data">Limpieza de todos los datos</string>
     <string name="clear_no_data">Los datos han sido borrados：</string>
+    <string name="setting_no_face_temper">No hay cara caliente</string>
 </resources>

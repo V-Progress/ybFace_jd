@@ -126,7 +126,20 @@
                     android:textSize="20dp" />
             </LinearLayout>
 
-            <LinearLayout
+
+        <LinearLayout
+            style="@style/setting_text_child">
+
+            <Switch
+                android:switchPadding="10dp"
+                android:textColor="@color/white"
+                android:text="收集手机号码"
+                android:id="@+id/sw_collect_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
                 style="@style/setting_text_child">
 
                 <TextView

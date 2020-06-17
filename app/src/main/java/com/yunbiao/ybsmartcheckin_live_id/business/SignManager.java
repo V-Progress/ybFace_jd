@@ -5,17 +5,12 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.yunbiao.faceview.CompareResult;
-import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
-import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
@@ -30,10 +25,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
-import com.zhy.http.okhttp.request.RequestCall;
 
 import org.apache.commons.io.IOUtils;
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -722,6 +715,33 @@ public class SignManager {
         });
     }
 
+    public VertifyRecord getICCardVerifyRecord(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
+        long time = System.currentTimeMillis();
+        File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
+        File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
+        File reFile = reBitmap != null ? saveBitmap("re_", time, reBitmap) : createEmptyFile();
+
+        VertifyRecord vertifyRecord = new VertifyRecord();
+        vertifyRecord.setIdCardHeadPath(idCardFile.getPath());
+        vertifyRecord.setPersonHeadPath(faceFile.getPath());
+        vertifyRecord.setHotImagePath(reFile.getPath());
+        vertifyRecord.setSimilar(similar + "");
+        vertifyRecord.setName(msg.name.trim());
+        vertifyRecord.setSex(TextUtils.equals(msg.sex, "男") ? "1" : "0");
+        vertifyRecord.setNation(msg.nation_str);
+        vertifyRecord.setBirthDate(msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
+        vertifyRecord.setIdNum(msg.id_num);
+        vertifyRecord.setAddress(msg.address);
+        vertifyRecord.setTermDate(msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
+        vertifyRecord.setIsPass(isPass + "");
+        vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");
+        vertifyRecord.setTemper(temper + "");
+        vertifyRecord.setTime(time);
+        vertifyRecord.setDate(vertifySdf.format(new Date(time)));
+        vertifyRecord.setUpload(false);
+        return vertifyRecord;
+    }
+
     /**
      * 加入验证记录到数据库
      * @param faceBitmap
@@ -732,44 +752,12 @@ public class SignManager {
      * @param similar
      * @param isPass
      */
-    public void addVerifyRecordToDB(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
-        long time = System.currentTimeMillis();
-        File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
-        File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
-        File reFile = reBitmap != null ? saveBitmap("re_", time, reBitmap) : createEmptyFile();
-
-        VertifyRecord vertifyRecord = new VertifyRecord();
-        vertifyRecord.setIdCardHeadPath(idCardFile.getPath());
-        vertifyRecord.setPersonHeadPath(faceFile.getPath());
-        vertifyRecord.setHotImagePath(reFile.getPath());
-        vertifyRecord.setSimilar(similar + "");
-        vertifyRecord.setName(msg.name.trim());
-        vertifyRecord.setSex(TextUtils.equals(msg.sex, "男") ? "1" : "0");
-        vertifyRecord.setNation(msg.nation_str);
-        vertifyRecord.setBirthDate(msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
-        vertifyRecord.setIdNum(msg.id_num);
-        vertifyRecord.setAddress(msg.address);
-        vertifyRecord.setTermDate(msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
-        vertifyRecord.setIsPass(isPass + "");
-        vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");
-        vertifyRecord.setTemper(temper + "");
-        vertifyRecord.setTime(time);
-        vertifyRecord.setDate(vertifySdf.format(new Date(time)));
-        vertifyRecord.setUpload(false);
-        long l = DaoManager.get().addOrUpdate(vertifyRecord);
+    public void addICCardVerifyRecordToDB(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
+        VertifyRecord verifyRecord = getICCardVerifyRecord(faceBitmap, reBitmap, idCardBitmap, temper, msg, similar, isPass);
+        long l = DaoManager.get().addOrUpdate(verifyRecord);
     }
 
-    /***
-     * 上传人证记录
-     * @param temper
-     * @param msg
-     * @param similar
-     * @param isPass
-     * @param idCardBitmap
-     * @param faceBitmap
-     * @param reBitmap
-     */
-    public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
+    public VertifyRecord getIDCardVerifyRecord(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap){
         long time = System.currentTimeMillis();
         File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
         File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
@@ -792,8 +780,16 @@ public class SignManager {
         vertifyRecord.setTime(time);
         vertifyRecord.setDate(vertifySdf.format(new Date(time)));
         vertifyRecord.setUpload(false);
+        return vertifyRecord;
+    }
+
+    public void uploadIdCardAndReImage(VertifyRecord vertifyRecord){
         long l = DaoManager.get().addOrUpdate(vertifyRecord);
         vertifyRecord.set_id(l);
+
+        File idCardFile = new File(vertifyRecord.getIdCardHeadPath());
+        File faceFile = new File(vertifyRecord.getPersonHeadPath());
+        File reFile = new File(vertifyRecord.getHotImagePath());
 
         Map<String, String> params = new HashMap();
         params.put("similar", vertifyRecord.getSimilar());
@@ -810,6 +806,10 @@ public class SignManager {
         params.put("temper", vertifyRecord.getTemper());
         params.put("signTime",vertifyRecord.getTime() + "");
 
+        String phoneNumber = vertifyRecord.getPhoneNumber();
+        if(!TextUtils.isEmpty(phoneNumber)){
+            params.put("phone",vertifyRecord.getPhoneNumber());
+        }
         String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
         Log.e(TAG, "上传身份信息");
         Log.e(TAG, "地址" + uploadIdcard);
@@ -836,6 +836,21 @@ public class SignManager {
                         DaoManager.get().update(vertifyRecord);
                     }
                 });
+    }
+
+    /***
+     * 上传人证记录
+     * @param temper
+     * @param msg
+     * @param similar
+     * @param isPass
+     * @param idCardBitmap
+     * @param faceBitmap
+     * @param reBitmap
+     */
+    public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
+        VertifyRecord vertifyRecord = getIDCardVerifyRecord(temper, msg, similar, isPass, idCardBitmap, faceBitmap, reBitmap);
+        uploadIdCardAndReImage(vertifyRecord);
     }
 
     //*************************************************************************************************8

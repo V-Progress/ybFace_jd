@@ -19,6 +19,12 @@
 
     <string name="xenon_welcome_tip">Welcome to Xenon Fever Defence</string>
 
+    <string name="user_number_is_exists">The User Id already exists</string><!--该用户编号已存在-->
+    <string name="there_is_no_net">"There is no server connection"</string>
+    <string name="please_add_a_user">Please add at least one user</string>
+    <string name="clear_all_data_dialog_title">Warning</string>
+    <string name="clear_all_data_dialog_message">Are you sure you want to delete all data from the device?</string><!--您确定要删除设备中的所有数据吗?-->
+
     <!--文件选择-->
     <string name="local_directory">Internal Flash</string>
     <string name="usb_directory">USB Disk</string>
@@ -47,7 +53,7 @@
     <string name="speech_setting_temper_location">Temperature display position</string>
     <string name="speech_setting_location_start">Before</string>
     <string name="speech_setting_location_center">Sign position</string>
-    <string name="speech_setting_location_end">behind</string>
+    <string name="speech_setting_location_end">Behind</string>
 
     <string name="speech_setting_alert">The temperature display position is identified by the # symbol, and the temperature number will be automatically completed. For example (36.5℃), only one # character can exist, and when there are multiple # characters, the first one will prevail and the remaining symbols will be deleted automatically</string>
     <string name="speech_setting_welcome_exmaple">Example of welcome：</string>
@@ -98,7 +104,6 @@
 
     <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
     <string name="sk_multiple">SKHighThroughput</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">online</string>
@@ -665,4 +670,5 @@
     <string name="setting_clear_policy_unit">days</string>
     <string name="setting_clear_all_data">Clear all data</string>
     <string name="clear_no_data">The data has been cleared：</string>
+    <string name="setting_no_face_temper">No face temperature reporting</string>
 </resources>

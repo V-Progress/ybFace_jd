@@ -62,6 +62,8 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
     View flVersionLoading;
     @BindView(R.id.btn_white_list)
     View btnWhiteList;
+    @BindView(R.id.btn_user_manager)
+    View btnUserManager;
 
     private Button btn_setting_system;
     private TextView btn_update_system;
@@ -170,11 +172,13 @@ public class CertificatesSystemActivity extends BaseActivity implements View.OnC
             tv_server_system.setText(getString(R.string.System_local_service));
         }
 
-        boolean whiteListEnabled = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
-        if(whiteListEnabled){
-            btnWhiteList.setVisibility(View.GONE);
+        boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
+        if(icCardMode){
+            btnUserManager.setVisibility(View.VISIBLE);
+            btnUserManager.setEnabled(true);
         } else {
-            btnWhiteList.setVisibility(View.INVISIBLE);
+            btnUserManager.setVisibility(View.INVISIBLE);
+            btnUserManager.setEnabled(false);
         }
     }
 

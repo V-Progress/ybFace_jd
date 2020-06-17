@@ -8,12 +8,13 @@
         android:allowBackup="true"
         android:icon="${app_icon}"
         android:label="${app_name}"
-        android:largeHeap="true"
         android:roundIcon="${app_icon}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="label,allowBackup">
-        <activity android:name=".activity_temper_check_in.FileSelectActivity"/>
+        <activity android:name=".activity_temper_check_in.ThermalDepartListActivity"></activity>
+        <activity android:name=".activity_certificates.CollectPhoneActivity" />
+        <activity android:name=".activity_temper_check_in.FileSelectActivity" />
         <activity android:name=".activity_temper_check_in.BatchImportActivity" />
         <activity android:name=".activity_temper_check_in.SpeechContentActivity" />
         <activity android:name=".activity_certificates.CertificatesAddUserActivity" />
@@ -168,16 +169,16 @@
     <permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
     <permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.usb.host" /> <!-- 弹窗权限 -->
     <uses-feature android:name="android.hardware.camera" />
 
-    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 弹窗权限 -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.hardware.usb.accessory" /> <!-- 关闭应用程序的权限 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 人脸识别 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 百度定位权限 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 关闭应用程序的权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" /> <!-- 人脸识别 -->
+    <uses-permission android:name="android.hardware.usb.accessory" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 百度定位权限 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

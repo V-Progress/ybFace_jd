@@ -218,9 +218,9 @@ public class APP extends Application {
         x.Ext.init(this);
 
         OkHttpClient build = new OkHttpClient.Builder()
-                .connectTimeout(60 * 3, TimeUnit.SECONDS)
-                .writeTimeout(60 * 3, TimeUnit.SECONDS)
-                .readTimeout(60 * 3, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
         OkHttpUtils.initClient(build);

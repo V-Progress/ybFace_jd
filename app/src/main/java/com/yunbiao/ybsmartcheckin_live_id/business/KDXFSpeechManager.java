@@ -169,6 +169,10 @@ public class KDXFSpeechManager {
      * 播放欢迎语
      */
     public void welcome() {
+        boolean welcomeTipEnabled = SpUtils.getBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED,ThermalConst.Default.WELCOME_TIP_ENABLED);
+        if(!welcomeTipEnabled){
+            return;
+        }
         String welcomeTips = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, ThermalConst.Default.WELCOME_TIP_CONTENT);
         if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL) {
             welcomeTips = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip4);

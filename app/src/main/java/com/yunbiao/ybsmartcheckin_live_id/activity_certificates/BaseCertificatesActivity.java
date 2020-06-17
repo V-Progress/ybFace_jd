@@ -192,12 +192,12 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         if (mMode == CertificatesConst.Mode.CERTIFICATES_THERMAL) {
             resultHandler.postDelayed(() -> {
                 TemperatureModule.getIns().initSerialPort(this, portPath, 115200);
-                resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, mLowTemp, hotImageK3232CallBack), 2000);
+                resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, mLowTemp, hotImageK3232CallBack), 1000);
             }, 1000);
         } else if (mMode == CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4) {
             d("当前模式：16——4");
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
-            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 2000);
+            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 1000);
         }
 
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);

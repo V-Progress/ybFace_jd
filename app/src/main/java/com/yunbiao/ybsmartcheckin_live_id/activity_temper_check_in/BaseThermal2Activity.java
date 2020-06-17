@@ -77,6 +77,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private boolean mFaceEnabled;
     private boolean mTemperEnabled;
     private int temperModule;
+    private boolean noFaceTemper;
 
     @Override
     protected void initData() {
@@ -117,6 +118,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         //初始化播报
         speechBean.initContent();
         KDXFSpeechManager.instance().setSpeed(speechBean.getSpeechSpeed());
+        //无人脸报温
+        noFaceTemper = SpUtils.getBoolean(ThermalConst.Key.NO_FACE_TEMPER,ThermalConst.Default.NO_FACE_TEMPER);
 
         temperModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE, ThermalConst.Default.TEMPER_MODULE);
         mFaceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
@@ -158,6 +161,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 Timber.e("onResume: 开启测温模块");
                 TemperatureModule.getIns().initSerialPort(this, "/dev/ttyS3", 115200);
                 updateUIHandler.postDelayed(() -> TemperatureModule.getIns().startSmt3232Temp(lowTempModel, smt3232TempCallBack), 2000);
+                break;
+            case TemperModuleType.INFRARED:
+                TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
+                TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
                 break;
             default:
                 isMLXRunning = false;
@@ -221,6 +228,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
+            Log.e(TAG, "newestInfraredTemp: measureF: " + measureF + ",afterF: " + afterF + ",ambientF: " + ambientF);
             handleTemperature(null, measureF, afterF);
         }
     };
@@ -340,7 +348,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             // TODO: 2020/5/14  无人无脸播报
             //如果模式不为高温模式，且模式为MLX164
-            if (currTemperMode != 2 && temperModule != TemperModuleType.HM_32_32) {
+            if (noFaceTemper && currTemperMode != 2 && temperModule != TemperModuleType.HM_32_32) {
                 if (originT - mCacheBeforeTemper >= 5.0f) {
                     if (mNoBodyTemperList.size() < 8) {
                         mNoBodyTemperList.add(afterT);

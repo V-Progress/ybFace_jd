@@ -10,13 +10,12 @@ import org.jetbrains.annotations.NonNls;
 
 import java.util.Objects;
 
-@Entity
+@Entity/*(indexes = {@Index(value = "faceId DESC,companyId DESC",unique = true)})*/
 public class User {
 
     @Id
     private long id;
 
-    @Unique
     private String faceId;
 
     private long departId;

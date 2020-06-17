@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:id="@+id/ll_root"
+    android:paddingBottom="10dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_No"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:text=""
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_depart_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:text=""
+        android:gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="@string/employ_list_item_edit"
+            android:layout_toLeftOf="@+id/view_middle"
+            android:layout_marginRight="6dp" />
+        <View
+            android:id="@+id/view_middle"
+            android:layout_width="1dp"
+            android:layout_height="21dp"
+            android:background="@color/white"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="@string/employ_list_item_delete"
+            android:layout_toRightOf="@+id/view_middle"
+            android:layout_marginLeft="6dp" />
+    </RelativeLayout>
+</LinearLayout>

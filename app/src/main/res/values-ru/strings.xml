@@ -234,6 +234,13 @@
     <string name="sign_export_record_failed">Не удалось экспортировать данные</string>
     <string name="sign_list_table_name">запись</string>
 
+    <!--文件选择-->
+    <string name="local_directory">Internal Flash</string>
+    <string name="usb_directory">USB Disk</string>
+    <string name="no_can_used_directory">Каталог не доступен, пожалуйста, проверьте его</string>
+    <string name="confirm_directore_tips">Вы уверены, что хотите использовать этот каталог?</string>
+    <string name="select_directory_title">Выбирать каталог</string>
+    <string name="click_select_this_directory">Нажмите на каталог.</string>
 
     <!--访客列表-->
     <string name="visitor_list_title">Перечень посетителей</string>
@@ -244,17 +251,11 @@
 
     <!--系统设置-->
     <!--模式-->
-    <string name="face_only_model">Табельный учет с распознаванием лиц</string>
-    <string name="infared_only_model">Только измерение температуры (маленький)</string>
-    <string name="face_infared_model">распознаванием лиц + измерение температуры (маленький)</string>
-    <string name="thermal_only_model">Только измерение температуры (HM-32*32)</string>
-    <string name="face_thermal_model">распознаванием лиц + измерение температуры(HM-32*32)</string>
-    <string name="thermal_16_4_model">Только измерение температуры (HM-16*4)</string>
-    <string name="face_thermal_16_4_model">распознаванием лиц + измерение температуры (HM-16*4)</string>
-    <string name="only_thermal_mlx_16_4_model">Только измерение температуры (MLX-16*4)</string>
-    <string name="face_thermal_mlx_16_4_model">распознаванием лиц + измерение температуры (MLX-16*4)</string>
-    <string name="smt_only_thermal">Только измерение температуры (SMT)</string>
-    <string name="smt_face_thermal">распознаванием лиц + измерение температуры (SMT)</string>
+    <string name="only_label">Только</string>
+    <string name="face_label">распознаванием лиц</string>
+    <string name="temper_label">измерение температуры</string>
+    <string name="model_tip">Индивидуальная посещаемость без измерения температуры</string><!--单选考勤时不进行测温-->
+    <string name="model_check_tip">Выбери хотя бы одну модель</string><!--至少选择一种模式-->
 
     <!--标签-->
     <string name="setting_tip_warning_number_reseted">Счет очищен</string>
@@ -324,8 +325,6 @@
     <string name="setting_low_temp_model">Режим "низкая температура"</string>
     <string name="setting_portrait_outline">Профиль лиц</string>
     <string name="setting_default_welcome_tip">Добро пожаловать использовать AI интеллектуальную систему табельного учета</string>
-    <string name="setting_default_welcome_tip2">Добро пожаловать использовать Hengtong систему табельного учета</string>
-    <string name="setting_default_welcome_tip3">добро пожаловать использовать SIKU систему табельного учета</string>
     <string name="setting_correct_temperature">Коррекция температуры</string>
     <string name="setting_broadcast_f">Трансляция по фаренгейту</string>
 
@@ -639,4 +638,15 @@
     <string name="safety_correct_temper_completion">Измерение температуры завершено</string><!--測溫完成-->
     <string name="safety_save_completion">Коррекция завершена</string><!--矯正完成-->
     <string name="safety_save_cancel">Отменить коррекцию</string><!--保存-->
+
+
+    <string name="setting_privacy_prompt">Измерьте температуру и не записывайте данные</string><!--保存-->
+    <string name="setting_clear_policy_7">7 д</string>
+    <string name="setting_clear_policy_15">15 д</string>
+    <string name="setting_clear_policy_30">30 д</string>
+    <string name="setting_clear_policy_custom">Самоопределение</string>
+    <string name="setting_clear_policy_unit">д</string>
+    <string name="setting_clear_all_data">Стереть все данные.</string>
+    <string name="clear_no_data">Данные уничтожены：</string>
+    <string name="setting_no_face_temper">Проверяю температуру, когда никого нет</string>
 </resources>

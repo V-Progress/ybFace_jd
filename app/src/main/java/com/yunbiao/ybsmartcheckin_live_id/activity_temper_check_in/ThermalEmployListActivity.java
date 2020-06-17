@@ -27,9 +27,11 @@ import com.yunbiao.ybsmartcheckin_live_id.adapter.ThermalDepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NetworkUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -101,9 +103,6 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         avlLoading = findViewById(R.id.avl_loading);
         edtQuery = findViewById(R.id.edt_query);
 
-//        TextView tvAdsAddName = findViewById(R.id.tv_ads_addname);
-//        tvAdsAddName.setOnClickListener(view -> {startActivity(new Intent(this,BatchImportActivity.class));});
-
         btn_addEmploy.setOnClickListener(this);
         btn_addDepart.setOnClickListener(this);
         btn_sync.setOnClickListener(this);
@@ -124,11 +123,12 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         userAdapter.setOnEmpDeleteListener(this);
         userAdapter.setOnEmpEditListener(this);
         lv_employ_List.setAdapter(userAdapter);
-
-        loadData();
     }
 
     private void loadData(){
+        if(departList.size() > 0){
+            departList.clear();
+        }
         comId = SpUtils.getCompany().getComid();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(comId);
         departList.add(new Depart(-999,0,getString(R.string.employ_list_all_depart),comId));
@@ -138,6 +138,11 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         departAdapter.notifyDataSetChanged();
         allUserList = DaoManager.get().queryUserByCompId(comId);
 
+        if (NetworkUtils.getNetType() < 1) {
+            UIUtils.showShort(this, getResString(R.string.there_is_no_net));
+        } else if(allUserList == null || allUserList.size() <= 0){
+            UIUtils.showShort(this,getResString(R.string.please_add_a_user));
+        }
         loadEmployData(mCurrDepId,key);
     }
 
@@ -222,6 +227,11 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     protected void onResume() {
         super.onResume();
         initDevice();
+        loadData();
+        Company company = SpUtils.getCompany();
+        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+            btn_addDepart.setVisibility(View.GONE);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -244,7 +254,6 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     public void itemDeleteClick(View v, final int postion) {
         final User user = userList.get(postion);
         Log.e(TAG, "itemDeleteClick: " + user.getName());
-
 
         showDialog(getString(R.string.employ_list_confirm_delete), (dialog, which) -> {
             // TODO: 2020/3/18 离线功能
@@ -325,6 +334,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
                 startActivity(intent);
                 break;
             case R.id.btn_addDepart:
+                startActivity(new Intent(this,ThermalDepartListActivity.class));
                 break;
             case R.id.btn_sync:
                 SyncManager.instance().requestUser();

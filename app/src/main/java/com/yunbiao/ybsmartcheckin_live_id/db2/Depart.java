@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
-@Entity
+@Entity/*(indexes = {@Index(value = "depId DESC,compId DESC",unique = true)})*/
 public class Depart {
 
     @Id

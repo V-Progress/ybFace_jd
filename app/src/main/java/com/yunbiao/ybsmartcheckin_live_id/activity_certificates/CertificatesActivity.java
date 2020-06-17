@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -32,6 +33,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
+import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -41,7 +43,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
@@ -114,6 +115,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     TextView tvAppVersion;
 
     private ServiceManager serviceManager;
+    private boolean collectPhone;
 
     @Override
     protected int getPortraitLayout() {
@@ -280,9 +282,18 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         BitmapDrawable idCardDrawable = (BitmapDrawable) ivIdCard.getDrawable();
         Bitmap idCardImage = idCardDrawable.getBitmap();
         if (icCardMode) {
-            SignManager.instance().addVerifyRecordToDB(faceImage, hotImage, idCardImage, finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1));
+            SignManager.instance().addICCardVerifyRecordToDB(faceImage, hotImage, idCardImage, finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1));
         } else {
-            SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+            if(collectPhone && isAlike){
+                VertifyRecord idCardVerifyRecord = SignManager.instance().getIDCardVerifyRecord(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+                Intent intent = new Intent(this, CollectPhoneActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("verifyRecord",idCardVerifyRecord);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } else {
+                SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+            }
         }
     }
 
@@ -518,7 +529,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     protected void onResume() {
         super.onResume();
-
+        collectPhone = SpUtils.getBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, CertificatesConst.Default.COLLECT_PHONE_ENABLED);
         if(btnNoIdCard != null){
             boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
             if(icCardMode){

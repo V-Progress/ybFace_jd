@@ -4,8 +4,12 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 @Entity
-public class VertifyRecord {
+public class VertifyRecord implements Serializable {
+    private static final long serialVersionUID = 111L;
+
     @Id(autoincrement = true)
     private Long _id = null;
 
@@ -30,12 +34,14 @@ public class VertifyRecord {
 
     private boolean isUpload = false;
 
-    @Generated(hash = 1042917765)
+    private String phoneNumber;
+
+    @Generated(hash = 957676739)
     public VertifyRecord(Long _id, String name, String sex, String nation,
             String birthDate, String idNum, String address, String termDate,
             String idCardHeadPath, String personHeadPath, String hotImagePath,
             String similar, String isPass, String comId, String temper, long time,
-            String date, boolean isUpload) {
+            String date, boolean isUpload, String phoneNumber) {
         this._id = _id;
         this.name = name;
         this.sex = sex;
@@ -54,10 +60,19 @@ public class VertifyRecord {
         this.time = time;
         this.date = date;
         this.isUpload = isUpload;
+        this.phoneNumber = phoneNumber;
     }
 
     @Generated(hash = 1708888079)
     public VertifyRecord() {
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getDate() {
@@ -204,6 +219,14 @@ public class VertifyRecord {
         this.time = time;
     }
 
+    public boolean getIsUpload() {
+        return this.isUpload;
+    }
+
+    public void setIsUpload(boolean isUpload) {
+        this.isUpload = isUpload;
+    }
+
     @Override
     public String toString() {
         return "VertifyRecord{" +
@@ -222,15 +245,10 @@ public class VertifyRecord {
                 ", isPass='" + isPass + '\'' +
                 ", comId='" + comId + '\'' +
                 ", temper='" + temper + '\'' +
-                ", time='" + time + '\'' +
+                ", time=" + time +
+                ", date='" + date + '\'' +
+                ", isUpload=" + isUpload +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
-    }
-
-    public boolean getIsUpload() {
-        return this.isUpload;
-    }
-
-    public void setIsUpload(boolean isUpload) {
-        this.isUpload = isUpload;
     }
 }
