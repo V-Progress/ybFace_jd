@@ -16,6 +16,7 @@ public class User {
     @Id
     private long id;
 
+    @Unique
     private String faceId;
 
     private long departId;

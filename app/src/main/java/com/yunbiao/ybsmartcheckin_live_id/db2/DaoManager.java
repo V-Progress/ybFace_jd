@@ -198,7 +198,8 @@ public class DaoManager {
         if (daoSession == null) {
             return null;
         }
-        return daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(comId), UserDao.Properties.FaceId.eq(faceId)).unique();
+        List<User> list = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.CompanyId.eq(comId), UserDao.Properties.FaceId.eq(faceId)).list();
+        return list == null || list.size() <= 0 ? null : list.get(0);
     }
 
     /***
