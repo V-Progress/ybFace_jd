@@ -30,10 +30,12 @@
                 android:layout_height="80dp" />
 
             <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
+                android:text="XENON FEVER DEFENCE"
                 android:id="@+id/tv_abb_name_system_thermal"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:textSize="16dp"
+                android:gravity="center_vertical|start"
                 android:layout_width="wrap_content"
-                android:textSize="28dp"
                 android:textStyle="bold"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

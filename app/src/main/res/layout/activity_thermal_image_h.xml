@@ -64,7 +64,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/iv_main_logo"
                 android:textColor="@color/white"
-                android:textSize="34dp"
+                android:textSize="24dp"
                 android:textStyle="bold" />
         </LinearLayout>
 

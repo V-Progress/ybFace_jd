@@ -21,6 +21,7 @@
 
     <string name="user_number_is_exists">The User Id already exists</string><!--该用户编号已存在-->
     <string name="there_is_no_net">"There is no server connection"</string>
+    <string name="upload_there_is_no_server_connect">There is no server connection. Data are saved automatically locally only</string>
     <string name="please_add_a_user">Please add at least one user</string>
     <string name="clear_all_data_dialog_title">Warning</string>
     <string name="clear_all_data_dialog_message">Are you sure you want to delete all data from the device?</string><!--您确定要删除设备中的所有数据吗?-->
@@ -45,7 +46,7 @@
 
     <!--语音设置-->
     <string name="speech_setting_title">Voice and Announcement Setup</string>
-    <string name="setting_welcome_speech">Welcome Speech</string><!--Welcome speech-->
+    <string name="setting_welcome_speech">Welcome message</string><!--Welcome speech-->
     <string name="temper_tips_close">Position Prompt</string>
     <string name="speech_setting_open_or_close">On</string>
 
@@ -68,7 +69,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
     <string name="setting_camera_vertical_mirror">Frame vertical mirror</string>
     <string name="setting_picture_rotation">With the camera</string>
-    <string name="setting_local_priority">Local Priority</string>
+    <string name="setting_local_priority">Use added logo</string>
     <string name="setting_pic_rotation">Direction of photos</string>
 
     <!--logo设置-->
@@ -77,7 +78,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
     <string name="setting_show_main_logo">Display LOGO</string>
     <string name="setting_show_main_thermal">Display Thermal Imaging</string>
-    <string name="setting_show_main_info">Display home page information</string>
+    <string name="setting_show_main_info">Display the panel on the home screen</string>
 
     <!--温度单位-->
     <string name="temper_tips_centigrade">Centigrade</string>
@@ -149,11 +150,11 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="System_Company">Company:</string><!--所属公司:-->
     <string name="System_Service">Service:</string><!--服务网络:-->
     <string name="System_ValiDate">Expiry:</string><!--有效期:-->
-    <string name="System_Manage">Manage Personnel Info.</string><!--人员管理-->
+    <string name="System_Manage">Manage Personnel Info</string><!--人员管理-->
     <string name="System_Add">Add Personnel</string><!--新增员工-->
-    <string name="System_Record">Record</string><!--考勤记录-->
-    <string name="System_Setting">Setting</string><!--系统设置-->
-    <string name="System_Visitor">Visitor</string><!--访客-->
+    <string name="System_Record">Records</string><!--考勤记录-->
+    <string name="System_Setting">Settings</string><!--系统设置-->
+    <string name="System_Visitor">Visitors</string><!--访客-->
     <string name="System_skin_select">Skin</string><!--更换皮肤-->
     <string name="System_update">Upgrade</string><!--升级-->
     <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string><!--版权所有:北京云标科技有限公司-->
@@ -169,9 +170,9 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="employ_list_depart_sync">Sync</string><!-- 同步 -->
     <string name="employ_List_add_user">Add</string><!-- 新增 -->
     <string name="employ_List_query_button">Search</string><!-- 搜索 -->
-    <string name="employ_list_download_failed">Header Image Download Failed</string><!-- 下载头像失败 -->
-    <string name="employ_list_add_face_failed">Header image is not valid</string><!--  添加人脸库失败-->
-    <string name="employ_list_update_head_failed">Header Image Update Failed</string><!-- 更新头像失败 -->
+    <string name="employ_list_download_failed">Failed to dowload image</string><!-- 下载头像失败 -->
+    <string name="employ_list_add_face_failed">Image is not valid</string><!--  添加人脸库失败-->
+    <string name="employ_list_update_head_failed">Failed to update image</string><!-- 更新头像失败 -->
     <string name="employ_list_field_index">No</string><!-- 序号 -->
     <string name="employ_list_field_number">ID</string><!--  员工编号-->
     <string name="employ_list_field_name">Name</string><!--员工名 -->
@@ -231,7 +232,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="act_editEmploy_unknown_error">Unknown Error</string><!--未知错误-->
 
     <!--离线数据-->
-    <string name="sign_list_title">Record</string><!--离线记录-->
+    <string name="sign_list_title">Records</string><!--离线记录-->
     <string name="sign_list_all_type">All</string><!-- 全部 -->
     <string name="sign_list_sent">Sent</string><!-- 已发送 -->
     <string name="sign_list_unsent">Unsent</string><!-- 未发送 -->
@@ -246,7 +247,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="sign_list_no_data">No data</string><!-- 暂无数据 -->
     <string name="sign_list_upload_success">Upload Success</string><!-- 上传成功 -->
     <string name="sign_list_upload_failed">Upload failed, please check the network</string>
-    <string name="sign_list_table_name">Record</string>
+    <string name="sign_list_table_name">Records</string>
 
     ><!-- 上传失败，请检查网络 -->
     <string name="sign_list_usb_disk">Please insert USB Storage/SD Card Storage</string><!--  请插入U盘-->
@@ -261,7 +262,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="sign_list_temper">Temperature</string>
     <string name="sign_list_head">Picture</string>
     <string name="sign_list_hot">Hot</string>
-    <string name="sign_export_record">Record</string>
+    <string name="sign_export_record">Records</string>
     <string name="sign_export_no_record">No Data</string>
     <string name="sign_export_create_record_failed">Create Data failed</string>
     <string name="sign_export_record_success">Export Success</string>
@@ -301,8 +302,8 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="setting_s">s</string><!-- 秒 -->
     <string name="setting_temp_correct_value">Temperature Cal. Value</string><!-- 测温矫正值 -->
     <string name="setting_amb_correct_value">Ambient correct value</string><!-- 环境温矫正值 -->
-    <string name="setting_temperature_threshold">Hypothermia threshold</string><!-- 最低体温播报 -->
-    <string name="setting_temperature_warning">Normothermia threshold</string><!-- 测温报警值 -->
+    <string name="setting_temperature_threshold">Low temperature threshold</string><!-- 最低体温播报 -->
+    <string name="setting_temperature_warning">High temperature threshold</string><!-- 测温报警值 -->
     <string name="setting_temp_range">Temperature measurement range</string><!--Temperature measurement range--><!-- 体温测温范围 -->
     <string name="setting_range_minimum">minimum</string><!--minimum--><!-- 最低 -->
     <string name="setting_range_highest">Highest</string><!--Highest--><!-- 最高 -->
@@ -451,7 +452,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
 
 
     <!-- act_set layout_setting.xml -->
-    <string name="act_set_xtsz">System settings</string><!-- 系统设置 -->
+    <string name="act_set_xtsz">Settings</string><!-- 系统设置 -->
     <string name="act_set_xtmm">System password</string><!-- 系统密码 -->
     <string name="act_set_qchc">Clear cache</string><!-- 清除缓存 -->
     <string name="act_set_qcsj">Clear data</string><!--清除数据  -->
@@ -616,7 +617,7 @@ For example, if you write “Your temp is # and normal” the broadcast will be 
     <string name="act_certificates_check_outtime_scan_code">Detect timeout, please scan again</string>
     <string name="act_certificates_temper_outtime_scan_code">The temperature is out of time, please scan the code again</string>
     <string name="act_certificates_white_list">White List</string>
-    <string name="act_certificates_verify_record">Record</string>
+    <string name="act_certificates_verify_record">Records</string>
     <string name="act_certificates_user_manage">Management</string>
     <string name="certificates_record_title">Verify the record</string>
     <string name="certificates_record_export_all">Export all</string>

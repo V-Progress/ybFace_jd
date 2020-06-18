@@ -28,6 +28,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NetworkUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
@@ -268,6 +269,10 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_upload:
+                if (NetworkUtils.getNetType() < 1) {
+                    UIUtils.showShort(this, getResString(R.string.upload_there_is_no_server_connect));
+                    return;
+                }
                 UIUtils.showNetLoading(this);
                 if(SpUtils.getCompany().getComid() == Constants.NOT_BIND_COMPANY_ID){
                     UIUtils.dismissNetLoading();

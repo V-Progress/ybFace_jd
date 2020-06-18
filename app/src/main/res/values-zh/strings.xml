@@ -18,6 +18,11 @@
     <string name="clear_all_data_dialog_title">警告</string>
     <string name="clear_all_data_dialog_message">您确定要删除设备中的所有数据吗？</string><!--您确定要删除设备中的所有数据吗?-->
 
+    <string name="user_number_is_exists">用户编号已存在</string><!--该用户编号已存在-->
+    <string name="there_is_no_net">网络未连接</string>
+    <string name="upload_there_is_no_server_connect">网络未连接，数据将仅保存在本地</string>
+    <string name="please_add_a_user">请添加至少一个用户</string>
+
     <!--文件选择-->
     <string name="local_directory">本地存储</string>
     <string name="usb_directory">USB Disk</string>

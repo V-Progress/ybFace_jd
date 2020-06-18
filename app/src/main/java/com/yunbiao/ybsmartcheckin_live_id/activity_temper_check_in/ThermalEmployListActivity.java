@@ -140,9 +140,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         departAdapter.notifyDataSetChanged();
         allUserList = DaoManager.get().queryUserByCompId(comId);
 
-        if (NetworkUtils.getNetType() < 1) {
-            UIUtils.showShort(this, getResString(R.string.there_is_no_net));
-        } else if(allUserList == null || allUserList.size() <= 0){
+        if(allUserList == null || allUserList.size() <= 0){
             UIUtils.showShort(this,getResString(R.string.please_add_a_user));
         }
         loadEmployData(mCurrDepId,key);
@@ -362,6 +360,10 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
                 startActivity(new Intent(this,ThermalDepartListActivity.class));
                 break;
             case R.id.btn_sync:
+                if (NetworkUtils.getNetType() < 1) {
+                    UIUtils.showShort(this, getResString(R.string.there_is_no_net));
+                    return;
+                }
                 SyncManager.instance().requestUser();
                 break;
             case R.id.iv_back:

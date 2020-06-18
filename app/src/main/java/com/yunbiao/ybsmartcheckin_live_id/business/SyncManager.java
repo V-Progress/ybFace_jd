@@ -418,20 +418,26 @@ public class SyncManager {
                 d("更新前员工库数据：" + (users == null ? 0 : users.size()));
 
                 //检查不存在的部门和用户并删除
-                for (Depart depart : departs) {
-                    long depId = depart.getDepId();
-                    if (!departMap.containsKey(depId)) {
-                        DaoManager.get().delete(depart);
+                if(departs != null && departs.size() > 0){
+                    for (Depart depart : departs) {
+                        long depId = depart.getDepId();
+                        if (!departMap.containsKey(depId)) {
+                            DaoManager.get().delete(depart);
+                        }
                     }
                 }
-                for (User user : users) {
-                    String faceId = user.getFaceId();
-                    if (!userMap.containsKey(faceId)) {
-                        DaoManager.get().delete(user);
-                    } else {
-                        userMap.get(faceId).setAddTag(user.getAddTag());
+
+                if(users != null && users.size() > 0){
+                    for (User user : users) {
+                        String faceId = user.getFaceId();
+                        if (!userMap.containsKey(faceId)) {
+                            DaoManager.get().delete(user);
+                        } else {
+                            userMap.get(faceId).setAddTag(user.getAddTag());
+                        }
                     }
                 }
+
                 for (Map.Entry<String, File> entry : allFaceMap.entrySet()) {
                     if (!userMap.containsKey(entry.getKey())) {
                         entry.getValue().delete();
