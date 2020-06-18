@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.Request;
+import timber.log.Timber;
 
 /**
  * Created by Administrator on 2018/8/7.
@@ -273,7 +275,22 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
 
             final Map<String, String> map = new HashMap<>();
             map.put("entryId", user.getId() + "");
+            Timber.d("Delete User");
+            Timber.d("Address:%s", ResourceUpdate.DELETESTAFF);
+            Timber.d("Params:%s", map.toString());
             OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
+                @Override
+                public void onBefore(Request request, int id) {
+                    super.onBefore(request, id);
+                    UIUtils.showNetLoading(ThermalEmployListActivity.this);
+                }
+
+                @Override
+                public void onAfter(int id) {
+                    super.onAfter(id);
+                    UIUtils.dismissNetLoading();
+                }
+
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     UIUtils.showTitleTip(ThermalEmployListActivity.this, getString(R.string.employ_list_delete_failed) + e != null ? e.getMessage() : "NULL");
@@ -281,23 +298,31 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
 
                 @Override
                 public void onResponse(String response, int id) {
-                    Log.e(TAG, "onResponse: 删除情况：" + response);
-                    boolean delete = false;
-                    Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
-                    if (allFaceMap.containsKey(user.getFaceId())) {
-                        File file = allFaceMap.get(user.getFaceId());
-                        if (file != null) {
-                            delete = !file.exists() || (file.exists() && file.delete());
+                    Timber.d("Response：%s", response);
+                    if(!TextUtils.isEmpty(response) && response.contains("1")){
+                        boolean delete = false;
+                        Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
+                        if (allFaceMap.containsKey(user.getFaceId())) {
+                            File file = allFaceMap.get(user.getFaceId());
+                            Timber.d("删除特征文件：" + (file != null ? file.getName() : "NULL"));
+                            if (file != null) {
+                                delete = !file.exists() || (file.exists() && file.delete());
+                            } else {
+                                delete = true;
+                            }
                         } else {
                             delete = true;
                         }
-                    }
-                    if (delete) {
-                        DaoManager.get().delete(user);
-                        userList.remove(postion);
-                        userAdapter.notifyDataSetChanged();
-                        UIUtils.showTitleTip(ThermalEmployListActivity.this, getString(R.string.employ_list_delete_success));
-                        FaceManager.getInstance().reloadRegisterList();
+                        Timber.d("删除特征文件结果：" + delete);
+                        if (delete) {
+                            DaoManager.get().delete(user);
+                            userList.remove(postion);
+                            userAdapter.notifyDataSetChanged();
+                            UIUtils.showTitleTip(ThermalEmployListActivity.this, getString(R.string.employ_list_delete_success));
+                            FaceManager.getInstance().reloadRegisterList();
+                        }
+                    } else {
+                        UIUtils.showShort(ThermalEmployListActivity.this,getResString(R.string.employ_list_delete_failed));
                     }
                 }
             });

@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
@@ -57,6 +58,7 @@ public class SignManager {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private DateFormat vertifySdf = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat visitSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private SimpleDateFormat paramsDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private boolean isDebug = true;
     private boolean isBulu = false;
 
@@ -82,7 +84,7 @@ public class SignManager {
         //初始化当前时间
         today = dateFormat.format(new Date());
 
-        if(autoUpload == null){
+        if (autoUpload == null) {
             autoUpload = new AutoUpload();
         }
 
@@ -91,9 +93,9 @@ public class SignManager {
                 || Constants.DEVICE_TYPE == Constants.DeviceType.SAFETY_CHECK_DOUBLE_LIGHT
                 || Constants.DEVICE_TYPE == Constants.DeviceType.HT_SAFETY_CHECK_DOUBLE_LIGHT) {
             autoUpload.startMultiUploadThread();
-        } else if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN
+        } else if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN
                 || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
-                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
+                || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {
             autoUpload.startUploadThread();
         }
 
@@ -101,8 +103,8 @@ public class SignManager {
         autoClean.startAutoClear();
     }
 
-    public void uploadSignRecord(Consumer<Boolean> consumer){
-        if(autoUpload != null){
+    public void uploadSignRecord(Consumer<Boolean> consumer) {
+        if (autoUpload != null) {
             autoUpload.uploadSignRecord(consumer);
         } else {
             try {
@@ -156,6 +158,38 @@ public class SignManager {
         sendSignRecord(sign);
 
         return sign;
+    }
+    public String getCurrentTimeZone() {
+        TimeZone tz = TimeZone.getDefault();
+        return createGmtOffsetString(true, true, tz.getRawOffset());
+    }
+
+    public  String createGmtOffsetString(boolean includeGmt, boolean includeMinuteSeparator, int offsetMillis) {
+        int offsetMinutes = offsetMillis / 60000;
+        char sign = '+';
+        if (offsetMinutes < 0) {
+            sign = '-';
+            offsetMinutes = -offsetMinutes;
+        }
+        StringBuilder builder = new StringBuilder(9);
+        if (includeGmt) {
+            builder.append("GMT");
+        }
+        builder.append(sign);
+        appendNumber(builder, 2, offsetMinutes / 60);
+        if (includeMinuteSeparator) {
+            builder.append(':');
+        }
+        appendNumber(builder, 2, offsetMinutes % 60);
+        return builder.toString();
+    }
+
+    private void appendNumber(StringBuilder builder, int count, int value) {
+        String string = Integer.toString(value);
+        for (int i = 0; i < count - string.length(); i++) {
+            builder.append('0');
+        }
+        builder.append(string);
     }
 
     /***
@@ -248,7 +282,7 @@ public class SignManager {
 
     //人脸打卡和访客打卡
     public Sign checkSignData(CompareResult compareResult, float temperature) {
-        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
+        boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
         return checkSignData(compareResult, temperature, !isPrivacy);
     }
 
@@ -377,24 +411,24 @@ public class SignManager {
      * @param isPrivacy
      * @param signConsumer
      */
-    public void uploadTemperatureSign(Bitmap headBitmap,Bitmap hotBitmap,final Sign sign,boolean isPrivacy,Consumer<Sign> signConsumer) {
+    public void uploadTemperatureSign(Bitmap headBitmap, Bitmap hotBitmap, final Sign sign, boolean isPrivacy, Consumer<Sign> signConsumer) {
         long start = System.currentTimeMillis();
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
         File file = !isPrivacy && headBitmap != null ? saveBitmap(sign.getTime(), headBitmap) : createEmptyFile();
         sign.setHeadPath(file.getPath());
-        if(headBitmap != null && !headBitmap.isRecycled()){
+        if (headBitmap != null && !headBitmap.isRecycled()) {
             headBitmap.recycle();
         }
 
         File hotFile = !isPrivacy && hotBitmap != null ? saveBitmap("hot_", sign.getTime(), hotBitmap) : createEmptyFile();
         sign.setHotImgPath(hotFile.getPath());
-        if(hotBitmap != null && !hotBitmap.isRecycled()){
+        if (hotBitmap != null && !hotBitmap.isRecycled()) {
             hotBitmap.recycle();
         }
 
         Log.e(TAG, "uploadTemperatureSign: 存DB耗时:" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
-        if(signConsumer != null){
+        if (signConsumer != null) {
             try {
                 signConsumer.accept(sign);
             } catch (Exception e) {
@@ -403,7 +437,7 @@ public class SignManager {
         }
 
         sign.setUpload(false);
-        if(!isPrivacy){
+        if (!isPrivacy) {
             DaoManager.get().addOrUpdate(sign);
         } else {
             return;
@@ -420,7 +454,8 @@ public class SignManager {
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("comId", SpUtils.getCompany().getComid() + "");
         params.put("temper", sign.getTemperature() + "");
-        params.put("signTime",sign.getTime() + "");
+        params.put("signTime", sign.getTime() + "");
+        params.put("signTimeFormat", paramsDateFormat.format(sign.getTime()));
         if (sign.getType() != -9) {
             params.put("entryId", sign.getEmpId() + "");
         }
@@ -503,7 +538,8 @@ public class SignManager {
         map.put("deviceId", HeartBeatClient.getDeviceNo());
         map.put("comId", "" + signBean.getComid());
         map.put("visitorId", signBean.getEmpId() + "");
-        map.put("signTime",signBean.getTime() + "");
+        map.put("signTime", signBean.getTime() + "");
+        map.put("signTimeFormat", paramsDateFormat.format(signBean.getTime()));
         d("上传访客记录");
         d("地址：" + ResourceUpdate.VISITOLOG);
         d("参数：" + map.toString());
@@ -545,6 +581,7 @@ public class SignManager {
         final Map<String, String> map = new HashMap<>();
         map.put("entryid", signBean.getEmpId() + "");
         map.put("signTime", signBean.getTime() + "");
+        map.put("signTimeFormat", paramsDateFormat.format(signBean.getTime()));
         map.put("deviceId", HeartBeatClient.getDeviceNo());
         map.put("temper", signBean.getTemperature() + "");
         d("上传考勤记录");
@@ -715,7 +752,7 @@ public class SignManager {
         });
     }
 
-    public VertifyRecord getICCardVerifyRecord(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
+    public VertifyRecord getICCardVerifyRecord(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass) {
         long time = System.currentTimeMillis();
         File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
         File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
@@ -744,6 +781,7 @@ public class SignManager {
 
     /**
      * 加入验证记录到数据库
+     *
      * @param faceBitmap
      * @param reBitmap
      * @param idCardBitmap
@@ -752,12 +790,12 @@ public class SignManager {
      * @param similar
      * @param isPass
      */
-    public void addICCardVerifyRecordToDB(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass){
+    public void addICCardVerifyRecordToDB(Bitmap faceBitmap, Bitmap reBitmap, Bitmap idCardBitmap, float temper, IdCardMsg msg, int similar, int isPass) {
         VertifyRecord verifyRecord = getICCardVerifyRecord(faceBitmap, reBitmap, idCardBitmap, temper, msg, similar, isPass);
         long l = DaoManager.get().addOrUpdate(verifyRecord);
     }
 
-    public VertifyRecord getIDCardVerifyRecord(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap){
+    public VertifyRecord getIDCardVerifyRecord(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
         long time = System.currentTimeMillis();
         File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
         File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
@@ -783,7 +821,7 @@ public class SignManager {
         return vertifyRecord;
     }
 
-    public void uploadIdCardAndReImage(VertifyRecord vertifyRecord){
+    public void uploadIdCardAndReImage(VertifyRecord vertifyRecord) {
         long l = DaoManager.get().addOrUpdate(vertifyRecord);
         vertifyRecord.set_id(l);
 
@@ -804,11 +842,12 @@ public class SignManager {
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("comId", vertifyRecord.getComId());
         params.put("temper", vertifyRecord.getTemper());
-        params.put("signTime",vertifyRecord.getTime() + "");
+        params.put("signTime", vertifyRecord.getTime() + "");
+        params.put("signTimeFormat", paramsDateFormat.format(vertifyRecord.getTime()));
 
         String phoneNumber = vertifyRecord.getPhoneNumber();
-        if(!TextUtils.isEmpty(phoneNumber)){
-            params.put("phone",vertifyRecord.getPhoneNumber());
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            params.put("phone", vertifyRecord.getPhoneNumber());
         }
         String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
         Log.e(TAG, "上传身份信息");

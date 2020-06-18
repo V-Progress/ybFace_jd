@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ public class AutoUpload {
     private int PERIOD_TIME = 5;
     private static final String TAG = "AutoUpload";
     private ScheduledExecutorService scheduledExecutorService;
+    private SimpleDateFormat paramsDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public AutoUpload(){
         scheduledExecutorService = Executors.newScheduledThreadPool(3);
@@ -110,7 +112,7 @@ public class AutoUpload {
 
         List<EntrySignBean> signBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            signBeans.add(new EntrySignBean(sign.getEmpId(), sign.getTime(), HeartBeatClient.getDeviceNo(),sign.getTemperature()));
+            signBeans.add(new EntrySignBean(sign.getEmpId(), sign.getTime(), HeartBeatClient.getDeviceNo(),sign.getTemperature(),paramsDateFormat.format(sign.getTime())));
         }
         String jsonStr = new Gson().toJson(signBeans);
         d("批量上传考勤记录：" + ResourceUpdate.SIGNARRAY);
@@ -164,7 +166,7 @@ public class AutoUpload {
         }
         List<TemperSignBean> temperSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(),sign.getEmpId()));
+            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(),sign.getEmpId(),paramsDateFormat.format(sign.getTime())));
         }
         String json = new Gson().toJson(temperSignBeans);
 
@@ -250,7 +252,7 @@ public class AutoUpload {
         }
         List<VisitorSignBean> visitorSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            visitorSignBeans.add(new VisitorSignBean(sign.getEmpId(), sign.getTime()));
+            visitorSignBeans.add(new VisitorSignBean(sign.getEmpId(), sign.getTime(),paramsDateFormat.format(sign.getTime())));
         }
         String json = new Gson().toJson(visitorSignBeans);
 
@@ -497,29 +499,6 @@ public class AutoUpload {
         Log.e(TAG, s);
     }
 
-
-    class VisitorSignBean {
-        long visitorId;
-        long createTime;
-
-        public VisitorSignBean(long visitorId, long createTime) {
-            this.visitorId = visitorId;
-            this.createTime = createTime;
-        }
-    }
-
-    class TemperSignBean {
-        long createTime;
-        float temper;
-        long entryId;
-
-        public TemperSignBean(long createTime, float temper, long empId) {
-            this.createTime = createTime;
-            this.temper = temper;
-            this.entryId = empId;
-        }
-    }
-
     private File getFileByPath(String headPath) {
         File headFile;
         if (TextUtils.isEmpty(headPath)) {
@@ -538,17 +517,46 @@ public class AutoUpload {
     }
 
 
+    class VisitorSignBean {
+        long visitorId;
+        long createTime;
+        String signTimeFormat;
+
+        public VisitorSignBean(long visitorId, long createTime,String signTimeFormat) {
+            this.visitorId = visitorId;
+            this.createTime = createTime;
+            this.signTimeFormat = signTimeFormat;
+        }
+    }
+
+    class TemperSignBean {
+        long createTime;
+        float temper;
+        long entryId;
+        String signTimeFormat;
+
+        public TemperSignBean(long createTime, float temper,long entryId,String signTimeFormat) {
+            this.createTime = createTime;
+            this.temper = temper;
+            this.entryId = entryId;
+            this.signTimeFormat = signTimeFormat;
+        }
+    }
+
+
     class EntrySignBean {
         long entryid;
         long signTime;
         String deviceId;
         float temper;
+        String signTimeFormat;
 
-        public EntrySignBean(long entryid, long signTime, String deviceId, float temper) {
+        public EntrySignBean(long entryid, long signTime, String deviceId, float temper,String signTimeFormat) {
             this.entryid = entryid;
             this.signTime = signTime;
             this.deviceId = deviceId;
             this.temper = temper;
+            this.signTimeFormat = signTimeFormat;
         }
     }
 
