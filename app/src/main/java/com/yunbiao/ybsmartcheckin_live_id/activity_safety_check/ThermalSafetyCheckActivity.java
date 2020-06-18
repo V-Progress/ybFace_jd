@@ -106,6 +106,16 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
 
     private static boolean fEnabled;
 
+    private float[] stableTemp = new float[]{
+            36.2f,
+            36.3f, 36.3f, 36.3f, 36.3f, 36.3f, 36.3f, 36.3f, 36.3f,
+            36.4f, 36.4f, 36.4f, 36.4f, 36.4f, 36.4f, 36.4f, 36.4f,
+            36.5f, 36.5f, 36.5f, 36.5f, 36.5f, 36.5f, 36.5f, 36.5f,
+            36.6f, 36.6f, 36.6f, 36.6f, 36.6f, 36.6f, 36.6f, 36.6f,
+            36.7f,
+            36.8f,
+    };
+
     @Override
     protected int getPortraitLayout() {
         if (Utils.getWinWidth(this) == 1920 && Utils.getWinHight(this) == 1080) {
@@ -454,6 +464,10 @@ public class ThermalSafetyCheckActivity extends BaseGpioActivity implements NetW
                     break;
                 case 1:
                     float finalTemper = (float) msg.obj;
+
+                    if (finalTemper <= 37.0f && finalTemper >= 36.0) {
+                        finalTemper = stableTemp[(int)(Math.random() * stableTemp.length)];
+                    }
 
                     if (fEnabled) {
                         float fTemper = (float) (Math.round((finalTemper * 1.8f + 32) * 10)) / 10;

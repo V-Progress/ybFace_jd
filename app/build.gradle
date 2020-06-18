@@ -192,6 +192,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPER_SAFETY_CHECK",
                 "@string/yb_safety_chceck", "@mipmap/icon_logo4", "5cbe87a60cafb210460006b3", "HG_SC",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*韩国 大通量*/
+        flavor(HG_DR, "7",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.MULTIPLE_THERMAL",
+                "@string/yb_multiple", "@mipmap/icon_logo4", "5cbe87a60cafb210460006b3", "HG_DR",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
         /*=====================================================================================*/
         flavor(XENON_10, "8",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",

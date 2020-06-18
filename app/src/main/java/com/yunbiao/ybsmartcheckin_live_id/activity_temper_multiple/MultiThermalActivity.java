@@ -316,7 +316,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         if(mBlackBodyEnable != isBlackBodyTemper){
             mTempMode = false;
             SpUtils.saveFloat(MultiThermalConst.Key.LAST_MIN_T, MultiThermalConst.Default.LAST_MIN_T);
-            SpUtils.saveFloat(MultiThermalConst.Key.CORRECT_VALUE,MultiThermalConst.Default.BODY_CORRECT_TEMPER);
+//            SpUtils.saveFloat(MultiThermalConst.Key.CORRECT_VALUE,MultiThermalConst.Default.BODY_CORRECT_TEMPER);
         }
         mBlackBodyEnable = isBlackBodyTemper;
 
