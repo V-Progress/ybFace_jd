@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.yunbiao.ybsmartcheckin_live_id.temper_5inch.databean.MainDataBean"/>
+        <import type="com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity.EventListener"/>
+        <import type="android.view.View"/>
+
+        <variable
+            name="mainDataBean"
+            type="MainDataBean" />
+        <variable
+            name="eventListener"
+            type="EventListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/bg_5inch_main"
+        tools:context=".activity.MainActivity">
+
+        <View
+            android:id="@+id/v_top"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@mipmap/bg_top_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_main_logo"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="20dp"
+            android:scaleType="fitCenter"
+            android:longClickable="true"
+            android:onClick="@{eventListener::onClick}"
+            app:layout_constraintBottom_toBottomOf="@+id/v_top"
+            app:layout_constraintStart_toStartOf="@+id/v_top"
+            app:layout_constraintTop_toTopOf="@+id/v_top" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_main_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main_title_text"
+            android:text='@string/main_title'
+            app:autoSizeMaxTextSize="30sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:textSize="30sp"
+            android:maxLines="1"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="@id/v_top"
+            app:layout_constraintBottom_toBottomOf="@+id/v_top"
+            app:layout_constraintTop_toTopOf="@+id/v_top"
+            app:layout_constraintEnd_toEndOf="@+id/v_top" />
+
+        <TextClock
+            android:id="@+id/tc_main_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format24Hour="HH:mm"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/v_top"
+            app:layout_constraintEnd_toEndOf="@+id/v_top"
+            app:layout_constraintTop_toTopOf="@+id/v_top" />
+
+        <View
+            android:id="@+id/v_body_temperature"
+            android:layout_width="681dp"
+            android:layout_height="373dp"
+            android:background="@mipmap/bg_body_temperature"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/v_top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_check_temp_title"
+            android:layout_width="120dp"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text='@string/temp_title'
+            android:textColor="@color/temp_title_text"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="@id/v_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature" />
+
+        <com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.CameraView
+            android:id="@+id/cv_main_camera"
+            android:layout_width="150dp"
+            android:layout_height="112.5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/v_body_temperature"
+            app:layout_constraintLeft_toLeftOf="@id/v_body_temperature"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="40dp"
+            android:textSize="24sp"
+            android:text="校准模式"
+            android:textColor="@color/temperature_how_low_text"
+            android:visibility="@{mainDataBean.isTest ? View.VISIBLE : View.GONE}"
+            app:layout_constraintRight_toRightOf="@id/v_body_temperature"
+            app:layout_constraintTop_toTopOf="@id/v_body_temperature"/>
+
+        <LinearLayout
+            android:id="@+id/ll_temperature_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:onLongClick="@{eventListener::onLongClick}"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintTop_toBottomOf="@id/ac_tv_check_temp_title"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/v_body_temperature">
+            <TextSwitcher
+                android:id="@+id/ts_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{mainDataBean.temperature}"
+                android:inAnimation="@anim/up_in"
+                android:outAnimation="@anim/down_out"
+                android:gravity="center" >
+            </TextSwitcher>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{mainDataBean.temperatureUnit}"
+                android:textColor="@{mainDataBean.tempStatus == 1 ? @color/temperature_normal_text : mainDataBean.tempStatus == 2 ? @color/temperature_abnormal_text : @color/temperature_how_low_text}"
+                android:textStyle="bold"
+                android:textSize="160sp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/v_normal_temperature"
+            android:layout_width="330dp"
+            android:layout_height="193dp"
+            android:background="@mipmap/bg_normal_temperature"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/v_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_normal_temp_title"
+            android:layout_width="120dp"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text='@string/temp_normal_title'
+            android:textColor="@color/temp_normal_title_text"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="@id/v_normal_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_normal_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_normal_temperature" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_normal_num"
+            android:layout_width="260dp"
+            android:layout_height="130dp"
+            android:gravity="center"
+            android:text="@{String.valueOf(mainDataBean.normalNum)}"
+            android:textColor="@color/temp_normal_num_text"
+            android:textStyle="bold"
+            app:autoSizeMaxTextSize="120sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintTop_toBottomOf="@id/ac_tv_normal_temp_title"
+            app:layout_constraintStart_toStartOf="@id/v_normal_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_normal_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/v_normal_temperature" />
+
+        <View
+            android:id="@+id/v_abnormal_temperature"
+            android:layout_width="330dp"
+            android:layout_height="193dp"
+            android:background="@mipmap/bg_abnormal_temperature"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/v_body_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_abnormal_temp_title"
+            android:layout_width="120dp"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text='@string/temp_abnormal_title'
+            android:textColor="@color/temp_abnormal_title_text"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="@id/v_abnormal_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_abnormal_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_abnormal_temperature" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ac_tv_abnormal_num"
+            android:layout_width="260dp"
+            android:layout_height="130dp"
+            android:gravity="center"
+            android:text="@{String.valueOf(mainDataBean.abnormalNum)}"
+            android:textColor="@color/temp_abnormal_num_text"
+            android:textStyle="bold"
+            app:autoSizeMaxTextSize="120sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintTop_toBottomOf="@id/ac_tv_abnormal_temp_title"
+            app:layout_constraintStart_toStartOf="@id/v_abnormal_temperature"
+            app:layout_constraintEnd_toEndOf="@id/v_abnormal_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/v_abnormal_temperature" />
+
+        <FrameLayout
+            android:id="@+id/fl_ad"
+            android:layout_width="680dp"
+            android:layout_height="452dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toTopOf="@id/v_announcement"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <ImageView
+                android:id="@+id/iv_ad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+            <VideoView
+                android:id="@+id/vv_ad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/v_announcement"
+            android:layout_width="680dp"
+            android:layout_height="82dp"
+            android:background="@mipmap/bg_announcement"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/iv_announcement"
+            android:layout_width="40dp"
+            android:layout_height="37dp"
+            android:background="@mipmap/icon_announcement"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="@id/v_announcement"
+            app:layout_constraintTop_toTopOf="@id/v_announcement"
+            app:layout_constraintBottom_toBottomOf="@id/v_announcement"/>
+
+        <com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.MarqueeTextView
+            android:id="@+id/mtv_announcement"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@{mainDataBean.subtitleContent}"
+            android:textSize="32sp"
+            android:textColor="@color/announcement_text"
+            app:scroll_first_delay="0"
+            app:scroll_mode="mode_forever"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toEndOf="@id/iv_announcement"
+            app:layout_constraintTop_toTopOf="@id/v_announcement"
+            app:layout_constraintBottom_toBottomOf="@id/v_announcement"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

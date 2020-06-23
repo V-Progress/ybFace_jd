@@ -652,4 +652,34 @@
     <string name="setting_clear_all_data">Limpieza de todos los datos</string>
     <string name="clear_no_data">Los datos han sido borrados：</string>
     <string name="setting_no_face_temper">No hay cara caliente</string>
+
+    <!-- 5寸 -->
+    <string name="main_title">AI Temperature</string>
+    <string name="temp_title">Measurement</string>
+    <string name="temp_normal_title">Normal</string>
+    <string name="temp_abnormal_title">Abnormal</string>
+
+    <string name="setting_title">Setting</string>
+    <string name="language_title">Language：</string>
+    <string name="display_title">Display：</string>
+    <string name="calibration_title">Calibration value：</string>
+    <string name="celsius_text">Celsius</string>
+    <string name="fahrenheit_text">Fahrenheit</string>
+    <string name="warning_title">Warning temperature：</string>
+    <string name="interval_title">Carousel interval：</string>
+    <string name="interval_unit">second</string>
+    <string name="speed_title">Subtitle speed：</string>
+    <string name="fast_text">fast</string>
+    <string name="moderate_text">moderate</string>
+    <string name="slow_text">slow</string>
+
+    <string name="sp_temp_check_again">Please check again</string>
+    <string name="sp_temp_warning_tips">Abnormal</string>
+    <string name="sp_temp_normal_tips">Normal</string>
+    <string name="sp_temp_error_tips">Abnormal</string>
+
+    <string name="click_to_exit_tip">Press again to exit the program</string>
+
+    <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 请用手掌或额头靠近测温点进行测温。</string>
+
 </resources>

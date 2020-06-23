@@ -39,4 +39,19 @@
     <color name="skin_color_main_text_color_end">@color/white</color>
     <color name="skin_color_makeup_text_color">@color/blue_all_title_bg</color>
     <color name="red">#ff0000</color><!--补录按钮-->
+
+    <color name="main_title_text">#00FFFF</color>
+    <color name="temp_title_text">#00FFFF</color>
+    <color name="temperature_normal_text">#36FF00</color>
+    <color name="temperature_abnormal_text">#FF0000</color>
+    <color name="temperature_how_low_text">#FFFF00</color>
+    <color name="temp_normal_title_text">#36FF00</color>
+    <color name="temp_abnormal_title_text">#FF0000</color>
+    <color name="temp_normal_num_text">#60FF94</color>
+    <color name="temp_abnormal_num_text">#FF7646</color>
+    <color name="announcement_text">#00FFFF</color>
+
+    <color name="setting_popup_bg">#0D142A</color>
+    <color name="setting_title_text">#00FFFF</color>
+    <color name="setting_line_bg">#00FFFF</color>
 </resources>

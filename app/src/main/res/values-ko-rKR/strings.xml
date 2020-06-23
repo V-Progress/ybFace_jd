@@ -649,4 +649,34 @@
     <string name="setting_clear_all_data">모든 데이터 삭제</string>
     <string name="clear_no_data">데이터가 모두 삭제되었습니다：</string>
     <string name="setting_no_face_temper">온정한 정을 보고할 사람이 없다</string>
+
+    <!-- 5寸 -->
+    <string name="main_title">AI 온도 측정 시스템</string>
+    <string name="temp_title">체온 측정</string>
+    <string name="temp_normal_title">정상적인 체온</string>
+    <string name="temp_abnormal_title">비정상적인 체온</string>
+
+    <string name="setting_title">설정</string>
+    <string name="language_title">언어：</string>
+    <string name="display_title">디스플레이：</string>
+    <string name="calibration_title">교정 값：</string>
+    <string name="celsius_text">섭씨</string>
+    <string name="fahrenheit_text">화씨</string>
+    <string name="warning_title">경고 온도：</string>
+    <string name="interval_title">회전식 간격：</string>
+    <string name="interval_unit">둘째</string>
+    <string name="speed_title">자막 속도：</string>
+    <string name="fast_text">빠른</string>
+    <string name="moderate_text">보통의</string>
+    <string name="slow_text">느린</string>
+
+    <string name="sp_temp_check_again">다시 측정 해주세요</string>
+    <string name="sp_temp_warning_tips">비정상적인 체온</string>
+    <string name="sp_temp_normal_tips">정상적인 체온</string>
+    <string name="sp_temp_error_tips">비정상적인 체온</string>
+
+    <string name="click_to_exit_tip">다시 누르면 프로그램이 종료됩니다</string>
+
+    <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 온도 측정을 위해 손바닥이나 이마를 온도 측정 지점에 가까이 가져 가십시오。</string>
+
 </resources>

@@ -202,6 +202,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/app_name8", "@mipmap/xenon_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*5寸=====================================================================================*/
+        flavor(YB_5, "9",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH",
+                "@string/app_name", "@mipmap/icon_logo_5_inch", "5cbe87a60cafb210460006b3", "YB_5",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -264,6 +269,8 @@ String buildApkName(String param) {
             name += "双光安检"
         } else if (param.contains("SC")) {
             name += "测温安检"
+        } else if (param.contains("5")) {
+            name += " Face_5寸"
         } else {
             name += "智能考勤"
         }

@@ -28,6 +28,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesActi
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
@@ -142,16 +143,18 @@ public class SplashActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-            Log.e(TAG, "激活结果: " + code);
-            if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED
-                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
-                    }
-                });
+            if (Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
+                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH) {
+                int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
+                Log.e(TAG, "激活结果: " + code);
+                if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
+                        }
+                    });
+                }
             }
             jump();
             finish();
@@ -276,6 +279,10 @@ public class SplashActivity extends BaseActivity {
                 Constants.Default.IS_H_MIRROR = false;
                 Constants.CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
                 startActivity(new Intent(this, SafetyCheckDoubleLightActivity.class));
+                break;
+            case Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH:
+                Constants.Default.CAMERA_ANGLE = 0;
+                startActivity(new Intent(this, Main5InchActivity.class));
                 break;
         }
     }

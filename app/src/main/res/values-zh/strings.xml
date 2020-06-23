@@ -658,4 +658,34 @@
     <string name="setting_clear_all_data">清除所有数据</string>
     <string name="clear_no_data">数据已清除完毕：</string>
     <string name="setting_no_face_temper">无人脸报温</string><!--保存-->
+
+    <!-- 5寸 -->
+    <string name="main_title">AI测温系统</string>
+    <string name="temp_title">体温测量</string>
+    <string name="temp_normal_title">体温正常</string>
+    <string name="temp_abnormal_title">体温异常</string>
+
+    <string name="setting_title">设置</string>
+    <string name="language_title">语言：</string>
+    <string name="display_title">显示：</string>
+    <string name="calibration_title">校准值：</string>
+    <string name="celsius_text">摄氏度</string>
+    <string name="fahrenheit_text">华氏度</string>
+    <string name="warning_title">预警温度：</string>
+    <string name="interval_title">轮播间隔：</string>
+    <string name="interval_unit">秒</string>
+    <string name="speed_title">字幕速度：</string>
+    <string name="fast_text">快速</string>
+    <string name="moderate_text">适中</string>
+    <string name="slow_text">慢速</string>
+
+    <string name="sp_temp_check_again">请重新测量</string>
+    <string name="sp_temp_warning_tips">体温异常</string>
+    <string name="sp_temp_normal_tips">体温正常</string>
+    <string name="sp_temp_error_tips">非正常体温</string>
+
+    <string name="click_to_exit_tip">再按一次退出程序</string>
+
+    <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 请用手掌或额头靠近测温点进行测温。</string>
+
 </resources>

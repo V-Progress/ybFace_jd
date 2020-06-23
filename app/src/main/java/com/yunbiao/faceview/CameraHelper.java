@@ -71,6 +71,8 @@ public class CameraHelper implements Camera.PreviewCallback {
 
         if (isMirror) {
             previewDisplayView.setScaleX(-1);
+        } else {
+            previewDisplayView.setScaleX(1);
         }
     }
 
@@ -138,6 +140,9 @@ public class CameraHelper implements Camera.PreviewCallback {
                         previewSize.width = 1280;
                         previewSize.height = 720;
                     }*/
+                } else if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH) {
+                    previewSize.width = 640;
+                    previewSize.height = 480;
                 }
                 Log.e(TAG, "start: 当前摄像头分辨率：" + previewSize.width + " --- " + previewSize.height);
                 parameters.setPreviewSize(previewSize.width, previewSize.height);

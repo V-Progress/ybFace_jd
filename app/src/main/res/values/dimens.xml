@@ -6,4 +6,8 @@
     <!-- 字体定义 -->
 
 
+    <dimen name="setting_item_title_width">180dp</dimen>
+    <dimen name="setting_item_title_height">60dp</dimen>
+    <dimen name="setting_item_content_marginStart">14dp</dimen>
+
 </resources>
