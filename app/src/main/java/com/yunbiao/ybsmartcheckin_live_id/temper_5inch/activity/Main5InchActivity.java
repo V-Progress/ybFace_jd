@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
@@ -101,6 +102,7 @@ public class Main5InchActivity extends Base5InchActivity {
     }
 
     private boolean isCover = false;
+    private long coverTime = 0;
     private boolean isReport = false;
     private List<Float> tempValueList = new ArrayList<>();
     List<Float> hTempList = new ArrayList<>();
@@ -108,6 +110,9 @@ public class Main5InchActivity extends Base5InchActivity {
     private MLX90614GgTempCallBack mlx90614GgTempCallBack = new MLX90614GgTempCallBack() {
         @Override
         public void newestInfraredTemp(float measuringTempF, float afterTreatmentF) {
+            if (System.currentTimeMillis() - coverTime > 150) {
+                isCover = false;
+            }
             if (isStop || !isReport) {
                 tempValueList.clear();
                 hTempList.clear();
@@ -187,12 +192,11 @@ public class Main5InchActivity extends Base5InchActivity {
 
         @Override
         public void distanceResponse() {
+            coverTime = System.currentTimeMillis();
             if (!isCover) {
                 isCover = true;
                 isReport = true;
             }
-            mainHandler.removeMessages(3);
-            mainHandler.sendEmptyMessageDelayed(3, 150);
         }
     };
 
@@ -243,7 +247,34 @@ public class Main5InchActivity extends Base5InchActivity {
         activity5inchMainBinding.mtvAnnouncement.startScroll();
     }
 
-    private Handler mainHandler = new Handler() {
+    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mediaPlayer) {
+            Main5InchActivity.this.mediaPlayer = mediaPlayer;
+            activity5inchMainBinding.vvAd.start();
+        }
+    };
+    private MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+            Message msg = new Message();
+            msg.what = 1;
+            msg.arg1 = position + 1;
+            mainHandler.sendMessage(msg);
+            return true;
+        }
+    };
+    private MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            Message msg = new Message();
+            msg.what = 1;
+            msg.arg1 = position + 1;
+            mainHandler.sendMessage(msg);
+        }
+    };
+
+    private Handler mainHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
@@ -256,32 +287,9 @@ public class Main5InchActivity extends Base5InchActivity {
                         activity5inchMainBinding.ivAd.setVisibility(View.GONE);
                         activity5inchMainBinding.vvAd.setVisibility(View.VISIBLE);
                         activity5inchMainBinding.vvAd.setVideoPath(file.toString());
-                        activity5inchMainBinding.vvAd.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mediaPlayer) {
-                                Main5InchActivity.this.mediaPlayer = mediaPlayer;
-                                activity5inchMainBinding.vvAd.start();
-                            }
-                        });
-                        activity5inchMainBinding.vvAd.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                            @Override
-                            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                msg.arg1 = position + 1;
-                                mainHandler.sendMessage(msg);
-                                return true;
-                            }
-                        });
-                        activity5inchMainBinding.vvAd.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            @Override
-                            public void onCompletion(MediaPlayer mediaPlayer) {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                msg.arg1 = position + 1;
-                                mainHandler.sendMessage(msg);
-                            }
-                        });
+                        activity5inchMainBinding.vvAd.setOnPreparedListener(onPreparedListener);
+                        activity5inchMainBinding.vvAd.setOnErrorListener(onErrorListener);
+                        activity5inchMainBinding.vvAd.setOnCompletionListener(onCompletionListener);
                     } else {
                         activity5inchMainBinding.ivAd.setVisibility(View.VISIBLE);
                         activity5inchMainBinding.vvAd.setVisibility(View.GONE);
@@ -303,9 +311,12 @@ public class Main5InchActivity extends Base5InchActivity {
                 case 3:
                     isCover = false;
                     tempValueList.clear();
+                    hTempList.clear();
+                    lTempList.clear();
                     break;
                 case 4:
-                    controlVideoAdVolume(1.0f);
+//                    controlVideoAdVolume(1.0f);
+                    playVideoSwitch(true);
                     break;
             }
         }
@@ -317,7 +328,16 @@ public class Main5InchActivity extends Base5InchActivity {
         }
     }
 
+    private void playVideoSwitch(boolean isPlay) {
+        if (activity5inchMainBinding.vvAd.isPlaying() && !isPlay) {
+            activity5inchMainBinding.vvAd.pause();
+        } else if (activity5inchMainBinding.vvAd.getVisibility() == View.VISIBLE && isPlay) {
+            activity5inchMainBinding.vvAd.start();
+        }
+    }
+
     private void speechText(float temperature, boolean isNormal) {
+        playVideoSwitch(false);
         StringBuffer stringBuffer = new StringBuffer();
         if((temperatureUnit == 1 && temperature > 45.0f) || (temperatureUnit == 2 && temperature > 113.0f)){
             stringBuffer.append(getResString(R.string.sp_temp_warning_tips));
@@ -342,7 +362,7 @@ public class Main5InchActivity extends Base5InchActivity {
                 stringBuffer.append(isZh ? "华氏度" : getResString(R.string.fahrenheit_text));
             }
         }
-        controlVideoAdVolume(0.2f);
+//        controlVideoAdVolume(0.1f);
         SpeechManager.getInstance().stopCurrent();
         SpeechManager.getInstance().playNormal(stringBuffer.toString(), isNormal, new SpeechCallback(isNormal));
     }
@@ -360,6 +380,7 @@ public class Main5InchActivity extends Base5InchActivity {
                 SpeechManager.getInstance().playWaningRing();
                 delayMillis = 2800;
             }
+            mainHandler.removeMessages(4);
             mainHandler.sendEmptyMessageDelayed(4, delayMillis);
         }
     }
@@ -410,25 +431,14 @@ public class Main5InchActivity extends Base5InchActivity {
         super.onResume();
         mainHandler.sendEmptyMessage(2);
         isStop = false;
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        mainHandler.sendEmptyMessage(2);
-        isStop = false;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        isStop = true;
+        playVideoSwitch(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         isStop = true;
+        playVideoSwitch(false);
     }
 
     @Override

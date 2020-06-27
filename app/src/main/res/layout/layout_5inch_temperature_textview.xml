@@ -6,5 +6,5 @@
     android:textColor="@color/temperature_normal_text"
     android:gravity="center"
     android:textStyle="bold"
-    android:textSize="160sp"
+    android:textSize="100sp"
     android:maxLines="1"/>

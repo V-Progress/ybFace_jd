@@ -70,7 +70,7 @@ public class CameraView extends FrameLayout {
     private void initCamera() {
         Log.e(TAG, "initCamera: 打开摄像头：" + Constants.CAMERA_ID);
         int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
-        boolean isMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR, Constants.Default.IS_H_MIRROR);
+        boolean isMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR, true);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(surfaceView.getMeasuredWidth(), surfaceView.getMeasuredHeight()))
                 .rotation(angle)

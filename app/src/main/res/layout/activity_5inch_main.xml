@@ -101,12 +101,13 @@
 
         <com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.CameraView
             android:id="@+id/cv_main_camera"
-            android:layout_width="150dp"
-            android:layout_height="112.5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintTop_toTopOf="@id/v_body_temperature"
-            app:layout_constraintLeft_toLeftOf="@id/v_body_temperature"/>
+            android:layout_width="280dp"
+            android:layout_height="210dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintTop_toBottomOf="@id/ac_tv_check_temp_title"
+            app:layout_constraintBottom_toBottomOf="@id/v_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -128,7 +129,7 @@
             android:onLongClick="@{eventListener::onLongClick}"
             android:layout_marginBottom="30dp"
             app:layout_constraintTop_toBottomOf="@id/ac_tv_check_temp_title"
-            app:layout_constraintStart_toStartOf="@id/v_body_temperature"
+            app:layout_constraintStart_toEndOf="@id/cv_main_camera"
             app:layout_constraintEnd_toEndOf="@id/v_body_temperature"
             app:layout_constraintBottom_toBottomOf="@id/v_body_temperature">
             <TextSwitcher
@@ -146,7 +147,7 @@
                 android:text="@{mainDataBean.temperatureUnit}"
                 android:textColor="@{mainDataBean.tempStatus == 1 ? @color/temperature_normal_text : mainDataBean.tempStatus == 2 ? @color/temperature_abnormal_text : @color/temperature_how_low_text}"
                 android:textStyle="bold"
-                android:textSize="160sp"/>
+                android:textSize="100sp"/>
         </LinearLayout>
 
         <View
