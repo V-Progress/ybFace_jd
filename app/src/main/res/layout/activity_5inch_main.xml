@@ -99,27 +99,208 @@
             app:layout_constraintStart_toStartOf="@id/v_body_temperature"
             app:layout_constraintEnd_toEndOf="@id/v_body_temperature" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_cm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{mainDataBean.isTest ? View.VISIBLE : View.GONE}"
+            app:constraint_referenced_ids="tv_cm_title, tv_temperature_value, tv_calibration_value, tv_body_temperature, btn_cm_cancel, btn_cm_confirm, tv_temperature_value_hint_1, tv_temperature_value_hint_2, tv_body_temperature_hint_1, tv_body_temperature_hint_2, fl_body_add_btn, fl_body_sub_btn, tv_calibration_value_hint"/>
+
+        <TextView
+            android:id="@+id/tv_cm_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="40dp"
+            android:textSize="24sp"
+            android:text="@string/calibration_mode_title"
+            android:textColor="@color/calibration_mode_main"
+            app:layout_constraintTop_toTopOf="@id/v_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"/>
+
+        <TextView
+            android:id="@+id/tv_temperature_value_hint_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/cm_temperature_measurement"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_temperature_value"
+            app:layout_constraintStart_toStartOf="@id/tv_temperature_value"
+            app:layout_constraintEnd_toEndOf="@id/tv_temperature_value"/>
+
+        <TextView
+            android:id="@+id/tv_temperature_value"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:textSize="36sp"
+            android:textColor="@color/calibration_mode_content"
+            android:text="@{mainDataBean.cmMeasurementValue.toString()}"
+            android:gravity="center"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="40dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_cm_title"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"
+            app:layout_constraintEnd_toStartOf="@id/tv_calibration_value"/>
+
+        <TextView
+            android:id="@+id/tv_temperature_value_hint_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/cm_local_measuring"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_temperature_value"
+            app:layout_constraintStart_toStartOf="@id/tv_temperature_value_hint_1"
+            app:layout_constraintEnd_toEndOf="@id/tv_temperature_value_hint_1"/>
+
+        <TextView
+            android:id="@+id/tv_calibration_value_hint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="1"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/cm_calibration_value"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_temperature_value"
+            app:layout_constraintStart_toStartOf="@id/tv_calibration_value"
+            app:layout_constraintEnd_toEndOf="@id/tv_calibration_value"/>
+
+        <TextView
+            android:id="@+id/tv_calibration_value"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintHorizontal_weight="0.7"
+            android:textSize="36sp"
+            android:textColor="@color/calibration_mode_content"
+            android:text="@{mainDataBean.cmCalibrationValue.toString()}"
+            android:gravity="center"
+            android:background="@drawable/shape_cm_value_bg"
+            android:layout_marginStart="30dp"
+            app:layout_constraintTop_toTopOf="@id/tv_temperature_value"
+            app:layout_constraintStart_toEndOf="@id/tv_temperature_value"
+            app:layout_constraintEnd_toStartOf="@id/tv_body_temperature"/>
+
+        <TextView
+            android:id="@+id/tv_body_temperature_hint_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/cm_body_temperature"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/tv_body_temperature"
+            app:layout_constraintEnd_toEndOf="@id/tv_body_temperature"/>
+
+        <FrameLayout
+            android:id="@+id/fl_body_sub_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:onClick="@{eventListener::onClick}"
+            android:background="@drawable/selector_num_jj_bg"
+            android:layout_marginStart="60dp"
+            app:layout_constraintStart_toEndOf="@id/tv_calibration_value"
+            app:layout_constraintTop_toTopOf="@id/tv_body_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/tv_body_temperature">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/icon_sub"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_body_temperature"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:textSize="36sp"
+            android:textColor="@color/calibration_mode_content"
+            android:text="@{mainDataBean.cmBodyTemperatureValue.toString()}"
+            android:gravity="center"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="80dp"
+            app:layout_constraintTop_toTopOf="@id/tv_temperature_value"
+            app:layout_constraintStart_toEndOf="@id/tv_calibration_value"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature"/>
+
+        <FrameLayout
+            android:id="@+id/fl_body_add_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:onClick="@{eventListener::onClick}"
+            android:background="@drawable/selector_num_jj_bg"
+            android:layout_marginEnd="70dp"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature"
+            app:layout_constraintTop_toTopOf="@id/tv_body_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/tv_body_temperature">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/icon_add"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_body_temperature_hint_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/cm_other_measuring"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_body_temperature"
+            app:layout_constraintStart_toStartOf="@id/tv_body_temperature_hint_1"
+            app:layout_constraintEnd_toEndOf="@id/tv_body_temperature_hint_1"/>
+
+        <Button
+            android:id="@+id/btn_cm_confirm"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:onClick="@{eventListener::onClick}"
+            android:text="@string/cm_confirm"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:background="@drawable/shape_cm_btn_bg"
+            android:layout_marginBottom="40dp"
+            android:layout_marginStart="100dp"
+            app:layout_constraintStart_toStartOf="@id/v_body_temperature"
+            app:layout_constraintEnd_toStartOf="@id/btn_cm_cancel"
+            app:layout_constraintBottom_toBottomOf="@id/v_body_temperature"/>
+
+        <Button
+            android:id="@+id/btn_cm_cancel"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:onClick="@{eventListener::onClick}"
+            android:text="@string/cm_cancel"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:background="@drawable/shape_cm_btn_bg"
+            android:layout_marginBottom="40dp"
+            android:layout_marginEnd="100dp"
+            app:layout_constraintStart_toEndOf="@id/btn_cm_confirm"
+            app:layout_constraintEnd_toEndOf="@id/v_body_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/v_body_temperature"/>
+
         <com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.CameraView
             android:id="@+id/cv_main_camera"
             android:layout_width="280dp"
             android:layout_height="210dp"
+            android:visibility="@{mainDataBean.isTest ? View.GONE : View.VISIBLE}"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
             app:layout_constraintTop_toBottomOf="@id/ac_tv_check_temp_title"
             app:layout_constraintBottom_toBottomOf="@id/v_body_temperature"
             app:layout_constraintStart_toStartOf="@id/v_body_temperature"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="40dp"
-            android:textSize="24sp"
-            android:text="校准模式"
-            android:textColor="@color/temperature_how_low_text"
-            android:visibility="@{mainDataBean.isTest ? View.VISIBLE : View.GONE}"
-            app:layout_constraintRight_toRightOf="@id/v_body_temperature"
-            app:layout_constraintTop_toTopOf="@id/v_body_temperature"/>
 
         <LinearLayout
             android:id="@+id/ll_temperature_container"
@@ -127,6 +308,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:onLongClick="@{eventListener::onLongClick}"
+            android:visibility="@{mainDataBean.isTest ? View.GONE : View.VISIBLE}"
             android:layout_marginBottom="30dp"
             app:layout_constraintTop_toBottomOf="@id/ac_tv_check_temp_title"
             app:layout_constraintStart_toEndOf="@id/cv_main_camera"

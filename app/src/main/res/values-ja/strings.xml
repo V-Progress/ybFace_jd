@@ -775,4 +775,13 @@
 
     <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 请用手掌或额头靠近测温点进行测温。</string>
 
+    <string name="calibration_mode_title">Calibration Mode</string>
+    <string name="cm_temperature_measurement">Measurement Value</string>
+    <string name="cm_local_measuring">Measuring By Local Terminal</string>
+    <string name="cm_calibration_value">Calibration Value</string>
+    <string name="cm_body_temperature">Actual Body Temperature</string>
+    <string name="cm_other_measuring">Third-party Tool Measuring</string>
+    <string name="cm_confirm">Confirm</string>
+    <string name="cm_cancel">Cancel</string>
+    <string name="cm_save_tip">Saved Successfully</string>
 </resources>

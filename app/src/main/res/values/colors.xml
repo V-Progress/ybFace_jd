@@ -54,4 +54,7 @@
     <color name="setting_popup_bg">#0D142A</color>
     <color name="setting_title_text">#00FFFF</color>
     <color name="setting_line_bg">#00FFFF</color>
+
+    <color name="calibration_mode_main">#FFFF00</color>
+    <color name="calibration_mode_content">#00FFFF</color>
 </resources>

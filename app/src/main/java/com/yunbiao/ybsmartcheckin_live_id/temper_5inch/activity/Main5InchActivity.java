@@ -168,6 +168,10 @@ public class Main5InchActivity extends Base5InchActivity {
             if (temperatureUnit == 2) {
                 temp = TemperatureUnitUtils.c2f(temp);
             }
+            if (mainDataBean.isTest.get()) {
+                cmSetMeasurementValue(temp);
+                return;
+            }
             TextView tvTempNext = (TextView) activity5inchMainBinding.tsTemperature.getNextView();
             if (BigDecimalUtils.compare(temp, warningValue)) {
                 mainDataBean.getTempStatus().set(2);
@@ -385,6 +389,27 @@ public class Main5InchActivity extends Base5InchActivity {
         }
     }
 
+    private void cmSetBodyTemperatureValue() {
+        if (temperatureUnit == 1) {
+            mainDataBean.cmBodyTemperatureValue.set(Temper5InchConst.defaultBodyValue);
+        } else {
+            mainDataBean.cmBodyTemperatureValue.set(TemperatureUnitUtils.c2f(Temper5InchConst.defaultBodyValue));
+        }
+        cmSetCalibrationValue();
+    }
+
+    private void cmSetCalibrationValue() {
+        float measurementValue = mainDataBean.cmMeasurementValue.get();
+        if (measurementValue != 0) {
+            mainDataBean.cmCalibrationValue.set(BigDecimalUtils.sub(Temper5InchConst.defaultBodyValue, measurementValue, 1).floatValue());
+        }
+    }
+
+    private void cmSetMeasurementValue(float temp) {
+        mainDataBean.cmMeasurementValue.set(temp);
+        cmSetCalibrationValue();
+    }
+
     public class EventListener {
         public void onClick(View v) {
             switch (v.getId()) {
@@ -392,6 +417,25 @@ public class Main5InchActivity extends Base5InchActivity {
                     Intent intent = new Intent();
                     intent.setClass(Main5InchActivity.this, Setting5InchActivity.class);
                     startActivity(intent);
+                    break;
+                case R.id.btn_cm_confirm:
+                    mainDataBean.isTest.set(false);
+                    calibrationValue = mainDataBean.cmCalibrationValue.get();
+                    SpUtils.saveFloat(Temper5InchConst.Key.CALIBRATION_VALUE, calibrationValue);
+                    TemperatureModule.getIns().setmCorrectionValue(calibrationValue);
+                    T.showShort(Main5InchActivity.this, getResString(R.string.cm_save_tip));
+                    break;
+                case R.id.btn_cm_cancel:
+                    mainDataBean.isTest.set(false);
+                    TemperatureModule.getIns().setmCorrectionValue(calibrationValue);
+                    break;
+                case R.id.fl_body_add_btn:
+                    Temper5InchConst.defaultBodyValue = BigDecimalUtils.add(Temper5InchConst.defaultBodyValue, 0.1f, 1).floatValue();
+                    cmSetBodyTemperatureValue();
+                    break;
+                case R.id.fl_body_sub_btn:
+                    Temper5InchConst.defaultBodyValue = BigDecimalUtils.sub(Temper5InchConst.defaultBodyValue, 0.1f, 1).floatValue();
+                    cmSetBodyTemperatureValue();
                     break;
             }
         }
@@ -403,6 +447,10 @@ public class Main5InchActivity extends Base5InchActivity {
                         mainDataBean.isTest.set(false);
                     } else {
                         mainDataBean.isTest.set(true);
+                        TemperatureModule.getIns().setmCorrectionValue(0);
+                        mainDataBean.cmMeasurementValue.set(0f);
+                        mainDataBean.cmCalibrationValue.set(calibrationValue);
+                        cmSetBodyTemperatureValue();
                     }
                     break;
             }

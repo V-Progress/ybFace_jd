@@ -18,6 +18,12 @@ public class MainDataBean {
 
     public final ObservableField<Boolean> isTest;
 
+    public final ObservableField<Float> cmMeasurementValue;
+
+    public final ObservableField<Float> cmCalibrationValue;
+
+    public final ObservableField<Float> cmBodyTemperatureValue;
+
     public MainDataBean(ObservableField<String> temperatureUnit, ObservableField<Integer> normalNum, ObservableField<Integer> abnormalNum) {
         this.temperature = new ObservableField<>("0.0");
         this.temperatureUnit = temperatureUnit;
@@ -26,6 +32,9 @@ public class MainDataBean {
         this.subtitleContent = new ObservableField<>("");
         this.tempStatus = new ObservableField<>(1);
         this.isTest = new ObservableField<>(false);
+        cmMeasurementValue = new ObservableField<>();
+        cmCalibrationValue = new ObservableField<>();
+        cmBodyTemperatureValue = new ObservableField<>();
     }
 
     public ObservableField<String> getSubtitleContent() {
@@ -52,4 +61,19 @@ public class MainDataBean {
         return tempStatus;
     }
 
+    public ObservableField<Boolean> getIsTest() {
+        return isTest;
+    }
+
+    public ObservableField<Float> getCmMeasurementValue() {
+        return cmMeasurementValue;
+    }
+
+    public ObservableField<Float> getCmCalibrationValue() {
+        return cmCalibrationValue;
+    }
+
+    public ObservableField<Float> getCmBodyTemperatureValue() {
+        return cmBodyTemperatureValue;
+    }
 }

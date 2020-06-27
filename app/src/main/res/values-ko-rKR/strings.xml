@@ -675,8 +675,17 @@
     <string name="sp_temp_normal_tips">정상적인 체온</string>
     <string name="sp_temp_error_tips">비정상적인 체온</string>
 
-    <string name="click_to_exit_tip">다시 누르면 프로그램이 종료됩니다</string>
+    <string name="click_to_exit_tip">버튼을 다시 누르면 프로그램이 종료 됩니다</string>
 
     <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 온도 측정을 위해 손바닥이나 이마를 온도 측정 지점에 가까이 가져 가십시오。</string>
 
+    <string name="calibration_mode_title">교정 모드</string>
+    <string name="cm_temperature_measurement">온도 측정</string>
+    <string name="cm_local_measuring">로컬 측정</string>
+    <string name="cm_calibration_value">교정 값</string>
+    <string name="cm_body_temperature">체온</string>
+    <string name="cm_other_measuring">다른 측정기로 측정</string>
+    <string name="cm_confirm">확인</string>
+    <string name="cm_cancel">취소</string>
+    <string name="cm_save_tip">저장 성공</string>
 </resources>

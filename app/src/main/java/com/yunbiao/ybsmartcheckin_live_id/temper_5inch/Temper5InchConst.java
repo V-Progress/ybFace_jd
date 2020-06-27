@@ -32,4 +32,6 @@ public class Temper5InchConst {
             36.7f,
             36.8f,
     };
+
+    public static float defaultBodyValue = 36.5f;
 }

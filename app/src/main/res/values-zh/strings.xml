@@ -688,4 +688,13 @@
 
     <string name="examples_subtitle_content">Please take the palm or forehead close to the temperature measurement point for temperature measurement。 请用手掌或额头靠近测温点进行测温。</string>
 
+    <string name="calibration_mode_title">校准模式</string>
+    <string name="cm_temperature_measurement">测温值</string>
+    <string name="cm_local_measuring">本机测量</string>
+    <string name="cm_calibration_value">校准值</string>
+    <string name="cm_body_temperature">真实体温</string>
+    <string name="cm_other_measuring">第三方工具测量</string>
+    <string name="cm_confirm">确定</string>
+    <string name="cm_cancel">取消</string>
+    <string name="cm_save_tip">保存成功</string>
 </resources>
