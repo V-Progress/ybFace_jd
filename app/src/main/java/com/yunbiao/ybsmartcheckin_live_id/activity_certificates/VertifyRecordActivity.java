@@ -1,29 +1,26 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_certificates;
 
 import android.app.DatePickerDialog;
-import android.os.Environment;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSignActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.FileSelectActivity;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
-import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-
-import org.xutils.common.util.FileUtil;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -32,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 
@@ -135,92 +131,43 @@ public class VertifyRecordActivity extends BaseActivity {
     private boolean isExporting = false;
 
     public void exportData(View view) {
-        //获取U盘地址
-        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        File file = new File(usbDiskPath);
-        if (!file.exists()) {
-            isExporting = false;
-            UIUtils.showTitleTip(this, "未检测到USB存储设备，将导出到本地");
-            usbDiskPath = Environment.getExternalStorageDirectory().getPath();
-            file = new File(usbDiskPath);
+        FileSelectActivity.selectFile(this,FileSelectActivity.FILE_TYPE_DIR,true,FileSelectActivity.SELECT_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
+            Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
+            export(new File(stringExtra));
         }
-        //创建记录最外层目录
-        final File dirFile = new File(file, format.format(new Date()) + "_导出记录");
-        if (!dirFile.exists()) {
-            boolean mkdirs = dirFile.mkdirs();
-            Log.e(TAG, "exportToUD: 创建外层目录：" + dirFile.getPath() + " --- " + mkdirs);
-        }
-        //创建图片目录
-        final File imgDir = new File(dirFile, "image");
-        if (!imgDir.exists()) {
-            boolean mkdirs = imgDir.mkdirs();
-            Log.e(TAG, "exportToUD: 创建图片目录：" + imgDir.getPath() + " --- " + mkdirs);
-        }
-        //创建xls文件
-        final File excelFile = new File(dirFile, format.format(new Date()) + "_导出记录" + ".xls");
-        //获取源数据
-        List<VertifyRecord> datas = DaoManager.get().queryAll(VertifyRecord.class);
-        Log.e(TAG, "export: 源数据：" + (datas == null ? 0 : datas.size()));
-        if (datas == null || datas.size() <= 0) {
-            UIUtils.showShort(this, "没有数据");
-            return;
-        }
-        //生成导出数据
-        final List<List<String>> tableData = createTableData(datas);
-        Log.e(TAG, "export: 导出数据：" + tableData.size());
-        if (tableData == null || tableData.size() <= 0) {
-            UIUtils.showShort(this, "生成导出数据失败，请重试");
-            return;
-        }
-        UIUtils.showNetLoading(this);
-        view.setEnabled(false);
-        //开始导出
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
+    }
+
+    private void export(File file){
+        final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.Export.ExportCallback() {
             @Override
-            public void run() {
-                Log.e(TAG, "run: 拷贝图片");
-                for (VertifyRecord data : datas) {
-                    String idCardHeadPath = data.getIdCardHeadPath();
-                    String personHeadPath = data.getPersonHeadPath();
-                    String hotImagePath = data.getHotImagePath();
+            public void onStart() {
+                UIUtils.showNetLoading(VertifyRecordActivity.this);
+            }
 
-                    if (!TextUtils.isEmpty(idCardHeadPath)) {
-                        File idCardFile = new File(idCardHeadPath);
-                        if (idCardFile.exists()) {
-                            boolean copy = FileUtil.copy(idCardFile.getPath(), imgDir.getPath() + File.separator + idCardFile.getName());
-                            Log.e(TAG, "run: 证件照，拷贝结果：" + copy);
-                        }
-                    }
+            @Override
+            public List<List<String>> getDataList() {
+                //获取源数据
+                List<VertifyRecord> datas = DaoManager.get().queryAll(VertifyRecord.class);
+                Log.e(TAG, "export: 源数据：" + (datas == null ? 0 : datas.size()));
+                return createTableData(datas);
+            }
 
-                    if (!TextUtils.isEmpty(personHeadPath)) {
-                        File headFile = new File(personHeadPath);
-                        if (headFile.exists()) {
-                            boolean copy = FileUtil.copy(headFile.getPath(), imgDir.getPath() + File.separator + headFile.getName());
-                            Log.e(TAG, "run: 头像，拷贝结果：" + copy);
-                        }
-                    }
-
-                    if (!TextUtils.isEmpty(hotImagePath)) {
-                        File hotImageFile = new File(hotImagePath);
-                        if (hotImageFile.exists()) {
-                            boolean copy = FileUtil.copy(hotImageFile.getPath(), imgDir.getPath() + File.separator + hotImageFile.getName());
-                            Log.e(TAG, "run: 热图，拷贝结果：" + copy);
-                        }
-                    }
-                }
-
-                ExcelUtils.initExcel(excelFile.getPath(),getResString(R.string.sign_list_table_name), title);
-                final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
-                Log.e(TAG, "run: excel，导出结果：" + result);
-                runOnUiThread(() -> {
-                    view.setEnabled(true);
-                    UIUtils.dismissNetLoading();
-                    UIUtils.showShort(VertifyRecordActivity.this, result
-                            ? (getResources().getString(R.string.sign_export_record_success) +
-                            "\n" +
-                            getResources().getString(R.string.sign_export_record_path) + dirFile.getPath())
-                            : getResources().getString(R.string.sign_export_record_failed));
-                });
+            @Override
+            public void onFinish(int result, String filePath) {
+                UIUtils.dismissNetLoading();
+                UIUtils.showShort(VertifyRecordActivity.this, result == 1
+                        ? (getResources().getString(R.string.sign_export_record_success) +
+                        "\n" +
+                        getResources().getString(R.string.sign_export_record_path) + filePath)
+                        : getResources().getString(R.string.sign_export_record_failed));
             }
         });
     }
@@ -242,9 +189,9 @@ public class VertifyRecordActivity extends BaseActivity {
                 beanList.add(vertifyRecord.getIdNum());
                 beanList.add(vertifyRecord.getAddress());
                 beanList.add(vertifyRecord.getTermDate());
-                beanList.add(new File(vertifyRecord.getIdCardHeadPath()).getName());
-                beanList.add(new File(vertifyRecord.getPersonHeadPath()).getName());
-                beanList.add(new File(vertifyRecord.getHotImagePath()).getName());
+                beanList.add(vertifyRecord.getIdCardHeadPath());
+                beanList.add(vertifyRecord.getPersonHeadPath());
+                beanList.add(vertifyRecord.getHotImagePath());
                 tableDatas.add(beanList);
             }
         }

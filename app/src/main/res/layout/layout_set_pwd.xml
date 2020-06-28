@@ -6,13 +6,27 @@
     android:background="@drawable/shape_employ_button"
     android:orientation="vertical">
 
-    <TextView
-        android:textColor="@color/white"
-        android:layout_margin="20dp"
-        android:textSize="26dp"
-        android:text="@string/setting_system_password"
+    <RelativeLayout
+        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="26dp"
+            android:text="@string/setting_system_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Switch
+            android:layout_centerVertical="true"
+            android:switchPadding="10dp"
+            android:textSize="26dp"
+            android:textColor="@color/white"
+            android:id="@+id/sw_enabled_password"
+            android:text="@string/setting_open"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
 
     <EditText
         android:background="@drawable/line_net_edt"

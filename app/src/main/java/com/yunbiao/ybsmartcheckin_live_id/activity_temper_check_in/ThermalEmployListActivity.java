@@ -80,6 +80,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     private List<Depart> departList;
     private ThermalDepartAdapter departAdapter;
     private EmployAdapter userAdapter;
+    private Button btnImport;
 
     @Override
     protected int getPortraitLayout() {
@@ -104,10 +105,12 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         tv_deviceNo = findViewById(R.id.tv_deviceNo);
         avlLoading = findViewById(R.id.avl_loading);
         edtQuery = findViewById(R.id.edt_query);
+        btnImport = findViewById(R.id.btn_import);
 
         btn_addEmploy.setOnClickListener(this);
         btn_addDepart.setOnClickListener(this);
         btn_sync.setOnClickListener(this);
+        btnImport.setOnClickListener(this);
     }
 
     @Override
@@ -229,9 +232,9 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         initDevice();
         loadData();
         Company company = SpUtils.getCompany();
-        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
-            btn_addDepart.setVisibility(View.GONE);
-        }
+//        if(company.getComid() != Constants.NOT_BIND_COMPANY_ID){
+//            btn_addDepart.setVisibility(View.GONE);
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -368,6 +371,9 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
                 break;
             case R.id.iv_back:
                 finish();
+                break;
+            case R.id.btn_import:
+                startActivity(new Intent(this,BatchImportActivity.class));
                 break;
         }
     }

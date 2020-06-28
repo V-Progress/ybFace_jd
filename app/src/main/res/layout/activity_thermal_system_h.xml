@@ -145,6 +145,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_expiry"
                 style="@style/system_item_ll_h"
                 android:layout_width="match_parent">
 

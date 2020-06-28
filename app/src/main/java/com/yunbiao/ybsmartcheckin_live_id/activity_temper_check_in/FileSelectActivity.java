@@ -2,13 +2,12 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -19,17 +18,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +44,25 @@ public class FileSelectActivity extends FragmentActivity {
     private List<File> fileList = new ArrayList<>();
     private TextView tvPathTree;
 
-    public static final int SELECT_DIRECTORY = 421;
-    public static final String SELECT_FILE_PATH = "selectFilePath";
+    public static final int SELECT_REQUEST_CODE = 421;//请求的requestCode
+    public static final String RESULT_PATH_KEY = "selectFilePath";//结果地址的Key
+
+    //要选择的文件里类型
+    public static final String SELECT_FILE_TYPE = "selectFileType";
+    public static final int FILE_TYPE_DIR = 0;
+    public static final int FILE_TYPE_IMG = 1;
+    public static final int FILE_TYPE_XLS = 2;
+    public static final String SHOW_USB_DISK = "showUsbDisk";
+
+    private static int mCurrSelectType = FILE_TYPE_DIR;//默认选文件夹
+    private boolean isShowUSBDisk = true;//默认U盘可见
+
+    public static void selectFile(Activity activity,int fileType,boolean showUsbDisk, int requestCode){
+        Intent intent = new Intent(activity, FileSelectActivity.class);
+        intent.putExtra(SELECT_FILE_TYPE,fileType);
+        intent.putExtra(SHOW_USB_DISK,showUsbDisk);
+        activity.startActivityForResult(intent,requestCode);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +75,15 @@ public class FileSelectActivity extends FragmentActivity {
         rlvFileList = findViewById(R.id.rlv_file_list);
         rlvFileList.addItemDecoration(new SimpleItemDecoration(10));
         rlvFileList.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        fileAdapter = new FileAdapter(fileList,onItemClickListener);
+        fileAdapter = new FileAdapter(this,fileList,onItemClickListener);
         rlvFileList.setAdapter(fileAdapter);
 
         //初始化根路径
         localRootPath = Environment.getExternalStorageDirectory();
         usbRootPath = new File(SdCardUtils.getUsbDiskPath(this));
+
+        mCurrSelectType = getIntent().getIntExtra(SELECT_FILE_TYPE,FILE_TYPE_DIR);
+        isShowUSBDisk = getIntent().getBooleanExtra(SHOW_USB_DISK,true);
 
         //本地路径是否存在
         if(!localRootPath.exists()){
@@ -74,7 +91,7 @@ public class FileSelectActivity extends FragmentActivity {
         }
 
         //usb路径是否存在
-        if(!usbRootPath.exists()){
+        if(!usbRootPath.exists() || !isShowUSBDisk){
             btnUsbDisk.setVisibility(View.GONE);
             btnLocalPath.performClick();
         } else {
@@ -89,8 +106,12 @@ public class FileSelectActivity extends FragmentActivity {
     private FileAdapter.OnItemClickListener onItemClickListener = new FileAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
+            //如果选择的不是文件夹，则不允许进入下级目录
             File file = fileList.get(position);
-            Log.e(TAG, "点击目录" + file.getName());
+            if(!file.isDirectory()){
+                return;
+            }
+            //点击..或目录后返回上级或者进入下级
             if(TextUtils.equals("..",file.getPath())){
                 goBack(file);
             } else {
@@ -101,13 +122,14 @@ public class FileSelectActivity extends FragmentActivity {
 
         @Override
         public void onItemChecked(int position) {
+            //选择文件
             File file = fileList.get(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(FileSelectActivity.this)
                     .setTitle(getString(R.string.base_tip))
                     .setMessage(getString(R.string.confirm_directore_tips) + "\n\n" + file.getPath())
                     .setCancelable(false).setPositiveButton(getString(R.string.base_ensure), (dialog, which) -> {
                         Intent intent = new Intent();
-                        intent.putExtra(SELECT_FILE_PATH,file.getPath());
+                        intent.putExtra(RESULT_PATH_KEY,file.getPath());
                         setResult(RESULT_OK,intent);
                         finish();
                     }).setNegativeButton(getString(R.string.base_cancel), (dialog, which) -> {
@@ -118,10 +140,12 @@ public class FileSelectActivity extends FragmentActivity {
         }
     };
 
+    //判断文件夹是否可用
     private boolean isDirCanUsed(File file){
         return file.exists() && file.canRead() && file.canWrite();
     }
 
+    //跳转本地目录
     public void jumpLocalPath(View view) {
         if(!fileStack.empty()){
             fileStack.clear();
@@ -129,6 +153,7 @@ public class FileSelectActivity extends FragmentActivity {
         goForward(localRootPath);
     }
 
+    //跳转Usb目录
     public void jumpUsbPath(View view) {
         if(!fileStack.empty()){
             fileStack.clear();
@@ -168,11 +193,23 @@ public class FileSelectActivity extends FragmentActivity {
         setList(path);
     }
 
+    //设置显示目录
     private void setList(File path){
         if(fileList.size() > 0){
             fileList.clear();
         }
-        File[] files = path.listFiles(pathname -> pathname.isDirectory());
+        File[] files = path.listFiles(file -> {
+            String name = file.getName();
+            boolean b;
+            if(mCurrSelectType == FILE_TYPE_IMG){
+                b = file.isDirectory() || name.endsWith(".jpg") || name.endsWith(".png") || file.getName().endsWith(".jpeg");
+            } else if(mCurrSelectType == FILE_TYPE_XLS){
+                b = file.isDirectory() || name.endsWith(".xls") || name.endsWith(".xlsx");
+            } else {
+                b = file.isDirectory();
+            }
+            return b;
+        });
         if(files != null){
             fileList.addAll(Arrays.asList(files));
         }
@@ -209,10 +246,12 @@ public class FileSelectActivity extends FragmentActivity {
     static class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private List<File> fileArray;
         private OnItemClickListener onItemClickListener;
+        private Context mContext;
 
-        public FileAdapter(List<File> fileArray,OnItemClickListener clickListener) {
+        public FileAdapter(Context context,List<File> fileArray,OnItemClickListener clickListener) {
             this.fileArray = fileArray;
             onItemClickListener = clickListener;
+            mContext = context;
         }
 
         @NonNull
@@ -245,11 +284,22 @@ public class FileSelectActivity extends FragmentActivity {
             }
 
             public void bindData(File file,int position){
-                int iconId = file.isDirectory() ? R.mipmap.dir_icon : R.mipmap.file_icon;
-                ivIcon.setImageResource(iconId);
+                //加载图标
+                if(file.isDirectory()){
+                    ivIcon.setImageResource(R.mipmap.dir_icon);
+                } else if(file.getName().endsWith(".jpg") || file.getName().endsWith(".png") || file.getName().endsWith(".jpeg")) {
+                    Glide.with(mContext).load(file).asBitmap().into(ivIcon);
+                } else {
+                    ivIcon.setImageResource(R.mipmap.file_icon);
+                }
                 tvName.setText(file.getName());
 
-                if (TextUtils.equals("..",file.getPath())) {
+                //判断选择按钮是否可见（如果是..或者指定类型时，其余文件不可选择）
+                if (TextUtils.equals("..",file.getPath())
+                        || (mCurrSelectType == FILE_TYPE_DIR && !file.isDirectory())//如果指定文件夹
+                        || (mCurrSelectType == FILE_TYPE_IMG && !file.getName().endsWith(".jpg") && !file.getName().endsWith(".png") && !file.getName().endsWith(".jpeg"))//如果指定了图片
+                        || (mCurrSelectType == FILE_TYPE_XLS && !file.getName().endsWith(".xls") && !file.getName().endsWith(".xlsx")))//如果指定了Excel文件
+                {
                     btnConfirm.setVisibility(View.GONE);
                 } else {
                     btnConfirm.setVisibility(View.VISIBLE);

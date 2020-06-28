@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="批量导入"
+                android:text="@string/import_title"
                 android:textColor="@color/white"
                 android:textSize="30dp" />
 
@@ -70,7 +70,7 @@
                 android:onClick="@{actionPresenter::chooseFile}"
                 android:layout_marginLeft="20dp"
                 android:textSize="22dp"
-                android:text="选择文件"
+                android:text="@string/import_select_file"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:paddingLeft="50dp"
@@ -92,17 +92,18 @@
                     android:enabled="@{batchContent.checkedAvailable}"
                     android:onCheckedChanged="@{actionPresenter::onReverseChecked}"
                     android:button="@drawable/selector_cb"
-                    android:text="反选"
+                    android:text="@string/import_select_reverse"
                     android:textSize="26dp"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <CheckBox
                     android:enabled="@{batchContent.checkedAvailable}"
+                    android:checked="@{batchContent.selectAll}"
                     android:onCheckedChanged="@{actionPresenter::onAllChecked}"
                     android:layout_marginLeft="20dp"
                     android:button="@drawable/selector_cb"
-                    android:text="全选"
+                    android:text="@string/import_select_all"
                     android:textSize="26dp"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
@@ -117,7 +118,6 @@
                 android:layout_height="0dp"/>
 
             <Button
-                android:enabled="@{batchContent.checkedAvailable}"
                 android:textColor="@color/white"
                 android:background="@drawable/selector_btn_take_photo"
                 android:layout_height="wrap_content"
@@ -126,9 +126,9 @@
                 android:layout_marginLeft="0dp"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
-                android:onClick="@{actionPresenter::chooseFile}"
+                android:onClick="@{actionPresenter::importUsers}"
                 android:textSize="24dp"
-                android:text="开始导入"/>
+                android:text="@string/import_start"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

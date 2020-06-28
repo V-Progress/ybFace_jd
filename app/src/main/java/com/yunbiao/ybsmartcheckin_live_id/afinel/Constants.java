@@ -3,9 +3,9 @@ package com.yunbiao.ybsmartcheckin_live_id.afinel;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
 import timber.log.Timber;
@@ -16,11 +16,11 @@ public class Constants {
     private static String PRE = "http://";
     private static String COLON = ":";
     //地址
-    public static String XMPP_HOST = NetConfig.PRO_URL;
-    public static String XMPP_PORT = NetConfig.PRO_XMPP_PORT;
-    public static String RESOURCE_HOST = NetConfig.PRO_URL;
-    public static String RESOURCE_PORT = NetConfig.PRO_RES_PORT;
-    public static String RESOURCE_SUFFIX = NetConfig.PRO_SUFFIX;
+    public static String XMPP_HOST = NetConfig.COMMUNICATION_HOST;
+    public static String XMPP_PORT = NetConfig.COMMUNICATION_PORT;
+    public static String RESOURCE_HOST = NetConfig.SERVICE_HOST;
+    public static String RESOURCE_PORT = NetConfig.SERVICE_PORT;
+    public static String RESOURCE_SUFFIX = NetConfig.SERVICE_NAME;
     public static String RESOURCE_URL = PRE + RESOURCE_HOST + COLON + RESOURCE_PORT + RESOURCE_SUFFIX;
 
     //资源路径
@@ -47,18 +47,21 @@ public class Constants {
         Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
         Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
-
-
     }
 
     private static final String TAG = "Constants";
     public static void checkSetIp() {
         if (SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL) == serverModel.JU) {
-            Constants.XMPP_HOST = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
-            Constants.XMPP_PORT = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
-            Constants.RESOURCE_HOST = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            String serviceIp = SpUtils.getStr(Key.JU_SERVICE_IP_CACHE);
+            String xmppIp = SpUtils.getStr(Key.JU_XMPP_IP_CACHE);
+
+            Constants.RESOURCE_HOST = TextUtils.isEmpty(serviceIp) ? xmppIp : serviceIp;
             Constants.RESOURCE_PORT = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
             String projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
+
+            Constants.XMPP_HOST = xmppIp;
+            Constants.XMPP_PORT = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+
             Constants.RESOURCE_URL = PRE + Constants.RESOURCE_HOST + COLON + Constants.RESOURCE_PORT + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
             ResourceUpdate.refreshAddress();
         }
@@ -66,10 +69,10 @@ public class Constants {
     }
 
     public static void logNetConfig(String TAG){
-        Timber.e("IP地址：%s", Constants.XMPP_HOST);
-        Timber.e("通信端口：%s", Constants.XMPP_PORT);
         Timber.e("服务地址：%s", Constants.RESOURCE_HOST);
         Timber.e("服务端口：%s", Constants.RESOURCE_PORT);
+        Timber.e("通信地址：%s", Constants.XMPP_HOST);
+        Timber.e("通信端口：%s", Constants.XMPP_PORT);
         Timber.e("服务地址：%s", Constants.RESOURCE_URL);
     }
 
@@ -81,6 +84,8 @@ public class Constants {
     public static final int MAX_DETECT_NUM = BuildConfig.MAX_DETECT_FACE_NUM;
     //最远人脸抓取距离
     public static final int DETECT_FACE_SCALE_VAL = BuildConfig.DETECT_FACE_SCALE_VAL;
+    //默认屏保
+    public static int DEFAULT_SCREE_BG = R.mipmap.splash;
     //设备未绑定时的公司Id
     public static final int NOT_BIND_COMPANY_ID = 0;
     //双光头横向大小偏移量
@@ -94,6 +99,12 @@ public class Constants {
         String PRO_RES_PORT = "8080";//数据端口
         String PRO_XMPP_PORT = "5222";//XMPP端口
         String PRO_SUFFIX = "/";//项目名（端口为80，项目名不用写）
+
+        String SERVICE_HOST = "47.105.80.245";
+        String SERVICE_PORT = "8080";
+        String SERVICE_NAME = "/";
+        String COMMUNICATION_HOST = "47.105.80.245";
+        String COMMUNICATION_PORT = "5222";
     }
 
     /***
@@ -154,12 +165,17 @@ public class Constants {
         String CAMERA_SIZE = "cameraSize";
 
         String SERVER_MODEL = "serverModel";//服务模式
-        String JU_IP_CACHE = "juIpCache";//IP
+        String JU_XMPP_IP_CACHE = "juIpCache";//通信地址
+        String JU_SERVICE_IP_CACHE = "juServiceIpCache";//服务地址
         String JU_RESOURCE_PORT_CACHE = "juResourcePortCache";//端口
         String JU_XMPP_PORT_CACHE = "juXmppPortCache";//XMPP端口
         String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
 
         String JUMP_TAG = "jumpTag";//跳转标签
+
+        String MAIN_SIGN_LIST = "mainSignList";
+
+        String PASSWORD_ENABLED = "passwordEnabled";
     }
 
     public static class Default{
@@ -169,7 +185,7 @@ public class Constants {
         public static final int SIMILAR_THRESHOLD = 80;
         public static boolean QRCODE_ENABLED = true;
         public static final boolean READ_CARD_ENABLED = false;
-        public static final boolean POSTER_ENABLED = false;
+        public static boolean POSTER_ENABLED = false;
         public static final boolean LIVENESS_ENABLED = false;
         public static final boolean FACE_DIALOG = false;
         public static boolean IS_H_MIRROR = true;
@@ -183,5 +199,9 @@ public class Constants {
         public static int SERVER_MODEL = serverModel.YUN;
 
         public static final boolean JUMP_TAG = false;
+
+        public static boolean MAIN_SIGN_LIST = true;
+
+        public static boolean PASSWORD_ENABLED = true;
     }
 }

@@ -33,6 +33,7 @@ public class ThermalSignAdapter extends BaseAdapter {
     private boolean isFahrenheit = false;
     private float mTemperMin = 35.5f;
     private float mWarningMin = 37.2f;
+    private OnItemDeleteListener onItemDeleteListener;
 
     public ThermalSignAdapter(Context context, List<Sign> mlist) {
         this.context = context;
@@ -52,10 +53,11 @@ public class ThermalSignAdapter extends BaseAdapter {
         isFahrenheit = fahrenheit;
     }
 
-    public ThermalSignAdapter(Context context, List<Sign> mlist, boolean isPrivacy){
+    public ThermalSignAdapter(Context context, List<Sign> mlist, boolean isPrivacy, OnItemDeleteListener deleteListener) {
         this.context = context;
         this.mlist = mlist;
         this.isPrivacy = isPrivacy;
+        onItemDeleteListener = deleteListener;
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ThermalSignAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.bindData(position,mlist.get(position),convertView);
+        viewHolder.bindData(position, mlist.get(position), convertView);
         return convertView;
     }
 
@@ -99,7 +101,7 @@ public class ThermalSignAdapter extends BaseAdapter {
         TextView tv_employJob;
         TextView tv_edit;
         ImageView iv_photo;
-
+        TextView tvDelete;
 
         public ViewHolder(View convertView) {
             tv_No = (TextView) convertView.findViewById(R.id.tv_No);
@@ -109,9 +111,10 @@ public class ThermalSignAdapter extends BaseAdapter {
             tv_employJob = (TextView) convertView.findViewById(R.id.tv_employJob);
             tv_edit = (TextView) convertView.findViewById(R.id.tv_edit);
             iv_photo = (ImageView) convertView.findViewById(R.id.iv_photo);
+            tvDelete = convertView.findViewById(R.id.tv_delete);
         }
 
-        public void bindData(int position,Sign vip,View convertView){
+        public void bindData(int position, Sign vip, View convertView) {
             tv_No.setText(position + 1 + "");
             if (!TextUtils.isEmpty(vip.getEmployNum())) {
                 tv_date.setText(vip.getTime() + "");
@@ -133,16 +136,16 @@ public class ThermalSignAdapter extends BaseAdapter {
 
             float temperature = vip.getTemperature();
             String temper;
-            if(isFahrenheit){
+            if (isFahrenheit) {
                 temper = formatF((float) (temperature * 1.8 + 32)) + "℉";
             } else {
                 temper = vip.getTemperature() + "℃";
             }
             tv_employJob.setText(temper);
 
-            if(temperature < mTemperMin){
+            if (temperature < mTemperMin) {
                 tv_employJob.setTextColor(Color.WHITE);
-            } else if(temperature < mWarningMin){
+            } else if (temperature < mWarningMin) {
                 tv_employJob.setTextColor(Color.GREEN);
             } else {
                 tv_employJob.setTextColor(Color.RED);
@@ -156,14 +159,22 @@ public class ThermalSignAdapter extends BaseAdapter {
                 convertView.setBackgroundColor(Color.parseColor("#0007216d"));
             }
             if (!TextUtils.isEmpty(vip.getHeadPath())) {
-                if(isPrivacy){
-                    Glide.with(context).load(vip.getHeadPath()).transform(new BlurTransformation(context,20)).into(iv_photo);
+                if (isPrivacy) {
+                    Glide.with(context).load(vip.getHeadPath()).transform(new BlurTransformation(context, 20)).into(iv_photo);
                 } else {
                     Glide.with(context).load(vip.getHeadPath()).asBitmap().into(iv_photo);
                 }
             } else {
                 iv_photo.setImageBitmap(null);
             }
+
+            tvDelete.setOnClickListener(view -> {
+                if (onItemDeleteListener != null) onItemDeleteListener.onItemDelete(position,vip);
+            });
         }
+    }
+
+    public interface OnItemDeleteListener {
+        void onItemDelete(int position,Sign sign);
     }
 }

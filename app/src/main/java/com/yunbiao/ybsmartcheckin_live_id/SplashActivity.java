@@ -8,6 +8,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
@@ -74,7 +75,7 @@ public class SplashActivity extends BaseActivity {
 
         GifImageView gifImageView = findViewById(R.id.giv);
         try {
-            GifDrawable gifDrawable = new GifDrawable(getResources(),R.mipmap.splash);
+            GifDrawable gifDrawable = new GifDrawable(getResources(), R.mipmap.splash);
             gifImageView.setImageDrawable(gifDrawable);
             gifDrawable.setLoopCount(0);
             gifDrawable.setSpeed(3.0f);
@@ -116,7 +117,10 @@ public class SplashActivity extends BaseActivity {
 
             switch (Constants.FLAVOR_TYPE) {
                 case FlavorType.XENON:
-                    setIp("34.247.168.20","5222","8080","");
+                    setIp("api-eu.feverdefence.com","34.247.168.20", "5222", "8080", "");
+                    break;
+                default:
+                    checkServiceIp();
                     break;
             }
 
@@ -125,8 +129,8 @@ public class SplashActivity extends BaseActivity {
             OutputLog.getInstance().initFile(Constants.LOCAL_ROOT_PATH);
             ThreadUitls.runInThread(() -> PowerOffTool.getPowerOffTool().machineStart());
 
-            if(Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
-             || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN){
+            if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN
+                    || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CHECK_IN) {
                 ConfigLoader.load();
             }
 
@@ -194,12 +198,18 @@ public class SplashActivity extends BaseActivity {
                 ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);
                 break;
             case FlavorType.XENON:
+                Constants.DEFAULT_SCREE_BG = R.mipmap.xenon_screen_saver;
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.xenon_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "";
                 ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.xenon_welcome_tip);
                 ThermalConst.Default.SHOW_MAIN_LOGO = true;
+                Constants.Default.POSTER_ENABLED = true;
                 ThermalConst.Default.SHOW_MAIN_INFO = true;
                 Constants.Default.QRCODE_ENABLED = false;
+                break;
+            case FlavorType.TURKEY:
+                ThermalConst.Default.LOW_TEMP = false;
+                ThermalConst.Default.AUTO_TEMPER = false;
                 break;
             default:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
@@ -233,13 +243,13 @@ public class SplashActivity extends BaseActivity {
         }
 
         int lastModel = SpUtils.getIntOrDef("thermalModelSetting", -1);
-        if(lastModel != -1){
+        if (lastModel != -1) {
             Log.e(TAG, "jump: 检测到旧模式：" + lastModel);
             NewModuleType newModuleType = oldModelToModuleType(lastModel);
             Log.e(TAG, "jump: 转换为新模式：" + newModuleType.toString());
-            SpUtils.saveInt(ThermalConst.Key.TEMPER_MODULE,newModuleType.module);
-            SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED,newModuleType.faceEnabled);
-            SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED,newModuleType.temperEnabled);
+            SpUtils.saveInt(ThermalConst.Key.TEMPER_MODULE, newModuleType.module);
+            SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED, newModuleType.faceEnabled);
+            SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED, newModuleType.temperEnabled);
             SpUtils.remove("thermalModelSetting");
         }
 
@@ -287,22 +297,43 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void setIp(String ip,String xPort,String rPort,String pName){
-            int intOrDef = SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, -99);
-            if(intOrDef == -99) SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-            String xmppIp = SpUtils.getStr(Constants.Key.JU_IP_CACHE,"");
-            if(TextUtils.isEmpty(xmppIp)) SpUtils.saveStr(Constants.Key.JU_IP_CACHE,ip);
-            String xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE,"");
-            if(TextUtils.isEmpty(xmppPort)) SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE,xPort);
-            String resIp = SpUtils.getStr(Constants.Key.JU_IP_CACHE,"");
-            if(TextUtils.isEmpty(resIp)) SpUtils.saveStr(Constants.Key.JU_IP_CACHE,ip);
-            String resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE,"");
-            if(TextUtils.isEmpty(resPort)) SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE,rPort);
-            String projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX,"");
-            if(TextUtils.isEmpty(projectName)) SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX,pName);
+    private void checkServiceIp(){
+        int intOrDef = SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL);
+        if(intOrDef == Constants.serverModel.JU){
+            String serIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE, "");
+            if(TextUtils.isEmpty(serIp)){
+                String xmppIp = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE, "");
+                SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE, xmppIp);
+            }
+        }
     }
 
-    private NewModuleType oldModelToModuleType(int model){
+    private void setIp(String sIp, String cIp, String xPort, String rPort, String pName) {
+        int intOrDef = SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, -99);
+        if (intOrDef == -99)
+            SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
+
+        String serIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE, "");
+        Log.e(TAG, "setIp: 设置的服务地址：" + serIp);
+        if (TextUtils.isEmpty(serIp))
+            SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE, sIp);
+        String resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE, "");
+        if (TextUtils.isEmpty(resPort))
+            SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, rPort);
+        String projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, "");
+        if (TextUtils.isEmpty(projectName))
+            SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, pName);
+
+        String xmppIp = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE, "");
+        if (TextUtils.isEmpty(xmppIp))
+            SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, cIp);
+        String xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE, "");
+        if (TextUtils.isEmpty(xmppPort))
+            SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, xPort);
+
+    }
+
+    private NewModuleType oldModelToModuleType(int model) {
         NewModuleType newModuleType = new NewModuleType();
         switch (model) {
             case 0:
@@ -362,20 +393,20 @@ public class SplashActivity extends BaseActivity {
                 break;
         }
 
-        if(newModuleType.module == -1){
+        if (newModuleType.module == -1) {
             String broadTypeStr = CommonUtils.getBroadType2();
-            if(TextUtils.equals("SMT",broadTypeStr)){
+            if (TextUtils.equals("SMT", broadTypeStr)) {
                 newModuleType.module = TemperModuleType.HM_16_4;
-            } else if(TextUtils.equals("LXR",broadTypeStr)){
+            } else if (TextUtils.equals("LXR", broadTypeStr)) {
                 newModuleType.module = TemperModuleType.HM_32_32;
-            } else if(TextUtils.equals("HARRIS",broadTypeStr)){
+            } else if (TextUtils.equals("HARRIS", broadTypeStr)) {
                 newModuleType.module = TemperModuleType.MLX_16_4;
             }
         }
         return newModuleType;
     }
 
-    class NewModuleType{
+    class NewModuleType {
         int module;
         boolean faceEnabled;
         boolean temperEnabled;
@@ -449,6 +480,9 @@ public class SplashActivity extends BaseActivity {
                     .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
                     .params(params)
                     .build()
+                    .readTimeOut(5000)
+                    .writeTimeOut(5000)
+                    .connTimeOut(5000)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, java.lang.Exception e, int id) {

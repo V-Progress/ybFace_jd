@@ -208,6 +208,14 @@
                 android:layout_height="30dp"
                 android:background="@mipmap/icon_jia" />
 
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/tv_correction_fahrenheit"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <Button
                 android:visibility="gone"
                 android:layout_marginLeft="50dp"
@@ -263,6 +271,14 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@mipmap/icon_jia" />
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tv_min_threshold_fahrenheit"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
@@ -305,6 +321,14 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@mipmap/icon_jia" />
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tv_max_threshold_fahrenheit"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
 

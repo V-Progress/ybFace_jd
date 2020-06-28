@@ -9,9 +9,6 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.CountDownTimer;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,7 +27,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.yunbiao.ybsmartcheckin_live_id.ButtonClickListener;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.FileSelectActivity;
@@ -39,7 +35,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
-import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -268,8 +263,7 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         rootView.findViewById(R.id.iv_export).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(BaseMultiThermalActivity.this, FileSelectActivity.class), FileSelectActivity.SELECT_DIRECTORY);
-//                exportToUD(v);
+                FileSelectActivity.selectFile(BaseMultiThermalActivity.this,FileSelectActivity.FILE_TYPE_DIR,true,FileSelectActivity.SELECT_REQUEST_CODE);
             }
         });
         rootView.findViewById(R.id.iv_hidden_record_multi_thermal).setOnClickListener(new View.OnClickListener() {
@@ -429,8 +423,8 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == FileSelectActivity.SELECT_DIRECTORY && resultCode == RESULT_OK){
-            String stringExtra = data.getStringExtra(FileSelectActivity.SELECT_FILE_PATH);
+        if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
             Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
             exportToUD(rootView.findViewById(R.id.iv_export), new File(stringExtra));
         }

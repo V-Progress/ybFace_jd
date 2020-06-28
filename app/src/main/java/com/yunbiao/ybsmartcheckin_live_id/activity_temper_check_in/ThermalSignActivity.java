@@ -1,16 +1,15 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.ThermalSignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
@@ -29,7 +27,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetworkUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -37,7 +34,6 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.common.util.FileUtil;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -46,10 +42,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by Administrator on 2018/10/10.
@@ -143,12 +137,49 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         Float minThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, ThermalConst.Default.TEMP_MIN_THRESHOLD);
         Float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
 
-        adapter = new ThermalSignAdapter(ThermalSignActivity.this, mShowList, isPrivacy);
+        adapter = new ThermalSignAdapter(ThermalSignActivity.this, mShowList, isPrivacy,onItemDeleteListener);
         adapter.setFahrenheit(isFEnabled);
         adapter.setmTemperMin(minThreshold);
         adapter.setmWarningMin(warningThreshold);
 
         lv_sign_List.setAdapter(adapter);
+    }
+
+    private ThermalSignAdapter.OnItemDeleteListener onItemDeleteListener = (position,sign) -> {
+        if(mShowList != null && mShowList.size() >= position){
+            showDeleteDialog(position,sign);
+        }
+    };
+
+    private void showDeleteDialog(int position,Sign sign){
+        new AlertDialog.Builder(this)
+                .setTitle(getResString(R.string.alert_title_warning))
+                .setMessage(getResString(R.string.delete_record_msg))
+                .setNegativeButton(getResString(R.string.setting_switch_cancel),(dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton(getResString(R.string.setting_switch_confirm),(dialog, which) -> {
+                    DaoManager.get().deleteSign(sign);
+                    mShowList.remove(position);
+                    adapter.notifyDataSetChanged();
+
+                    //如果是签到类型，则不删除头像。
+                    if(sign.getType() != 0){
+                        String headPath = sign.getHeadPath();
+                        File file = new File(headPath);
+                        if(file.exists()){
+                            file.delete();
+                        }
+                    }
+
+                    String hotImgPath = sign.getHotImgPath();
+                    File hotFile = new File(hotImgPath);
+                    if (hotFile.exists()) {
+                        hotFile.delete();
+                    }
+                })
+                .create()
+                .show();
     }
 
     private String formatDate(String date) {
@@ -174,38 +205,29 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
             }
         });
-        spnDataMode.setSelection(modeArray.length - 1);
+        spnDataMode.setSelection(0);
     }
 
     private void loading() {
-        pb_load_list.post(new Runnable() {
-            @Override
-            public void run() {
-                pb_load_list.setVisibility(View.VISIBLE);
-                tv_load_tips.setVisibility(View.GONE);
-            }
+        pb_load_list.post(() -> {
+            pb_load_list.setVisibility(View.VISIBLE);
+            tv_load_tips.setVisibility(View.GONE);
         });
     }
 
     private void tips(final String tips) {
-        tv_load_tips.post(new Runnable() {
-            @Override
-            public void run() {
-                lv_sign_List.setVisibility(View.GONE);
-                pb_load_list.setVisibility(View.GONE);
-                tv_load_tips.setVisibility(View.VISIBLE);
-                tv_load_tips.setText(tips);
-            }
+        tv_load_tips.post(() -> {
+            lv_sign_List.setVisibility(View.GONE);
+            pb_load_list.setVisibility(View.GONE);
+            tv_load_tips.setVisibility(View.VISIBLE);
+            tv_load_tips.setText(tips);
         });
     }
 
     private void hide() {
-        tv_load_tips.post(new Runnable() {
-            @Override
-            public void run() {
-                pb_load_list.setVisibility(View.GONE);
-                tv_load_tips.setVisibility(View.GONE);
-            }
+        tv_load_tips.post(() -> {
+            pb_load_list.setVisibility(View.GONE);
+            tv_load_tips.setVisibility(View.GONE);
         });
     }
 
@@ -235,15 +257,6 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                     tips(getString(R.string.sign_list_no_data));
                     return;
                 }
-
-                //删除类型为-9的记录
-                /*Iterator<Sign> iterator = mSignList.iterator();
-                while (iterator.hasNext()) {
-                    Sign next = iterator.next();
-                    if (next.getType() == -9) {
-                        iterator.remove();
-                    }
-                }*/
 
                 for (Sign signBean : mSignList) {
                     if (DATA_MODE == MODE_UNSENDED && !signBean.isUpload()) {
@@ -279,15 +292,12 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                     UIUtils.showShort(ThermalSignActivity.this, "The device is not tied to the company and the data will be saved locally only");
                     return;
                 }
-                SignManager.instance().uploadSignRecord(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
-                            EventBus.getDefault().post(new UpdateSignDataEvent());
-                        }
-                        UIUtils.dismissNetLoading();
-                        UIUtils.showShort(ThermalSignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
+                SignManager.instance().uploadSignRecord(aBoolean -> {
+                    if (aBoolean) {
+                        EventBus.getDefault().post(new UpdateSignDataEvent());
                     }
+                    UIUtils.dismissNetLoading();
+                    UIUtils.showShort(ThermalSignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
                 });
                 break;
             case R.id.iv_back:
@@ -324,145 +334,69 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    private boolean isExporting = false;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == FileSelectActivity.SELECT_DIRECTORY && resultCode == RESULT_OK){
-            String stringExtra = data.getStringExtra(FileSelectActivity.SELECT_FILE_PATH);
+        if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
             Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
             export(new File(stringExtra));
         }
     }
 
+    /**
+     * 导出
+     * @param view
+     */
     public void exportToUD(final View view) {
-        startActivityForResult(new Intent(this,FileSelectActivity.class),FileSelectActivity.SELECT_DIRECTORY);
-
-        /*//获取U盘地址
-        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        File file = new File(usbDiskPath);
-        if (!file.exists()) {
-            isExporting = false;
-            UIUtils.showTitleTip(ThermalSignActivity.this, getString(R.string.sign_list_tip_usb_disk));
-            usbDiskPath = Environment.getExternalStorageDirectory().getPath();
-            file = new File(usbDiskPath);
-        }
-        export(file);*/
+        FileSelectActivity.selectFile(this,FileSelectActivity.FILE_TYPE_DIR,true,FileSelectActivity.SELECT_REQUEST_CODE);
     }
 
     private void export(File file){
-        //创建记录最外层目录
-        final File dirFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record));
-        if (!dirFile.exists()) {
-            boolean mkdirs = dirFile.mkdirs();
-            Log.e(TAG, "exportToUD: 创建外层目录：" + dirFile.getPath() + " --- " + mkdirs);
-            if(!mkdirs){
-                UIUtils.showShort(ThermalSignActivity.this, getResources().getString(R.string.sign_export_record_failed));
-                return;
-            }
-        }
-        //创建图片目录
-        final File imgDir = new File(dirFile, "image");
-        if (!imgDir.exists()) {
-            boolean mkdirs = imgDir.mkdirs();
-            Log.e(TAG, "exportToUD: 创建图片目录：" + imgDir.getPath() + " --- " + mkdirs);
-            if(!mkdirs){
-                UIUtils.showShort(ThermalSignActivity.this, getResources().getString(R.string.sign_export_record_failed));
-                return;
-            }
-        }
-        //创建xls文件
-        final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
-        //获取源数据
-        final List<Sign> signs = DaoManager.get().querySignByComId(SpUtils.getCompany().getComid());
-        Log.e(TAG, "export: 源数据：" + (signs == null ? 0 : signs.size()));
-        if (signs == null || signs.size() <= 0) {
-            UIUtils.showShort(this, getResources().getString(R.string.sign_export_no_record));
-            return;
-        }
-        //生成导出数据
-        final List<List<String>> tableData = createTableData(signs);
-        Log.e(TAG, "export: 导出数据：" + tableData.size());
-        if (tableData == null || tableData.size() <= 0) {
-            UIUtils.showShort(this, getResources().getString(R.string.sign_export_create_record_failed));
-            return;
-        }
-        UIUtils.showNetLoading(this);
-//        view.setEnabled(false);
-        //开始导出
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
+        final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.Export.ExportCallback() {
             @Override
-            public void run() {
-                Log.e(TAG, "run: 拷贝图片");
-                for (Sign sign : signs) {
-                    String headPath = sign.getHeadPath();
-                    String hotImgPath = sign.getHotImgPath();
+            public void onStart() {
+                UIUtils.showNetLoading(ThermalSignActivity.this);
+            }
 
-                    if (!TextUtils.isEmpty(headPath)) {
-                        File headFile = new File(headPath);
-                        if (headFile.exists()) {
-                            boolean copy = FileUtil.copy(headFile.getPath(), imgDir.getPath() + File.separator + headFile.getName());
-                            Log.e(TAG, "run: 头像，拷贝结果：" + copy);
-                        }
-                    }
+            @Override
+            public List<List<String>> getDataList() {
+                return createObjTableData();
+            }
 
-                    if (!TextUtils.isEmpty(hotImgPath)) {
-                        File hotImageFile = new File(hotImgPath);
-                        if (hotImageFile.exists()) {
-                            boolean copy = FileUtil.copy(hotImageFile.getPath(), imgDir.getPath() + File.separator + hotImageFile.getName());
-                            Log.e(TAG, "run: 热图，拷贝结果：" + copy);
-                        }
-                    }
-                }
-
-                ExcelUtils.initExcel(excelFile.getPath(),getResString(R.string.sign_list_table_name) , title);
-                final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
-                Log.e(TAG, "run: excel，导出结果：" + result);
-                runOnUiThread(() -> {
-//                        view.setEnabled(true);
-                    UIUtils.dismissNetLoading();
-                    UIUtils.showShort(ThermalSignActivity.this, result
-                            ? (getResources().getString(R.string.sign_export_record_success) +
-                            "\n" +
-                            getResources().getString(R.string.sign_export_record_path) + dirFile.getPath())
-                            : getResources().getString(R.string.sign_export_record_failed));
-                });
+            @Override
+            public void onFinish(int result, String filePath) {
+                UIUtils.dismissNetLoading();
+                UIUtils.showShort(ThermalSignActivity.this, result == 1
+                        ? (getResources().getString(R.string.sign_export_record_success) +
+                        "\n" +
+                        getResources().getString(R.string.sign_export_record_path) + filePath)
+                        : getResources().getString(R.string.sign_export_record_failed));
             }
         });
     }
 
-    public List<List<String>> createTableData(List<Sign> signs) {
-        List<List<String>> tableDatas = new ArrayList<>();
-        if (signs != null) {
+    //创建表格数据
+    public List<List<String>> createObjTableData(){
+        List<List<String>> stringListList = new ArrayList<>();
+        final List<Sign> signs = DaoManager.get().querySignByComId(SpUtils.getCompany().getComid());
+        if(signs != null && signs.size() > 0){
             for (int i = 0; i < signs.size(); i++) {
                 Sign sign = signs.get(i);
-                List<String> beanList = new ArrayList<>();
-
-                beanList.add(TextUtils.isEmpty(sign.getName()) ? getResString(R.string.fment_sign_visitor_name) : sign.getName());
-                beanList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
-                beanList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
-                beanList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
-                beanList.add(dateFormat1.format(sign.getTime()) + "");
-                beanList.add(dateFormat2.format(sign.getTime()) + "");
-                beanList.add(sign.getTemperature() + "");
-                beanList.add(new File(sign.getHeadPath()).getName() + "");
-                beanList.add(TextUtils.isEmpty(sign.getHotImgPath()) ? "" : new File(sign.getHotImgPath()).getName());
-                tableDatas.add(beanList);
+                List<String> stringList = new ArrayList<>();
+                stringList.add(TextUtils.isEmpty(sign.getName()) ? getResString(R.string.fment_sign_visitor_name) : sign.getName());
+                stringList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
+                stringList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
+                stringList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
+                stringList.add(dateFormat1.format(sign.getTime()) + "");
+                stringList.add(dateFormat2.format(sign.getTime()) + "");
+                stringList.add(sign.getTemperature() + "");
+                stringList.add(sign.getHeadPath());
+                stringList.add(sign.getHotImgPath());
+                stringListList.add(stringList);
             }
         }
-        return tableDatas;
-    }
-
-    private String getSDPath() {
-        File sdDir = new File(Environment.getExternalStorageDirectory().getPath());
-        return sdDir.getPath();
-    }
-
-    public void makeDir(File dir) {
-        if (!dir.getParentFile().exists()) {
-            makeDir(dir.getParentFile());
-        }
-        dir.mkdir();
+        return stringListList;
     }
 }

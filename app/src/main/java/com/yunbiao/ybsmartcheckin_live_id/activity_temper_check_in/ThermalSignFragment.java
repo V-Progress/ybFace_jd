@@ -220,6 +220,17 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         } else {
             llInfoSignList.setVisibility(View.GONE);
         }
+
+        if(rlv != null){
+            boolean isMainSignList = SpUtils.getBoolean(Constants.Key.MAIN_SIGN_LIST,Constants.Default.MAIN_SIGN_LIST);
+            if(isMainSignList){
+                if(!rlv.isShown())
+                    rlv.setVisibility(View.VISIBLE);
+            } else {
+                if(rlv.isShown())
+                    rlv.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     @Override

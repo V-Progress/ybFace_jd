@@ -35,8 +35,6 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalConst;
-import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalSettingActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
@@ -57,10 +55,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -393,7 +388,7 @@ public class CertificatesSettingActivity extends BaseActivity {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, mIp);
                     SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
                     SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
@@ -418,7 +413,7 @@ public class CertificatesSettingActivity extends BaseActivity {
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            ip = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
             resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
             xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
             proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);

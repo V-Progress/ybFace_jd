@@ -7,8 +7,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,9 +37,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bumptech.glide.Glide;
-import com.lcw.library.imagepicker.ImagePicker;
-import com.lcw.library.imagepicker.utils.ImageLoader;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -48,8 +44,8 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
+import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -71,7 +67,6 @@ import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -79,6 +74,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Request;
+import timber.log.Timber;
 
 public class ThermalSettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
@@ -122,12 +118,9 @@ public class ThermalSettingActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQEST_SELECT_IMAGES_CODE && resultCode == RESULT_OK) {
-            List<String> imagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
-            if (1 > imagePaths.size()) {
-                return;
-            }
-            String imgPath = imagePaths.get(0);
+        if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
+            String imgPath = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
+            Log.e(TAG, "onActivityResult: 选中的目录：" + imgPath);
             ImageView ivMainLogo = findViewById(R.id.iv_main_logo);
             if (TextUtils.isEmpty(imgPath)) {
                 UIUtils.showShort(this, getResString(R.string.select_img_failed));
@@ -324,6 +317,18 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
             });
 
+            //首页列表================================================================================================
+            boolean showMainSignList = SpUtils.getBoolean(Constants.Key.MAIN_SIGN_LIST,Constants.Default.MAIN_SIGN_LIST);
+            View llMainListParent = view.findViewById(R.id.ll_main_list_parent);
+            if(getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
+                llMainListParent.setVisibility(View.GONE);
+            }
+            Switch swMainList = view.findViewById(R.id.sw_main_list_setting);
+            swMainList.setChecked(showMainSignList);
+            swMainList.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                SpUtils.saveBoolean(Constants.Key.MAIN_SIGN_LIST,isChecked);
+            });
+
             //首页logo文字============================================================================================
             String mainLogoText = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT);
             EditText edtMainLogoText = view.findViewById(R.id.edt_main_logo_text);
@@ -373,15 +378,7 @@ public class ThermalSettingActivity extends BaseActivity {
                 }
             }
             btnSaveMainLogo.setOnClickListener(v -> {
-                ImagePicker.getInstance()
-                        .setTitle(getResources().getString(R.string.select_img_title))//设置标题
-                        .showCamera(true)//设置是否显示拍照按钮
-                        .showImage(true)//设置是否展示图片
-                        .showVideo(false)//设置是否展示视频
-//                    .setMaxCount(1)//设置最大选择图片数目(默认为1，单选)
-//                    .setImagePaths(mImageList)//保存上一次选择图片的状态，如果不需要可以忽略
-                        .setImageLoader(new ImgLoader())//设置自定义图片加载器
-                        .start(getActivity(), REQEST_SELECT_IMAGES_CODE);//REQEST_SELECT_IMAGES_CODE为Intent调用的
+                FileSelectActivity.selectFile(getActivity(),FileSelectActivity.FILE_TYPE_IMG,false,FileSelectActivity.SELECT_REQUEST_CODE);
             });
             btnRestore.setOnClickListener(v -> {
                 SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
@@ -517,12 +514,18 @@ public class ThermalSettingActivity extends BaseActivity {
             swNoFaceTemper.setChecked(noFaceTemper);
             swNoFaceTemper.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.NO_FACE_TEMPER,isChecked));
 
+
+            TextView tvMaxF = view.findViewById(R.id.tv_max_threshold_fahrenheit);
+            TextView tvCorrectionF = view.findViewById(R.id.tv_correction_fahrenheit);
+            TextView tvMinF = view.findViewById(R.id.tv_min_threshold_fahrenheit);
             //进入矫正=======================================================================================================
             float thermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
             Button btnCorrectSub = view.findViewById(R.id.btn_correct_sub_setting);
             Button btnCorrectAdd = view.findViewById(R.id.btn_correct_add_setting);
             final EditText edtCorrect = view.findViewById(R.id.edt_correct_setting);
             edtCorrect.setText(thermalCorrect + "");
+            tvCorrectionF.setText(getCorrectionFahrenheit(thermalCorrect));
+
             View.OnClickListener correctOnclickListener = v -> {
                 String s = edtCorrect.getText().toString();
                 float corrValue = Float.parseFloat(s);
@@ -534,6 +537,8 @@ public class ThermalSettingActivity extends BaseActivity {
                 corrValue = ((ThermalSettingActivity)getActivity()).formatF(corrValue);
                 SpUtils.saveFloat(ThermalConst.Key.THERMAL_CORRECT, corrValue);
                 edtCorrect.setText(corrValue + "");
+
+                tvCorrectionF.setText(getCorrectionFahrenheit(corrValue));
             };
             btnCorrectSub.setOnClickListener(correctOnclickListener);
             btnCorrectAdd.setOnClickListener(correctOnclickListener);
@@ -542,9 +547,9 @@ public class ThermalSettingActivity extends BaseActivity {
             Button btnMinSub = view.findViewById(R.id.btn_temp_min_threshold_sub_setting);
             Button btnMinAdd = view.findViewById(R.id.btn_temp_min_threshold_add_setting);
             final EditText edtMinThreshold = view.findViewById(R.id.edt_temp_min_threshold_setting);
-            //温度最低阈值
             final float minValue = SpUtils.getFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, ThermalConst.Default.TEMP_MIN_THRESHOLD);
             edtMinThreshold.setText(minValue + "");
+            tvMinF.setText(getFahrenheit(minValue));
             View.OnClickListener minClickListener = v -> {
                 String value = edtMinThreshold.getText().toString();
                 float v1 = ((ThermalSettingActivity)getActivity()).formatF(Float.parseFloat(value));
@@ -559,6 +564,8 @@ public class ThermalSettingActivity extends BaseActivity {
                 v1 = ((ThermalSettingActivity)getActivity()).formatF(v1);
                 edtMinThreshold.setText(v1 + "");
                 SpUtils.saveFloat(ThermalConst.Key.TEMP_MIN_THRESHOLD, v1);
+
+                tvMinF.setText(getFahrenheit(v1));
             };
             btnMinSub.setOnClickListener(minClickListener);
             btnMinAdd.setOnClickListener(minClickListener);
@@ -569,6 +576,7 @@ public class ThermalSettingActivity extends BaseActivity {
             final EditText edtWarnThreshold = view.findViewById(R.id.edt_temp_warning_threshold_setting);
             final float warningValue = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
             edtWarnThreshold.setText(warningValue + "");
+            tvMaxF.setText(getFahrenheit(warningValue));
             View.OnClickListener warnClickListener = v -> {
                 String value = edtWarnThreshold.getText().toString();
                 float v1 = ((ThermalSettingActivity)getActivity()).formatF(Float.parseFloat(value));
@@ -580,6 +588,8 @@ public class ThermalSettingActivity extends BaseActivity {
                 v1 = ((ThermalSettingActivity)getActivity()).formatF(v1);
                 edtWarnThreshold.setText(v1 + "");
                 SpUtils.saveFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, v1);
+
+                tvMaxF.setText(getFahrenheit(v1));
             };
             btnWarnSub.setOnClickListener(warnClickListener);
             btnWarnAdd.setOnClickListener(warnClickListener);
@@ -606,6 +616,18 @@ public class ThermalSettingActivity extends BaseActivity {
             };
             btnSpeechDelayAdd.setOnClickListener(speechDelayOnClickLitsener);
             btnSpeechDelaySub.setOnClickListener(speechDelayOnClickLitsener);
+        }
+
+        private String getFahrenheit(float centigrade){
+            return "( " + formatF((float) (centigrade * 1.8 + 32)) + "℉ )";
+        }
+
+        private String getCorrectionFahrenheit(float centigrade){
+            return "( " + formatF((float) ((centigrade * 1.8 + 32) - 32)) + "℉ )";
+        }
+
+        protected float formatF(float fValue) {
+            return (float) (Math.round(fValue * 10)) / 10;
         }
     }
 
@@ -794,43 +816,11 @@ public class ThermalSettingActivity extends BaseActivity {
                     .setTitle(getResources().getString(R.string.clear_all_data_dialog_title))
                     .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
                     .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
-                        clearAllData();
+                        SignManager.instance().clearAllData(getActivity());
                     }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
                         dialog.dismiss();
                     }).create();
             alertDialog.show();
-        }
-
-        private void clearAllData(){
-            List<Sign> signList = DaoManager.get().queryAll(Sign.class);
-            if(signList == null || signList.size() == 0){
-                UIUtils.showShort(getActivity(),(getString(R.string.clear_no_data) + "0"));
-                return;
-            }
-
-            int total = 0;
-            Iterator<Sign> iterator = signList.iterator();
-            while (iterator.hasNext()) {
-                Sign next = iterator.next();
-                String headPath = next.getHeadPath();
-                String hotImgPath = next.getHotImgPath();
-                if(!TextUtils.isEmpty(headPath)){
-                    File headFile = new File(headPath);
-                    if(headFile.exists()){
-                        headFile.delete();
-                    }
-                }
-                if(!TextUtils.isEmpty(hotImgPath)){
-                    File hotFile = new File(hotImgPath);
-                    if(hotFile.exists()){
-                        hotFile.delete();
-                    }
-                }
-                DaoManager.get().deleteSign(next);
-                total ++;
-            }
-
-            UIUtils.showShort(getActivity(),(getString(R.string.clear_no_data) + total));
         }
 
         private static class CpuUtils {
@@ -906,14 +896,16 @@ public class ThermalSettingActivity extends BaseActivity {
             }
         }
 
-        private EditText edtIp;
+        private EditText edtCommunicationIp;
         private EditText edtResPort;
         private EditText edtXmppPort;
         private EditText edtProName;
+        private EditText edtServiceIp;
 
         //初始化IP设置
         private void initSetIp(View view) {
-            edtIp = view.findViewById(R.id.edt_ip);
+            edtServiceIp = view.findViewById(R.id.edt_service_ip);
+            edtCommunicationIp = view.findViewById(R.id.edt_communication_ip);
             edtResPort = view.findViewById(R.id.edt_res_port);
             edtXmppPort = view.findViewById(R.id.edt_xmpp_port);
             edtProName = view.findViewById(R.id.edt_pro_name);
@@ -938,37 +930,36 @@ public class ThermalSettingActivity extends BaseActivity {
             });
 
             btnSave.setOnClickListener(v -> {
-                String mIp = edtIp.getText().toString();
+                String mServiceIp = edtServiceIp.getText().toString();
+                String mCommunicationIp = edtCommunicationIp.getText().toString();
                 String mResPort = edtResPort.getText().toString();
                 String mXmppPort = edtXmppPort.getText().toString();
                 String mProName = edtProName.getText().toString();
-                if (TextUtils.isEmpty(mIp)) {
-                    UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_please_set_ip));
+                if(TextUtils.isEmpty(mServiceIp)){
+                    edtServiceIp.setError(APP.getContext().getResources().getString(R.string.setting_please_set_ip));
                     return;
                 }
-
-
+                if (TextUtils.isEmpty(mCommunicationIp)) {
+                    edtCommunicationIp.setError(APP.getContext().getResources().getString(R.string.setting_please_set_ip));
+                    return;
+                }
                 if (TextUtils.isEmpty(mResPort)) {
-                    UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_please_set_res));
+                    edtResPort.setError(APP.getContext().getResources().getString(R.string.setting_please_set_res));
                     return;
                 }
                 int intResPort = Integer.parseInt(mResPort);
                 if (intResPort > 65535) {
-                    UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_res_port_error));
+                    edtResPort.setError(APP.getContext().getResources().getString(R.string.setting_res_port_error));
                     return;
                 }
-
                 if (TextUtils.isEmpty(mXmppPort)) {
-                    UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_please_set_xmpp));
+                    edtXmppPort.setError(APP.getContext().getResources().getString(R.string.setting_please_set_xmpp));
                     return;
                 }
                 int intXmppPort = Integer.parseInt(mXmppPort);
                 if (intXmppPort > 65535) {
-                    UIUtils.showTitleTip(getActivity(), APP.getContext().getResources().getString(R.string.setting_xmpp_port_error));
+                    edtXmppPort.setError(APP.getContext().getResources().getString(R.string.setting_xmpp_port_error));
                     return;
-                }
-
-                if (TextUtils.isEmpty(mProName)) {
                 }
 
                 ConfigLoader.save();
@@ -977,8 +968,9 @@ public class ThermalSettingActivity extends BaseActivity {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE,mServiceIp);
                     SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, mCommunicationIp);
                     SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
                 }
@@ -987,33 +979,41 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void setServerInfo(int model) {
-            String ip = Constants.NetConfig.PRO_URL;
-            String resPort = Constants.NetConfig.PRO_RES_PORT;
-            String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
-            String proName = Constants.NetConfig.PRO_SUFFIX;
+            String sIp = Constants.NetConfig.SERVICE_HOST;
+            String sPort = Constants.NetConfig.SERVICE_PORT;
+            String sPName = Constants.NetConfig.SERVICE_NAME;
+
+            String cIp = Constants.NetConfig.COMMUNICATION_HOST;
+            String cPort = Constants.NetConfig.COMMUNICATION_PORT;
+
             if (model == Constants.serverModel.YUN) {
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
-                edtIp.setEnabled(false);
+                edtServiceIp.setText(sIp);
+                edtResPort.setText(sPort);
+                edtProName.setText(sPName);
+                edtCommunicationIp.setText(cIp);
+                edtXmppPort.setText(cPort);
+
+                edtCommunicationIp.setEnabled(false);
                 edtResPort.setEnabled(false);
                 edtXmppPort.setEnabled(false);
                 edtProName.setEnabled(false);
             } else {
-                ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
-                resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
-                xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
-                proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
-                edtIp.setEnabled(true);
+                sIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE);
+                sPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+                sPName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
+                cIp = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
+                cPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+
+                edtCommunicationIp.setEnabled(true);
                 edtResPort.setEnabled(true);
                 edtXmppPort.setEnabled(true);
                 edtProName.setEnabled(true);
 
-                edtIp.setText(ip);
-                edtResPort.setText(resPort);
-                edtXmppPort.setText(xmppPort);
-                edtProName.setText(proName);
+                edtServiceIp.setText(sIp);
+                edtResPort.setText(sPort);
+                edtProName.setText(sPName);
+                edtCommunicationIp.setText(cIp);
+                edtXmppPort.setText(cPort);
             }
         }
 
@@ -1122,18 +1122,16 @@ public class ThermalSettingActivity extends BaseActivity {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.layout_set_pwd);
 
+            Switch swPasswordEnabled = dialog.findViewById(R.id.sw_enabled_password);
             final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_set_pwd);
             final EditText edtPwd2 = (EditText) dialog.findViewById(R.id.edt_set_pwd_again);
             final Button btnCancel = (Button) dialog.findViewById(R.id.btn_pwd_cancel);
             final Button btnConfirm = (Button) dialog.findViewById(R.id.btn_pwd_confirm);
 
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
+            boolean passwordEnabled = SpUtils.getBoolean(Constants.Key.PASSWORD_ENABLED,Constants.Default.PASSWORD_ENABLED);
+            swPasswordEnabled.setChecked(passwordEnabled);
+            swPasswordEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.PASSWORD_ENABLED,isChecked));
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
             btnConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1156,50 +1154,63 @@ public class ThermalSettingActivity extends BaseActivity {
                         return;
                     }
 
-                    btnCancel.setEnabled(false);
-                    btnConfirm.setEnabled(false);
-                    Map<String, String> params = new HashMap<>();
-                    params.put("deviceNo", HeartBeatClient.getDeviceNo());
-                    params.put("password", pwd2);
-                    OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
-                        @Override
-                        public void onBefore(Request request, int id) {
-                            super.onBefore(request, id);
-                            UIUtils.showNetLoading(getActivity());
-                        }
+                    Company company = SpUtils.getCompany();
+                    int comid = company.getComid();
+                    if(comid == Constants.NOT_BIND_COMPANY_ID){
+                        UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_success));
+                        SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
+                        dialog.dismiss();
+                    } else {
+                        btnCancel.setEnabled(false);
+                        btnConfirm.setEnabled(false);
+                        Map<String, String> params = new HashMap<>();
+                        params.put("deviceNo", HeartBeatClient.getDeviceNo());
+                        params.put("password", pwd2);
+                        Timber.d("修改密码：" + ResourceUpdate.UPDATE_PWD);
+                        Timber.d("参数:" + params.toString());
+                        OkHttpUtils.post().url(ResourceUpdate.UPDATE_PWD).params(params).build().execute(new StringCallback() {
+                            @Override
+                            public void onBefore(Request request, int id) {
+                                super.onBefore(request, id);
+                                UIUtils.showNetLoading(getActivity());
+                            }
 
-                        @Override
-                        public void onError(Call call, final Exception e, int id) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_failed) + ":" + e != null ? e.getMessage() : "NULL");
-                                }
-                            });
-                        }
+                            @Override
+                            public void onError(Call call, final Exception e, int id) {
+                                Timber.d("错误：" + e);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_failed) + ":" + (e != null ? e.getMessage() : "NULL"));
+                                    }
+                                });
+                            }
 
-                        @Override
-                        public void onResponse(String response, int id) {
-                            JSONObject jsonObject = JSONObject.parseObject(response);
-                            final Integer status = jsonObject.getInteger("status");
-                            getActivity().runOnUiThread(() -> {
-                                if (status == 1) {
-                                    UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_success));
-                                    SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
-                                    dialog.dismiss();
-                                } else {
-                                    UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_failed));
-                                }
-                            });
-                        }
+                            @Override
+                            public void onResponse(String response, int id) {
+                                Timber.d("响应：" + response);
+                                JSONObject jsonObject = JSONObject.parseObject(response);
+                                final Integer status = jsonObject.getInteger("status");
+                                getActivity().runOnUiThread(() -> {
+                                    if (status == 1) {
+                                        UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_success));
+                                        SpUtils.saveStr(SpUtils.MENU_PWD, pwd2);
+                                        dialog.dismiss();
+                                    } else {
+                                        UIUtils.showTitleTip(getActivity(), getString(R.string.setting_edit_password_failed));
+                                    }
+                                });
+                            }
 
-                        @Override
-                        public void onAfter(int id) {
-                            UIUtils.dismissNetLoading();
-                            btnConfirm.setEnabled(true);
-                            btnCancel.setEnabled(true);
-                        }
-                    });
+                            @Override
+                            public void onAfter(int id) {
+                                UIUtils.dismissNetLoading();
+                                btnConfirm.setEnabled(true);
+                                btnCancel.setEnabled(true);
+                            }
+                        });
+                    }
+
                 }
             });
 

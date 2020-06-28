@@ -166,6 +166,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                 Depart depart = new Depart();
                 depart.setId(departId);
                 depart.setDepId(departId);
+                depart.setCompId(comid);
                 depart.setDepName(departName);
                 DaoManager.get().add(depart);
 
@@ -174,17 +175,34 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                     departAdapter.notifyDataSetChanged();
                 }
             } else {
+                Map<String,String> params = new HashMap<>();
+                params.put("name", departName);
+                params.put("comId", String.valueOf(comid));
+                Timber.d("新增部门：" + ResourceUpdate.ADDDEPART);
+                Timber.d("参数：" + params.toString());
                 OkHttpUtils.post()
-                        .addParams("name", departName)
-                        .addParams("comId", String.valueOf(comid))
+                        .url(ResourceUpdate.ADDDEPART)
+                        .params(params)
                         .build().execute(new StringCallback() {
                     @Override
+                    public void onBefore(Request request, int id) {
+                        UIUtils.showNetLoading(ThermalEditEmployActivity.this);
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        UIUtils.dismissNetLoading();
+                    }
+
+                    @Override
                     public void onError(Call call, Exception e, int id) {
+                        Timber.d("失败：%s", e.getMessage());
                         UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb) + "(" + e == null ?"NULL" : e.getMessage() +")");
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Timber.d("结果：%s", response);
                         if(TextUtils.isEmpty(response)){
                             UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
                             return;
@@ -192,7 +210,7 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
                         com.alibaba.fastjson.JSONObject jsonObject = JSONObject.parseObject(response);
                         Integer status = jsonObject.getInteger("status");
-                        if(status == 1){
+                        if(status != 1){
                             UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
                             return;
                         }
@@ -201,9 +219,10 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                         Depart de = new Depart();
                         de.setId(depId);
                         de.setDepId(depId);
+                        de.setCompId(comid);
                         de.setDepName(departName);
                         DaoManager.get().addOrUpdate(de);
-
+                        UIUtils.showShort(ThermalEditEmployActivity.this,getResString(R.string.act_editEmploy_tip_add_success));
                         departList.add(de);
                         if(departAdapter != null){
                             departAdapter.notifyDataSetChanged();

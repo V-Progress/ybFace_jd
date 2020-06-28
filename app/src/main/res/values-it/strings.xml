@@ -16,61 +16,2052 @@
     <string name="temper_error_btn_cancel">No processing</string>
 
 
-    <string name="setting_tab_face">Le facce</string>
-    <string name="setting_tab_page">interfaccia</string>
-    <string name="setting_tab_temper">temperatura</string>
-    <string name="setting_tab_device">attrezzature</string>
+    <string name="there_is_no_net">"Nessuna connessione al server"</string>
 
-    <!--语音设置-->
-    <string name="setting_welcome_speech">Welcome speech</string><!--Welcome speech--><!--欢迎语  -->
-    <string name="setting_normal_speech_content">Normal temperature broadcast:</string><!--普通温度播报-->
-    <string name="setting_warning_speech_content">Abnormal temperature broadcast</string><!--异常温度播报-->
-    <string name="setting_broadcast_speed">Voice speed</string>
-    <string name="speech_setting_title">Installazione di comunicazioni vocali</string>
-    <string name="temper_tips_close">Vicino a tip</string>
-    <string name="speech_setting_open_or_close">attivazione</string>
-    <string name="speech_setting_show_temper">Che temperatura</string>
-    <string name="speech_setting_temper_location">Posizione indicata dalla temperatura</string>
-    <string name="speech_setting_location_start">prima</string>
-    <string name="speech_setting_location_center">Simboli bit</string>
-    <string name="speech_setting_location_end">coda</string>
-    <string name="speech_setting_alert">L’uso del logo # simboli temperatura mostra l’ubicazione, la temperatura di completamento automatico di dati, esempi (36,5 ℃), esiste solo un # descrittori, esistono oltre # descrittori, sarà la prima a prevalere, simboli e cancellare il resto automaticamente</string>
-    <string name="speech_setting_welcome_exmaple">Esempi di parole di benvenuto：</string>
-    <string name="speech_setting_distance_exmaple">Esempi di distanza：</string>
-    <string name="speech_setting_normal_exmaple">Esempi di normale：</string>
-    <string name="speech_setting_warning_exmaple">Esempi di anomalie：</string>
-    <string name="speech_setting_audition">In onda</string>
-    <string name="setting_camera_vertical_mirror">Montature longitudinali</string>
+    <string name="upload_there_is_no_server_connect">Nessuna connessione al server. I dati sono salvati in locale</string>
 
-    <!--口罩提示IT-->
-    <string name="no_mask_tip">Si prega di indossare la maschera</string>
-    <string name="error_mask_tip">Si prega di indossare la maschera correttamente</string>
-    <string name="please_aim_face_frame">Si prega di guardare nella telecamera</string>
+    <string name="please_add_a_user">Aggiungere almeno un utente</string>
 
-    <!--温度单位-->
-    <string name="temper_tips_centigrade">Gradi centigradi</string>
-    <string name="temper_tips_fahrenheit">Fahrenheit gradi</string>
-    <string name="app_main_title">Applicazioni titolo</string>
-    <string name="select_img_title">Select Image</string>
-    <string name="select_img_failed">Image selection failed</string>
-    <string name="select_img_failed_not_exists">The selected image does not exist</string>
-    <string name="setting_app_logo">APP Logo</string>
-    <string name="setting_select_image">Choose</string>
-    <string name="setting_restore_image">Restore</string>
-    <string name="setting_auto_temper">Modello automaticamente</string>
+    <string name="clear_all_data_dialog_title">Attenzione</string>
 
-    <string name="setting_picture_rotation">With the camera</string>
-    <string name="setting_local_priority">Local Priority</string>
-    <string name="setting_pic_rotation">Direction of photos</string>
+    <string name="clear_all_data_dialog_message">Cancellare tutti i dati dal dispositvo?</string>
 
-    <!--logo设置-->
-    <string name="setting_privacy_mode">Privacy Mode</string>
-    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
-    <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
-    <string name="setting_show_main_logo">Display home LOGO</string>
-    <string name="setting_show_main_thermal">Display Thermal Imaging</string>
-    <string name="setting_show_main_info">Display home page information</string>
-    <string name="setting_default_welcome_tip">Welcome to AI intelligent attendance system</string><!--欢迎语-->
+    <!--????-->
+
+
+    <string name="local_directory">Memoria interna</string>
+
+    <string name="usb_directory">Memoria USB</string>
+
+    <string name="no_can_used_directory">Cartella non disponibile, controllare i permessi</string>
+
+    <string name="confirm_directore_tips">Usare questa cartella?</string>
+
+    <string name="select_directory_title">Selezionare una cartella</string>
+
+    <string name="click_select_this_directory">Fare click per selezionare questa cartella</string>
+
+
+    <!--????-->
+
+
+    <string name="no_mask_tip">Si prega di indossare la mascherak</string>
+
+    <string name="error_mask_tip">Indossare la maschera correttamente</string>
+
+    <string name="please_aim_face_frame">Posizionare il viso nell\'apposita area</string>
+
+    <string name="setting_tab_face">Volti</string>
+
+    <string name="setting_tab_page">Schermo</string>
+
+    <string name="setting_tab_temper">Temperatura</string>
+
+    <string name="setting_tab_device">Dispositivo</string>
+
+    <!--????-->
+
+
+    <string name="speech_setting_title">Configurazione avvisi</string>
+
+    <string name="setting_welcome_speech">Messaggio di benvenuto</string>
+
+    <!--Welcome speech-->
+
+
+    <string name="temper_tips_close">Posizione logo</string>
+
+    <string name="speech_setting_open_or_close">On</string>
+
+    <string name="speech_setting_show_temper">Messaggio Temperatura</string>
+
+    <string name="speech_setting_temper_location">Messaggio Temp. in Broadcast</string>
+
+    <string name="speech_setting_location_start">Precedente</string>
+
+    <string name="speech_setting_location_center">Posizione custom</string>
+
+    <string name="speech_setting_location_end">Successivo</string>
+
+    <string name="speech_setting_alert">Put the # symbol in the text where you want to display and pronounce temperature value. Please do not forget to choose Custom position in this case.</string>
+
+    <string name="speech_setting_welcome_exmaple">Esempio di benvenuto:</string>
+
+    <string name="speech_setting_distance_exmaple">Esempio posizione logo:</string>
+
+    <string name="speech_setting_normal_exmaple">Esempio di temperatura normale:</string>
+
+    <string name="speech_setting_warning_exmaple">Esempio di temperatura anormale:</string>
+
+    <string name="speech_setting_audition">play</string>
+
+    <string name="setting_normal_speech_content">Broadcast temperatura normale:</string>
+
+    <!--??????-->
+
+
+    <string name="setting_warning_speech_content">Broadcast temperatura anormale</string>
+
+    <!--??????-->
+
+
+    <string name="setting_broadcast_speed">Velocita\' voce</string>
+
+    <string name="setting_default_welcome_tip">Benvenuto in Termo Access TC8</string>
+
+    <!--???-->
+
+    <string name="setting_camera_vertical_mirror">Capovolgi riquadro</string>
+
+    <string name="setting_picture_rotation">con la camera</string>
+
+    <string name="setting_local_priority">Priorita\' locale</string>
+
+    <string name="setting_pic_rotation">Orientamento foto</string>
+
+
+    <!--logo??-->
+
+
+    <string name="setting_privacy_mode">Modalita\' Privacy</string>
+
+    <string name="setting_periodic_purge_policy">Cancellazione periodica</string>
+
+    <string name="setting_clear_policy_tip">Cancella automaticamente ogni %1$s giorni</string>
+
+    <string name="setting_show_main_logo">Visualizza logo</string>
+
+    <string name="setting_show_main_thermal">Visualizza immagine termica</string>
+
+    <string name="setting_show_main_info">Visualizza il riquadro nella schermata principale</string>
+
+    <!--????-->
+
+
+    <string name="temper_tips_centigrade">Celsius</string>
+
+    <string name="temper_tips_fahrenheit">Fahrenheit</string>
+
+    <string name="app_main_title">Visualizza/Titolo</string>
+
+    <string name="select_img_title">Seleziona immagine</string>
+
+    <string name="select_img_failed">Selezione immagine fallita</string>
+
+    <string name="select_img_failed_not_exists">L\'immagine selezionata non esiste</string>
+
+    <string name="setting_app_logo">Logo</string>
+
+    <string name="setting_select_image">Aggiorna</string>
+
+    <string name="setting_restore_image">Default</string>
+
+    <string name="setting_auto_temper">Modalita\' automatica</string>
+
+
+    <!--???-->
+
+
+    <string name="smt_main_net_normal">online</string>
+
+    <string name="smt_main_net_normal2">online</string>
+
+    <string name="smt_main_net_no">offline</string>
+
+    <string name="smt_main_all">Tutti</string>
+
+    <string name="smt_main_already">Arr</string>
+
+    <string name="smt_main_ver">Ver:</string>
+
+    <string name="smt_main_company">Societa\':</string>
+
+    <string name="smt_main_device_no">No.</string>
+
+    <string name="smt_main_not_bind">Scollega</string>
+
+    <!--??????-->
+
+
+    <string name="main_temp_warning_tips">Temperatura anormale</string>
+
+    <!--????-->
+
+
+    <string name="main_temp_normal_tips">Normale</string>
+
+    <!--????-->
+
+
+    <string name="main_temp_error_tips">Temperatura anormale</string>
+
+    <string name="main_temp_tips_please_close">Si prega di avvicinarsi</string>
+
+    <!--Please approach-->
+
+
+    <!--????-->
+
+
+    <string name="main_temp_tips_so_far_text">Troppo lontano</string>
+
+    <!--Please approach-->
+
+
+    <!--????,???-->
+
+
+    <string name="main_temp_tips_please_far">Si prega di fare un passo indietro</string>
+
+    <!--????-->
+
+
+    <string name="main_temp_tips_so_close_text">Troppo vicino</string>
+
+    <!--????,????-->
+
+
+    <string name="main_thermal_has_person">Immagine termica:persona</string>
+
+    <string name="main_thermal_no_person">Immagine termica:nessuno</string>
+
+    <string name="main_thermal_temp">Temperatura:</string>
+
+    <!--??? ??:-->
+
+
+    <string name="main_please_waiting">Si prega di attendere</string>
+
+    <!--???-->
+
+
+    <string name="main_temp_tips_please_in_range">Posizionare il viso all\'interno del riquadro</string>
+
+    <!--??????????-->
+
+
+    <string name="main_tips_please_close">Si prega di avvicinarsi</string>
+
+    <!--??-->
+
+
+    <string name="temp_measuring_setting">Misurazione</string>
+
+    <!--????-->
+
+
+    <string name="port_setting">Porta seriale</string>
+
+    <!--??-->
+
+
+    <string name="select_port_setting">Seleziona la porta seriale</string>
+
+    <!--????-->
+
+
+    <string name="auto_close_door_setting">(Timoeut chiusura automatica porta)</string>
+
+    <!--Automatic closing-->
+
+
+    <!--(?????????)-->
+
+
+    <string name="recommend_valuez_setting">80%</string>
+
+    <!--????:80-->
+
+
+    <string name="current_model_setting">Modalita\' corrente</string>
+
+    <!--????-->
+
+
+    <!--????-->
+
+
+    <string name="System_title">Informazioni</string>
+
+    <!--????????-->
+
+
+    <string name="System_deviceNo">ID dispositivo:</string>
+
+    <!--????:-->
+
+
+    <string name="System_bindCode">Bind Code:</string>
+
+    <!--???:-->
+
+
+    <string name="System_Company">Societa\':</string>
+
+    <!--????:-->
+
+
+    <string name="System_Service">Servizio:</string>
+
+    <!--????:-->
+
+
+    <string name="System_ValiDate">Scadenza:</string>
+
+    <!--???:-->
+
+
+    <string name="System_Manage">Gestione del personale</string>
+
+    <!--????-->
+
+
+    <string name="System_Add">Aggiungi persona</string>
+
+    <!--????-->
+
+
+    <string name="System_Record">Registrazioni</string>
+
+    <!--????-->
+
+
+    <string name="System_Setting">Configurazione</string>
+
+    <!--????-->
+
+
+    <string name="System_Visitor">Visitatori</string>
+
+    <!--??-->
+
+
+    <string name="System_skin_select">Pelle</string>
+
+    <!--????-->
+
+
+    <string name="System_update">Aggiornamento</string>
+
+    <!--??-->
+
+
+    <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string>
+
+    <!--????:??????????-->
+
+
+    <string name="System_Service_offline">offline</string>
+
+    <!--??-->
+
+
+    <string name="System_online">online</string>
+
+    <!--??-->
+
+
+    <string name="System_offline">offline</string>
+
+    <!--??-->
+
+
+    <string name="System_validityPeriod">Nessuna scadenza</string>
+
+    <!--???-->
+
+
+    <string name="System_cloud_service">Servizi Cloud</string>
+
+    <!--???-->
+
+
+    <string name="System_local_service">Servizi Locali</string>
+
+    <!--????-->
+
+
+    <!--????-->
+
+
+    <string name="employ_list_title">Informazioni del personale</string>
+
+    <!-- ???? -->
+
+
+    <string name="employ_list_depart_sync">Sincronizza</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_List_add_user">Aggiungi</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_List_query_button">Cerca</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_list_download_failed">Dowload immagine fallito</string>
+
+    <!-- ?????? -->
+
+
+    <string name="employ_list_add_face_failed">L\'immagine non e\' valida</string>
+
+    <!-- ???????-->
+
+
+    <string name="employ_list_update_head_failed">Aggiornamento immagine fallito</string>
+
+    <!-- ?????? -->
+
+
+    <string name="employ_list_field_index">No</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_list_field_number">ID</string>
+
+    <!-- ????-->
+
+
+    <string name="employ_list_field_name">Nome</string>
+
+    <!--??? -->
+
+
+    <string name="employ_list_field_depart">Dipartimento</string>
+
+    <!--?? -->
+
+
+    <string name="employ_list_field_position">Titolo</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_list_field_control">Operazione</string>
+
+    <!--?? -->
+
+
+    <string name="employ_list_item_delete">Cancella</string>
+
+    <!-- ??-->
+
+
+    <string name="employ_list_item_edit">Modifica</string>
+
+    <!--?? -->
+
+
+    <string name="employ_list_all_depart">Tutti</string>
+
+    <!-- ???? -->
+
+
+    <string name="employ_list_please_input_user_name">Nome utente</string>
+
+    <!-- ??????? -->
+
+
+    <string name="employ_list_confirm_edit">Confermare la modifica</string>
+
+    <!-- ?????? -->
+
+
+    <string name="employ_list_confirm_delete">Confermare la cancellazione</string>
+
+    <!-- ?????? -->
+
+
+    <string name="employ_list_delete_failed">Cancellazione fallita</string>
+
+    <!-- ???? -->
+
+
+    <string name="employ_list_delete_success">Cancellazione eseguita con successo</string>
+
+    <!-- ???? -->
+
+
+    <string name="employ_list_depart">Dipartimento</string>
+
+    <!-- ?? -->
+
+
+    <string name="employ_list_add_depart">Aggiungi dipartimento</string>
+
+    <!-- ???? -->
+
+
+    <string name="employ_list_please_input_name">Inserire un nome</string>
+
+    <!--?????-->
+
+
+    <string name="employ_list_no_this_person">Persona non trovata</string>
+
+    <!--???????-->
+
+
+    <!--????-->
+
+
+    <string name="act_editEmploy_zjyg">Aggiungi persona</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_xgxx">Modifica persona</string>
+
+    <!--???? -->
+
+
+    <string name="act_editEmploy_pz">Scatta una foto</string>
+
+    <!-- ?? -->
+
+
+    <string name="act_editEmploy_reset">reset</string>
+
+    <!-- ?? -->
+
+
+    <string name="act_editEmploy_jbxx">Informazioni</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_name">Nome:</string>
+
+    <!-- ??: -->
+
+
+    <string name="act_editEmploy_sex">Genere:</string>
+
+    <!-- ??: -->
+
+
+    <string name="act_editEmploy_bm">Dipartimento:</string>
+
+    <!--??: -->
+
+
+    <string name="act_editEmploy_ygbh">ID:</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_kh">Documento Identita\':</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_zw">Titolo:</string>
+
+    <!-- ??: -->
+
+
+    <string name="act_editEmploy_csrq">Data di nascita:</string>
+
+    <!-- ????-->
+
+
+    <string name="act_editEmploy_gxqm">Note:</string>
+
+    <!-- ????-->
+
+
+    <string name="act_editEmploy_tip_qxpz">Si prega di scattare una foto</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_tip_qtxxm">Si prega di inserire il nome</string>
+
+    <!-- ????? -->
+
+
+    <string name="act_editEmploy_tip_qxzxb">Si prega di selezionare il genere </string>
+
+    <!--????? -->
+
+
+    <string name="act_editEmploy_tip_qtxbh">Si prega di inserire il documento di identita\'</string>
+
+    <!-- ????? -->
+
+
+    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">Avatar non trovato. Si prega di scattare un\'altra foto</string>
+
+    <!-- ???????,???????? -->
+
+
+    <string name="act_editEmploy_tip_wzrhxg">Nessuna modifica</string>
+
+    <!-- ?????? -->
+
+
+    <string name="act_editEmploy_tip_tjsb">Aggiunta non riuscita</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_editEmploy_tip_gygbcz">La persona non esiste</string>
+
+    <!-- ?????? -->
+
+
+    <string name="act_editEmploy_tip_bczgbm">Il dipartimento non esiste</string>
+
+    <!-- ?????? -->
+
+
+    <string name="act_editEmploy_tip_gsmyzgbm">La societa\' non ha questo dipartimento</string>
+
+    <!-- ???????? -->
+
+
+    <string name="act_editEmploy_tip_gsyzwyg">La societa\' non ha questa persona</string>
+
+    <!--???????? -->
+
+
+    <string name="act_editEmploy_tip_cscw">Errore nei parametri</string>
+
+    <!--???? -->
+
+
+    <string name="act_editEmploy_tip_qtxbm">Selezionare il dipartimento</string>
+
+    <!--?????-->
+
+
+    <string name="act_editEmploy_tip_add_success">Aggiunta completata</string>
+
+    <!--????-->
+
+
+    <string name="act_editEmploy_add_face_failed">Aggiunta dati volto fallita</string>
+
+    <!--????????-->
+
+
+    <string name="act_editEmploy_submit_failed">Invio fallito</string>
+
+    <!--????-->
+
+
+    <string name="act_editEmploy_please_set_depart">Creare un dipartimento</string>
+
+    <!--?????-->
+
+
+    <string name="act_editEmploy_update_complete">Foto del profilo aggiornata</string>
+
+    <!--????-->
+
+
+    <string name="act_editEmploy_update_failed">Aggiornamento profilo fallito</string>
+
+    <string name="act_editEmploy_update_info_success">Informazioni aggiornate</string>
+
+    <string name="act_editEmploy_no_face">Nessun volto individuato</string>
+
+    <!--??????-->
+
+
+    <string name="act_editEmploy_please_face_only_one">Si prega di inquadrare solo il volto</string>
+
+    <!--????????????-->
+
+
+    <string name="act_editEmploy_photo_failed_try_again">Scatto foto fallito. Riprovare.</string>
+
+    <!--????,???-->
+
+
+    <string name="act_editEmploy_unknown_error">Errore sconosciuto</string>
+
+    <!--????-->
+
+
+    <!--????-->
+
+
+    <string name="sign_list_title">Registrazioni</string>
+
+    <!--????-->
+
+
+    <string name="sign_list_all_type">Tutte</string>
+
+    <!-- ?? -->
+
+
+    <string name="sign_list_sent">Inviate</string>
+
+    <!-- ??? -->
+
+
+    <string name="sign_list_unsent">Non inviate</string>
+
+    <!-- ??? -->
+
+
+    <string name="sign_list_export">Esportazione</string>
+
+    <!-- ???? -->
+
+
+    <string name="sign_list_upload">Invio al cloud</string>
+
+    <!-- ????-->
+
+
+    <string name="sign_list_filed_index">Indice</string>
+
+    <!-- ??-->
+
+
+    <string name="sign_list_filed_time">Ora</string>
+
+    <!-- ?? -->
+
+
+    <string name="sign_list_filed_name">Nome utente</string>
+
+    <!-- ??? -->
+
+
+    <string name="sign_list_filed_depart">Dipartimento</string>
+
+    <!-- ?? -->
+
+
+    <string name="sign_list_filed_job">Titolo</string>
+
+    <!--?? -->
+
+
+    <string name="sign_list_filed_head">Immagine</string>
+
+    <!-- ?? -->
+
+
+    <string name="sign_list_no_data">Nessun dato</string>
+
+    <!-- ???? -->
+
+
+    <string name="sign_list_upload_success">Invio al cloud eseguito</string>
+
+    <!-- ???? -->
+
+
+    <string name="sign_list_upload_failed">Invio al cloud fallito, controllare la rete</string>
+
+    <string name="sign_list_table_name">Registrazioni</string>
+    >
+    <!-- ????,????? -->
+
+
+    <string name="sign_list_usb_disk">Inserire chiavetta USB o SD Card</string>
+
+    <!-- ???U?-->
+
+
+    <string name="sign_list_tip_usb_disk">Nessuna chiavetta USB. Dati esportati nella memoria locale</string>
+
+    <string name="sign_list_all_data_sent">Tutti i dati inviati al cloud</string>
+
+    <!-- ??????? -->
+
+
+    <string name="sign_list_name">Nome</string>
+
+    <string name="sign_list_number">Numero</string>
+
+    <string name="sign_list_depart">Dipartimento</string>
+
+    <string name="sign_list_position">Titolo</string>
+
+    <string name="sign_list_date">Data</string>
+
+    <string name="sign_list_time">Ora</string>
+
+    <string name="sign_list_temper">Temperatura</string>
+
+    <string name="sign_list_head">Immagine</string>
+
+    <string name="sign_list_hot">Temperatura alta</string>
+
+    <string name="sign_export_record">Registrazioni</string>
+
+    <string name="sign_export_no_record">Nessun dato</string>
+
+    <string name="sign_export_create_record_failed">Creazione registrazione fallita</string>
+
+    <string name="sign_export_record_success">Esportazione eseguita</string>
+
+    <string name="sign_export_record_path">Percorso:</string>
+
+    <string name="sign_export_record_failed">Esportazione fallita</string>
+
+    <!--????-->
+
+
+    <string name="visitor_list_title">Lista visitatori</string>
+
+    <!-- ???? -->
+
+
+    <string name="visitor_list_filed_name">Nome</string>
+
+    <!-- ??-->
+
+
+    <string name="visitor_list_filed_time">Data visita</string>
+
+    <!-- ????? -->
+
+
+    <string name="visitor_list_filed_company">Societa\'</string>
+
+    <!-- ?? -->
+
+
+    <string name="visitor_list_filed_reason">Motivo della visita</string>
+
+    <!-- ?? -->
+
+
+    <!--????-->
+
+
+    <!--??-->
+
+
+    <string name="only_label">solo</string>
+
+    <string name="face_label">Presenza</string>
+
+    <string name="temper_label">Immagine termica</string>
+
+    <string name="model_tip">Nessuna misura di temperatura durante il controllo di presenza</string>
+
+    <!--??????????-->
+
+
+    <string name="model_check_tip">Selezionare almeno un modello</string>
+
+    <!--????????-->
+
+
+    <!--??-->
+
+
+    <string name="setting_face_similar_threshold">Livello somiglianza volto</string>
+
+    <!-- ????????? -->
+
+
+    <string name="setting_enable_dialog">Visualizza informazioni volto</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_enable_liveness">Riconoscimento in tempo reale</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_camera_mirror">Rifletti orizzontalmente</string>
+
+    <!-- ??????? -->
+
+
+    <string name="setting_select_model">Selezione modalita\'</string>
+
+    <!--???? -->
+
+
+    <string name="setting_current_port_path">Porta seriale</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_baud_rate">Baud rate</string>
+
+    <!-- ??? -->
+
+
+    <string name="setting_open">On</string>
+
+    <!-- ?? -->
+
+
+    <string name="setting_enable_distance_tips">Posizione logo</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_thermal_imaging_mirror">immagine termica riflessa</string>
+
+    <!-- ??????? -->
+
+
+    <string name="setting_open_temperature_delay">Ritardo misura temperatura</string>
+
+    <!--?????? -->
+
+
+    <string name="setting_temperature_delay_time">Ritardo</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_ms">ms</string>
+
+    <!-- ?? -->
+
+
+    <string name="setting_s">s</string>
+
+    <!-- ? -->
+
+
+    <string name="setting_temp_correct_value">Calibrazione temperatura</string>
+
+    <!-- ????? -->
+
+
+    <string name="setting_amb_correct_value">Correzione temp. ambiente</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_temperature_threshold">Soglia temperatura troppo bassa</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_temperature_warning">Soglia temperatura elevata</string>
+
+    <!-- ????? -->
+
+
+    <string name="setting_temp_range">Intervallo di misura della temperatura</string>
+
+    <!--Temperature measurement range-->
+
+
+    <!-- ?????? -->
+
+
+    <string name="setting_range_minimum">Minimo</string>
+
+    <!--minimum-->
+
+
+    <!-- ?? -->
+
+
+    <string name="setting_range_highest">Massimo</string>
+
+    <!--Highest-->
+
+
+    <!-- ?? -->
+
+
+    <string name="setting_speech_delay">Ritardo riprod. vocale</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_screen_saver">Salvaschermo</string>
+
+    <!--?? -->
+
+
+    <string name="setting_show_qr_code">Mostra QrCode</string>
+
+    <!-- ????? -->
+
+
+    <string name="setting_enable_ic_card">Lettore smart card</string>
+
+    <!-- IC??? -->
+
+
+    <string name="setting_relay_delay_time">Ritardo chiusura porta</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_cpu_temp">Temperatura CPU:</string>
+
+    <!-- CPU?? -->
+
+
+    <string name="setting_camera_angle">Angolo telecamera</string>
+
+    <!-- ?????-->
+
+
+    <string name="setting_curr_net">Rete:</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_net_name">【Rete WiFi:XXXXX?</string>
+
+    <!-- ?WIFI,????:XXXXX? -->
+
+
+    <string name="setting_reboot_device">Riavvia</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_check_update">Aggiorna</string>
+
+    <!-- ????-->
+
+
+    <string name="setting_manage_password">Cambia la password</string>
+
+    <!--?????? -->
+
+
+    <string name="setting_system_password">Password di sistema</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_please_input_password">Inserire una password 6-12 caratteri</string>
+
+    <!-- ???6-12???(?????) -->
+
+
+    <string name="setting_please_input_again">Inserire ancora la password</string>
+
+    <!-- ??????? -->
+
+
+    <string name="setting_cloud_service">Cloud</string>
+
+    <!--?? -->
+
+
+    <string name="setting_local_service">LAN</string>
+
+    <!-- ??? -->
+
+
+    <string name="setting_ip_address">Indirizzo IP</string>
+
+    <!-- IP?? -->
+
+
+    <string name="setting_xmpp_port">Porta comunicazione</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_resource_port">Porta Service</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_project_name">Nome progetto</string>
+
+    <!--??? -->
+
+
+    <string name="setting_save_service_info">Salva</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_total_one">Totale 1</string>
+
+    <!-- ?1? -->
+
+
+    <string name="setting_current_used">【Current：】</string>
+
+    <!-- ?????:? -->
+
+
+    <string name="setting_cam_angle">angolo</string>
+
+    <!-- ?? -->
+
+
+    <string name="setting_net_prefix">【Ethernet,Indirizzo IP:</string>
+
+    <!-- ?????,IP??: -->
+
+
+    <string name="setting_ip_info">,Indirizzo IP:</string>
+
+    <!--,IP??: -->
+
+
+    <string name="setting_best_camera_size">Migliore</string>
+
+    <!-- ?? -->
+
+
+    <string name="setting_max_camera_size">Massimo</string>
+
+    <!-- ?? -->
+
+
+    <string name="setting_wifi_name">Nome:</string>
+
+    <!-- ??: -->
+
+
+    <string name="setting_wifi_rssi">Intensita\' segnale:</string>
+
+    <!-- ,????: -->
+
+
+    <string name="setting_device_will_reboot">Il dispositivo verra\' riavviato. Continuare?</string>
+
+    <!-- ?????,????? -->
+
+
+    <string name="setting_device_reboot">Riavvia</string>
+
+    <!--???? -->
+
+
+    <string name="setting_3_scond_reboot">Il dispositivo verra\' riavviato in 3 secondi</string>
+
+    <!-- 3???????-->
+
+
+    <string name="setting_password_not_null">La password non puo\' essere vuota</string>
+
+    <!-- ?????? -->
+
+
+    <string name="setting_password_min_6">La password deve avere almeno 6 caratteri</string>
+
+    <!-- ??????6? -->
+
+
+    <string name="setting_please_input_password_agian">Inserire nuovamente la password</string>
+
+    <!-- ??????? -->
+
+
+    <string name="setting_password_disaccord">Le password sono diverse</string>
+
+    <!-- ?????????? -->
+
+
+    <string name="setting_edit_password_failed">Modifica fallita</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_edit_password_success">Modifica riuscita</string>
+
+    <!-- ???? -->
+
+
+    <string name="setting_current_correct_value">Correzione attuale:</string>
+
+    <!--?????-->
+
+
+    <string name="setting_low_temp_model">Modalita\' bassa temperatura</string>
+
+    <!--????-->
+
+
+    <string name="setting_portrait_outline">Contorno figura</string>
+
+    <!--????-->
+
+
+    <string name="setting_default_welcome_tip4">Welcome to use the high-throughput temperature measurement and screening system</string>
+
+    <string name="setting_correct_temperature">Correzione temperatura</string>
+
+    <string name="setting_broadcast_f">Abilita Fahrenheit</string>
+
+    <string name="setting_show_thermal_face_frame">Abilita contorno viso nell\'immagine termica</string>
+
+    <string name="setting_show_black_body">Abilita riquadro BlackBody</string>
+
+    <string name="setting_multi_track">Abilita riconoscimento multiplo</string>
+
+    <string name="setting_save_success">Salvataggio completato</string>
+
+    <string name="setting_save_succ_please_restart">Salvataggio completato. Riavviare la APP</string>
+
+    <string name="setting_please_set_ip">Selezionare Indirizzo IP</string>
+
+    <string name="setting_please_set_res">Selezionare la porta per i servizi</string>
+
+    <string name="setting_please_set_xmpp">Selezionare la porta di comunicazione</string>
+
+    <string name="setting_res_port_error">Formato porta per i servizi non corretto</string>
+
+    <string name="setting_xmpp_port_error">Formato porta di comunicazione non corretto</string>
+
+    <string name="setting_switch_to_certificates">Misura di temperatura certificata</string>
+
+    <!---->
+
+
+    <string name="setting_switch_to_temperature_check_in">Misura di temperatura standard</string>
+
+    <!---->
+
+
+    <string name="setting_switch_function">Cambio funzione</string>
+
+    <!---->
+
+
+    <string name="setting_switch_tip1">Passaggio alla misura di temperatura certificata</string>
+
+    <!---->
+
+
+    <string name="setting_switch_tip2">Passaggio alla misura di temperatura standard</string>
+
+    <!---->
+
+
+    <string name="setting_switch_confirm">SI</string>
+
+    <string name="setting_switch_cancel">NO</string>
+
+    <!--?????-->
+
+
+    <string name="setting_tip_warning_number_reseted">Conteggio azzerato</string>
+
+    <string name="setting_reset_warning_number">Conteggio azzerato</string>
+
+    <string name="setting_power_on_off">Programmazione timer</string>
+
+    <string name="act_power_title">Programmazione timer</string>
+
+    <string name="act_power_power_on_strategy">Strategia di accensione</string>
+
+    <string name="act_power_power_off_strategy">Strategia di spegnimento</string>
+
+    <string name="act_power_power_on_strategy2">Strategia di accensione 2</string>
+
+    <string name="act_power_power_off_strategy2">Strategia di spegnimento 2</string>
+
+    <string name="act_power_none">Nessuno</string>
+
+    <string name="act_power_monday">Lunedi\'</string>
+
+    <string name="act_power_tuesday">Martedi\'</string>
+
+    <string name="act_power_wednesday">Mercoledi\'</string>
+
+    <string name="act_power_thursday">Giovedi\'</string>
+
+    <string name="act_power_friday">Venerdi\'</string>
+
+    <string name="act_power_saturday">Sabato</string>
+
+    <string name="act_power_sunday">Domenica</string>
+
+    <string name="act_power_all_select">Tutti</string>
+
+    <string name="act_power_turn_on_time">Ora di accensione</string>
+
+    <string name="act_power_turn_off_time">Ora di spegnimento</string>
+
+    <string name="act_power_save">Salva</string>
+
+    <string name="act_power_set_success">Configurazione riuscita</string>
+
+    <string name="act_power_set_failed_not_check_on">Configurazione fallita. Selezionare la data di accensione corretta</string>
+
+    <string name="act_power_set_failed_not_check_off">Configurazione fallita. Selezionare la data di spegnimento corretta</string>
+
+    <!--??????-->
+
+
+    <string name="act_correct_title">Calibrazione temperatura</string>
+
+    <string name="act_correct_tips">Immettere il valore letto dal termometro</string>
+
+    <string name="act_correct_current_value">Correzzione attuale:</string>
+
+    <string name="act_correct_thermal_temp">Temperatura immagine termica:</string>
+
+    <string name="act_correct_click_get_temperature">leggi la temperatura</string>
+
+    <string name="act_correct_thermometer_gun">Lettura termometro:</string>
+
+    <string name="act_correct_save">Salva</string>
+
+    <!--??? -->
+
+
+    <string name="base_tip">Aiuto</string>
+
+    <!-- ?? -->
+
+
+    <string name="base_ensure">Conferma</string>
+
+    <!--?? -->
+
+
+    <string name="base_cancel">Annulla</string>
+
+    <!-- ??-->
+
+
+    <string name="base_male">Sig.</string>
+
+    <!-- ?-->
+
+
+    <string name="base_female">Sig.ra</string>
+
+    <!-- ? -->
+
+
+    <string name="base_people"> </string>
+
+    <!-- ? ppls-->
+
+
+    <string name="base_year">-</string>
+
+    <!-- ? -->
+
+
+    <string name="base_month">-</string>
+
+    <!-- ? -->
+
+
+    <string name="base_day">""</string>
+
+    <!-- ? -->
+
+
+    <!--Splash?? -->
+
+
+    <string name="splash_request_permission_failed">Applicazione permessi fallita</string>
+
+    <!-- ?????? -->
+
+
+    <string name="splash_active_failed">Attivazione fallita</string>
+
+    <!-- ???? -->
+
+
+    <!--??? -->
+
+
+    <string name="act_wel_topTitle">YB Intelligent attendance</string>
+
+    <!-- ??????-->
+
+
+    <string name="act_wel_bottomTitle">YB Intelligent attendance</string>
+
+    <!-- ?????? -->
+
+
+    <string name="act_wel_error_bywjsrmmo">Inserire la password</string>
+
+    <!-- ?????????-->
+
+
+    <string name="act_wel_error_mmclqcxsrb">Password errata</string>
+
+    <!-- ????,????? -->
+
+
+    <string name="act_wel_glmm">Password amministratore</string>
+
+    <!--???? -->
+
+
+    <string name="act_wel_qsrglmm">Inserisci la password Amministratore</string>
+
+    <!-- ???????-->
+
+
+    <!--AdsFragment-->
+
+
+    <string name="fment_ads_slogan">Termo Access TC8 aumenta la sicurezza in azienda</string>
+
+    <!-- ??????,??????~-->
+
+
+    <!--SignFragment-->
+
+
+    <string name="fment_sign_tip_yqd">Registrato</string>
+
+    <!-- ??? -->
+
+
+    <string name="fment_sign_bl">Fatto</string>
+
+    <!--?? -->
+
+
+    <string name="fment_sign_jrqd">Registrato oggi:</string>
+
+    <!-- ????: -->
+
+
+    <string name="fment_sign_visitor_name">Visitatore</string>
+
+    <string name="fment_sign_company">Azienda:</string>
+
+    <string name="fment_sign_device_no">N.:</string>
+
+    <string name="fment_sign_version">Ver:</string>
+
+    <string name="fment_sign_bind_code">Bind Code:</string>
+
+    <string name="fment_sign_net">Rete:</string>
+
+    <string name="fment_sign_total">Totale</string>
+
+    <string name="fment_sign_already">Arr</string>
+
+    <!--WebFragment-->
+
+
+    <string name="fment_Web_back">Indietro</string>
+
+    <!-- ??-->
+
+
+    <string name="fment_Web_refresh">Aggiorna</string>
+
+    <!-- ?? -->
+
+
+    <!-- act_set layout_setting.xml -->
+
+
+    <string name="act_set_xtsz">Configurazione</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_set_xtmm">Password di sistema</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_set_qchc">Cancella la cache</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_set_qcsj">Cancella i dati</string>
+
+    <!--???? -->
+
+
+    <string name="act_set_jcsxt">Detection camera</string>
+
+    <!-- ????? -->
+
+
+    <string name="act_set_sfjx">Riflettere</string>
+
+    <!-- ???? Mirroring:Yes No-->
+
+
+    <string name="act_set_wlzt">Stato rete</string>
+
+    <!--???? -->
+
+
+    <string name="act_set_gb">Chiudi</string>
+
+    <!-- ?? -->
+
+
+    <!--activity_DepartList-->
+
+
+    <string name="act_departList_tip_qsrbmmc">Inserire dipartimento</string>
+
+    <!-- ??????? -->
+
+
+    <string name="act_departList_tip_qdscm">Cancellare?</string>
+
+    <!-- ?????? -->
+
+
+    <string name="act_departList_bmlb">Lista dipartimenti</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_departList_add">Aggiungi</string>
+
+    <!-- ?? -->
+
+
+    <string name="act_departList_xh">No</string>
+
+    <!-- ??-->
+
+
+    <string name="act_departList_bmmc">Nome dipartimento</string>
+
+    <!-- ???? -->
+
+
+    <string name="act_departList_cz">Operazione</string>
+
+    <!-- ?? -->
+
+
+    <!--InformationFragment-->
+
+
+    <!--dialog_depart-->
+
+
+    <string name="dialog_depart_qsrbmmc">Inserire nome dipartimento</string>
+
+    <!--??????? -->
+
+
+    <!-- ?? -->
+
+
+    <string name="lay_loadPop_sync">Sincronizzazione</string>
+
+    <!-- ?? -->
+
+
+    <string name="lay_loadPop_zlxsxx">Mostra le informazioni qui</string>
+
+    <!-- ?????? -->
+
+
+    <string name="uiUtils_tip_notice">Avviso</string>
+
+    <!-- ?? -->
+
+
+    <string name="uiUtils_tip_zzazxgyyqnxdd">Installazione in corso. Attendere...</string>
+
+    <!-- ????????,?????! -->
+
+
+    <string name="dialog_sync_tbjs">Chiusura sincronizzata</string>
+
+    <!-- ???? -->
+
+
+    <string name="sync_company_1">Informazioni societa\'</string>
+
+    <!-- ?????? -->
+
+
+    <string name="sync_staff_2">Informazioni personali</string>
+
+    <!-- ?????? -->
+
+
+    <string name="sync_database_3">Sincronizzazione database</string>
+
+    <!-- ????? -->
+
+
+    <string name="sync_head_4">Download Avatar</string>
+
+    <!-- ????-->
+
+
+    <string name="sync_face_5">Sinc. database volti</string>
+
+    <!--????? -->
+
+
+    <string name="sync_get_failed">Lettura fallita. Nuovo tentativo...</string>
+
+    <!-- ????,???? -->
+
+
+    <string name="sync_not_bind">Dispositivo non abbinato</string>
+
+    <!-- ?????-->
+
+
+    <string name="sync_data_resolve_failed">Resolve Data Filed</string>
+
+    <string name="sync_not_depart">Nessun dipartimento nella societa\'</string>
+
+    <!-- ???????-->
+
+
+    <string name="sync_params_error">Errore in un parametro</string>
+
+    <!-- ????-->
+
+
+    <string name="edit_not_edit">Nessuna modifica</string>
+
+    <!-- ?????? -->
+
+
+    <!-- RestartAPPTool -->
+
+
+    <string name="restartAPPTool_sftcyy">Uscire?</string>
+
+    <!-- ??????? -->
+
+
+    <string name="restartAPPTool_ycdht">Mettere in background</string>
+
+    <!-- ?????-->
+
+
+    <string name="restartAPPTool_exit">Uscire</string>
+
+    <!-- ??-->
+
+
+    <!-- UpdateManager -->
+
+
+    <string name="updateManager_dqbbwzxbb">La versione corrente e\' la piu\' aggiornata</string>
+
+    <!-- ????????? -->
+
+
+    <string name="updateManager_wlljsbqjcwl">Connessione alla rete fallita</string>
+
+    <!--??????,????? -->
+
+
+    <string name="updateManager_xzsb">Download fallito</string>
+
+    <!--???? -->
+
+
+    <string name="update_version_title">Versione</string>
+
+    <string name="update_lable_new">ultima versione:</string>
+
+    <string name="update_lable_current">version corrente:</string>
+
+    <string name="update_check_failed">Verifica aggiornamenti fallito. Controllare la rete</string>
+
+    <string name="update_check_ing">Verifica aggiornamenti...</string>
+
+    <string name="update_have_new">trovata nuova versione</string>
+
+    <string name="update_no_description">Nessun dettaglio</string>
+
+    <!--??-->
+
+
+    <string name="recognize_failed_notice">Non riconosciuto:%s</string>
+
+    <!-- DENIED:%s -->
+
+
+    <string name="low_confidence_level">somiglianza bassa</string>
+
+    <!--face low confidence level -->
+
+
+    <string name="accessibility_description">xxx????????????</string>
+
+    <!-- xxx???????????? -->
+
+
+    <string name="System_Setting_save_threshold">Salva</string>
+
+    <!--?? -->
+
+
+    <!--????-->
+
+
+    <string name="main_title_multi_thermal">AI Temperature Measurement</string>
+
+    <string name="main_permission_failed_multi_thermal">USB permission acquisition failed</string>
+
+    <string name="main_not_found_usb_multi_thermal">Target device not found</string>
+
+    <string name="main_exception_record_multi_thermal">Abnormal record</string>
+
+    <string name="main_normal_record_multi_thermal">Movement record</string>
+
+    <string name="main_total_passage_multi_thermal">Number</string>
+
+    <string name="main_normal_multi_thermal">Normal</string>
+
+    <string name="main_error_multi_thermal">Abnormal</string>
+
+    <string name="main_company_multi_thermal">staff</string>
+
+    <string name="main_visitor_multi_thermal">Visit</string>
+
+    <string name="main_real_detection">Monitoring</string>
+
+    <!--????-->
+
+
+    <string name="main_data_total">Data statistics</string>
+
+    <!--????-->
+
+
+    <string name="system_net_status_multi_thermal">Network:</string>
+
+    <string name="system_record_multi_thermal">Temperature recording</string>
+
+    <string name="record_index_multi_thermal">Index</string>
+
+    <string name="record_date_multi_thermal">Date</string>
+
+    <string name="record_pass_time_multi_thermal">Time</string>
+
+    <string name="record_temper_multi_thermal">Temperature</string>
+
+    <string name="record_head_multi_thermal">Head portrait</string>
+
+    <string name="record_hot_multi_thermal">Thermal imaging</string>
+
+    <string name="setting_black_body_rect_multi_thermal">Blackbody detection area calibration</string>
+
+    <string name="setting_save_failed_multi_thermal">not changed</string>
+
+    <string name="setting_save_success_multi_thermal">Save successfully</string>
+
+    <string name="setting_save_multi_thermal">SAVE</string>
+
+    <string name="setting_please_correct_multi_thermal">(Please fill in the difference according to the temperature measured by the temperature gun and the thermal imaging temperature)</string>
+
+    <string name="record_export_multi_thermal">export</string>
+
+    <!--??????-->
+
+
+    <string name="act_certificates_idcard_only">人证比对模式</string>
+
+    <string name="act_certificates_idcard_thermal">Verify + Temperature (32*32)</string>
+
+    <string name="act_certificates_idcard_thermal_16_4">Verify + Temperature (16*4)</string>
+
+    <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
+
+    <string name="act_certificates_title">AI Authentication System</string>
+
+    <string name="act_certificates_please_get_hat">Please take off your glasses and hat</string>
+
+    <string name="act_certificates_no_idcard_temper">无证测温</string>
+
+    <string name="act_certificates_face_picture">Face photos</string>
+
+    <string name="act_certificates_card_picture">Id photo</string>
+
+    <string name="act_certificates_name">Name:</string>
+
+    <string name="act_certificates_depart">Depart:</string>
+
+    <string name="act_certificates_native_place">Native place:</string>
+
+    <string name="act_certificates_temperature">Temperature:</string>
+
+    <string name="act_certificates_status">State:</string>
+
+    <string name="act_certificates_health_code">H-Code</string>
+
+    <string name="act_certificates_can_go">can pass</string>
+
+    <string name="act_certificates_not_pass">can\'t pass</string>
+
+    <string name="act_certificates_ensure_pass">Confirm</string>
+
+    <string name="act_certificates_please_set_id_card">Please put your ic card in the swipe area</string>
+
+    <string name="act_certificates_testing">Please wait...</string>
+
+    <string name="act_certificates_please_wait">Please wait...</string>
+
+    <string name="act_certificates_idcard_failed">card reading failed, please try again</string>
+
+    <string name="act_certificates_please_look_camera">Please look straight at the camera</string>
+
+    <string name="act_certificates_verify_ing">Being validated</string>
+
+    <string name="act_certificates_verify_pass">Verification by,</string>
+
+    <string name="act_certificates_verify_not_pass">People don\'t match,</string>
+
+    <string name="act_certificates_temper_normal">Temperature is normal</string>
+
+    <string name="act_certificates_temper_warning">Temperature anomalies</string>
+
+    <string name="act_certificates_normal">normal</string>
+
+    <string name="act_certificates_warning">abnormal</string>
+
+    <string name="act_certificates_similar">similarity</string>
+
+    <string name="act_certificates_please_pass">,Please pass</string>
+
+    <string name="act_certificates_please_can_pass">can pass</string>
+
+    <string name="act_certificates_please_not_pass">can\'t pass</string>
+
+    <string name="act_certificates_visitor">visitors</string>
+
+    <string name="act_certificates_temper">temperature:</string>
+
+    <string name="act_certificates_temper_failed">Temperature measuring failure</string>
+
+    <string name="act_certificates_green">green</string>
+
+    <string name="act_certificates_yellow">yellow</string>
+
+    <string name="act_certificates_no_printer">No printer detected</string>
+
+    <string name="act_certificates_warning_printer">Warning: printer</string>
+
+    <string name="act_certificates_printer_name">Name:</string>
+
+    <string name="act_certificates_printer_depart">Depart:</string>
+
+    <string name="act_certificates_printer_native_place">Native Place:</string>
+
+    <string name="act_certificates_printer_temper">Temper:</string>
+
+    <string name="act_certificates_printer_error"> (abnormal)</string>
+
+    <string name="act_certificates_printer_time">Time:</string>
+
+    <string name="act_certificates_printer_white">White List:</string>
+
+    <string name="act_certificates_printer_white_yes">yes</string>
+
+    <string name="act_certificates_printer_white_no">no</string>
+
+    <string name="act_certificates_printer_tips">Please keep the printed voucher for checking</string>
+
+    <!--Please keep the printed voucher for checking-->
+
+
+    <string name="act_certificates_card_read_failed">Certificate reading failed, please reattach the card</string>
+
+    <string name="act_certificates_verifing">Verification in progress, please face the camera</string>
+
+    <string name="act_certficates_check_outtime">Detect timeout, please reattach the card</string>
+
+    <string name="act_certficates_check_failed">The temperature measurement failed, please reattach the card</string>
+
+    <string name="act_certficates_feature_outtime">Feature extraction timeout, please reattach the card</string>
+
+    <string name="act_certificates_verify_pass_yes">Verification by</string>
+
+    <string name="act_certificates_verify_pass_no">Don\'t match</string>
+
+    <string name="act_certificates_verify_temper_yes">Temperature is normal</string>
+
+    <string name="act_certificates_verify_temper_no">Temperature anomalies</string>
+
+    <string name="act_certificates_verify_passage_no">No thoroughfare</string>
+
+    <string name="act_certificates_verify_passage_yes">Please pass</string>
+
+    <string name="act_certificates_verify_passage_ensure">Please confirm the passage.</string>
+
+    <string name="act_certificates_speech_pass_yes">The temperature is normal, please pass</string>
+
+    <string name="act_certificates_speech_pass_no">Body temperature is abnormal, do not pass</string>
+
+    <string name="act_certificates_get_info_failed">Failed to get information, please try again</string>
+
+    <string name="act_certificates_check_outtime_scan_code">Detect timeout, please scan again</string>
+
+    <string name="act_certificates_temper_outtime_scan_code">The temperature is out of time, please scan the code again</string>
+
+    <string name="act_certificates_white_list">White List</string>
+
+    <string name="act_certificates_verify_record">Record</string>
+
+    <string name="act_certificates_user_manage">Management</string>
+
+    <string name="certificates_record_title">Verify the record</string>
+
+    <string name="certificates_record_export_all">Export all</string>
+
+    <string name="certificates_record_index">Index</string>
+
+    <string name="certificates_record_time">Time</string>
+
+    <string name="certificates_record_name">Name</string>
+
+    <string name="certificates_record_native">Native place</string>
+
+    <string name="certificates_record_depart">Depart</string>
+
+    <string name="certificates_record_temper">Temperature</string>
+
+    <string name="certificates_record_similar">Similar</string>
+
+    <string name="certificates_record_id_photo">Id Photo</string>
+
+    <string name="certificates_record_face_photo">Face Photo</string>
+
+    <string name="certificates_user_list_card_number">Card No</string>
+
+    <string name="act_certificates_someone">Thermal someone</string>
+
+    <string name="act_certificates_noone">Thermal nobody</string>
+
+    <string name="certificates_add_user_card_tips">Please swipe or enter your card number</string>
+
+    <string name="certificates_setting_printer_enable">Enable USB printer</string>
+
+    <string name="certificates_setting_id_card_mode">Enable IC card mode</string>
+
+    <string name="act_certificates_tech_support">Beijing YUNBIAO technical support</string>
+
+    <string name="act_certificates_no_this_person">No such person, please input the card number information first</string>
+
+    <!--???-->
+
+
+    <string name="safety_main_title">AI Temperature Measurement</string>
+
+    <string name="safety_main_real_detection">Monitoring</string>
+
+    <string name="safety_main_temer_area">Temperature</string>
+
+    <string name="safety_main_warning_number">Abnormal</string>
+
+    <string name="safety_main_device_no">Device No.</string>
+
+    <string name="safety_black_body_size_large">Large</string>
+
+    <string name="safety_black_body_size_Middle">Middle</string>
+
+    <string name="safety_black_body_size_Small">Small</string>
+
+    <string name="safety_black_body_size_Smaller">Smaller</string>
+
+    <string name="safety_balck_body_size">Temperature area size</string>
+
+    <string name="safety_black_body_enable">Turn on blackbody correction</string>
+
+    <!--??????-->
+
+
+    <string name="safety_temperature_threshold">Temperature threshold</string>
+
+    <!--????-->
+
+
+    <string name="safety_temperature_frame_enable">temperature measuring frame</string>
+
+    <!--?????-->
+
+
+    <string name="safety_immediate_report_enable">Immediate temperature report</string>
+
+    <!--????-->
+
+
+    <string name="safety_calibration_main">Calibration</string>
+
+    <!--??-->
+
+
+    <string name="safety_measure_main">measure:</string>
+
+    <!--??:-->
+
+
+    <string name="safety_correct_main">correct:</string>
+
+    <!--??:-->
+
+
+    <string name="safety_temper_main">temper:</string>
+
+    <!--??:-->
+
+
+    <string name="safety_auto_calibration_setting">Automatic Calibration</string>
+
+    <string name="safety_correct_temper_tip">Please aim the face at the temperature measurement frame,Temperature measurement is about to start</string>
+
+    <string name="safety_correct_temper_ing">Temperature measurement</string>
+
+    <!--????-->
+
+
+    <string name="safety_correct_temper_completion">Thermometric completion</string>
+
+    <!--????-->
+
+
+    <string name="safety_save_completion">Calibration completion</string>
+
+    <!--??-->
+
+
+    <string name="safety_save_cancel">Cancel calibration</string>
+
+    <string name="setting_privacy_prompt">Solo misura temperatura. Nessuna immagine salvata</string>
+
+    <!--??-->
+
+
+    <string name="setting_clear_policy_7">7 giorni</string>
+
+    <string name="setting_clear_policy_15">15 giorni</string>
+
+    <string name="setting_clear_policy_30">30 giorni</string>
+
+    <string name="setting_clear_policy_custom">Personalizzato</string>
+
+    <string name="setting_clear_policy_unit">giorni</string>
+
+    <string name="setting_clear_all_data">Cancella tutti i dati</string>
+
+    <string name="clear_no_data">I dati sono stati cancellati:</string>
+
+    <string name="setting_no_face_temper">Misura temperatura senza volti</string>
+
 
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
@@ -86,574 +2077,6 @@
 
     <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
     <string name="sk_multiple">SKHighThroughput</string>
-
-    <!--视美泰-->
-    <string name="smt_main_net_normal">ON-LINE</string>
-    <string name="smt_main_net_normal2">ON-LINE</string>
-    <string name="smt_main_net_no">OFF-LINE</string>
-    <string name="smt_main_all">All</string>
-    <string name="smt_main_already">Arr</string>
-    <string name="smt_main_ver">Ver:</string>
-    <string name="smt_main_company">Company:</string>
-    <string name="smt_main_device_no">No.</string>
-    <string name="smt_main_not_bind">Unbound</string>
-
-
-    <!--首页测温提示IT-->
-    <string name="main_temp_warning_tips">Stato di febbre</string><!--体温异常-->
-    <string name="main_temp_normal_tips">Normale</string><!--体温正常-->
-    <string name="main_temp_error_tips">Temperatura anormale</string>
-    <string name="main_temp_tips_please_close">Si prega di avvicinarsi</string><!--Si prega di avvicinarsi--><!--请靠近点-->
-    <string name="main_temp_tips_so_far_text">Si prega di avvicinarsi</string><!--Si prega di avvicinarsi--><!--距离太远，请靠近-->
-    <string name="main_temp_tips_please_far">Si prega di allontanarsi</string><!--请远一点-->
-    <string name="main_temp_tips_so_close_text">Si prega di allontanarsi</string><!--距离太近，请远一点-->
-    <string name="main_thermal_has_person">Persona in immagine termica</string>
-    <string name="main_thermal_no_person">Nessuno in immagine termica</string>
-    <string name="main_thermal_temp">Temperatura：</string><!--热成像 体温：-->
-    <string name="main_please_waiting">Si prega di attendere</string><!--请等待-->
-    <string name="main_temp_tips_please_in_range">Si prega di posizionare il volto nell\'area di riconoscimento</string><!--请将面部对准识别区域-->
-    <string name="main_tips_please_close">Si prega di avvicinarsi</string>
-
-
-    <!--设置-->
-    <string name="temp_measuring_setting">Measuring</string><!--正在测温-->
-    <string name="port_setting">Serial port</string><!--串口-->
-    <string name="select_port_setting">Select serial port</string><!--选择串口-->
-    <string name="auto_close_door_setting">（Close the door automatically after this time）</string><!--Automatic closing--><!--（此时间之后自动关门）-->
-    <string name="recommend_valuez_setting">Recommended value：80</string><!--推荐阈值：80-->
-    <string name="current_model_setting">Current mode</string><!--当前模式-->
-
-    <!--系统信息-->
-    <string name="System_title">Information</string><!--云标智能考勤系统-->
-    <string name="System_deviceNo">Device No:</string><!--设备编号:-->
-    <string name="System_bindCode">Bind Code:</string><!--绑定码:-->
-    <string name="System_Company">Company:</string><!--所属公司:-->
-    <string name="System_Service">Service:</string><!--服务网络:-->
-    <string name="System_ValiDate">Expiry:</string><!--有效期:-->
-    <string name="System_Manage">User Manage</string><!--人员管理-->
-    <string name="System_Add">Add User</string><!--新增员工-->
-    <string name="System_Record">Record</string><!--考勤记录-->
-    <string name="System_Setting">Setting</string><!--系统设置-->
-    <string name="System_Visitor">Visitor</string><!--访客-->
-    <string name="System_skin_select">Skin</string><!--更换皮肤-->
-    <string name="System_update">Upgrade</string><!--升级-->
-    <string name="System_copyright">copyright:Beijing Yunbiao Technology Co., Ltd</string><!--版权所有:北京云标科技有限公司-->
-    <string name="System_Service_offline">off-line</string><!--离线-->
-    <string name="System_online">on-line</string><!--在线-->
-    <string name="System_offline">off-line</string><!--离线-->
-    <string name="System_validityPeriod">Indefinite period</string><!--无限期-->
-    <string name="System_cloud_service">Cloud services</string><!--云服务-->
-    <string name="System_local_service">Local services</string><!--本地服务-->
-
-    <!--人员管理-->
-    <string name="employ_list_title">Staff List</string><!-- 员工列表 -->
-    <string name="employ_list_depart_sync">Sync</string><!-- 同步 -->
-    <string name="employ_List_add_user">Add</string><!-- 新增 -->
-    <string name="employ_List_query_button">Query</string><!-- 搜索 -->
-    <string name="employ_list_download_failed">Header image download faile</string><!-- 下载头像失败 -->
-    <string name="employ_list_add_face_failed">Header image is not valid</string><!--  添加人脸库失败-->
-    <string name="employ_list_update_head_failed">Header image update faile</string><!-- 更新头像失败 -->
-    <string name="employ_list_field_index">No</string><!-- 序号 -->
-    <string name="employ_list_field_number">Id</string><!--  员工编号-->
-    <string name="employ_list_field_name">Name</string><!--员工名 -->
-    <string name="employ_list_field_depart">Department</string><!--部门  -->
-    <string name="employ_list_field_position">Position</string><!-- 职位 -->
-    <string name="employ_list_field_control">Operation</string><!--操作  -->
-    <string name="employ_list_item_delete">Delete</string><!--  删除-->
-    <string name="employ_list_item_edit">Edit</string><!--编辑  -->
-    <string name="employ_list_all_depart">All</string><!-- 全部部门 -->
-    <string name="employ_list_please_input_user_name">username</string><!-- 请输入员工姓名 -->
-    <string name="employ_list_confirm_edit">Are you sure to modify？</string><!-- 确定修改吗？ -->
-    <string name="employ_list_confirm_delete">Are you sure to delete？</string><!-- 确定删除吗？ -->
-    <string name="employ_list_delete_failed">delete failed</string><!-- 删除失败 -->
-    <string name="employ_list_delete_success">delete success</string><!-- 删除成功 -->
-    <string name="employ_list_depart">Depart</string><!-- 部门 -->
-    <string name="employ_list_add_depart">Add Depart</string><!-- 新增部门 -->
-    <string name="employ_list_please_input_name">Please enter a name</string><!--请输入姓名-->
-    <string name="employ_list_no_this_person">The employee was not searched</string><!--未搜索到该员工-->
-
-    <!--编辑信息-->
-    <string name="act_editEmploy_zjyg">Add user</string><!-- 增加员工 -->
-    <string name="act_editEmploy_xgxx">Edit user</string><!--修改信息  -->
-    <string name="act_editEmploy_pz">Take Photo</string><!-- 拍照 -->
-    <string name="act_editEmploy_reset">reset</string><!-- 重置 -->
-    <string name="act_editEmploy_jbxx">Information</string><!-- 基本信息 -->
-    <string name="act_editEmploy_name">User name:</string><!-- 姓名: -->
-    <string name="act_editEmploy_sex">Sex:</string><!-- 性别: -->
-    <string name="act_editEmploy_bm">Depart:</string><!--部门:  -->
-    <string name="act_editEmploy_kh">Card Id:</string><!-- 员工编号 -->
-    <string name="act_editEmploy_ygbh">User Id:</string><!-- 员工编号 -->
-    <string name="act_editEmploy_zw">Position:</string><!-- 职位: -->
-    <string name="act_editEmploy_csrq">Birthday:</string><!--  出生日期-->
-    <string name="act_editEmploy_gxqm">Life motto:</string><!--  个性签名-->
-    <string name="act_editEmploy_tip_qxpz">Please take photos first.</string><!-- 请先拍照 -->
-    <string name="act_editEmploy_tip_qtxxm">Please fill in your name</string><!-- 请填写姓名 -->
-    <string name="act_editEmploy_tip_qxzxb">Please select gender</string><!--请选择性别  -->
-    <string name="act_editEmploy_tip_qtxbh">Please fill in the Id</string><!-- 请填写编号 -->
-    <string name="act_editEmploy_tip_wzdtxwjqcxpzhzs">No avatar file found, please take another picture and try again</string><!-- 未找到头像文件，请重新拍照后再试 -->
-    <string name="act_editEmploy_tip_wzrhxg">No changes</string><!-- 未做任何修改 -->
-    <string name="act_editEmploy_tip_tjsb">Add failure</string><!-- 添加失败 -->
-    <string name="act_editEmploy_tip_gygbcz">The employee does not exist</string><!-- 该员工不存在 -->
-    <string name="act_editEmploy_tip_bczgbm">The Department does not exist</string><!-- 不存在该部门 -->
-    <string name="act_editEmploy_tip_gsmyzgbm">The company does not have this department</string><!-- 公司没有这个部门 -->
-    <string name="act_editEmploy_tip_gsyzwyg">The company does not have this employee</string><!--公司没有这位员工  -->
-    <string name="act_editEmploy_tip_cscw">Parameter error</string><!--参数错误  -->
-    <string name="act_editEmploy_tip_qtxbm">Please select the department</string><!--请选择部门-->
-    <string name="act_editEmploy_tip_add_success">Add Complete</string><!--添加成功-->
-    <string name="act_editEmploy_add_face_failed">Failed to add face data</string><!--添加人脸数据失败-->
-    <string name="act_editEmploy_submit_failed">Submit Failure</string><!--提交失败-->
-    <string name="act_editEmploy_please_set_depart">Please set up a department</string><!--请设置部门-->
-    <string name="act_editEmploy_update_complete">Profile photo updated successfully</string><!--更新成功-->
-    <string name="act_editEmploy_update_failed">Update profile failed</string>
-    <string name="act_editEmploy_update_info_success">Update information successfully</string>
-    <string name="act_editEmploy_no_face">No face detected</string><!--未检测到人脸-->
-    <string name="act_editEmploy_please_face_only_one">Please keep only one face on the screen</string><!--请保持屏幕中只有一张人脸-->
-    <string name="act_editEmploy_photo_failed_try_again">Photo failed, please try again</string><!--拍照失败，请重试-->
-    <string name="act_editEmploy_unknown_error">Unknown Error</string><!--未知错误-->
-
-    <!--离线数据-->
-    <string name="sign_list_title">Record</string><!--离线记录-->
-    <string name="sign_list_all_type">All</string><!-- 全部 -->
-    <string name="sign_list_sent">Sent</string><!-- 已发送 -->
-    <string name="sign_list_unsent">Unsent</string><!-- 未发送 -->
-    <string name="sign_list_export">Export record</string><!-- 导出数据 -->
-    <string name="sign_list_upload">Upload record</string><!--  上传数据-->
-    <string name="sign_list_filed_index">Index</string><!--  序号-->
-    <string name="sign_list_filed_time">Time</string><!-- 时间 -->
-    <string name="sign_list_filed_name">User name</string><!-- 员工名 -->
-    <string name="sign_list_filed_depart">Depart</string><!-- 部门 -->
-    <string name="sign_list_filed_job">Position</string><!--职位  -->
-    <string name="sign_list_filed_head">Head</string><!-- 头像 -->
-    <string name="sign_list_no_data">No data</string><!-- 暂无数据 -->
-    <string name="sign_list_upload_success">Upload Success</string><!-- 上传成功 -->
-    <string name="sign_list_upload_failed">Upload failed, please check the network</string>
-    <string name="sign_list_table_name">Record</string>
-    ><!-- 上传失败，请检查网络 -->
-    <string name="sign_list_usb_disk">Please insert U disk</string><!--  请插入U盘-->
-    <string name="sign_list_tip_usb_disk">No USB device detected, will export to local</string>
-    <string name="sign_list_all_data_sent">All data uploaded</string><!-- 数据已全部上传 -->
-    <string name="sign_list_name">Name</string>
-    <string name="sign_list_number">Number</string>
-    <string name="sign_list_depart">Department</string>
-    <string name="sign_list_position">Position</string>
-    <string name="sign_list_date">Date</string>
-    <string name="sign_list_time">Time</string>
-    <string name="sign_list_temper">Temperature</string>
-    <string name="sign_list_head">Head</string>
-    <string name="sign_list_hot">Hot</string>
-    <string name="sign_export_record">Record</string>
-    <string name="sign_export_no_record">No Data</string>
-    <string name="sign_export_create_record_failed">Create Data failed</string>
-    <string name="sign_export_record_success">Export Success</string>
-    <string name="sign_export_record_path">Path：</string>
-    <string name="sign_export_record_failed">Export Failed</string>
-
-
-    <!--访客列表-->
-    <string name="visitor_list_title">Visitor List</string><!-- 访客列表 -->
-    <string name="visitor_list_filed_name">Name</string><!--  姓名-->
-    <string name="visitor_list_filed_time">Visit period</string><!-- 访问时间段 -->
-    <string name="visitor_list_filed_company">Company</string><!-- 单位 -->
-    <string name="visitor_list_filed_reason">Cause</string><!-- 事由 -->
-
-
-    <!--系统设置-->
-    <!--模式-->
-    <string name="only_label">Solo</string>
-    <string name="face_label">frequenza</string>
-    <string name="temper_label">Immagini termiche</string>
-    <string name="model_tip">La temperatura misurata non viene misurata durante la frequenza</string><!--单选考勤时不进行测温-->
-    <string name="model_check_tip">Scegliete almeno un modello</string><!--至少选择一种模式-->
-
-    <!--标签-->
-    <string name="setting_face_similar_threshold">Face similarity threshold</string><!-- 设置人脸相似度阈值 -->
-    <string name="setting_enable_dialog">show face infomaction</string><!-- 开启人脸弹框 -->
-    <string name="setting_enable_liveness">Turn on live detection</string><!-- 开启活体检测 -->
-    <string name="setting_camera_mirror">Enable face frame mirroring</string><!-- 开启人脸框镜像 -->
-    <string name="setting_select_model">Select mode</string><!--选择模式  -->
-    <string name="setting_current_port_path">Current serial port</string><!-- 当前串口 -->
-    <string name="setting_baud_rate">Baud rate</string><!-- 波特率 -->
-    <string name="setting_open">On</string><!-- 开启 -->
-    <string name="setting_enable_distance_tips">Distance Remind</string><!-- 开启距离提示 -->
-    <string name="setting_thermal_imaging_mirror">Thermal image mirroring</string><!-- 热成像画面镜像 -->
-    <string name="setting_open_temperature_delay">Temperature measurement delay</string><!--开启测温延时  -->
-    <string name="setting_temperature_delay_time">delay</string><!-- 测温延时 -->
-    <string name="setting_ms">ms</string><!-- 毫秒 -->
-    <string name="setting_s">s</string><!-- 秒 -->
-    <string name="setting_temp_correct_value">Temp correct value</string><!-- 测温矫正值 -->
-    <string name="setting_amb_correct_value">Ambient correct value</string><!-- 环境温矫正值 -->
-    <string name="setting_temperature_threshold">Hypothermia threshold</string><!-- 最低体温播报 -->
-    <string name="setting_temperature_warning">Normothermia threshold</string><!-- 测温报警值 -->
-    <string name="setting_temp_range">Temperature measurement range</string><!--Temperature measurement range--><!-- 体温测温范围 -->
-    <string name="setting_range_minimum">minimum</string><!--minimum--><!-- 最低 -->
-    <string name="setting_range_highest">Highest</string><!--Highest--><!-- 最高 -->
-    <string name="setting_speech_delay">Broadcast delay</string><!-- 连续播报间隔 -->
-    <string name="setting_screen_saver">Screen saver</string><!--屏保  -->
-    <string name="setting_show_qr_code">Show QrCode</string><!-- 显示二维码 -->
-    <string name="setting_enable_ic_card">IC Card Reader</string><!-- IC读卡器 -->
-    <string name="setting_relay_delay_time">Close Door Delay</string><!-- 开门时间 -->
-    <string name="setting_cpu_temp">CPU Temperature:</string><!-- CPU温度 -->
-    <string name="setting_camera_angle">Camera Angle</string><!--  摄像头角度-->
-    <string name="setting_curr_net">Network:</string><!-- 当前网络 -->
-    <string name="setting_net_name">【WIFI，Network：XXXXX】</string><!-- 【WIFI，网络名称：XXXXX】 -->
-    <string name="setting_reboot_device">Reboot</string><!-- 重启设备 -->
-    <string name="setting_check_update">Upgrade</string><!--  检测升级-->
-    <string name="setting_manage_password">Change Manage Password</string><!--管理密码修改  -->
-    <string name="setting_system_password">System password</string><!-- 系统密码 -->
-    <string name="setting_please_input_password">Please enter 6-12 digit password (number, letter)</string><!-- 请输入6-12位密码（数字、字母） -->
-    <string name="setting_please_input_again">Please enter the password again</string><!-- 请再次输入密码 -->
-    <string name="setting_cloud_service">Cloud</string><!--云端  -->
-    <string name="setting_local_service">LAN</string><!-- 局域网 -->
-    <string name="setting_ip_address">IP Address</string><!-- IP地址 -->
-    <string name="setting_xmpp_port">Communication port</string><!-- 通信端口 -->
-    <string name="setting_resource_port">Service port</string><!-- 服务端口 -->
-    <string name="setting_project_name">Project name</string><!--项目名  -->
-    <string name="setting_save_service_info">save</string><!-- 保存服务 -->
-    <string name="setting_total_one">total of 1</string><!-- 共1个 -->
-    <string name="setting_current_used">【Current：】</string><!-- 【当前使用：】 -->
-    <string name="setting_cam_angle">angle</string><!-- 角度 -->
-    <string name="setting_net_prefix">【Ethernet，IP Address:</string><!-- 【以太网络，IP地址: -->
-    <string name="setting_ip_info">，IP Address:</string><!--，IP地址:  -->
-    <string name="setting_best_camera_size">Best</string><!-- 最佳 -->
-    <string name="setting_max_camera_size">Max</string><!-- 最大 -->
-    <string name="setting_wifi_name">name:</string><!-- 名称: -->
-    <string name="setting_wifi_rssi">，Signal strength:</string><!-- ，信号强度: -->
-    <string name="setting_device_will_reboot">The device will restart. Do you want to continue?</string><!-- 设备将重启，是否继续？ -->
-    <string name="setting_device_reboot">Device restart</string><!--设备重启  -->
-    <string name="setting_3_scond_reboot">Device will restart in 3 seconds</string><!--  3秒后将重启设备-->
-    <string name="setting_password_not_null">Password cannot be empty</string><!-- 密码不可为空 -->
-    <string name="setting_password_min_6">Password must be at least 6 characters</string><!-- 密码最少输入6位 -->
-    <string name="setting_please_input_password_agian">Please enter the password again</string><!-- 请再次输入密码 -->
-    <string name="setting_password_disaccord">Passwords entered twice are inconsistent</string><!-- 两次输入的密码不一致 -->
-    <string name="setting_edit_password_failed">Modified failed</string><!-- 修改失败 -->
-    <string name="setting_edit_password_success">Modified success</string><!-- 修改成功 -->
-    <string name="setting_current_correct_value">Current correction value:</string><!--当前补正值-->
-    <string name="setting_low_temp_model">Low temperature mode</string><!--低温模式-->
-    <string name="setting_portrait_outline">Portrait Outline</string><!--人像轮廓-->
-    <string name="setting_correct_temperature">Correct Temperature</string>
-    <string name="setting_broadcast_f">Enable Fahrenheit</string>
-
-    <string name="setting_show_thermal_face_frame">Enable Thermal Imaging Face Frame</string>
-    <string name="setting_show_black_body">Enable BlackBody Correction Frame</string>
-    <string name="setting_multi_track">Enable Multiple detection</string>
-
-    <string name="setting_save_success">Save Complete</string>
-    <string name="setting_save_succ_please_restart">Save Complete,Please restart APP</string>
-    <string name="setting_please_set_ip">Please set IP address</string>
-    <string name="setting_please_set_res">Please set the service port</string>
-    <string name="setting_please_set_xmpp">Please set the communication port</string>
-    <string name="setting_res_port_error">Service port format is incorrect, please check</string>
-    <string name="setting_xmpp_port_error">Communication port format is incorrect, please check</string>
-
-    <string name="setting_switch_to_certificates">Switch to certificate temperature measurement</string><!---->
-    <string name="setting_switch_to_temperature_check_in">Switch to temperature measurement attendance</string><!---->
-    <string name="setting_switch_function">Function switch</string><!---->
-    <string name="setting_switch_tip1">Are you sure to switch to certificate temperature measurement？</string><!---->
-    <string name="setting_switch_tip2">Are you sure to switch to temperature measurement attendance？</string><!---->
-    <string name="setting_switch_confirm">YES</string>
-    <string name="setting_switch_cancel">NO</string>
-
-
-    <!--开关机设置-->
-    <string name="setting_tip_warning_number_reseted">Count cleared</string>
-    <string name="setting_reset_warning_number">Count cleared</string>
-    <string name="setting_power_on_off">Timing switch</string>
-    <string name="act_power_title">Timing switch</string>
-    <string name="act_power_power_on_strategy">Boot strategy</string>
-    <string name="act_power_power_off_strategy">Shutdown strategy</string>
-    <string name="act_power_power_on_strategy2">Boot strategy</string>
-    <string name="act_power_power_off_strategy2">Shutdown strategy</string>
-    <string name="act_power_none">None</string>
-    <string name="act_power_monday">Monday</string>
-    <string name="act_power_tuesday">Tuesday</string>
-    <string name="act_power_wednesday">Wednesday</string>
-    <string name="act_power_thursday">Thursday</string>
-    <string name="act_power_friday">Friday</string>
-    <string name="act_power_saturday">Saturday</string>
-    <string name="act_power_sunday">Sunday</string>
-    <string name="act_power_all_select">All</string>
-    <string name="act_power_turn_on_time">Turn on time</string>
-    <string name="act_power_turn_off_time">Turn off time</string>
-    <string name="act_power_save">Save</string>
-    <string name="act_power_set_success">Set up successfully!</string>
-    <string name="act_power_set_failed_not_check_on">Setting failed, please select the effective date in the boot operation policy</string>
-    <string name="act_power_set_failed_not_check_off">Setting failed, please select the effective date in the shutdown run policy</string>
-
-
-    <!--温度矫正页面-->
-    <string name="act_correct_title">Temperature correction</string>
-    <string name="act_correct_tips">Please fill in according to the temperature gun</string>
-    <string name="act_correct_current_value">Current correction value:</string>
-    <string name="act_correct_thermal_temp">Thermal imaging temperature：</string>
-    <string name="act_correct_click_get_temperature">get temperature</string>
-    <string name="act_correct_thermometer_gun">Thermometer gun temperature：</string>
-    <string name="act_correct_save">save</string>
-
-    <!--通用的  -->
-    <string name="base_tip">Tips</string><!-- 提示 -->
-    <string name="base_ensure">Confirm</string><!--确定  -->
-    <string name="base_cancel">Cancel</string><!--  取消-->
-    <string name="base_male">Mr</string><!--  男-->
-    <string name="base_female">Ms</string><!-- 女 -->
-    <string name="base_people"> </string><!-- 人  ppls-->
-    <string name="base_year">-</string><!-- 年 -->
-    <string name="base_month">-</string><!-- 月 -->
-    <string name="base_day">""</string><!-- 日 -->
-
-    <!--Splash界面  -->
-    <string name="splash_request_permission_failed">Permission application failed</string><!-- 权限申请失败 -->
-    <string name="splash_active_failed">Activation failed</string><!-- 激活失败 -->
-
-    <!--主界面  -->
-    <string name="act_wel_topTitle">YB Intelligent attendance</string><!--  云标智能考勤-->
-    <string name="act_wel_bottomTitle">YB Intelligent attendance</string><!-- 云标智能考勤 -->
-    <string name="act_wel_error_bywjsrmmo">Do not forget to enter the password</string><!--  不要忘记输入密码哦-->
-    <string name="act_wel_error_mmclqcxsrb">The password is wrong. Please re-enter it</string><!-- 密码错了，重新输入吧 -->
-    <string name="act_wel_glmm">Management password</string><!--管理密码  -->
-    <string name="act_wel_qsrglmm">Please enter the management password</string><!--  请输入管理密码-->
-    <!--AdsFragment-->
-    <string name="fment_ads_slogan">Intelligent face check-in makes enterprises more secure~</string><!-- 智能人脸签到，让企业更放心~-->
-    <!--SignFragment-->
-    <string name="fment_sign_tip_yqd">Signed-in</string><!-- 已签到 -->
-    <string name="fment_sign_bl">Make up</string><!--补录  -->
-    <string name="fment_sign_jrqd">Signed in today:</string><!-- 今日签到: -->
-    <string name="fment_sign_visitor_name">visitor</string>
-    <string name="fment_sign_company">Company：</string>
-    <string name="fment_sign_device_no">No：</string>
-    <string name="fment_sign_version">Ver：</string>
-    <string name="fment_sign_bind_code">Bind Code：</string>
-    <string name="fment_sign_net">Network：</string>
-    <string name="fment_sign_total">Total</string>
-    <string name="fment_sign_already">Arr</string>
-    <!--WebFragment-->
-    <string name="fment_Web_back">Back</string><!--  后退-->
-    <string name="fment_Web_refresh">Refresh</string><!-- 刷新 -->
-
-
-    <!-- act_set layout_setting.xml -->
-    <string name="act_set_xtsz">System settings</string><!-- 系统设置 -->
-    <string name="act_set_xtmm">System password</string><!-- 系统密码 -->
-    <string name="act_set_qchc">Clear cache</string><!-- 清除缓存 -->
-    <string name="act_set_qcsj">Clear data</string><!--清除数据  -->
-    <string name="act_set_jcsxt">Detection camera</string><!-- 检测摄像头 -->
-    <string name="act_set_sfjx">Mirroring</string><!-- 是否镜像   Mirroring:Yes   No-->
-    <string name="act_set_wlzt">Network status</string><!--网络状态  -->
-    <string name="act_set_gb">Close</string><!-- 关闭 -->
-
-
-    <!--activity_DepartList-->
-    <string name="act_departList_tip_qsrbmmc">Please enter a department name</string><!-- 请输入部门名称 -->
-    <string name="act_departList_tip_qdscm">Confirm to delete?</string><!-- 确定删除吗？ -->
-    <string name="act_departList_bmlb">Department list</string><!-- 部门列表 -->
-    <string name="act_departList_add">Add</string><!-- 新增 -->
-    <string name="act_departList_xh">No</string><!--  序号-->
-    <string name="act_departList_bmmc">Department name</string><!-- 部门名称 -->
-    <string name="act_departList_cz">Operation</string><!-- 操作 -->
-
-    <!--InformationFragment-->
-
-    <!--dialog_depart-->
-    <string name="dialog_depart_qsrbmmc">Please enter a department name</string><!--请输入部门名称  -->
-
-    <!-- 同步 -->
-    <string name="lay_loadPop_sync">Sync</string><!-- 同步 -->
-    <string name="lay_loadPop_zlxsxx">Show information here</string><!-- 这里显示信息 -->
-    <string name="uiUtils_tip_notice">Notice</string><!-- 通知 -->
-    <string name="uiUtils_tip_zzazxgyyqnxdd">Installing related applications, please be patient!</string><!-- 正在安装相关应用，请耐心等待！ -->
-    <string name="dialog_sync_tbjs">End synchronously</string><!-- 同步结束 -->
-    <string name="sync_company_1">Access to company information</string><!-- 获取公司信息 -->
-    <string name="sync_staff_2">Get personnel information</string><!-- 获取人员信息 -->
-    <string name="sync_database_3">Sync database</string><!-- 同步数据库 -->
-    <string name="sync_head_4">Download Avatar</string><!--  下载头像-->
-    <string name="sync_face_5">Syn face database</string><!--同步人脸库  -->
-    <string name="sync_get_failed">Failed to get, retrying soon</string><!-- 获取失败，即将重试 -->
-    <string name="sync_not_bind">Device not bound</string><!--  设备未绑定-->
-    <string name="sync_data_resolve_failed">Resolve Data Filed</string>
-    <string name="sync_not_depart">No department set up in the company</string><!--  公司未设置部门-->
-    <string name="sync_params_error">Parameter error</string><!--  参数错误-->
-    <string name="edit_not_edit">No changes</string><!-- 未做任何修改 -->
-
-    <!-- RestartAPPTool -->
-    <string name="restartAPPTool_sftcyy">Exit app?</string><!-- 是否退出应用？ -->
-    <string name="restartAPPTool_ycdht">Hide to background</string><!--  隐藏到后台-->
-    <string name="restartAPPTool_exit">Quit</string><!--  退出-->
-
-    <!-- UpdateManager -->
-    <string name="updateManager_dqbbwzxbb">The current version is the latest version</string><!-- 当前版本为最新版本 -->
-    <string name="updateManager_wlljsbqjcwl">Network connection failed, please check the network</string><!--网络连接失败，请检查网络  -->
-    <string name="updateManager_xzsb">Download failed</string><!--下载失败  -->
-    <string name="update_version_title">Version Information</string>
-    <string name="update_lable_new">latest version：</string>
-    <string name="update_lable_current">current version：</string>
-    <string name="update_check_failed">Failed to detect the update. Please check the network</string>
-    <string name="update_check_ing">Checking the latest version</string>
-    <string name="update_have_new">A new version has been detected. Please check for details</string>
-    <string name="update_no_description">No details</string>
-
-    <!--其他-->
-    <string name="recognize_failed_notice">DENIED:%s</string><!-- DENIED:%s -->
-    <string name="low_confidence_level">face low confidence level</string><!--face low confidence level  -->
-    <string name="accessibility_description">xxx按键监听的无障碍辅助服务</string><!-- xxx按键监听的无障碍辅助服务 -->
-    <string name="System_Setting_save_threshold">Save</string><!--保存  -->
-
-
-    <!--多人测温-->
-    <string name="main_title_multi_thermal">AI Temperature Measurement</string>
-    <string name="main_permission_failed_multi_thermal">USB permission acquisition failed</string>
-    <string name="main_not_found_usb_multi_thermal">Target device not found</string>
-    <string name="main_exception_record_multi_thermal">Abnormal record</string>
-    <string name="main_normal_record_multi_thermal">Movement record</string>
-    <string name="main_total_passage_multi_thermal">Number</string>
-    <string name="main_normal_multi_thermal">Normal</string>
-    <string name="main_error_multi_thermal">Abnormal</string>
-    <string name="main_company_multi_thermal">staff</string>
-    <string name="main_visitor_multi_thermal">Visit</string>
-    <string name="main_real_detection">Monitoring</string><!--实时监测-->
-    <string name="main_data_total">Data statistics</string><!--数据统计-->
-    <string name="system_net_status_multi_thermal">Network:</string>
-    <string name="system_record_multi_thermal">Temperature recording</string>
-    <string name="record_index_multi_thermal">Index</string>
-    <string name="record_date_multi_thermal">Date</string>
-    <string name="record_pass_time_multi_thermal">Time</string>
-    <string name="record_temper_multi_thermal">Temperature</string>
-    <string name="record_head_multi_thermal">Head portrait</string>
-    <string name="record_hot_multi_thermal">Thermal imaging</string>
-    <string name="setting_black_body_rect_multi_thermal">Blackbody detection area calibration</string>
-    <string name="setting_save_failed_multi_thermal">not changed</string>
-    <string name="setting_save_success_multi_thermal">Save successfully</string>
-    <string name="setting_save_multi_thermal">SAVE</string>
-    <string name="setting_please_correct_multi_thermal">（Please fill in the difference according to the temperature measured by the temperature gun and the thermal imaging temperature）</string>
-    <string name="record_export_multi_thermal">export</string>
-
-
-    <!--人证测温系统-->
-    <string name="act_certificates_idcard_only">人证比对模式</string>
-    <string name="act_certificates_idcard_thermal">Verify + Temperature (32*32)</string>
-    <string name="act_certificates_idcard_thermal_16_4">Verify + Temperature (16*4)</string>
-    <string name="act_certificates_idcard_infared">人证比对+红外测温模式</string>
-    <string name="act_certificates_title">AI authentication system</string>
-    <string name="act_certificates_please_get_hat">Please take off your glasses and hat</string>
-    <string name="act_certificates_no_idcard_temper">无证测温</string>
-    <string name="act_certificates_face_picture">Face photos</string>
-    <string name="act_certificates_card_picture">Id photo</string>
-    <string name="act_certificates_name">Name：</string>
-    <string name="act_certificates_depart">Depart：</string>
-    <string name="act_certificates_native_place">Native place：</string>
-    <string name="act_certificates_temperature">Temperature：</string>
-    <string name="act_certificates_status">State：</string>
-    <string name="act_certificates_health_code">H-Code</string>
-    <string name="act_certificates_can_go">can pass</string>
-    <string name="act_certificates_not_pass">can\'t pass</string>
-    <string name="act_certificates_ensure_pass">Confirm</string>
-    <string name="act_certificates_please_set_id_card">Please put your ic card in the swipe area</string>
-    <string name="act_certificates_testing">Please wait...</string>
-    <string name="act_certificates_please_wait">Please wait...</string>
-    <string name="act_certificates_idcard_failed">card reading failed, please try again</string>
-    <string name="act_certificates_please_look_camera">Please look straight at the camera</string>
-    <string name="act_certificates_verify_ing">Being validated</string>
-    <string name="act_certificates_verify_pass">Verification by，</string>
-    <string name="act_certificates_verify_not_pass">People don\'t match，</string>
-    <string name="act_certificates_temper_normal">Temperature is normal</string>
-    <string name="act_certificates_temper_warning">Temperature anomalies</string>
-    <string name="act_certificates_normal">normal</string>
-    <string name="act_certificates_warning">abnormal</string>
-    <string name="act_certificates_similar">similarity</string>
-    <string name="act_certificates_please_pass">，Please pass</string>
-    <string name="act_certificates_please_can_pass">can pass</string>
-    <string name="act_certificates_please_not_pass">can\'t pass</string>
-    <string name="act_certificates_visitor">visitors</string>
-    <string name="act_certificates_temper">temperature：</string>
-    <string name="act_certificates_temper_failed">Temperature measuring failure</string>
-    <string name="act_certificates_green">green</string>
-    <string name="act_certificates_yellow">yellow</string>
-    <string name="act_certificates_no_printer">No printer detected</string>
-    <string name="act_certificates_warning_printer">Warning: printer</string>
-    <string name="act_certificates_printer_name">Name：</string>
-    <string name="act_certificates_printer_depart">Depart：</string>
-    <string name="act_certificates_printer_native_place">Native Place：</string>
-    <string name="act_certificates_printer_temper">Temper：</string>
-    <string name="act_certificates_printer_error">  (abnormal)</string>
-    <string name="act_certificates_printer_time">Time：</string>
-    <string name="act_certificates_printer_white">White List：</string>
-    <string name="act_certificates_printer_white_yes">yes</string>
-    <string name="act_certificates_printer_white_no">no</string>
-    <string name="act_certificates_printer_tips">Please keep the printed voucher for checking</string><!--Please keep the printed voucher for checking-->
-    <string name="act_certificates_card_read_failed">Certificate reading failed, please reattach the card</string>
-    <string name="act_certificates_verifing">Verification in progress, please face the camera</string>
-    <string name="act_certficates_check_outtime">Detect timeout, please reattach the card</string>
-    <string name="act_certficates_check_failed">The temperature measurement failed, please reattach the card</string>
-    <string name="act_certficates_feature_outtime">Feature extraction timeout, please reattach the card</string>
-    <string name="act_certificates_verify_pass_yes">Verification by</string>
-    <string name="act_certificates_verify_pass_no">Don\'t match</string>
-    <string name="act_certificates_verify_temper_yes">Temperature is normal</string>
-    <string name="act_certificates_verify_temper_no">Temperature anomalies</string>
-    <string name="act_certificates_verify_passage_no">No thoroughfare</string>
-    <string name="act_certificates_verify_passage_yes">Please pass</string>
-    <string name="act_certificates_verify_passage_ensure">Please confirm the passage.</string>
-    <string name="act_certificates_speech_pass_yes">The temperature is normal, please pass</string>
-    <string name="act_certificates_speech_pass_no">Body temperature is abnormal, do not pass</string>
-    <string name="act_certificates_get_info_failed">Failed to get information, please try again</string>
-    <string name="act_certificates_check_outtime_scan_code">Detect timeout, please scan again</string>
-    <string name="act_certificates_temper_outtime_scan_code">The temperature is out of time, please scan the code again</string>
-    <string name="act_certificates_white_list">White List</string>
-    <string name="act_certificates_verify_record">Record</string>
-    <string name="act_certificates_user_manage">Management</string>
-    <string name="certificates_record_title">Verify the record</string>
-    <string name="certificates_record_export_all">Export all</string>
-    <string name="certificates_record_index">Index</string>
-    <string name="certificates_record_time">Time</string>
-    <string name="certificates_record_name">Name</string>
-    <string name="certificates_record_native">Native place</string>
-    <string name="certificates_record_depart">Depart</string>
-    <string name="certificates_record_temper">Temperature</string>
-    <string name="certificates_record_similar">Similar</string>
-    <string name="certificates_record_id_photo">Id Photo</string>
-    <string name="certificates_record_face_photo">Face Photo</string>
-    <string name="certificates_user_list_card_number">Card No</string>
-    <string name="act_certificates_someone">Thermal someone</string>
-    <string name="act_certificates_noone">Thermal nobody</string>
-    <string name="certificates_add_user_card_tips">Please swipe or enter your card number</string>
-    <string name="certificates_setting_printer_enable">Enable USB printer</string>
-    <string name="certificates_setting_id_card_mode">Enable IC card mode</string>
-    <string name="act_certificates_tech_support">Beijing YUNBIAO technical support</string>
-    <string name="act_certificates_no_this_person">No such person, please input the card number information first</string>
-
-
-    <!--安检门-->
-    <string name="safety_main_title">AI Temperature Measurement</string>
-    <string name="safety_main_real_detection">Monitoring</string>
-    <string name="safety_main_temer_area">Temperature</string>
-    <string name="safety_main_warning_number">Abnormal</string>
-    <string name="safety_main_device_no">Device No.</string>
-    <string name="safety_black_body_size_large">Large</string>
-    <string name="safety_black_body_size_Middle">Middle</string>
-    <string name="safety_black_body_size_Small">Small</string>
-    <string name="safety_black_body_size_Smaller">Smaller</string>
-    <string name="safety_balck_body_size">Temperature area size</string>
-    <string name="safety_black_body_enable">Turn on blackbody correction</string><!--开启黑体矫正-->
-    <string name="safety_temperature_threshold">Temperature threshold</string><!--取温阈值-->
-    <string name="safety_temperature_frame_enable">temperature measuring frame</string><!--开启测温框-->
-    <string name="safety_immediate_report_enable">Immediate temperature report</string><!--立即报温-->
-    <string name="safety_calibration_main">Calibration</string><!--校准-->
-    <string name="safety_measure_main">measure:</string><!--测温:-->
-    <string name="safety_correct_main">correct:</string><!--校准:-->
-    <string name="safety_temper_main">temper:</string><!--体温:-->
-    <string name="safety_auto_calibration_setting">Automatic Calibration</string>
-    <string name="safety_correct_temper_tip">Please aim the face at the temperature measurement frame,Temperature measurement is about to start</string>
-    <string name="safety_correct_temper_ing">Temperature measurement</string><!--正在测温-->
-    <string name="safety_correct_temper_completion">Thermometric completion</string><!--测温结束-->
-    <string name="safety_save_completion">Calibration completion</string><!--保存-->
-    <string name="safety_save_cancel">Cancel calibration</string>
-
-    <string name="setting_privacy_prompt">Si esegue solo la temperatura di misura e non si registrano dati di immagine数据</string><!--保存-->
-    <string name="setting_clear_policy_7">7 giorni</string>
-    <string name="setting_clear_policy_15">15 giorni</string>
-    <string name="setting_clear_policy_30">30 giorni</string>
-    <string name="setting_clear_policy_custom">input</string>
-    <string name="setting_clear_policy_unit">giorni</string>
-    <string name="setting_clear_all_data">Eliminazione di tutti i dati</string>
-    <string name="clear_no_data">I dati sono stati raccolti：</string>
-    <string name="setting_no_face_temper">Nessuno dichiara wen in faccia</string>
 
     <!-- 5寸 -->
     <string name="main_title">AI Temperature</string>

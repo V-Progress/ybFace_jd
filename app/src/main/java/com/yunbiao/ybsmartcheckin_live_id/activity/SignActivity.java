@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -15,15 +16,17 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.FileSelectActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.SignAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -31,7 +34,6 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.common.util.FileUtil;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -40,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import io.reactivex.functions.Consumer;
 
@@ -286,115 +287,67 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private boolean isExporting = false;
 
     public void exportToUD(final View view) {
-        //获取U盘地址
-        String usbDiskPath = SdCardUtils.getUsbDiskPath(this);
-        usbDiskPath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(usbDiskPath);
-        if (!file.exists()) {
-            isExporting = false;
-            UIUtils.showTitleTip(SignActivity.this, getString(R.string.sign_list_usb_disk));
-            return;
-        }
-        /*String[] list = file.list();
-        for (String s : list) {
-            File usbFile = new File(file, s);
-            if (usbFile.isDirectory()) {
-                file = usbFile;
-            }
-        }*/
-        //创建记录最外层目录
-        final File dirFile = new File(file, dateFormat.format(new Date()) + "_导出记录");
-        if (!dirFile.exists()) {
-            boolean mkdirs = dirFile.mkdirs();
-            Log.e(TAG, "exportToUD: 创建外层目录：" + dirFile.getPath() + " --- " + mkdirs);
-        }
-        //创建图片目录
-        final File imgDir = new File(dirFile, "image");
-        if (!imgDir.exists()) {
-            boolean mkdirs = imgDir.mkdirs();
-            Log.e(TAG, "exportToUD: 创建图片目录：" + imgDir.getPath() + " --- " + mkdirs);
-        }
-        //创建xls文件
-        final File excelFile = new File(dirFile, dateFormat.format(new Date()) + "_导出记录.xls");
-        //获取源数据
-        final List<Sign> signs = DaoManager.get().queryAll(Sign.class);
-        Log.e(TAG, "export: 源数据：" + (signs == null ? 0 : signs.size()));
-        if (signs == null || signs.size() <= 0) {
-            UIUtils.showShort(this, "没有数据");
-            return;
-        }
-        //生成导出数据
-        final List<List<String>> tableData = createTableData(signs);
-        Log.e(TAG, "export: 导出数据：" + tableData.size());
-        if (tableData == null || tableData.size() <= 0) {
-            UIUtils.showShort(this, "生成导出数据失败");
-            return;
-        }
-        UIUtils.showNetLoading(this);
-        view.setEnabled(false);
-        //开始导出
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "run: 拷贝图片");
-                for (Sign sign : signs) {
-                    String headPath = sign.getHeadPath();
-                    String hotImgPath = sign.getHotImgPath();
+        startActivityForResult(new Intent(this, FileSelectActivity.class),FileSelectActivity.SELECT_REQUEST_CODE);
+    }
 
-                    if (!TextUtils.isEmpty(headPath)) {
-                        File headFile = new File(headPath);
-                        if (headFile.exists()) {
-                            boolean copy = FileUtil.copy(headFile.getPath(), imgDir.getPath() + File.separator + headFile.getName());
-                            Log.e(TAG, "run: 头像，拷贝结果：" + copy);
-                        }
-                    }
-
-                    if (!TextUtils.isEmpty(hotImgPath)) {
-                        File hotImageFile = new File(hotImgPath);
-                        if (hotImageFile.exists()) {
-                            boolean copy = FileUtil.copy(hotImageFile.getPath(), imgDir.getPath() + File.separator + hotImageFile.getName());
-                            Log.e(TAG, "run: 热图，拷贝结果：" + copy);
-                        }
-                    }
-                }
-
-                ExcelUtils.initExcel(excelFile.getPath(),getResString(R.string.sign_list_table_name), title);
-                final boolean result = ExcelUtils.writeObjListToExcel(tableData, excelFile.getPath());
-                Log.e(TAG, "run: excel，导出结果：" + result);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        view.setEnabled(true);
-                        UIUtils.dismissNetLoading();
-                        UIUtils.showShort(SignActivity.this, result ? ("导出成功\n目录：" + dirFile.getPath()) : "导出失败");
-                    }
-                });
-            }
-        });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
+            String stringExtra = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
+            Log.e(TAG, "onActivityResult: 选中的目录：" + stringExtra);
+            export(new File(stringExtra));
+        }
     }
 
     private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
 
-    public List<List<String>> createTableData(List<Sign> signs) {
-        List<List<String>> tableDatas = new ArrayList<>();
-        if (signs != null) {
+    private void export(File file){
+        final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.Export.ExportCallback() {
+            @Override
+            public void onStart() {
+                UIUtils.showNetLoading(SignActivity.this);
+            }
+
+            @Override
+            public List<List<String>> getDataList() {
+                return createObjTableData();
+            }
+
+            @Override
+            public void onFinish(int result, String filePath) {
+                UIUtils.dismissNetLoading();
+                UIUtils.showShort(SignActivity.this, result == 1
+                        ? (getResources().getString(R.string.sign_export_record_success) +
+                        "\n" +
+                        getResources().getString(R.string.sign_export_record_path) + filePath)
+                        : getResources().getString(R.string.sign_export_record_failed));
+            }
+        });
+    }
+
+    //创建表格数据
+    public List<List<String>> createObjTableData(){
+        List<List<String>> stringListList = new ArrayList<>();
+        final List<Sign> signs = DaoManager.get().querySignByComId(SpUtils.getCompany().getComid());
+        if(signs != null && signs.size() > 0){
             for (int i = 0; i < signs.size(); i++) {
                 Sign sign = signs.get(i);
-                List<String> beanList = new ArrayList<>();
-
-                beanList.add(TextUtils.isEmpty(sign.getName()) ? "" : sign.getName());
-                beanList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
-                beanList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
-                beanList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
-                beanList.add(dateFormat1.format(sign.getTime()) + "");
-                beanList.add(dateFormat2.format(sign.getTime()) + "");
-                beanList.add(sign.getTemperature() + "");
-                beanList.add(new File(sign.getHeadPath()).getName() + "");
-                beanList.add(TextUtils.isEmpty(sign.getHotImgPath()) ? "" : new File(sign.getHotImgPath()).getName());
-                tableDatas.add(beanList);
+                List<String> stringList = new ArrayList<>();
+                stringList.add(TextUtils.isEmpty(sign.getName()) ? getResString(R.string.fment_sign_visitor_name) : sign.getName());
+                stringList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
+                stringList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
+                stringList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
+                stringList.add(dateFormat1.format(sign.getTime()) + "");
+                stringList.add(dateFormat2.format(sign.getTime()) + "");
+                stringList.add(sign.getTemperature() + "");
+                stringList.add(sign.getHeadPath());
+                stringList.add(sign.getHotImgPath());
+                stringListList.add(stringList);
             }
         }
-        return tableDatas;
+        return stringListList;
     }
 
     private String getSDPath() {

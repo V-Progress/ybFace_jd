@@ -22,7 +22,7 @@
             android:textSize="32dp"
             android:textColor="@color/white"
             android:layout_centerInParent="true"
-            android:text="部门管理" />
+            android:text="@string/act_departList_bmlb" />
 
         <TextView
             android:gravity="center_vertical"
@@ -62,7 +62,7 @@
                 android:drawableLeft="@mipmap/icon_add"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/employ_List_add_user"
+                android:text="@string/employ_list_add_depart"
                 android:textColor="#64DCFE"
                 android:textSize="20dp" />
         </RelativeLayout>

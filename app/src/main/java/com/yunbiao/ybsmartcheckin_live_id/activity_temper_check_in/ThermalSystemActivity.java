@@ -80,6 +80,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     private Button btnVisitorSystem;
     private Button btnSkinSystem;
     private TextView tvAbbName;
+    private View llExpiry;
 
     @Override
     protected int getPortraitLayout() {
@@ -112,6 +113,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         tv_server_system = (TextView) findViewById(R.id.tv_server_system);
         tv_version_system = (TextView) findViewById(R.id.tv_version_system);
         tv_online_system = (TextView) findViewById(R.id.tv_online_system);
+        llExpiry = findViewById(R.id.ll_expiry);
 
         btn_depart_system.setOnClickListener(this);
         btn_add_system.setOnClickListener(this);
@@ -129,9 +131,10 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
             tv_server_system.setText(getString(R.string.System_local_service));
         }
 
+        boolean titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
         boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO,ThermalConst.Default.SHOW_MAIN_LOGO);
         ivLogo.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
-        tvAbbName.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
+        tvAbbName.setVisibility(titleEnabled ? View.VISIBLE : View.GONE);
 
         if(showMainLogo){
             //onResume中加载该加载的东西
@@ -140,7 +143,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     }
 
     private void setLogo(ImageView logoView,TextView tvName) {
-        boolean titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
         boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
         if (localPriority) {
             String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
@@ -166,15 +168,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
                 });
             }
             tvName.setText(TextUtils.isEmpty(abbname) ? "" : abbname);
-        }
-        if(titleEnabled){
-            if(!tvName.isShown()){
-                tvName.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if(tvName.isShown()){
-                tvName.setVisibility(View.GONE);
-            }
         }
     }
     private String appName = "";
@@ -263,10 +256,12 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
         if (TextUtils.isEmpty(expDate)) {
             expDate = getString(R.string.System_validityPeriod);
+            llExpiry.setVisibility(View.GONE);
         } else {
+            llExpiry.setVisibility(View.VISIBLE);
             expDate = dateFormat.format(new Date(Long.parseLong(expDate)));
+            tv_exp_system.setText(expDate);
         }
-        tv_exp_system.setText(expDate);
 
         tv_online_system.setText(CoreInfoHandler.isOnline ? getString(R.string.System_online) : getString(R.string.System_offline));
     }

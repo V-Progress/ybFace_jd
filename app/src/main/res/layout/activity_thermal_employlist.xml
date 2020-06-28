@@ -66,14 +66,15 @@
                 android:background="@mipmap/icon_depart_spinner"/>
 
             <Button
+                android:drawablePadding="5dp"
                 android:layout_marginLeft="6dp"
                 android:paddingLeft="10dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:id="@+id/btn_addDepart"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_employ_button"
-                android:text="@string/employ_list_add_depart"
+                android:text="@string/employ_list_depart"
                 android:textColor="#64DCFE"
                 android:drawableLeft="@mipmap/icon_add" />
 
@@ -92,7 +93,6 @@
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent" />
-
             <Button
                 android:paddingLeft="10dp"
                 android:layout_marginLeft="6dp"
@@ -105,7 +105,20 @@
                 android:drawableLeft="@mipmap/icon_add"
                 android:text="@string/employ_List_add_user"
                 android:textColor="#64DCFE" />
-
+            <Button
+                android:layout_marginLeft="6dp"
+                android:paddingRight="10dp"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="10dp"
+                android:drawablePadding="10dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_import"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:drawableLeft="@mipmap/import_icon"
+                android:text="@string/import_title"
+                android:textColor="@color/white"/>
             <Button
                 android:paddingLeft="10dp"
                 android:layout_marginLeft="6dp"
@@ -159,7 +172,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
 
         <LinearLayout
             android:paddingTop="10dp"

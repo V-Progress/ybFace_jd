@@ -64,7 +64,8 @@ public class AutoUpload {
 
     //开始上传记录
     public void uploadSignRecord(final Consumer<Boolean> callback) {
-        final List<Sign> signs = DaoManager.get().querySignByUpload(false);
+        int comid = SpUtils.getCompany().getComid();
+        List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, false);
         if (signs == null) {
             Log.e(TAG, "uploadSignRecord: 暂无数据：" + signs.size());
             return;
@@ -95,6 +96,15 @@ public class AutoUpload {
             } else {
                 visitorSignList.add(signBean);
             }
+        }
+
+        if(entrySignList.size() <= 0 && visitorSignList.size() <= 0 && temperSignList.size() <= 0){
+            try {
+                callback.accept(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
         }
 
         //上传考勤数据

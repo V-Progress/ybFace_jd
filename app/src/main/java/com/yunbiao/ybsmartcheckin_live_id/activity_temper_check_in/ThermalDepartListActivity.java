@@ -20,22 +20,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.activity.DepartListActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
-import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +38,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
-
-import static com.yunbiao.ybsmartcheckin_live_id.R2.id.et_departName;
+import okhttp3.Request;
+import timber.log.Timber;
 
 public class ThermalDepartListActivity extends BaseActivity {
     private static final String TAG = "ThermalDepartListActivi";
@@ -113,14 +107,53 @@ public class ThermalDepartListActivity extends BaseActivity {
      */
     private void deleteDepartDialog(Depart depart) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("删除");
-        builder.setMessage("确定要删除【" + depart.getDepName() + "】吗？");
+        builder.setTitle(getResString(R.string.employ_list_item_delete));
+        builder.setMessage(getResString(R.string.act_departList_tip_qdscm));
         builder.setPositiveButton(getString(R.string.base_ensure), (dialog, which) -> {
             if (SpUtils.getCompany().getComid() == Constants.NOT_BIND_COMPANY_ID) {
                 DaoManager.get().delete(depart);
                 initData();
             } else {
+                long depId = depart.getDepId();
+                Map<String, String> params = new HashMap<>();
+                params.put("depId", String.valueOf(depId));
+                Timber.d("删除部门：%s", ResourceUpdate.DELETEDEPART);
+                Timber.d("参数：%s", params.toString());
+                OkHttpUtils.post()
+                        .url(ResourceUpdate.DELETEDEPART)
+                        .params(params)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onBefore(Request request, int id) {
+                                UIUtils.showNetLoading(ThermalDepartListActivity.this);
+                            }
 
+                            @Override
+                            public void onAfter(int id) {
+                                UIUtils.dismissNetLoading();
+                            }
+
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                Timber.d("失败：%s", e.getMessage());
+                                UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.employ_list_delete_failed) + "(" + e.getMessage() + ")");
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                Timber.d("结果：%s", response);
+                                if (response.contains("1")) {
+                                    UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.employ_list_delete_success));
+                                    DaoManager.get().delete(depart);
+                                    initData();
+                                } else {
+                                    JSONObject jsonObject = JSONObject.parseObject(response);
+                                    Integer status = jsonObject.getInteger("status");
+                                    UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.employ_list_delete_failed) + "(" + status + ")");
+                                }
+                            }
+                        });
             }
         });
         builder.setNegativeButton(getString(R.string.base_cancel), (dialog, which) -> {
@@ -164,7 +197,7 @@ public class ThermalDepartListActivity extends BaseActivity {
         builder.setPositiveButton(getString(R.string.base_ensure), (dialog, which) -> {
             String departName = edtDepartName.getText().toString();
             if (TextUtils.isEmpty(departName)) {
-                edtDepartName.setError("请输入部门名称");
+                edtDepartName.setError(getResString(R.string.act_departList_tip_qsrbmmc));
                 return;
             }
             int comid = SpUtils.getCompany().getComid();
@@ -183,6 +216,7 @@ public class ThermalDepartListActivity extends BaseActivity {
                     departId += 1l;
                     finalDepart.setId(departId);
                     finalDepart.setDepId(departId);
+                    finalDepart.setCompId(comid);
                     finalDepart.setDepName(departName);
                     DaoManager.get().add(finalDepart);
                 } else {
@@ -191,35 +225,73 @@ public class ThermalDepartListActivity extends BaseActivity {
                 }
                 initData();
             } else {
+                Map<String, String> params = new HashMap<>();
+                params.put("name", departName);
+                params.put("comId", String.valueOf(comid));
+
+                String url;
+                if (operation == 0) {
+                    url = ResourceUpdate.ADDDEPART;
+                    Timber.d("新增部门：" + url);
+                    Timber.d("参数：" + params.toString());
+                } else {
+                    params.put("depId", String.valueOf(finalDepart.getDepId()));
+                    url = ResourceUpdate.UPDATEDEPART;
+                    Timber.d("修改部门：" + url);
+                    Timber.d("参数：" + params.toString());
+                }
+
                 OkHttpUtils.post()
-                        .addParams("name", departName)
-                        .addParams("comId", String.valueOf(comid))
+                        .url(url)
+                        .params(params)
                         .build().execute(new StringCallback() {
                     @Override
+                    public void onBefore(Request request, int id) {
+                        UIUtils.showNetLoading(ThermalDepartListActivity.this);
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        UIUtils.dismissNetLoading();
+                    }
+
+                    @Override
                     public void onError(Call call, Exception e, int id) {
-                        UIUtils.showShort(ThermalDepartListActivity.this,getResString(R.string.act_editEmploy_tip_tjsb) + "(" + e == null ?"NULL" : e.getMessage() +")");
+                        Timber.d("失败：%s", e.getMessage());
+                        UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.act_editEmploy_tip_tjsb) + "(" + e == null ? "NULL" : e.getMessage() + ")");
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        if(TextUtils.isEmpty(response)){
-                            UIUtils.showShort(ThermalDepartListActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
+                        Timber.d("结果：%s", response);
+                        if (TextUtils.isEmpty(response)) {
+                            UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.act_editEmploy_tip_tjsb) + "(Empty Response)");
                             return;
                         }
 
-                        com.alibaba.fastjson.JSONObject jsonObject = JSONObject.parseObject(response);
+                        JSONObject jsonObject = JSONObject.parseObject(response);
                         Integer status = jsonObject.getInteger("status");
-                        if(status == 1){
-                            UIUtils.showShort(ThermalDepartListActivity.this,getResString(R.string.act_editEmploy_tip_tjsb));
+                        if (status != 1) {
+                            UIUtils.showShort(ThermalDepartListActivity.this, getResString(R.string.act_editEmploy_tip_tjsb) + "(" + status + ")");
                             return;
                         }
 
-                        Integer depId = jsonObject.getInteger("depId");
-                        Depart de = new Depart();
-                        de.setId(depId);
-                        de.setDepId(depId);
-                        de.setDepName(departName);
-                        DaoManager.get().addOrUpdate(de);
+                        if (operation == 0) {
+                            Integer depId = jsonObject.getInteger("depId");
+                            finalDepart.setId(depId);
+                            finalDepart.setDepId(depId);
+                            finalDepart.setDepName(departName);
+                            finalDepart.setCompId(comid);
+                            long l = DaoManager.get().addOrUpdate(finalDepart);
+                            Log.e(TAG, "onResponse: 添加结果：" + l);
+
+                            UIUtils.showShort(ThermalDepartListActivity.this,getResString(R.string.act_editEmploy_tip_add_success));
+                        } else {
+                            finalDepart.setDepName(departName);
+                            DaoManager.get().update(finalDepart);
+                            UIUtils.showShort(ThermalDepartListActivity.this,getResString(R.string.setting_edit_password_success));
+                        }
+                        initData();
                     }
                 });
             }

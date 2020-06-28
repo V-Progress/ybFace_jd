@@ -192,7 +192,7 @@ public class Setting5InchActivity extends Base5InchActivity {
         } else {
             settingDataBean.serverInfoEnabled.set(true);
 
-            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            ip = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
             resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
             xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
             proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
@@ -258,7 +258,7 @@ public class Setting5InchActivity extends Base5InchActivity {
                         SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                     } else if (activity5inchSettingBinding.rbJu.isChecked()) {
                         SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-                        SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                        SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, mIp);
                         SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
                         SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
                         SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);

@@ -3,18 +3,18 @@ package com.yunbiao.ybsmartcheckin_live_id.db2;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
-@Entity/*(indexes = {@Index(value = "depId DESC,compId DESC",unique = true)})*/
+@Entity(indexes = {@Index(value = "depId DESC,compId DESC",unique = true)})
 public class Depart {
 
     @Id
     private long id;
 
-    @Unique
     private long depId;
 
     private String depName;

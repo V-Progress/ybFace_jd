@@ -33,6 +33,7 @@ public class ResourceUpdate {
     public static String VISITARRAY = Constants.RESOURCE_URL + "api/visitor/signUploadByarray.html";//定时发送访客列表
     public static String ADDDEPART = Constants.RESOURCE_URL + "api/department/departmentadd.html";//创建部门
     public static String DELETEDEPART = Constants.RESOURCE_URL + "api/department/departmentdelete.html";//删除部门
+    public static String UPDATEDEPART = Constants.RESOURCE_URL + "/api/department/departmentupdate.html";//删除部门
     public static String GETAD = Constants.RESOURCE_URL + "api/company/getadvert.html";//获取广告
     public static String getCompInfo = Constants.RESOURCE_URL + "api/propa/getAll.html";//公司介绍信息
     public static String getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
@@ -58,6 +59,7 @@ public class ResourceUpdate {
 
     public static String GET_ACTIVE_CODE = Constants.RESOURCE_URL + "api/activate/getCode.html";//获取激活码
     public static String RETURN_ACTIVE_STATUS = Constants.RESOURCE_URL + "api/activate/getCodeReturn.html";//返回激活码
+    public static String IMPORT_USER_BY_EXCEL = Constants.RESOURCE_URL + "/api/entry/importEntryByExcel.html";//上传Excel到服务器
 
     public static void refreshAddress(){
         COMPANYINFO_ID = Constants.RESOURCE_URL + "api/company/getcompanyById.html";//获取公司信息以及下的部门信息接口
@@ -79,6 +81,7 @@ public class ResourceUpdate {
         VISITARRAY = Constants.RESOURCE_URL + "api/visitor/signUploadByarray.html";//定时发送访客列表
         ADDDEPART = Constants.RESOURCE_URL + "api/department/departmentadd.html";//创建部门
         DELETEDEPART = Constants.RESOURCE_URL + "api/department/departmentdelete.html";//删除部门
+        UPDATEDEPART = Constants.RESOURCE_URL + "/api/department/departmentupdate.html";//删除部门
         GETAD = Constants.RESOURCE_URL + "api/company/getadvert.html";//获取广告
         getCompInfo = Constants.RESOURCE_URL + "api/propa/getAll.html";//公司介绍信息
         getWeatherInfo = "http://www.yunbiao.tv/weather/city.html";
@@ -103,6 +106,7 @@ public class ResourceUpdate {
         UPLOAD_DISK_URL = Constants.RESOURCE_URL + "device/service/uploadDisk.html";
         GET_ACTIVE_CODE = Constants.RESOURCE_URL + "api/activate/getCode.html";//获取激活码
         RETURN_ACTIVE_STATUS = Constants.RESOURCE_URL + "api/activate/getCodeReturn.html";//返回激活码
+        IMPORT_USER_BY_EXCEL = Constants.RESOURCE_URL + "/api/entry/importEntryByExcel.html";//上传Excel到服务器
     }
 
     private static String CACHE_BASE_PATH = Constants.LOCAL_ROOT_PATH;

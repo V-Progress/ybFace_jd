@@ -82,6 +82,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     private TextView tvTips;
     private boolean showMainLogo;
     private boolean showMainThermal;
+    private View slTestLayout;
+    private TextView tvTemperTest;
+    private TextView tvModelTest;
+    private boolean titleEnabled;
+    private View llMainLogoParent;
 
     @Override
     protected int getPortraitLayout() {
@@ -104,6 +109,10 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         faceView.setRetryTime(1);
         faceView.setRetryDelayTime(4000);
 
+        llMainLogoParent = findViewById(R.id.ll_main_logo_parent);
+        tvTemperTest = findViewById(R.id.tv_temper_test);
+        tvModelTest = findViewById(R.id.tv_model_test);
+        slTestLayout = findViewById(R.id.sl_test_layout);
         ivMainLogo = findViewById(R.id.iv_main_logo);//LOGO
         tvMainAbbName = findViewById(R.id.tv_main_abbname);//公司名
         faceDistanceView = findViewById(R.id.view_face_distance);//人脸距离框
@@ -131,10 +140,12 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         if (faceView != null) {
             faceView.resume();
         }
+        titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
         showMainThermal = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_THERMAL, ThermalConst.Default.SHOW_MAIN_THERMAL);
         showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
         ivMainLogo.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
-        tvMainAbbName.setVisibility(showMainLogo ? View.VISIBLE : View.GONE);
+        tvMainAbbName.setVisibility(titleEnabled ? View.VISIBLE : View.GONE);
+        llMainLogoParent.setVisibility(!showMainLogo && !titleEnabled ? View.GONE : View.VISIBLE);
         mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
         //设置活体开关
@@ -151,7 +162,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     }
 
     private void setLogo(ImageView logoView,TextView tvName) {
-        boolean titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
         boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
         if (localPriority) {
             String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
@@ -177,15 +187,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
                 });
             }
             tvName.setText(TextUtils.isEmpty(abbname) ? "" : abbname);
-        }
-        if(titleEnabled){
-            if(!tvName.isShown()){
-                tvName.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if(tvName.isShown()){
-                tvName.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -266,6 +267,50 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             ivThermalImaging.setImageBitmap(bitmap);
             tvThermalTemper.setText(getResources().getString(R.string.main_thermal_temp) + temper + "℃");
         }
+    }
+
+    @Override
+    protected boolean isTesting() {
+        boolean b = slTestLayout != null && slTestLayout.isShown();
+        if(b){
+            if (stringBuffer == null) {
+                stringBuffer = new StringBuffer();
+            }
+        } else {
+            if(stringBuffer != null){
+                stringBuffer.setLength(0);
+                stringBuffer = null;
+            }
+        }
+        return b;
+    }
+
+    StringBuffer stringBuffer = new StringBuffer();
+    @Override
+    protected void testTemper(float originT, float afterT, float ambientF) {
+        String s = "原始温度：" + originT + "，处理温度：" + afterT + "，环境温度：" + ambientF + "\n";
+        stringBuffer.insert(0,s);
+        if(stringBuffer.length() > 10000){
+            stringBuffer.replace(0,5000,"");
+        }
+        tvTemperTest.post(() -> tvTemperTest.setText(stringBuffer.toString()));
+    }
+
+    @Override
+    protected void testModel(int currTemperMode) {
+        tvModelTest.post(() -> {
+            switch (currTemperMode) {
+                case 0:
+                    tvModelTest.setText("低温模式");
+                    break;
+                case 1:
+                    tvModelTest.setText("常温模式");
+                    break;
+                case 2:
+                    tvModelTest.setText("高温模式");
+                    break;
+            }
+        });
     }
 
     @Override
@@ -499,14 +544,10 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     }
 
     public void goSetting() {
+        boolean passwordEnabled = SpUtils.getBoolean(Constants.Key.PASSWORD_ENABLED,Constants.Default.PASSWORD_ENABLED);
         String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-        if (!TextUtils.isEmpty(pwd)) {
-            inputPwd(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(ThermalImage2Activity.this, ThermalSystemActivity.class));
-                }
-            });
+        if(passwordEnabled && !TextUtils.isEmpty(pwd)){
+            inputPwd(() -> startActivity(new Intent(ThermalImage2Activity.this, ThermalSystemActivity.class)));
             return;
         }
         startActivity(new Intent(ThermalImage2Activity.this, ThermalSystemActivity.class));

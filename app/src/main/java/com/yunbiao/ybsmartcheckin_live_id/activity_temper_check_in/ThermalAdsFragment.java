@@ -89,7 +89,11 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
 
         //广告内容
         mixedPlayer = rootView.findViewById(R.id.mpl_ads);
-        mixedPlayer.setDefaultImgId(R.mipmap.splash);
+        mixedPlayer.setDefaultImgId(Constants.DEFAULT_SCREE_BG);
+
+        if(Constants.FLAVOR_TYPE == FlavorType.XENON){
+            ivLogo.setVisibility(View.GONE);
+        }
 
         //大布局
         headView = rootView.findViewById(R.id.layout_head);
@@ -131,6 +135,9 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
 
 
     private void setLogo(ImageView logoView,TextView tvName) {
+        if(Constants.FLAVOR_TYPE == FlavorType.XENON){
+            return;
+        }
         boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
         if (localPriority) {
             String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);

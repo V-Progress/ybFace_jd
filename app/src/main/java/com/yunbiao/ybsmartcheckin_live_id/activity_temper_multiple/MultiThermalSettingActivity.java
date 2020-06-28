@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.hardware.Camera;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -668,7 +667,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(Constants.Key.JU_IP_CACHE, mIp);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, mIp);
                     SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
                     SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
                     SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
@@ -693,7 +692,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(Constants.Key.JU_IP_CACHE);
+            ip = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
             resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
             xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
             proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);

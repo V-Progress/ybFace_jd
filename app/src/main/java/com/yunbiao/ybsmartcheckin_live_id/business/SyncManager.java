@@ -12,6 +12,7 @@ import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.Event.SyncFinishEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -33,6 +34,7 @@ import com.yunbiao.ybsmartcheckin_live_id.views.SyncDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.apache.poi.ss.formula.functions.Even;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -318,6 +320,254 @@ public class SyncManager {
         });
     }
 
+    public interface SyncCallback{
+        void onFailed(String message);
+        void onFinish();
+    }
+    public void requestUser(SyncCallback callback){
+        int comid = SpUtils.getCompany().getComid();
+        Map<String, String> params = new HashMap<>();
+        params.put("companyId", comid + "");
+        d("地址：" + ResourceUpdate.GETSTAFF);
+        d("参数：" + params.toString());
+        OkHttpUtils.post()
+                .url(ResourceUpdate.GETSTAFF)
+                .params(params)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        d(e);
+                        callback.onFailed(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        d(response);
+                        if (TextUtils.isEmpty(response)) {
+                            callback.onFailed("Response is empty");
+                            return;
+                        }
+
+                        StaffResponse staffResponse = null;
+                        try {
+                            staffResponse = new Gson().fromJson(response, StaffResponse.class);
+                        } catch (Exception e) {
+                            callback.onFailed("Data format error");
+                            return;
+                        }
+
+                        if (staffResponse == null) {
+                            callback.onFailed("Response is empty");
+                            return;
+                        }
+
+                        if (staffResponse.getStatus() != 1) {
+                            callback.onFailed(String.valueOf(staffResponse.getStatus()));
+                            return;
+                        }
+
+                        List<Depart> dep = staffResponse.getDep();
+                        sync(comid, dep,callback);
+                    }
+                });
+    }
+    /***
+     * 3.同步数据库
+     * @param comId 公司ID
+     * @param departList 部门列表
+     */
+    private void sync(final int comId, final List<Depart> departList,SyncCallback callback) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_database_3));
+                Map<String, File> allFaceMap = FaceManager.getInstance().getAllFaceMap();
+
+                //生成统一的部门列表和员工列表（此为远程数据）
+                Map<Long, Depart> departMap = new HashMap<>();
+                Map<String, User> userMap = new HashMap<>();
+                if (departList != null) {
+                    for (Depart depart : departList) {
+                        depart.setCompId(comId);
+                        depart.setId(depart.getDepId());
+                        departMap.put(depart.getDepId(), depart);
+
+                        List<User> entry = depart.getEntry();
+                        for (User user : entry) {
+                            user.setCompanyId(comId);
+
+                            user.setDepartId(depart.getDepId());
+                            user.setDepartName(depart.getDepName());
+                            String head = user.getHead();
+                            if (!TextUtils.isEmpty(head)) {
+                                String filepath = Constants.HEAD_PATH + head.substring(head.lastIndexOf("/") + 1);
+                                user.setHeadPath(filepath);
+                            }
+                            userMap.put(user.getFaceId(), user);
+                        }
+                    }
+                }
+                d("部门数据：" + departMap.size());
+                d("用户数据：" + userMap.size());
+
+                //查询当前库中的数据
+                List<Depart> departs = DaoManager.get().queryDepartByCompId(comId);
+                List<User> users = DaoManager.get().queryUserByCompId(comId);
+                d("更新前部门库数据：" + (departs == null ? 0 : departs.size()));
+                d("更新前员工库数据：" + (users == null ? 0 : users.size()));
+
+                //检查不存在的部门和用户并删除
+                if(departs != null && departs.size() > 0){
+                    for (Depart depart : departs) {
+                        long depId = depart.getDepId();
+                        if (!departMap.containsKey(depId)) {
+                            DaoManager.get().delete(depart);
+                        }
+                    }
+                }
+
+                if(users != null && users.size() > 0){
+                    for (User user : users) {
+                        String faceId = user.getFaceId();
+                        if (!userMap.containsKey(faceId)) {
+                            DaoManager.get().delete(user);
+                        } else {
+                            userMap.get(faceId).setAddTag(user.getAddTag());
+                        }
+                    }
+                }
+
+                for (Map.Entry<String, File> entry : allFaceMap.entrySet()) {
+                    if (!userMap.containsKey(entry.getKey())) {
+                        entry.getValue().delete();
+                    }
+                }
+
+                //添加、更新部门和用户
+                for (Map.Entry<Long, Depart> entry : departMap.entrySet()) {
+                    Depart value = entry.getValue();
+                    DaoManager.get().addOrUpdate(value);
+                }
+                for (Map.Entry<String, User> entry : userMap.entrySet()) {
+                    User value = entry.getValue();
+                    DaoManager.get().addOrUpdate(value);
+                }
+
+                //再次检查库中数据是否正确
+                departs = DaoManager.get().queryDepartByCompId(comId);
+                users = DaoManager.get().queryUserByCompId(comId);
+                d("更新后部门库数据：" + (departs == null ? 0 : departs.size()));
+                d("更新后员工库数据：" + (users == null ? 0 : users.size()));
+
+                //生成下载队列
+                final Queue<User> userQueue = new LinkedList<>();
+                if(users != null && users.size() > 0){
+                    for (User user : users) {
+                        String headPath = user.getHeadPath();
+                        File file = new File(headPath);
+                        if (file == null || !file.exists()) {
+                            userQueue.offer(user);
+                        }
+                    }
+                }
+                d("没有头像的用户数量：" + userQueue.size());
+
+                final int totalSize = userQueue.size();
+                if (totalSize != 0) {
+                    SyncDialog.setStep(APP.getContext().getString(R.string.sync_head_4));
+                    SyncDialog.setProgress(1, totalSize);
+                }
+
+                //开始下载
+                download(userQueue, new DownloadCallback() {
+                    @Override
+                    public void onSingleComplete(User user, File result) {
+                        int progress = totalSize - userQueue.size();
+                        SyncDialog.setProgress(progress, totalSize);
+                        user.setAddTag(UserInfo.HEAD_HAS_UPDATE);
+                        user.setHeadPath(result.getPath());
+                        DaoManager.get().addOrUpdate(user);
+                    }
+
+                    @Override
+                    public void onSingleFailed(User user, Throwable ex) {
+                        int progress = totalSize - userQueue.size();
+                        SyncDialog.setProgress(progress, totalSize);
+                        user.setAddTag(UserInfo.HEAD_DOWNLOAD_FAILED);
+                        DaoManager.get().addOrUpdate(user);
+                    }
+
+                    @Override
+                    public void onFinished() {
+                        updateFace(callback);
+                    }
+                });
+            }
+        });
+    }
+
+    /***
+     * 5.更新人脸库
+     */
+    private void updateFace(SyncCallback callback) {
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                SyncDialog.setStep(APP.getContext().getString(R.string.sync_face_5));
+                Log.e(TAG, "run: 开始同步人脸库");
+                Company company = SpUtils.getCompany();
+                List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
+                Log.e(TAG, "updateFace: 用户总数：" + (users == null ? 0 : users.size()));
+
+                if (users == null) {
+                    callback.onFinish();
+                    return;
+                }
+
+                int totalSize = users.size();
+                for (int i = 0; i < totalSize; i++) {
+                    SyncDialog.setProgress(i, totalSize);
+
+                    User user = users.get(i);
+                    String faceId = user.getFaceId();
+                    String headPath = user.getHeadPath();
+                    int addTag = user.getAddTag();
+
+                    //判断照片是否更新
+                    boolean isExists = FaceManager.getInstance().checkFace(faceId);
+
+                    //人脸文件存在，并且状态是无需更新时则不继续
+                    if (addTag != UserInfo.HEAD_HAS_UPDATE && isExists) {
+                        Log.e(TAG, "照片未更新且文件存在：" + i + " --- " + faceId);
+                        continue;
+                    }
+
+                    //添加进库
+                    boolean addUser = FaceManager.getInstance().addUser(faceId, headPath);
+
+                    //添加人脸库失败，并且addTag为下载图片失败或添加人脸库失败的时候，无需更新数据库
+                    if ((!addUser) && (addTag == UserInfo.HEAD_DOWNLOAD_FAILED || addTag == UserInfo.ADD_FACE_DB_FAILED)) {
+                        Log.e(TAG, "添加失败且无需更新：" + i + " --- " + faceId + " --- " + addTag);
+                        continue;
+                    }
+
+                    addTag = addUser ? UserInfo.HANDLE_SUCCESS : UserInfo.ADD_FACE_DB_FAILED;
+                    user.setAddTag(addTag);
+                    long l = DaoManager.get().update(user);
+                    Log.e(TAG, "添加人脸库结果：" + addUser + " --- " + i + " --- " + faceId + " --- 更新数据库结果：" + l);
+                }
+
+                FaceManager.getInstance().reloadRegisterList();
+                int size = FaceManager.getInstance().getTotalSize();
+                Log.e(TAG, "onFinished: 完毕后库中数据：" + size);
+                dissmissDialog();
+
+                callback.onFinish();
+            }
+        });
+    }
+
     /***
      * 2.获取员工数据
      */
@@ -462,11 +712,13 @@ public class SyncManager {
 
                 //生成下载队列
                 final Queue<User> userQueue = new LinkedList<>();
-                for (User user : users) {
-                    String headPath = user.getHeadPath();
-                    File file = new File(headPath);
-                    if (file == null || !file.exists()) {
-                        userQueue.offer(user);
+                if(users != null && users.size() > 0){
+                    for (User user : users) {
+                        String headPath = user.getHeadPath();
+                        File file = new File(headPath);
+                        if (file == null || !file.exists()) {
+                            userQueue.offer(user);
+                        }
                     }
                 }
                 d("没有头像的用户数量：" + userQueue.size());
@@ -599,6 +851,8 @@ public class SyncManager {
                 int size = FaceManager.getInstance().getTotalSize();
                 Log.e(TAG, "onFinished: 完毕后库中数据：" + size);
                 dissmissDialog();
+
+                EventBus.getDefault().post(new SyncFinishEvent());
             }
         });
     }
@@ -813,7 +1067,7 @@ public class SyncManager {
             SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
         } else {
             SpUtils.saveInt(SpUtils.COMPANYID, 0);
-            SpUtils.saveStr(SpUtils.MENU_PWD, "");
+            SpUtils.saveInt(SpUtils.DISPLAYPOSITION, 0);
         }
     }
 

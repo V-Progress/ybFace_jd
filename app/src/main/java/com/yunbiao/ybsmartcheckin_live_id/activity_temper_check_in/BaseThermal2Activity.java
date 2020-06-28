@@ -22,6 +22,7 @@ import com.intelligence.hardware.temperature.callback.Smt3232TempCallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -228,6 +229,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private InfraredTempCallBack infraredTempCallBack = new InfraredTempCallBack() {
         @Override
         public void newestInfraredTemp(float measureF, float afterF, float ambientF) {
+            if(isTesting()){
+                testTemper(measureF,afterF,ambientF);
+            }
             Log.e(TAG, "newestInfraredTemp: measureF: " + measureF + ",afterF: " + afterF + ",ambientF: " + ambientF);
             handleTemperature(null, measureF, afterF);
         }
@@ -235,6 +239,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private HotImageK3232CallBack imageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float sensorT, final float maxT, final float minT, final float bodyMaxT, final boolean isBody, final int bodyPercentage) {
+            if(isTesting()){
+                testTemper(sensorT,maxT,minT);
+            }
             handleTemperature(imageBmp, sensorT, maxT);
         }
 
@@ -246,6 +253,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            if(isTesting()){
+                testTemper(originalMaxT,maxT,minT);
+            }
             handleTemperature(imageBmp, originalMaxT, maxT);
         }
 
@@ -258,6 +268,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
+            if(isTesting()){
+                testTemper(originalMaxT,maxT,minT);
+            }
             handleTemperature(bitmap, originalMaxT, maxT);
         }
 
@@ -270,6 +283,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private MLX90621GgTempCallBack mlx90621GgTempCallBack = new MLX90621GgTempCallBack() {
         @Override
         public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            if(isTesting()){
+                testTemper(originalMaxT,maxT,minT);
+            }
             handleTemperature(imageBmp, originalMaxT, maxT);
         }
     };
@@ -307,12 +323,21 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 TemperatureModule.getIns().setHotImageColdMode(false);
                 TemperatureModule.getIns().setHotImageHotMode(false, 45f);
             }
+            testModel(currTemperMode);
             autoCheckList.clear();
         }
     }
 
     private List<Float> mNoBodyTemperList = new ArrayList<>();
     private int currTemperMode = -1;
+
+    protected boolean isTesting(){
+        return false;
+    }
+
+    protected void testTemper(float originT, float afterT, float ambientF){}
+
+    protected void testModel(int currTemperMode){}
 
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
@@ -330,7 +355,15 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         mLastHotImage = imageBmp;
         sendUpdateHotInfoMessage(imageBmp, afterT);
 
+        if(!lowTempModel && !mAutoTemper && Constants.FLAVOR_TYPE == FlavorType.TURKEY){
+            handleTurkeyTemperatureLogic(originT,afterT);
+            return;
+        }
+
         if (!mHasFace) {
+            if(mTurkeyDelayTag != 0){
+                mTurkeyDelayTag = 0;
+            }
             if (distanceTipNumber != 0) {
                 distanceTipNumber = 0;
             }
@@ -392,6 +425,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             autoCheckList.clear();
         }
 
+ /*       if(Constants.FLAVOR_TYPE == FlavorType.TURKEY){
+            long currMillis = System.currentTimeMillis();
+            if(mTurkeyDelayTag == 0){
+                mTurkeyDelayTag = currMillis;
+                return;
+            } else if(currMillis - mTurkeyDelayTag < 1500) {
+                return;
+            }
+        }
+*/
         if (isFaceToFar) {
             if (mCacheTime != 0) mCacheTime = 0;
             if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
@@ -473,6 +516,82 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 });
             }
         } else if (isTemperAndFace()) {
+            mCacheTemperList.add(afterT);
+        }
+    }
+
+    private boolean isTurkeyHighTemper = false;
+    private float mCacheTurkeyCorr = 0.0f;
+    private List<Float> mCacheTurkeyList = new ArrayList<>();
+    private void handleTurkeyTemperatureLogic(float originT, float afterT){
+        /*Timber.d("原始温度：" + originT);
+        originT = formatF(36f + nextDouble(1.8f,4.0f));
+        Timber.d("模拟温度：" + originT);
+*/
+        if(!mHasFace){
+            int temperSize = mCacheTurkeyCorr == 0.0f ? 10 : 40;
+            if(mCacheTurkeyList.size() < temperSize){
+                Timber.d("存值");
+                mCacheTurkeyList.add(originT);
+            } else {
+                float mean = getMean(mCacheTurkeyList);
+                isTurkeyHighTemper = mean >= 36.0f;
+                mCacheTurkeyCorr = 36.0f - mean;
+                if(isTurkeyHighTemper){
+                    Timber.d("高温校准值：" + mCacheTurkeyCorr);
+                    SpUtils.saveFloat(ThermalConst.Key.THERMAL_CORRECT, mCacheTurkeyCorr);
+                    TemperatureModule.getIns().setmCorrectionValue(mCacheTurkeyCorr);
+                } else {
+                    Timber.d("低温校准值：" + 0.0f);
+                    SpUtils.saveFloat(ThermalConst.Key.THERMAL_CORRECT, 0.0f);
+                    TemperatureModule.getIns().setmCorrectionValue(0.0f);
+                }
+
+                mCacheTurkeyList.clear();
+            }
+            return;
+        }
+
+        float temper;
+        if(isTurkeyHighTemper){
+            temper = originT + mCacheTurkeyCorr;
+            Log.e(TAG, "handleTurkeyTemperatureLogic高温: " + temper);
+        } else {
+            temper = afterT;
+            Log.e(TAG, "handleTurkeyTemperatureLogic常温: " + temper);
+        }
+
+        if(isOnlyTemper()){
+            long currentTimeMillis = System.currentTimeMillis();
+            if (mCacheTime != 0 && currentTimeMillis - mCacheTime < mSpeechDelay) {
+                return;
+            }
+            mCacheTemperList.add(temper);
+            if (mCacheTemperList.size() < mCacheTemperSize) {
+                return;
+            }
+            mCacheTime = currentTimeMillis;
+
+            Float resultTemper = formatF(Collections.max(mCacheTemperList));
+            mCacheTemperList.clear();
+            Log.e(TAG, "handleTurkeyTemperatureLogic: 最终值：" + resultTemper);
+
+            if (resultTemper < mTempMinThreshold) {
+                return;
+            }
+            sendResultMessage(resultTemper, "");//发送结果
+            if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                openDoor();
+            }
+
+            if (resultTemper < HIGHEST_TEMPER) {
+                Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
+                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
+                    Log.e(TAG, "accept: 保存完成");
+                    sendUpdateSignMessage(sign);//发送列表更新事件
+                });
+            }
+        } else {
             mCacheTemperList.add(afterT);
         }
     }
@@ -578,6 +697,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     public void onFaceDetection(Boolean hasFace, List<FacePreviewInfo> facePreviewInfoList) {
 
     }
+
+    private long mTurkeyDelayTag = 0;
 
     @Override
     public boolean onFaceDetection(boolean hasFace, FacePreviewInfo facePreviewInfo) {

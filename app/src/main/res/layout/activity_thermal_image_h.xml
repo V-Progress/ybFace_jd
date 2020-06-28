@@ -37,8 +37,8 @@
             android:paddingTop="10dp" />
 
         <LinearLayout
+            android:id="@+id/ll_main_logo_parent"
             android:gravity="center_vertical"
-            android:id="@+id/ll_logo_area_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -73,7 +73,7 @@
             android:padding="3dp"
             android:background="@drawable/shape_thermal_image_main"
             android:orientation="vertical"
-            android:layout_below="@+id/ll_logo_area_main"
+            android:layout_below="@+id/ll_main_logo_parent"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
             android:layout_width="200dp"
@@ -100,6 +100,32 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <ScrollView
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/ll_thermal_area_main"
+            android:id="@+id/sl_test_layout"
+            android:background="#80000000"
+            android:layout_below="@+id/ll_head_layout"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_model_test"
+                    android:background="@color/red"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tv_temper_test"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </ScrollView>
+
         <LinearLayout
             android:id="@+id/ll_clock_area"
             android:layout_width="wrap_content"
@@ -108,7 +134,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <TextClock
+            <!--<TextClock
                 android:id="@+id/textClock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -117,7 +143,7 @@
                 android:format12Hour="yyyy/MM/dd  HH:mm:ss"
                 android:format24Hour="yyyy/MM/dd  HH:mm:ss"
                 android:textColor="@color/text_clock_color_main"
-                android:textSize="28dp" />
+                android:textSize="28dp" />-->
 
             <ImageView
                 android:id="@+id/iv_setting"

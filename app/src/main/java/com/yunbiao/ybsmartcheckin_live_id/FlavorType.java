@@ -10,4 +10,5 @@ public interface FlavorType {
     int SCAN_TEMP = 6;
     int PING_TECH = 7;
     int XENON = 8;
+    int TURKEY = 9;
 }

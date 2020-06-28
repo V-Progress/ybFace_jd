@@ -12,13 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -27,36 +22,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.lcw.library.imagepicker.ImagePicker;
 import com.yunbiao.ybsmartcheckin_live_id.BR;
 import com.yunbiao.ybsmartcheckin_live_id.R;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.PictureData;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
-import jxl.Cell;
-import jxl.CellFeatures;
-import jxl.CellType;
-import jxl.CellView;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.WorkbookSettings;
-import jxl.read.biff.BiffException;
+import timber.log.Timber;
 
 /***
  * 导入流程
@@ -66,24 +42,27 @@ public class BatchImportActivity extends Activity {
     private BatchContent batchContent = new BatchContent();
     private ActionPresenter actionPresenter = new ActionPresenter();
     private List<UserCheckBean> userCheckList = new ArrayList();
+    private RecyclerView rlvData;
+    private Uri mExcelFileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ViewDataBinding viewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_batch_import);
 
-        viewDataBinding.setVariable(BR.batchContent,batchContent);
-        viewDataBinding.setVariable(BR.actionPresenter,actionPresenter);
+        viewDataBinding.setVariable(BR.batchContent, batchContent);
+        viewDataBinding.setVariable(BR.actionPresenter, actionPresenter);
 
-        RecyclerView rlvData = viewDataBinding.getRoot().findViewById(R.id.rlv_data);
-        rlvData.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        BatchImportAdapter batchImportAdapter = new BatchImportAdapter(this,userCheckList);
+        rlvData = viewDataBinding.getRoot().findViewById(R.id.rlv_data);
+        rlvData.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        BatchImportAdapter batchImportAdapter = new BatchImportAdapter(this, userCheckList);
         batchImportAdapter.setOnItemCheckedListener((position, checked) -> {
             userCheckList.get(position).setChecked(checked);
         });
         rlvData.setAdapter(batchImportAdapter);
 
-        batchContent.setFileName("请选择导入文件(.xls)、(.xlsx)");
+        batchContent.setFileName(getString(R.string.import_please_select_excel));
         batchContent.setCheckedAvailable(true);
     }
 
@@ -91,14 +70,9 @@ public class BatchImportActivity extends Activity {
     final String XLSX1 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     final String XLS = "application/vnd.ms-excel";
 
-    public class ActionPresenter{
-        public void chooseFile(View view){
+    public class ActionPresenter {
+        public void chooseFile(View view) {
             //调用系统文件管理器打开指定路径目录
-            //intent.setDataAndType(Uri.fromFile(dir.getParentFile()), "file/*.txt");
-//            intent.setType("application/vnd.ms-excel"); //华为手机mate7不支持
-//            intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //华为手机mate7不支持
-//            intent.setType("text/plain");
-
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             String[] mimeTypes = {XLS, XLSX1, XLSX};
@@ -108,92 +82,144 @@ public class BatchImportActivity extends Activity {
         }
 
         public void onAllChecked(CompoundButton buttonView, boolean isChecked) {
-
+            selectAll(isChecked, SpUtils.getCompany().getComid() == Constants.NOT_BIND_COMPANY_ID);
         }
 
         public void onReverseChecked(CompoundButton buttonView, boolean isChecked) {
+            selectReverse(isChecked);
+        }
 
+        public void importUsers(View view) {
+            Company company = SpUtils.getCompany();
+            if (company.getComid() == Constants.NOT_BIND_COMPANY_ID) {
+                ReadExcel.importDataToLocal(company.getComid(), userCheckList, new ReadExcel.ImportCallback() {
+                    @Override
+                    public void onStartImport() {
+                        UIUtils.showNetLoading(BatchImportActivity.this);
+                    }
+
+                    @Override
+                    public void onImportComplete(ReadExcel.ImportResult importResult) {
+                        UIUtils.showLong(BatchImportActivity.this,
+                                getString(R.string.import_add_success) + importResult.successNum
+                                        + "\n"
+                                        + getString(R.string.import_add_failed) + importResult.failedNum
+                                        + "\n"
+                                        + getString(R.string.import_add_exists) + importResult.alreadyExists
+                                        + "\n"
+                                        + getString(R.string.import_add_skip) + importResult.skipNum);
+                        UIUtils.dismissNetLoading();
+                    }
+                });
+            } else {
+                ReadExcel.submitExcelToServer(BatchImportActivity.this, mExcelFileUri, new ReadExcel.SubmitCallback() {
+                    @Override
+                    public void onStart() {
+                        UIUtils.showNetLoading(BatchImportActivity.this);
+                    }
+
+                    @Override
+                    public void onSubmitResult(int result, ReadExcel.ImportResult importResult, String errMsg) {
+                        runOnUiThread(() -> {
+                            switch (result) {
+                                case -1:
+                                    UIUtils.showLong(BatchImportActivity.this, getString(R.string.import_submit_failed) + errMsg);
+                                    break;
+                                case -2:
+                                    UIUtils.showLong(BatchImportActivity.this, getString(R.string.import_sync_failed) + errMsg);
+                                    break;
+                            }
+                            if (result != 1) {
+                                return;
+                            }
+
+                            UIUtils.showLong(BatchImportActivity.this,
+                                    getString(R.string.import_import_complete)
+                                            + "\n"
+                                            + getString(R.string.import_add_success) + importResult.successNum
+                                            + "\n"
+                                            + getString(R.string.import_add_failed) + importResult.failedNum
+                                            + "\n"
+                                            + getString(R.string.import_add_exists) + importResult.alreadyExists);
+                        });
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        UIUtils.dismissNetLoading();
+                    }
+                });
+            }
         }
     }
 
-    private static final String TAG = "BatchImportActivity";
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1111 && resultCode == RESULT_OK){
-            Uri xls = data.getData();
-            batchContent.setFileName(getFileRealNameFromUri(this, xls));
+        if (requestCode == 1111 && resultCode == RESULT_OK) {
+            mExcelFileUri = data.getData();
+            Timber.d("文件地址：" + (mExcelFileUri == null ? "NULL" : mExcelFileUri.getPath()));
 
-
-
-//            DocumentFile documentFile = DocumentFile.fromSingleUri(this,xls);
-            try {
-                InputStream inputStream = getContentResolver().openInputStream(xls);
-                WorkbookSettings workbookSettings = new WorkbookSettings();
-                workbookSettings.setEncoding("UTF-8");
-                Workbook workbook = Workbook.getWorkbook(inputStream,workbookSettings);
-                String[] sheetNames = workbook.getSheetNames();
-                if (sheetNames.length <= 0) {
-                    Log.e(TAG, "onActivityResult: 文件内没有表格");
-                    return;
-                }
-                for (String sheetName : sheetNames) {
-                    Log.e(TAG, "表名：" + sheetName);
+            ReadExcel.readEntries(this, mExcelFileUri, new ReadExcel.ReadCallback() {
+                @Override
+                public void onStartRead() {
+                    UIUtils.showNetLoading(BatchImportActivity.this);
                 }
 
-                Sheet sheet = workbook.getSheet(sheetNames[0]);
-                int rows = sheet.getRows();
-                if(rows <= 0){
-                    Log.e(TAG, "onActivityResult: 该表格内没有数据");
-                    return;
-                }
-
-                InputStream is = getContentResolver().openInputStream(xls);
-                try {
-                    org.apache.poi.ss.usermodel.Workbook wb = WorkbookFactory.create(is);
-                    int numberOfSheets = wb.getNumberOfSheets();
-                    org.apache.poi.ss.usermodel.Sheet sheetA = wb.getSheetAt(numberOfSheets);
-
-                    List<? extends PictureData> allPictures = wb.getAllPictures();
-                    for (PictureData allPicture : allPictures) {
-
+                @Override
+                public void onReadData(List<ReadExcel.Entry> entryList, ReadExcel.ErrorInfo errorInfo) {
+                    UIUtils.dismissNetLoading();
+                    if (errorInfo.errCode == ReadExcel.ErrorCode.COMPLETE) {
+                        batchContent.setFileName(getFileRealNameFromUri(BatchImportActivity.this, mExcelFileUri));
+                        setUserList(entryList);
+                    } else {
+                        UIUtils.showShort(BatchImportActivity.this, errorInfo.errMsg);
                     }
-
-
-                    org.apache.poi.ss.usermodel.Cell cell;
-                    for (Row row : sheetA) {
-                        cell = row.getCell(0);
-
-
-                    }
-
-
-                } catch (InvalidFormatException e) {
-                    e.printStackTrace();
                 }
-
-
-                StringBuffer stringBuffer = new StringBuffer();
-                for (int i = 1; i < rows; i++) {
-                    Cell[] row = sheet.getRow(i);
-                    for (Cell cell : row) {
-                        stringBuffer.append(cell.getContents()).append("(").append(cell.getType()).append(")").append(",");
-                    }
-                    Log.e(TAG, i + "行：" + stringBuffer.toString());
-                    stringBuffer.setLength(0);
-                }
-                inputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (BiffException e) {
-                e.printStackTrace();
-            }
-
+            });
         }
     }
 
+    //设置显示用户列表
+    private void setUserList(List<ReadExcel.Entry> entryList) {
+        if (!userCheckList.isEmpty()) {
+            userCheckList.clear();
+        }
+        for (ReadExcel.Entry entry : entryList) {
+            UserCheckBean checkBean = new UserCheckBean();
+            checkBean.setEntry(entry);
+            userCheckList.add(checkBean);
+            rlvData.getAdapter().notifyItemInserted(userCheckList.size() - 1);
+        }
+        Company company = SpUtils.getCompany();
+
+        Timber.d("绑定结果：" + company.getComid());
+        selectAll(true, company.getComid() == Constants.NOT_BIND_COMPANY_ID);
+    }
+
+    //全选
+    private void selectAll(boolean check, boolean enabled) {
+        Timber.d("是否可用：" + enabled);
+
+        for (UserCheckBean checkBean : userCheckList) {
+            checkBean.setChecked(check);
+            checkBean.setCheckEnabled(enabled);
+        }
+        rlvData.getAdapter().notifyDataSetChanged();
+        batchContent.setSelectAll(check);
+        batchContent.setCheckedAvailable(enabled);
+    }
+
+    //反选
+    private void selectReverse(boolean check) {
+        for (UserCheckBean checkBean : userCheckList) {
+            checkBean.setChecked(!checkBean.isChecked());
+        }
+        rlvData.getAdapter().notifyDataSetChanged();
+        batchContent.setSelectReverse(check);
+    }
+
+    //通过Uri获得名称
     public static String getFileRealNameFromUri(Context context, Uri fileUri) {
         if (context == null || fileUri == null) return null;
         DocumentFile documentFile = DocumentFile.fromSingleUri(context, fileUri);
@@ -206,7 +232,7 @@ public class BatchImportActivity extends Activity {
         private Context mContext;
         private onItemCheckedListener onItemCheckedListener;
 
-        public BatchImportAdapter(Context context,List<UserCheckBean> datas) {
+        public BatchImportAdapter(Context context, List<UserCheckBean> datas) {
             this.datas = datas;
             this.mContext = context;
         }
@@ -218,13 +244,13 @@ public class BatchImportActivity extends Activity {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new BatchHolder(getLayoutInflater().inflate(R.layout.item_batch_import,null));
+            return new BatchHolder(getLayoutInflater().inflate(R.layout.item_batch_import, parent, false));
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             BatchHolder batchHolder = (BatchHolder) holder;
-            batchHolder.bindData(userCheckList.get(position),position);
+            batchHolder.bindData(userCheckList.get(position), position);
         }
 
         @Override
@@ -232,13 +258,14 @@ public class BatchImportActivity extends Activity {
             return datas == null ? 0 : datas.size();
         }
 
-        class BatchHolder extends RecyclerView.ViewHolder{
+        class BatchHolder extends RecyclerView.ViewHolder {
             TextView tvName;
             TextView tvDepart;
             TextView tvSex;
             TextView tvPosition;
             ImageView ivHead;
             CheckBox checkBox;
+
             public BatchHolder(@NonNull View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tv_name);
@@ -249,30 +276,55 @@ public class BatchImportActivity extends Activity {
                 checkBox = itemView.findViewById(R.id.cb_checked);
             }
 
-            public void bindData(UserCheckBean userCheckBean,int position) {
-                tvName.setText(userCheckBean.getName());
-                tvDepart.setText(userCheckBean.getDepart());
-                tvSex.setText(userCheckBean.getSexStr());
-                tvPosition.setText(userCheckBean.getPosition());
-                Glide.with(mContext).load(userCheckBean.getImageBytes()).asBitmap().into(ivHead);
+            public void bindData(UserCheckBean userCheckBean, int position) {
+                ReadExcel.Entry entry = userCheckBean.getEntry();
+                tvName.setText(entry.getName());
+                tvDepart.setText(entry.getDepName());
+                tvSex.setText(getString(entry.getSex() == 1 ? R.string.base_male : R.string.base_female));
+                tvPosition.setText(entry.getPosition());
+                Glide.with(mContext).load(entry.getPic()).asBitmap().into(ivHead);
+
+                checkBox.setEnabled(userCheckBean.isCheckEnabled());
                 checkBox.setChecked(userCheckBean.isChecked());
                 checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if(onItemCheckedListener != null){
-                        onItemCheckedListener.onItemChecked(position,isChecked);
+                    if (onItemCheckedListener != null) {
+                        onItemCheckedListener.onItemChecked(position, isChecked);
                     }
                 });
             }
         }
     }
 
-    public interface onItemCheckedListener{
-        void onItemChecked(int position,boolean checked);
+    public interface onItemCheckedListener {
+        void onItemChecked(int position, boolean checked);
     }
 
     public class BatchContent extends BaseObservable {
         String fileName;
         String filePath;
         boolean checkedAvailable;
+        boolean isSelectAll;
+        boolean isSelectReverse;
+
+        @Bindable
+        public boolean isSelectAll() {
+            return isSelectAll;
+        }
+
+        public void setSelectAll(boolean selectAll) {
+            isSelectAll = selectAll;
+            notifyPropertyChanged(BR.selectAll);
+        }
+
+        @Bindable
+        public boolean isSelectReverse() {
+            return isSelectReverse;
+        }
+
+        public void setSelectReverse(boolean selectReverse) {
+            isSelectReverse = selectReverse;
+            notifyPropertyChanged(BR.selectReverse);
+        }
 
         @Bindable
         public boolean isCheckedAvailable() {
@@ -305,52 +357,25 @@ public class BatchImportActivity extends Activity {
         }
     }
 
-    public class UserCheckBean{
-        private String name;
-        private String depart;
-        private String sexStr;
-        private String position;
-        private byte[] imageBytes;
+    public class UserCheckBean {
         private boolean isChecked;
+        private boolean isCheckEnabled;
+        private ReadExcel.Entry entry;
 
-        public String getName() {
-            return name;
+        public boolean isCheckEnabled() {
+            return isCheckEnabled;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setCheckEnabled(boolean checkEnabled) {
+            isCheckEnabled = checkEnabled;
         }
 
-        public String getDepart() {
-            return depart;
+        public ReadExcel.Entry getEntry() {
+            return entry;
         }
 
-        public void setDepart(String depart) {
-            this.depart = depart;
-        }
-
-        public String getSexStr() {
-            return sexStr;
-        }
-
-        public void setSexStr(String sexStr) {
-            this.sexStr = sexStr;
-        }
-
-        public String getPosition() {
-            return position;
-        }
-
-        public void setPosition(String position) {
-            this.position = position;
-        }
-
-        public byte[] getImageBytes() {
-            return imageBytes;
-        }
-
-        public void setImageBytes(byte[] imageBytes) {
-            this.imageBytes = imageBytes;
+        public void setEntry(ReadExcel.Entry entry) {
+            this.entry = entry;
         }
 
         public boolean isChecked() {
@@ -361,4 +386,6 @@ public class BatchImportActivity extends Activity {
             isChecked = checked;
         }
     }
+
+
 }

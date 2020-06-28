@@ -8,8 +8,8 @@ android {
         applicationId "com.yunbiao.ybsmartcheckin_live_id"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 50
-        versionName "1.5.0"
+        versionCode 51
+        versionName "1.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
         multiDexEnabled true
@@ -198,9 +198,14 @@ android {
                 "@string/yb_multiple", "@mipmap/icon_logo4", "5cbe87a60cafb210460006b3", "HG_DR",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "30", "32")
         /*=====================================================================================*/
-        flavor(XENON_10, "8",
+        flavor(XENON_10, "com.yunbiao.ybsmartcheckin_live_id.FlavorType.XENON",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
-                "@string/app_name8", "@mipmap/xenon_logo", "5cbe87a60cafb210460006b3", "SOFT_WORK_Z_8",
+                "@string/app_name8", "@mipmap/xenon_logo", "5cbe87a60cafb210460006b3", "XENON_10",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*=====================================================================================*/
+        flavor(TURKEY_8,"com.yunbiao.ybsmartcheckin_live_id.FlavorType.TURKEY",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "XENON_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*5寸=====================================================================================*/
         flavor(YB_5, "9",
@@ -226,7 +231,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 43//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 45//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.ybsmartcheckin_live_id.db2'
     }
     dataBinding {
@@ -249,15 +254,15 @@ String buildApkName(String param) {
         name = "PingTech"
     } else if (param.contains("XENON")) {
         name = "Xenon"
-    } else {
+    } else if (param.contains("TURKEY")){
+        name = "TR"
+    }else {
         name = "YB"
     }
 
     if (!param.contains("OSIMLE") && !param.contains("SOFT_WORK")) {
         //确定后缀名
-        if (param.contains("10")) {
-            name += " Face"
-        } else if (param.contains("RZ")) {
+        if (param.contains("RZ")) {
             name += "人证测温"
         } else if (param.contains("DR")) {
             if (param.contains("SK")) {//判断思库版本
@@ -272,7 +277,7 @@ String buildApkName(String param) {
         } else if (param.contains("5")) {
             name += " Face_5寸"
         } else {
-            name += "智能考勤"
+            name += "Face"
         }
     }
     return name
@@ -288,11 +293,13 @@ def buildTime() {
 }
 
 def getYBFace_APP_ID() {
-    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""
+    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""//YBFACE
+//    return "\"AYuHvcMYBDjwqVXRHkGTvQzyRndUfjgGmrcfKTZHk8bf\""//HSD
 }
 
 def getYBFace_SDK_KEY() {
-    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""
+    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""//YBFACE
+//    return "\"2foqrfXF7oF8WDj17ZiFyAhoRZbAJn3DsAZCEYpkVXdE\""//HSD
 }
 
 def getHTFace_APP_ID() {
@@ -445,7 +452,6 @@ dependencies {
     implementation files('libs/PrintUtils1114.jar')
     implementation files('libs/arcsoft_face.jar')
     implementation files('libs/poweronoff.jar')
-    implementation 'com.lcw.library:imagepicker:2.1.2'
     implementation files('libs/ysapi.jar')
     implementation files('libs/poi-3.12-android-a.jar')
     implementation files('libs/poi-ooxml-schemas-3.12-20150511-a.jar')

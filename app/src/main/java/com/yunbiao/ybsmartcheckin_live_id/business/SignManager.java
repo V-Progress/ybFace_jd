@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -11,6 +12,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
+import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
@@ -22,6 +24,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -38,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -1003,6 +1007,41 @@ public class SignManager {
         if (comid == Constants.NOT_BIND_COMPANY_ID) {
             return;
         }
+    }
+
+
+    public void clearAllData(@NonNull Activity activity){
+        List<Sign> signList = DaoManager.get().queryAll(Sign.class);
+        if(signList == null || signList.size() == 0){
+            UIUtils.showShort(activity,(activity.getString(R.string.clear_no_data) + "0"));
+            return;
+        }
+
+        int total = 0;
+        Iterator<Sign> iterator = signList.iterator();
+        while (iterator.hasNext()) {
+            Sign next = iterator.next();
+            String headPath = next.getHeadPath();
+            String hotImgPath = next.getHotImgPath();
+            if(next.getType() != 0){
+                if(!TextUtils.isEmpty(headPath)){
+                    File headFile = new File(headPath);
+                    if(headFile.exists()){
+                        headFile.delete();
+                    }
+                }
+            }
+            if(!TextUtils.isEmpty(hotImgPath)){
+                File hotFile = new File(hotImgPath);
+                if(hotFile.exists()){
+                    hotFile.delete();
+                }
+            }
+            DaoManager.get().deleteSign(next);
+            total ++;
+        }
+
+        UIUtils.showShort(activity,(activity.getString(R.string.clear_no_data) + total));
     }
 
 }
