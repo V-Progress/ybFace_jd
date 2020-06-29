@@ -164,7 +164,7 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <!--<TextClock
+        <TextClock
             android:layout_toLeftOf="@+id/iv_setting"
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
@@ -173,7 +173,7 @@
             android:format12Hour="yyyy/MM/dd  HH:mm:ss"
             android:format24Hour="yyyy/MM/dd  HH:mm:ss"
             android:textColor="@color/text_clock_color_main"
-            android:textSize="28dp" />-->
+            android:textSize="28dp" />
 
         <ImageView
             android:id="@+id/iv_setting"
