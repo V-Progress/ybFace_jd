@@ -138,7 +138,7 @@ public class Constants {
         int SAFETY_CHECK_DOUBLE_LIGHT = 17;//双光安检
         int HT_SAFETY_CHECK_DOUBLE_LIGHT = 18;//亨通双光安检
 
-        int TEMPERATURE_MEASUREMENT_5_INCH = 19;//5寸
+        int TEMPERATURE_MEASUREMENT_5_INCH = 21;//5寸
     }
 
     //默认摄像头ID

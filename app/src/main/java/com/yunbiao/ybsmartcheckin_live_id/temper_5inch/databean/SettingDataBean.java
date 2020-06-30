@@ -17,6 +17,11 @@ public class SettingDataBean {
     public final ObservableField<String> versionName;
     public final ObservableField<String> versionInfo;
 
+    public final ObservableField<String> deviceNo;
+    public final ObservableField<String> bindCode;
+    public final ObservableField<String> companyName;
+    public final ObservableField<String> netStateInfo;
+
     public SettingDataBean(ObservableField<String> calibrationContent, ObservableField<String> intervalContent, ObservableField<String> warningContent) {
         this.calibrationContent = calibrationContent;
         this.intervalContent = intervalContent;
@@ -28,6 +33,10 @@ public class SettingDataBean {
         serverProName = new ObservableField<>("");
         versionName = new ObservableField<>("");
         versionInfo = new ObservableField<>("");
+        deviceNo = new ObservableField<>("");
+        bindCode = new ObservableField<>("");
+        companyName = new ObservableField<>("");
+        netStateInfo = new ObservableField<>("");
     }
 
     public ObservableField<String> getCalibrationContent() {

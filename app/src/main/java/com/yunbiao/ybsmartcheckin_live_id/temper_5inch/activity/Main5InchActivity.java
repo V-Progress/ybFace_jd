@@ -15,6 +15,9 @@ import com.intelligence.hardware.temperature.callback.MLX90614GgTempCallBack;
 import com.ys.rkapi.MyManager;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
+import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
+import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.databinding.Activity5inchMainBinding;
 import com.yunbiao.ybsmartcheckin_live_id.printer.T;
 import com.yunbiao.ybsmartcheckin_live_id.printer.Utils;
@@ -26,7 +29,9 @@ import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.BigDecimalUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.FileUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.ResourceUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.TemperatureUnitUtils;
+import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.MeasureResultDialog;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.xutils.image.ImageOptions;
 import org.xutils.x;
@@ -42,6 +47,9 @@ import androidx.databinding.ObservableField;
 
 public class Main5InchActivity extends Base5InchActivity {
 
+    // xmpp推送服务
+    private ServiceManager serviceManager;
+
     private Activity5inchMainBinding activity5inchMainBinding;
     private MainDataBean mainDataBean;
     private ImageOptions adOptions = new ImageOptions.Builder().setFadeIn(true).setImageScaleType(ImageView.ScaleType.FIT_CENTER).build();
@@ -50,7 +58,7 @@ public class Main5InchActivity extends Base5InchActivity {
     private List<File> mAdList;
     private MediaPlayer mediaPlayer;
 
-    private int temperatureUnit = 1;
+    public static int temperatureUnit = 1;
     private float calibrationValue = 0;
     private int carouselInterval = 0;
     private int subtitleSpeed = 0;
@@ -93,6 +101,14 @@ public class Main5InchActivity extends Base5InchActivity {
     protected void initData() {
         SpeechManager.getInstance().init();
         loadConfigurationFile();
+        MeasureResultDialog.getInstance().init();
+        //开启Xmpp
+        startXmpp();
+        //初始化定位工具
+        LocateManager.instance().init(this);
+
+        SyncManager.instance().requestOnlyCompany();
+        SignManager.instance();
 
         TemperatureModule.getIns().setHotImageColdMode(false);
         TemperatureModule.getIns().setHotImageHotMode(false, 45.0f);
@@ -113,7 +129,7 @@ public class Main5InchActivity extends Base5InchActivity {
             if (System.currentTimeMillis() - coverTime > 150) {
                 isCover = false;
             }
-            if (isStop || !isReport) {
+            if (isStop || !isReport || MeasureResultDialog.getInstance().isShowing()) {
                 tempValueList.clear();
                 hTempList.clear();
                 lTempList.clear();
@@ -165,6 +181,7 @@ public class Main5InchActivity extends Base5InchActivity {
             if (!mainDataBean.isTest.get() && temp >= Temper5InchConst.stableLowerLimit && temp <= Temper5InchConst.stableUpperLimit) {
                 temp = Temper5InchConst.stableTemp[(int)(Math.random() * Temper5InchConst.stableTemp.length)];
             }
+            float tempC = temp;
             if (temperatureUnit == 2) {
                 temp = TemperatureUnitUtils.c2f(temp);
             }
@@ -176,12 +193,14 @@ public class Main5InchActivity extends Base5InchActivity {
             if (BigDecimalUtils.compare(temp, warningValue)) {
                 mainDataBean.getTempStatus().set(2);
                 tvTempNext.setTextColor(ResourceUtils.getColorResource(R.color.temperature_abnormal_text));
+                MeasureResultDialog.getInstance().showResultDialog(Main5InchActivity.this, activity5inchMainBinding.cvMainCamera.getCurrCameraFrame(), tempC, false);
                 speechText(temp, false);
                 abnormalNum += 1;
                 mainDataBean.getAbnormalNum().set(abnormalNum);
             } else {
                 speechText(temp, true);
                 if ((temperatureUnit == 1 && temp >= 35.0f) || (temperatureUnit == 2 && temp >= 95.0f)) {
+                    MeasureResultDialog.getInstance().showResultDialog(Main5InchActivity.this, activity5inchMainBinding.cvMainCamera.getCurrCameraFrame(), tempC, true);
                     tvTempNext.setTextColor(ResourceUtils.getColorResource(R.color.temperature_normal_text));
                     mainDataBean.getTempStatus().set(1);
                     normalNum += 1;
@@ -344,7 +363,7 @@ public class Main5InchActivity extends Base5InchActivity {
         playVideoSwitch(false);
         StringBuffer stringBuffer = new StringBuffer();
         if((temperatureUnit == 1 && temperature > 45.0f) || (temperatureUnit == 2 && temperature > 113.0f)){
-            stringBuffer.append(getResString(R.string.sp_temp_warning_tips));
+            stringBuffer.append(getResString(R.string.main_temp_error_tips));
         } else if ((temperatureUnit == 1 && temperature < 35.0f) || (temperatureUnit == 2 && temperature < 95.0f)) {
             stringBuffer.append(getResString(R.string.sp_temp_check_again));
         } else {
@@ -389,19 +408,11 @@ public class Main5InchActivity extends Base5InchActivity {
         }
     }
 
-    private void cmSetBodyTemperatureValue() {
-        if (temperatureUnit == 1) {
-            mainDataBean.cmBodyTemperatureValue.set(Temper5InchConst.defaultBodyValue);
-        } else {
-            mainDataBean.cmBodyTemperatureValue.set(TemperatureUnitUtils.c2f(Temper5InchConst.defaultBodyValue));
-        }
-        cmSetCalibrationValue();
-    }
-
     private void cmSetCalibrationValue() {
         float measurementValue = mainDataBean.cmMeasurementValue.get();
         if (measurementValue != 0) {
-            mainDataBean.cmCalibrationValue.set(BigDecimalUtils.sub(Temper5InchConst.defaultBodyValue, measurementValue, 1).floatValue());
+            float bodyTemperature = mainDataBean.cmBodyTemperatureValue.get();
+            mainDataBean.cmCalibrationValue.set(BigDecimalUtils.sub(bodyTemperature, measurementValue, 1).floatValue());
         }
     }
 
@@ -421,6 +432,9 @@ public class Main5InchActivity extends Base5InchActivity {
                 case R.id.btn_cm_confirm:
                     mainDataBean.isTest.set(false);
                     calibrationValue = mainDataBean.cmCalibrationValue.get();
+                    if (temperatureUnit == 2) {
+                        calibrationValue = BigDecimalUtils.div(calibrationValue, 1.8f, 1).floatValue();
+                    }
                     SpUtils.saveFloat(Temper5InchConst.Key.CALIBRATION_VALUE, calibrationValue);
                     TemperatureModule.getIns().setmCorrectionValue(calibrationValue);
                     T.showShort(Main5InchActivity.this, getResString(R.string.cm_save_tip));
@@ -430,12 +444,16 @@ public class Main5InchActivity extends Base5InchActivity {
                     TemperatureModule.getIns().setmCorrectionValue(calibrationValue);
                     break;
                 case R.id.fl_body_add_btn:
-                    Temper5InchConst.defaultBodyValue = BigDecimalUtils.add(Temper5InchConst.defaultBodyValue, 0.1f, 1).floatValue();
-                    cmSetBodyTemperatureValue();
+                    float addBodyTemperature = mainDataBean.cmBodyTemperatureValue.get();
+                    addBodyTemperature = BigDecimalUtils.add(addBodyTemperature, 0.1f, 1).floatValue();
+                    mainDataBean.cmBodyTemperatureValue.set(addBodyTemperature);
+                    cmSetCalibrationValue();
                     break;
                 case R.id.fl_body_sub_btn:
-                    Temper5InchConst.defaultBodyValue = BigDecimalUtils.sub(Temper5InchConst.defaultBodyValue, 0.1f, 1).floatValue();
-                    cmSetBodyTemperatureValue();
+                    float subBodyTemperature = mainDataBean.cmBodyTemperatureValue.get();
+                    subBodyTemperature = BigDecimalUtils.sub(subBodyTemperature, 0.1f, 1).floatValue();
+                    mainDataBean.cmBodyTemperatureValue.set(subBodyTemperature);
+                    cmSetCalibrationValue();
                     break;
             }
         }
@@ -449,8 +467,13 @@ public class Main5InchActivity extends Base5InchActivity {
                         mainDataBean.isTest.set(true);
                         TemperatureModule.getIns().setmCorrectionValue(0);
                         mainDataBean.cmMeasurementValue.set(0f);
-                        mainDataBean.cmCalibrationValue.set(calibrationValue);
-                        cmSetBodyTemperatureValue();
+                        if (temperatureUnit == 1) {
+                            mainDataBean.cmCalibrationValue.set(calibrationValue);
+                            mainDataBean.cmBodyTemperatureValue.set(Temper5InchConst.defaultBodyValue);
+                        } else {
+                            mainDataBean.cmCalibrationValue.set(BigDecimalUtils.mul(calibrationValue, 1.8f, 1).floatValue());
+                            mainDataBean.cmBodyTemperatureValue.set(TemperatureUnitUtils.c2f(Temper5InchConst.defaultBodyValue));
+                        }
                     }
                     break;
             }
@@ -472,6 +495,18 @@ public class Main5InchActivity extends Base5InchActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void startXmpp() {//开启xmpp
+        serviceManager = new ServiceManager(this);
+        serviceManager.startService();
+    }
+
+    private void destroyXmpp() {
+        if (serviceManager != null) {
+            serviceManager.stopService();
+            serviceManager = null;
+        }
     }
 
     @Override
@@ -503,5 +538,7 @@ public class Main5InchActivity extends Base5InchActivity {
         TemperatureModule.getIns().closeSerialPort();
         SpeechManager.getInstance().destroy();
         activity5inchMainBinding.cvMainCamera.destroy();
+        destroyXmpp();
+        LocateManager.instance().destory();
     }
 }

@@ -526,15 +526,34 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
+                <TextView
+                    android:id="@+id/tv_clear_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="30dp"
+                    android:background="@drawable/selector_btn_take_photo"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:clickable="true"
+                    android:onClick="@{eventListener::onClick}"
+                    android:textSize="24sp"
+                    android:textColor="@color/white"
+                    android:text="@string/act_set_qcsj"
+                    app:layout_constraintTop_toBottomOf="@id/v_line_6"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
                 <View
                     android:id="@+id/v_set_net_bg"
                     style="@style/setting_text_child"
                     android:layout_width="match_parent"
-                    android:layout_height="340dp"
+                    android:layout_height="510dp"
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginTop="20dp"
-                    app:layout_constraintTop_toBottomOf="@id/v_line_6"
+                    app:layout_constraintTop_toBottomOf="@id/tv_clear_data"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -548,7 +567,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="30dp"
                     app:layout_constraintStart_toStartOf="@id/v_set_net_bg"
-                    app:layout_constraintTop_toTopOf="@id/v_set_net_bg">
+                    app:layout_constraintTop_toTopOf="@id/v_net_content_bg">
 
                     <RadioButton
                         android:id="@+id/rb_yun"
@@ -570,6 +589,104 @@
                         android:textSize="24dp" />
                 </RadioGroup>
 
+                <TextView
+                    android:id="@+id/tv_device_no_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/System_deviceNo"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="40dp"
+                    app:layout_constraintTop_toTopOf="@id/v_set_net_bg"
+                    app:layout_constraintStart_toEndOf="@id/rg_server_model"/>
+
+                <TextView
+                    android:id="@+id/tv_device_no_5inch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:gravity="center_vertical|left"
+                    android:text="@{settingDataBean.deviceNo}"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintTop_toTopOf="@id/tv_device_no_title"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_device_no_title"
+                    app:layout_constraintStart_toEndOf="@id/tv_device_no_title"
+                    app:layout_constraintEnd_toEndOf="@id/v_set_net_bg"/>
+
+                <TextView
+                    android:id="@+id/tv_bind_code_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/System_bindCode"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_device_no_title"
+                    app:layout_constraintStart_toStartOf="@id/tv_device_no_title"/>
+
+                <TextView
+                    android:id="@+id/tv_bind_code_5inch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:gravity="center_vertical|left"
+                    android:text="@{settingDataBean.bindCode}"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintTop_toTopOf="@id/tv_bind_code_title"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_bind_code_title"
+                    app:layout_constraintStart_toEndOf="@id/tv_bind_code_title"
+                    app:layout_constraintEnd_toEndOf="@id/v_set_net_bg"/>
+
+                <TextView
+                    android:id="@+id/tv_company_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/System_Company"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_bind_code_title"
+                    app:layout_constraintStart_toStartOf="@id/tv_bind_code_title"/>
+
+                <TextView
+                    android:id="@+id/tv_company_name_5inch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:gravity="center_vertical|left"
+                    android:text="@{settingDataBean.companyName}"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintTop_toTopOf="@id/tv_company_title"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_company_title"
+                    app:layout_constraintStart_toEndOf="@id/tv_company_title"
+                    app:layout_constraintEnd_toEndOf="@id/v_set_net_bg"/>
+
+                <TextView
+                    android:id="@+id/tv_net_state_info_5inch"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/shape_spinner_drop"
+                    android:textColor="@color/font_green"
+                    android:text="@{settingDataBean.netStateInfo}"
+                    android:textSize="20dp"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    app:layout_constraintStart_toStartOf="@id/v_set_net_bg"
+                    app:layout_constraintEnd_toStartOf="@id/v_net_content_bg"
+                    app:layout_constraintTop_toTopOf="@id/v_set_net_bg"
+                    app:layout_constraintBottom_toTopOf="@id/v_net_content_bg"/>
+
                 <View
                     android:id="@+id/v_net_content_bg"
                     android:layout_width="0dp"
@@ -579,11 +696,11 @@
                     android:background="@drawable/shape_spinner_drop"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     app:layout_constraintStart_toEndOf="@id/rg_server_model"
                     app:layout_constraintEnd_toEndOf="@id/v_set_net_bg"
-                    app:layout_constraintTop_toTopOf="@id/v_set_net_bg"
+                    app:layout_constraintTop_toBottomOf="@id/tv_company_title"
                     app:layout_constraintBottom_toBottomOf="@id/v_set_net_bg"/>
 
                 <TextView
@@ -789,7 +906,7 @@
                     app:layout_constraintEnd_toEndOf="@id/v_check_version_bg">
                     <TextView
                         android:id="@+id/tv_version_info_5inch_system"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
                         android:textColor="@color/white"
                         android:text="@{settingDataBean.versionInfo}"
                         android:layout_width="match_parent"
@@ -816,6 +933,7 @@
                     <TextView
                         android:text="@string/update_check_ing"
                         android:textColor="@color/white"
+                        android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>

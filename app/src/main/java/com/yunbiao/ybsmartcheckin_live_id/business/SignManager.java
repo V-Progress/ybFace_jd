@@ -14,6 +14,7 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Record5Inch;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -104,7 +105,12 @@ public class SignManager {
         }
 
         AutoClean autoClean = new AutoClean();
-        autoClean.startAutoClear();
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH) {
+            autoUpload.start5InchUploadThread();
+            autoClean.startAutoClear5InchRecord();
+        } else {
+            autoClean.startAutoClear();
+        }
     }
 
     public void uploadSignRecord(Consumer<Boolean> consumer) {
@@ -1009,6 +1015,23 @@ public class SignManager {
         }
     }
 
+    //5寸添加记录到数据库
+    public void add5InchRecordToDB(Bitmap bitmap, float temperature) {
+        Record5Inch record5Inch = new Record5Inch();
+        long time = System.currentTimeMillis();
+
+        File file = saveBitmap(time, bitmap);
+        record5Inch.setImgPath(file.getPath());
+        record5Inch.setTemperature(temperature);
+
+        int comid = SpUtils.getCompany().getComid();
+        record5Inch.setComid(comid);
+        record5Inch.setTime(time);
+        record5Inch.setDate(dateFormat.format(time));
+
+        record5Inch.setUpload(false);
+        long add = DaoManager.get().add(record5Inch);
+    }
 
     public void clearAllData(@NonNull Activity activity){
         List<Sign> signList = DaoManager.get().queryAll(Sign.class);

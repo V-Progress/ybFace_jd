@@ -54,6 +54,7 @@ public class DaoManager {
         daoSession.getWhiteDao().detachAll();
         daoSession.getVertifyRecordDao().detachAll();
         daoSession.getCertificatesUserDao().detachAll();
+        daoSession.getRecord5InchDao().detachAll();
     }
 
     public DaoSession getDaoSession() {
@@ -338,5 +339,34 @@ public class DaoManager {
             return null;
         }
         return daoSession.getCertificatesUserDao().queryBuilder().where(CertificatesUserDao.Properties.Num.eq(cardNum)).unique();
+    }
+
+    //查询所有5寸未上传数据
+    public List<Record5Inch> queryRecord5InchByUpload(boolean isUp) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getRecord5InchDao().queryBuilder().where(Record5InchDao.Properties.IsUpload.eq(isUp)).list();
+    }
+
+    public List<Record5Inch> queryRecord5InchByComIdAndUpload(int comId, boolean isUpload) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getRecord5InchDao().queryBuilder().where(Record5InchDao.Properties.Comid.eq(comId), Record5InchDao.Properties.IsUpload.eq(isUpload)).list();
+    }
+
+    public List<Record5Inch> queryRecord5InchByComId(int comId) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getRecord5InchDao().queryBuilder().where(Record5InchDao.Properties.Comid.eq(comId)).list();
+    }
+
+    public void delete5InchRecord(Record5Inch record5Inch) {
+        if (daoSession == null) {
+            return;
+        }
+        daoSession.getRecord5InchDao().delete(record5Inch);
     }
 }

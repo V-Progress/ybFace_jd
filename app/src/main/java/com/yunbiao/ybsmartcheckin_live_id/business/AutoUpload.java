@@ -10,6 +10,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Record5Inch;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -449,6 +450,117 @@ public class AutoUpload {
         }, INITIAL_TIME, PERIOD_TIME, TimeUnit.MINUTES);
     }
 
+    /**
+     * 开启5寸上传线程
+     */
+    public void start5InchUploadThread() {
+        d("开启批量上传线程");
+        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+                d("开始批量上传");
+                int comid = SpUtils.getCompany().getComid();
+                if (comid == Constants.NOT_BIND_COMPANY_ID) {
+                    d("公司未绑定，不上传数据");
+                    check5InchDaoData(20 * 1000);
+                    return;
+                }
+
+                final List<Record5Inch> recordList = DaoManager.get().queryRecord5InchByComIdAndUpload(comid, false);
+                if (recordList == null || recordList.size() <= 0) {
+                    d("暂无批量数据");
+                    return;
+                }
+
+                Map<String, File> fileMap = new HashMap<>();
+                List<WitBean> witBeanList = new ArrayList<>();
+                for (int i = 0; i < recordList.size(); i++) {
+                    Record5Inch record = recordList.get(i);
+                    String headPath1 = record.getImgPath();
+                    if (TextUtils.isEmpty(headPath1)) {
+                        d("图片不存在：" + headPath1);
+                        DaoManager.get().delete(record);
+                        continue;
+                    }
+                    if (!new File(headPath1).exists()) {
+                        d("图片不存在：" + headPath1);
+                        DaoManager.get().delete(record);
+                        continue;
+                    }
+
+                    WitBean witBean = new WitBean();
+                    witBean.createTime = record.getTime();
+                    witBean.temper = record.getTemperature();
+                    witBeanList.add(witBean);
+
+                    //添加头像
+                    File file;
+                    String headPath = record.getImgPath();
+                    if (!TextUtils.isEmpty(headPath)) {
+                        file = new File(record.getImgPath());
+                    } else if (isPrivacy) {
+                        file = createNullFile("", record.getTime());
+                    } else {
+                        file = createNullFile("", record.getTime());
+                    }
+                    fileMap.put(file.getName(), file);
+                }
+                Map<String, String> params = new HashMap<>();
+                String jsonStr = new Gson().toJson(witBeanList);
+                params.put("witJson", jsonStr + "");
+                params.put("deviceNo", HeartBeatClient.getDeviceNo());
+                params.put("comId", SpUtils.getCompany().getComid() + "");
+
+                d("地址：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_HEAD);
+                d("参数：" + params.toString());
+                d("图片：" + fileMap.size());
+
+                OkHttpUtils.post().url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_HEAD)
+                        .params(params)
+                        .files("heads", fileMap)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onBefore(Request request, int id) {
+                                super.onBefore(request, id);
+                                d("onBefore: 开始上传");
+                            }
+
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                d("上送失败--->" + (e != null ? e.getMessage() : "NULL"));
+
+                                check5InchDaoData(100);
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                d("onResponse: 上传结果：" + response);
+                                JSONObject jsonObject = JSONObject.parseObject(response);
+                                String status = jsonObject.getString("status");
+                                boolean isSucc = TextUtils.equals("1", status);
+                                if (!isSucc) {
+                                    return;
+                                }
+                                for (int i = 0; i < recordList.size(); i++) {
+                                    Record5Inch record = recordList.get(i);
+                                    record.setUpload(true);
+                                    DaoManager.get().addOrUpdate(record);
+                                }
+
+                                check5InchDaoData(100);
+                            }
+
+                            @Override
+                            public void onAfter(int id) {
+                                super.onAfter(id);
+                            }
+                        });
+            }
+        }, INITIAL_TIME, PERIOD_TIME, TimeUnit.MINUTES);
+    }
+
     // 检查数据，已上传的就删除
     private void checkDaoData(final int mostNum) {
         scheduledExecutorService.execute(() -> {
@@ -479,6 +591,40 @@ public class AutoUpload {
                     iterator.remove();
 
                     if (signs.size() <= mostNum) {
+                        d("run: 数量小于：" + mostNum + "，停止删除");
+                        break;
+                    }
+                }
+            }
+            d("run: 删除：" + deleteNum + "条");
+        });
+    }
+
+    // 检查数据，已上传的就删除（5寸）
+    private void check5InchDaoData(final int mostNum) {
+        scheduledExecutorService.execute(() -> {
+            int comid = SpUtils.getCompany().getComid();
+            List<Record5Inch> recordList = DaoManager.get().queryRecord5InchByComId(comid);
+            if (recordList == null) {
+                return;
+            }
+            if (recordList.size() <= mostNum) {
+                return;
+            }
+            int deleteNum = 0;
+            Iterator<Record5Inch> iterator = recordList.iterator();
+            while (iterator.hasNext()) {
+                Record5Inch record = iterator.next();
+                if (record.isUpload()) {
+                    deleteNum += 1;
+                    File file = new File(record.getImgPath());
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    DaoManager.get().delete5InchRecord(record);
+                    iterator.remove();
+
+                    if (recordList.size() <= mostNum) {
                         d("run: 数量小于：" + mostNum + "，停止删除");
                         break;
                     }

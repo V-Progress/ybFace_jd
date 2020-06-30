@@ -1,6 +1,9 @@
 package com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity;
 
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -12,20 +15,32 @@ import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.databinding.Activity5inchSettingBinding;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Record5Inch;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.Temper5InchConst;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.databean.SettingDataBean;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.BigDecimalUtils;
+import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.ResourceUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.TemperatureUnitUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableField;
 
-public class Setting5InchActivity extends Base5InchActivity {
+public class Setting5InchActivity extends Base5InchActivity implements NetWorkChangReceiver.NetWorkChangeListener {
 
     private Activity5inchSettingBinding activity5inchSettingBinding;
     private SettingDataBean settingDataBean;
+
+    private NetWorkChangReceiver netWorkChangReceiver;
+    private boolean isNetConnected = false;
 
     @Override
     protected int getPortraitLayout() {
@@ -89,6 +104,17 @@ public class Setting5InchActivity extends Base5InchActivity {
             setServerInfo(Constants.serverModel.JU);
         }
 
+        settingDataBean.deviceNo.set(SpUtils.getStr(SpUtils.DEVICE_NUMBER));
+        settingDataBean.bindCode.set(SpUtils.getStr(SpUtils.BIND_CODE));
+        int comid = SpUtils.getCompany().getComid();
+        String compName = SpUtils.getCompany().getComname();
+        if (comid == Constants.NOT_BIND_COMPANY_ID) {
+            settingDataBean.companyName.set(ResourceUtils.getStringResource(R.string.smt_main_not_bind));
+        } else {
+            settingDataBean.companyName.set(compName);
+        }
+        setNetStateInfo();
+
         setEditTextSelection();
 
         activity5inchSettingBinding.setEventListener(new EventListener());
@@ -96,6 +122,13 @@ public class Setting5InchActivity extends Base5InchActivity {
 
     @Override
     protected void initData() {
+        netWorkChangReceiver = new NetWorkChangReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkChangReceiver, filter);
+
         checkUpgrade(new CheckUpgradeCallback() {
             @Override
             public void onStart() {
@@ -134,9 +167,39 @@ public class Setting5InchActivity extends Base5InchActivity {
     }
 
     @Override
+    public void connect() {
+        isNetConnected = true;
+        setNetStateInfo();
+    }
+
+    @Override
+    public void disConnect() {
+        isNetConnected = false;
+        setNetStateInfo();
+    }
+
+    private void setNetStateInfo() {
+        if (isNetConnected) {
+            settingDataBean.netStateInfo.set(ResourceUtils.getStringResource(R.string.smt_main_net_normal2));
+            activity5inchSettingBinding.tvNetStateInfo5inch.setTextColor(Color.GREEN);
+        } else {
+            settingDataBean.netStateInfo.set(ResourceUtils.getStringResource(R.string.smt_main_net_no));
+            activity5inchSettingBinding.tvNetStateInfo5inch.setTextColor(Color.RED);
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         saveConfiguration();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (netWorkChangReceiver != null) {
+            unregisterReceiver(netWorkChangReceiver);
+        }
     }
 
     private void saveConfiguration() {
@@ -267,6 +330,33 @@ public class Setting5InchActivity extends Base5InchActivity {
                     break;
                 case R.id.btn_update_system:
                     UpdateVersionControl.getInstance().checkUpdate(Setting5InchActivity.this);
+                    break;
+                case R.id.tv_clear_data:
+                    v.setClickable(false);
+                    List<Record5Inch> recordList = DaoManager.get().queryAll(Record5Inch.class);
+                    if(recordList == null || recordList.size() == 0){
+                        UIUtils.showShort(Setting5InchActivity.this, (getString(R.string.clear_no_data) + "0"));
+                        v.setClickable(true);
+                        return;
+                    }
+
+                    int total = 0;
+                    Iterator<Record5Inch> iterator = recordList.iterator();
+                    while (iterator.hasNext()) {
+                        Record5Inch next = iterator.next();
+                        String imgPath = next.getImgPath();
+                        if(!TextUtils.isEmpty(imgPath)){
+                            File imgFile = new File(imgPath);
+                            if(imgFile.exists()){
+                                imgFile.delete();
+                            }
+                        }
+                        DaoManager.get().delete5InchRecord(next);
+                        total ++;
+                    }
+
+                    v.setClickable(true);
+                    UIUtils.showShort(Setting5InchActivity.this,(getString(R.string.clear_no_data) + total));
                     break;
             }
         }
