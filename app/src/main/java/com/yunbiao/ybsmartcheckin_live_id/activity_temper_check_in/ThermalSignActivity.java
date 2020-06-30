@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -349,7 +350,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
      * @param view
      */
     public void exportToUD(final View view) {
-        FileSelectActivity.selectFile(this,FileSelectActivity.FILE_TYPE_DIR,true,FileSelectActivity.SELECT_REQUEST_CODE);
+        FileSelectActivity.selectFile(this,FileSelectActivity.FILE_TYPE_DIR,Build.VERSION.SDK_INT < Build.VERSION_CODES.O,FileSelectActivity.SELECT_REQUEST_CODE);
     }
 
     private void export(File file){

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +38,12 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,14 +80,7 @@ public class SplashActivity extends BaseActivity {
         super.initView();
 
         GifImageView gifImageView = findViewById(R.id.giv);
-        try {
-            GifDrawable gifDrawable = new GifDrawable(getResources(), R.mipmap.splash);
-            gifImageView.setImageDrawable(gifDrawable);
-            gifDrawable.setLoopCount(0);
-            gifDrawable.setSpeed(3.0f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setOpenGif(gifImageView);
 
         String deviceSN = HeartBeatClient.getDeviceSN();
         Timber.e("initView: 当前设备的DeviceSN是：%s", deviceSN);
@@ -89,6 +88,39 @@ public class SplashActivity extends BaseActivity {
         String wifiMac = CommonUtils.getWifiMac();
         Timber.e("initView: 当前wifiMac：%s", wifiMac);
         Timber.e("initView: 当前localMac：%s", localMac);
+    }
+
+    private void setOpenGif(GifImageView gifImageView) {
+        File splashDir = new File(Constants.SPLASH_DIR_PATH);
+        Log.e(TAG, "闪屏动画：" + splashDir.getPath());
+        if (!splashDir.exists() || !splashDir.isDirectory()) {
+            splashDir.mkdirs();
+        }
+
+        GifDrawable gifDrawable;
+
+        File[] files = splashDir.listFiles(pathname -> pathname.isFile());
+        if (files != null && files.length > 0) {
+            Arrays.sort(files, (o1, o2) -> o1.isDirectory() && o2.isFile() ? -1 : o1.isFile() && o2.isDirectory() ? 1 : o1.getName().compareTo(o2.getName()));
+            File file = files[0];
+            try {
+                gifDrawable = new GifDrawable(file);
+                gifImageView.setImageDrawable(gifDrawable);
+                gifDrawable.setLoopCount(0);
+                gifDrawable.setSpeed(3.0f);
+            } catch (IOException e) {
+                gifImageView.setImageURI(Uri.fromFile(file));
+            }
+        } else {
+            try {
+                gifDrawable = new GifDrawable(getResources(), R.mipmap.splash);
+                gifImageView.setImageDrawable(gifDrawable);
+                gifDrawable.setLoopCount(0);
+                gifDrawable.setSpeed(3.0f);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -117,7 +149,7 @@ public class SplashActivity extends BaseActivity {
 
             switch (Constants.FLAVOR_TYPE) {
                 case FlavorType.XENON:
-                    setIp("api-eu.feverdefence.com","34.247.168.20", "5222", "8080", "");
+                    setIp("api-eu.feverdefence.com", "34.247.168.20", "5222", "8080", "");
                     break;
                 default:
                     checkServiceIp();
@@ -297,11 +329,11 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void checkServiceIp(){
+    private void checkServiceIp() {
         int intOrDef = SpUtils.getIntOrDef(Constants.Key.SERVER_MODEL, Constants.Default.SERVER_MODEL);
-        if(intOrDef == Constants.serverModel.JU){
+        if (intOrDef == Constants.serverModel.JU) {
             String serIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE, "");
-            if(TextUtils.isEmpty(serIp)){
+            if (TextUtils.isEmpty(serIp)) {
                 String xmppIp = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE, "");
                 SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE, xmppIp);
             }

@@ -87,6 +87,18 @@ public class ExcelUtils {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            File file = new File(filePath);
+            if(!file.exists()){
+                try {
+                    boolean newFile = file.createNewFile();
+                    if(!newFile){
+                        return -1;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return -1;
+                }
+            }
             //创建工作簿
             HSSFWorkbook workbook = new HSSFWorkbook();
             //创建表格

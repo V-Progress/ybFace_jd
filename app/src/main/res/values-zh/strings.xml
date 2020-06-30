@@ -46,6 +46,10 @@
     <string name="confirm_directore_tips">确定使用这个目录吗？</string>
     <string name="select_directory_title">选择目录</string>
     <string name="click_select_this_directory">点击选择此目录</string>
+    <string name="create_dir_title">创建目录</string>
+    <string name="please_input_dir_name">请输入目录名称</string>
+    <string name="create_success">创建成功</string>
+    <string name="create_failed">创建失败</string>
 
     <!--口罩提示IT-->
     <string name="no_mask_tip">Si prega di indossare la maschera</string>

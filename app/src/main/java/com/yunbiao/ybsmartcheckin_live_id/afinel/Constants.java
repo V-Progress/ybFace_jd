@@ -25,6 +25,8 @@ public class Constants {
 
     //资源路径
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_face_db/";
+    public static String SPLASH_DIR_PATH = LOCAL_ROOT_PATH + "/splash/";
+    public static String LOGO_DIR_PATH = LOCAL_ROOT_PATH + "/logo/";
     public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径

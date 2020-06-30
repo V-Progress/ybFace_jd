@@ -50,6 +50,10 @@
     <string name="select_directory_title">Select the directory</string>
     <string name="click_select_this_directory">Click to select this directory</string>
     <string name="delete_record_msg">Are you sure you want to delete the record?</string>
+    <string name="create_dir_title">create directory</string>
+    <string name="please_input_dir_name">Please enter the directory name</string>
+    <string name="create_success">Directory created successfully</string>
+    <string name="create_failed">Failed to create directory</string>
 
     <!--口罩提示IT-->
     <string name="no_mask_tip">Si prega di indossare la maschera</string>

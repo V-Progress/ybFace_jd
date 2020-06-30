@@ -53,7 +53,9 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
+import org.xutils.common.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -119,21 +121,31 @@ public class ThermalSettingActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == FileSelectActivity.SELECT_REQUEST_CODE && resultCode == RESULT_OK){
-            String imgPath = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
-            Log.e(TAG, "onActivityResult: 选中的目录：" + imgPath);
             ImageView ivMainLogo = findViewById(R.id.iv_main_logo);
+            String imgPath = data.getStringExtra(FileSelectActivity.RESULT_PATH_KEY);
             if (TextUtils.isEmpty(imgPath)) {
                 UIUtils.showShort(this, getResString(R.string.select_img_failed));
                 ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
-            } else {
-                File file = new File(imgPath);
-                if (!file.exists()) {
+                return;
+            }
+
+            File oringinFile = new File(imgPath);
+            File newFile = new File(Constants.LOGO_DIR_PATH,oringinFile.getName());
+            try {
+                Timber.d("拷贝文件，源文件" + oringinFile.getPath());
+                FileUtils.copyFile(oringinFile,newFile);
+                Timber.d("拷贝文件成功，新文件：" + newFile.getPath());
+                if (!newFile.exists()) {
                     UIUtils.showShort(this, getResString(R.string.select_img_failed_not_exists));
                     ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
                 } else {
                     SpUtils.saveStr(ThermalConst.Key.MAIN_LOGO_IMG, imgPath);
-                    ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
+                    ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(newFile.getPath()));
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                UIUtils.showShort(this, getResString(R.string.select_img_failed));
+                ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
             }
         }
     }
@@ -355,12 +367,7 @@ public class ThermalSettingActivity extends BaseActivity {
             boolean titleEnabled = SpUtils.getBoolean(ThermalConst.Key.TITLE_ENABLED,ThermalConst.Default.TITLE_ENABLED);
             Switch swTitle = view.findViewById(R.id.sw_title_display);
             swTitle.setChecked(titleEnabled);
-            swTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    SpUtils.saveBoolean(ThermalConst.Key.TITLE_ENABLED,isChecked);
-                }
-            });
+            swTitle.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(ThermalConst.Key.TITLE_ENABLED,isChecked));
 
             //设置首页LOGO================================================================================
             Button btnRestore = view.findViewById(R.id.btn_restore_main_logo);
@@ -377,9 +384,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     ivMainLogo.setImageBitmap(BitmapFactory.decodeFile(mainLogoImg));
                 }
             }
-            btnSaveMainLogo.setOnClickListener(v -> {
-                FileSelectActivity.selectFile(getActivity(),FileSelectActivity.FILE_TYPE_IMG,false,FileSelectActivity.SELECT_REQUEST_CODE);
-            });
+            btnSaveMainLogo.setOnClickListener(v -> FileSelectActivity.selectFile(getActivity(),FileSelectActivity.FILE_TYPE_IMG,true,FileSelectActivity.SELECT_REQUEST_CODE));
             btnRestore.setOnClickListener(v -> {
                 SpUtils.remove(ThermalConst.Key.MAIN_LOGO_IMG);
                 ivMainLogo.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);

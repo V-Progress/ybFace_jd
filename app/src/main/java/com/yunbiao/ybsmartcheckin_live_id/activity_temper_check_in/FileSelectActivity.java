@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,13 +55,25 @@ public class FileSelectActivity extends FragmentActivity {
     public static final int FILE_TYPE_XLS = 2;
     public static final String SHOW_USB_DISK = "showUsbDisk";
 
+    public static final String CAN_CREATE_DIR = "canCreateDir";
+
     private static int mCurrSelectType = FILE_TYPE_DIR;//默认选文件夹
     private boolean isShowUSBDisk = true;//默认U盘可见
+
+    private boolean canCreateDir = true;
 
     public static void selectFile(Activity activity,int fileType,boolean showUsbDisk, int requestCode){
         Intent intent = new Intent(activity, FileSelectActivity.class);
         intent.putExtra(SELECT_FILE_TYPE,fileType);
         intent.putExtra(SHOW_USB_DISK,showUsbDisk);
+        activity.startActivityForResult(intent,requestCode);
+    }
+
+    public static void selectFile(Activity activity,int fileType,boolean showUsbDisk, boolean canCreateDir, int requestCode){
+        Intent intent = new Intent(activity, FileSelectActivity.class);
+        intent.putExtra(SELECT_FILE_TYPE,fileType);
+        intent.putExtra(SHOW_USB_DISK,showUsbDisk);
+        intent.putExtra(CAN_CREATE_DIR,canCreateDir);
         activity.startActivityForResult(intent,requestCode);
     }
 
@@ -71,6 +84,7 @@ public class FileSelectActivity extends FragmentActivity {
 
         Button btnLocalPath = findViewById(R.id.btn_local_path);
         Button btnUsbDisk = findViewById(R.id.btn_usb_disk);
+        Button btnCreateDir = findViewById(R.id.btn_create_dir);
         tvPathTree = findViewById(R.id.tv_path_tree);
         rlvFileList = findViewById(R.id.rlv_file_list);
         rlvFileList.addItemDecoration(new SimpleItemDecoration(10));
@@ -78,16 +92,20 @@ public class FileSelectActivity extends FragmentActivity {
         fileAdapter = new FileAdapter(this,fileList,onItemClickListener);
         rlvFileList.setAdapter(fileAdapter);
 
+        mCurrSelectType = getIntent().getIntExtra(SELECT_FILE_TYPE,FILE_TYPE_DIR);
+        isShowUSBDisk = getIntent().getBooleanExtra(SHOW_USB_DISK,true);
+        canCreateDir = getIntent().getBooleanExtra(CAN_CREATE_DIR,true);
+        //是否可以创建目录
+        if(!canCreateDir){
+            btnCreateDir.setVisibility(View.GONE);
+        }
+
+
         //初始化根路径
         localRootPath = Environment.getExternalStorageDirectory();
         usbRootPath = new File(SdCardUtils.getUsbDiskPath(this));
-
-        mCurrSelectType = getIntent().getIntExtra(SELECT_FILE_TYPE,FILE_TYPE_DIR);
-        isShowUSBDisk = getIntent().getBooleanExtra(SHOW_USB_DISK,true);
-
-        //本地路径是否存在
-        if(!localRootPath.exists()){
-            btnLocalPath.setVisibility(View.GONE);
+        if(!isDirCanUsed(localRootPath) && !isDirCanUsed(usbRootPath)){
+            UIUtils.showShort(this,getString(R.string.no_can_used_directory));
         }
 
         //usb路径是否存在
@@ -96,10 +114,6 @@ public class FileSelectActivity extends FragmentActivity {
             btnLocalPath.performClick();
         } else {
             btnUsbDisk.performClick();
-        }
-
-        if(!isDirCanUsed(localRootPath) && !isDirCanUsed(usbRootPath)){
-            UIUtils.showShort(this,getString(R.string.no_can_used_directory));
         }
     }
 
@@ -159,6 +173,51 @@ public class FileSelectActivity extends FragmentActivity {
             fileStack.clear();
         }
         goForward(usbRootPath);
+    }
+
+    //创建新目录
+    public void createDir(View view){
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.act_departList_tip_qsrbmmc))
+                .setView(LayoutInflater.from(this).inflate(R.layout.dialog_depart, null))
+                .setPositiveButton(getString(R.string.base_ensure), null)
+                .setNegativeButton(getString(R.string.base_cancel), null)
+                .setCancelable(false)
+                .create();
+        alertDialog.show();
+
+        EditText edtDepartName = alertDialog.findViewById(R.id.et_departName);
+        edtDepartName.setHint(getString(R.string.please_input_dir_name));
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String inputText = edtDepartName.getText().toString();
+            if(TextUtils.isEmpty(inputText)){
+                edtDepartName.setError(getString(R.string.please_input_dir_name));
+            } else {
+                File peek = fileStack.peek();
+                File newDir = new File(peek,inputText);
+                boolean mkdir = newDir.mkdir();
+                if(mkdir){
+                    UIUtils.showShort(FileSelectActivity.this,getString(R.string.create_success));
+                    setList(peek);
+                    alertDialog.dismiss();
+
+                    int position = fileList != null && fileList.size() > 0 ? fileList.size() - 1 : 0;
+                    if(fileList != null){
+                        for (int i = 0; i < fileList.size(); i++) {
+                            File file = fileList.get(i);
+                            if(TextUtils.equals(newDir.getPath(),file.getPath())){
+                                position = i;
+                                break;
+                            }
+                        }
+                    }
+                    rlvFileList.smoothScrollToPosition(position);
+                } else {
+                    UIUtils.showShort(FileSelectActivity.this,getString(R.string.create_failed));
+                }
+            }
+        });
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> alertDialog.dismiss());
     }
 
     /***

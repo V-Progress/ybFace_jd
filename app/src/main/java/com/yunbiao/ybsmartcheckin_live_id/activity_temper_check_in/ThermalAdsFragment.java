@@ -130,50 +130,13 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event){
         //再onResume中判断
-        setLogo(ivLogo,null);
-    }
-
-
-    private void setLogo(ImageView logoView,TextView tvName) {
-        if(Constants.FLAVOR_TYPE == FlavorType.XENON){
-            return;
-        }
-        boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
-        if (localPriority) {
-            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
-            if (TextUtils.isEmpty(logoPath)) {
-                logoView.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
-            } else {
-                logoView.setImageBitmap(BitmapFactory.decodeFile(logoPath));
-            }
-            if(tvName != null){
-                tvName.setText(SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_TEXT, ThermalConst.Default.MAIN_LOGO_TEXT));
-            }
-        } else {
-            Company company = SpUtils.getCompany();
-            String comlogo = company.getComlogo();
-            String abbname = company.getAbbname();
-            if(company.getComid() == Constants.NOT_BIND_COMPANY_ID || TextUtils.isEmpty(comlogo)){
-                logoView.setVisibility(View.GONE);
-                logoView.setImageBitmap(null);
-            } else {
-                Glide.with(getActivity()).load(comlogo).asBitmap().into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        logoView.setImageBitmap(resource);
-                    }
-                });
-            }
-            if(tvName != null){
-                tvName.setText(TextUtils.isEmpty(abbname) ? "" : abbname);
-            }
-        }
+        setLogo(ivLogo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(ResetLogoEvent event){
         //再onResume中判断
-        setLogo(ivLogo,null);
+        setLogo(ivLogo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -258,6 +221,7 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
     public void onResume() {
         super.onResume();
         mixedPlayer.resume();
+        setLogo(ivLogo);
     }
 
     @Override
@@ -387,7 +351,7 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
             public void run() {
                 timerHandler.removeMessages(0);
                 mixedPlayer.resume();
-
+                setLogo(ivLogo);
                 EventBus.getDefault().postSticky(new AdsStateEvent(AdsStateEvent.STATE_OPENED));
             }
         });
@@ -434,5 +398,45 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+
+    private void setLogo(ImageView logoView) {
+        if(logoView == null){
+            return;
+        }
+        boolean showMainLogo = SpUtils.getBoolean(ThermalConst.Key.SHOW_MAIN_LOGO, ThermalConst.Default.SHOW_MAIN_LOGO);
+        boolean localPriority = SpUtils.getBoolean(ThermalConst.Key.LOCAL_PRIORITY, ThermalConst.Default.LOCAL_PRIORITY);
+        if(localPriority){
+            String logoPath = SpUtils.getStr(ThermalConst.Key.MAIN_LOGO_IMG, ThermalConst.Default.MAIN_LOGO_IMG);
+            if (TextUtils.isEmpty(logoPath)) {
+                logoView.setImageResource(ThermalConst.Default.DEFAULT_LOGO_ID);
+            } else {
+                logoView.setImageBitmap(BitmapFactory.decodeFile(logoPath));
+            }
+        } else {
+            Company company = SpUtils.getCompany();
+            String comlogo = company.getComlogo();
+            if(company.getComid() == Constants.NOT_BIND_COMPANY_ID || TextUtils.isEmpty(comlogo)){
+                logoView.setVisibility(View.GONE);
+                logoView.setImageBitmap(null);
+            } else {
+                Glide.with(getActivity()).load(comlogo).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        logoView.setImageBitmap(resource);
+                    }
+                });
+            }
+        }
+        if(showMainLogo){
+            if(!logoView.isShown()){
+                logoView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if(logoView.isShown()){
+                logoView.setVisibility(View.GONE);
+            }
+        }
     }
 }
