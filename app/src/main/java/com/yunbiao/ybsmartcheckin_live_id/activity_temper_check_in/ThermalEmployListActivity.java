@@ -258,7 +258,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         final User user = userList.get(postion);
         Log.e(TAG, "itemDeleteClick: " + user.getName());
 
-        showDialog(getString(R.string.employ_list_confirm_delete), (dialog, which) -> {
+        showDialog(getString(R.string.delete_user_dialog_title), getString(R.string.employ_list_confirm_delete), (dialog, which) -> {
             // TODO: 2020/3/18 离线功能
             if(user.getCompanyId() == Constants.NOT_BIND_COMPANY_ID){
                 DaoManager.get().delete(user);
@@ -334,7 +334,7 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
     public void itemEditClick(View v, final int postion) {
         User user = userList.get(postion);
         Log.e(TAG, "itemEditClick: " + user.getName());
-        showDialog(getString(R.string.employ_list_confirm_edit), (dialog, which) -> {
+        showDialog(getString(R.string.edit_user_dialog_title),getString(R.string.employ_list_confirm_edit), (dialog, which) -> {
             Intent intent = new Intent(ThermalEmployListActivity.this, ThermalEditEmployActivity.class);
             intent.putExtra(ThermalEditEmployActivity.KEY_ID, user.getId());
             intent.putExtra(ThermalEditEmployActivity.KEY_TYPE, ThermalEditEmployActivity.TYPE_EDIT);
@@ -342,9 +342,9 @@ public class ThermalEmployListActivity extends BaseActivity implements EmployAda
         });
     }
 
-    private void showDialog(String msg, DialogInterface.OnClickListener confirm) {
+    private void showDialog(String title,String msg, DialogInterface.OnClickListener confirm) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.base_tip) + "!");
+        builder.setTitle(title);
         builder.setMessage(msg);
         builder.setPositiveButton(getString(R.string.base_ensure), confirm);
         builder.setNegativeButton(getString(R.string.base_cancel), (dialog, which) -> dialog.dismiss());

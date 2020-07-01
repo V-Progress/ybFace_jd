@@ -113,72 +113,77 @@
 
         <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_marginTop="20dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
             <TextView
                 android:text="@string/setting_periodic_purge_policy"
                 style="@style/setting_text"/>
 
-            <RadioGroup
-                android:layout_marginLeft="20dp"
-                android:id="@+id/rg_clear_policy"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <RadioButton
-                    android:button="@drawable/temper_radio_button"
-                    android:textColor="@color/white"
-                    android:id="@+id/rb_clear_policy_7"
-                    android:text="@string/setting_clear_policy_7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:layout_marginLeft="20dp"
-                    android:button="@drawable/temper_radio_button"
-                    android:textColor="@color/white"
-                    android:id="@+id/rb_clear_policy_15"
-                    android:text="@string/setting_clear_policy_15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:layout_marginLeft="20dp"
-                    android:button="@drawable/temper_radio_button"
-                    android:textColor="@color/white"
-                    android:id="@+id/rb_clear_policy_30"
-                    android:text="@string/setting_clear_policy_30"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:layout_marginLeft="20dp"
-                    android:button="@drawable/temper_radio_button"
-                    android:textColor="@color/white"
-                    android:id="@+id/rb_clear_policy_custom"
-                    android:text="@string/setting_clear_policy_custom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </RadioGroup>
-
             <LinearLayout
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/shape_system_name"
-                android:padding="5dp"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <EditText
-                    style="@style/style_setting_input_number_edt"
-                    android:id="@+id/edt_policy_custom"
-                    android:layout_width="100dp"
-                    android:inputType="text"
-                    android:maxLength="20"/>
-
-                <TextView
-                    android:text="@string/setting_clear_policy_unit"
-                    android:textColor="@color/white"
+                <RadioGroup
+                    android:id="@+id/rg_clear_policy"
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:button="@drawable/temper_radio_button"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_clear_policy_7"
+                        android:text="@string/setting_clear_policy_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <RadioButton
+                        android:layout_marginLeft="20dp"
+                        android:button="@drawable/temper_radio_button"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_clear_policy_15"
+                        android:text="@string/setting_clear_policy_15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <RadioButton
+                        android:layout_marginLeft="20dp"
+                        android:button="@drawable/temper_radio_button"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_clear_policy_30"
+                        android:text="@string/setting_clear_policy_30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <RadioButton
+                        android:layout_marginLeft="20dp"
+                        android:button="@drawable/temper_radio_button"
+                        android:textColor="@color/white"
+                        android:id="@+id/rb_clear_policy_custom"
+                        android:text="@string/setting_clear_policy_custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/shape_system_name"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        style="@style/style_setting_input_number_edt"
+                        android:id="@+id/edt_policy_custom"
+                        android:layout_width="100dp"
+                        android:inputType="text"
+                        android:maxLength="20"/>
+
+                    <TextView
+                        android:text="@string/setting_clear_policy_unit"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

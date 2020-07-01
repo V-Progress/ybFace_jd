@@ -786,11 +786,12 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
                     if (!b) {
                         UIUtils.showShort(ThermalEditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_update_failed));
                     } else {
-
+                        UIUtils.showShort(ThermalEditEmployActivity.this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
                         long l = DaoManager.get().addOrUpdate(user);
                         Log.e(TAG, "onResponse: 更新用户库：" + l);
                     }
                 } else {
+                    UIUtils.showShort(ThermalEditEmployActivity.this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
                     long l = DaoManager.get().addOrUpdate(user);
                     Log.e(TAG, "onResponse: 更新用户库：" + l);
                 }

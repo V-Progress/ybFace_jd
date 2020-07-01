@@ -151,6 +151,9 @@ public class SplashActivity extends BaseActivity {
                 case FlavorType.XENON:
                     setIp("api-eu.feverdefence.com", "34.247.168.20", "5222", "8080", "");
                     break;
+                /*case FlavorType.YB:
+                    setIp("192.168.255.115","192.168.255.115","5222","80","ybface");
+                    break;*/
                 default:
                     checkServiceIp();
                     break;
@@ -179,21 +182,17 @@ public class SplashActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
-                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH) {
-                int code = FaceEngine.active(APP.getContext(), com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-                Log.e(TAG, "激活结果: " + code);
-                if (code != ErrorInfo.MOK && code != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UIUtils.showShort(SplashActivity.this, getResources().getString(R.string.splash_active_failed));
-                        }
-                    });
+
+            boolean canGo = Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK
+                    && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
+                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH;
+            FaceSDKActive.active(FaceSDKActive.TYPE_REMOTE, canGo, (result, message) -> {
+                if(!result){
+                    runOnUiThread(() -> UIUtils.showLong(SplashActivity.this,getResources().getString(R.string.splash_active_failed) + "(" + message + ")"));
                 }
-            }
-            jump();
-            finish();
+                jump();
+                finish();
+            });
         }).start();
     };
 

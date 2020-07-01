@@ -4,6 +4,9 @@ package com.yunbiao.ybsmartcheckin_live_id.common;
 import android.content.Context;
 import android.view.WindowManager;
 
+import com.arcsoft.face.ActiveFileInfo;
+import com.arcsoft.face.ErrorInfo;
+import com.arcsoft.face.FaceEngine;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.VersionUpdateConstants;
@@ -14,6 +17,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by LiuShao on 2016/3/4.
@@ -55,13 +60,23 @@ public class MachineDetial {
             map.put("deviceCpu", CommonUtils.getCpuName() + " " + CommonUtils.getNumCores() + "核" + CommonUtils
                     .getMaxCpuFreq() + "khz");
             map.put("deviceIp", NetworkUtils.getIpAddress());//当前设备IP地址
-            map.put("mac", NetworkUtils.getLocalMacAddress());//设备的本机MAC地址
+            map.put("mac", CommonUtils.getLocalMac());//设备的本机MAC地址
             map.put("camera", CommonUtils.checkCamera());//设备是否有摄像头 1有  0没有
 
+            ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+            int code = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
+            if(code == ErrorInfo.MOK){
+                map.put("appID",activeFileInfo.getAppId());
+                map.put("appKey",activeFileInfo.getSdkKey());
+                map.put("startTime",activeFileInfo.getStartTime());
+                map.put("endTime",activeFileInfo.getEndTime());
+            }
+
+            Timber.d("上传设备信息：" + map.toString());
             MyXutils.getInstance().post(ResourceUpdate.UPLOAD_MACHINE_INFO, map, new MyXutils.XCallBack() {
                 @Override
                 public void onSuccess(String result) {
-
+                    Timber.d("响应：" + result);
                 }
 
                 @Override
