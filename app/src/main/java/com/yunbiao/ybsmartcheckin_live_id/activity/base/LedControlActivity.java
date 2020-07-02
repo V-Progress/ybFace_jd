@@ -54,7 +54,9 @@ public abstract class LedControlActivity extends BaseActivity {
             mSmdtManager = SmdtManager.create(this);
             try {
                 //设置继电器为非自动模式
-                mSmdtManager.setRelayIoMode(0, 0);
+                if (Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+                    mSmdtManager.setRelayIoMode(0, 0);
+                }
             } catch (Exception e) {
                 L.e("BaseGpioActivity", "onCreate:" + (e == null ? "NULL" : e.getMessage()));
             }
@@ -67,7 +69,7 @@ public abstract class LedControlActivity extends BaseActivity {
         TemperatureModule.getIns().controlExpandRelay(true);
 
         if (!(this instanceof WelComeActivity)) {
-            if (mSmdtManager != null) {
+            if (mSmdtManager != null && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 mSmdtManager.setRelayIoValue(1);
             }
         }
@@ -90,7 +92,7 @@ public abstract class LedControlActivity extends BaseActivity {
         TemperatureModule.getIns().controlExpandRelay(false);
 
         if (!(this instanceof WelComeActivity)) {
-            if (mSmdtManager != null) {
+            if (mSmdtManager != null && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 mSmdtManager.setRelayIoValue(0);
             }
         }

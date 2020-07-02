@@ -129,6 +129,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         viewInterface.onModeChanged(mTemperEnabled, mFaceEnabled, temperModule);
 
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            portPath = "/dev/ttyS4";
+        }
         String broadType = CommonUtils.getBroadType2();
         switch (temperModule) {
             case TemperModuleType.HM_32_32:
@@ -145,7 +148,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             case TemperModuleType.MLX_16_4:
                 if (!isMLXRunning) {
                     //亿莱顿则开启串口
-                    if (TextUtils.equals("LXR", broadType)) {
+                    if (TextUtils.equals("LXR", broadType) || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                         isMLXRunning = true;
                         TemperatureModule.getIns().startMLX90621GgPort(lowTempModel, 16 * 32, 4 * 40, mlx90621GgTempCallBack);
                         TemperatureModule.getIns().initSerialPort(this, portPath, 9600);

@@ -96,6 +96,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        //云标21.5寸
+        flavor(YB_21, "0",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH",
+                "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "YB_21",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*//云标8寸
         flavor(YB_8, "0",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
@@ -275,7 +280,9 @@ String buildApkName(String param) {
         } else if (param.contains("SC")) {
             name += "测温安检"
         } else if (param.contains("5")) {
-            name += " Face_5寸"
+            name += " Face_5寸网络版"
+        } else if (param.contains("21")) {
+            name += " Face_21寸"
         } else {
             name += "Face"
         }

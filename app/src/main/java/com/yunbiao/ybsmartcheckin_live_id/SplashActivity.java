@@ -290,6 +290,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case Constants.DeviceType.TEMPERATURE_CHECK_IN:
             case Constants.DeviceType.HT_TEMPERATURE_CHECK_IN:
+            case Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH:
                 if (SpUtils.getBoolean(Constants.Key.JUMP_TAG, Constants.Default.JUMP_TAG)) {
                     startActivity(new Intent(SplashActivity.this, CertificatesActivity.class));
                 } else {

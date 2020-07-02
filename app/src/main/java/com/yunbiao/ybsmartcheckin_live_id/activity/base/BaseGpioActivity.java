@@ -16,7 +16,7 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!(this instanceof WelComeActivity)) {
-            if (mSmdtManager != null) {
+            if (mSmdtManager != null && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 try {
                     //设置继电器为非自动模式
                     mSmdtManager.setRelayIoMode(0, 0);

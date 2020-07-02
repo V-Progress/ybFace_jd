@@ -17,7 +17,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -103,6 +105,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);//人脸识别
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) faceView.getLayoutParams();
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
         faceView.setCallback(this);
         faceView.enableMultiRetry(true);
         faceView.enableMultiCallback(true);
