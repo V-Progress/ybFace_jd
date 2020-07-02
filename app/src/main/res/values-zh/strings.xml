@@ -68,6 +68,8 @@
     <string name="setting_tab_page">界面</string>
     <string name="setting_tab_temper">测温</string>
     <string name="setting_tab_device">设备</string>
+    <string name="broadcast_delay_prompt">只在仅测温模式下生效</string>
+    <string name="tip_delay_title">语音提示间隔</string>
 
     <!--语音设置-->
     <string name="speech_setting_title">语音播报设置</string>

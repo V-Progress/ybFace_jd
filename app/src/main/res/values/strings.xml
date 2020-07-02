@@ -55,6 +55,9 @@
     <string name="create_success">Directory created successfully</string>
     <string name="create_failed">Failed to create directory</string>
     <string name="tip_add_depart_success">Department is added successfully</string><!--添加成功-->
+    <string name="broadcast_delay_prompt">Only valid in "temperature only" mode</string>
+    <string name="tip_delay_title">Voice prompt interval</string>
+
 
 
     <string name="tip_delete_depart_success">Department is deleted successfully</string>

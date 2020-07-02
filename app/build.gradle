@@ -300,13 +300,13 @@ def buildTime() {
 }
 
 def getYBFace_APP_ID() {
-    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""//YBFACE
-//    return "\"AYuHvcMYBDjwqVXRHkGTvQzyRndUfjgGmrcfKTZHk8bf\""//HSD
+//    return "\"HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q\""//YBFACE
+    return "\"AYuHvcMYBDjwqVXRHkGTvQzyRndUfjgGmrcfKTZHk8bf\""//HSD
 }
 
 def getYBFace_SDK_KEY() {
-    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""//YBFACE
-//    return "\"2foqrfXF7oF8WDj17ZiFyAhoRZbAJn3DsAZCEYpkVXdE\""//HSD
+//    return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""//YBFACE
+    return "\"2foqrfXF7oF8WDj17ZiFyAhoRZbAJn3DsAZCEYpkVXdE\""//HSD
 }
 
 def getHTFace_APP_ID() {

@@ -45,7 +45,7 @@
     <!--????-->
 
 
-    <string name="no_mask_tip">Si prega di indossare la mascherak</string>
+    <string name="no_mask_tip">Si prega di indossare la maschera</string>
 
     <string name="error_mask_tip">Indossare la maschera correttamente</string>
 
@@ -58,6 +58,8 @@
     <string name="setting_tab_temper">Temperatura</string>
 
     <string name="setting_tab_device">Dispositivo</string>
+    <string name="broadcast_delay_prompt">Valido solo in modalita\' "sola temperatura"</string>
+    <string name="tip_delay_title">Intervallo avvisi vocali</string>
 
     <!--????-->
 

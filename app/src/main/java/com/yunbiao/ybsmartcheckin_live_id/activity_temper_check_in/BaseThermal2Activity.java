@@ -52,6 +52,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private boolean mFEnabled;//华氏度开关
     private boolean mPrivacyMode;//隐私模式
     private boolean mAutoTemper;//自动模式
+    private long mTipTime = 0;//播报时间
 
     private Random random = new Random();
     private TypedArray noFaceArray;
@@ -152,6 +153,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         isMLXRunning = true;
                         TemperatureModule.getIns().startMLX90621GgPort(lowTempModel, 16 * 32, 4 * 40, mlx90621GgTempCallBack);
                         TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
+                    } else if(TextUtils.equals("SMT",broadType)){
+                        Timber.d("当前是视美泰机器，开启串口号4");
+                        isMLXRunning = true;
+                        TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                        TemperatureModule.getIns().initSerialPort(this,"/dev/ttyS4",9600 );
                     } else {
                         updateUIHandler.postDelayed(() -> {
                             isMLXRunning = true;
@@ -428,25 +434,22 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             autoCheckList.clear();
         }
 
- /*       if(Constants.FLAVOR_TYPE == FlavorType.TURKEY){
-            long currMillis = System.currentTimeMillis();
-            if(mTurkeyDelayTag == 0){
-                mTurkeyDelayTag = currMillis;
-                return;
-            } else if(currMillis - mTurkeyDelayTag < 1500) {
-                return;
-            }
-        }
-*/
         if (isFaceToFar) {
             if (mCacheTime != 0) mCacheTime = 0;
             if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
             sendTipsMessage(speechBean.getDistanceContent());
             if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
-                if(speechBean.isDistanceEnabled() && distanceTipNumber < 5)
-                    KDXFSpeechManager.instance().playApprochSound(() -> distanceTipNumber++);
-            } else if (speechBean.isDistanceEnabled() && distanceTipNumber < 5)
-                KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> distanceTipNumber++);
+                if(speechBean.isDistanceEnabled() && distanceTipNumber < 5 && isTipTimeOk())
+                    KDXFSpeechManager.instance().playApprochSound(() -> {
+                        mTipTime = System.currentTimeMillis();
+                        distanceTipNumber++;
+                    });
+            } else if (speechBean.isDistanceEnabled() && distanceTipNumber < 5 && isTipTimeOk()){
+                KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> {
+                    mTipTime = System.currentTimeMillis();
+                    distanceTipNumber++;
+                });
+            }
             return;
         }
 
@@ -625,8 +628,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 if (mCacheTime != 0) mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
                 sendTipsMessage(speechBean.getDistanceContent());
-                if (speechBean.isDistanceEnabled() && distanceTipNumber < 5)
-                    KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> distanceTipNumber++);
+                if (speechBean.isDistanceEnabled() && distanceTipNumber < 5 && isTipTimeOk())
+                    KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> {
+                        mTipTime = System.currentTimeMillis();
+                        distanceTipNumber++;
+                    });
                 return;
             }
 
@@ -669,6 +675,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
         }
     };
+
+    private boolean isTipTimeOk(){
+        return mTipTime == 0 || System.currentTimeMillis() - mTipTime > speechBean.getTipDelay();
+    }
 
     private float getResultTemperForFandT() {
         if (mCacheTemperList.size() <= 0) {
@@ -790,7 +800,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     sign,
                     mPrivacyMode,
                     sign1 -> viewInterface.updateSignList(sign1));
-            if (sign.getType() == -2 || sign.getType() == -9) {
+
+            //-2:访客超时，-9:陌生人，高温
+            if (sign.getType() == -2 || sign.getType() == -9 || resultTemper >= mTempWarningThreshold) {
                 return;
             }
             openDoor();
@@ -911,7 +923,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     } else {
                         Runnable resultRunnable = speechCallback(temperature);
                         String speechText = getSpeechText(mFEnabled, temperature);
-                        if (temperature >= HIGHEST_TEMPER) {
+                        if (temperature >= HIGHEST_TEMPER) {//超温
                             if (speechBean.isWarningEnabled()) {
                                 KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
                             } else {
@@ -919,7 +931,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                                 KDXFSpeechManager.instance().playWaningRing();
                                 sendResetResultMessage();
                             }
-                        } else if (temperature >= mTempWarningThreshold) {
+                        } else if (temperature >= mTempWarningThreshold) {//高温
                             if (speechBean.isWarningEnabled()) {
                                 if (!TextUtils.isEmpty(name)) {
                                     speechText += "，" + name;
@@ -930,7 +942,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                                 KDXFSpeechManager.instance().playWaningRing();
                                 sendResetResultMessage();
                             }
-                        } else {
+                        } else {//正常
                             if (speechBean.isNormalEnabled()) {
                                 if (!TextUtils.isEmpty(name)) {
                                     speechText += "，" + name;
@@ -1090,6 +1102,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     class SpeechBean {
         private float speechSpeed;
 
+        private long tipDelay;
+
         private String welcomeContent;
         private boolean welcomeEnabled;
 
@@ -1115,6 +1129,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
         public void initContent() {
             speechSpeed = SpUtils.getFloat(ThermalConst.Key.VOICE_SPEED, ThermalConst.Default.VOICE_SPEED);
+            tipDelay = SpUtils.getLong(ThermalConst.Key.TIP_DELAY,ThermalConst.Default.TIP_DELAY);
             welcomeContent = SpUtils.getStr(ThermalConst.Key.WELCOME_TIP_CONTENT, getResources().getString(R.string.setting_default_welcome_tip));
             welcomeEnabled = SpUtils.getBoolean(ThermalConst.Key.WELCOME_TIP_ENABLED, ThermalConst.Default.WELCOME_TIP_ENABLED);
             distanceContent = SpUtils.getStr(ThermalConst.Key.DISTANCE_TIP_CONTENT, getResources().getString(R.string.main_tips_please_close));
@@ -1131,6 +1146,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             fahrenheit = SpUtils.getStr(ThermalConst.Key.FAHRENHEIT, getResources().getString(R.string.temper_tips_fahrenheit));
             normalEnabled = SpUtils.getBoolean(ThermalConst.Key.NORMAL_BROADCAST_ENABLED, ThermalConst.Default.NORMAL_BROADCAST_ENABLED);
             warningEnabled = SpUtils.getBoolean(ThermalConst.Key.WARNING_BROAD_ENABLED, ThermalConst.Default.WARNING_BROAD_ENABLED);
+        }
+
+        public long getTipDelay() {
+            return tipDelay;
         }
 
         public boolean isNormalEnabled() {

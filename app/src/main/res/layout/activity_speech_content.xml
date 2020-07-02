@@ -99,6 +99,51 @@
                         android:background="@mipmap/icon_jia" />
                 </LinearLayout>
 
+                <LinearLayout
+                    style="@style/setting_text_child"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tip_delay_title" />
+
+                    <Button
+                        android:onClick="@{actionPresenter::onTipDelayButtonClick}"
+                        android:id="@+id/btn_tip_delay_sub_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@mipmap/icon_jian" />
+
+                    <LinearLayout
+                        style="@style/style_setting_input_save_button"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp">
+
+                        <EditText
+                            android:onTextChanged="@{actionPresenter::onTipDelayChanged}"
+                            android:text="@{String.valueOf(speechContent.tipDelay)}"
+                            android:id="@+id/edt_tip_delay_setting"
+                            style="@style/style_setting_input_number_edt"
+                            android:enabled="false" />
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:text="@string/setting_ms" />
+                    </LinearLayout>
+
+                    <Button
+                        android:onClick="@{actionPresenter::onTipDelayButtonClick}"
+                        android:id="@+id/btn_tip_delay_plus_setting"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@mipmap/icon_jia" />
+                </LinearLayout>
 
                 <LinearLayout
                     style="@style/setting_text_child"

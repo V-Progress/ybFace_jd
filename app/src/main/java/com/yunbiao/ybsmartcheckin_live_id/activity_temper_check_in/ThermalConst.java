@@ -47,9 +47,11 @@ public class ThermalConst {
         String MASK_TIP = "thermalMaskTip";//口罩提示开关
         String TITLE_ENABLED = "thermalTitleEnabled";//标题显示
         String NO_FACE_TEMPER = "thermalNoFaceThermal";
+        String TIP_DELAY = "thermalTipDelay";
     }
 
     public static class Default {
+        public static final long TIP_DELAY = 500;
         public static final boolean NO_FACE_TEMPER = false;//无人脸测温
         public static boolean FACE_ENABLED = false;//启用人脸识别
         public static boolean TEMPER_ENABLED = true;//启用测温

@@ -48,9 +48,25 @@ public class SpeechContentActivity extends Activity {
             speechContent.setSpeechSpeed(speed);
         }
 
+        public void onTipDelayButtonClick(View view){
+            EditText edtTipDelay = viewDataBinding.getRoot().findViewById(R.id.edt_tip_delay_setting);
+            long mTipDelay = Long.valueOf(edtTipDelay.getText().toString());
+            if(view.getId() == R.id.btn_tip_delay_sub_setting){
+                mTipDelay -= 100;
+            } else {
+                mTipDelay += 100;
+            }
+            speechContent.setTipDelay(mTipDelay);
+        }
+
         public void onSpeedChanged(CharSequence s, int start, int before, int count){
             float speed = Float.parseFloat(s.toString());
             speechContent.setSpeechSpeed(speed);
+        }
+
+        public void onTipDelayChanged(CharSequence s, int start, int before, int count){
+            long tipDelay = Long.valueOf(s.toString());
+            speechContent.setTipDelay(tipDelay);
         }
 
         //欢迎语
