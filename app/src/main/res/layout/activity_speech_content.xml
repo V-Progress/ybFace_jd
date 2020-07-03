@@ -347,11 +347,43 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:orientation="vertical"
                             android:gravity="center_vertical"
-                            android:layout_marginTop="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_marginTop="10dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:text="@string/speech_setting_temper_location"
+                                    style="@style/setting_text"/>
+                                <RadioGroup
+                                    android:onCheckedChanged="@{actionPresenter::onNormalLocationCheckedChanged}"
+                                    android:checkedButton="@{speechContent.normalTemperLocation == 0 ? @id/rb_start_normal : speechContent.normalTemperLocation == 1 ? @id/rb_center_normal : @id/rb_end_normal}"
+                                    android:layout_marginLeft="10dp"
+                                    android:orientation="horizontal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+                                    <RadioButton
+                                        style="@style/setting_text"
+                                        android:id="@+id/rb_start_normal"
+                                        android:text="@string/speech_setting_location_start"/>
+                                    <RadioButton
+                                        android:id="@+id/rb_center_normal"
+                                        android:text="@string/speech_setting_location_center"
+                                        style="@style/setting_text"/>
+                                    <RadioButton
+                                        android:id="@+id/rb_end_normal"
+                                        android:text="@string/speech_setting_location_end"
+                                        style="@style/setting_text"/>
+                                </RadioGroup>
+                            </LinearLayout>
                             <Switch
+                                android:layout_marginTop="10dp"
                                 style="@style/setting_text"
                                 android:checked="@{speechContent.normalShow}"
                                 android:onCheckedChanged="@{actionPresenter::onNormalTemperEnableChanged}"
@@ -359,30 +391,6 @@
                                 android:text="@string/speech_setting_show_temper"
                                 android:switchPadding="10dp"/>
 
-                            <TextView
-                                android:layout_marginLeft="10dp"
-                                android:text="@string/speech_setting_temper_location"
-                                style="@style/setting_text"/>
-                            <RadioGroup
-                                android:onCheckedChanged="@{actionPresenter::onNormalLocationCheckedChanged}"
-                                android:checkedButton="@{speechContent.normalTemperLocation == 0 ? @id/rb_start_normal : speechContent.normalTemperLocation == 1 ? @id/rb_center_normal : @id/rb_end_normal}"
-                                android:layout_marginLeft="10dp"
-                                android:orientation="horizontal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                                <RadioButton
-                                    style="@style/setting_text"
-                                    android:id="@+id/rb_start_normal"
-                                    android:text="@string/speech_setting_location_start"/>
-                                <RadioButton
-                                    android:id="@+id/rb_center_normal"
-                                    android:text="@string/speech_setting_location_center"
-                                    style="@style/setting_text"/>
-                                <RadioButton
-                                    android:id="@+id/rb_end_normal"
-                                    android:text="@string/speech_setting_location_end"
-                                    style="@style/setting_text"/>
-                            </RadioGroup>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -432,11 +440,43 @@
 
                         <LinearLayout
                             android:gravity="center_vertical"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_marginTop="10dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:text="@string/speech_setting_temper_location"
+                                    style="@style/setting_text"/>
+                                <RadioGroup
+                                    android:onCheckedChanged="@{actionPresenter::onWarningLocationCheckedChanged}"
+                                    android:checkedButton="@{speechContent.warningTemperLocation == 0 ? @id/rb_start_warning : speechContent.warningTemperLocation == 1 ? @id/rb_center_warning : @id/rb_end_warning}"
+                                    android:id="@+id/rg_location_warning"
+                                    android:layout_marginLeft="10dp"
+                                    android:orientation="horizontal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+                                    <RadioButton
+                                        android:id="@+id/rb_start_warning"
+                                        android:text="@string/speech_setting_location_start"
+                                        style="@style/setting_text"/>
+                                    <RadioButton
+                                        android:id="@+id/rb_center_warning"
+                                        android:text="@string/speech_setting_location_center"
+                                        style="@style/setting_text"/>
+                                    <RadioButton
+                                        android:id="@+id/rb_end_warning"
+                                        android:text="@string/speech_setting_location_end"
+                                        style="@style/setting_text"/>
+                                </RadioGroup>
+                            </LinearLayout>
                             <Switch
+                                android:layout_marginTop="10dp"
                                 style="@style/setting_text"
                                 android:checked="@{speechContent.warningShow}"
                                 android:onCheckedChanged="@{actionPresenter::onWarningTemperEnableChanged}"
@@ -444,31 +484,6 @@
                                 android:text="@string/speech_setting_show_temper"
                                 android:switchPadding="10dp"/>
 
-                            <TextView
-                                android:layout_marginLeft="10dp"
-                                android:text="@string/speech_setting_temper_location"
-                                style="@style/setting_text"/>
-                            <RadioGroup
-                                android:onCheckedChanged="@{actionPresenter::onWarningLocationCheckedChanged}"
-                                android:checkedButton="@{speechContent.warningTemperLocation == 0 ? @id/rb_start_warning : speechContent.warningTemperLocation == 1 ? @id/rb_center_warning : @id/rb_end_warning}"
-                                android:id="@+id/rg_location_warning"
-                                android:layout_marginLeft="10dp"
-                                android:orientation="horizontal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                                <RadioButton
-                                    android:id="@+id/rb_start_warning"
-                                    android:text="@string/speech_setting_location_start"
-                                    style="@style/setting_text"/>
-                                <RadioButton
-                                    android:id="@+id/rb_center_warning"
-                                    android:text="@string/speech_setting_location_center"
-                                    style="@style/setting_text"/>
-                                <RadioButton
-                                    android:id="@+id/rb_end_warning"
-                                    android:text="@string/speech_setting_location_end"
-                                    style="@style/setting_text"/>
-                            </RadioGroup>
                         </LinearLayout>
                     </LinearLayout>
                     <TextView
