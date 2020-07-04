@@ -961,7 +961,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     break;
                 case 2://提示相关
                     int id;
-                    if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                    if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                         id = R.mipmap.bg_verify_nopass;
                     } else {
                         id = R.drawable.shape_main_frame_temperature_warning;
@@ -1010,13 +1010,13 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     private int getBgId(float temperature) {
         if (temperature >= mTempWarningThreshold) {
-            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 return R.mipmap.bg_verify_nopass;
             } else {
                 return R.drawable.shape_main_frame_temperature_warning;
             }
         } else {
-            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 return R.mipmap.bg_verify_pass;
             } else {
                 return R.drawable.shape_main_frame_temperature_normal;

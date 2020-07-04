@@ -34,6 +34,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.LocateManager;
@@ -92,6 +93,9 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     protected int getPortraitLayout() {
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            return R.layout.activity_thermal_image_p215;
+        }
         return R.layout.activity_thermal_image;
     }
 
@@ -105,11 +109,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         APP.setMainActivity(this);
         EventBus.getDefault().register(this);
         faceView = findViewById(R.id.face_view);//人脸识别
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) faceView.getLayoutParams();
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
         faceView.setCallback(this);
         faceView.enableMultiRetry(true);
         faceView.enableMultiCallback(true);
@@ -135,6 +134,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         //加载签到列表Fragment
         signListFragment = new ThermalSignFragment();
         replaceFragment(R.id.ll_list_container, signListFragment);
+
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            InformationFragment informationFragment = new InformationFragment();
+            replaceFragment(R.id.layout_h, informationFragment);
+        }
     }
 
     @Override

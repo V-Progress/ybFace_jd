@@ -103,7 +103,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         EventBus.getDefault().register(this);
         mCurrentOrientation = APP.getContext().getResources().getConfiguration().orientation;
 
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
             rootView = inflater.inflate(R.layout.fragment_sign_list_thermal, container, false);
         } else {
             rootView = inflater.inflate(R.layout.fragment_sign_list_thermal_h, container, false);
@@ -186,7 +186,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             tvCompanyName.setText(APP.getContext().getResources().getString(R.string.fment_sign_bind_code) + SpUtils.getStr(SpUtils.BIND_CODE));
         }
 
-        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
             //公告
             NoticeManager.getInstance().initSignData();
         }
@@ -293,7 +293,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(UpdateInfoEvent event) {
-        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
             //公告
             NoticeManager.getInstance().initSignData();
         }
@@ -389,7 +389,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         List<User> users = DaoManager.get().queryUserByCompId(company.getComid());
 
         int totalUserNum = users == null ? 0 : users.size();
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
             tvTotal.setText(totalUserNum + "");
             tvAlready.setText(total + "");
         } else {
@@ -466,7 +466,7 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (orientation == Configuration.ORIENTATION_PORTRAIT && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                 return new ViewHolder(View.inflate(viewGroup.getContext(), R.layout.item_sign_thermal, null));
             } else {
                 return new ViewHolder(View.inflate(viewGroup.getContext(), R.layout.item_sign_thermal_h, null));
