@@ -81,7 +81,110 @@ public class SdCardUtils {
         }
         return "";
     }
+    /**
+     * 获取文件夹大小(递归)
+     *
+     * @param file File实例
+     * @return long
+     */
+    public static long getFolderSize(java.io.File file) {
 
+        long size = 0;
+        try {
+            java.io.File[] fileList = file.listFiles();
+            for (int i = 0; i < fileList.length; i++) {
+                if (fileList[i].isDirectory()) {
+                    size = size + getFolderSize(fileList[i]);
+
+                } else {
+                    size = size + fileList[i].length();
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
+    }
+
+    public static class Capacity{
+        private double used_kb;
+        private double all_kb;
+        private double used_mb;
+        private double all_mb;
+        private double used_gb;
+        private double all_gb;
+
+        public Capacity(double used, double all) {
+            this.used_kb = used;
+            this.used_mb = used_kb == 0 ? 0 : (used_kb / 1024);
+            this.used_gb = used_kb == 0 ? 0 : (used_kb / 1024 / 1024);
+
+            this.all_kb = all;
+            this.all_mb = all_kb == 0 ? 0 : (all_kb / 1024);
+            this.all_gb = all_kb == 0 ? 0 : (all_kb / 1024 /1024);
+        }
+
+        public double getUsed_mb() {
+            return used_mb;
+        }
+
+        public double getAll_mb() {
+            return all_mb;
+        }
+
+        public double getUsed_gb() {
+            return used_gb;
+        }
+
+        public double getAll_gb() {
+            return all_gb;
+        }
+
+        public double getUsed_kb() {
+            return used_kb;
+        }
+
+        public double getAll_kb() {
+            return all_kb;
+        }
+
+        @Override
+        public String toString() {
+            return "Capacity{" +
+                    "used_kb=" + formatD(used_kb) +
+                    ", all_kb=" + formatD(all_kb) +
+                    ", used_mb=" + formatD(used_mb) +
+                    ", all_mb=" + formatD(all_mb) +
+                    ", used_gb=" + formatD(used_gb) +
+                    ", all_gb=" + formatD(all_gb) +
+                    '}';
+        }
+
+        public double formatD(double fValue) {
+            return (double) (Math.round(fValue * 100)) / 100;
+        }
+    }
+
+    public static Capacity getUsedCapacity(){
+        Capacity capacity = null;
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            File sdcardDir = Environment.getExternalStorageDirectory();
+            StatFs sf = new StatFs(sdcardDir.getPath());
+            double blockSize = sf.getBlockSize();
+            double blockCount = sf.getBlockCount();
+            double availCount = sf.getAvailableBlocks();
+            Double level = (availCount * blockSize / 1024);
+            Double all = (blockSize * blockCount / 1024);
+            Double use = all - level;
+            capacity = new Capacity(use,all);
+        }
+        if(capacity == null){
+            capacity = new Capacity(0,0);
+        }
+        return capacity;
+    }
 
 
     public static String getSDDiskCon() {

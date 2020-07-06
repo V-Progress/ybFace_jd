@@ -459,18 +459,20 @@ public class ReadExcel {
     }
 
     private static String getCellValue(Cell cell) {
-        String value;
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_NUMERIC:
-                value = String.valueOf((long) cell.getNumericCellValue());
-                break;
-            case Cell.CELL_TYPE_STRING:
-                value = cell.getStringCellValue();
-                break;
-            case Cell.CELL_TYPE_BLANK:
-            default:
-                value = null;
-                break;
+        String value = null;
+        if(cell != null){
+            switch (cell.getCellType()) {
+                case Cell.CELL_TYPE_NUMERIC:
+                    value = String.valueOf((long) cell.getNumericCellValue());
+                    break;
+                case Cell.CELL_TYPE_STRING:
+                    value = cell.getStringCellValue();
+                    break;
+                case Cell.CELL_TYPE_BLANK:
+                default:
+                    value = null;
+                    break;
+            }
         }
         return value;
     }

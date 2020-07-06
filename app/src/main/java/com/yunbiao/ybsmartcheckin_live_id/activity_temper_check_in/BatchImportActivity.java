@@ -71,6 +71,9 @@ public class BatchImportActivity extends Activity {
     final String XLS = "application/vnd.ms-excel";
 
     public class ActionPresenter {
+        public void onBack(View view){
+            finish();
+        }
         public void chooseFile(View view) {
             //调用系统文件管理器打开指定路径目录
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -173,7 +176,7 @@ public class BatchImportActivity extends Activity {
                         batchContent.setFileName(getFileRealNameFromUri(BatchImportActivity.this, mExcelFileUri));
                         setUserList(entryList);
                     } else {
-                        UIUtils.showShort(BatchImportActivity.this, errorInfo.errMsg);
+                        runOnUiThread(() -> UIUtils.showShort(BatchImportActivity.this, errorInfo.errMsg));
                     }
                 }
             });

@@ -1,17 +1,17 @@
 package com.yunbiao.ybsmartcheckin_live_id;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
-import android.util.Log;
+import android.widget.Button;
+import android.widget.Toast;
 
-import com.arcsoft.face.ActiveFileInfo;
-import com.arcsoft.face.ErrorInfo;
-import com.arcsoft.face.FaceEngine;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesConst;
@@ -32,6 +32,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -39,11 +40,8 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,21 +76,38 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
+    }
 
+    @Override
+    protected void initData() {
+        long folderSize = SdCardUtils.getFolderSize(new File(Constants.LOCAL_ROOT_PATH));
+        Timber.d("当前应用占用空间大小：" + (folderSize / 1024 / 1024));
+
+        SdCardUtils.Capacity capacity = SdCardUtils.getUsedCapacity();
+        double remainingSpace = capacity.getAll_mb() - capacity.getUsed_mb();
+        String availSpace = String.format(getResString(R.string.alvailable_space),capacity.formatD(remainingSpace),"mb");
+        if(remainingSpace <= 30){
+            Toast.makeText(this, getResString(R.string.clean_storage_must), Toast.LENGTH_SHORT).show();
+            finish();
+        } else if (remainingSpace <= 160) {
+            showAlert(getResString(R.string.clean_storage_must) + "\n"+ availSpace,false,null, APP::exit,0);
+        } else if (capacity.getAll_mb() - capacity.getUsed_mb() < (capacity.getAll_mb() / 10)) {
+            showAlert(getResString(R.string.clean_storage_please) + "\n"+ availSpace,true, APP::exit, this::checkPermission,45000);
+        } else {
+            checkPermission();
+        }
+    }
+
+    private void checkPermission(){
         GifImageView gifImageView = findViewById(R.id.giv);
         setOpenGif(gifImageView);
 
-        String deviceSN = HeartBeatClient.getDeviceSN();
-        Timber.e("initView: 当前设备的DeviceSN是：%s", deviceSN);
-        String localMac = CommonUtils.getLocalMac();
-        String wifiMac = CommonUtils.getWifiMac();
-        Timber.e("initView: 当前wifiMac：%s", wifiMac);
-        Timber.e("initView: 当前localMac：%s", localMac);
+        ybPermission = new YBPermission(permissionListener);
+        ybPermission.checkPermission(this, PERMISSONS);
     }
 
     private void setOpenGif(GifImageView gifImageView) {
         File splashDir = new File(Constants.SPLASH_DIR_PATH);
-        Log.e(TAG, "闪屏动画：" + splashDir.getPath());
         if (!splashDir.exists() || !splashDir.isDirectory()) {
             splashDir.mkdirs();
         }
@@ -123,10 +138,45 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void initData() {
-        ybPermission = new YBPermission(permissionListener);
-        ybPermission.checkPermission(this, PERMISSONS);
+    private void showAlert(String msg, boolean showPositive, Runnable negativeRunnable, Runnable positiveRunnable,long delayTime) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(getResString(R.string.alert_title_warning))
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton(getResString(R.string.base_ensure), (dialog, which) -> {
+                    dialog.dismiss();
+                    if (positiveRunnable != null) {
+                        positiveRunnable.run();
+                    }
+                });
+        if (showPositive) {
+            builder.setNegativeButton(getResString(R.string.base_cancel), (dialog, which) -> {
+                dialog.dismiss();
+                if (negativeRunnable != null) {
+                    negativeRunnable.run();
+                }
+            });
+        }
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        if(delayTime > 0){
+            Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            CharSequence text = btnPositive.getText();
+            CountDownTimer countDownTimer = new CountDownTimer(delayTime,1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    int second = millisUntilFinished < 1000 ? 0 : (int) (millisUntilFinished / 1000);
+                    btnPositive.setText(text + "(" + second + ")");
+                }
+
+                @Override
+                public void onFinish() {
+                    btnPositive.performClick();
+                }
+            };
+            countDownTimer.start();
+        }
     }
 
     private YBPermission.PermissionListener permissionListener = new YBPermission.PermissionListener() {
@@ -187,8 +237,8 @@ public class SplashActivity extends BaseActivity {
                     && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
                     && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH;
             FaceSDKActive.active(FaceSDKActive.TYPE_REMOTE, canGo, (result, message) -> {
-                if(!result){
-                    runOnUiThread(() -> UIUtils.showLong(SplashActivity.this,getResources().getString(R.string.splash_active_failed) + "(" + message + ")"));
+                if (!result) {
+                    runOnUiThread(() -> UIUtils.showLong(SplashActivity.this, getResources().getString(R.string.splash_active_failed) + "(" + message + ")"));
                 }
                 jump();
                 finish();
@@ -250,7 +300,6 @@ public class SplashActivity extends BaseActivity {
         }
 
         String broadTypeStr = CommonUtils.getBroadType2();
-        Log.e(TAG, "jump: 板卡信息：" + broadTypeStr);
         switch (broadTypeStr) {
             case "SMT":
                 Constants.Default.CAMERA_ANGLE = 270;
@@ -275,9 +324,9 @@ public class SplashActivity extends BaseActivity {
 
         int lastModel = SpUtils.getIntOrDef("thermalModelSetting", -1);
         if (lastModel != -1) {
-            Log.e(TAG, "jump: 检测到旧模式：" + lastModel);
+            Timber.d("jump: 检测到旧模式：" + lastModel);
             NewModuleType newModuleType = oldModelToModuleType(lastModel);
-            Log.e(TAG, "jump: 转换为新模式：" + newModuleType.toString());
+            Timber.d("jump: 转换为新模式：" + newModuleType.toString());
             SpUtils.saveInt(ThermalConst.Key.TEMPER_MODULE, newModuleType.module);
             SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED, newModuleType.faceEnabled);
             SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED, newModuleType.temperEnabled);
@@ -346,7 +395,7 @@ public class SplashActivity extends BaseActivity {
             SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
 
         String serIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE, "");
-        Log.e(TAG, "setIp: 设置的服务地址：" + serIp);
+        Timber.d("setIp: 设置的服务地址：" + serIp);
         if (TextUtils.isEmpty(serIp))
             SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE, sIp);
         String resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE, "");
@@ -467,13 +516,12 @@ public class SplashActivity extends BaseActivity {
         new Thread(() -> {
             final List<Exception> exceptions = DaoManager.get().queryAll(Exception.class);
             if (exceptions == null || exceptions.size() <= 0) {
-                Log.e(TAG, "run: 没有异常");
                 if (runnable != null) {
                     runOnUiThread(runnable);
                 }
                 return;
             }
-            Log.e(TAG, "run: 异常条数：" + exceptions.size());
+            Timber.d("run: 异常条数：" + exceptions.size());
             //地址
             String url = ResourceUpdate.DEVICE_EXCEPTION_UPLOAD;
             //版本号
@@ -505,8 +553,8 @@ public class SplashActivity extends BaseActivity {
             params.put("deviceNumber", str + "");
             params.put("crasharray", crashArray + "");
 
-            Log.e(TAG, "异常上传：" + url);
-            Log.e(TAG, "参数：" + params.toString());
+            Timber.d("异常上传：" + url);
+            Timber.d("参数：" + params.toString());
 
             OkHttpUtils.post()
                     .url(ResourceUpdate.DEVICE_EXCEPTION_UPLOAD)
@@ -518,12 +566,12 @@ public class SplashActivity extends BaseActivity {
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, java.lang.Exception e, int id) {
-                            Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                            Timber.d("onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            Log.e(TAG, "onResponse: 上传结果：" + response);
+                            Timber.d("onResponse: 上传结果：" + response);
                             for (Exception exception : exceptions) {
                                 DaoManager.get().delete(exception);
                             }
