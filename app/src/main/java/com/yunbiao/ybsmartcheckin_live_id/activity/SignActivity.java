@@ -303,8 +303,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
 
     private void export(File file){
-        final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
-        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.Export.ExportCallback() {
+        final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xlsx");
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.ExportCallback() {
+            @Override
+            public void onProgress(int progress, int max) {
+
+            }
+
             @Override
             public void onStart() {
                 UIUtils.showNetLoading(SignActivity.this);

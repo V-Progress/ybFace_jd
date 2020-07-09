@@ -35,6 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 public class FaceManager {
     private static final String TAG = "FaceManager";
     public static final String IMG_SUFFIX = ".jpg";
@@ -172,23 +174,22 @@ public class FaceManager {
     }
 
     public boolean addUser(final String userId, String imageFile) {
-        if (faceRegisterInfos.size() >= MAX_FACE_NUM) {
-            return false;
-        }
-
         try {
             File file = new File(imageFile);
             if (file == null || !file.exists()) {
+                Timber.d("图片文件不存在");
                 return false;
             }
             //转换成bitmap
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile);
             if(bitmap == null){
+                Timber.d("路径转换图片失败");
                 return false;
             }
             //裁剪图片为合适的尺寸
             bitmap = ArcSoftImageUtil.getAlignedBitmap(bitmap, true);
             if(bitmap == null){
+                Timber.d("裁剪图片失败");
                 return false;
             }
             //创建等同于bitmap大小的byte[]

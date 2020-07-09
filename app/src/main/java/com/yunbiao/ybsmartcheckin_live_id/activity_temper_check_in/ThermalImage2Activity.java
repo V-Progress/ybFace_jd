@@ -17,9 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -44,7 +42,9 @@ import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -139,6 +139,12 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             InformationFragment informationFragment = new InformationFragment();
             replaceFragment(R.id.layout_h, informationFragment);
         }
+
+        SdCardUtils.Capacity capacity = SdCardUtils.getUsedCapacity();
+        double remainingSpace = capacity.getAll_mb() - capacity.getUsed_mb();
+        if(remainingSpace < 500){
+            UIUtils.showShort(this,getResString(R.string.space_insufficient_save_and_delete));
+        }
     }
 
     @Override
@@ -159,11 +165,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         llMainLogoParent.setVisibility(!showMainLogo && !titleEnabled ? View.GONE : View.VISIBLE);
         mShowDialog = SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG);
         personFrameEnable = SpUtils.getBoolean(ThermalConst.Key.PERSON_FRAME, ThermalConst.Default.PERSON_FRAME);
-        //设置活体开关
-        boolean livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
-        if (faceView != null) {
-            faceView.setLiveness(livenessEnabled);
-        }
         llThermalArea.setVisibility(showMainThermal ? View.VISIBLE :View.GONE);
 
         initAds();
@@ -202,9 +203,13 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     }
 
     @Override
-    public void onModeChanged(boolean temperEnabled,boolean faceEnabled ,int temperModule) {
+    public void onModeChanged(boolean temperEnabled, boolean faceEnabled, int temperModule, boolean livenessEnabled) {
         //设置人脸间隔
         SignManager.instance().setVerifyDelay(faceEnabled && !temperEnabled ? 10000 : 0);
+
+        if (faceView != null) {
+            faceView.setLiveness(livenessEnabled);
+        }
 
         //显示模式
         if (signListFragment != null) {

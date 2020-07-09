@@ -51,6 +51,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class FaceView extends FrameLayout {
     private static final String TAG = "FaceView";
@@ -400,8 +401,23 @@ public class FaceView extends FrameLayout {
             //判断单人回调和多人回调
             if (isSignleDetect) {
                 if (callback != null) {
-                    boolean canNext = callback.onFaceDetection(hasFace, hasFace ? facePreviewInfoList.get(0) : null);
-                    if (!canNext) {
+                    FacePreviewInfo facePreviewInfo = null;
+
+                    if(hasFace){
+                        facePreviewInfo = facePreviewInfoList.get(0);
+                    }
+
+                    //活体检测
+                    if(livenessDetect && facePreviewInfo != null){
+                        Integer liveness = livenessMap.get(facePreviewInfo.getTrackId());
+                        if(liveness == null || liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING){
+                            livenessMap.put(facePreviewInfo.getTrackId(), RequestLivenessStatus.ANALYZING);
+                            faceHelper.requestFaceLiveness(nv21, facePreviewInfo.getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfo.getTrackId(), LivenessType.RGB);
+                        }
+                        facePreviewInfo.setLiveness(liveness == null ? LivenessInfo.UNKNOWN : liveness);
+                    }
+
+                    if (!callback.onFaceDetection(hasFace, facePreviewInfo)) {
                         return;
                     }
                 }

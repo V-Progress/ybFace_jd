@@ -287,12 +287,13 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                     UIUtils.showShort(this, getResString(R.string.upload_there_is_no_server_connect));
                     return;
                 }
-                UIUtils.showNetLoading(this);
+
                 if(SpUtils.getCompany().getComid() == Constants.NOT_BIND_COMPANY_ID){
-                    UIUtils.dismissNetLoading();
                     UIUtils.showShort(ThermalSignActivity.this, "The device is not tied to the company and the data will be saved locally only");
                     return;
                 }
+
+                UIUtils.showNetLoading(this);
                 SignManager.instance().uploadSignRecord(aBoolean -> {
                     if (aBoolean) {
                         EventBus.getDefault().post(new UpdateSignDataEvent());
@@ -355,10 +356,15 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
     private void export(File file){
         final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
-        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.Export.ExportCallback() {
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.ExportCallback() {
+            @Override
+            public void onProgress(int progress, int max) {
+                UIUtils.setProgress(progress,max);
+            }
+
             @Override
             public void onStart() {
-                UIUtils.showNetLoading(ThermalSignActivity.this);
+                UIUtils.showNetLoading(ThermalSignActivity.this,true);
             }
 
             @Override

@@ -7,9 +7,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -131,18 +134,42 @@ public class UIUtils {
 
 
     private static Dialog dialog;
+    private static ProgressBar progressBar;
 
     public static void showNetLoading(Context context) {
+        showNetLoading(context,false);
+    }
+
+    public static void showNetLoading(Context context,boolean showProgress){
         dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(Color.TRANSPARENT);
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setBackgroundColor(Color.TRANSPARENT);
+
         AVLoadingIndicatorView avLoadingIndicatorView = new AVLoadingIndicatorView(context);
         avLoadingIndicatorView.setBackgroundColor(Color.TRANSPARENT);
-        frameLayout.addView(avLoadingIndicatorView, new FrameLayout.LayoutParams(300, 200, Gravity.CENTER));
-        dialog.setContentView(frameLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        linearLayout.addView(avLoadingIndicatorView,new LinearLayout.LayoutParams(300,200,Gravity.CENTER));
+
+        if(showProgress){
+            View rootView = View.inflate(context,R.layout.layout_progress,null);
+            progressBar = rootView.findViewById(R.id.pb_progress);
+            linearLayout.addView(rootView,new LinearLayout.LayoutParams(400,15,Gravity.CENTER));
+        }
+
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
+
+        dialog.setContentView(linearLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    public static void setProgress(int progress,int max){
+        if(progressBar != null){
+            progressBar.setProgress(progress);
+            progressBar.setMax(max);
+        }
     }
 
     public static void dismissNetLoading() {

@@ -78,7 +78,7 @@ public class ThermalConst {
         public static boolean MASK_DETECT_ENABLED = true;
         public static boolean LOCAL_PRIORITY = true;
         public static final boolean WELCOME_TIP_ENABLED = true;
-        public static final boolean DISTANCE_TIP_ENABLED = true;
+        public static final boolean DISTANCE_TIP_ENABLED = false;
         public static final boolean FRAME_TIP_ENABLED = true;
         public static final boolean NORMAL_TEMPER_SHOW = true;
         public static final int NORMAL_TEMPER_LOCATION = 2;

@@ -30,6 +30,8 @@
     <string name="import_add_exists">已存在:</string>
     <string name="import_add_skip">跳过:</string>
 
+    <string name="space_insufficient_save_and_delete">设备存储空间不足，每次存储记录时将会删除最早的一条记录</string>
+
     <string name="clean_storage_must">存储空间不足，程序无法正常运行，请清理存储空间</string>
     <string name="clean_storage_please">存储空间即将用尽，可能导致程序无法正常运行，是否进入？</string>
     <string name="alvailable_space">可用空间: %1$s%2$s</string>

@@ -7,6 +7,15 @@ public class FacePreviewInfo {
     private int trackId;
     private float temper;
     private float oringinTemper;
+    private int liveness;
+
+    public int getLiveness() {
+        return liveness;
+    }
+
+    public void setLiveness(int liveness) {
+        this.liveness = liveness;
+    }
 
     public float getOringinTemper() {
         return oringinTemper;

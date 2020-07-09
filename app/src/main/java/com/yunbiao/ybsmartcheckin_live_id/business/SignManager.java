@@ -24,6 +24,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -49,6 +50,7 @@ import java.util.TimeZone;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
+import timber.log.Timber;
 
 /**
  * Created by Administrator on 2019/3/18.
@@ -169,38 +171,6 @@ public class SignManager {
 
         return sign;
     }
-    public String getCurrentTimeZone() {
-        TimeZone tz = TimeZone.getDefault();
-        return createGmtOffsetString(true, true, tz.getRawOffset());
-    }
-
-    public  String createGmtOffsetString(boolean includeGmt, boolean includeMinuteSeparator, int offsetMillis) {
-        int offsetMinutes = offsetMillis / 60000;
-        char sign = '+';
-        if (offsetMinutes < 0) {
-            sign = '-';
-            offsetMinutes = -offsetMinutes;
-        }
-        StringBuilder builder = new StringBuilder(9);
-        if (includeGmt) {
-            builder.append("GMT");
-        }
-        builder.append(sign);
-        appendNumber(builder, 2, offsetMinutes / 60);
-        if (includeMinuteSeparator) {
-            builder.append(':');
-        }
-        appendNumber(builder, 2, offsetMinutes % 60);
-        return builder.toString();
-    }
-
-    private void appendNumber(StringBuilder builder, int count, int value) {
-        String string = Integer.toString(value);
-        for (int i = 0; i < count - string.length(); i++) {
-            builder.append('0');
-        }
-        builder.append(string);
-    }
 
     /***
      * 普通考勤打卡
@@ -238,15 +208,15 @@ public class SignManager {
                     String currStart = visitor.getCurrStart();
                     String currEnd = visitor.getCurrEnd();
 
-                    Log.e(TAG, "访问开始时间：" + currStart);
-                    Log.e(TAG, "访问结束时间：" + currEnd);
+                    Timber.d( "访问开始时间：" + currStart);
+                    Timber.d( "访问结束时间：" + currEnd);
 
                     try {
                         Date start = visitSdf.parse(currStart);
                         Date end = visitSdf.parse(currEnd);
                         //在开始时间之前或者在结束时间之后
                         if (currDate.before(start) || currDate.after(end)) {
-                            Log.e(TAG, "不在访问期内");
+                            Timber.d( "不在访问期内");
                             sign.setType(-2);
                             sign.setAutograph("不在访问期内");
                         }
@@ -329,7 +299,7 @@ public class SignManager {
             }
         }
         sign.setHeadPath(file.getPath());
-        Log.e(TAG, "uploadTemperatureSign: 保存头像：" + file.getPath());
+        Timber.d( "uploadTemperatureSign: 保存头像：" + file.getPath());
 
         File hotFile;
         Bitmap hotImageBitmap = sign.getHotImageBitmap();
@@ -345,7 +315,7 @@ public class SignManager {
                 }
             }
         }
-        Log.e(TAG, "uploadTemperatureSign: 保存热图：" + hotFile.getPath());
+        Timber.d( "uploadTemperatureSign: 保存热图：" + hotFile.getPath());
         sign.setHotImgPath(hotFile.getPath());
 
         // TODO: 2020/3/18 离线功能
@@ -360,9 +330,9 @@ public class SignManager {
         if (sign.getType() != -9) {
             params.put("entryId", sign.getEmpId() + "");
         }
-        Log.e(TAG, "上传温度");
-        Log.e(TAG, "地址：" + url);
-        Log.e(TAG, "参数: " + params.toString());
+        Timber.d( "上传温度");
+        Timber.d( "地址：" + url);
+        Timber.d( "参数: " + params.toString());
         PostFormBuilder builder = OkHttpUtils.post()
                 .url(url)
                 .params(params);
@@ -372,25 +342,25 @@ public class SignManager {
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                Timber.d( "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
                 sign.setUpload(false);
                 DaoManager.get().addOrUpdate(sign);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: 上传成功：" + response);
+                Timber.d( "onResponse: 上传成功：" + response);
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 String status = jsonObject.getString("status");
                 boolean isSucc = TextUtils.equals("1", status);
                 if (isSucc) {
                     if (file != null && file.exists()) {
                         boolean delete = file.delete();
-                        Log.e(TAG, "onResponse: 头像删除：" + file.getPath() + " ----- " + delete);
+                        Timber.d( "onResponse: 头像删除：" + file.getPath() + " ----- " + delete);
                     }
                     if (hotFile != null && hotFile.exists()) {
                         boolean delete = hotFile.delete();
-                        Log.e(TAG, "onResponse: 热图删除：" + hotFile.getPath() + " ----- " + delete);
+                        Timber.d( "onResponse: 热图删除：" + hotFile.getPath() + " ----- " + delete);
                     }
                 }
             }
@@ -437,7 +407,7 @@ public class SignManager {
             hotBitmap.recycle();
         }
 
-        Log.e(TAG, "uploadTemperatureSign: 存DB耗时:" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
+        Timber.d( "uploadTemperatureSign: 存DB耗时:" + "(" + (System.currentTimeMillis() - start) + ") 毫秒");
         if (signConsumer != null) {
             try {
                 signConsumer.accept(sign);
@@ -449,6 +419,7 @@ public class SignManager {
         sign.setUpload(false);
         if (!isPrivacy) {
             DaoManager.get().addOrUpdate(sign);
+            checkStorageSpace();
         } else {
             return;
         }
@@ -469,9 +440,9 @@ public class SignManager {
         if (sign.getType() != -9) {
             params.put("entryId", sign.getEmpId() + "");
         }
-        Log.e(TAG, "上传温度");
-        Log.e(TAG, "地址：" + url);
-        Log.e(TAG, "参数: " + params.toString());
+        Timber.d( "上传温度");
+        Timber.d( "地址：" + url);
+        Timber.d( "参数: " + params.toString());
         PostFormBuilder builder = OkHttpUtils.post()
                 .url(url)
                 .params(params);
@@ -484,13 +455,13 @@ public class SignManager {
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                Timber.d( "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
                 sign.setUpload(false);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: 上传结果：" + response);
+                Timber.d( "onResponse: 上传结果：" + response);
 
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 if (jsonObject.getInteger("status") == 1) {
@@ -500,7 +471,7 @@ public class SignManager {
                         DaoManager.get().addOrUpdate(sign);
                     }
                 } else {
-                    Log.e(TAG, "onResponse: 上传失败");
+                    Timber.d( "onResponse: 上传失败");
                 }
             }
 
@@ -518,9 +489,9 @@ public class SignManager {
         params.put("visitorId", String.valueOf(visitorId));
         params.put("visEntryId", String.valueOf(visEntryId));
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
-        Log.e(TAG, "通知被访人：" + url);
-        Log.e(TAG, "地址：" + url);
-        Log.e(TAG, "参数：" + params.toString());
+        Timber.d( "通知被访人：" + url);
+        Timber.d( "地址：" + url);
+        Timber.d( "参数：" + params.toString());
 
         OkHttpUtils.post()
                 .url(url)// TODO: 2019/12/7
@@ -529,12 +500,12 @@ public class SignManager {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG, "通知被访人：onError: " + (e == null ? "NULL" : e.getMessage()));
+                        Timber.d( "通知被访人：onError: " + (e == null ? "NULL" : e.getMessage()));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "通知被访人：onResponse: " + response);
+                        Timber.d( "通知被访人：onResponse: " + response);
                     }
                 });
     }
@@ -601,6 +572,7 @@ public class SignManager {
         OutputLog.getInstance().addLog(signBean.getTemperature() + " ----- " + signBean.getName() + " ----- " + map.toString());
 
         DaoManager.get().addOrUpdate(signBean);
+        checkStorageSpace();
         final long time = signBean.getTime();
 
         // TODO: 2020/3/18 离线功能
@@ -654,13 +626,13 @@ public class SignManager {
 
     public void uploadNoIdCardResult(int isPass, Bitmap currCameraFrame, Float max, Bitmap mCacheHotImage) {
         String url = ResourceUpdate.UPLOAD_NO_IDCARD;
-        Log.e(TAG, "uploadNoIdCardResult: 地址：" + url);
+        Timber.d( "uploadNoIdCardResult: 地址：" + url);
 
         Map<String, String> params = new HashMap<>();
         params.put("isPass", isPass + "");
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("temper", max + "");
-        Log.e(TAG, "uploadNoIdCardResult: params：" + params.toString());
+        Timber.d( "uploadNoIdCardResult: params：" + params.toString());
 
         PostFormBuilder builder = OkHttpUtils.post().url(url).params(params);
 
@@ -678,7 +650,7 @@ public class SignManager {
             }
         }
         builder.addFile("newHeads", file.getName(), file);
-        Log.e(TAG, "uploadNoIdCardResult: 头像：" + file.getPath());
+        Timber.d( "uploadNoIdCardResult: 头像：" + file.getPath());
 
         File reFile;
         if (mCacheHotImage != null) {
@@ -694,17 +666,17 @@ public class SignManager {
             }
         }
         builder.addFile("reHead", reFile.getName(), reFile);
-        Log.e(TAG, "uploadNoIdCardResult: 热量图：" + reFile.getPath());
+        Timber.d( "uploadNoIdCardResult: 热量图：" + reFile.getPath());
 
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                Timber.d( "onError: " + (e == null ? "NULL" : e.getMessage()));
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: " + response);
+                Timber.d( "onResponse: " + response);
             }
         });
 
@@ -725,13 +697,13 @@ public class SignManager {
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("isPass", (isPass ? 0 : 1) + "");
         params.put("temper", temper + "");
-        Log.e(TAG, "uploadCodeVerifyResult: 参数：" + params.toString());
+        Timber.d( "uploadCodeVerifyResult: 参数：" + params.toString());
 
         PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.UPLOAD_CODE_VERIFY_RESULT).params(params);
 
         File file = saveBitmap(System.currentTimeMillis(), newHead);
         builder.addFile("newHeads", file.getName(), file);
-        Log.e(TAG, "uploadCodeVerifyResult: 截图：" + file.exists() + " --- " + file.getPath());
+        Timber.d( "uploadCodeVerifyResult: 截图：" + file.exists() + " --- " + file.getPath());
 
         File reFile;
         if (reHead != null) {
@@ -746,18 +718,18 @@ public class SignManager {
                 }
             }
         }
-        Log.e(TAG, "uploadCodeVerifyResult: 热量图：" + reFile.exists() + " --- " + reFile.getPath());
+        Timber.d( "uploadCodeVerifyResult: 热量图：" + reFile.exists() + " --- " + reFile.getPath());
         builder.addFile("reHead", reFile.getName(), reFile);
 
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
+                Timber.d( "onError: 上传失败：" + (e == null ? "NULL" : e.getMessage()));
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: 上传结果：" + response);
+                Timber.d( "onResponse: 上传结果：" + response);
             }
         });
     }
@@ -860,12 +832,12 @@ public class SignManager {
             params.put("phone", vertifyRecord.getPhoneNumber());
         }
         String uploadIdcard = ResourceUpdate.UPLOAD_IDCARD;
-        Log.e(TAG, "上传身份信息");
-        Log.e(TAG, "地址" + uploadIdcard);
-        Log.e(TAG, "参数：" + params.toString());
-        Log.e(TAG, "身份证图像: " + vertifyRecord.getIdCardHeadPath());
-        Log.e(TAG, "人脸图像：" + vertifyRecord.getPersonHeadPath());
-        Log.e(TAG, "热成像图像" + vertifyRecord.getHotImagePath());
+        Timber.d( "上传身份信息");
+        Timber.d( "地址" + uploadIdcard);
+        Timber.d( "参数：" + params.toString());
+        Timber.d( "身份证图像: " + vertifyRecord.getIdCardHeadPath());
+        Timber.d( "人脸图像：" + vertifyRecord.getPersonHeadPath());
+        Timber.d( "热成像图像" + vertifyRecord.getHotImagePath());
         OkHttpUtils.post().url(uploadIdcard)
                 .params(params)
                 .addFile("oldHeads", idCardFile.getName(), idCardFile)
@@ -875,12 +847,12 @@ public class SignManager {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                        Timber.d( "onError: " + (e == null ? "NULL" : e.getMessage()));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "onResponse: " + response);
+                        Timber.d( "onResponse: " + response);
                         vertifyRecord.setUpload(true);
                         DaoManager.get().update(vertifyRecord);
                     }
@@ -1007,7 +979,7 @@ public class SignManager {
         sign.setUpload(false);
         long add = DaoManager.get().add(sign);
 
-        Log.e(TAG, "addSignToDB: 当前是第：" + add + " --- " + sign.getTime());
+        Timber.d( "addSignToDB: 当前是第：" + add + " --- " + sign.getTime());
 
         int comid = SpUtils.getCompany().getComid();
         if (comid == Constants.NOT_BIND_COMPANY_ID) {
@@ -1067,4 +1039,28 @@ public class SignManager {
         UIUtils.showShort(activity,(activity.getString(R.string.clear_no_data) + total));
     }
 
+    public void checkStorageSpace(){
+        SdCardUtils.Capacity capacity = SdCardUtils.getUsedCapacity();
+        double remainingSpace = capacity.getAll_mb() - capacity.getUsed_mb();
+        if(remainingSpace < 500){
+            List<Sign> signList = DaoManager.get().querySignByComidForEarly(SpUtils.getCompany().getComid(), 1);
+            if(signList != null){
+                Iterator<Sign> iterator = signList.iterator();
+                while (iterator.hasNext()) {
+                    Sign next = iterator.next();
+                    String headPath = next.getHeadPath();
+                    File file = new File(headPath);
+                    if(file.exists()){
+                        file.delete();
+                    }
+                    String hotImgPath = next.getHotImgPath();
+                    file = new File(hotImgPath);
+                    if(file.exists()){
+                        file.delete();
+                    }
+                    DaoManager.get().deleteSign(next);
+                }
+            }
+        }
+    }
 }

@@ -64,15 +64,15 @@ public class AutoClean {
             Log.e(TAG, "startAutoClear: 清除策略：" + policy);
             Log.e(TAG, "startAutoClear: 时间差： " + offset);
 
-            List<String> fileList = new ArrayList<>();
+//            List<String> fileList = new ArrayList<>();
             int total = 0;
             for (Sign sign : signList) {
                 String headPath = sign.getHeadPath();
                 String hotImgPath = sign.getHotImgPath();
                 File headFile = new File(headPath);
                 File hotImgFile = new File(hotImgPath);
-                fileList.add(headFile.getName());
-                fileList.add(hotImgFile.getName());
+//                fileList.add(headFile.getName());
+//                fileList.add(hotImgFile.getName());
 
                 long diffValue = date.getTime() - sign.getTime();
                 if (diffValue < offset) {
@@ -89,7 +89,7 @@ public class AutoClean {
             }
             Log.e(TAG, "startAutoClear: 总共已清除：" + total);
 
-            if(fileList.size() > 0){
+            /*if(fileList.size() > 0){
                 long deleteNumber = 0;
                 File cacheDir = new File(Constants.CACHE_PATH);
                 if(!cacheDir.exists()){
@@ -143,7 +143,7 @@ public class AutoClean {
                     }
                 }
                 Timber.d("总共删除垃圾文件：" + deleteNumber);
-            }
+            }*/
         },INITIAL_TIME,PERIOD_TIME, TimeUnit.MINUTES);
     }
 

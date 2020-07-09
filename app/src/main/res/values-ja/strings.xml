@@ -63,7 +63,7 @@
     <string name="setting_show_main_info">Display home page information</string>
 
     <!--温度単位-->
-    <string name="temper_tips_centigrade">摂氏度</string>
+    <string name="temper_tips_centigrade">度</string>
     <string name="temper_tips_fahrenheit">華氏度</string>
     <string name="app_main_title">メインタイトル</string>
 
@@ -74,7 +74,7 @@
     <string name="setting_select_image">アバターを選択</string>
     <string name="setting_restore_image">アバターを復元する</string>
     <string name="setting_auto_temper">自動温度測定</string>
-    <string name="main_temp_warning_tips">体温が異常であるである</string>
+    <string name="main_temp_warning_tips">体温が異常です。</string>
     <string name="main_temp_normal_tips">通常の体温</string>
     <string name="main_temp_error_tips">異常な体温</string>
     <string name="main_temp_tips_please_close">近づいてください</string><!--Please approach-->
@@ -332,7 +332,7 @@
     <string name="setting_current_correct_value">現在の矯正値：</string>
     <string name="setting_low_temp_model">低温モード</string>
     <string name="setting_portrait_outline">人物の輪郭</string>
-    <string name="setting_default_welcome_tip">AIスマート勤務評定システムをご利用ください</string>
+    <string name="setting_default_welcome_tip">AIスマート勤務評定システム</string>
     <string name="setting_correct_temperature">温度を矯正する</string>
     <string name="setting_broadcast_f">放送華氏度</string>
 

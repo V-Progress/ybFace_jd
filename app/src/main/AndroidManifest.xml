@@ -59,6 +59,7 @@
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.PowerOnOffActivity" /> <!-- 测温考勤机 -->
         <activity
+            android:excludeFromRecents="true"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation"
             android:name=".activity_temper_check_in.ThermalImage2Activity"
             android:launchMode="singleTask" />

@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,8 +33,11 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.XmppConnectEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -52,6 +57,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import skin.support.SkinCompatManager;
+import timber.log.Timber;
 
 public class ThermalSystemActivity extends BaseActivity implements View.OnClickListener {
 
@@ -120,6 +126,38 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_data_system.setOnClickListener(this);
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
+
+//        test();
+    }
+
+    private void test(){
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                UIUtils.showNetLoading(ThermalSystemActivity.this);
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Timber.d("开始添加");
+                for (int i = 0; i < 5000; i++) {
+                    Sign temperatureSign = SignManager.instance().getTemperatureSign(36.5f);
+                    temperatureSign.setHotImgPath(new File(Environment.getExternalStorageDirectory(),"2.jpg").getPath());
+                    temperatureSign.setHeadPath(new File(Environment.getExternalStorageDirectory(),"1.jpg").getPath());
+                    DaoManager.get().add(temperatureSign);
+                }
+                Timber.d("添加完毕");
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                UIUtils.dismissNetLoading();
+            }
+        }.execute();
     }
 
     @Override

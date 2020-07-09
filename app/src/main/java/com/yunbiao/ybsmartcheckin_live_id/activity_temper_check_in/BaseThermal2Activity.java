@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.arcsoft.face.LivenessInfo;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
@@ -64,6 +65,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private long mCacheTime = 0;//缓存时间
     private float mCacheDiffValue = 2.0f;//缓存温差值
     private boolean mHasFace = false;//是否有人脸
+    private Integer mLiveness;///活体标签
     private boolean isFaceToFar = true;//人脸距离
     private boolean isFaceInsideRange = false;//人脸是否在范围内（仅红外）
     private View mDistanceView;//范围限制View
@@ -80,6 +82,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private boolean mTemperEnabled;
     private int temperModule;
     private boolean noFaceTemper;
+    private boolean livenessEnabled;
 
     @Override
     protected void initData() {
@@ -122,12 +125,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         KDXFSpeechManager.instance().setSpeed(speechBean.getSpeechSpeed());
         //无人脸报温
         noFaceTemper = SpUtils.getBoolean(ThermalConst.Key.NO_FACE_TEMPER,ThermalConst.Default.NO_FACE_TEMPER);
-
+        //活体开关
+        livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED,Constants.Default.LIVENESS_ENABLED);
+        //测温模式
         temperModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE, ThermalConst.Default.TEMPER_MODULE);
+        //人脸识别开关
         mFaceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
+        //测温开关
         mTemperEnabled = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED,ThermalConst.Default.TEMPER_ENABLED);
 
-        viewInterface.onModeChanged(mTemperEnabled, mFaceEnabled, temperModule);
+        viewInterface.onModeChanged(mTemperEnabled, mFaceEnabled, temperModule,livenessEnabled);
 
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
         if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
@@ -300,7 +307,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     };
 
     private void startAutoCheck(float originT) {
-        Timber.e("handleTemperature: 原始温度：" + originT);
         if (autoCheckList.size() < 10) {
             autoCheckList.add(originT);
         } else {
@@ -313,22 +319,17 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     highTotal++;
                 }
             }
-            Timber.e("handleTemperature: 低温数量：" + lowTotal + " ----- " + autoCheckList.size());
-            Timber.e("handleTemperature: 高温数量：" + highTotal + " ----- " + autoCheckList.size());
             int total = (autoCheckList.size() / 2) + 1;
             if (lowTotal >= total) {
                 currTemperMode = 0;
-                Timber.e("handleTemperature: 开启低温模式");
                 TemperatureModule.getIns().setHotImageColdMode(true);
                 TemperatureModule.getIns().setHotImageHotMode(false, 45f);
             } else if (highTotal >= total) {
                 currTemperMode = 2;
-                Timber.e("handleTemperature: 开启高温模式");
                 TemperatureModule.getIns().setHotImageColdMode(false);
                 TemperatureModule.getIns().setHotImageHotMode(true, 45f);
             } else {
                 currTemperMode = 1;
-                Timber.e("handleTemperature: 常温模式");
                 TemperatureModule.getIns().setHotImageColdMode(false);
                 TemperatureModule.getIns().setHotImageHotMode(false, 45f);
             }
@@ -425,8 +426,12 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     }
                 }
             }
-
             sendClearAllUIMessage();
+            return;
+        }
+
+        //只有仅测温模式下 以及 开启活体 以及 非活体时才拦截
+        if(isOnlyTemper() && livenessEnabled && (mLiveness == null || mLiveness != LivenessInfo.ALIVE)){
             return;
         }
 
@@ -723,6 +728,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         if (!hasFace) {
             return false;
         }
+        mLiveness = facePreviewInfo.getLiveness();
         //如果是人脸模式
         if (isOnlyFace()) {
             return true;

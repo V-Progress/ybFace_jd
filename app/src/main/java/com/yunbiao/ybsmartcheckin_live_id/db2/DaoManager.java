@@ -5,6 +5,7 @@ import android.util.Log;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 
 import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -35,15 +36,10 @@ public class DaoManager {
 
 
     public void initDb(String name) {
-        Log.e(TAG, "initDb: ");
         MySQLiteHelper helper = new MySQLiteHelper(APP.getContext(), name, null);
-        Log.e(TAG, "initDb: " + helper);
         Database db = helper.getWritableDb();
-        Log.e(TAG, "initDb: " + db);
         daoMaster = new DaoMaster(db);
-        Log.e(TAG, "initDb: " + daoMaster);
         daoSession = daoMaster.newSession();
-        Log.e(TAG, "initDb: " + daoSession);
         daoSession.clear();
         daoSession.getUserDao().detachAll();
         daoSession.getDepartDao().detachAll();
@@ -148,6 +144,18 @@ public class DaoManager {
             return null;
         }
         return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId)).list();
+    }
+
+    public List<Sign> querySignByComidForEarly(int comId,int num){
+        if(daoSession == null){
+            return null;
+        }
+        QueryBuilder<Sign> signQueryBuilder = daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId)).orderAsc(SignDao.Properties.Time);
+        if(num > 0){
+            return signQueryBuilder.offset(0).limit(num).list();
+        } else {
+            return signQueryBuilder.list();
+        }
     }
 
     public List<Sign> querySignByComIdAndUpload(int comId, boolean isUpload) {
