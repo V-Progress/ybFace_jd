@@ -16,7 +16,7 @@
             android:onClick="showSystemInfo"
             android:id="@+id/iv_logo_multi_thermal"
             android:layout_marginLeft="30dp"
-            android:layout_width="140dp"
+            android:layout_width="240dp"
             android:layout_height="80dp" />
 
         <TextView

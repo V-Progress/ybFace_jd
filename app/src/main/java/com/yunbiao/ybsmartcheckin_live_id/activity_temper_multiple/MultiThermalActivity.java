@@ -588,9 +588,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
             if (temperCache.containsKey(trackId)) {
                 float lastTemp = temperCache.get(trackId);
-                if (lastTemp > 35) {
-                    return;
-                } else if (temperByTrackId > 35) {
+                if (lastTemp <= 35 && temperByTrackId > 35) {
+                    temperCache.put(trackId, temperByTrackId);
+                } else if (lastTemp > 35 && lastTemp < 37.3 && temperByTrackId >= 37.3) {
                     temperCache.put(trackId, temperByTrackId);
                 } else {
                     return;
