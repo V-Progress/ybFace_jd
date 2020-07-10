@@ -40,7 +40,6 @@
         android:id="@+id/view_face_distance"
         android:layout_width="280dp"
         android:layout_height="280dp"
-        android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:background="@drawable/shape_temperature_frame_background" />
 
@@ -70,7 +69,7 @@
                     android:onClick="goSetting"
                     android:scaleType="fitCenter" />
                 <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:textStyle="bold"
                     android:textSize="24dp"
                     android:id="@+id/tv_main_abbname"
@@ -83,7 +82,6 @@
                 android:padding="3dp"
                 android:background="@drawable/shape_thermal_image_main"
                 android:orientation="vertical"
-                android:layout_below="@+id/rl_top_area"
                 android:layout_marginTop="10dp"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content">
@@ -165,7 +163,7 @@
         </RelativeLayout>
 
         <TextClock
-            android:layout_toLeftOf="@+id/iv_setting"
+            android:layout_toStartOf="@+id/iv_setting"
             android:id="@+id/textClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -179,7 +177,7 @@
             android:id="@+id/iv_setting"
             android:onClick="goSetting"
             android:scaleType="fitCenter"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:src="@mipmap/setting_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"/>

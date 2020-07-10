@@ -19,15 +19,15 @@
     <TextView
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
         android:textSize="26dp"
         android:textColor="#1296DB"
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:drawableLeft="@mipmap/back"/>
+        android:drawableStart="@mipmap/back"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,7 +44,6 @@
             android:id="@+id/tv_date"
             android:layout_width="170dp"
             android:layout_height="44dp"
-            android:layout_toRightOf="@+id/btn_date"
             android:background="@drawable/selector_btn_take_photo"
             android:gravity="center"
             android:text=""
@@ -52,13 +51,13 @@
             android:textSize="20dp" />
 
         <Spinner
-            android:paddingLeft="5dp"
-            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingStart="5dp"
+            android:drawableEnd="@mipmap/icon_arrow_down"
             android:id="@+id/spn_data_mode"
             android:layout_width="108dp"
             android:layout_height="44dp"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/tv_date"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/tv_date"
             android:background="@drawable/selector_btn_take_photo"
             android:gravity="center"
             android:textColor="#64DCFE"
@@ -71,20 +70,20 @@
             android:textColor="#64DCFE"
             android:text="@string/sign_list_export"
             android:background="@drawable/selector_btn_take_photo"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_width="108dp"
             android:layout_height="44dp" />
 
         <Button
             android:drawablePadding="10dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/tv_export_sign_data"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/tv_export_sign_data"
             android:id="@+id/btn_upload"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:background="@drawable/shape_bg_btnsync"
-            android:drawableLeft="@mipmap/icon_sync"
-            android:paddingLeft="10dp"
+            android:drawableStart="@mipmap/icon_sync"
+            android:paddingStart="10dp"
             android:text="@string/sign_list_upload"
             android:textColor="@color/white"
             android:textSize="20dp"
@@ -176,7 +175,7 @@
                 android:id="@+id/lv_sign_List"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"></ListView>
+                android:layout_centerInParent="true"/>
 
             <com.wang.avi.AVLoadingIndicatorView
                 match:indicator="LineScalePulseOutRapid"

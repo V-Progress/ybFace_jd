@@ -168,7 +168,7 @@ public class SyncManager {
 
                             deleteNotBindUser();
                         }
-                        saveCompanyInfo(null);
+                        SpUtils.setCompany(null);
                         dissmissDialog();
                     }
                     retryOnluCompany(companyResponse.getStatus());
@@ -191,7 +191,7 @@ public class SyncManager {
                 Log.e("canSync", "company.getComid()-----------> " + company.getComid());
 
                 //保存部门数据
-                saveCompanyInfo(company);
+                SpUtils.setCompany(company);
                 d("保存部门数据");
 
                 //初始化存储路径
@@ -275,7 +275,7 @@ public class SyncManager {
                             EventBus.getDefault().post(new UpdateInfoEvent());
                             isFirst = false;
                         }
-                        saveCompanyInfo(null);
+                        SpUtils.setCompany(null);
                         dissmissDialog();
                     }
                     retryGetCompany(companyResponse.getStatus());
@@ -300,7 +300,7 @@ public class SyncManager {
 //                AlarmManagerUtil.setAlarm(companyResponse.getCompany());
 
                 //保存部门数据
-                saveCompanyInfo(company);
+                SpUtils.setCompany(company);
                 d("保存部门数据");
 
                 //初始化存储路径
@@ -1054,21 +1054,6 @@ public class SyncManager {
                 requestUser();
             }
         }, 10 * 1000);
-    }
-
-    private void saveCompanyInfo(Company company) {
-        SpUtils.setCompany(company);
-        if (company != null) {
-            //存公司ID
-            SpUtils.saveInt(SpUtils.COMPANYID, company.getComid());
-            d("缓存公司信息");
-            SpUtils.saveStr(SpUtils.MENU_PWD, company.getDevicePwd());
-            //2019.10.21 添加  获取是否显示职称，默认显示displayPosition，1是显示
-            SpUtils.saveInt(SpUtils.DISPLAYPOSITION, company.getDisplayPosition());
-        } else {
-            SpUtils.saveInt(SpUtils.COMPANYID, 0);
-            SpUtils.saveInt(SpUtils.DISPLAYPOSITION, 0);
-        }
     }
 
     private void d(String log) {

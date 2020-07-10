@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -34,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:gravity="center"
                 android:text="@string/recommend_valuez_setting"
                 android:textColor="#ff0000"
@@ -42,6 +42,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_liveness_area"
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +57,7 @@
                 android:id="@+id/sw_liveness_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@color/white" />
@@ -82,8 +83,7 @@
                     android:id="@+id/cb_mirror"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:checked="true"
                     android:text="@string/setting_open"
                     android:textColor="@color/white"
@@ -104,8 +104,7 @@
                     android:id="@+id/cb_vertical_mirror"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:checked="true"
                     android:text="@string/setting_open"
                     android:textColor="@color/white"
@@ -128,7 +127,7 @@
                 android:id="@+id/sw_face_dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@color/white" />
@@ -154,14 +153,13 @@
                 android:id="@+id/btn_setAngle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/cb_mirror"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/shape_system_name"
                 android:onClick="setAngle"
                 android:textColor="#59B4CA" />
 
             <TextView
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:id="@+id/tv_camera"
                 style="@style/setting_text"
                 android:text="@string/setting_pic_rotation"/>
@@ -170,8 +168,7 @@
                 android:id="@+id/btn_picture_rotation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/cb_mirror"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/shape_system_name"
                 android:onClick="setPicRotation"
                 android:textColor="#59B4CA" />
@@ -180,7 +177,7 @@
                 android:id="@+id/spn_camera_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:background="@drawable/shape_system_name"
                 android:visibility="gone" />
         </LinearLayout>

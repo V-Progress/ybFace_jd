@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingLeft="20dp"
-    android:paddingRight="10dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="10dp"
     android:paddingBottom="10dp"
     tools:ignore="MissingDefaultResource">
 
@@ -20,7 +20,6 @@
             android:textSize="14dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:text="和水水水水模式"
             android:id="@+id/tv_model_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +37,7 @@
             android:layout_height="wrap_content">
 
             <pl.droidsonroids.gif.GifImageView
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:id="@+id/iv_qrcode_sign_list"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -55,7 +54,6 @@
                 android:layout_height="100dp">
 
                 <TextView
-                    android:text="公司：北京互啊"
                     android:textSize="14dp"
                     android:id="@+id/tv_company_name_sign_fragment"
                     android:textColor="@color/white"
@@ -66,7 +64,6 @@
 
                 <TextView
                     android:gravity="center"
-                    android:text="编号：1213131121"
                     android:textColor="@color/white"
                     android:textSize="14dp"
                     android:id="@+id/tv_device_no_sign_fragment"
@@ -98,7 +95,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:text="版本：1.4.1"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="14dp"
@@ -149,7 +145,7 @@
         android:id="@+id/rl_record"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentEnd="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rlv_sign_list"
@@ -181,9 +177,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:maxLines="1"
-                    android:paddingRight="15dp"
+                    android:paddingEnd="15dp"
                     android:text="@string/fment_sign_jrqd"
                     android:textColor="@color/text_color_h"
                     android:textSize="20dp" />

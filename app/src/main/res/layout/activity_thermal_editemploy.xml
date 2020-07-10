@@ -26,15 +26,15 @@
 
         <TextView
             android:gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
             android:textSize="26dp"
             android:textColor="#1296DB"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:drawableLeft="@mipmap/back"/>
+            android:drawableStart="@mipmap/back"/>
     </RelativeLayout>
 
     <FrameLayout
@@ -63,7 +63,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginEnd="15dp">
 
             <Button
                 android:drawablePadding="10dp"
@@ -71,8 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_bg_btnsync"
-                android:drawableLeft="@mipmap/icon_camera"
-                android:paddingLeft="18dp"
+                android:drawableStart="@mipmap/icon_camera"
+                android:paddingStart="18dp"
                 android:text="@string/act_editEmploy_pz"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
@@ -92,10 +92,10 @@
             android:id="@+id/btn_ReTakePhoto"
             android:layout_width="108dp"
             android:layout_height="44dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:background="@drawable/shape_bg_btnrepicture"
-            android:drawableLeft="@mipmap/icon_repicture"
-            android:paddingLeft="18dp"
+            android:drawableStart="@mipmap/icon_repicture"
+            android:paddingStart="18dp"
             android:text="@string/act_editEmploy_reset"
             android:textColor="@color/theme_green"
             android:textSize="20dp" />
@@ -123,8 +123,8 @@
             android:textSize="28dp" />
 
         <EditText
-            android:paddingRight="6dp"
-            android:drawableRight="@mipmap/edit_avaliable"
+            android:paddingEnd="6dp"
+            android:drawableEnd="@mipmap/edit_avaliable"
             android:id="@+id/et_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@mipmap/bg_edit"
-            android:paddingLeft="@dimen/paddingleft_addemploy"
+            android:paddingStart="@dimen/paddingleft_addemploy"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -160,7 +160,7 @@
                 android:id="@+id/rb_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:button="@android:drawable/btn_radio"
                 android:text="@string/base_female"
                 android:textColor="@color/white"
@@ -174,8 +174,8 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_alignTop="@+id/et_name"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/et_name"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/et_name"
             android:scaleType="centerInside"
             android:src="@mipmap/image_default_head" />
 
@@ -184,8 +184,8 @@
             android:layout_height="44dp"
             android:layout_below="@+id/tv_jbxx"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/et_name"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/et_name"
             android:gravity="center"
             android:text="@string/act_editEmploy_name"
             android:textColor="@color/font_green"
@@ -198,8 +198,8 @@
             android:layout_height="44dp"
             android:layout_below="@+id/et_name"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/rg_sex"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/rg_sex"
             android:gravity="center"
             android:text="@string/act_editEmploy_sex"
             android:textColor="@color/font_green"
@@ -213,8 +213,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_spinner_background"
-            android:paddingLeft="10dp"
-            android:paddingRight="12dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="12dp"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -223,8 +223,8 @@
             android:layout_height="44dp"
             android:layout_below="@+id/rg_sex"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/sp_depart"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/sp_depart"
             android:gravity="center"
             android:text="@string/act_editEmploy_bm"
             android:textColor="@color/font_green"
@@ -237,12 +237,12 @@
             android:layout_below="@+id/rg_sex"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/sp_depart"/>
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/sp_depart"/>
 
         <EditText
-            android:paddingRight="6dp"
-            android:drawableRight="@mipmap/edit_avaliable"
+            android:paddingEnd="6dp"
+            android:drawableEnd="@mipmap/edit_avaliable"
             android:id="@+id/et_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -251,7 +251,7 @@
             android:layout_marginTop="20dp"
             android:background="@mipmap/bg_edit"
             android:inputType="number"
-            android:paddingLeft="@dimen/paddingleft_addemploy"
+            android:paddingStart="@dimen/paddingleft_addemploy"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -260,16 +260,16 @@
             android:layout_height="44dp"
             android:layout_below="@+id/sp_depart"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/et_job"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/et_job"
             android:gravity="center"
             android:text="@string/act_editEmploy_ygbh"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
         <EditText
-            android:paddingRight="6dp"
-            android:drawableRight="@mipmap/edit_avaliable"
+            android:paddingEnd="6dp"
+            android:drawableEnd="@mipmap/edit_avaliable"
             android:id="@+id/et_job"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -277,7 +277,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@mipmap/bg_edit"
-            android:paddingLeft="@dimen/paddingleft_addemploy"
+            android:paddingStart="@dimen/paddingleft_addemploy"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -286,16 +286,16 @@
             android:layout_height="44dp"
             android:layout_below="@+id/et_num"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/et_job"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/et_job"
             android:gravity="center"
             android:text="@string/act_editEmploy_zw"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
         <TextView
-            android:paddingRight="6dp"
-            android:drawableRight="@mipmap/date_select"
+            android:paddingEnd="6dp"
+            android:drawableEnd="@mipmap/date_select"
             android:id="@+id/tv_birth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -304,7 +304,7 @@
             android:layout_marginTop="20dp"
             android:background="@mipmap/bg_edit"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/paddingleft_addemploy"
+            android:paddingStart="@dimen/paddingleft_addemploy"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -313,16 +313,16 @@
             android:layout_height="44dp"
             android:layout_below="@+id/et_job"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/tv_birth"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/tv_birth"
             android:gravity="center"
             android:text="@string/act_editEmploy_csrq"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
         <EditText
-            android:paddingRight="6dp"
-            android:drawableRight="@mipmap/edit_avaliable"
+            android:paddingEnd="6dp"
+            android:drawableEnd="@mipmap/edit_avaliable"
             android:id="@+id/et_sign"
             android:layout_width="400dp"
             android:layout_height="120dp"
@@ -330,7 +330,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_bg_btnrepicture"
-            android:paddingLeft="@dimen/paddingleft_addemploy"
+            android:paddingStart="@dimen/paddingleft_addemploy"
             android:textColor="@color/font_green"
             android:textSize="20dp" />
 
@@ -339,8 +339,8 @@
             android:layout_height="24dp"
             android:layout_below="@+id/tv_birth"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/et_sign"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@+id/et_sign"
             android:gravity="center"
             android:text="@string/act_editEmploy_gxqm"
             android:textColor="@color/font_green"
@@ -353,7 +353,7 @@
             android:layout_height="10dp"
             android:layout_below="@+id/et_sign"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"></View>
+            android:layout_marginTop="20dp"/>
 
         <Button
             android:id="@+id/btn_submit"
@@ -361,8 +361,8 @@
             android:layout_height="44dp"
             android:layout_below="@+id/et_sign"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@+id/view_middle2"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/view_middle2"
             android:background="@drawable/shape_bg_btnsync"
             android:text="@string/base_ensure"
             android:textColor="@color/white"
@@ -373,9 +373,9 @@
             android:layout_width="108dp"
             android:layout_height="44dp"
             android:layout_below="@+id/et_sign"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
-            android:layout_toRightOf="@+id/view_middle2"
+            android:layout_toEndOf="@+id/view_middle2"
             android:background="@drawable/shape_bg_btnrepicture"
             android:text="@string/base_cancel"
             android:textColor="@color/theme_green"
@@ -390,9 +390,8 @@
         android:paddingBottom="20dp"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@drawable/shape_bg_btnsync"
-        android:text="填\n写\n信\n息"
         android:textColor="@color/white" />
 </RelativeLayout>

@@ -26,27 +26,26 @@
 
         <TextView
             android:gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
             android:textSize="26dp"
             android:textColor="#1296DB"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:drawableLeft="@mipmap/back"/>
+            android:drawableStart="@mipmap/back"/>
     </RelativeLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/shape_employ_list"
-        android:padding="15dp"
-        android:layout_below="@+id/rl_title_Area">
+        android:padding="15dp">
 
         <RelativeLayout
             android:id="@+id/rl_control_area"
@@ -54,12 +53,12 @@
             android:layout_height="wrap_content">
             <Button
                 android:drawablePadding="10dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:id="@+id/btn_addDepart"
                 android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:background="@drawable/shape_employ_button"
-                android:drawableLeft="@mipmap/icon_add"
+                android:drawableStart="@mipmap/icon_add"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/employ_list_add_depart"
@@ -74,7 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_employ_list"
-            android:layout_below="@+id/rl_control_area"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">

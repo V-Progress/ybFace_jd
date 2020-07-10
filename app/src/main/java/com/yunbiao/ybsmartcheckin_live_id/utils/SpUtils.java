@@ -13,6 +13,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by LiuShao on 2016/2/21.
@@ -48,18 +49,26 @@ public class SpUtils {
 
     public static void init() {
         getCompany();
+        Timber.d("初始化时公司Id为：" + (mCacheCompany == null ? "NULL" : mCacheCompany.getComid()));
     }
 
     public static void setCompany(final Company company) {
         mCacheCompany = company;
         if(company != null){
+            //存公司ID
+            saveInt(COMPANYID, mCacheCompany.getComid());
+            saveStr(MENU_PWD, mCacheCompany.getDevicePwd());
+            saveInt(DISPLAYPOSITION, mCacheCompany.getDisplayPosition());
             Observable.create(e -> {
                 String json = new Gson().toJson(company);
                 saveStr(COMPANY_INFO, json);
             }).subscribeOn(Schedulers.io()).subscribe();
         } else {
             saveStr(COMPANY_INFO, "");
+            saveInt(COMPANYID, 0);
+            saveInt(DISPLAYPOSITION, 0);
         }
+        Timber.d("同步后公司Id为：" + (mCacheCompany == null ? "NULL" : mCacheCompany.getComid()));
     }
 
     public static Company getCompany() {

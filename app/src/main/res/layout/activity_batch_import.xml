@@ -42,11 +42,11 @@
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="#00000000"
-                android:paddingLeft="20dp"
-                android:paddingRight="30dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="30dp"
                 android:src="@mipmap/back" />
         </RelativeLayout>
 
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/tv_select_file_name"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:textColor="@color/white"
                 android:textSize="26dp"
                 android:layout_weight="1"
@@ -69,7 +69,7 @@
             <Button
                 style="@style/style_setting_input_save_button"
                 android:onClick="@{actionPresenter::chooseFile}"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:textSize="22dp"
                 android:text="@string/import_select_file"
                 android:paddingTop="15dp"
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
-                android:gravity="center_vertical|right"
+                android:gravity="center_vertical|end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <CheckBox
@@ -102,7 +102,7 @@
                     android:enabled="@{batchContent.checkedAvailable}"
                     android:checked="@{batchContent.selectAll}"
                     android:onCheckedChanged="@{actionPresenter::onAllChecked}"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:button="@drawable/selector_cb"
                     android:text="@string/import_select_all"
                     android:textSize="26dp"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
                 android:onClick="@{actionPresenter::importUsers}"

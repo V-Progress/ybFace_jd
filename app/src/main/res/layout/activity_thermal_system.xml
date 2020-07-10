@@ -29,11 +29,11 @@
                 android:maxHeight="100dp"
                 android:src="@mipmap/yb_logo"
                 android:id="@+id/iv_system_logo"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:scaleType="fitCenter" />
             <com.yunbiao.ybsmartcheckin_live_id.views.GradientColorTextView
                 android:id="@+id/tv_abb_name_system_thermal"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:textSize="18dp"
                 android:gravity="center_vertical|start"
                 android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_toLeftOf="@+id/iv_back"
+            android:layout_toStartOf="@+id/iv_back"
             android:background="@drawable/shape_employ_button"
             android:gravity="center"
             android:paddingLeft="30dp"
@@ -72,15 +72,15 @@
         <TextView
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
             android:textSize="26dp"
             android:textColor="#1296DB"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:drawableLeft="@mipmap/back"/>
+            android:drawableStart="@mipmap/back"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -204,7 +204,7 @@
                 android:id="@+id/btn_depart_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:nextFocusRight="@+id/btn_add_system"
@@ -218,7 +218,7 @@
                 android:id="@+id/btn_add_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:nextFocusLeft="@+id/btn_depart_system"
@@ -238,7 +238,7 @@
                 android:id="@+id/btn_data_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:nextFocusRight="@+id/btn_setting_system"
@@ -252,7 +252,7 @@
                 android:id="@+id/btn_setting_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:nextFocusLeft="@+id/btn_data_system"
@@ -277,7 +277,7 @@
                 android:nextFocusRight="@+id/btn_add_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
@@ -294,7 +294,7 @@
                 android:nextFocusLeft="@+id/btn_depart_system"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take_photo"
                 android:padding="30dp"
@@ -357,7 +357,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="wrap_content"/>
                 </ScrollView>
             </LinearLayout>
 
@@ -384,12 +384,12 @@
 
 
         <LinearLayout
-            android:gravity="right"
+            android:gravity="end"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:id="@+id/tv_version_system"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

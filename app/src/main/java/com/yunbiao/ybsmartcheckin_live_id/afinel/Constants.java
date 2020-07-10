@@ -191,7 +191,8 @@ public class Constants {
         public static boolean QRCODE_ENABLED = true;
         public static final boolean READ_CARD_ENABLED = false;
         public static boolean POSTER_ENABLED = false;
-        public static final boolean LIVENESS_ENABLED = false;
+        public static boolean LIVENESS_ENABLED = false;
+        public static boolean SHOW_LIVENESS_SETTING = true;
         public static final boolean FACE_DIALOG = false;
         public static boolean IS_H_MIRROR = true;
         public static final boolean IS_V_MIRROR = false;

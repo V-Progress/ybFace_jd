@@ -293,6 +293,13 @@ public class SplashActivity extends BaseActivity {
                 ThermalConst.Default.AUTO_TEMPER = false;
                 break;
             default:
+                //朱培元客户
+//                Constants.Default.LIVENESS_ENABLED = true;
+//                Constants.Default.SHOW_LIVENESS_SETTING = false;
+                //Melody客户
+//                ThermalConst.Default.NORMAL_BROADCAST_ENABLED = false;
+//                ThermalConst.Default.WARNING_BROAD_ENABLED = false;
+                //普通
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";
                 ThermalConst.Default.WELCOME_TIP_CONTENT = getResString(R.string.setting_default_welcome_tip);

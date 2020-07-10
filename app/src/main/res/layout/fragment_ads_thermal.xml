@@ -29,7 +29,7 @@
 
         <TextClock
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:textColor="@color/skin_color_main_clock"
             android:gravity="center"
             android:id="@+id/tc_hour"

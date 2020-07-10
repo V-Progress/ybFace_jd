@@ -127,37 +127,6 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
 
-//        test();
-    }
-
-    private void test(){
-        new AsyncTask<Void,Void,Void>(){
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                UIUtils.showNetLoading(ThermalSystemActivity.this);
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                Timber.d("开始添加");
-                for (int i = 0; i < 5000; i++) {
-                    Sign temperatureSign = SignManager.instance().getTemperatureSign(36.5f);
-                    temperatureSign.setHotImgPath(new File(Environment.getExternalStorageDirectory(),"2.jpg").getPath());
-                    temperatureSign.setHeadPath(new File(Environment.getExternalStorageDirectory(),"1.jpg").getPath());
-                    DaoManager.get().add(temperatureSign);
-                }
-                Timber.d("添加完毕");
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                UIUtils.dismissNetLoading();
-            }
-        }.execute();
     }
 
     @Override

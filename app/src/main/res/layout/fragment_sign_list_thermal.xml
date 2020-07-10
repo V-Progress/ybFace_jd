@@ -13,8 +13,6 @@
         android:id="@+id/layout_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/skin_main_notice_horn_background"
         android:orientation="horizontal">
 
@@ -44,7 +42,6 @@
         android:textSize="14dp"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="和水水水水模式"
         android:id="@+id/tv_model_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,13 +56,13 @@
         android:id="@+id/ll_info_sign_list"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
-        android:gravity="right|center"
+        android:gravity="end|center"
         android:background="@mipmap/bg_warn"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <pl.droidsonroids.gif.GifImageView
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:id="@+id/iv_qrcode_sign_list"
             android:layout_width="108dp"
             android:layout_height="108dp"
@@ -74,7 +71,7 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:background="@mipmap/frame_sign_total"
             android:padding="5dp"
             android:layout_weight="1"
@@ -83,7 +80,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -102,7 +99,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -153,7 +150,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="right|center_vertical"
+                    android:gravity="end|center_vertical"
                     android:textColor="@color/white"
                     android:textSize="22dp" />
                 <TextView
@@ -176,7 +173,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="right|center_vertical"
+                    android:gravity="end|center_vertical"
                     android:letterSpacing="0.1"
                     android:textColor="@color/white"
                     android:textSize="22dp" />

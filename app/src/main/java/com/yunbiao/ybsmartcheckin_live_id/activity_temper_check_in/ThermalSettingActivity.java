@@ -187,6 +187,8 @@ public class ThermalSettingActivity extends BaseActivity {
             });
 
             //设置活体=========================================================================
+            View llLivenessArea = view.findViewById(R.id.ll_liveness_area);
+            llLivenessArea.setVisibility(Constants.Default.SHOW_LIVENESS_SETTING ? View.VISIBLE :View.GONE);
             Switch swLiveness = view.findViewById(R.id.sw_liveness_setting);
             boolean liveness = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);
             swLiveness.setChecked(liveness);

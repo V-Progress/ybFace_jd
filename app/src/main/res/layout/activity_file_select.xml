@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:gravity="center_vertical"
-        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -19,11 +19,9 @@
             android:textColor="#000"
             android:text="@string/select_directory_title"
             android:textSize="30dp"
-            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
-            android:text="121311312"
             android:layout_marginTop="10dp"
             android:textSize="20dp"
             android:ellipsize="start"
@@ -44,7 +42,7 @@
 
         <RelativeLayout
             android:paddingTop="10dp"
-            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             android:orientation="vertical"
             android:layout_width="200dp"
             android:layout_height="match_parent">
@@ -93,7 +91,7 @@
                     android:layout_height="30dp"/>
                 <TextView
                     android:textSize="18dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:text="@string/click_select_this_directory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -108,7 +106,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:id="@+id/rlv_file_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

@@ -82,10 +82,10 @@ public class ThermalConst {
         public static final boolean FRAME_TIP_ENABLED = true;
         public static final boolean NORMAL_TEMPER_SHOW = true;
         public static final int NORMAL_TEMPER_LOCATION = 2;
-        public static final boolean NORMAL_BROADCAST_ENABLED = true;
+        public static boolean NORMAL_BROADCAST_ENABLED = true;
         public static final boolean WARNING_TEMPER_SHOW = true;
         public static final int WARNING_TEMPER_LOCATION = 2;
-        public static final boolean WARNING_BROAD_ENABLED = true;
+        public static boolean WARNING_BROAD_ENABLED = true;
 
         public static String WELCOME_TIP_CONTENT = APP.getContext().getResources().getString(R.string.setting_default_welcome_tip);
     }
