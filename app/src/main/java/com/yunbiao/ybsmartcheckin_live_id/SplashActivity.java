@@ -81,7 +81,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
         long folderSize = SdCardUtils.getFolderSize(new File(Constants.LOCAL_ROOT_PATH));
-        Timber.d("当前应用占用空间大小：" + (folderSize / 1024 / 1024));
+        Timber.d("当前应用占用空间大小：" + (folderSize / 1024 / 1024) + "mb");
 
         SdCardUtils.Capacity capacity = SdCardUtils.getUsedCapacity();
         double remainingSpace = capacity.getAll_mb() - capacity.getUsed_mb();

@@ -375,10 +375,12 @@ public class CrashHandler2 implements Thread.UncaughtExceptionHandler {
                     mStringBuffer.append("\n**************************************************************************\n");
                 }
 
-                Exception exception = new Exception();
-                exception.setCrashTime(time);
-                exception.setCrashExeption(mExceptionInfo);
-                DaoManager.get().addOrUpdate(exception);
+                if(mExceptionInfo.length() < 1000){
+                    Exception exception = new Exception();
+                    exception.setCrashTime(time);
+                    exception.setCrashExeption(mExceptionInfo);
+                    DaoManager.get().addOrUpdate(exception);
+                }
 
                 mFileOutputStream.write(mStringBuffer.toString().getBytes());
                 mFileOutputStream.close();

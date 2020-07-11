@@ -154,12 +154,14 @@ public class Constants {
         String CLEAR_POLICY = "clearPolicy";//清理策略
         String CLEAR_POLICY_CUSTOM = "clearPolicyCustom";//自定义清理策略
         String SIMILAR_THRESHOLD = "similarThreshold";//相似度阈值
+        String PASSWORD_ENABLED = "passwordEnabled";
 
         String FACE_DIALOG = "faceDialog";//人脸弹窗
         String LIVENESS_ENABLED = "livenessEnabled";//活体开关
         String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
         String READ_CARD_ENABLED = "readCardEnabled";//读卡模块
         String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
+        String MAIN_SIGN_LIST = "mainSignList";
 
         String DOOR_STATE = "doorState";//门禁常开模式
         String GPIO_DELAY = "doorDelay";//继电器延时
@@ -177,10 +179,6 @@ public class Constants {
         String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
 
         String JUMP_TAG = "jumpTag";//跳转标签
-
-        String MAIN_SIGN_LIST = "mainSignList";
-
-        String PASSWORD_ENABLED = "passwordEnabled";
     }
 
     public static class Default{
@@ -191,7 +189,7 @@ public class Constants {
         public static boolean QRCODE_ENABLED = true;
         public static final boolean READ_CARD_ENABLED = false;
         public static boolean POSTER_ENABLED = false;
-        public static boolean LIVENESS_ENABLED = false;
+        public static boolean LIVENESS_ENABLED = true;
         public static boolean SHOW_LIVENESS_SETTING = true;
         public static final boolean FACE_DIALOG = false;
         public static boolean IS_H_MIRROR = true;

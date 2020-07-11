@@ -82,6 +82,7 @@ public class SpUtils {
                 mCacheCompany = new Company();
                 mCacheCompany.setComid(Constants.NOT_BIND_COMPANY_ID);
             }
+            saveInt(COMPANYID, mCacheCompany.getComid());
         }
         return mCacheCompany;
     }
