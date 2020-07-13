@@ -41,6 +41,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 import com.yunbiao.ybsmartcheckin_live_id.db2.User;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -100,6 +101,10 @@ public class ThermalEditEmployActivity extends BaseActivity implements View.OnCl
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 600 && Utils.getWinHight(this)  == 976) {
+            //适配土耳其客户机器
+            return R.layout.activity_thermal_editemploy_976600;
+        }
         return R.layout.activity_thermal_editemploy;
     }
 

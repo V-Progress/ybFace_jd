@@ -50,12 +50,12 @@ import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.xutils.common.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -80,9 +80,15 @@ import timber.log.Timber;
 
 public class ThermalSettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
+    public static boolean isTurkey = false;
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 600 && Utils.getWinHight(this)  == 976) {
+            //适配土耳其客户机器
+            isTurkey = true;
+            return R.layout.activity_thermal_setting_976600;
+        }
         return R.layout.activity_thermal_setting;
     }
 
@@ -155,6 +161,9 @@ public class ThermalSettingActivity extends BaseActivity {
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_face_setting, container, false);
+            if (ThermalSettingActivity.isTurkey) {
+                rootView.setPadding(20, 10, 0 , 10);
+            }
             return rootView;
         }
 
@@ -260,6 +269,10 @@ public class ThermalSettingActivity extends BaseActivity {
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_page_setting, container, false);
+            if (ThermalSettingActivity.isTurkey) {
+                rootView = inflater.inflate(R.layout.fragment_page_setting_976600, container, false);
+                rootView.setPadding(20, 10, 0 , 10);
+            }
             return rootView;
         }
 
@@ -409,6 +422,9 @@ public class ThermalSettingActivity extends BaseActivity {
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_temper_setting, container, false);
+            if (ThermalSettingActivity.isTurkey) {
+                rootView.setPadding(20, 10, 0 , 10);
+            }
             return rootView;
         }
 
@@ -643,6 +659,9 @@ public class ThermalSettingActivity extends BaseActivity {
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_device_setting, container, false);
+            if (ThermalSettingActivity.isTurkey) {
+                rootView.setPadding(20, 10, 0 , 10);
+            }
             return rootView;
         }
 

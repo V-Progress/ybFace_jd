@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/skin_main_screen_background"
+    android:id="@+id/rl_root">
+
+    <RelativeLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:id="@+id/rl_title_Area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/tv_deviceNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="@color/theme_green"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_ads_addname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32dp"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:text="@string/employ_list_title" />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
+            android:textSize="26dp"
+            android:textColor="#1296DB"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:drawableStart="@mipmap/back"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@drawable/shape_employ_list"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/rl_control_area"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <Spinner
+                android:layout_weight="1.4"
+                android:id="@+id/sp_depart"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@mipmap/icon_depart_spinner"/>
+
+            <Button
+                android:layout_marginStart="6dp"
+                android:paddingStart="4dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_addDepart"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:text="@string/employ_list_depart"
+                android:textSize="13sp"
+                android:textColor="#64DCFE"
+                android:drawableStart="@mipmap/icon_add" />
+
+            <EditText
+                android:layout_marginStart="6dp"
+                android:paddingRight="6dp"
+                android:paddingLeft="6dp"
+                android:drawableStart="@mipmap/query_icon"
+                android:gravity="center"
+                android:background="@mipmap/bg_edit"
+                android:textColorHint="@color/gray_low"
+                android:textColor="@color/white"
+                android:hint="@string/employ_list_please_input_user_name"
+                android:id="@+id/edt_query"
+                android:textSize="13sp"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+            <Button
+                android:paddingStart="4dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_addEmploy"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:drawableLeft="@mipmap/icon_add"
+                android:text="@string/employ_List_add_user"
+                android:textSize="13sp"
+                android:textColor="#64DCFE" />
+            <Button
+                android:layout_marginStart="6dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="4dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_import"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:drawableStart="@mipmap/import_icon"
+                android:text="@string/import_title"
+                android:textSize="13sp"
+                android:textColor="@color/white"/>
+            <Button
+                android:paddingStart="8dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_sync"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:drawableLeft="@mipmap/icon_sync"
+                android:text="@string/employ_list_depart_sync"
+                android:textSize="13sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tuli_area"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:background="#ED8E17"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="@string/employ_list_download_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginStart="10dp"
+                android:background="#FA0808"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="@string/employ_list_add_face_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginStart="10dp"
+                android:background="#A2A2A2"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:text="@string/employ_list_update_head_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_employ_list"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_index"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_number"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_name"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_depart"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_position"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="@string/employ_list_field_control"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/lv_employ_List"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_loading"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

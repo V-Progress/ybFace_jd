@@ -42,6 +42,7 @@ import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 import com.yunbiao.ybsmartcheckin_live_id.views.ImageFileLoader;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,6 +91,10 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 600 && Utils.getWinHight(this)  == 976) {
+            //适配土耳其客户机器
+            return R.layout.activity_thermal_system_976600;
+        }
         return R.layout.activity_thermal_system;
     }
 

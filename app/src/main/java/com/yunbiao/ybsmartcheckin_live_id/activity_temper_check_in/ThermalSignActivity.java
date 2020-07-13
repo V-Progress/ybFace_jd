@@ -31,6 +31,7 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.NetworkUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -80,6 +81,10 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected int getPortraitLayout() {
+        if (Utils.getWinWidth(this) == 600 && Utils.getWinHight(this)  == 976) {
+            //适配土耳其客户机器
+            return R.layout.activity_thermal_sign_976600;
+        }
         return R.layout.activity_thermal_sign;
     }
 
