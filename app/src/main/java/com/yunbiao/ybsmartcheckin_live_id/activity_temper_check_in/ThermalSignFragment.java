@@ -200,10 +200,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
         gifImageView.setVisibility(qrCodeEnabled ? View.VISIBLE : View.GONE);
 
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
-        if(rlv != null){
-            rlv.setVisibility(isPrivacy ? View.INVISIBLE : View.VISIBLE);
-        }
-        Log.e(TAG, "onResume: 重加载数据");
+        boolean isMainSignList = SpUtils.getBoolean(Constants.Key.MAIN_SIGN_LIST,Constants.Default.MAIN_SIGN_LIST);
+        rlv.setVisibility(!isPrivacy && isMainSignList ? View.VISIBLE : View.INVISIBLE);
+
         float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
         faceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
         temperEnabled = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED,ThermalConst.Default.TEMPER_ENABLED);
@@ -219,17 +218,6 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
             llInfoSignList.setVisibility(View.VISIBLE);
         } else {
             llInfoSignList.setVisibility(View.GONE);
-        }
-
-        if(rlv != null){
-            boolean isMainSignList = SpUtils.getBoolean(Constants.Key.MAIN_SIGN_LIST,Constants.Default.MAIN_SIGN_LIST);
-            if(isMainSignList){
-                if(!rlv.isShown())
-                    rlv.setVisibility(View.VISIBLE);
-            } else {
-                if(rlv.isShown())
-                    rlv.setVisibility(View.INVISIBLE);
-            }
         }
     }
 

@@ -27,8 +27,10 @@ import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
+import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalEditEmployActivity;
 import com.yunbiao.ybsmartcheckin_live_id.adapter.DepartAdapter;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
@@ -88,14 +90,11 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private FaceView faceView;
     private RadioGroup rgSex;
 
-    private List<String> departNames = new ArrayList<>();
-    private List<Long> departIds = new ArrayList<>();
-
-    private User mCurrUser = null;
-    private User mTempUser = null;
-
-    private int type;
     private TextView tvTitle;
+
+    private List<Depart> departList = new ArrayList<>();
+    private int type;
+    private DepartAdapter departAdapter;
 
     @Override
     protected int getPortraitLayout() {
@@ -106,8 +105,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     protected int getLandscapeLayout() {
         return R.layout.activity_editemploy_h;
     }
-
-    private Animation animation;
 
     @Override
     protected void initView() {
@@ -205,37 +202,37 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private String departName = "";
-    private long departId = -1;
+    private Depart mCurrAddDepart;
+
+    private boolean isNumberExists(String number){
+        return DaoManager.get().queryNumberExists(SpUtils.getCompany().getComid(),number);
+    }
 
     //初始化新增逻辑
     private void initAddLogic() {
-        if (departNames.size() > 0) {
-            departName = departNames.get(0);
-        }
-        if (departIds.size() > 0) {
-            departId = departIds.get(0);
+        if(departList.size() > 0){
+            mCurrAddDepart = departList.get(0);
         }
         rgSex.check(R.id.rb_male);
     }
 
     private void submitAddUser() {
         if (TextUtils.isEmpty(mCurrPhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
 
         String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
 
         // TODO: 2020/3/18 离线功能
         int comid = SpUtils.getCompany().getComid();
         if(comid != Constants.NOT_BIND_COMPANY_ID){
-            if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
+            if (mCurrAddDepart == null) {
+                UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbm));
                 return;
             }
         }
@@ -250,7 +247,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
         String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbh));
             return;
         }
 
@@ -259,10 +256,10 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         String signature = et_sign.getText().toString();
 
         final User addUser = new User();
-        addUser.setDepartId(departId);
+        addUser.setDepartId(mCurrAddDepart == null ? -1 : mCurrAddDepart.getDepId());
         addUser.setNumber(number);
         addUser.setSex(sex);
-        addUser.setDepartName(departName);
+        addUser.setDepartName(mCurrAddDepart == null ? "" : mCurrAddDepart.getDepName());
         addUser.setName(name);
         addUser.setHeadPath(mCurrPhotoPath);
         addUser.setCompanyId(comid);
@@ -306,10 +303,13 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             if (b) {
                 DaoManager.get().add(addUser);
                 UIUtils.showShort(EditEmployActivity.this, "添加成功");
+                UIUtils.dismissNetLoading();
+
+                finish();
             } else {
                 UIUtils.showShort(EditEmployActivity.this, "添加人脸库失败");
+                UIUtils.dismissNetLoading();
             }
-            UIUtils.dismissNetLoading();
             return;
         }
 
@@ -348,7 +348,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                        UIUtils.showTitleTip(EditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                        UIUtils.showTitleTip(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_submit_failed) + "：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                         UIUtils.dismissNetLoading();
                     }
 
@@ -387,18 +387,16 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                         addUser.setFaceId(addStaffResponse.getFaceId());
 
                         boolean b = FaceManager.getInstance().addUser(addUser.getFaceId(), addUser.getHeadPath());
-                        if (!b) {
-                            UIUtils.showShort(EditEmployActivity.this, "添加人脸库失败");
-                        } else {
+                        if(b){
                             DaoManager.get().add(addUser);
-                        }
-                        faceView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
+                            UIUtils.showShort(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_add_success));
+                            faceView.postDelayed(() -> {
                                 UIUtils.dismissNetLoading();
                                 finish();
-                            }
-                        }, 1000);
+                            }, 1000);
+                        } else {
+                            UIUtils.showShort(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_add_face_failed));
+                        }
                     }
                 });
 
@@ -406,20 +404,17 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initDepart() {
-        departNames.clear();
-        departIds.clear();
+        departList.clear();
 
         Company company = SpUtils.getCompany();
         List<Depart> departs = DaoManager.get().queryDepartByCompId(company.getComid());
         if (departs == null || departs.size() <= 0) {
-            UIUtils.showShort(EditEmployActivity.this, "请先设置部门");
+            UIUtils.showShort(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_set_depart));
+        } else {
+            departList.addAll(departs);
         }
 
-        for (Depart depart : departs) {
-            departNames.add(depart.getDepName());
-            departIds.add(depart.getDepId());
-        }
-        DepartAdapter departAdapter = new DepartAdapter(this, departNames);
+        departAdapter = new DepartAdapter(this,departList);
         sp_depart.setAdapter(departAdapter);
         Drawable drawable = getResources().getDrawable(R.drawable.shape_employ_button);
         sp_depart.setPopupBackgroundDrawable(drawable);
@@ -429,11 +424,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            departId = departIds.get(position);
-            departName = departNames.get(position);
-
-            mUpdateDepartId = departIds.get(position);
-            mUpdateDepartName = departNames.get(position);
+            mCurrAddDepart = departList.get(position);
+            mCurrUpdateDepart = departList.get(position);
         }
 
         @Override
@@ -450,12 +442,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 handler.sendEmptyMessage(0);
                 break;
             case R.id.btn_ReTakePhoto:
-                showDialog("是否重置所有信息？", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        resetInfo();
-                    }
-                });
+                showDialog("是否重置所有信息？", (dialog, which) -> resetInfo());
                 break;
             case R.id.tv_birth:
                 showCalendar();
@@ -480,20 +467,19 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     private String mUpdatePhotoPath;
     private User user;
-    private long mUpdateDepartId = -1;
-    private String mUpdateDepartName;
+    private Depart mCurrUpdateDepart;
 
     private void initEditLogic() {
         long userId = getIntent().getLongExtra(EditEmployActivity.KEY_ID, -1);
         if (userId == -1) {
-            UIUtils.showShort(this, "未知错误");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_unknown_error));
             finish();
             return;
         }
 
         user = DaoManager.get().queryUserById(userId);
         if (user == null) {
-            UIUtils.showShort(this, "用户不存在");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_gygbcz));
             finish();
             return;
         }
@@ -507,35 +493,38 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         mUpdatePhotoPath = user.getHeadPath();
 
         long departId = user.getDepartId();
-        mUpdateDepartId = departId;
-        int index = departIds.indexOf(departId);
+        int index = 0;
+        for (int i = 0; i < departList.size(); i++) {
+            Depart depart = departList.get(i);
+            if(depart.getDepId() == departId){
+                index = i;
+                mCurrUpdateDepart = depart;
+            }
+        }
         sp_depart.setSelection(index);
     }
 
     private void submitUpdateUser() {
         if (TextUtils.isEmpty(mUpdatePhotoPath)) {
-            UIUtils.showShort(this, "请拍照");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qxpz));
             return;
         }
         final String name = et_name.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            UIUtils.showShort(this, "请输入姓名");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxxm));
             return;
         }
         int checkedRadioButtonId = rgSex.getCheckedRadioButtonId();
         final int sex = checkedRadioButtonId == R.id.rb_male ? 1 : 0;
 
-        // TODO: 2020/3/18 离线功能
-        if(user.getCompanyId() != Constants.NOT_BIND_COMPANY_ID){
-            if (departId == -1) {
-                UIUtils.showShort(this, "请选择部门");
-                return;
-            }
-        }
-
         final String number = et_num.getText().toString();
         if (TextUtils.isEmpty(number)) {
-            UIUtils.showShort(this, "请输入编号");
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.act_editEmploy_tip_qtxbh));
+            return;
+        }
+
+        if(!TextUtils.equals(number,user.getNumber()) && isNumberExists(number)){
+            UIUtils.showShort(this, APP.getContext().getResources().getString(R.string.user_number_is_exists));
             return;
         }
 
@@ -554,8 +543,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             UIUtils.showNetLoading(this);
             user.setName(name);
             user.setSex(sex);
-            user.setDepartId(mUpdateDepartId);
-            user.setDepartName(mUpdateDepartName);
+            user.setDepartId(mCurrUpdateDepart == null ? -1 : mCurrUpdateDepart.getDepId());
+            user.setDepartName(mCurrUpdateDepart == null ? "" :mCurrUpdateDepart.getDepName());
             user.setNumber(number);
             user.setPosition(position);
             user.setBirthday(birthday);
@@ -575,15 +564,16 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             } else {
                 DaoManager.get().addOrUpdate(user);
                 UIUtils.showShort(this,"更新信息成功");
-            }
+                UIUtils.dismissNetLoading();
 
-            UIUtils.dismissNetLoading();
+                finish();
+            }
             return;
         }
 
         Map<String, String> params = new HashMap<>();
         params.put("id", user.getId() + "");
-        params.put("depId", mUpdateDepartId + "");
+        params.put("depId", mCurrUpdateDepart.getDepId() + "");
 
         if (!TextUtils.equals(name, user.getName())) {
             params.put("name", name);
@@ -630,7 +620,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("提交失败：" + (e == null ? "NULL" : e.getMessage()));
-                UIUtils.showTitleTip(EditEmployActivity.this, "提交失败：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
+                UIUtils.showTitleTip(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_submit_failed) + "：" + (e == null ? "NULL" : e.getClass().getSimpleName() + ": " + e.getMessage()));
                 UIUtils.dismissNetLoading();
             }
 
@@ -668,8 +658,8 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 user.setHeadPath(currFile.getPath());
                 user.setName(name);
                 user.setSex(sex);
-                user.setDepartId(mUpdateDepartId);
-                user.setDepartName(mUpdateDepartName);
+                user.setDepartId(mCurrUpdateDepart.getDepId());
+                user.setDepartName(mCurrUpdateDepart.getDepName());
                 user.setNumber(number);
                 user.setPosition(position);
                 user.setBirthday(birthday);
@@ -679,23 +669,21 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
                 if (isHeadUpdated) {
                     boolean b = FaceManager.getInstance().addUser(user.getFaceId(), user.getHeadPath());
                     if (!b) {
-                        UIUtils.showShort(EditEmployActivity.this, "更新人脸库失败");
+                        UIUtils.showShort(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_update_failed));
                     } else {
-
+                        UIUtils.showShort(EditEmployActivity.this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
                         long l = DaoManager.get().addOrUpdate(user);
                         Log.e(TAG, "onResponse: 更新用户库：" + l);
                     }
                 } else {
+                    UIUtils.showShort(EditEmployActivity.this,APP.getContext().getString(R.string.act_editEmploy_update_info_success));
                     long l = DaoManager.get().addOrUpdate(user);
                     Log.e(TAG, "onResponse: 更新用户库：" + l);
                 }
 
-                faceView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        UIUtils.dismissNetLoading();
-                        finish();
-                    }
+                faceView.postDelayed(() -> {
+                    UIUtils.dismissNetLoading();
+                    finish();
                 }, 1 * 1000);
             }
         });
@@ -706,25 +694,30 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (mHasFace == -1) {
+            /*if (mHasFace == -1) {
                 UIUtils.showTitleTip(EditEmployActivity.this, "未检测到人脸");
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
-            } else if (mHasFace == -2) {
-                UIUtils.showTitleTip(EditEmployActivity.this, "请保持屏幕中只有一张人脸");
+            } else */if (mHasFace == -2) {
+                UIUtils.showTitleTip(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_please_face_only_one));
                 pbTakePhoto.setVisibility(View.GONE);
                 btn_TakePhoto.setVisibility(View.VISIBLE);
                 return;
             }
 
-            Bitmap bitmap = faceView.takePicture();
+            Bitmap bitmap;
+            if(mHasFace == -1){
+                bitmap = faceView.getCurrCameraFrame();
+            } else {
+                bitmap = faceView.takePicture();
+            }
             if (bitmap != null) {
                 mCurrPhotoPath = saveBitmap(bitmap);
                 mUpdatePhotoPath = mCurrPhotoPath;
                 Glide.with(EditEmployActivity.this).load(mCurrPhotoPath).asBitmap().override(100, 100).into(iv_capture);
             } else {
-                UIUtils.showTitleTip(EditEmployActivity.this, "失败，请重试");
+                UIUtils.showTitleTip(EditEmployActivity.this, APP.getContext().getResources().getString(R.string.act_editEmploy_photo_failed_try_again));
             }
 
             pbTakePhoto.setVisibility(View.GONE);
@@ -737,12 +730,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
         builder.setTitle(getString(R.string.base_tip) + "!");
         builder.setMessage(msg);
         builder.setPositiveButton(getString(R.string.base_ensure), confirm);
-        builder.setNegativeButton(getString(R.string.base_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.base_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
@@ -777,12 +765,9 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     private void showCalendar() {
         Calendar now = Calendar.getInstance();
-        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                String birthDay = year + "-" + (month + 1) + "-" + dayOfMonth;
-                tv_birth.setText(birthDay);
-            }
+        DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, month, dayOfMonth) -> {
+            String birthDay = year + "-" + (month + 1) + "-" + dayOfMonth;
+            tv_birth.setText(birthDay);
         };
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, onDateSetListener, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();

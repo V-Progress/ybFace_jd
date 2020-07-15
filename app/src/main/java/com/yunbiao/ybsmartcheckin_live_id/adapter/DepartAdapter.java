@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.db2.Depart;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class DepartAdapter extends BaseAdapter {
 
-    private List<String> mList;
+    private List<Depart> mList;
     private Context mContext;
 
-    public DepartAdapter(Context pContext, List<String> pList) {
+    public DepartAdapter(Context pContext, List<Depart> pList) {
         this.mContext = pContext;
         this.mList = pList;
     }
@@ -47,7 +48,7 @@ public class DepartAdapter extends BaseAdapter {
 
         if (convertView != null) {
             TextView _TextView1 = (TextView) convertView.findViewById(R.id.tv_depart);
-            _TextView1.setText(mList.get(position));
+            _TextView1.setText(mList.get(position).getDepName());
         }
         return convertView;
     }

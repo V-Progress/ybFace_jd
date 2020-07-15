@@ -275,10 +275,11 @@ public class SettingActivity extends BaseActivity {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.YUN);
                 } else if (rbJu.isChecked()) {
                     SpUtils.saveInt(Constants.Key.SERVER_MODEL, Constants.serverModel.JU);
-                    SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE, mIp);
-                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE, mResPort);
-                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE, mXmppPort);
-                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX, mProName);
+                    SpUtils.saveStr(Constants.Key.JU_SERVICE_IP_CACHE,mIp);
+                    SpUtils.saveStr(Constants.Key.JU_RESOURCE_PORT_CACHE,mResPort);
+                    SpUtils.saveStr(Constants.Key.JU_PROJECT_NAME_SUFFIX,mProName);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_IP_CACHE,mIp);
+                    SpUtils.saveStr(Constants.Key.JU_XMPP_PORT_CACHE,mXmppPort);
                 }
                 UIUtils.showTitleTip(SettingActivity.this, "保存成功,重启APP后生效");
             }
@@ -286,33 +287,37 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void setServerInfo(int model) {
-        String ip = Constants.NetConfig.PRO_URL;
-        String resPort = Constants.NetConfig.PRO_RES_PORT;
-        String xmppPort = Constants.NetConfig.PRO_XMPP_PORT;
-        String proName = Constants.NetConfig.PRO_SUFFIX;
+        String serviceIp = Constants.NetConfig.SERVICE_HOST;
+        String servicePort = Constants.NetConfig.SERVICE_PORT;
+        String projectName = Constants.NetConfig.SERVICE_NAME;
+        String commIp = Constants.NetConfig.COMMUNICATION_HOST;
+        String commPort = Constants.NetConfig.COMMUNICATION_PORT;
+
         if (model == Constants.serverModel.YUN) {
-            edtIp.setText(ip);
-            edtResPort.setText(resPort);
-            edtXmppPort.setText(xmppPort);
-            edtProName.setText(proName);
+            edtIp.setText(commIp);
+            edtResPort.setText(servicePort);
+            edtProName.setText(projectName);
+            edtXmppPort.setText(commPort);
             edtIp.setEnabled(false);
             edtResPort.setEnabled(false);
             edtXmppPort.setEnabled(false);
             edtProName.setEnabled(false);
         } else {
-            ip = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
-            resPort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
-            xmppPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
-            proName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
+            serviceIp = SpUtils.getStr(Constants.Key.JU_SERVICE_IP_CACHE);
+            servicePort = SpUtils.getStr(Constants.Key.JU_RESOURCE_PORT_CACHE);
+            projectName = SpUtils.getStr(Constants.Key.JU_PROJECT_NAME_SUFFIX);
+            commIp = SpUtils.getStr(Constants.Key.JU_XMPP_IP_CACHE);
+            commPort = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
+
             edtIp.setEnabled(true);
             edtResPort.setEnabled(true);
             edtXmppPort.setEnabled(true);
             edtProName.setEnabled(true);
 
-            edtIp.setText(ip);
-            edtResPort.setText(resPort);
-            edtXmppPort.setText(xmppPort);
-            edtProName.setText(proName);
+            edtIp.setText(commIp);
+            edtResPort.setText(servicePort);
+            edtProName.setText(projectName);
+            edtXmppPort.setText(commPort);
         }
     }
 
@@ -327,7 +332,6 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(Constants.Key.FACE_DIALOG, isChecked);
             }
         });
-
     }
 
     //初始化摄像头设置

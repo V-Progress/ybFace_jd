@@ -203,6 +203,33 @@ public class ThermalSettingActivity extends BaseActivity {
             swLiveness.setChecked(liveness);
             swLiveness.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(Constants.Key.LIVENESS_ENABLED, isChecked));
 
+/*
+            Button btnLiveThreSub = view.findViewById(R.id.btn_liveness_threshold_sub_setting);
+            Button btnLiveThrePlus = view.findViewById(R.id.btn_liveness_threshold_add_setting);
+            Float livenessThreshold = SpUtils.getFloat(Constants.Key.LIVENESS_THRESHOLD, Constants.Default.LIVENESS_THRESHOLD);
+            int thresholdInt = (int) (livenessThreshold * 100);
+            Timber.d("预设值:" + thresholdInt);
+            EditText edtLivenessThreshold = view.findViewById(R.id.edt_liveness_threshold_setting);
+            edtLivenessThreshold.setText(String.valueOf(thresholdInt));
+            View.OnClickListener onClickListener = v -> {
+                float thresholdF = livenessThreshold;
+
+                String string = edtLivenessThreshold.getText().toString();
+                int i = Integer.parseInt(string);
+                Timber.d("转换值:" + i);
+                if(v.getId() == R.id.btn_liveness_threshold_sub_setting){
+                    thresholdF -= 0.1f;
+                } else {
+                    thresholdF += 0.1f;
+                }
+                float resultThreshold = ((BaseActivity) getActivity()).formatF((float) i / 100);
+                Timber.d("转换值：" + resultThreshold);
+                SpUtils.saveFloat(Constants.Key.LIVENESS_THRESHOLD,resultThreshold);
+            };
+            btnLiveThrePlus.setOnClickListener(onClickListener);
+            btnLiveThreSub.setOnClickListener(onClickListener);
+*/
+
             //人脸框=========================================================================
             //人脸框横向镜像
             CheckBox cbMirror = view.findViewById(R.id.cb_mirror);

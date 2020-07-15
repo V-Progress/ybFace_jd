@@ -24,6 +24,7 @@ import com.arcsoft.face.FaceFeature;
 import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.GenderInfo;
 import com.arcsoft.face.LivenessInfo;
+import com.arcsoft.face.LivenessParam;
 import com.arcsoft.face.VersionInfo;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
@@ -810,6 +811,7 @@ public class FaceView extends FrameLayout {
         flEngine = new FaceEngine();
         flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,/*ASF_OP_ALL_OUT*/
                 DETECT_FACE_SCALE_VAL, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
+        flEngine.setLivenessParam(new LivenessParam(0.8f,0.8f));
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);

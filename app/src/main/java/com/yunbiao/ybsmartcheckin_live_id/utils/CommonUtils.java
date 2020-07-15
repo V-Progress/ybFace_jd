@@ -505,7 +505,9 @@ public class CommonUtils {
             broad_info = saveBroadInfo();
             SpUtils.saveStr(SpUtils.BOARD_INFO, broad_info);
         }
-        if (broad_info.contains("lxr")) {//视美泰
+        if(broad_info.contains("wxl")){//视美泰
+            return 0;
+        } else if (broad_info.contains("lxr")) {//亿莱顿
             return 5;
         } else if (broad_info.contains("HARRIS") || broad_info.contains("silence")) {//亿晟
             return 4;

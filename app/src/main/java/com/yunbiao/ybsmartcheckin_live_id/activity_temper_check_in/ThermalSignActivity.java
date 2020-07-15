@@ -26,12 +26,12 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetworkUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.excel.Export;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -361,7 +361,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
     private void export(File file){
         final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
-        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.ExportCallback() {
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new Export.ExportCallback() {
             @Override
             public void onProgress(int progress, int max) {
                 UIUtils.setProgress(progress,max);

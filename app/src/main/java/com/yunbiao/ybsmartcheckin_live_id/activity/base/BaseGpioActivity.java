@@ -44,6 +44,9 @@ public abstract class BaseGpioActivity extends LedControlActivity {
 
     //打开补光灯，并且执行自动关灯任务（检测到人脸时将会一直调用该方法，因此不用担心自动关灯会影响其他灯）
     protected void onLight() {
+        if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN){
+            return;
+        }
         xhapiLedOpen();
         smdtLedWhite();
         ysLedWhite();

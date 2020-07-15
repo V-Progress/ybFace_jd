@@ -17,10 +17,11 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.FileSelectActivity;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
-import com.yunbiao.ybsmartcheckin_live_id.utils.ExcelUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.excel.ExcelUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IDCardReader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.excel.Export;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -146,7 +147,7 @@ public class VertifyRecordActivity extends BaseActivity {
 
     private void export(File file){
         final File excelFile = new File(file, dateFormat.format(new Date()) + "_" + getResources().getString(R.string.sign_export_record) + ".xls");
-        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new ExcelUtils.ExportCallback() {
+        ExcelUtils.initExcelForPoi(excelFile.getPath(), getResString(R.string.sign_list_table_name), title, new Export.ExportCallback() {
             @Override
             public void onProgress(int progress, int max) {
 

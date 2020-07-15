@@ -50,88 +50,59 @@
         android:padding="15dp"
         android:layout_below="@+id/rl_title_Area">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_control_area"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="50dp">
             <Spinner
+                android:layout_weight="1"
+                android:paddingStart="10dp"
                 android:id="@+id/sp_depart"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:background="@mipmap/icon_depart_spinner"
-                android:tag="@string/employ_list_depart"
-                android:padding="2dp"/>
-
-            <LinearLayout
-                android:layout_toLeftOf="@+id/btn_addEmploy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:gravity="center"
-                    android:layout_gravity="bottom"
-                    android:background="@mipmap/bg_edit"
-                    android:textColorHint="@color/gray_low"
-                    android:textColor="@color/white"
-                    android:hint="@string/employ_list_please_input_user_name"
-                    android:id="@+id/edt_query"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:textSize="20dp"
-                    android:layout_width="108dp"
-                    android:layout_height="44dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/shape_bg_btnsync"
-                    android:drawableLeft="@mipmap/query_icon"
-                    android:onClick="queryClick"
-                    android:paddingLeft="10dp"
-                    android:text="@string/employ_List_query_button"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <Button
-                android:visibility="gone"
-                android:id="@+id/btn_addDepart"
-                android:layout_width="108dp"
-                android:layout_height="44dp"
-                android:background="@drawable/shape_employ_button"
-                android:text="@string/employ_list_add_depart"
-                android:textColor="#64DCFE"
-                android:textSize="16dp"
-                android:drawableLeft="@mipmap/icon_add"
-                android:layout_toRightOf="@+id/sp_depart"
-                android:paddingLeft="5dp"
-                android:layout_marginLeft="20dp"/>
-
-            <Button
-                android:id="@+id/btn_sync"
-                android:layout_width="108dp"
-                android:layout_height="44dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/shape_bg_btnsync"
-                android:drawableLeft="@mipmap/icon_sync"
-                android:paddingLeft="18dp"
-                android:text="@string/employ_list_depart_sync"
+                android:tag="@string/employ_list_depart"/>
+            <EditText
+                android:layout_marginStart="6dp"
+                android:drawablePadding="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:drawableStart="@mipmap/query_icon"
+                android:gravity="center"
+                android:background="@mipmap/bg_edit"
+                android:textColorHint="@color/gray_low"
                 android:textColor="@color/white"
-                android:textSize="20dp"
-                android:visibility="visible"/>
-
+                android:hint="@string/employ_list_please_input_user_name"
+                android:id="@+id/edt_query"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
             <Button
+                android:paddingStart="10dp"
+                android:layout_marginStart="6dp"
+                android:drawablePadding="10dp"
+                android:layout_weight="1"
                 android:id="@+id/btn_addEmploy"
-                android:layout_width="108dp"
-                android:layout_height="44dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/shape_employ_button"
-                android:layout_toLeftOf="@+id/btn_sync"
-                android:layout_marginRight="10dp"
                 android:drawableLeft="@mipmap/icon_add"
-                android:paddingLeft="18dp"
                 android:text="@string/employ_List_add_user"
-                android:textColor="#64DCFE"
-                android:textSize="20dp" />
-        </RelativeLayout>
-
+                android:textColor="#64DCFE" />
+            <Button
+                android:paddingStart="10dp"
+                android:layout_marginStart="6dp"
+                android:drawablePadding="10dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_sync"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_employ_button"
+                android:drawableLeft="@mipmap/icon_sync"
+                android:text="@string/employ_list_depart_sync"
+                android:textColor="@color/white"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_tuli_area"

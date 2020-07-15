@@ -158,6 +158,7 @@ public class Constants {
 
         String FACE_DIALOG = "faceDialog";//人脸弹窗
         String LIVENESS_ENABLED = "livenessEnabled";//活体开关
+        String LIVENESS_THRESHOLD = "livenessThreshold";//活体阈值
         String POSTER_ENABLED = "posterEnabled";//大屏海报是否可用
         String READ_CARD_ENABLED = "readCardEnabled";//读卡模块
         String QRCODE_ENABLED = "qrCodeEnabled";//二维码开关
@@ -190,6 +191,7 @@ public class Constants {
         public static final boolean READ_CARD_ENABLED = false;
         public static boolean POSTER_ENABLED = false;
         public static boolean LIVENESS_ENABLED = true;
+        public static float LIVENESS_THRESHOLD = 0.7f;
         public static boolean SHOW_LIVENESS_SETTING = true;
         public static final boolean FACE_DIALOG = false;
         public static boolean IS_H_MIRROR = true;

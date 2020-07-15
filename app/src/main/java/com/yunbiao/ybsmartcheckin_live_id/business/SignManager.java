@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
 import com.yunbiao.ybsmartcheckin_live_id.R;
+import com.yunbiao.ybsmartcheckin_live_id.activity.SignLogTest;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Record5Inch;
 import com.yunbiao.ybsmartcheckin_live_id.db2.VertifyRecord;
@@ -249,6 +250,8 @@ public class SignManager {
                 sign.setComid(userBean.getCompanyId());
                 sign.setType(0);
                 sign.setHeadPath(userBean.getHeadPath());
+
+                SignLogTest.getInstance().addFaceContent(sign.getTime(),sign.getEmpId() + " --> " + sign.getName());
 
                 if (isUpload) {
                     sendSignRecord(sign);
@@ -571,7 +574,9 @@ public class SignManager {
 
         OutputLog.getInstance().addLog(signBean.getTemperature() + " ----- " + signBean.getName() + " ----- " + map.toString());
 
-        DaoManager.get().addOrUpdate(signBean);
+        long l = DaoManager.get().addOrUpdate(signBean);
+        SignLogTest.getInstance().addSaveContent(signBean.getTime(),signBean.getEmpId() + " --> " + signBean.getName() + " --> " + l);
+
         checkStorageSpace();
         final long time = signBean.getTime();
 
@@ -595,6 +600,7 @@ public class SignManager {
                     sign.setUpload(status == 1 || status == 12);
                     DaoManager.get().addOrUpdate(sign);
                 }
+                SignLogTest.getInstance().addUploadContent(time, sign.getEmpId() + " --> " + sign.getName() + " --> " + response);
             }
 
             @Override

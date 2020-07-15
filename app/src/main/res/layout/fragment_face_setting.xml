@@ -61,6 +61,45 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@color/white" />
+
+
+  <!--          <TextView
+                style="@style/setting_text"
+                android:layout_height="wrap_content"
+                android:text="阈值" />
+
+            <Button
+                android:id="@+id/btn_liveness_threshold_sub_setting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@mipmap/icon_jian" />
+
+            <LinearLayout
+                style="@style/style_setting_input_save_button"
+                android:layout_marginStart="0dp"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
+
+                <EditText
+                    android:id="@+id/edt_liveness_threshold_setting"
+                    style="@style/style_setting_input_number_edt"
+                    android:enabled="false" />
+
+                <TextView
+                    style="@style/setting_text"
+                    android:text="%" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_liveness_threshold_add_setting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@mipmap/icon_jia" />
+-->
         </LinearLayout>
 
         <LinearLayout

@@ -110,6 +110,8 @@ public class WelComeActivity extends BaseGpioActivity {
             InformationFragment informationFragment = new InformationFragment();
             replaceFragment(R.id.layout_h, informationFragment);
         }
+
+        SignManager.instance();
     }
 
     @Override
@@ -168,7 +170,6 @@ public class WelComeActivity extends BaseGpioActivity {
             if (signListFragment != null) {
                 signListFragment.addSignData(sign);
             }
-
             if (SpUtils.getBoolean(Constants.Key.FACE_DIALOG, Constants.Default.FACE_DIALOG)) {
                 VipDialogManager.showVipDialog(WelComeActivity.this, sign);
             }
@@ -234,11 +235,11 @@ public class WelComeActivity extends BaseGpioActivity {
     @SuppressLint("RestrictedApi")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        /*if (ReadCardUtils.isInputFromReader(this, event)) {
+        if (ReadCardUtils.isInputFromReader(this, event)) {
             if (readCardUtils != null) {
                 readCardUtils.resolveKeyEvent(event);
             }
-        }*/
+        }
         return super.dispatchKeyEvent(event);
     }
 

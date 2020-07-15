@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.SignLogTest;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
 import okhttp3.Request;
+import timber.log.Timber;
 
 public class AutoUpload {
     private int INITIAL_TIME = 1;
@@ -75,7 +77,7 @@ public class AutoUpload {
             }
             return;
         }
-        Log.e(TAG, "run: ------ 未上传记录：" + signs.size());
+        Timber.d( "run: ------ 未上传记录：" + signs.size());
 
         List<Sign> entrySignList = new ArrayList<>();
         List<Sign> visitorSignList = new ArrayList<>();
@@ -118,7 +120,7 @@ public class AutoUpload {
 
         List<EntrySignBean> signBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            signBeans.add(new EntrySignBean(sign.getEmpId(), sign.getTime(), HeartBeatClient.getDeviceNo(),sign.getTemperature(),paramsDateFormat.format(sign.getTime())));
+            signBeans.add(new EntrySignBean(sign.getEmpId(), sign.getTime(), HeartBeatClient.getDeviceNo(), sign.getTemperature(), paramsDateFormat.format(sign.getTime())));
         }
         String jsonStr = new Gson().toJson(signBeans);
         d("批量上传考勤记录：" + ResourceUpdate.SIGNARRAY);
@@ -133,11 +135,13 @@ public class AutoUpload {
                     public void onError(Call call, Exception e, int id) {
                         d("批量上传考勤记录：上送失败--->" + (e != null ? e.getMessage() : "NULL"));
                         e.printStackTrace();
+
+                        SignLogTest.getInstance().addArrayContent(signList,(e != null ? e.getMessage() : "NULL"));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "批量上传考勤记录：onResponse: 上传结果：" + response);
+                        Timber.d( "批量上传考勤记录：onResponse: 上传结果：" + response);
                         JSONObject jsonObject = JSONObject.parseObject(response);
                         String status = jsonObject.getString("status");
                         boolean isSucc = TextUtils.equals("1", status);
@@ -155,6 +159,8 @@ public class AutoUpload {
                             DaoManager.get().addOrUpdate(sign);
                         }
 
+                        SignLogTest.getInstance().addArrayContent(signList,response);
+
                         uploadTemperArray(signList, callback);
                     }
 
@@ -168,18 +174,22 @@ public class AutoUpload {
                                 e.printStackTrace();
                             }
                         }
+
                     }
                 });
     }
 
     //上传测温记录
     private void uploadTemperArray(final List<Sign> signList, final Consumer<Boolean> callback) {
+        if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN){
+            return;
+        }
         if (signList == null || signList.size() <= 0) {
             return;
         }
         List<TemperSignBean> temperSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(),sign.getEmpId(),paramsDateFormat.format(sign.getTime())));
+            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(), sign.getEmpId(), paramsDateFormat.format(sign.getTime())));
         }
         String json = new Gson().toJson(temperSignBeans);
 
@@ -224,7 +234,7 @@ public class AutoUpload {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "批量上传测温记录:onResponse: 上传结果：" + response);
+                        Timber.d( "批量上传测温记录:onResponse: 上传结果：" + response);
                         if (TextUtils.isEmpty(response)) {
                             return;
                         }
@@ -265,7 +275,7 @@ public class AutoUpload {
         }
         List<VisitorSignBean> visitorSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
-            visitorSignBeans.add(new VisitorSignBean(sign.getEmpId(), sign.getTime(),paramsDateFormat.format(sign.getTime())));
+            visitorSignBeans.add(new VisitorSignBean(sign.getEmpId(), sign.getTime(), paramsDateFormat.format(sign.getTime())));
         }
         String json = new Gson().toJson(visitorSignBeans);
 
@@ -307,7 +317,7 @@ public class AutoUpload {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, "批量上传访客记录：onResponse: 上传结果：" + response);
+                        Timber.d( "批量上传访客记录：onResponse: 上传结果：" + response);
                         JSONObject jsonObject = JSONObject.parseObject(response);
                         String status = jsonObject.getString("status");
                         boolean isSucc = TextUtils.equals("1", status);
@@ -648,7 +658,7 @@ public class AutoUpload {
         });
     }
 
-    class WitBean {
+    static class WitBean {
         long createTime;
         float temper;
     }
@@ -666,14 +676,14 @@ public class AutoUpload {
     }
 
     private void d(String s){
-        Log.e(TAG, s);
+        Timber.d( s);
     }
 
     private File getFileByPath(String headPath) {
         File headFile;
         if (TextUtils.isEmpty(headPath)) {
             headFile = new File(Environment.getExternalStorageDirectory(), "1.txt");
-            if (headFile == null || !headFile.exists()) {
+            if (!headFile.exists()) {
                 try {
                     headFile.createNewFile();
                 } catch (IOException e) {
@@ -687,25 +697,25 @@ public class AutoUpload {
     }
 
 
-    class VisitorSignBean {
+    static class VisitorSignBean {
         long visitorId;
         long createTime;
         String signTimeFormat;
 
-        public VisitorSignBean(long visitorId, long createTime,String signTimeFormat) {
+        VisitorSignBean(long visitorId, long createTime, String signTimeFormat) {
             this.visitorId = visitorId;
             this.createTime = createTime;
             this.signTimeFormat = signTimeFormat;
         }
     }
 
-    class TemperSignBean {
+    static class TemperSignBean {
         long createTime;
         float temper;
         long entryId;
         String signTimeFormat;
 
-        public TemperSignBean(long createTime, float temper,long entryId,String signTimeFormat) {
+        TemperSignBean(long createTime, float temper, long entryId, String signTimeFormat) {
             this.createTime = createTime;
             this.temper = temper;
             this.entryId = entryId;
@@ -714,14 +724,14 @@ public class AutoUpload {
     }
 
 
-    class EntrySignBean {
+    static class EntrySignBean {
         long entryid;
         long signTime;
         String deviceId;
         float temper;
         String signTimeFormat;
 
-        public EntrySignBean(long entryid, long signTime, String deviceId, float temper,String signTimeFormat) {
+        EntrySignBean(long entryid, long signTime, String deviceId, float temper, String signTimeFormat) {
             this.entryid = entryid;
             this.signTime = signTime;
             this.deviceId = deviceId;

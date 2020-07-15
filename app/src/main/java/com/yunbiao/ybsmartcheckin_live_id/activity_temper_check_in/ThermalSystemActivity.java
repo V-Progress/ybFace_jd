@@ -3,12 +3,15 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.Editable;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
@@ -39,6 +43,7 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.system.CoreInfoHandler;
+import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SkinLoader;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -60,7 +65,7 @@ import butterknife.BindView;
 import skin.support.SkinCompatManager;
 import timber.log.Timber;
 
-public class ThermalSystemActivity extends BaseActivity implements View.OnClickListener {
+public class ThermalSystemActivity extends BaseActivity implements View.OnClickListener, NetWorkChangReceiver.NetWorkChangeListener {
 
     @BindView(R.id.tv_version_name_thermal_system)
     TextView tvVersionName;
@@ -88,6 +93,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     private Button btnSkinSystem;
     private TextView tvAbbName;
     private View llExpiry;
+    private NetWorkChangReceiver netWorkChangReceiver;
 
     @Override
     protected int getPortraitLayout() {
@@ -240,6 +246,23 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
                 flVersionLoading.setVisibility(View.GONE);
             }
         });
+
+        netWorkChangReceiver = new NetWorkChangReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkChangReceiver, filter);
+    }
+
+    @Override
+    public void connect() {
+        tv_online_system.setText(APP.getContext().getResources().getString(R.string.smt_main_net_normal2));
+    }
+
+    @Override
+    public void disConnect() {
+        tv_online_system.setText(APP.getContext().getResources().getString(R.string.smt_main_net_no));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -249,7 +272,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(XmppConnectEvent connectEvent) {
-        tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.System_online) : getString(R.string.System_offline));
+//        tv_online_system.setText(connectEvent.isConnected() ? getString(R.string.System_online) : getString(R.string.System_offline));
     }
 
     public void setInfo() {
@@ -331,6 +354,9 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(netWorkChangReceiver != null){
+            unregisterReceiver(netWorkChangReceiver);
+        }
         EventBus.getDefault().unregister(this);
     }
 
