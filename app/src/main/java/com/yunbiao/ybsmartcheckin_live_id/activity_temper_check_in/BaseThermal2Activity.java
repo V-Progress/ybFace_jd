@@ -165,7 +165,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         isMLXRunning = true;
                         TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
                         TemperatureModule.getIns().initSerialPort(this,"/dev/ttyS4",9600 );
-                    } else if (TextUtils.equals("HARRIS",broadType)) {
+                    } else if (TextUtils.equals("WILL",broadType)) {
                         Timber.d("当前是土耳其客户机器，开启串口号3");
                         isMLXRunning = true;
                         TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);

@@ -1,11 +1,15 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -32,6 +36,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.ResetLogoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateInfoEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateMediaEvent;
+import com.yunbiao.ybsmartcheckin_live_id.activity.WelComeActivity;
 import com.yunbiao.ybsmartcheckin_live_id.activity.fragment.InformationFragment;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.business.KDXFSpeechManager;
@@ -362,7 +367,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void dismissResult() {
-        if (tvTempTips.isShown()) {
+        if (tvTempTips.isShown() && !isShowPassTips) {
             tvTempTips.setVisibility(View.GONE);
         }
         setBigHeadDottedLine();
@@ -370,7 +375,7 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     public void clearAllUI() {
-        if (tvTempTips.isShown()) {
+        if (tvTempTips.isShown() && !isShowPassTips) {
             tvTempTips.setVisibility(View.GONE);
         }
         if (tvTips.isShown()) {
@@ -470,6 +475,8 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     @Override
     protected void initData() {
+        initCardReader();
+
         super.initData();
         KDXFSpeechManager.instance().init(this);
 
@@ -477,6 +484,15 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         startXmpp();
         //初始化定位工具
         LocateManager.instance().init(this);
+    }
+
+    /**
+     * 读卡器初始化
+     */
+    private void initCardReader() {
+        //读卡器声明
+        readCardUtils = new ReadCardUtils();
+        readCardUtils.setReadSuccessListener(readCardListener);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -583,6 +599,78 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     //跳转设置界面
     public void goSetting(View view) {
         goSetting();
+    }
+
+    private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
+        @Override
+        public void onScanSuccess(String barcode) {
+            Log.e(TAG, "barcode: " + barcode);
+            Sign sign = SignManager.instance().checkSignForCard(barcode);
+
+            if (sign == null) {
+                showPassTips(false);
+                return;
+            }
+
+            if (signListFragment != null) {
+                signListFragment.addSignData(sign);
+            }
+
+            if (SpUtils.getBoolean(ThermalConst.Key.SHOW_DIALOG, ThermalConst.Default.SHOW_DIALOG)) {
+                VipDialogManager.showVipDialog(ThermalImage2Activity.this, sign);
+            }
+
+            showPassTips(true);
+            KDXFSpeechManager.instance().playNormal(sign.getName());
+
+            if (sign.getType() == -2) {
+                return;
+            }
+
+            openDoor();
+        }
+    };
+
+    private boolean isShowPassTips = false;
+    private void showPassTips(boolean isPass) {
+        if (mCurrentOrientation != Configuration.ORIENTATION_PORTRAIT || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            return;
+        }
+        if (isPass) {
+            ledOff();
+            ledGreen();
+            tvTempTips.setBackgroundResource(R.mipmap.bg_verify_pass);
+            tvTempTips.setText(getResString(R.string.act_certificates_please_pass_1));
+        } else {
+            ledOff();
+            ledRed();
+            tvTempTips.setBackgroundResource(R.mipmap.bg_verify_nopass);
+            tvTempTips.setText(getResString(R.string.act_certificates_please_not_pass));
+        }
+        isShowPassTips = true;
+        if (!tvTempTips.isShown()) {
+            tvTempTips.setVisibility(View.VISIBLE);
+        }
+        handler.removeMessages(0);
+        handler.sendEmptyMessageDelayed(0, 2000);
+    }
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            ledOff();
+            isShowPassTips = false;
+        }
+    };
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (ReadCardUtils.isInputFromReader(this, event)) {
+            if (readCardUtils != null) {
+                readCardUtils.resolveKeyEvent(event);
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

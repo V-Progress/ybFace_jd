@@ -1839,6 +1839,7 @@
     <string name="act_certificates_similar">similarity</string>
 
     <string name="act_certificates_please_pass">,Please pass</string>
+    <string name="act_certificates_please_pass_1">Please pass</string>
 
     <string name="act_certificates_please_can_pass">can pass</string>
 

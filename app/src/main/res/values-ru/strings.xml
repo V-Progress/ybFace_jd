@@ -526,6 +526,7 @@
     <string name="act_certificates_warning">Ненормальная</string>
     <string name="act_certificates_similar">Сходство</string>
     <string name="act_certificates_please_pass">Пожалуйста, пройдите</string>
+    <string name="act_certificates_please_pass_1">Пожалуйста, пройдите</string>
     <string name="act_certificates_please_can_pass">Проход разрешен</string>
     <string name="certificates_record_depart">Отдел</string>
     <string name="act_certificates_please_not_pass">Проход запрещен</string>

@@ -529,6 +529,8 @@ public class CommonUtils {
             return "LXR";//亿莱顿
         } else if (broad_info.contains("harris") || broad_info.contains("silence")) {
             return "HARRIS";//亿晟
+        } else if (broad_info.contains("will")) {
+            return "WILL";//土耳其机器板子
         } else {
             return "HARRIS";//亿晟
         }

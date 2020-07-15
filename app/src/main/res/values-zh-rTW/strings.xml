@@ -512,6 +512,7 @@
     <string name="act_certificates_warning">異常</string>
     <string name="act_certificates_similar">相似度</string>
     <string name="act_certificates_please_pass">，請通行</string>
+    <string name="act_certificates_please_pass_1">請通行</string>
     <string name="act_certificates_please_can_pass">可以通行</string>
     <string name="act_certificates_please_not_pass">禁止通行</string>
     <string name="act_certificates_visitor">訪客</string>

@@ -620,8 +620,8 @@
 </string>
     <string name="act_certificates_similar">類似度
 </string>
-    <string name="act_certificates_please_pass">，通行してください
-</string>
+    <string name="act_certificates_please_pass">，通行してください</string>
+    <string name="act_certificates_please_pass_1">通行してください</string>
     <string name="act_certificates_please_can_pass">可以通行</string>
     <string name="act_certificates_please_not_pass">禁止通行</string>
     <string name="act_certificates_visitor">访客</string>

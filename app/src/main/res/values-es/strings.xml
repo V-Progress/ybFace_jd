@@ -559,6 +559,7 @@
     <string name="act_certificates_warning">anormal</string>
     <string name="act_certificates_similar">similitud</string>
     <string name="act_certificates_please_pass">，Por favor pase</string>
+    <string name="act_certificates_please_pass_1">Por favor pase</string>
     <string name="act_certificates_please_can_pass">puede pasar</string>
     <string name="act_certificates_please_not_pass">no puede pasar</string>
     <string name="act_certificates_visitor">visitantes</string>

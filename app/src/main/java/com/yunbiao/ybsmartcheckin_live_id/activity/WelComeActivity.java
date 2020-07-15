@@ -190,6 +190,10 @@ public class WelComeActivity extends BaseGpioActivity {
             Log.e(TAG, "barcode: " + barcode);
             Sign sign = SignManager.instance().checkSignForCard(barcode);
 
+            if (sign == null) {
+                return;
+            }
+
             if (signListFragment != null) {
                 signListFragment.addSignData(sign);
             }
