@@ -880,7 +880,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         float temper = multiTemperBean.getTemper();
         StringBuffer speechBuffer = new StringBuffer();
         Runnable speechRunnable = null;
+        boolean isNormal = true;
         if (temper <= 0f || temper >= 37.3f) {
+            isNormal  = false;
             speechBuffer.append(getResString(R.string.act_certificates_verify_temper_no));
             if (!is1280800) {
                 KDXFSpeechManager.instance().playWaningRingNoStop();
@@ -930,6 +932,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
             if (newTemper - oldTemper >= 0.3f || oldTemper - newTemper >= 0.3f) {
                 totalMap.put(trackId, multiTemperBean);
                 SignManager.instance().addSignToDB(multiTemperBean);
+            }
+            if (!isNormal) {
+                handleData(multiTemperBean);
             }
             return;
         }
