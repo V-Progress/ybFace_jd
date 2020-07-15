@@ -225,6 +225,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void haveNewVersion(String versionName, String versionInfo) {
+//                UIUtils.showLong(ThermalSystemActivity.this,getResString(R.string.update_have_new));
                 btn_update_system.setEnabled(true);
                 tvVersionName.setText(getResString(R.string.update_lable_new) + versionName);
                 tvVersionInfo.setGravity(Gravity.LEFT);

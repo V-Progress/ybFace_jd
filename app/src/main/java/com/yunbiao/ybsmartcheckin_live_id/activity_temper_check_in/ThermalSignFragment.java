@@ -201,7 +201,9 @@ public class ThermalSignFragment extends Fragment implements NetWorkChangReceive
 
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE,Constants.Default.PRIVACY_MODE);
         boolean isMainSignList = SpUtils.getBoolean(Constants.Key.MAIN_SIGN_LIST,Constants.Default.MAIN_SIGN_LIST);
-        rlv.setVisibility(!isPrivacy && isMainSignList ? View.VISIBLE : View.INVISIBLE);
+        if(rlv != null){
+            rlv.setVisibility(!isPrivacy && isMainSignList ? View.VISIBLE : View.INVISIBLE);
+        }
 
         float warningThreshold = SpUtils.getFloat(ThermalConst.Key.TEMP_WARNING_THRESHOLD, ThermalConst.Default.TEMP_WARNING_THRESHOLD);
         faceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);

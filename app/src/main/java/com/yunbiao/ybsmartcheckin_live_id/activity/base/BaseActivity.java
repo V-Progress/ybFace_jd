@@ -395,7 +395,6 @@ public abstract class BaseActivity extends FragmentActivity {
 
                 String versionInfo = jsonObject.getString("versionDesc");
                 if (callback != null) {
-                    UIUtils.showLong(BaseActivity.this,getResString(R.string.update_have_new));
                     callback.haveNewVersion(versionName, versionInfo);
                     callback.onFinish();
                 }
