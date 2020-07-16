@@ -621,7 +621,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             }
 
             showPassTips(true);
-            KDXFSpeechManager.instance().playNormal(sign.getName());
 
             if (sign.getType() == -2) {
                 return;
@@ -641,11 +640,13 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
             ledGreen();
             tvTempTips.setBackgroundResource(R.mipmap.bg_verify_pass);
             tvTempTips.setText(getResString(R.string.act_certificates_please_pass_1));
+            KDXFSpeechManager.instance().playNormal(getResString(R.string.act_certificates_please_pass_1));
         } else {
             ledOff();
             ledRed();
             tvTempTips.setBackgroundResource(R.mipmap.bg_verify_nopass);
             tvTempTips.setText(getResString(R.string.act_certificates_please_not_pass));
+            KDXFSpeechManager.instance().playNormal(getResString(R.string.act_certificates_please_not_pass));
         }
         isShowPassTips = true;
         if (!tvTempTips.isShown()) {
