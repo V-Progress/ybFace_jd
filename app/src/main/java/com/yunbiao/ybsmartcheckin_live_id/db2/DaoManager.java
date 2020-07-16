@@ -165,6 +165,34 @@ public class DaoManager {
         return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload)).list();
     }
 
+    public long querySignByComIdAndUploadCount(int comId, boolean isUpload) {
+        if (daoSession == null) {
+            return 0;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload)).count();
+    }
+
+    public List<Sign> querySignByComIdAndUploadLimit(int comId, boolean isUpload, int limit) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload)).offset(0).limit(limit).list();
+    }
+
+    public List<Sign> querySignByComIdUploadTypeWithLimit(int comId, boolean isUpload, int type, int page, int limit) {
+        if (daoSession == null) {
+            return null;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload), SignDao.Properties.Type.eq(type)).offset(page * limit).limit(limit).list();
+    }
+
+    public long querySignByComIdUploadTypeCount(int comId, boolean isUpload, int type) {
+        if (daoSession == null) {
+            return 0;
+        }
+        return daoSession.getSignDao().queryBuilder().where(SignDao.Properties.Comid.eq(comId), SignDao.Properties.IsUpload.eq(isUpload), SignDao.Properties.Type.eq(type)).count();
+    }
+
     public List<Sign> querySignByComIdAndDateWithLimit(int comid, String date, int limit) {
         if (daoSession == null) {
             return null;

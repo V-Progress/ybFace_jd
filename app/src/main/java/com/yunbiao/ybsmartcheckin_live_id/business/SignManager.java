@@ -117,8 +117,8 @@ public class SignManager {
     }
 
     public void uploadSignRecord(Consumer<Boolean> consumer) {
-        if (autoUpload != null) {
-            autoUpload.uploadSignRecord(consumer);
+        if (autoUpload != null && autoUpload.uploadProgress == -1) {
+            autoUpload.checkAndUploadSignRecord();
         } else {
             try {
                 consumer.accept(false);

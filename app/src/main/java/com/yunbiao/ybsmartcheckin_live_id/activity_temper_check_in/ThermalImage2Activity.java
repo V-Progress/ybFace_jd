@@ -45,6 +45,7 @@ import com.yunbiao.ybsmartcheckin_live_id.business.SignManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.SyncManager;
 import com.yunbiao.ybsmartcheckin_live_id.business.VipDialogManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Company;
+import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.RestartAPPTool;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
@@ -55,6 +56,8 @@ import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * 此处只进行UI界面的更新以及人脸部分的初始化工作
@@ -600,6 +603,33 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     public void goSetting(View view) {
         goSetting();
     }
+
+//    public void test(View view) {
+//        int comid = SpUtils.getCompany().getComid();
+//        d("AutoUpload, count = " + DaoManager.get().querySignByComIdAndUploadCount(comid, false));
+//        List<Sign> signs = DaoManager.get().querySignByComIdAndUploadLimit(comid, true, 1);
+//        if (signs == null || signs.size() == 0) {
+//            d("AutoUpload，制造数据有问题");
+//            return;
+//        }
+//        Sign sign = signs.get(0);
+//        d("AutoUpload 示例 = " + sign.toString());
+//        for (int i = 0; i < 3000; i++) {
+//            Sign newSign = new Sign();
+//            newSign.setComid(comid);
+//            newSign.setHeadPath(sign.getHeadPath());
+//            newSign.setImgBitmap(sign.getImgBitmap());
+//            newSign.setHotImgPath(sign.getHotImgPath());
+//            newSign.setType(-9);
+//            newSign.setTemperature(i);
+//            newSign.setTime(sign.getTime());
+//            newSign.setDate(sign.getDate());
+//            newSign.setEmpId(sign.getEmpId());
+//            newSign.setUpload(false);
+//            DaoManager.get().addOrUpdate(newSign);
+//        }
+//        d("AutoUpload，制造数据完成");
+//    }
 
     private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
         @Override

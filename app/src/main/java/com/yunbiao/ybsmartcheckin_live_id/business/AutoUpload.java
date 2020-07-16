@@ -26,8 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -54,78 +56,207 @@ public class AutoUpload {
         scheduledExecutorService = Executors.newScheduledThreadPool(3);
     }
 
+    public int uploadProgress = -1;
+    Map<Integer, Queue<List<Sign>>> uploadMap = new HashMap<>();
     public void startUploadThread(){
         scheduledExecutorService.scheduleAtFixedRate(() ->{
             d("开启自动上传线程");
-            uploadSignRecord(aBoolean -> {
-                if (aBoolean) {
-                    EventBus.getDefault().post(new UpdateSignDataEvent());
-                }
-            });
+            //判断上次上传进度
+            d("上传进度，uploadProgress = " + uploadProgress);
+            if (uploadProgress != -1) {
+                return;
+            }
+            checkAndUploadSignRecord();
         }, INITIAL_TIME, PERIOD_TIME,TimeUnit.MINUTES);
     }
 
-    //开始上传记录
-    public void uploadSignRecord(final Consumer<Boolean> callback) {
+    //检查并上传记录
+    public void checkAndUploadSignRecord() {
+        uploadProgress = 0;
         int comid = SpUtils.getCompany().getComid();
-        List<Sign> signs = DaoManager.get().querySignByComIdAndUpload(comid, false);
-        if (signs == null || signs.size() <= 0) {
-            try {
-                callback.accept(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        Timber.d( "run: ------ 未上传记录：" + signs.size());
 
-        List<Sign> entrySignList = new ArrayList<>();
-        List<Sign> visitorSignList = new ArrayList<>();
-        List<Sign> temperSignList = new ArrayList<>();
-        for (Sign signBean : signs) {
-            // TODO: 2020/3/18 离线功能
-            if (signBean.getComid() == Constants.NOT_BIND_COMPANY_ID) {
-                continue;
-            }
-            if (signBean.getType() == 0) {
-                entrySignList.add(signBean);
-            } else if (signBean.getType() == -9) {
-                temperSignList.add(signBean);
-            } else {
-                visitorSignList.add(signBean);
-            }
-        }
-
-        if(entrySignList.size() <= 0 && visitorSignList.size() <= 0 && temperSignList.size() <= 0){
-            try {
-                callback.accept(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        //查询未上传总数据量
+        long unUploadCount = DaoManager.get().querySignByComIdAndUploadCount(comid, false);
+        Timber.d("未上传条数 = " + unUploadCount);
+        if (unUploadCount == 0) {
+            uploadProgress = -1;
             return;
         }
 
-        //上传考勤数据
-        uploadSignArray(entrySignList, callback);
-        //上传访客数据
-        uploadVisitorSignArray(visitorSignList, callback);
-        //上传测温记录
-        uploadTemperArray(temperSignList, callback);
+        Queue<List<Sign>> signQueue = new LinkedList<>();
+        Queue<List<Sign>> visitorQueue = new LinkedList<>();
+        Queue<List<Sign>> temperQueue = new LinkedList<>();
+
+        //查询考勤记录总数 0
+        long signCount = DaoManager.get().querySignByComIdUploadTypeCount(comid, false, 0);
+        Timber.d("考勤 0 - 未上传条数 = " + signCount);
+        if (signCount > 0) {
+            //每页条数
+            int signPageLength = 30;
+            //总页数
+            int signPage = (int) (signCount / signPageLength);
+            if (signCount % signPageLength != 0) {
+                signPage += 1;
+            }
+            for (int i = 0; i < signPage; i++) {
+                List<Sign> signs = DaoManager.get().querySignByComIdUploadTypeWithLimit(comid, false, 0, i, signPageLength);
+                signQueue.add(signs);
+            }
+        }
+        Timber.d("考勤 0 - 队列数 = " + signQueue.size());
+
+        //查询访客记录总数 -1
+        long visitorCount1 = DaoManager.get().querySignByComIdUploadTypeCount(comid, false, -1);
+        Timber.d("访客 -1 - 未上传条数 = " + visitorCount1);
+        if (visitorCount1 > 0) {
+            //每页条数
+            int visitorPageLength1 = 30;
+            //总页数
+            int visitorPage1 = (int) (visitorCount1 / visitorPageLength1);
+            if (visitorCount1 % visitorPageLength1 != 0) {
+                visitorPage1 += 1;
+            }
+            for (int i = 0; i < visitorPage1; i++) {
+                List<Sign> visitors1 = DaoManager.get().querySignByComIdUploadTypeWithLimit(comid, false, -1, i, visitorPageLength1);
+                visitorQueue.add(visitors1);
+            }
+        }
+
+        //查询访客记录总数 -2
+        long visitorCount2 = DaoManager.get().querySignByComIdUploadTypeCount(comid, false, -2);
+        Timber.d("访客 -2 - 未上传条数 = " + visitorCount2);
+        if (visitorCount2 > 0) {
+            //每页条数
+            int visitorPageLength2 = 30;
+            //总页数
+            int visitorPage2 = (int) (visitorCount2 / visitorPageLength2);
+            if (visitorCount2 % visitorPageLength2 != 0) {
+                visitorPage2 += 1;
+            }
+            for (int i = 0; i < visitorPage2; i++) {
+                List<Sign> visitors2 = DaoManager.get().querySignByComIdUploadTypeWithLimit(comid, false, -2, i, visitorPageLength2);
+                visitorQueue.add(visitors2);
+            }
+        }
+        Timber.d("访客 -1/-2 - 队列数 = " + visitorQueue.size());
+
+        //查询体温记录总数 -9
+        long temperCount = DaoManager.get().querySignByComIdUploadTypeCount(comid, false, -9);
+        Timber.d("体温 -9 - 未上传条数 = " + temperCount);
+        if (temperCount > 0) {
+            //每页条数
+            int temperPageLength = 30;
+            //总页数
+            int temperPage = (int) (temperCount / temperPageLength);
+            if (visitorCount1 % temperPageLength != 0) {
+                temperPage += 1;
+            }
+            for (int i = 0; i < temperPage; i++) {
+                List<Sign> temper = DaoManager.get().querySignByComIdUploadTypeWithLimit(comid, false, -9, i, temperPageLength);
+                temperQueue.add(temper);
+            }
+        }
+        Timber.d("体温 -9 - 队列数 = " + temperQueue.size());
+
+        uploadMap.put(1, signQueue);
+        uploadMap.put(2, visitorQueue);
+        uploadMap.put(3, temperQueue);
+
+        uploadProgress = 1;
+        uploadSignRecord();
     }
+
+    private void uploadSignRecord() {
+        switch (uploadProgress) {
+            case 1:
+                uploadSignArray(uploadMap.get(1));
+                break;
+            case 2:
+                uploadTemperArray(null, uploadMap.get(2));
+                break;
+            case 3:
+                uploadVisitorSignArray(uploadMap.get(3));
+                break;
+            case 4:
+                uploadProgress = -1;
+                uploadMap.clear();
+                EventBus.getDefault().post(new UpdateSignDataEvent());
+                break;
+        }
+    }
+
+    //开始上传记录
+//    public void uploadSignRecord(final Consumer<Boolean> callback) {
+//        int comid = SpUtils.getCompany().getComid();
+//        //只取出30条数据
+//        List<Sign> signs = DaoManager.get().querySignByComIdAndUploadLimit(comid, false, 30);
+//        if (signs == null || signs.size() <= 0) {
+//            try {
+//                callback.accept(true);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        }
+//        Timber.d( "run: ------ 本次上传条数：" + signs.size());
+//
+//        List<Sign> entrySignList = new ArrayList<>();
+//        List<Sign> visitorSignList = new ArrayList<>();
+//        List<Sign> temperSignList = new ArrayList<>();
+//        for (Sign signBean : signs) {
+//            // TODO: 2020/3/18 离线功能
+//            if (signBean.getComid() == Constants.NOT_BIND_COMPANY_ID) {
+//                continue;
+//            }
+//            if (signBean.getType() == 0) {
+//                entrySignList.add(signBean);
+//            } else if (signBean.getType() == -9) {
+//                temperSignList.add(signBean);
+//            } else {
+//                visitorSignList.add(signBean);
+//            }
+//        }
+//
+//        if(entrySignList.size() <= 0 && visitorSignList.size() <= 0 && temperSignList.size() <= 0){
+//            try {
+//                callback.accept(true);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        }
+//
+//        //开始上传
+//        uploadProgress = 0;
+//
+//        //上传考勤数据
+//        uploadSignArray(entrySignList, callback);
+//        //上传访客数据
+//        uploadVisitorSignArray(visitorSignList, callback);
+//        //上传测温记录
+//        uploadTemperArray(temperSignList, callback);
+//    }
+
     //上传考勤记录
-    private void uploadSignArray(final List<Sign> signList, final Consumer<Boolean> callback) {
-        if (signList == null || signList.size() <= 0) {
+    private int uploadState1 = 0;
+    private void uploadSignArray(Queue<List<Sign>> signQueue) {
+        if (signQueue == null || signQueue.size() <= 0) {
+            uploadProgress = 2;
+            uploadSignRecord();
             return;
         }
 
+        List<Sign> signList = signQueue.poll();
         List<EntrySignBean> signBeans = new ArrayList<>();
         for (Sign sign : signList) {
             signBeans.add(new EntrySignBean(sign.getEmpId(), sign.getTime(), HeartBeatClient.getDeviceNo(), sign.getTemperature(), paramsDateFormat.format(sign.getTime())));
         }
         String jsonStr = new Gson().toJson(signBeans);
+        d(uploadProgress + " - 批量上传考勤记录：条数：" + signList.size());
         d("批量上传考勤记录：" + ResourceUpdate.SIGNARRAY);
         d("批量上传考勤记录：参数1：" + jsonStr);
         d("批量上传考勤记录：参数2：" + HeartBeatClient.getDeviceNo());
+        uploadState1 = 0;
         OkHttpUtils.post()
                 .url(ResourceUpdate.SIGNARRAY)
                 .addParams("signstr", jsonStr)
@@ -145,14 +276,11 @@ public class AutoUpload {
                         JSONObject jsonObject = JSONObject.parseObject(response);
                         String status = jsonObject.getString("status");
                         boolean isSucc = TextUtils.equals("1", status);
-                        try {
-                            callback.accept(isSucc);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+
                         if (!isSucc) {
                             return;
                         }
+                        uploadState1 = 1;
 
                         for (Sign sign : signList) {
                             sign.setUpload(true);
@@ -161,31 +289,45 @@ public class AutoUpload {
 
                         SignLogTest.getInstance().addArrayContent(signList,response);
 
-                        uploadTemperArray(signList, callback);
+                        uploadTemperArray(signList, signQueue);
                     }
 
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        if (callback != null) {
-                            try {
-                                callback.accept(true);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (uploadState1 != 1) {
+                            uploadSignArray(signQueue);
                         }
-
                     }
                 });
     }
 
     //上传测温记录
-    private void uploadTemperArray(final List<Sign> signList, final Consumer<Boolean> callback) {
-        if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN){
+    private void uploadTemperArray(final List<Sign> signs, Queue<List<Sign>> signQueue) {
+        if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {
+            if (uploadProgress == 1) {
+                uploadSignArray(signQueue);
+            } else if (uploadProgress == 2) {
+                uploadProgress = 3;
+                uploadSignRecord();
+            } else if (uploadProgress == 3) {
+                uploadVisitorSignArray(signQueue);
+            }
             return;
         }
-        if (signList == null || signList.size() <= 0) {
-            return;
+        List<Sign> signList;
+        if (uploadProgress == 1) {
+            signList = signs;
+        } else if (uploadProgress == 2) {
+            if (signQueue == null || signQueue.size() <= 0) {
+                uploadProgress = 3;
+                uploadSignRecord();
+                return;
+            } else {
+                signList = signQueue.poll();
+            }
+        } else {
+            signList = signs;
         }
         List<TemperSignBean> temperSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
@@ -205,6 +347,7 @@ public class AutoUpload {
             hotMap.put(hotFile.getName(), hotFile);
         }
 
+        d(uploadProgress + " - 批量上传测温记录：条数：" + signList.size());
         d("批量上传测温记录：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY);
         d("批量上传测温记录:参数：" + json);
         d("批量上传测温记录:头像文件：" + headMap.toString());
@@ -257,22 +400,27 @@ public class AutoUpload {
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        if (callback != null) {
-                            try {
-                                callback.accept(true);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (uploadProgress == 1) {
+                            uploadSignArray(signQueue);
+                        } else if (uploadProgress == 2) {
+                            uploadTemperArray(null, signQueue);
+                        } else if (uploadProgress == 3) {
+                            uploadVisitorSignArray(signQueue);
                         }
                     }
                 });
     }
 
     //上传访客记录
-    private void uploadVisitorSignArray(final List<Sign> signList, final Consumer<Boolean> callback) {
-        if (signList == null || signList.size() <= 0) {
+    private int uploadState2 = 0;
+    private void uploadVisitorSignArray(Queue<List<Sign>> signQueue) {
+        if (signQueue == null || signQueue.size() <= 0) {
+            uploadProgress = 4;
+            uploadSignRecord();
             return;
         }
+
+        List<Sign> signList = signQueue.poll();
         List<VisitorSignBean> visitorSignBeans = new ArrayList<>();
         for (Sign sign : signList) {
             visitorSignBeans.add(new VisitorSignBean(sign.getEmpId(), sign.getTime(), paramsDateFormat.format(sign.getTime())));
@@ -284,6 +432,7 @@ public class AutoUpload {
             File fileByPath = getFileByPath(sign.getHeadPath());
             headMap.put(fileByPath.getName(), fileByPath);
         }
+        d(uploadProgress + " - 批量上传访客记录：条数：" + signList.size());
         d("批量上传访客记录：" + ResourceUpdate.VISITARRAY);
         d("批量上传访客记录：参数：" + json);
         StringBuffer stringBuffer = new StringBuffer();
@@ -295,6 +444,7 @@ public class AutoUpload {
         d("批量上传访客记录：头像文件：" + stringBuffer.toString());
 
         int comid = SpUtils.getCompany().getComid();
+        uploadState2 = 0;
         OkHttpUtils.post()
                 .url(ResourceUpdate.VISITARRAY)
                 .addParams("witJson", json)
@@ -324,22 +474,19 @@ public class AutoUpload {
                         if (!isSucc) {
                             return;
                         }
+                        uploadState2 = 1;
                         for (Sign sign : signList) {
                             sign.setUpload(true);
                             DaoManager.get().addOrUpdate(sign);
                         }
-                        uploadTemperArray(signList, callback);
+                        uploadTemperArray(signList, signQueue);
                     }
 
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        if (callback != null) {
-                            try {
-                                callback.accept(true);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (uploadState2 != 1) {
+                            uploadVisitorSignArray(signQueue);
                         }
                     }
                 });
