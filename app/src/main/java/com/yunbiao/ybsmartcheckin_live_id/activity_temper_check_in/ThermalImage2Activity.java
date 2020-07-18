@@ -696,10 +696,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     @SuppressLint("RestrictedApi")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ReadCardUtils.isInputFromReader(this, event)) {
+        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && ReadCardUtils.isInputFromReader(this, event)) {
             if (readCardUtils != null) {
                 readCardUtils.resolveKeyEvent(event);
             }
+            return true;
         }
         return super.dispatchKeyEvent(event);
     }

@@ -10,6 +10,7 @@ import com.yunbiao.ybsmartcheckin_live_id.afinel.ResourceUpdate;
 import com.yunbiao.ybsmartcheckin_live_id.common.cache.ACache;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.xutil.MyXutils;
 
 import org.json.JSONArray;
@@ -59,7 +60,10 @@ public class PowerOffTool {
         return acache.getAsString(key);
     }
 
-    private void setPowerRestartTime() {
+    public void setPowerRestartTime() {
+        if (!SpUtils.getBoolean(SpUtils.POWER_ON_OFF_SWITCH, SpUtils.powerOnOffDef)) {
+            return;
+        }
         Integer type = CommonUtils.getBroadType();
         Log.d("poweroff--板子", "setPowerRestartTime: " + type);
         switch (type.intValue()) {
@@ -71,6 +75,22 @@ public class PowerOffTool {
                 break;
             case 4:
                 YsPowerController.setPower();
+                break;
+        }
+    }
+
+    public void cancelPowerRestartTime() {
+        Integer type = CommonUtils.getBroadType();
+        Log.d("poweroff--板子", "cancelPowerRestartTime: " + type);
+        switch (type.intValue()) {
+            case 0:
+                OnOffTool.setDisabled();
+                break;
+            case 5:
+                PowerControllerTool.cancelPowerContr();
+                break;
+            case 4:
+                YsPowerController.clearPower();
                 break;
         }
     }

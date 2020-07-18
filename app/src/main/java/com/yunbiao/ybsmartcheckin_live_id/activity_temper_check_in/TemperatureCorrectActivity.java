@@ -1,5 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,6 +20,8 @@ import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
+import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -66,6 +69,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         btnSubTempCorr.setOnClickListener(onClickListener);
         btnAddTempCorr.setOnClickListener(onClickListener);
         btnClickTemp.setOnClickListener(onClickListener);
+        findViewById(R.id.ib_back).setOnClickListener(onClickListener);
 
         thermalMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
         lowTemp = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
@@ -74,7 +78,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         float thermalCorr = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         tvCurrentCorr.setText("当前补正值：" + thermalCorr + "℃");
 
-        edtValueTemp.setText(0.0 + "");
+        edtValueTemp.setText(36.5 + "");
         edtValueTemp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -97,7 +101,26 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
 
     @Override
     protected void initData() {
-//        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.MODE, ThermalConst.Default.MODE);//当前模式
+        int currMode = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE, ThermalConst.Default.TEMPER_MODULE);;//当前模式
+        String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+            portPath = "/dev/ttyS4";
+        }
+        String broadType = CommonUtils.getBroadType2();
+        switch (currMode) {
+            case TemperModuleType.HM_32_32:
+                break;
+            case TemperModuleType.HM_16_4:
+                break;
+            case TemperModuleType.MLX_16_4:
+                break;
+            case TemperModuleType.SMT_32_32:
+                break;
+            case TemperModuleType.INFRARED:
+                break;
+            default:
+                break;
+        }
         /*if (currMode == ThermalConst.ONLY_INFRARED || currMode == ThermalConst.FACE_INFRARED) {
             TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
         } else if (currMode == ThermalConst.ONLY_THERMAL_HM_32_32 || currMode == ThermalConst.FACE_THERMAL_HM_32_32) {

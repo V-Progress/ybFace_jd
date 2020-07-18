@@ -59,6 +59,10 @@ public class PowerControllerTool {
 
     }
 
+    public static void cancelPowerContr() {
+        execSuCmd("system/xbin/test 201301181659 201301181700 disable");
+    }
+
     public static void execSuCmd(String cmd) {
         Process process = null;
         DataOutputStream os = null;

@@ -84,6 +84,11 @@ public class YsPowerController {
         powerOnOffManager.setPowerOnOffWithWeekly(onTimeArr,offTimeArr,dateArray);
     }
 
+    public static void clearPower() {
+        PowerOnOffManager powerOnOffManager = PowerOnOffManager.getInstance(APP.getContext());
+        powerOnOffManager.clearPowerOnOffTime();
+    }
+
     /**
      * @return 1, 2, 3, 4, 5, 6, 7;08:00
      */

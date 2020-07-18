@@ -77,7 +77,6 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
-                android:onClick="goSetting"
                 android:id="@+id/ll_thermal_area_main"
                 android:padding="3dp"
                 android:background="@drawable/shape_thermal_image_main"

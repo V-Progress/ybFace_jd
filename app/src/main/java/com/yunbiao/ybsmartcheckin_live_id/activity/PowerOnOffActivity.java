@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
@@ -28,6 +30,9 @@ public class PowerOnOffActivity extends BaseActivity {
     private static final String TAG = "SMTPowerOnOffActivity";
 
     private List<CheckBox> onBoxs=new ArrayList<>();
+
+    private TextView tvOn;
+    private TextView tvOff;
 
     private  int onHTime=9;
     private int onMTime=0;
@@ -116,29 +121,36 @@ public class PowerOnOffActivity extends BaseActivity {
 
         String powerOnParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_ON);
         String powerOffParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_OFF);
-        TextView tvOn = findViewById(R.id.tv_on_params);
-        TextView tvOff = findViewById(R.id.tv_off_params);
-        if(TextUtils.isEmpty(powerOnParams)){
-            tvOn.setText(getResources().getString(R.string.act_power_power_on_strategy2) + "：" + getResources().getString(R.string.act_power_none));
-        } else {
-            tvOn.setText(getResources().getString(R.string.act_power_power_on_strategy2) + "：" + getPowerString(powerOnParams));
-        }
+        tvOn = findViewById(R.id.tv_on_params);
+        tvOff = findViewById(R.id.tv_off_params);
+        setOnOffTv();
 
-        if(TextUtils.isEmpty(powerOffParams)){
-            tvOff.setText(getResources().getString(R.string.act_power_power_off_strategy2) + "：" + getResources().getString(R.string.act_power_none));
-        } else {
-            tvOff.setText(getResources().getString(R.string.act_power_power_off_strategy2) + "：" + getPowerString(powerOffParams));
+        String powerOnDate[] = null;
+        String powerOnTime[] = null;
+        if (!TextUtils.isEmpty(powerOnParams)) {
+            powerOnDate = powerOnParams.split(";")[0].split(",");
+            powerOnTime = powerOnParams.split(";")[1].split(":");
+        }
+        String powerOffDate[] = null;
+        String powerOffTime[] = null;
+        if (!TextUtils.isEmpty(powerOffParams)) {
+            powerOffDate = powerOffParams.split(";")[0].split(",");
+            powerOffTime = powerOffParams.split(";")[1].split(":");
         }
 
         NumberPicker onHPicker = findViewById(R.id.number_power_on_h_smt);
         onHPicker.setMaxValue(23);
         onHPicker.setMinValue(0);
-        onHPicker.setValue(9);
+        if (powerOnTime != null && powerOnTime.length == 2) {
+            onHTime = Integer.parseInt(powerOnTime[0]);
+        } else {
+            onHTime = 9;
+        }
+        onHPicker.setValue(onHTime);
         onHPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 Log.e(TAG, "onValueChange: " + oldVal + " ----- " + newVal);
-
                 onHTime=newVal;
             }
         });
@@ -146,6 +158,12 @@ public class PowerOnOffActivity extends BaseActivity {
         NumberPicker onMPicker = findViewById(R.id.number_power_on_m_smt);
         onMPicker.setMaxValue(59);
         onMPicker.setMinValue(0);
+        if (powerOnTime != null && powerOnTime.length == 2) {
+            onMTime = Integer.parseInt(powerOnTime[1]);
+        } else {
+            onMTime = 0;
+        }
+        onMPicker.setValue(onMTime);
 
         onMPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
@@ -158,7 +176,12 @@ public class PowerOnOffActivity extends BaseActivity {
         NumberPicker offHPicker = findViewById(R.id.number_power_off_h_smt);
         offHPicker.setMaxValue(23);
         offHPicker.setMinValue(0);
-        offHPicker.setValue(20);
+        if (powerOffTime != null && powerOffTime.length == 2) {
+            offHTime = Integer.parseInt(powerOffTime[0]);
+        } else {
+            offHTime = 20;
+        }
+        offHPicker.setValue(offHTime);
         offHPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -170,6 +193,12 @@ public class PowerOnOffActivity extends BaseActivity {
         NumberPicker offMPicker = findViewById(R.id.number_power_off_m_smt);
         offMPicker.setMaxValue(59);
         offMPicker.setMinValue(0);
+        if (powerOffTime != null && powerOffTime.length == 2) {
+            offMTime = Integer.parseInt(powerOffTime[1]);
+        } else {
+            offMTime = 0;
+        }
+        offMPicker.setValue(offMTime);
         offMPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -197,6 +226,20 @@ public class PowerOnOffActivity extends BaseActivity {
         onBoxs.add(cb_on_6);
         onBoxs.add(cb_on_7);
 
+        if (powerOnDate != null && powerOnDate.length > 0) {
+            for (int i = 0; i < onBoxs.size(); i++) {
+                onBoxs.get(i).setChecked(false);
+            }
+            for (int i = 0; i < powerOnDate.length; i++) {
+                onBoxs.get(Integer.parseInt(powerOnDate[i]) - 1).setChecked(true);
+            }
+            if (powerOnDate.length == 7) {
+                cb_on_all.setChecked(true);
+            } else {
+                cb_on_all.setChecked(false);
+            }
+        }
+
         cb_on_all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -212,6 +255,44 @@ public class PowerOnOffActivity extends BaseActivity {
                 }
             }
         });
+
+        Switch sw_open = findViewById(R.id.sw_open);
+        sw_open.setChecked(SpUtils.getBoolean(SpUtils.POWER_ON_OFF_SWITCH, SpUtils.powerOnOffDef));
+        sw_open.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    String powerOnParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_ON);
+                    String powerOffParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_OFF);
+                    if (TextUtils.isEmpty(powerOnParams) || TextUtils.isEmpty(powerOffParams)) {
+                        sw_open.setChecked(false);
+                        return;
+                    }
+                    SpUtils.saveBoolean(SpUtils.POWER_ON_OFF_SWITCH, true);
+                    PowerOffTool.getPowerOffTool().setPowerRestartTime();
+                } else {
+                    SpUtils.saveBoolean(SpUtils.POWER_ON_OFF_SWITCH, false);
+                    PowerOffTool.getPowerOffTool().cancelPowerRestartTime();
+                }
+            }
+        });
+    }
+
+    private void setOnOffTv() {
+        String powerOnParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_ON);
+        String powerOffParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_OFF);
+        tvOn = findViewById(R.id.tv_on_params);
+        tvOff = findViewById(R.id.tv_off_params);
+        if(TextUtils.isEmpty(powerOnParams)){
+            tvOn.setText(getResources().getString(R.string.act_power_power_on_strategy2) + "：" + getResources().getString(R.string.act_power_none));
+        } else {
+            tvOn.setText(getResources().getString(R.string.act_power_power_on_strategy2) + "：" + getPowerString(powerOnParams));
+        }
+        if(TextUtils.isEmpty(powerOffParams)){
+            tvOff.setText(getResources().getString(R.string.act_power_power_off_strategy2) + "：" + getResources().getString(R.string.act_power_none));
+        } else {
+            tvOff.setText(getResources().getString(R.string.act_power_power_off_strategy2) + "：" + getPowerString(powerOffParams));
+        }
     }
 
     @Override
@@ -317,7 +398,7 @@ public class PowerOnOffActivity extends BaseActivity {
             }
         });
         UIUtils.showShort(this,getResources().getString(R.string.act_power_set_success));
-        finish();
+        setOnOffTv();
     }
 
     public class PowerBean{

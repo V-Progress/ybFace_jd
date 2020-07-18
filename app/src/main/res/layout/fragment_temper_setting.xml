@@ -219,7 +219,7 @@
 
             <Button
                 android:visibility="gone"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="30dp"
                 android:id="@+id/btn_thermal_corr"
                 style="@style/style_setting_input_save_button"
                 android:text="@string/setting_correct_temperature" />

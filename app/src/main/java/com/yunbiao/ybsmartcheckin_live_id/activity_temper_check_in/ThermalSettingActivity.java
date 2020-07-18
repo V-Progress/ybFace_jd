@@ -462,6 +462,8 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void initView(View view) {
+            Button btn_thermal_corr = view.findViewById(R.id.btn_thermal_corr);
+
             final TextView tvModelSetting = view.findViewById(R.id.tv_model_setting);
             CheckBox cbFace = view.findViewById(R.id.cb_face);
             CheckBox cbTemper = view.findViewById(R.id.cb_temper);
@@ -474,6 +476,11 @@ public class ThermalSettingActivity extends BaseActivity {
             tvModelSetting.setText(temperModuleArray[currTemperModule]);
             cbFace.setChecked(faceEnabled);
             cbTemper.setChecked(temperEnabled);
+            if (temperEnabled) {
+                btn_thermal_corr.setVisibility(View.GONE);
+            } else {
+                btn_thermal_corr.setVisibility(View.GONE);
+            }
 
             tvModelSetting.setOnClickListener(view1 -> {
                 int currModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE,ThermalConst.Default.TEMPER_MODULE);
@@ -509,6 +516,11 @@ public class ThermalSettingActivity extends BaseActivity {
                         return;
                     }
                     SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED,isChecked);
+                    if (isChecked) {
+                        btn_thermal_corr.setVisibility(View.GONE);
+                    } else {
+                        btn_thermal_corr.setVisibility(View.GONE);
+                    }
                 }
             };
             cbFace.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -592,6 +604,13 @@ public class ThermalSettingActivity extends BaseActivity {
             };
             btnCorrectSub.setOnClickListener(correctOnclickListener);
             btnCorrectAdd.setOnClickListener(correctOnclickListener);
+
+            btn_thermal_corr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity(), TemperatureCorrectActivity.class));
+                }
+            });
 
             //修改测温阈值==========================================================================================
             Button btnMinSub = view.findViewById(R.id.btn_temp_min_threshold_sub_setting);
