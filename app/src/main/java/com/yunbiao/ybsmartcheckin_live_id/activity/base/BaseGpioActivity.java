@@ -54,7 +54,7 @@ public abstract class BaseGpioActivity extends LedControlActivity {
     }
 
     //关灯并且清除自动关灯任务
-    private void offLight() {
+    protected void offLight() {
         xhapiLedClose();
         closeSmdtLedWhite();
         ysLedOff();

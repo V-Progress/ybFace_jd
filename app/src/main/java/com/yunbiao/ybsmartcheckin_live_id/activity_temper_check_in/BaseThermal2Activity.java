@@ -71,7 +71,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private View mDistanceView;//范围限制View
     private boolean isResultShown = false;//测温结果是否正在显示
     private Rect mAreaRect = new Rect();//范围限制View的Rect
-    private boolean isActivityPaused = false;//当前Activity是否已pause
+    protected boolean isActivityPaused = false;//当前Activity是否已pause
     private boolean isMLXRunning = false;//MLX芯片是否正在运行
     private int distanceTipNumber = 0;//距离提示的次数
     private List<Float> autoCheckList = new ArrayList<>();//自动模式缓存集合
@@ -224,6 +224,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     protected void onPause() {
         super.onPause();
         isActivityPaused = true;
+        offLight();
     }
 
     //==测温相关============================================================================================================
@@ -375,7 +376,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        if (!mHasFace) {
+        if (isActivityPaused || !mHasFace) {
             if(mTurkeyDelayTag != 0){
                 mTurkeyDelayTag = 0;
             }

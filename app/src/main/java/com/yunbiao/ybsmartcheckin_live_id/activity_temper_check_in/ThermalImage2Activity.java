@@ -341,7 +341,9 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     public void hasFace(boolean hasFace) {
         if (hasFace) {
             //检测到人后开灯
-            onLight();
+            if(!isActivityPaused){
+                onLight();
+            }
             //收起海报界面
             if (adsFragment != null) {
                 adsFragment.detectFace();
@@ -589,13 +591,17 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     }
 
     private void onBackKeyPressed(Runnable runnable) {
-        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-        if (!TextUtils.isEmpty(pwd)) {
-            inputPwd(runnable);
-            return;
-        }
-        if (runnable != null) {
-            runnable.run();
+        boolean passwordEnabled = SpUtils.getBoolean(Constants.Key.PASSWORD_ENABLED,Constants.Default.PASSWORD_ENABLED);
+        if(passwordEnabled){
+            String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+            if (!TextUtils.isEmpty(pwd)) {
+                inputPwd(runnable);
+                return;
+            }
+        } else {
+            if (runnable != null) {
+                runnable.run();
+            }
         }
     }
 
