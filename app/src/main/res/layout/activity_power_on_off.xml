@@ -206,6 +206,16 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_power_time_tips_ys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorAccent"
+            android:text="@string/act_power_ys_time_tips"/>
+
     </LinearLayout>
 
     <Button

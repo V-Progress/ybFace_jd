@@ -100,7 +100,7 @@ public class MultiThermalRecordAdapter extends RecyclerView.Adapter<RecyclerView
             if (MultiThermalActivity.fEnabled) {
                 afterTreatmentTemp = (float) (Math.round((temper * 1.8f + 32) * 10)) / 10;
             }
-            if (temper <= 0f || temper >= warningThreshold) {
+            if (temper < MultiThermalActivity.normalRangeStart || temper > MultiThermalActivity.normalRangeEnd) {
                 temperStr = mAct.getResources().getString(R.string.main_error_multi_thermal) + "（" + afterTreatmentTemp + "）";
             } else {
                 temperStr = mAct.getResources().getString(R.string.main_normal_multi_thermal) + "（" + afterTreatmentTemp + "）";

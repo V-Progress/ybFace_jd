@@ -343,6 +343,7 @@
     <string name="setting_amb_correct_value">Ambient correct value</string><!-- 环境温矫正值 -->
     <string name="setting_temperature_threshold">Low temperature threshold</string><!-- 最低体温播报 -->
     <string name="setting_temperature_warning">High temperature threshold</string><!-- 测温报警值 -->
+    <string name="setting_normal_temperature_range">Normal temperature range</string>
     <string name="setting_temp_range">Temperature measurement range</string><!--Temperature measurement range--><!-- 体温测温范围 -->
     <string name="setting_range_minimum">minimum</string><!--minimum--><!-- 最低 -->
     <string name="setting_range_highest">Highest</string><!--Highest--><!-- 最高 -->
@@ -439,6 +440,7 @@
     <string name="act_power_set_success">Schedule settings are saved successfully</string>
     <string name="act_power_set_failed_not_check_on">Setting Failed. Please Select the right Date in Boot Setting</string>
     <string name="act_power_set_failed_not_check_off">Setting Failed. Please Select the right Date in Shutdown Setting</string>
+    <string name="act_power_ys_time_tips">Attention: Boost time must be ealier than shutdown time. For example, boost time: 8.00am, shutdown time: 11:00pm.</string>
 
 
     <!--温度矫正页面-->

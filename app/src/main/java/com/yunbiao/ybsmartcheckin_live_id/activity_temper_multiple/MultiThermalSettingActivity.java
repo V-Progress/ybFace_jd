@@ -35,6 +35,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.db2.DaoManager;
+import com.yunbiao.ybsmartcheckin_live_id.db2.MultiTotal;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Sign;
 import com.yunbiao.ybsmartcheckin_live_id.utils.L;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
@@ -42,6 +43,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.logutils.Utils;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +94,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
         setWarningTemper();
 
         setHotImageMirror();
+
+        setLivenessSetting();
 
         setThermalFaceFrame();
 
@@ -317,25 +322,43 @@ public class MultiThermalSettingActivity extends BaseActivity {
         final EditText edtTemper = findViewById(R.id.edt_temp_warning_threshold_setting);
         Button btnAdd = findViewById(R.id.btn_temp_warning_threshold_add_setting);
 
-        float warningValue = SpUtils.getFloat(MultiThermalConst.Key.WARNING_TEMP, MultiThermalConst.Default.WARNING_TEMP);
-        edtTemper.setText(warningValue + "");
-        View.OnClickListener warnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String value = edtTemper.getText().toString();
-                float v1 = formatF(Float.parseFloat(value));
-                if (v.getId() == R.id.btn_temp_warning_threshold_sub_setting) {
-                    v1 -= 0.1;
-                } else {
-                    v1 += 0.1;
-                }
-                v1 = formatF(v1);
-                edtTemper.setText(v1 + "");
-                SpUtils.saveFloat(MultiThermalConst.Key.WARNING_TEMP, v1);
+        float normalRangeStart = SpUtils.getFloat(MultiThermalConst.Key.NORMAL_RANGE_START, MultiThermalConst.Default.NORMAL_RANGE_START);
+        edtTemper.setText(normalRangeStart + "");
+        View.OnClickListener rangeStartClickListener = v -> {
+            String value = edtTemper.getText().toString();
+            float v1 = formatF(Float.parseFloat(value));
+            if (v.getId() == R.id.btn_temp_warning_threshold_sub_setting) {
+                v1 -= 0.1;
+            } else {
+                v1 += 0.1;
             }
+            v1 = formatF(v1);
+            edtTemper.setText(v1 + "");
+            SpUtils.saveFloat(MultiThermalConst.Key.NORMAL_RANGE_START, v1);
         };
-        btnSub.setOnClickListener(warnClickListener);
-        btnAdd.setOnClickListener(warnClickListener);
+        btnSub.setOnClickListener(rangeStartClickListener);
+        btnAdd.setOnClickListener(rangeStartClickListener);
+
+        Button btnSub1 = findViewById(R.id.btn_temp_warning_threshold_sub_setting_1);
+        final EditText edtTemper1 = findViewById(R.id.edt_temp_warning_threshold_setting_1);
+        Button btnAdd1 = findViewById(R.id.btn_temp_warning_threshold_add_setting_1);
+
+        float normalRangeEnd = SpUtils.getFloat(MultiThermalConst.Key.NORMAL_RANGE_END, MultiThermalConst.Default.NORMAL_RANGE_END);
+        edtTemper1.setText(normalRangeEnd + "");
+        View.OnClickListener rangeEndClickListener = v -> {
+            String value = edtTemper1.getText().toString();
+            float v1 = formatF(Float.parseFloat(value));
+            if (v.getId() == R.id.btn_temp_warning_threshold_sub_setting_1) {
+                v1 -= 0.1;
+            } else {
+                v1 += 0.1;
+            }
+            v1 = formatF(v1);
+            edtTemper1.setText(v1 + "");
+            SpUtils.saveFloat(MultiThermalConst.Key.NORMAL_RANGE_END, v1);
+        };
+        btnSub1.setOnClickListener(rangeEndClickListener);
+        btnAdd1.setOnClickListener(rangeEndClickListener);
     }
 
 
@@ -361,6 +384,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(MultiThermalConst.Key.THERMAL_MIRROR, isChecked);
+            }
+        });
+    }
+
+    private void setLivenessSetting() {
+        Switch swThermalLivenessSetting = findViewById(R.id.sw_thermal_liveness_setting);
+        boolean liveness = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, MultiThermalConst.Default.LIVENESS_ENABLED);
+        swThermalLivenessSetting.setChecked(liveness);
+        swThermalLivenessSetting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(Constants.Key.LIVENESS_ENABLED, isChecked);
             }
         });
     }
@@ -392,6 +427,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
             }
             DaoManager.get().deleteSign(next);
             total ++;
+        }
+
+        int comid = SpUtils.getCompany().getComid();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        MultiTotal multiTotal = DaoManager.get().queryTotalByCompIfAndDate(comid, dateFormat.format(System.currentTimeMillis()));
+        if (multiTotal != null) {
+            multiTotal.setTotalNum(0);
+            multiTotal.setWarningNum(0);
+            multiTotal.setNormalNum(0);
+            multiTotal.setStaffNum(0);
+            multiTotal.setVisitorNum(0);
+            DaoManager.get().addOrUpdate(multiTotal);
         }
 
         UIUtils.showShort(this,(getString(R.string.clear_no_data) + total));

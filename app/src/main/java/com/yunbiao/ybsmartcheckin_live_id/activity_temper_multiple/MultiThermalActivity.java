@@ -183,6 +183,9 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
 
     public static boolean is1280800 = false;
 
+    public static float normalRangeStart = 0f;
+    public static float normalRangeEnd = 0f;
+
     @Override
     protected int getPortraitLayout() {
         return R.layout.activity_multi_thermal_portrait;
@@ -330,11 +333,18 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         boolean isThermalFaceFrame = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_FACE_FRAME, MultiThermalConst.Default.THERMAL_FACE_FRAME);
 
         fEnabled = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_F_ENABLED, MultiThermalConst.Default.THERMAL_F_ENABLED);
+
+        boolean livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, MultiThermalConst.Default.LIVENESS_ENABLED);
+        faceView.setLiveness(livenessEnabled);
+
         //是否显示热成像人脸框
         faceView.enableThermalFaceFrame(isThermalFaceFrame);
         //开启多次回调
         faceView.enableMultiCallback(mMultiTrack);
         startHotImage();
+
+        normalRangeStart = SpUtils.getFloat(MultiThermalConst.Key.NORMAL_RANGE_START, MultiThermalConst.Default.NORMAL_RANGE_START);
+        normalRangeEnd = SpUtils.getFloat(MultiThermalConst.Key.NORMAL_RANGE_END, MultiThermalConst.Default.NORMAL_RANGE_END);
     }
 
     private Rect getCacheRect() {
@@ -800,7 +810,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         });
         for (int i = 0; i < signs.size(); i++) {
             Sign sign = signs.get(i);
-            if (sign.getTemperature() < mWarningTemper) {
+            if (sign.getTemperature() >= normalRangeStart && sign.getTemperature() <= normalRangeEnd) {
                 if (normalList.size() < 15) {
                     MultiTemperBean multiTemperBean = signToMultiTemperBean(sign);
                     normalList.add(multiTemperBean);
@@ -844,7 +854,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         int normalSize = 0;
         for (MultiTemperBean multiTemperBean : multiTemperBeanList) {
             float temper = multiTemperBean.getTemper();
-            if (temper <= 0f || temper >= 37.3f) {
+            if (temper < normalRangeStart || temper > normalRangeEnd) {
                 warningSize += 1;
                 warningList.add(0, multiTemperBean);
                 warningAdapter.notifyItemInserted(0);
@@ -881,7 +891,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         StringBuffer speechBuffer = new StringBuffer();
         Runnable speechRunnable = null;
         boolean isNormal = true;
-        if (temper <= 0f || temper >= 37.3f) {
+        if (temper < normalRangeStart || temper > normalRangeEnd) {
             isNormal  = false;
             speechBuffer.append(getResString(R.string.act_certificates_verify_temper_no));
             if (!is1280800) {
@@ -1012,7 +1022,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         String faceId = multiTemperBean.getFaceId();
 
         tvTotalNum.setText(String.valueOf(++totalNum));
-        if (temper <= 0f || temper >= 37.3f) {
+        if (temper < normalRangeStart || temper > normalRangeEnd) {
             warningNum += 1;
             String s = String.valueOf(warningNum);
             tvWarningNum.setText(s);

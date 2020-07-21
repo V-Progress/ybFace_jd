@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.common.power.PowerOffTool;
+import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.ThreadUitls;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
@@ -42,6 +43,8 @@ public class PowerOnOffActivity extends BaseActivity {
 
     private List<Integer> onWeek;
     private List<Integer> offWeek;
+
+    private Switch sw_open;
 
     @Override
     protected int getPortraitLayout() {
@@ -118,6 +121,10 @@ public class PowerOnOffActivity extends BaseActivity {
                 finish();
             }
         });
+
+        if (CommonUtils.getBroadType() == 4) {
+            findViewById(R.id.tv_power_time_tips_ys).setVisibility(View.VISIBLE);
+        }
 
         String powerOnParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_ON);
         String powerOffParams = PowerOffTool.getPowerOffTool().getPowerParam(PowerOffTool.POWER_OFF);
@@ -256,7 +263,7 @@ public class PowerOnOffActivity extends BaseActivity {
             }
         });
 
-        Switch sw_open = findViewById(R.id.sw_open);
+        sw_open = findViewById(R.id.sw_open);
         sw_open.setChecked(SpUtils.getBoolean(SpUtils.POWER_ON_OFF_SWITCH, SpUtils.powerOnOffDef));
         sw_open.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -391,6 +398,8 @@ public class PowerOnOffActivity extends BaseActivity {
        final String powerJson=new Gson().toJson(powerBeanList);
         Log.e(TAG, "savePower: 设置开关机的规则：" + powerJson);
 
+        SpUtils.saveBoolean(SpUtils.POWER_ON_OFF_SWITCH, true);
+        sw_open.setChecked(true);
         ThreadUitls.runInThread(new Runnable() {
             @Override
             public void run() {// 开关机时间设置

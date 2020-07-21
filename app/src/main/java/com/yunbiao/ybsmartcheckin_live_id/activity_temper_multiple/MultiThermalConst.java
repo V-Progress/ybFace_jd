@@ -27,6 +27,9 @@ public class MultiThermalConst {
         String LAST_MIN_T = "multiThermalLastMinT";
 
         String THERMAL_F_ENABLED = "fEnabled";
+
+        String NORMAL_RANGE_START = "normalRangeStart";
+        String NORMAL_RANGE_END = "normalRangeEnd";
     }
 
     public interface Default{
@@ -52,6 +55,11 @@ public class MultiThermalConst {
         float BODY_TEMPER = 36.5f;//预设体温
         float LAST_MIN_T = 0.0f;//最近一次的最低温
 
-        public static boolean THERMAL_F_ENABLED = false;
+        boolean THERMAL_F_ENABLED = false;
+
+        boolean LIVENESS_ENABLED = false;
+
+        float NORMAL_RANGE_START = 35.0f;
+        float NORMAL_RANGE_END = 37.2f;
     }
 }

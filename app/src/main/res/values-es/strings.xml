@@ -284,6 +284,7 @@
     <string name="setting_amb_correct_value">Valor correcto de ambiente</string><!-- 环境温矫正值 -->
     <string name="setting_temperature_threshold">Umbral de hipotermia</string><!-- 最低体温播报 -->
     <string name="setting_temperature_warning">Umbral de normotermia</string><!-- 测温报警值 -->
+    <string name="setting_normal_temperature_range">Normal temperature range</string>
     <string name="setting_temp_range">Rango de medición de temperatura</string><!--Temperature measurement range--><!-- 体温测温范围 -->
     <string name="setting_range_minimum">mínimo</string><!--minimum--><!-- 最低 -->
     <string name="setting_range_highest">máximo</string><!--Highest--><!-- 最高 -->
@@ -378,6 +379,7 @@
     <string name="act_power_set_success">Configurado exitosamente!</string>
     <string name="act_power_set_failed_not_check_on">Configuración fallida, por favor seleccione la fecha de vigencia en la política de operación de arranque</string>
     <string name="act_power_set_failed_not_check_off">Configuración fallida, por favor seleccione la fecha de vigencia en la política de ejecución de apagado</string>
+    <string name="act_power_ys_time_tips">Attention: Boost time must be ealier than shutdown time. For example, boost time: 8.00am, shutdown time: 11:00pm.</string>
 
 
     <!--温度矫正页面-->
