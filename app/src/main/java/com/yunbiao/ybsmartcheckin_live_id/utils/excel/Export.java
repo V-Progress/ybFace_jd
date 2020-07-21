@@ -72,6 +72,13 @@ public abstract class Export extends AsyncTask<Void, Integer, Integer> {
 
             splitExport(value, exportDir, key);
         }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return 1;
     }
 

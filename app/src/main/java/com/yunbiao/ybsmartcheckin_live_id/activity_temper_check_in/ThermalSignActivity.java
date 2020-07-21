@@ -400,8 +400,8 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 List<String> stringList = new ArrayList<>();
                 stringList.add(TextUtils.isEmpty(sign.getName()) ? getResString(R.string.fment_sign_visitor_name) : sign.getName());
                 stringList.add(TextUtils.isEmpty(sign.getEmployNum()) ? "" : sign.getEmployNum());
-                stringList.add(TextUtils.isEmpty(sign.getDepart()) ? sign.getDepart() : "");
-                stringList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : "");
+                stringList.add(TextUtils.isEmpty(sign.getDepart()) ? "" : sign.getDepart());
+                stringList.add(TextUtils.isEmpty(sign.getPosition()) ? "" : sign.getPosition());
                 stringList.add(dateFormat1.format(sign.getTime()) + "");
                 stringList.add(dateFormat2.format(sign.getTime()) + "");
                 stringList.add(sign.getTemperature() + "");
