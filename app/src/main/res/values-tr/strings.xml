@@ -52,7 +52,7 @@
     <string name="setting_app_logo">APP Logo</string>
     <string name="setting_select_image">Choose</string>
     <string name="setting_restore_image">Restore</string>
-    <string name="setting_auto_temper">Otomatik mod</string>
+    <string name="setting_high_temp_model">Yüksek sıcaklık modu</string>
 
     <!--语音设置-->
     <string name="temper_tips_close">İpuçlarına yakın</string>

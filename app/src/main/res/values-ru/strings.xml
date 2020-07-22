@@ -60,7 +60,7 @@
     <string name="setting_app_logo">Логотип в доме</string>
     <string name="setting_select_image">Выбрать</string>
     <string name="setting_restore_image">Восстановить</string>
-    <string name="setting_auto_temper">Автоматический режим</string>
+    <string name="setting_high_temp_model">Температурный режим</string>
     <!--应用名称-->
     <string name="yb_check_in">YBFace</string>
     <string name="yb_temper_check_in">YBFace</string>

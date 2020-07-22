@@ -56,7 +56,7 @@
     <string name="setting_app_logo">Aplicación del Logo</string>
     <string name="setting_select_image">seleccione</string>
     <string name="setting_restore_image">La recuperación</string>
-    <string name="setting_auto_temper">Modo automático</string>
+    <string name="setting_high_temp_model">Modo de alta temperatura</string>
 
     <!--logo设置-->
     <string name="setting_welcome_speech">Palabras de bienvenida</string><!--Welcome speech--><!--欢迎语  -->

@@ -73,7 +73,7 @@
     <string name="setting_app_logo">APPロゴ</string>
     <string name="setting_select_image">アバターを選択</string>
     <string name="setting_restore_image">アバターを復元する</string>
-    <string name="setting_auto_temper">自動温度測定</string>
+    <string name="setting_high_temp_model">高温モード</string>
     <string name="main_temp_warning_tips">体温が異常です。</string>
     <string name="main_temp_normal_tips">通常の体温</string>
     <string name="main_temp_error_tips">異常な体温</string>
