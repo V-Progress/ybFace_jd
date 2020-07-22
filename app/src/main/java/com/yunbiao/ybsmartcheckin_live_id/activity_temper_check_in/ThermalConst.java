@@ -25,7 +25,7 @@ public class ThermalConst {
         String SHOW_MAIN_THERMAL = "thermalShowMainThermal";//首页热成像开关
         String MAIN_LOGO_TEXT = "thermalMainLogoText";//首页Logo文字设置
         String MAIN_LOGO_IMG = "thermalMainLogoImg";//首页LOGO图片设置
-        String HIGH_TEMPER_MODE = "thermalAutoTemper";//自动模式
+        String HIGH_TEMPER_MODE = "highTempMode";//高温模式
         String LOCAL_PRIORITY = "thermalLocalPriority";//本地优先级
         String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";//口罩检测
         String WELCOME_TIP_CONTENT = "welcomeTips";//欢迎语设置
