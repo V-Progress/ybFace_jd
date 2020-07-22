@@ -50,9 +50,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private float mTempCorrect;//温度补正
     private boolean mThermalImgMirror;//热成像镜像
     private boolean lowTempModel;//低温模式
+    private boolean highTempModel;//高温模式
     private boolean mFEnabled;//华氏度开关
     private boolean mPrivacyMode;//隐私模式
-    private boolean mAutoTemper;//自动模式
     private long mTipTime = 0;//播报时间
 
     private Random random = new Random();
@@ -113,13 +113,13 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         mThermalImgMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
         //低温模式
         lowTempModel = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
+        //高温模式
+        highTempModel = SpUtils.getBoolean(ThermalConst.Key.HIGH_TEMPER_MODE, ThermalConst.Default.HIGH_TEMPER_MODE);
         //温度补偿
         mTempCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
         TemperatureModule.getIns().setmCorrectionValue(mTempCorrect);
         //华氏度
         mFEnabled = SpUtils.getBoolean(ThermalConst.Key.THERMAL_F_ENABLED, ThermalConst.Default.THERMAL_F_ENABLED);
-        //自动模式
-        mAutoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER, ThermalConst.Default.AUTO_TEMPER);
         //初始化播报
         speechBean.initContent();
         KDXFSpeechManager.instance().setSpeed(speechBean.getSpeechSpeed());
@@ -195,13 +195,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 break;
         }
 
-        if (mAutoTemper) {
+        //判断高低温模式
+        if(lowTempModel){//低温模式开
+            TemperatureModule.getIns().setHotImageColdMode(true);
+            TemperatureModule.getIns().setHotImageHotMode(false, 45f);
+        } else if(highTempModel){//高温模式开
+            TemperatureModule.getIns().setHotImageHotMode(true, 45f);
             TemperatureModule.getIns().setHotImageColdMode(false);
-            TemperatureModule.getIns().setHotImageHotMode(false, 45.0f);
-        } else {
-            //如果自动模式关闭，则关闭高温模式并且以设置为准调整低温模式
-            TemperatureModule.getIns().setHotImageColdMode(lowTempModel);
-            TemperatureModule.getIns().setHotImageHotMode(false, 45.0f);
+        } else {//普通模式
+            TemperatureModule.getIns().setHotImageColdMode(false);
+            TemperatureModule.getIns().setHotImageHotMode(false, 45f);
         }
         mCacheTemperSize = temperModule == TemperModuleType.MLX_16_4 || temperModule == TemperModuleType.HM_16_4 ? 3 : 4;
     }
@@ -371,7 +374,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         mLastHotImage = imageBmp;
         sendUpdateHotInfoMessage(imageBmp, afterT);
 
-        if(!lowTempModel && !mAutoTemper && Constants.FLAVOR_TYPE == FlavorType.TURKEY){
+        if(!lowTempModel && !highTempModel && Constants.FLAVOR_TYPE == FlavorType.TURKEY){
             handleTurkeyTemperatureLogic(originT,afterT);
             return;
         }
@@ -390,11 +393,6 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (mCacheTemperList.size() > 0) {
                 mCacheTemperList.clear();
             }
-            //自动调整模式
-            if (mAutoTemper && !lowTempModel) {
-                startAutoCheck(originT);
-            }
-
             // TODO: 2020/5/14  无人无脸播报
             //如果模式不为高温模式，且模式为MLX164
             if (noFaceTemper && currTemperMode != 2 && temperModule != TemperModuleType.HM_32_32) {

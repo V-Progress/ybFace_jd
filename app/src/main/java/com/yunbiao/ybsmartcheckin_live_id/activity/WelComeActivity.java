@@ -121,7 +121,7 @@ public class WelComeActivity extends BaseGpioActivity {
         isPosterEnabled = SpUtils.getBoolean(Constants.Key.POSTER_ENABLED, Constants.Default.POSTER_ENABLED);//大屏海报开关
 
         //设置人脸间隔
-        SignManager.instance().setVerifyDelay(10000);
+        SignManager.instance().setVerifyDelay(5000);
 
         //设置活体开关
         boolean livenessEnabled = SpUtils.getBoolean(Constants.Key.LIVENESS_ENABLED, Constants.Default.LIVENESS_ENABLED);

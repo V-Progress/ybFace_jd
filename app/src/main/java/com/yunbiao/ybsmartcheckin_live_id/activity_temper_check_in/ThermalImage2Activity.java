@@ -592,16 +592,13 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
 
     private void onBackKeyPressed(Runnable runnable) {
         boolean passwordEnabled = SpUtils.getBoolean(Constants.Key.PASSWORD_ENABLED,Constants.Default.PASSWORD_ENABLED);
-        if(passwordEnabled){
-            String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
-            if (!TextUtils.isEmpty(pwd)) {
-                inputPwd(runnable);
-                return;
-            }
-        } else {
-            if (runnable != null) {
-                runnable.run();
-            }
+        String pwd = SpUtils.getStr(SpUtils.MENU_PWD);
+        if (passwordEnabled && !TextUtils.isEmpty(pwd)) {
+            inputPwd(runnable);
+            return;
+        }
+        if (runnable != null) {
+            runnable.run();
         }
     }
 
@@ -609,33 +606,6 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     public void goSetting(View view) {
         goSetting();
     }
-
-//    public void test(View view) {
-//        int comid = SpUtils.getCompany().getComid();
-//        d("AutoUpload, count = " + DaoManager.get().querySignByComIdAndUploadCount(comid, false));
-//        List<Sign> signs = DaoManager.get().querySignByComIdAndUploadLimit(comid, true, 1);
-//        if (signs == null || signs.size() == 0) {
-//            d("AutoUpload，制造数据有问题");
-//            return;
-//        }
-//        Sign sign = signs.get(0);
-//        d("AutoUpload 示例 = " + sign.toString());
-//        for (int i = 0; i < 3000; i++) {
-//            Sign newSign = new Sign();
-//            newSign.setComid(comid);
-//            newSign.setHeadPath(sign.getHeadPath());
-//            newSign.setImgBitmap(sign.getImgBitmap());
-//            newSign.setHotImgPath(sign.getHotImgPath());
-//            newSign.setType(-9);
-//            newSign.setTemperature(i);
-//            newSign.setTime(sign.getTime());
-//            newSign.setDate(sign.getDate());
-//            newSign.setEmpId(sign.getEmpId());
-//            newSign.setUpload(false);
-//            DaoManager.get().addOrUpdate(newSign);
-//        }
-//        d("AutoUpload，制造数据完成");
-//    }
 
     private ReadCardUtils.OnReadSuccessListener readCardListener = new ReadCardUtils.OnReadSuccessListener() {
         @Override

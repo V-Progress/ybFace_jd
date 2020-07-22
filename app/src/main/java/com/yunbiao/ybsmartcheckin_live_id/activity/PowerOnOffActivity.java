@@ -121,7 +121,6 @@ public class PowerOnOffActivity extends BaseActivity {
                 finish();
             }
         });
-
         if (CommonUtils.getBroadType() == 4) {
             findViewById(R.id.tv_power_time_tips_ys).setVisibility(View.VISIBLE);
         }

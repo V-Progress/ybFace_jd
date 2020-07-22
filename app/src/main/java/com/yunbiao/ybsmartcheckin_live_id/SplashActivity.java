@@ -290,7 +290,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case FlavorType.TURKEY:
                 ThermalConst.Default.LOW_TEMP = false;
-                ThermalConst.Default.AUTO_TEMPER = false;
+                ThermalConst.Default.HIGH_TEMPER_MODE = false;
                 break;
             default:
                 //朱培元客户

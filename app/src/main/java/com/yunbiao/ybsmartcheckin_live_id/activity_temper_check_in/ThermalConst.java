@@ -25,7 +25,7 @@ public class ThermalConst {
         String SHOW_MAIN_THERMAL = "thermalShowMainThermal";//首页热成像开关
         String MAIN_LOGO_TEXT = "thermalMainLogoText";//首页Logo文字设置
         String MAIN_LOGO_IMG = "thermalMainLogoImg";//首页LOGO图片设置
-        String AUTO_TEMPER = "thermalAutoTemper";//自动模式
+        String HIGH_TEMPER_MODE = "thermalAutoTemper";//自动模式
         String LOCAL_PRIORITY = "thermalLocalPriority";//本地优先级
         String MASK_DETECT_ENABLED = "thermalMaskDetectEnabled";//口罩检测
         String WELCOME_TIP_CONTENT = "welcomeTips";//欢迎语设置
@@ -74,7 +74,7 @@ public class ThermalConst {
         public static boolean THERMAL_F_ENABLED = false;
         public static String MAIN_LOGO_TEXT = "YBFACE";
         public static String MAIN_LOGO_IMG = "";
-        public static boolean AUTO_TEMPER = false;
+        public static boolean HIGH_TEMPER_MODE = false;
         public static boolean MASK_DETECT_ENABLED = true;
         public static boolean LOCAL_PRIORITY = true;
         public static final boolean WELCOME_TIP_ENABLED = true;

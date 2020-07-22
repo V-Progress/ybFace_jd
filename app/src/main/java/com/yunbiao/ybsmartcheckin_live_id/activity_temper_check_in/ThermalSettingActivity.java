@@ -548,26 +548,29 @@ public class ThermalSettingActivity extends BaseActivity {
 
             //===低温模式=========================================================
             Switch swLowTempModel = view.findViewById(R.id.sw_low_temp_model_setting);
-            Switch swAutoMode = view.findViewById(R.id.sw_auto_model_setting);
+            Switch swHighTempModel = view.findViewById(R.id.sw_high_temp_model_setting);
+
             boolean aBoolean = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
             swLowTempModel.setChecked(aBoolean);
             swLowTempModel.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked && swAutoMode.isChecked()) {
+                //如果在低温模式开启的时候，高温模式也开启了，那么就把高温模式关闭
+                if (isChecked && swHighTempModel.isChecked()) {
                     SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
-                    swAutoMode.setChecked(false);
+                    swHighTempModel.setChecked(false);
                 }
                 SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, isChecked);
             });
 
             //===自动模式=========================================================
-            boolean autoTemper = SpUtils.getBoolean(ThermalConst.Key.AUTO_TEMPER, ThermalConst.Default.AUTO_TEMPER);
-            swAutoMode.setChecked(autoTemper);
-            swAutoMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            boolean autoTemper = SpUtils.getBoolean(ThermalConst.Key.HIGH_TEMPER_MODE, ThermalConst.Default.HIGH_TEMPER_MODE);
+            swHighTempModel.setChecked(autoTemper);
+            swHighTempModel.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                //如果在开启高温模式的时候，低温模式也开启了，那么就把低温模式关闭
                 if (isChecked && swLowTempModel.isChecked()) {
                     SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE, false);
                     swLowTempModel.setChecked(false);
                 }
-                SpUtils.saveBoolean(ThermalConst.Key.AUTO_TEMPER, isChecked);
+                SpUtils.saveBoolean(ThermalConst.Key.HIGH_TEMPER_MODE, isChecked);
             });
 
             //===无人脸报温=======================================================
