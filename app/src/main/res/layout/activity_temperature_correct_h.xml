@@ -107,8 +107,7 @@
                     android:id="@+id/tv_thermal_temp_correct"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center"
+                    android:gravity="left"
                     android:textColor="@color/white"
                     android:textSize="32dp" />
                 <Button
@@ -123,7 +122,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -137,7 +136,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -182,7 +181,7 @@
                 android:textColor="@color/white"
                 android:text="@string/act_correct_save"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="60dp" />
         </LinearLayout>
 
     </LinearLayout>

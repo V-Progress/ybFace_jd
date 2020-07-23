@@ -23,7 +23,7 @@
             android:textSize="30dp" />
 
         <ImageButton
-            android:id="@+id/ib_back"
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -70,9 +70,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical"
-            android:padding="50dp">
+            android:paddingTop="30dp"
+            android:paddingLeft="130dp"
+            android:paddingRight="130dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,8 +110,7 @@
                     android:id="@+id/tv_thermal_temp_correct"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:gravity="center"
+                    android:gravity="left"
                     android:textColor="@color/white"
                     android:textSize="32dp" />
                 <Button
@@ -139,7 +139,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -183,8 +183,9 @@
                 android:textSize="30dp"
                 android:textColor="@color/white"
                 android:text="@string/act_correct_save"
+                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="60dp" />
         </LinearLayout>
 
     </LinearLayout>

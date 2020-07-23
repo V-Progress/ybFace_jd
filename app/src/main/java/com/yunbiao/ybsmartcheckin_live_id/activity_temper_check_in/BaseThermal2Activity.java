@@ -176,6 +176,16 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                             TemperatureModule.getIns().startMLX90621YsI2C(lowTempModel, 16 * 30, 4 * 40, mlx90621YsTempCallBack);
                         }, 1000);
                     }
+                } else {
+                    if (TextUtils.equals("LXR", broadType) || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+                        TemperatureModule.getIns().startMLX90621GgPort(lowTempModel, 16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                    } else if(TextUtils.equals("SMT",broadType)){
+                        TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                    } else if (TextUtils.equals("WILL",broadType)) {
+                        TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                    } else {
+                        TemperatureModule.getIns().setMLX90621YsI2CCallBack(mlx90621YsTempCallBack);
+                    }
                 }
                 break;
             case TemperModuleType.SMT_32_32:

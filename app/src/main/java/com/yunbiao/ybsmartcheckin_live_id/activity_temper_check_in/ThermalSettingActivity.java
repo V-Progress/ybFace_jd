@@ -445,6 +445,9 @@ public class ThermalSettingActivity extends BaseActivity {
     }
 
     public static class TemperSettingFragment extends Fragment {
+
+        private EditText edtCorrect;
+        private TextView tvCorrectionF;
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -459,6 +462,15 @@ public class ThermalSettingActivity extends BaseActivity {
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             initView(getView());
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            float thermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
+            edtCorrect.setText(thermalCorrect + "");
+            tvCorrectionF.setText(getCorrectionFahrenheit(thermalCorrect));
         }
 
         private void initView(View view) {
@@ -477,7 +489,7 @@ public class ThermalSettingActivity extends BaseActivity {
             cbFace.setChecked(faceEnabled);
             cbTemper.setChecked(temperEnabled);
             if (temperEnabled) {
-                btn_thermal_corr.setVisibility(View.GONE);
+                btn_thermal_corr.setVisibility(View.VISIBLE);
             } else {
                 btn_thermal_corr.setVisibility(View.GONE);
             }
@@ -517,7 +529,7 @@ public class ThermalSettingActivity extends BaseActivity {
                     }
                     SpUtils.saveBoolean(ThermalConst.Key.TEMPER_ENABLED,isChecked);
                     if (isChecked) {
-                        btn_thermal_corr.setVisibility(View.GONE);
+                        btn_thermal_corr.setVisibility(View.VISIBLE);
                     } else {
                         btn_thermal_corr.setVisibility(View.GONE);
                     }
@@ -581,13 +593,13 @@ public class ThermalSettingActivity extends BaseActivity {
 
 
             TextView tvMaxF = view.findViewById(R.id.tv_max_threshold_fahrenheit);
-            TextView tvCorrectionF = view.findViewById(R.id.tv_correction_fahrenheit);
+            tvCorrectionF = view.findViewById(R.id.tv_correction_fahrenheit);
             TextView tvMinF = view.findViewById(R.id.tv_min_threshold_fahrenheit);
             //进入矫正=======================================================================================================
             float thermalCorrect = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
             Button btnCorrectSub = view.findViewById(R.id.btn_correct_sub_setting);
             Button btnCorrectAdd = view.findViewById(R.id.btn_correct_add_setting);
-            final EditText edtCorrect = view.findViewById(R.id.edt_correct_setting);
+            edtCorrect = view.findViewById(R.id.edt_correct_setting);
             edtCorrect.setText(thermalCorrect + "");
             tvCorrectionF.setText(getCorrectionFahrenheit(thermalCorrect));
 

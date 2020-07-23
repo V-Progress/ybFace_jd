@@ -412,4 +412,17 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
         }
         return stringListList;
     }
+
+    public void clearAllData(View view) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.delete_user_dialog_title))
+                .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
+                .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
+                    SignManager.instance().clearAllData(this);
+                    loadSignList();
+                }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
+                    dialog.dismiss();
+                }).create();
+        alertDialog.show();
+    }
 }

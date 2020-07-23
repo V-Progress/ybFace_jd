@@ -9,12 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.intelligence.hardware.temperature.TemperatureModule;
+import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
 import com.intelligence.hardware.temperature.callback.InfraredTempCallBack;
+import com.intelligence.hardware.temperature.callback.MLX90621GgTempCallBack;
+import com.intelligence.hardware.temperature.callback.MLX90621YsTempCallBack;
+import com.intelligence.hardware.temperature.callback.Smt3232TempCallBack;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.faceview.FacePreviewInfo;
 import com.yunbiao.faceview.FaceView;
@@ -27,6 +33,8 @@ import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class TemperatureCorrectActivity extends BaseGpioActivity {
     private static final String TAG = "TemperatureCorrectActiv";
@@ -69,7 +77,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         btnSubTempCorr.setOnClickListener(onClickListener);
         btnAddTempCorr.setOnClickListener(onClickListener);
         btnClickTemp.setOnClickListener(onClickListener);
-        findViewById(R.id.ib_back).setOnClickListener(onClickListener);
+        findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 
         thermalMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
         lowTemp = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
@@ -102,23 +110,55 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
     @Override
     protected void initData() {
         int currMode = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE, ThermalConst.Default.TEMPER_MODULE);;//当前模式
-        String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS1" : "/dev/ttyS4";
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
-            portPath = "/dev/ttyS4";
-        }
+        boolean mThermalImgMirror = SpUtils.getBoolean(ThermalConst.Key.THERMAL_IMAGE_MIRROR, ThermalConst.Default.THERMAL_IMAGE_MIRROR);
+        boolean lowTempModel = SpUtils.getBoolean(ThermalConst.Key.LOW_TEMP_MODE, ThermalConst.Default.LOW_TEMP);
         String broadType = CommonUtils.getBroadType2();
         switch (currMode) {
             case TemperModuleType.HM_32_32:
+                TemperatureModule.getIns().startHotImageK3232(mThermalImgMirror, lowTempModel, hotImageK3232CallBack);
                 break;
             case TemperModuleType.HM_16_4:
+                if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ivThermalCorr.getLayoutParams();
+                    lp.height = 100;
+                    lp.width = 200;
+                    ivThermalCorr.setLayoutParams(lp);
+                } else {
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivThermalCorr.getLayoutParams();
+                    lp.height = 100;
+                    lp.width = 200;
+                    ivThermalCorr.setLayoutParams(lp);
+                }
+                TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, lowTempModel, hotImageK1604CallBack);
                 break;
             case TemperModuleType.MLX_16_4:
+                if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ivThermalCorr.getLayoutParams();
+                    lp.height = 100;
+                    lp.width = 200;
+                    ivThermalCorr.setLayoutParams(lp);
+                } else {
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivThermalCorr.getLayoutParams();
+                    lp.height = 100;
+                    lp.width = 200;
+                    ivThermalCorr.setLayoutParams(lp);
+                }
+                if (TextUtils.equals("LXR", broadType) || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
+                    TemperatureModule.getIns().startMLX90621GgPort(lowTempModel, 16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                } else if(TextUtils.equals("SMT",broadType)){
+                    TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                } else if (TextUtils.equals("WILL",broadType)) {
+                    TemperatureModule.getIns().startMLX90621GgPort(lowTempModel,16 * 32, 4 * 40, mlx90621GgTempCallBack);
+                } else {
+                    TemperatureModule.getIns().setMLX90621YsI2CCallBack(mlx90621YsTempCallBack);
+                }
                 break;
             case TemperModuleType.SMT_32_32:
+                TemperatureModule.getIns().startSmt3232Temp(lowTempModel, smt3232TempCallBack);
                 break;
             case TemperModuleType.INFRARED:
-                break;
             default:
+                TemperatureModule.getIns().setInfraredTempCallBack(infraredTempCallBack);
                 break;
         }
         /*if (currMode == ThermalConst.ONLY_INFRARED || currMode == ThermalConst.FACE_INFRARED) {
@@ -161,6 +201,133 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         @Override
         public void dataRecoveryFailed() {
 
+        }
+    };
+
+    private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ivThermalCorr.setImageBitmap(imageBmp);
+                }
+            });
+
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(originalMaxT);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
+
+                }
+            }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+
+        }
+    };
+
+    private MLX90621GgTempCallBack mlx90621GgTempCallBack = new MLX90621GgTempCallBack() {
+        @Override
+        public void newestHotImageData(final Bitmap imageBmp, final float originalMaxT, final float maxT, final float minT) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ivThermalCorr.setImageBitmap(imageBmp);
+                }
+            });
+
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(originalMaxT);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
+
+                }
+            }
+        }
+    };
+
+    private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
+        @Override
+        public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ivThermalCorr.setImageBitmap(bitmap);
+                }
+            });
+
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(originalMaxT);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
+
+                }
+            }
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+
+        }
+    };
+
+    private Smt3232TempCallBack smt3232TempCallBack = new Smt3232TempCallBack() {
+        @Override
+        public void newestSmt3232Temp(float measureF, float afterF) {
+            if (isDetecting) {
+                if (tempList.size() < 5) {
+                    tempList.add(measureF);
+                } else {
+                    mMeanValue = getMean(tempList);
+                    tempList.clear();
+                    isDetecting = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.dismissNetLoading();
+                            tvThermalTemp.setText(mMeanValue + "℃");
+                            btnClickTemp.setEnabled(true);
+                        }
+                    });
+
+                }
+            }
         }
     };
 
@@ -246,7 +413,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
                 isDetecting = true;
                 return;
             }
-            if (v.getId() == R.id.ib_back) {
+            if (v.getId() == R.id.iv_back) {
                 finish();
                 return;
             }
