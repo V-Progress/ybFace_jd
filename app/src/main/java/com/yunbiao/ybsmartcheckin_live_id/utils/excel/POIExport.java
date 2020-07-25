@@ -62,8 +62,8 @@ public class POIExport extends Export{
                 List<String> strings = dataList.get(row);
 
                 int realNum = row + 1;
-                int rowNum = row + numOffset + 1;
-                publishProgress(rowNum, maxSize);
+                int progress = row + numOffset + 1;
+                publishProgress(progress, maxSize);
                 Timber.d("当前写入行：" + realNum);
 
                 Row pRow = sheet.createRow(realNum);
@@ -86,7 +86,7 @@ public class POIExport extends Export{
                         if (bytes != null) {
                             try{
                                 Drawing patriarch = sheet.createDrawingPatriarch();
-                                XSSFClientAnchor anchor = new XSSFClientAnchor(5, 5, 80, 80, (short) column, rowNum, (short) (column + 1), rowNum + 1);
+                                XSSFClientAnchor anchor = new XSSFClientAnchor(5, 5, 80, 80, (short) column, realNum, (short) (column + 1), realNum + 1);
                                 anchor.setAnchorType(HSSFClientAnchor.DONT_MOVE_AND_RESIZE);
                                 // 插入图片
                                 patriarch.createPicture(anchor, workbook.addPicture(bytes, HSSFWorkbook.PICTURE_TYPE_JPEG));
