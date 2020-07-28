@@ -264,13 +264,15 @@ String buildApkName(String param) {
         name = "PingTech"
     } else if (param.contains("XENON")) {
         name = "Xenon"
-    } else if (param.contains("TURKEY")){
+    } else if (param.contains("TURKEY")) {
         name = "TR"
+    } else if (param.contains("TOUCHLESS")){
+        name = "TOUCHLESS ENTRY"
     }else {
         name = "YB"
     }
 
-    if (!param.contains("OSIMLE") && !param.contains("SOFT_WORK")) {
+    if (!param.contains("OSIMLE") && !param.contains("SOFT_WORK") && !param.contains("TOUCHLESS")) {
         //确定后缀名
         if (param.contains("RZ")) {
             name += "人证测温"

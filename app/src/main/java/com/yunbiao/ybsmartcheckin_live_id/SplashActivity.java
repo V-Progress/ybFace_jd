@@ -293,6 +293,7 @@ public class SplashActivity extends BaseActivity {
                 ThermalConst.Default.MAIN_LOGO_TEXT = "Touchless Entry";
                 Constants.Default.IS_H_MIRROR = true;
                 Constants.Default.IS_V_MIRROR = true;
+                Constants.Default.PICTURE_ROTATION = 270;
                 break;
             default:
                 //朱培元客户
