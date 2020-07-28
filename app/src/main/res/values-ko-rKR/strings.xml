@@ -2,9 +2,6 @@
     <string name="app_name">YBFace</string>
     <string name="app_name2">HTFace</string>
     <string name="app_name3">思库考勤</string>
-    <string name="app_name4">Osmile AI</string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
     <string name="used">사용:</string>
     <string name="no_used">미사용:</string>
     <string name="back">이전</string>

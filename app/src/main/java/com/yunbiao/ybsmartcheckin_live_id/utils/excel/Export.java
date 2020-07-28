@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
+import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -56,10 +58,15 @@ public abstract class Export extends AsyncTask<Void, Integer, Integer> {
             exportDir.mkdirs();
         }
         exportPath = exportDir.getPath();
+        OutputLog.getInstance().addExportLog("创建文件目录：" + exportDir.getPath() + " ----- " + exportDir.exists());
+
+        List<List<String>> dataList = callback.getDataList();
+        OutputLog.getInstance().addExportLog("总数据条数：" + (dataList == null ? 0 : dataList.size()));
 
         //按日期拆分数据
-        Map<String, List<List<String>>> stringListMap = splitListForDate(callback.getDataList());
+        Map<String, List<List<String>>> stringListMap = splitListForDate(dataList);
         Timber.d("根据日期拆分List：" + stringListMap.size());
+        OutputLog.getInstance().addExportLog("按日期拆分数据：" + (stringListMap == null ? 0 : stringListMap.size()));
 
         Iterator<Map.Entry<String, List<List<String>>>> iterator = stringListMap.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -69,6 +76,8 @@ public abstract class Export extends AsyncTask<Void, Integer, Integer> {
 
             Timber.d("当前导出日期：" + key);
             Timber.d("日期分包执行线程：" + Thread.currentThread().getName());
+
+            OutputLog.getInstance().addExportLog("当前导出日期：" + key + ", 条数：" + value.size());
 
             splitExport(value, exportDir, key);
         }
@@ -108,6 +117,7 @@ public abstract class Export extends AsyncTask<Void, Integer, Integer> {
             num += numY == 0 ? 0 : 1;
             Map<Integer, List<List<String>>> dataMap = spiltList(dataList, num);
             Timber.d("数据已拆分：" + num);
+            OutputLog.getInstance().addExportLog("数据过多，继续拆分：" + dataMap.size());
 
             Iterator<List<List<String>>> iterator = dataMap.values().iterator();
             int offset = 0;
@@ -202,18 +212,31 @@ public abstract class Export extends AsyncTask<Void, Integer, Integer> {
      * @return
      */
     protected byte[] readBitmap(String imgPath) {
-        ByteArrayOutputStream imgBytesOut = new ByteArrayOutputStream();
-        Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, imgBytesOut);
-        byte[] bytes = imgBytesOut.toByteArray().clone();
-        if (!bitmap.isRecycled()) {
-            bitmap.recycle();
+        File file = new File(imgPath);
+        if(!file.exists()){
+            return null;
         }
-        if (imgBytesOut != null) {
-            try {
-                imgBytesOut.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        byte[] bytes = null;
+        ByteArrayOutputStream imgBytesOut = null;
+        try {
+            imgBytesOut = new ByteArrayOutputStream();
+            Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, imgBytesOut);
+            bytes = imgBytesOut.toByteArray();
+            if (!bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+        }catch (Exception e){
+            OutputLog.getInstance().addExportLog("读取图片异常：" + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (imgBytesOut != null) {
+                try {
+                    imgBytesOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return bytes;

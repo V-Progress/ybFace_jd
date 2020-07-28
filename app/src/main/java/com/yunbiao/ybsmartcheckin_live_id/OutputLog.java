@@ -12,8 +12,10 @@ import java.util.concurrent.TimeUnit;
 public class OutputLog {
 
     private StringBuffer stringBuffer = new StringBuffer();
+    private StringBuffer exportStringBuffer = new StringBuffer();
     private static OutputLog outputLog;
     private File logFile;
+    private File excelLogFile;
 
     public static synchronized OutputLog getInstance(){
         if(outputLog == null){
@@ -42,6 +44,18 @@ public class OutputLog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        excelLogFile = new File(dirFile,"export_log");
+        if(!excelLogFile.exists()){
+            if(!excelLogFile.getParentFile().exists()){
+                excelLogFile.getParentFile().mkdirs();
+            }
+            try {
+                boolean newFile = excelLogFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static final String TAG = "OutputLog";
@@ -56,10 +70,23 @@ public class OutputLog {
                     e.printStackTrace();
                 }
             }
+
+            if(excelLogFile != null && excelLogFile.exists() && exportStringBuffer.length() > 0){
+                try {
+                    FileUtils.write(excelLogFile,exportStringBuffer,true);
+                    exportStringBuffer.setLength(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         },1,1, TimeUnit.MINUTES);
     }
 
     public void addLog(String s){
         stringBuffer.append(s).append("\n");
+    }
+
+    public void addExportLog(String s){
+        exportStringBuffer.append(s).append("\n");
     }
 }

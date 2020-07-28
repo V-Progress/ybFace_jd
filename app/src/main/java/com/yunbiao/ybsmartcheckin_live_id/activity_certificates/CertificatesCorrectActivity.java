@@ -38,7 +38,6 @@ public class CertificatesCorrectActivity extends BaseGpioActivity {
     private ImageView ivThermalCorr;
     private FaceView faceView;
     private Button btnClickTemp;
-    private ImageButton ibBack;
     private TextView tvCurrentCorr;
 
     private List<Float> tempList = new ArrayList<>();//温度缓存list
@@ -63,12 +62,10 @@ public class CertificatesCorrectActivity extends BaseGpioActivity {
         edtValueTemp = findViewById(R.id.edt_value_temp_gun);
         ivThermalCorr = findViewById(R.id.iv_thermal_corr);
         faceView = findViewById(R.id.face_view);
-        ibBack = findViewById(R.id.ib_back);
         tvCurrentCorr = findViewById(R.id.tv_current_corr);
 
         btnSubTempCorr.setOnClickListener(onClickListener);
         btnAddTempCorr.setOnClickListener(onClickListener);
-        ibBack.setOnClickListener(onClickListener);
         btnClickTemp.setOnClickListener(onClickListener);
 
         thermalMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);

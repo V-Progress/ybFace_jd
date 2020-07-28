@@ -5,9 +5,6 @@
 </string>
     <string name="app_name3">思库インテリジェント勤務
 </string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
-    <string name="app_name4">Osmile AI</string>
     <string name="used">使用済:</string>
     <string name="no_used">/利用可能:</string>
     <string name="back">戻る</string>
@@ -32,7 +29,7 @@
     <string name="speech_setting_title">音声放送設定</string>
     <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->
     <string name="setting_welcome_speech">歓迎のことば</string><!--Welcome speech-->
-    <string name="temper_tips_close">ヒントに近づく</string>
+    <string name="temper_tips_close">接近アナウンス</string>
     <string name="setting_normal_speech_content">正常体温</string>
     <string name="setting_warning_speech_content">体温異常</string>
     <string name="speech_setting_open_or_close">ON/OFF</string>
@@ -43,8 +40,8 @@
     <string name="speech_setting_location_center">Sign position</string>
     <string name="speech_setting_location_end">behind</string>
 
-    <string name="speech_setting_alert">温度表示位置#记号使用表示、自動的に補完温度数字を例示(36.5℃)、お守りを一つしか存在#あまりの#符の時、存在する初の基準で、自動削除し、残りの符号</string>
-    <string name="speech_setting_welcome_exmaple">歓迎語例：</string>
+    <string name="speech_setting_alert">温度表示位置は＃記号で指定し、温度は自動的に表示されます。【例：36.5℃】</string>
+    <string name="speech_setting_welcome_exmaple">歓迎のことば：</string>
     <string name="speech_setting_distance_exmaple">距離提示例：</string>
     <string name="speech_setting_normal_exmaple">正常体温例：</string>
     <string name="speech_setting_warning_exmaple">体温異常例：</string>
@@ -55,8 +52,8 @@
     <string name="setting_pic_rotation">Direction of photos</string>
 
     <!--logo设置-->
-    <string name="setting_privacy_mode">Privacy Mode</string>
-    <string name="setting_periodic_purge_policy">Periodic purge policy</string>
+    <string name="setting_privacy_mode">プライバシーモード</string>
+    <string name="setting_periodic_purge_policy">データー自動消去期間設定</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
     <string name="setting_show_main_logo">Display home LOGO</string>
     <string name="setting_show_main_thermal">Display Thermal Imaging</string>
@@ -74,9 +71,9 @@
     <string name="setting_select_image">アバターを選択</string>
     <string name="setting_restore_image">アバターを復元する</string>
     <string name="setting_high_temp_model">高温モード</string>
-    <string name="main_temp_warning_tips">体温が異常です。</string>
-    <string name="main_temp_normal_tips">通常の体温</string>
-    <string name="main_temp_error_tips">異常な体温</string>
+    <string name="main_temp_warning_tips">。体温の異常を検知しました。</string>
+    <string name="main_temp_normal_tips">。平熱の範囲です。</string>
+    <string name="main_temp_error_tips">。体温の異常を検知しました。</string>
     <string name="main_temp_tips_please_close">近づいてください</string><!--Please approach-->
     <string name="main_temp_tips_so_far_text">近づいてください</string><!--Please approach-->
     <string name="main_temp_tips_please_far">離れてください</string>
@@ -86,7 +83,7 @@
     <string name="main_thermal_no_person">サーモ画像なし</string>
     <string name="main_please_waiting">お待ちください</string>
     <string name="main_temp_tips_please_in_range">顔を識別エリアに合わせてください。</string>
-    <string name="main_tips_please_close">ちょっと近くに来てください
+    <string name="main_tips_please_close">もう少し近づいて下さい
 </string>
 
     <!--应用名称-->
@@ -121,7 +118,7 @@
     <string name="temp_measuring_setting">測定中</string>
     <string name="port_setting">シリアル</string>
     <string name="select_port_setting">シリアル選択</string>
-    <string name="auto_close_door_setting">（この時間以降は自動的にシャットダウンします）</string><!--Automatic closing-->
+    <string name="auto_close_door_setting">(この時間以降ドアは自動的に閉じます)</string><!--Automatic closing-->
     <string name="recommend_valuez_setting">推奨境界値：８０</string>
     <string name="current_model_setting">現在モード</string>
 
@@ -129,12 +126,12 @@
     <string name="System_title">システム情報</string>
     <string name="System_deviceNo">デバイス番号:</string>
     <string name="System_bindCode">バインディングコード:</string>
-    <string name="System_Company">所属会社:</string>
+    <string name="System_Company">会社名:</string>
     <string name="System_Service">サービスネットワーク:</string>
     <string name="System_ValiDate">有効期間:</string>
-    <string name="System_Manage">社員管理</string>
-    <string name="System_Add">新規従業員</string>
-    <string name="System_Record">勤務評定記録</string>
+    <string name="System_Manage">名簿</string>
+    <string name="System_Add">名簿追加</string>
+    <string name="System_Record">記録</string>
     <string name="System_Setting">システム設定</string>
     <string name="System_Visitor">訪問客</string>
     <string name="System_skin_select">皮膚をとりかえる</string>
@@ -175,7 +172,7 @@
     <string name="employ_list_no_this_person">従業員が検索されませんでした。</string><!--未搜索到该员工-->
 
     <!--编辑信息-->
-    <string name="act_editEmploy_zjyg">従業員を増やす</string>
+    <string name="act_editEmploy_zjyg">名簿追加</string>
     <string name="act_editEmploy_xgxx">変更情報</string>
     <string name="act_editEmploy_pz">写真を撮る</string>
     <string name="act_editEmploy_reset">リセット</string>
@@ -262,7 +259,7 @@
     <string name="only_label"></string>
     <string name="face_label">勤務</string>
     <string name="temper_label">熱画像</string>
-    <string name="model_tip">職場での温度測定は行わない</string><!--单选考勤时不进行测温-->
+    <string name="model_tip">一人だけ出席の場合は温度測定しない</string><!--单选考勤时不进行测温-->
     <string name="model_check_tip">少なくとも1つのパターンを選択する</string><!--至少选择一种模式-->
 
     <!--标签-->
@@ -275,7 +272,7 @@
     <string name="setting_select_model">選択モード</string>
     <string name="setting_current_port_path">カレント・シリアル</string>
     <string name="setting_baud_rate">bps</string>
-    <string name="setting_open">開ける</string>
+    <string name="setting_open">開く</string>
     <string name="setting_enable_distance_tips">距離ヒントをオンにする</string>
     <string name="setting_thermal_imaging_mirror">熱画像画面鏡像</string>
     <string name="setting_open_temperature_delay">温度測定の遅延をオンにする</string>
@@ -284,21 +281,21 @@
     <string name="setting_s">秒</string>
     <string name="setting_temp_correct_value">温度測定矯正値</string>
     <string name="setting_amb_correct_value">環境温度矯正値</string>
-    <string name="setting_temperature_threshold">最低体温放送</string>
-    <string name="setting_temperature_warning">温度測定警報値</string>
+    <string name="setting_temperature_threshold">低温しきい値</string>
+    <string name="setting_temperature_warning">高温しきい値</string>
     <string name="setting_temp_range">体温測定範囲</string><!--Temperature measurement range-->
     <string name="setting_range_minimum">最低</string><!--minimum-->
     <string name="setting_range_highest">最高</string><!--Highest-->
     <string name="setting_speech_delay">連続放送間隔</string>
-    <string name="setting_screen_saver">スクリーン</string>
+    <string name="setting_screen_saver">スクリーンセイバー</string>
     <string name="setting_show_qr_code">二次元コードを表示</string>
     <string name="setting_enable_ic_card">ICリーダー</string>
-    <string name="setting_relay_delay_time">営業時間</string>
+    <string name="setting_relay_delay_time">リレーの遅延時間</string>
     <string name="setting_cpu_temp">CPU温度:</string>
     <string name="setting_camera_angle">カメラの角度</string>
     <string name="setting_curr_net">現在のネットワーク:</string>
     <string name="setting_net_name">【WIFI，ネットワーク名：XXXXX】</string>
-    <string name="setting_reboot_device">デバイスを再起動</string>
+    <string name="setting_reboot_device">デバイス再起動</string>
     <string name="setting_check_update">検出昇級</string>
     <string name="setting_manage_password">管理パスワード変更</string>
     <string name="setting_system_password">システムのパスワード</string>
@@ -320,7 +317,7 @@
     <string name="setting_max_camera_size">最大</string>
     <string name="setting_wifi_name">名前:</string>
     <string name="setting_wifi_rssi">，信号強度:</string>
-    <string name="setting_device_will_reboot">デバイスは再起動して、続行しますか？？</string>
+    <string name="setting_device_will_reboot">デバイスを再起動しますか？</string>
     <string name="setting_device_reboot">デバイスの再起動</string>
     <string name="setting_3_scond_reboot">3秒後に再起動します。</string>
     <string name="setting_password_not_null">パスワードは空ではいけません</string>
@@ -332,7 +329,7 @@
     <string name="setting_current_correct_value">現在の矯正値：</string>
     <string name="setting_low_temp_model">低温モード</string>
     <string name="setting_portrait_outline">人物の輪郭</string>
-    <string name="setting_default_welcome_tip">AIスマート勤務評定システム</string>
+    <string name="setting_default_welcome_tip">AI管理システムへ。ようこそ</string>
     <string name="setting_correct_temperature">温度を矯正する</string>
     <string name="setting_broadcast_f">放送華氏度</string>
 
@@ -356,15 +353,15 @@
     <string name="setting_switch_cancel">取消</string>
 
     <!--设置开关机-->
-    <string name="setting_power_on_off">タイムスイッチ</string>
-    <string name="act_power_title">スイッチの設定</string>
+    <string name="setting_power_on_off">タイマー設定</string>
+    <string name="act_power_title">タイマー設定</string>
     <string name="act_power_power_on_strategy">起動運転ポリシー
 </string>
     <string name="act_power_power_off_strategy">シャットダウン運転ポリシー
 </string>
-    <string name="act_power_power_on_strategy2">起動戦略
+    <string name="act_power_power_on_strategy2">タイマーON
 </string>
-    <string name="act_power_power_off_strategy2">起動ポリシー
+    <string name="act_power_power_off_strategy2">タイマーOFF
 </string>
     <string name="act_power_none">シャットダウンポリシー
 </string>
@@ -690,8 +687,8 @@
     <string name="main_exception_record_multi_thermal">異常人員記録</string>
     <string name="main_normal_record_multi_thermal">人員流動記録</string>
     <string name="main_total_passage_multi_thermal">通過人数</string>
-    <string name="main_normal_multi_thermal">通常の体温</string>
-    <string name="main_error_multi_thermal">異常な体温</string>
+    <string name="main_normal_multi_thermal">。平熱の範囲です。</string>
+    <string name="main_error_multi_thermal">。体温の異常を検知しました。</string>
     <string name="main_company_multi_thermal">会社員</string>
     <string name="main_visitor_multi_thermal">訪問者</string>
     <string name="system_net_status_multi_thermal">ネットワーク状態:</string>
@@ -744,7 +741,7 @@
     <string name="setting_clear_policy_unit">日</string>
     <string name="setting_clear_all_data">データを全て消去する</string>
     <string name="clear_no_data">データはクリア済みです：</string>
-    <string name="setting_no_face_temper">顔の温度を報告しなかった</string>
+    <string name="setting_no_face_temper">顔の温度を報告しない</string>
 
     <!-- 5寸 -->
     <string name="main_title">AI Temperature</string>

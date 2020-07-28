@@ -2,9 +2,6 @@
     <string name="app_name">雲標智能考勤</string>
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思庫考勤</string>
-    <string name="app_name4">Osmile AI</string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>

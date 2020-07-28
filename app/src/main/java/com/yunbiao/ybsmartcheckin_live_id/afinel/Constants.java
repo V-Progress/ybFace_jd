@@ -195,7 +195,7 @@ public class Constants {
         public static boolean SHOW_LIVENESS_SETTING = true;
         public static final boolean FACE_DIALOG = false;
         public static boolean IS_H_MIRROR = true;
-        public static final boolean IS_V_MIRROR = false;
+        public static boolean IS_V_MIRROR = false;
         //屏幕角度默认值
         public static int CAMERA_ANGLE = 0;
         //截图方向

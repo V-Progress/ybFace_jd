@@ -11,4 +11,5 @@ public interface FlavorType {
     int PING_TECH = 7;
     int XENON = 8;
     int TURKEY = 9;
+    int TOUCHLESS_ENTRY = 10;
 }

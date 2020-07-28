@@ -2,9 +2,6 @@
     <string name="app_name">Yunbiao Akıllı Katılım</string>
     <string name="app_name2">Hengtong katılım</string>
     <string name="app_name3">Siku Katılım</string>
-    <string name="app_name4">Osmile AI</string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
     <string name="used">kullanılmış:</string>
     <string name="no_used">/mevcut:</string>
     <string name="back">Geri</string>
@@ -89,7 +86,6 @@
 
     <string name="sk_temper_check_in">SKTemperatureCheckIn</string>
     <string name="sk_multiple">SKHighThroughput</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--视美泰-->
     <string name="smt_main_net_normal">normal</string>

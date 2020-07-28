@@ -81,8 +81,14 @@ public class JXLExport extends Export{
                             sheet.addCell(labelC);
                         } else {
                             File file = new File(content);
-                            WritableImage image = new WritableImage(column, realNum, 1, 1, readBitmap(file.getPath()));
-                            sheet.addImage(image);
+                            byte[] bytes = readBitmap(file.getPath());
+                            if(bytes != null){
+                                WritableImage image = new WritableImage(column, realNum, 1, 1,bytes);
+                                sheet.addImage(image);
+                            } else {
+                                Label labelC = new Label(column, realNum, "");
+                                sheet.addCell(labelC);
+                            }
                         }
                     } else {
                         Label labelC = new Label(column, realNum, "");

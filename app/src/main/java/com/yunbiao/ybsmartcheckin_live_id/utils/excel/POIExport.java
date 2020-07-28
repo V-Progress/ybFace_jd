@@ -3,6 +3,8 @@ package com.yunbiao.ybsmartcheckin_live_id.utils.excel;
 
 import android.text.TextUtils;
 
+import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -52,6 +54,7 @@ public class POIExport extends Export{
                 excelFile.createNewFile();
             }
             Timber.d("-----》 " + excelFile.getPath());
+            OutputLog.getInstance().addExportLog("创建文件：" + excelFile.getPath());
 
             SXSSFWorkbook workbook = new SXSSFWorkbook(new XSSFWorkbook());
             Sheet sheet = workbook.createSheet(tableName);
@@ -92,11 +95,13 @@ public class POIExport extends Export{
                                 patriarch.createPicture(anchor, workbook.addPicture(bytes, HSSFWorkbook.PICTURE_TYPE_JPEG));
                             }catch (Exception e){
                                 e.printStackTrace();
+                                OutputLog.getInstance().addExportLog("写入图片时出现错误：" + e.getMessage());
                                 Timber.d("写入图片时出现错误：创建空格");
                                 cell = pRow.createCell(column, HSSFCell.CELL_TYPE_STRING);
                                 cell.setCellValue("");
                             }
                         } else {
+                            OutputLog.getInstance().addExportLog("读取图片失败");
                             Timber.d("写入图片时出现错误：创建空格");
                             cell = pRow.createCell(column, HSSFCell.CELL_TYPE_STRING);
                             cell.setCellValue("");
@@ -106,10 +111,13 @@ public class POIExport extends Export{
             }
 
             Timber.d("创建数据完毕，准备写出");
+            OutputLog.getInstance().addExportLog("准备写出");
             writeToFile(workbook, excelFile.getPath());
+            OutputLog.getInstance().addExportLog("写出成功");
             Timber.d("写出完毕");
             return 1;
         } catch (Exception e) {
+            OutputLog.getInstance().addExportLog("写出异常：" + e.getMessage());
             e.printStackTrace();
             return -2;
         }

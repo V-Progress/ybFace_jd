@@ -92,14 +92,11 @@ public class ExcelUtils {
      * @param callback
      */
     public static void initExcelForPoi(String filePath, String tableName, String[] colName, Export.ExportCallback callback) {
-//        ExportForJXL export = new ExportForJXL(filePath,tableName,colName,callback);
-//        export.execute();
-
         Export export = new POIExport(filePath, tableName, colName, callback);
         export.execute();
 
-        /*LotDataExport export = new LotDataExport(filePath, tableName, colName, callback);
-        export.execute();*/
+//        Export export = new JXLExport(filePath, tableName, colName, callback);
+//        export.execute();
     }
 
     /*

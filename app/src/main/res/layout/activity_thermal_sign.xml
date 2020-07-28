@@ -29,87 +29,101 @@
         android:text="@string/back"
         android:drawableStart="@mipmap/back"/>
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_ads_addname"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/shape_employ_list"
-        android:padding="20dp">
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="170dp"
-            android:layout_height="44dp"
-            android:background="@drawable/selector_btn_take_photo"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#64DCFE"
-            android:textSize="20dp" />
-
-        <Spinner
-            android:paddingStart="5dp"
-            android:drawableEnd="@mipmap/icon_arrow_down"
-            android:id="@+id/spn_data_mode"
-            android:layout_width="108dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@+id/tv_date"
-            android:background="@drawable/selector_btn_take_photo"
-            android:gravity="center"
-            android:textColor="#64DCFE"
-            android:textSize="20dp"/>
-
-        <TextView
-            android:onClick="exportToUD"
-            android:id="@+id/tv_export_sign_data"
-            android:gravity="center"
-            android:textColor="#64DCFE"
-            android:text="@string/sign_list_export"
-            android:background="@drawable/selector_btn_take_photo"
-            android:layout_alignParentEnd="true"
-            android:layout_width="108dp"
-            android:layout_height="44dp" />
-
-        <Button
-            android:drawablePadding="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_toStartOf="@+id/tv_export_sign_data"
-            android:id="@+id/btn_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:background="@drawable/shape_bg_btnsync"
-            android:drawableStart="@mipmap/icon_sync"
-            android:paddingStart="10dp"
-            android:text="@string/sign_list_upload"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:visibility="visible"/>
-
-        <Button
-            android:layout_marginEnd="20dp"
-            android:layout_toStartOf="@+id/btn_upload"
-            android:id="@+id/btn_clear_all"
-            android:onClick="clearAllData"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:background="@drawable/shape_bg_btnsync"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:text="@string/setting_clear_all_data"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:visibility="visible"/>
+        android:padding="15dp">
 
         <LinearLayout
-            android:id="@+id/layout_title"
+            android:gravity="start"
+            android:orientation="horizontal"
+            android:id="@+id/ll_head_top"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_below="@+id/tv_date"
-            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_gravity="start"
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:minHeight="44dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_take_photo"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#64DCFE"
+                android:textSize="20dp" />
+
+            <Spinner
+                android:layout_gravity="start"
+                android:drawableEnd="@mipmap/icon_arrow_down"
+                android:id="@+id/spn_data_mode"
+                android:layout_width="0dp"
+                android:minHeight="44dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/selector_btn_take_photo"
+                android:textColor="#64DCFE"
+                android:textSize="20dp"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:minHeight="44dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:onClick="clearAllData"
+                android:background="@drawable/selector_btn_take_photo"
+                android:text="@string/setting_clear_all_data"
+                android:textColor="@color/white"
+                android:textSize="20dp"/>
+
+            <Button
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:id="@+id/btn_upload"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:minHeight="44dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_take_photo"
+                android:drawableStart="@mipmap/icon_sync"
+                android:paddingStart="5dp"
+                android:text="@string/sign_list_upload"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:visibility="visible"/>
+
+            <TextView
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:onClick="exportToUD"
+                android:id="@+id/tv_export_sign_data"
+                android:gravity="center"
+                android:textColor="#64DCFE"
+                android:text="@string/sign_list_export"
+                android:background="@drawable/selector_btn_take_photo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:minHeight="44dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/shape_employ_list"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -182,8 +196,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/layout_title">
+            android:layout_height="match_parent">
 
             <ListView
                 android:visibility="gone"
@@ -209,6 +222,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

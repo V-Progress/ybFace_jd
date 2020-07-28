@@ -75,6 +75,10 @@ public class AutoUpload {
         uploadProgress = 0;
         int comid = SpUtils.getCompany().getComid();
 
+        if(comid == Constants.NOT_BIND_COMPANY_ID){
+            return;
+        }
+
         //查询未上传总数据量
         long unUploadCount = DaoManager.get().querySignByComIdAndUploadCount(comid, false);
         Timber.d("未上传条数 = " + unUploadCount);

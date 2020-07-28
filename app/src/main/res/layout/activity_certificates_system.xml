@@ -175,6 +175,7 @@
                 android:textSize="32dp" />
 
             <Button
+                android:id="@+id/btn_user_manager"
                 android:onClick="goUserManager"
                 android:layout_width="0dp"
                 android:layout_marginLeft="50dp"

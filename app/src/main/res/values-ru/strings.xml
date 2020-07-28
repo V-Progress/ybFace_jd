@@ -2,9 +2,6 @@
     <string name="app_name">YBFace</string>
     <string name="app_name2">Hengtong табельный счет</string>
     <string name="app_name3">SK табельный счет</string>
-    <string name="app_name4">Osmile AI</string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
     <string name="used">Использованный:</string>
     <string name="no_used">/Доступный:</string>
     <string name="back">Назад</string>

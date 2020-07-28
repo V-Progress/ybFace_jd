@@ -2,9 +2,6 @@
     <string name="app_name">雲標智能考勤</string>
     <string name="app_name2">亨通考勤</string>
     <string name="app_name3">思庫考勤</string>
-    <string name="app_name4">Osmile AI</string>
-    <string name="app_name5">SoftWorkz AI</string>
-    <string name="app_name6">Scan Temp</string>
     <string name="used">已用:</string>
     <string name="no_used">/可用:</string>
     <string name="back">返回</string>
@@ -72,7 +69,6 @@
 
     <string name="sk_temper_check_in">思庫測溫考勤</string>
     <string name="sk_multiple">思庫大通量測溫</string>
-    <string name="sk_safety_chceck">思庫系統</string>
 
     <!--視美泰-->
     <string name="smt_main_net_normal">正常</string>
