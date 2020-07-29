@@ -117,6 +117,46 @@ public abstract class BaseMultiThermalActivity extends BaseGpioActivity implemen
         return rect;
     }
 
+    protected Rect adjustMi320Rect(int previewWidth, int previewHeight, Rect ftRect) {
+        if (ftRect == null) {
+            return null;
+        }
+
+        int canvasWidth = 320;
+        int canvasHeight = 240;
+        float horizontalRatio = (float) canvasWidth / (float) previewWidth;
+        float verticalRatio = (float) canvasHeight / (float) previewHeight;
+
+        Rect rect = new Rect(ftRect);
+        rect.left *= horizontalRatio;
+        rect.right *= horizontalRatio;
+        rect.top *= verticalRatio;
+        rect.bottom *= verticalRatio;
+
+        if(rect.left <= 5){
+            rect.left += 4;
+            rect.right += 4;
+        } else if(rect.left < 13){
+            rect.left += 1;
+            rect.right += 1;
+        } else if(rect.right >= 70 && rect.right < 78){
+            rect.left -= 3;
+            rect.right -= 3;
+        } if(rect.right >= 78){
+            rect.right -= 4;
+            rect.left -= 4;
+        } else {
+            rect.left += 1;
+            rect.right += 1;
+        }
+
+        rect.left -= boxSizeOffset;
+        rect.right += boxSizeOffset;
+        rect.top += (boxPortraitOffset - boxSizeOffset);
+        rect.bottom += (boxPortraitOffset + boxSizeOffset);
+        return rect;
+    }
+
     //显示系统信息
     private PopupWindow systemInfoPopup;
     private CountDownTimer countDownTimer;

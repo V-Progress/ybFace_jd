@@ -13,6 +13,11 @@ public class MultiThermalConst {
         String CORRECT_AREA_RIGHT = "multiThermalCorrectAreaRight";
         String CORRECT_AREA_BOTTOM = "multiThermalCorrectAreaBottom";
 
+        String MI320_CORRECT_AREA_LEFT = "mi320MultiThermalCorrectAreaLeft";
+        String MI320_CORRECT_AREA_TOP = "mi320MultiThermalCorrectAreaTop";
+        String MI320_CORRECT_AREA_RIGHT = "mi320MultiThermalCorrectAreaRight";
+        String MI320_CORRECT_AREA_BOTTOM = "mi320MultiThermalCorrectAreaBottom";
+
         String THERMAL_FACE_FRAME = "multiThermalFaceFrame";
 
         String BLACK_BODY_FRAME = "multiThermalBlackBodyFrame";
@@ -30,6 +35,8 @@ public class MultiThermalConst {
 
         String NORMAL_RANGE_START = "normalRangeStart";
         String NORMAL_RANGE_END = "normalRangeEnd";
+
+        String MULTI_TEMPER_MODULE = "multiTemperModule";
     }
 
     public interface Default{
@@ -42,6 +49,11 @@ public class MultiThermalConst {
         int CORRECT_AREA_TOP = 0;
         int CORRECT_AREA_RIGHT = 5;
         int CORRECT_AREA_BOTTOM = 5;
+
+        int MI320_CORRECT_AREA_LEFT = 0;
+        int MI320_CORRECT_AREA_TOP = 0;
+        int MI320_CORRECT_AREA_RIGHT = 20;
+        int MI320_CORRECT_AREA_BOTTOM = 20;
 
         boolean THERMAL_FACE_FRAME = false;//热成像人脸框
         boolean BLACK_BODY_FRAME = false;//黑体框
@@ -61,5 +73,10 @@ public class MultiThermalConst {
 
         float NORMAL_RANGE_START = 35.0f;
         float NORMAL_RANGE_END = 37.2f;
+    }
+
+    public interface TemperModuleType {
+        int K6080 = 101;
+        int MI320 = 102;
     }
 }

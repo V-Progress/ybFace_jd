@@ -257,6 +257,7 @@ public class FaceView extends FrameLayout {
 
     private Map<Integer, Float> temperHashMap = new HashMap<>();
     private Map<Integer, Long> temperTimeMap = new HashMap<>();
+    private Map<Integer, Bitmap> bitmapMap = new HashMap<>();
     private long timeMillis = 0;
     private long temperUpdateInterval = 1000;
     private List<Integer> idList = new ArrayList<>();
@@ -273,6 +274,7 @@ public class FaceView extends FrameLayout {
             timeMillis = System.currentTimeMillis();
             if (true) {
                 idList.clear();
+                bitmapMap.clear();
                 for (FaceIndexInfo faceIndexInfo : arrayList) {
                     int faceId = faceIndexInfo.getFaceId();
                     float afterTreatmentF = faceIndexInfo.getAfterTreatmentF();
@@ -281,6 +283,7 @@ public class FaceView extends FrameLayout {
                         afterTreatmentF = originalTempF;
                     }
                     idList.add(faceId);
+                    bitmapMap.put(faceId, faceIndexInfo.getBitmap());
                     if (!temperHashMap.containsKey(faceId)) {
                         temperHashMap.put(faceId, afterTreatmentF);
                         temperTimeMap.put(faceId, timeMillis);
@@ -315,6 +318,13 @@ public class FaceView extends FrameLayout {
                 }
             }
         }
+    }
+
+    public Bitmap getBitmapByTrackId (int trackId) {
+        if (bitmapMap.containsKey(trackId)) {
+            return bitmapMap.get(trackId);
+        }
+        return null;
     }
 
     public float getTemperByTrackId(int trackId) {

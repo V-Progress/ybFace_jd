@@ -95,7 +95,13 @@
                         android:id="@+id/iv_hot_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:visibility="gone"
                         android:scaleType="fitXY" />
+                    <com.intelligence.hardware.temperature.view.Mi320View
+                        android:id="@+id/mi320_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"/>
                     <com.yunbiao.faceview.SecondFaceRectView
                         android:id="@+id/face_rect_view_hot_image"
                         android:layout_width="match_parent"

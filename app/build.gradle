@@ -343,6 +343,8 @@ dependencies {
 
     /*测温模块*/
     implementation fileTree(includes: ['temperature-release.aar'], dir: 'libs')
+    implementation fileTree(includes: ['seekware-4.1.0.0.aar'], dir: 'libs')
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'

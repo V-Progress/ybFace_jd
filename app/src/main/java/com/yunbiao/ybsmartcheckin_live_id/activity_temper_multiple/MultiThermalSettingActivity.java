@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -28,6 +30,7 @@ import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.bean.BlackBody;
 import com.intelligence.hardware.temperature.bean.FaceIndexInfo;
 import com.intelligence.hardware.temperature.callback.HotImageK6080CallBack;
+import com.intelligence.hardware.temperature.callback.Mi320BitmapCallBack;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.PowerOnOffActivity;
@@ -69,6 +72,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
     private boolean is1280800 = false;
     private View rlCorrectArea;
 
+    private int temperModule;
+
     @Override
     protected int getPortraitLayout() {
         return R.layout.activity_multi_thermal_setting;
@@ -86,6 +91,8 @@ public class MultiThermalSettingActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
+
+        temperModule = SpUtils.getIntOrDef(MultiThermalConst.Key.MULTI_TEMPER_MODULE, MultiThermalConst.TemperModuleType.MI320);
 
         initFaceRectMirrorSetting();
 
@@ -486,10 +493,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
         int top = mSaveRect.top;
         int right = mSaveRect.right;
         int bottom = mSaveRect.bottom;
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_LEFT, left);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_TOP, top);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_RIGHT, right);
-        SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, bottom);
+        if (temperModule == MultiThermalConst.TemperModuleType.K6080) {
+            SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_LEFT, left);
+            SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_TOP, top);
+            SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_RIGHT, right);
+            SpUtils.saveInt(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, bottom);
+        } else {
+            SpUtils.saveInt(MultiThermalConst.Key.MI320_CORRECT_AREA_LEFT, left);
+            SpUtils.saveInt(MultiThermalConst.Key.MI320_CORRECT_AREA_TOP, top);
+            SpUtils.saveInt(MultiThermalConst.Key.MI320_CORRECT_AREA_RIGHT, right);
+            SpUtils.saveInt(MultiThermalConst.Key.MI320_CORRECT_AREA_BOTTOM, bottom);
+        }
+
 
         L.e("MultiThermalSettingActivity", "saveRect:保存的数值：" + left + " --- " + top + " --- " + right + " --- " + bottom);
 
@@ -502,10 +517,18 @@ public class MultiThermalSettingActivity extends BaseActivity {
     }
 
     private Rect getCacheRect() {
-        int left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT, MultiThermalConst.Default.CORRECT_AREA_LEFT);
-        int top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP, MultiThermalConst.Default.CORRECT_AREA_TOP);
-        int right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT, MultiThermalConst.Default.CORRECT_AREA_RIGHT);
-        int bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
+        int left, top, right, bottom;
+        if (temperModule == MultiThermalConst.TemperModuleType.K6080) {
+            left = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_LEFT, MultiThermalConst.Default.CORRECT_AREA_LEFT);
+            top = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_TOP, MultiThermalConst.Default.CORRECT_AREA_TOP);
+            right = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_RIGHT, MultiThermalConst.Default.CORRECT_AREA_RIGHT);
+            bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.CORRECT_AREA_BOTTOM, MultiThermalConst.Default.CORRECT_AREA_BOTTOM);
+        } else {
+            left = SpUtils.getIntOrDef(MultiThermalConst.Key.MI320_CORRECT_AREA_LEFT, MultiThermalConst.Default.MI320_CORRECT_AREA_LEFT);
+            top = SpUtils.getIntOrDef(MultiThermalConst.Key.MI320_CORRECT_AREA_TOP, MultiThermalConst.Default.MI320_CORRECT_AREA_TOP);
+            right = SpUtils.getIntOrDef(MultiThermalConst.Key.MI320_CORRECT_AREA_RIGHT, MultiThermalConst.Default.MI320_CORRECT_AREA_RIGHT);
+            bottom = SpUtils.getIntOrDef(MultiThermalConst.Key.MI320_CORRECT_AREA_BOTTOM, MultiThermalConst.Default.MI320_CORRECT_AREA_BOTTOM);
+        }
         return new Rect(left, top, right, bottom);
     }
 
@@ -513,38 +536,53 @@ public class MultiThermalSettingActivity extends BaseActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            boolean mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
-
             Rect cacheRect = getCacheRect();
+            if (temperModule == MultiThermalConst.TemperModuleType.K6080) {
+                boolean mThermalMirror = SpUtils.getBoolean(MultiThermalConst.Key.THERMAL_MIRROR, MultiThermalConst.Default.THERMAL_MIRROR);
 
-            //开启热成像6080模块
-            //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
-            TemperatureModule.getIns().startHotImageK6080(mThermalMirror, false, new HotImageK6080CallBack() {
-                @Override
-                public void newestHotImageData(final Bitmap bitmap, float v, float v1, float v2) {
-                    if (ivHotImage != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ivHotImage.setImageBitmap(bitmap);
-                            }
-                        });
+                //开启热成像6080模块
+                //isMirror:热成像画面是否左右镜像, isCold:是否为低温补偿模式, hotImageK6080CallBack:数据回调
+                TemperatureModule.getIns().startHotImageK6080(mThermalMirror, false, new HotImageK6080CallBack() {
+                    @Override
+                    public void newestHotImageData(final Bitmap bitmap, float v, float v1, float v2) {
+                        if (ivHotImage != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ivHotImage.setImageBitmap(bitmap);
+                                }
+                            });
+                        }
                     }
-                }
 
-                @Override
-                public void newestHotImageData(Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
+                    @Override
+                    public void newestHotImageData(Bitmap bitmap, ArrayList<FaceIndexInfo> arrayList) {
 
-                }
-            });
-            TemperatureModule.getIns().setmCorrectionValue(0.0f);
-            BlackBody blackBody = new BlackBody(cacheRect.left, cacheRect.right, cacheRect.top, cacheRect.bottom);
-            blackBody.setFrameColor(Color.WHITE);
-            blackBody.setTempPreValue(345);
-            TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+                    }
+                });
+                TemperatureModule.getIns().setmCorrectionValue(0.0f);
+                BlackBody blackBody = new BlackBody(cacheRect.left, cacheRect.right, cacheRect.top, cacheRect.bottom);
+                blackBody.setFrameColor(Color.WHITE);
+                blackBody.setTempPreValue(345);
+                TemperatureModule.getIns().startK6080BlackBodyMode(blackBody);
+            } else {
+                BlackBody blackBody = new BlackBody(cacheRect.left, cacheRect.right, cacheRect.top, cacheRect.bottom);
+                blackBody.setFrameColor(Color.WHITE);
+                blackBody.setTempPreValue(345);
+                handler.postDelayed(() -> MultiThermalActivity.mi320View.startBlackBodyMode(blackBody), 500);
+                MultiThermalActivity.mi320View.setMi320BitmapCallBack(new Mi320BitmapCallBack() {
+                    @Override
+                    public void newestHotImageData(Bitmap bitmap) {
+                        Matrix matrix = new Matrix();
+                        matrix.postScale(-1, 1);
+                        runOnUiThread(() -> ivHotImage.setImageBitmap(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true)));
+                    }
+                });
+            }
         }
     };
 
+    int widthHieght = 5;
     private void initCorrectArea() {
         final SeekBar xSeekBar = findViewById(R.id.sb_x_multi_setting);
         final SeekBar ySeekBar = findViewById(R.id.sb_y_multi_setting);
@@ -566,21 +604,33 @@ public class MultiThermalSettingActivity extends BaseActivity {
                 ySeekBar.setProgress(rect.top);
                 ySeekBar.setMax(60 - rect.height());
 
-                final int widthHieght = 5;
+                if (temperModule == MultiThermalConst.TemperModuleType.MI320) {
+                    widthHieght = 20;
+                    xSeekBar.setMax(320 - rect.width());
+                    ySeekBar.setMax(240 - rect.height());
+                }
                 SeekBar.OnSeekBarChangeListener onSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         if (seekBar.getId() == R.id.sb_x_multi_setting) {
                             rect.left = 0 + progress;
                             rect.right = widthHieght + progress;
-                            if (rect.right >= 80) {
+                            if (temperModule == MultiThermalConst.TemperModuleType.K6080 && rect.right >= 80) {
+                                seekBar.setProgress(progress);
+                                return;
+                            }
+                            if (temperModule == MultiThermalConst.TemperModuleType.MI320 && rect.right >= 320) {
                                 seekBar.setProgress(progress);
                                 return;
                             }
                         } else {
                             rect.top = 0 + progress;
                             rect.bottom = widthHieght + progress;
-                            if (rect.bottom >= 60) {
+                            if (temperModule == MultiThermalConst.TemperModuleType.K6080 && rect.bottom >= 60) {
+                                seekBar.setProgress(progress);
+                                return;
+                            }
+                            if (temperModule == MultiThermalConst.TemperModuleType.MI320 && rect.bottom >= 240) {
                                 seekBar.setProgress(progress);
                                 return;
                             }
@@ -622,8 +672,24 @@ public class MultiThermalSettingActivity extends BaseActivity {
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);//不填充
 
+        if (temperModule == MultiThermalConst.TemperModuleType.MI320) {
+            float widthOffsetF = imageBitmap.getWidth() / 320f;
+            float heightOffsetF = imageBitmap.getHeight() / 240f;
+
+            paint.setStrokeWidth(1 * widthOffsetF); //线的宽度
+
+            RectF exmpRect = new RectF(rect);
+            exmpRect.left *= widthOffsetF;
+            exmpRect.right *= widthOffsetF;
+            exmpRect.top *= heightOffsetF;
+            exmpRect.bottom *= heightOffsetF;
+            canvas.drawRect(exmpRect, paint);
+            return mutableBitmap;
+        }
+
         int widthOffset = imageBitmap.getWidth() / 80;
         int heightOffset = imageBitmap.getHeight() / 60;
+
         paint.setStrokeWidth(1 * widthOffset); //线的宽度
 
         RectF exmpRect = new RectF(rect);
@@ -760,4 +826,5 @@ public class MultiThermalSettingActivity extends BaseActivity {
         super.finish();
         overridePendingTransition(R.anim.left_in, R.anim.left_out);
     }
+
 }
