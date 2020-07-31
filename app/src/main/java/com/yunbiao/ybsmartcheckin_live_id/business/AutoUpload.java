@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.UpdateSignDataEvent;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SignLogTest;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
@@ -24,8 +25,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -152,7 +155,7 @@ public class AutoUpload {
             int temperPageLength = 30;
             //总页数
             int temperPage = (int) (temperCount / temperPageLength);
-            if (visitorCount1 % temperPageLength != 0) {
+            if (temperCount % temperPageLength != 0) {
                 temperPage += 1;
             }
             for (int i = 0; i < temperPage; i++) {
@@ -287,8 +290,10 @@ public class AutoUpload {
                         uploadState1 = 1;
 
                         for (Sign sign : signList) {
-                            sign.setUpload(true);
-                            DaoManager.get().addOrUpdate(sign);
+                            if(sign.getTemperature() == 0){
+                                sign.setUpload(true);
+                                DaoManager.get().addOrUpdate(sign);
+                            }
                         }
 
                         SignLogTest.getInstance().addArrayContent(signList,response);
@@ -333,33 +338,49 @@ public class AutoUpload {
         } else {
             signList = signs;
         }
-        List<TemperSignBean> temperSignBeans = new ArrayList<>();
-        for (Sign sign : signList) {
-            temperSignBeans.add(new TemperSignBean(sign.getTime(), sign.getTemperature(), sign.getEmpId(), paramsDateFormat.format(sign.getTime())));
-        }
-        String json = new Gson().toJson(temperSignBeans);
 
-        Map<String, File> headMap = new HashMap<>();
-        Map<String, File> hotMap = new HashMap<>();
-        for (Sign sign : signList) {
+        Map<String, File> headMap = new LinkedHashMap<>();
+        Map<String, File> hotMap = new LinkedHashMap<>();
+        List<TemperSignBean> temperSignBeans = new ArrayList<>();
+        for (int i = 0; i < signList.size(); i++) {
+            Sign sign = signList.get(i);
+            long time = sign.getTime();
+            temperSignBeans.add(new TemperSignBean(time, sign.getTemperature(), sign.getEmpId(), paramsDateFormat.format(sign.getTime())));
+
             //存头像
             File headFile = getFileByPath(sign.getHeadPath());
-            headMap.put(headFile.getName(), headFile);
+            headMap.put(time + ".jpg", headFile);
 
             //存热图
             File hotFile = getFileByPath(sign.getHotImgPath());
-            hotMap.put(hotFile.getName(), hotFile);
+            hotMap.put(time + "_hot.jpg", hotFile);
         }
+        String json = new Gson().toJson(temperSignBeans);
+
+        String format = paramsDateFormat.format(new Date());
+        OutputLog.getInstance().addMultipleLog(format + " ----- " + json);
+
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, File> stringFileEntry : headMap.entrySet()) {
+            sb.append("Key: ").append(stringFileEntry.getKey()).append(" --- Value: ").append(stringFileEntry.getValue().length());
+        }
+        OutputLog.getInstance().addMultipleLog("头像 ----- " + sb.toString());
+        sb.setLength(0);
+
+        for (Map.Entry<String, File> stringFileEntry : hotMap.entrySet()) {
+            sb.append("Key: ").append(stringFileEntry.getKey()).append(" --- Value: ").append(stringFileEntry.getValue().length());
+        }
+        OutputLog.getInstance().addMultipleLog("热成像 ----- " + sb.toString());
 
         d(uploadProgress + " - 批量上传测温记录：条数：" + signList.size());
-        d("批量上传测温记录：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY);
+        d("批量上传测温记录：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW);
         d("批量上传测温记录:参数：" + json);
         d("批量上传测温记录:头像文件：" + headMap.toString());
         d("批量上传测温记录:热图文件：" + hotMap.toString());
 
         int comid = SpUtils.getCompany().getComid();
         OkHttpUtils.post()
-                .url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY)
+                .url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW)
                 .addParams("witJson", json)
                 .addParams("deviceNo", HeartBeatClient.getDeviceNo())
                 .addParams("comId", comid + "")
@@ -519,8 +540,8 @@ public class AutoUpload {
                     return;
                 }
 
-                Map<String, File> hotMap = new HashMap<>();
-                Map<String, File> fileMap = new HashMap<>();
+                Map<String, File> hotMap = new LinkedHashMap<>();
+                Map<String, File> fileMap = new LinkedHashMap<>();
                 List<WitBean> witBeanList = new ArrayList<>();
                 for (int i = 0; i < signs.size(); i++) {
                     Sign sign = signs.get(i);
@@ -552,7 +573,7 @@ public class AutoUpload {
                     } else {
                         file = createNullFile("", sign.getTime());
                     }
-                    fileMap.put(file.getName(), file);
+                    fileMap.put(sign.getTime() + ".jpg", file);
 
                     //添加热图
                     File hotFile;
@@ -566,7 +587,7 @@ public class AutoUpload {
                             hotFile = createNullFile("hot_", sign.getTime());
                         }
                     }
-                    hotMap.put(hotFile.getName(), hotFile);
+                    hotMap.put(sign.getTime() + "_hot.jpg", hotFile);
                 }
                 Map<String, String> params = new HashMap<>();
                 String jsonStr = new Gson().toJson(witBeanList);
@@ -574,12 +595,12 @@ public class AutoUpload {
                 params.put("deviceNo", HeartBeatClient.getDeviceNo());
                 params.put("comId", SpUtils.getCompany().getComid() + "");
 
-                d("地址：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY);
+                d("地址：" + ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW);
                 d("参数：" + params.toString());
                 d("头像：" + fileMap.size());
                 d("热图：" + hotMap.size());
 
-                OkHttpUtils.post().url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY)
+                OkHttpUtils.post().url(ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW)
                         .params(params)
                         .files("heads", fileMap)
                         .files("reHead", hotMap)

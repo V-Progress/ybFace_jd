@@ -13,9 +13,11 @@ public class OutputLog {
 
     private StringBuffer stringBuffer = new StringBuffer();
     private StringBuffer exportStringBuffer = new StringBuffer();
+    private StringBuffer multipleStringBuffer = new StringBuffer();
     private static OutputLog outputLog;
     private File logFile;
     private File excelLogFile;
+    private File multipleLogFile;
 
     public static synchronized OutputLog getInstance(){
         if(outputLog == null){
@@ -56,6 +58,15 @@ public class OutputLog {
                 e.printStackTrace();
             }
         }
+
+        multipleLogFile = new File(dirFile,"multiple_log");
+        if(!multipleLogFile.exists()){
+            try {
+                multipleLogFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static final String TAG = "OutputLog";
@@ -64,7 +75,7 @@ public class OutputLog {
             if(logFile != null && logFile.exists() && stringBuffer.length() > 0){
                 try {
                     Log.e(TAG, "OutputLog: 写入长度：" + stringBuffer.length());
-                    FileUtils.write(logFile,stringBuffer,true);
+                    FileUtils.write(logFile,stringBuffer,multipleLogFile.length() < 10 * 1024 * 1024);
                     stringBuffer.setLength(0);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -73,8 +84,17 @@ public class OutputLog {
 
             if(excelLogFile != null && excelLogFile.exists() && exportStringBuffer.length() > 0){
                 try {
-                    FileUtils.write(excelLogFile,exportStringBuffer,true);
+                    FileUtils.write(excelLogFile,exportStringBuffer,multipleLogFile.length() < 10 * 1024 * 1024);
                     exportStringBuffer.setLength(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(multipleLogFile != null && multipleLogFile.exists() && multipleStringBuffer.length() > 0){
+                try {
+                    FileUtils.write(multipleLogFile,multipleStringBuffer,multipleLogFile.length() < 10 * 1024 * 1024);
+                    multipleStringBuffer.setLength(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,6 +104,10 @@ public class OutputLog {
 
     public void addLog(String s){
         stringBuffer.append(s).append("\n");
+    }
+
+    public void addMultipleLog(String log){
+        multipleStringBuffer.append(log).append("\n");
     }
 
     public void addExportLog(String s){

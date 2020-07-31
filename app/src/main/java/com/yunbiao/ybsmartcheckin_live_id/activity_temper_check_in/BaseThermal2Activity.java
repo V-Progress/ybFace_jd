@@ -208,13 +208,13 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         //判断高低温模式
         if(lowTempModel){//低温模式开
             TemperatureModule.getIns().setHotImageColdMode(true);
-            TemperatureModule.getIns().setHotImageHotMode(false, 45f);
+            TemperatureModule.getIns().setHotImageHotMode(false, 42f);
         } else if(highTempModel){//高温模式开
-            TemperatureModule.getIns().setHotImageHotMode(true, 45f);
+            TemperatureModule.getIns().setHotImageHotMode(true, 42f);
             TemperatureModule.getIns().setHotImageColdMode(false);
         } else {//普通模式
             TemperatureModule.getIns().setHotImageColdMode(false);
-            TemperatureModule.getIns().setHotImageHotMode(false, 45f);
+            TemperatureModule.getIns().setHotImageHotMode(false, 42f);
         }
         mCacheTemperSize = temperModule == TemperModuleType.MLX_16_4 || temperModule == TemperModuleType.HM_16_4 ? 3 : 4;
     }
@@ -325,35 +325,54 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         }
     };
 
-    private void startAutoCheck(float originT) {
-        if (autoCheckList.size() < 10) {
-            autoCheckList.add(originT);
-        } else {
-            int highTotal = 0;
-            int lowTotal = 0;
-            for (Float aFloat : autoCheckList) {
-                if (aFloat <= 16f) {
-                    lowTotal++;
-                } else if (aFloat >= 29f) {
-                    highTotal++;
-                }
-            }
-            int total = (autoCheckList.size() / 2) + 1;
-            if (lowTotal >= total) {
-                currTemperMode = 0;
-                TemperatureModule.getIns().setHotImageColdMode(true);
-                TemperatureModule.getIns().setHotImageHotMode(false, 45f);
-            } else if (highTotal >= total) {
-                currTemperMode = 2;
-                TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(true, 45f);
-            } else {
-                currTemperMode = 1;
-                TemperatureModule.getIns().setHotImageColdMode(false);
-                TemperatureModule.getIns().setHotImageHotMode(false, 45f);
-            }
-            testModel(currTemperMode);
-            autoCheckList.clear();
+    private boolean isInitMode = false;
+    private List<Float> autoCorrectList = new ArrayList<>();
+    private void autoCorrectMode(float originT){
+        if(isInitMode){
+           return;
+        }
+
+        if(autoCorrectList.size() < 30){
+            autoCorrectList.add(originT);
+            return;
+        }
+        isInitMode = true;
+
+        Float max = Collections.max(autoCorrectList);
+
+        Float min = Collections.min(autoCorrectList);
+
+        autoCorrectList.remove(max);
+
+        autoCorrectList.remove(min);
+
+        float mean = getMean(autoCorrectList);
+
+        autoCorrectList.clear();
+
+        //低于30度为室内模式
+        if(mean < 30.0f){
+            TemperatureModule.getIns().setHotImageHotMode(false,42.0f);
+            TemperatureModule.getIns().setHotImageColdMode(true);
+            SpUtils.saveBoolean(ThermalConst.Key.HIGH_TEMPER_MODE,false);
+            SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE,true);
+            Timber.d("低温模式开启");
+        }
+        //高于34度为室外模式
+        else if(mean >= 34.0f){
+            TemperatureModule.getIns().setHotImageHotMode(true,42.0f);
+            TemperatureModule.getIns().setHotImageColdMode(false);
+            SpUtils.saveBoolean(ThermalConst.Key.HIGH_TEMPER_MODE,true);
+            SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE,false);
+            Timber.d("高温模式开启");
+        }
+        //介于之间为普通模式
+        else {
+            TemperatureModule.getIns().setHotImageHotMode(false,42.0f);
+            TemperatureModule.getIns().setHotImageColdMode(false);
+            SpUtils.saveBoolean(ThermalConst.Key.HIGH_TEMPER_MODE,false);
+            SpUtils.saveBoolean(ThermalConst.Key.LOW_TEMP_MODE,false);
+            Timber.d("普通模式开启");
         }
     }
 
@@ -370,6 +389,106 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
+        /*if (isActivityPaused) {
+            return;
+        }
+        if (isOnlyFace()) {
+            return;
+        }
+
+        if (imageBmp == null) {
+            imageBmp = selectInfaredImage(mHasFace);
+        }
+
+        mLastHotImage = imageBmp;
+        sendUpdateHotInfoMessage(imageBmp, afterT);
+
+        if(!lowTempModel && !highTempModel && Constants.FLAVOR_TYPE == FlavorType.TURKEY){
+            handleTurkeyTemperatureLogic(originT,afterT);
+            return;
+        }
+
+        if (isActivityPaused || !mHasFace) {
+            autoCorrectMode(originT);
+
+            if(mTurkeyDelayTag != 0){
+                mTurkeyDelayTag = 0;
+            }
+            if (distanceTipNumber != 0) {
+                distanceTipNumber = 0;
+            }
+            if (mCacheBeforeTemper == 0.0f || originT < mCacheBeforeTemper) {
+                mCacheBeforeTemper = originT;
+            }
+            mCacheTime = 0;
+            if (mCacheTemperList.size() > 0) {
+                mCacheTemperList.clear();
+            }
+            sendClearAllUIMessage();
+            return;
+        }
+
+        //只有仅测温模式下 以及 开启活体 以及 非活体时才拦截
+        if(isOnlyTemper() && livenessEnabled && (mLiveness == null || mLiveness != LivenessInfo.ALIVE)){
+            return;
+        }
+
+        if (isFaceToFar) {
+            if (mCacheTime != 0) mCacheTime = 0;
+            if (mCacheTemperList.size() > 0) mCacheTemperList.clear();
+            sendTipsMessage(speechBean.getDistanceContent());
+            if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
+                if(speechBean.isDistanceEnabled() && distanceTipNumber < 5 && isTipTimeOk())
+                    KDXFSpeechManager.instance().playApprochSound(() -> {
+                        mTipTime = System.currentTimeMillis();
+                        distanceTipNumber++;
+                    });
+            } else if (speechBean.isDistanceEnabled() && distanceTipNumber < 5 && isTipTimeOk()){
+                KDXFSpeechManager.instance().playNormalAdd(speechBean.getDistanceContent(), () -> {
+                    mTipTime = System.currentTimeMillis();
+                    distanceTipNumber++;
+                });
+            }
+            return;
+        }
+        //全部通过后清除提示框
+        sendResetTipsMessage(0);
+
+        if(isOnlyTemper()){
+            long currentTimeMillis = System.currentTimeMillis();
+            if(mCacheTime != 0 && currentTimeMillis - mCacheTime < mSpeechDelay){
+                return;
+            }
+            mCacheTemperList.add(afterT);
+            if(mCacheTemperList.size() < mCacheTemperSize){
+                return;
+            }
+            mCacheTime = currentTimeMillis;
+
+            Collections.sort(mCacheTemperList);
+            Float resultTemper = mCacheTemperList.get(mCacheTemperList.size() / 2 + 1);
+            mCacheTemperList.clear();
+
+            resultTemper = formatF(resultTemper);
+            sendResultMessage(resultTemper, "");//发送结果
+            if (resultTemper >= mTempMinThreshold && resultTemper < mTempWarningThreshold) {
+                openDoor();
+            }
+
+            if (resultTemper < HIGHEST_TEMPER) {
+                Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
+                //发送列表更新事件
+                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                        mLastHotImage.copy(mLastHotImage.getConfig(), false),
+                        temperatureSign,
+                        mPrivacyMode,
+                        this::sendUpdateSignMessage);
+            }
+        } else if(isTemperAndFace()){
+            mCacheTemperList.add(afterT);
+        }
+
+*/
         if (isActivityPaused) {
             return;
         }
@@ -801,6 +920,10 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
             openDoor();
         } else {
+            //判断集合中的温度数据
+            if (mCacheTemperList.size() < mCacheTemperSize) {
+                return;
+            }
             float resultTemper = getResultTemperForFandT();
             if (resultTemper <= 0.0f) {
                 return;

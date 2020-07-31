@@ -42,6 +42,7 @@ public class ResourceUpdate {
     public static String UPLOAD_CODE_VERIFY_RESULT = Constants.RESOURCE_URL + "/api/witness/checkCodeUpload.html";//扫码上传
     public static String UPLOAD_TEMPERETURE_EXCEPTION = Constants.RESOURCE_URL + "api/facewitness/checkTemper.html";//单条测温记录
     public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = Constants.RESOURCE_URL + "api/facewitness/checkByarrayTemper.html";//多条测温记录
+    public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW = Constants.RESOURCE_URL + "api/facewitness/checkByarrayTemperNow.html";//多条测温记录
     public static String UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_HEAD = Constants.RESOURCE_URL + "api/facewitness/checkByarrayTemperHead.html";//5寸多条测温记录
     public static String UPLOAD_IDCARD = Constants.RESOURCE_URL + "/api/witness/checktemper.html";//人证测温记录
     public static String UPLOAD_NO_IDCARD = Constants.RESOURCE_URL + "/api/witness/nocardUpload.html";//无证测温
@@ -91,6 +92,7 @@ public class ResourceUpdate {
         UPLOAD_CODE_VERIFY_RESULT = Constants.RESOURCE_URL + "/api/witness/checkCodeUpload.html";//扫码上传
         UPLOAD_TEMPERETURE_EXCEPTION = Constants.RESOURCE_URL + "api/facewitness/checkTemper.html";//单条测温记录
         UPLOAD_TEMPERETURE_EXCEPTION_ARRAY = Constants.RESOURCE_URL + "api/facewitness/checkByarrayTemper.html";//多条测温记录
+        UPLOAD_TEMPERETURE_EXCEPTION_ARRAY_NOW = Constants.RESOURCE_URL + "api/facewitness/checkByarrayTemperNow.html";//多条测温记录
         UPLOAD_IDCARD = Constants.RESOURCE_URL + "/api/witness/checktemper.html";//人证测温记录
         UPLOAD_NO_IDCARD = Constants.RESOURCE_URL + "/api/witness/nocardUpload.html";//无证测温
         SAFETY_SEND_WARNING_MESSAGE = Constants.RESOURCE_URL + "/api/device/temperexp.html";//安检门发信息
