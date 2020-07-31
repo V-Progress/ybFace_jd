@@ -84,7 +84,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         ambientCorrect = SpUtils.getFloat(ThermalConst.Key.AMBIENT_CORRECT, ThermalConst.Default.AMBIENT_CORRECT);
 
         float thermalCorr = SpUtils.getFloat(ThermalConst.Key.THERMAL_CORRECT, ThermalConst.Default.THERMAL_CORRECT);
-        tvCurrentCorr.setText("当前补正值：" + thermalCorr + "℃");
+        tvCurrentCorr.setText(getResString(R.string.act_correct_current_value) + thermalCorr + "℃");
 
         edtValueTemp.setText(36.5 + "");
         edtValueTemp.addTextChangedListener(new TextWatcher() {
@@ -394,7 +394,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
                     corrValue = -(mMeanValue - v);
                 }
                 corrValue = formatF(corrValue);
-                tvCurrentCorr.setText("当前补正值：" + corrValue + "℃");
+                tvCurrentCorr.setText(getResString(R.string.act_correct_current_value) + corrValue + "℃");
                 Log.e(TAG, "onDestroy: ---------------- " + corrValue);
                 SpUtils.saveFloat(ThermalConst.Key.THERMAL_CORRECT, corrValue);
                 UIUtils.showShort(this, "修改成功，补正值：" + corrValue);

@@ -371,7 +371,7 @@
     <!--温度矫正页面-->
     <string name="act_correct_title">Sıcaklık düzeltmesi</string>
     <string name="act_correct_tips">Lütfen sıcaklık tabancası tarafından ölçülen sıcaklığa göre doldurun</string>
-    <string name="act_correct_current_value">Geçerli tazminat değeri</string>
+    <string name="act_correct_current_value">Geçerli tazminat değeri：</string>
     <string name="act_correct_thermal_temp">Termal görüntüleme sıcaklığı：</string>
     <string name="act_correct_click_get_temperature">Sıcaklığı ölçmek için tıklayın</string>
     <string name="act_correct_thermometer_gun">Termometre sıcaklığı:</string>

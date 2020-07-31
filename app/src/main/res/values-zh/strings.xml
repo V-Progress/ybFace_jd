@@ -424,7 +424,7 @@
     <!--温度矫正页面-->
     <string name="act_correct_title">温度矫正</string>
     <string name="act_correct_tips">请根据体温枪实测温度填写</string>
-    <string name="act_correct_current_value">当前补偿值</string>
+    <string name="act_correct_current_value">当前补偿值：</string>
     <string name="act_correct_thermal_temp">热成像温度：</string>
     <string name="act_correct_click_get_temperature">点击测温</string>
     <string name="act_correct_thermometer_gun">测温枪温度：</string>

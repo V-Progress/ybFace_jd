@@ -376,7 +376,7 @@
     <!--温度矫正页面-->
     <string name="act_correct_title">Коррекция температуры</string>
     <string name="act_correct_tips">Пожалуйста, заполните в соответствии с измеренной температурой обычного термометра</string>
-    <string name="act_correct_current_value">Величина текущей коррекции</string>
+    <string name="act_correct_current_value">Величина текущей коррекции：</string>
     <string name="act_correct_thermal_temp">Температура по тепловизору：</string>
     <string name="act_correct_click_get_temperature">Нажмить, чтобы измерить температуру</string>
     <string name="act_correct_thermometer_gun">Температура по обычному термометру：</string>

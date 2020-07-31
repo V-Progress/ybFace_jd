@@ -361,7 +361,7 @@
     <!--溫度矯正頁面-->
     <string name="act_correct_title">溫度矯正</string>
     <string name="act_correct_tips">請根據體溫槍實測溫度填寫</string>
-    <string name="act_correct_current_value">當前補償值</string>
+    <string name="act_correct_current_value">當前補償值：</string>
     <string name="act_correct_thermal_temp">熱成像溫度：</string>
     <string name="act_correct_click_get_temperature">點擊測溫</string>
     <string name="act_correct_thermometer_gun">測溫槍溫度：</string>

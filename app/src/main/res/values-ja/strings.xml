@@ -397,7 +397,7 @@
 </string>
     <string name="act_correct_tips">体温ガンの実測温度に基づいて記入してください。
 </string>
-    <string name="act_correct_current_value">現在の補償値
+    <string name="act_correct_current_value">現在の補償値：
 </string>
     <string name="act_correct_thermal_temp">熱画像温度
 ：</string>
