@@ -446,6 +446,7 @@
     <string name="act_correct_save">save</string>
     <string name="act_correct_save_tips_success">Calibrated value：</string>
     <string name="act_correct_save_tips_fail">Notification is not changed</string>
+    <string name="act_correct_save_tips_error">Please detect your temperature first</string>
 
     <!--通用的  -->
     <string name="base_tip">Tips</string><!-- 提示 -->

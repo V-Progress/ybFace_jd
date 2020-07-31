@@ -382,7 +382,9 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
         if (!TextUtils.isEmpty(s)) {
 
             float v = Float.parseFloat(s);
-            if (v == 0.0f && mMeanValue == 0.0f) {
+            if (mMeanValue == 0.0f) {
+                UIUtils.showShort(this, getResString(R.string.act_correct_save_tips_error));
+            } else if (v == 0.0f && mMeanValue == 0.0f) {
                 UIUtils.showShort(this, getResString(R.string.act_correct_save_tips_fail));
             } else {
                 float corrValue = 0.0f;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_main"
+    android:background="@drawable/skin_main_screen_background"
     android:orientation="vertical"
     tools:context=".activity_temper_check_in.TemperatureCorrectActivity">
 
@@ -153,6 +153,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/line_net_edt"
+                        android:inputType="numberDecimal"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="30dp" />
