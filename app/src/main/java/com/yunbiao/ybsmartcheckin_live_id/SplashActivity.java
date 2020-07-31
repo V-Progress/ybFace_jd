@@ -302,6 +302,9 @@ public class SplashActivity extends BaseActivity {
                 //Melody客户
 //                ThermalConst.Default.NORMAL_BROADCAST_ENABLED = false;
 //                ThermalConst.Default.WARNING_BROAD_ENABLED = false;
+                Constants.Default.IS_H_MIRROR = true;
+                Constants.Default.IS_V_MIRROR = true;
+                Constants.Default.PICTURE_ROTATION = 270;
                 //普通
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";
