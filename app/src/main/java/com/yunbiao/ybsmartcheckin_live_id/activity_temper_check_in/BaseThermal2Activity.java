@@ -704,7 +704,12 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return 0.0f;
         }
         Collections.sort(mCacheTemperList);
-        Float max = mCacheTemperList.get(mCacheTemperList.size() / 2 + 1);
+        Float max = 0f;
+        if (mCacheTemperList.size() >= 3) {
+            max = mCacheTemperList.get(mCacheTemperList.size() / 2 + 1);
+        } else {
+            max = mCacheTemperList.get(mCacheTemperList.size() - 1);
+        }
         mCacheTemperList.clear();
         return max;
     }

@@ -29,6 +29,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
+import com.yunbiao.faceview.LivenessType;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
@@ -122,6 +123,11 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
         faceView.enableMultiCallback(true);
         faceView.setRetryTime(1);
         faceView.setRetryDelayTime(4000);
+//        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+//            faceView.setLivenessType(LivenessType.IR);
+//        } else {
+//            faceView.setLivenessType(LivenessType.RGB);
+//        }
 
         llMainLogoParent = findViewById(R.id.ll_main_logo_parent);
         tvTemperTest = findViewById(R.id.tv_temper_test);

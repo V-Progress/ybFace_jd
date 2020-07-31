@@ -100,6 +100,8 @@ public class FaceView extends FrameLayout {
      * 活体检测的开关
      */
     private boolean livenessDetect = false;
+    //活体类型
+    private LivenessType livenessType = LivenessType.RGB;
 
     /**
      * 用于记录人脸识别相关状态
@@ -148,6 +150,10 @@ public class FaceView extends FrameLayout {
     public FaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
+    }
+
+    public void setLivenessType(LivenessType livenessType) {
+        this.livenessType = livenessType;
     }
 
     public void setSimilarThreshold() {
@@ -423,7 +429,7 @@ public class FaceView extends FrameLayout {
                         Integer liveness = livenessMap.get(facePreviewInfo.getTrackId());
                         if(liveness == null || liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING){
                             livenessMap.put(facePreviewInfo.getTrackId(), RequestLivenessStatus.ANALYZING);
-                            faceHelper.requestFaceLiveness(nv21, facePreviewInfo.getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfo.getTrackId(), LivenessType.RGB);
+                            faceHelper.requestFaceLiveness(nv21, facePreviewInfo.getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfo.getTrackId(), livenessType);
                         }
                         facePreviewInfo.setLiveness(liveness == null ? LivenessInfo.UNKNOWN : liveness);
                     }
@@ -451,7 +457,7 @@ public class FaceView extends FrameLayout {
                         if (liveness == null
                                 || (liveness != LivenessInfo.ALIVE && liveness != LivenessInfo.NOT_ALIVE && liveness != RequestLivenessStatus.ANALYZING)) {
                             livenessMap.put(facePreviewInfoList.get(i).getTrackId(), RequestLivenessStatus.ANALYZING);
-                            faceHelper.requestFaceLiveness(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId(), LivenessType.RGB);
+                            faceHelper.requestFaceLiveness(nv21, facePreviewInfoList.get(i).getFaceInfo(), previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, facePreviewInfoList.get(i).getTrackId(), livenessType);
                         }
                     }
 
@@ -821,7 +827,7 @@ public class FaceView extends FrameLayout {
         flEngine = new FaceEngine();
         flInitCode = flEngine.init(getContext(), DetectMode.ASF_DETECT_MODE_IMAGE, orientPriority,/*ASF_OP_ALL_OUT*/
                 DETECT_FACE_SCALE_VAL, MAX_DETECT_NUM, FaceEngine.ASF_LIVENESS);
-//        flEngine.setLivenessParam(new LivenessParam(0.8f,0.8f));
+        flEngine.setLivenessParam(new LivenessParam(0.9f,0.9f));
 
         VersionInfo versionInfo = new VersionInfo();
         ftEngine.getVersion(versionInfo);
