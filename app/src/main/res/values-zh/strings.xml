@@ -429,6 +429,8 @@
     <string name="act_correct_click_get_temperature">点击测温</string>
     <string name="act_correct_thermometer_gun">测温枪温度：</string>
     <string name="act_correct_save">保存</string>
+    <string name="act_correct_save_tips_success">修改成功，补正值：</string>
+    <string name="act_correct_save_tips_fail">未修改补正值</string>
 
     <!--通用的  -->
     <string name="base_tip">提示</string>

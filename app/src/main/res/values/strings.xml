@@ -444,6 +444,8 @@
     <string name="act_correct_click_get_temperature">get temperature</string>
     <string name="act_correct_thermometer_gun">Exact temperature：</string>
     <string name="act_correct_save">save</string>
+    <string name="act_correct_save_tips_success">Calibrated value：</string>
+    <string name="act_correct_save_tips_fail">Notification is not changed</string>
 
     <!--通用的  -->
     <string name="base_tip">Tips</string><!-- 提示 -->

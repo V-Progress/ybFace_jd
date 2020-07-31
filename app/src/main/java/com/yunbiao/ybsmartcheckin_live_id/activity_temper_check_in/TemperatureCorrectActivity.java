@@ -383,7 +383,7 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
 
             float v = Float.parseFloat(s);
             if (v == 0.0f && mMeanValue == 0.0f) {
-                UIUtils.showShort(this, "未修改补正值");
+                UIUtils.showShort(this, getResString(R.string.act_correct_save_tips_fail));
             } else {
                 float corrValue = 0.0f;
                 if (v == mMeanValue) {
@@ -397,10 +397,10 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
                 tvCurrentCorr.setText(getResString(R.string.act_correct_current_value) + corrValue + "℃");
                 Log.e(TAG, "onDestroy: ---------------- " + corrValue);
                 SpUtils.saveFloat(ThermalConst.Key.THERMAL_CORRECT, corrValue);
-                UIUtils.showShort(this, "修改成功，补正值：" + corrValue);
+                UIUtils.showShort(this, getResString(R.string.act_correct_save_tips_success) + corrValue);
             }
         } else {
-            UIUtils.showShort(this, "未修改补正值");
+            UIUtils.showShort(this, getResString(R.string.act_correct_save_tips_fail));
         }
     }
 
