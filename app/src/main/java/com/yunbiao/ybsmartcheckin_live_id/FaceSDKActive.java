@@ -35,7 +35,55 @@ public class FaceSDKActive {
     public static final int TYPE_REMOTE = 1;
     private static ActiveCallback cb;
     private static String ACTIVE_FILE_NAME = "33C096899E53BE44705CD53F68190A75";
-    public static void active(int type, boolean canGo, @NonNull ActiveCallback callback){
+
+    public static String YB_APPID = "HaViJoN9enHzZjfE9nb6G672dQxgRuJe8mVJS3nuNX7Q";
+    public static String YB_SDKKEY = "212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs";
+
+    public static String HSD_APPID = "AYuHvcMYBDjwqVXRHkGTvQzyRndUfjgGmrcfKTZHk8bf";
+    public static String HSD_SDKKEY = "2foqrfXF7oF8WDj17ZiFyAhoRZbAJn3DsAZCEYpkVXdE";
+
+    public static void activeLocal(String appId,String sdkKey, @NonNull ActiveCallback callback){
+        cb = callback;
+        wifiMac = CommonUtils.getWifiMac();
+        if (!TextUtils.isEmpty(wifiMac)) {
+            wifiMac = wifiMac.replace(":", "-");
+        } else {
+            wifiMac = "";
+        }
+        localMac = CommonUtils.getLocalMac();
+        if (!TextUtils.isEmpty(localMac)) {
+            localMac = localMac.replace(":", "-");
+        } else {
+            localMac = "";
+        }
+
+        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+        int code = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
+        if(code == ErrorInfo.MOK
+                && !TextUtils.isEmpty(activeFileInfo.getAppId())
+                && !TextUtils.isEmpty(activeFileInfo.getSdkKey())){
+            int activeCode = FaceEngine.active(APP.getContext(), activeFileInfo.getAppId(), activeFileInfo.getSdkKey());
+            if(activeCode == ErrorInfo.MOK || activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED){
+                writeActiveInfo(activeFileInfo.getAppId(),activeFileInfo.getSdkKey());
+                cb.onActiveResult(true,"");
+                return;
+            }
+        } else {
+            AF af = readActiveFile();
+            if(af != null){
+                int activeCode = FaceEngine.active(APP.getContext(), af.appId, af.sdkKey);
+                if(activeCode == ErrorInfo.MOK || activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED){
+                    writeActiveInfo(activeFileInfo.getAppId(),activeFileInfo.getSdkKey());
+                    cb.onActiveResult(true,"");
+                    return;
+                }
+            }
+        }
+
+        activeSDK(appId, sdkKey);
+    }
+
+    public static void active(boolean canGo, @NonNull ActiveCallback callback){
         cb = callback;
         wifiMac = CommonUtils.getWifiMac();
         if (!TextUtils.isEmpty(wifiMac)) {
@@ -78,11 +126,7 @@ public class FaceSDKActive {
             }
         }
 
-        if(type == TYPE_LOCAL){
-            activeSDK(com.yunbiao.faceview.Constants.APP_ID, com.yunbiao.faceview.Constants.SDK_KEY);
-        } else {
-            requestAppIdAndKey();
-        }
+        requestAppIdAndKey();
     }
 
     private static void requestAppIdAndKey(){
