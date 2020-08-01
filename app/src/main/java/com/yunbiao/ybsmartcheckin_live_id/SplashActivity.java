@@ -233,10 +233,6 @@ public class SplashActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            boolean canGo = Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK
-                    && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
-                    && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH;
-
             FaceSDKActive.ActiveCallback activeCallback = (result, message) -> {
                 if (!result) {
                     runOnUiThread(() -> UIUtils.showLong(SplashActivity.this, getResources().getString(R.string.splash_active_failed) + "(" + message + ")"));
@@ -248,7 +244,11 @@ public class SplashActivity extends BaseActivity {
             if(Constants.FLAVOR_TYPE == FlavorType.XENON){
                 FaceSDKActive.activeLocal(FaceSDKActive.YB_APPID,FaceSDKActive.YB_SDKKEY,activeCallback);
             } else {
-                FaceSDKActive.active(canGo,activeCallback);
+                FaceSDKActive.active(
+                        Constants.DEVICE_TYPE == Constants.DeviceType.TEMPER_SAFETY_CHECK
+                        || Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
+                        || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH
+                        ,activeCallback);
             }
         }).start();
     };

@@ -29,6 +29,15 @@ public class DeviceInfoBean {
         private String url;
         private int themeId;
         private String type;
+        private String devicePwd;
+
+        public String getDevicePwd() {
+            return devicePwd;
+        }
+
+        public void setDevicePwd(String devicePwd) {
+            this.devicePwd = devicePwd;
+        }
 
         public String getType() {
             return type;

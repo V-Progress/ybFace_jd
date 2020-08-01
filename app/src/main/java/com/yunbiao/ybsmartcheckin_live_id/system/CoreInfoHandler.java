@@ -3,6 +3,7 @@ package com.yunbiao.ybsmartcheckin_live_id.system;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import okhttp3.Call;
+import timber.log.Timber;
 
 /**
  * xmpp消息处理
@@ -58,6 +60,7 @@ public class CoreInfoHandler {
     private final static int UPDATE_INFO = 33; //修改了设备宣传目录.
     private final static int UPDATE_SKIN = 104;
     private final static int UPDATE_STAFF_PART = 260;
+    private final static int PWD_CHANGED = 105;//密码发生了改变
 
     public static boolean isOnline = false;
 
@@ -187,6 +190,13 @@ public class CoreInfoHandler {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                    break;
+                case PWD_CHANGED:
+                    String devicePwd = content.getDevicePwd();
+                    Timber.d("取到的密码：" + devicePwd);
+                    if(!TextUtils.isEmpty(devicePwd)){
+                        SpUtils.saveStr(SpUtils.MENU_PWD, devicePwd);
                     }
                     break;
                 default:
