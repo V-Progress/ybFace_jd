@@ -253,6 +253,36 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void jump() {
+        if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {
+            Constants.Default.CAMERA_ANGLE = 0;//横屏
+            Constants.Default.IS_H_MIRROR = true;
+        } else {
+            String broadTypeStr = CommonUtils.getBroadType2();
+            switch (broadTypeStr) {
+                case "SMT":
+                    Constants.Default.CAMERA_ANGLE = 270;
+                    Constants.Default.IS_H_MIRROR = false;
+                    Constants.Default.IS_V_MIRROR = false;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_16_4;
+                    break;
+                case "LXR":
+                    Constants.Default.CAMERA_ANGLE = 0;//横屏
+                    Constants.Default.IS_H_MIRROR = true;
+                    Constants.Default.IS_V_MIRROR = false;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
+                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_32_32;
+                    break;
+                case "HARRIS":
+                default:
+                    Constants.Default.CAMERA_ANGLE = 90;
+                    Constants.Default.IS_H_MIRROR = false;
+                    Constants.Default.IS_V_MIRROR = false;
+                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
+                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.MLX_16_4;
+                    break;
+            }
+        }
         switch (Constants.FLAVOR_TYPE) {
             case FlavorType.HT:
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.logo_icon_horizontal;
@@ -315,34 +345,6 @@ public class SplashActivity extends BaseActivity {
                 ThermalConst.Default.DEFAULT_LOGO_ID = R.mipmap.yb_logo;
                 ThermalConst.Default.MAIN_LOGO_TEXT = "YBFACE";
                 break;
-        }
-
-        if (Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {
-            Constants.Default.CAMERA_ANGLE = 0;//横屏
-            Constants.Default.IS_H_MIRROR = true;
-        } else {
-            String broadTypeStr = CommonUtils.getBroadType2();
-            switch (broadTypeStr) {
-                case "SMT":
-                    Constants.Default.CAMERA_ANGLE = 270;
-                    Constants.Default.IS_H_MIRROR = false;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_16_4;
-                    break;
-                case "LXR":
-                    Constants.Default.CAMERA_ANGLE = 0;//横屏
-                    Constants.Default.IS_H_MIRROR = true;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL;
-                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.HM_32_32;
-                    break;
-                case "HARRIS":
-                default:
-                    Constants.Default.CAMERA_ANGLE = 90;
-                    Constants.Default.IS_H_MIRROR = false;
-                    CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
-                    ThermalConst.Default.TEMPER_MODULE = TemperModuleType.MLX_16_4;
-                    break;
-            }
         }
 
         int lastModel = SpUtils.getIntOrDef("thermalModelSetting", -1);
