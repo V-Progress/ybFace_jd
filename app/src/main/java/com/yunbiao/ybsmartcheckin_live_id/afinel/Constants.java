@@ -180,9 +180,12 @@ public class Constants {
         String JU_PROJECT_NAME_SUFFIX = "juRrojectNameSuffix";//后缀
 
         String JUMP_TAG = "jumpTag";//跳转标签
+
+        String SHOW_TOTAL = "showTotal";//显示统计数据
     }
 
     public static class Default{
+        public static final boolean SHOW_TOTAL = false;
         public static final boolean PRIVACY_MODE = false;
         public static final int CLEAR_POLICY = 3;
         public static final int CLEAR_POLICY_CUSTOM = 30;

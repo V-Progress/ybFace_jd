@@ -96,6 +96,9 @@ public class WelComeActivity extends BaseGpioActivity {
         faceView.setCallback(faceCallback);
         faceView.enableMutiple(true);
 
+        faceView.setRetryTime(9999);
+        faceView.enableMultiRetry(true);
+
         ivMainLogo = findViewById(R.id.iv_main_logo);
         tvMainAbbName = findViewById(R.id.tv_main_abbname);
         tvMainTopTitle = findViewById(R.id.tv_main_topTitle);

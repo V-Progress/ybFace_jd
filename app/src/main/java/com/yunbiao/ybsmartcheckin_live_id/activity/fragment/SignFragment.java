@@ -77,6 +77,7 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     private TextView tvMale1;
     private TextView tvFemale1;
     private TextView tvModel;
+    private View llTotalArea;
 
     @Nullable
     @Override
@@ -96,6 +97,8 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
         }
 
         linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, false);
+
+        llTotalArea = rootView.findViewById(R.id.ll_total_area);
 
         tvTotal1 = rootView.findViewById(R.id.tv_total_number);
         tvMale1 = rootView.findViewById(R.id.tv_male_number);
@@ -154,6 +157,9 @@ public class SignFragment extends Fragment/* implements SignManager.SignEventLis
     @Override
     public void onResume() {
         super.onResume();
+
+        boolean showTotal = SpUtils.getBoolean(Constants.Key.SHOW_TOTAL,Constants.Default.SHOW_TOTAL);
+        llTotalArea.setVisibility(showTotal ? View.VISIBLE : View.GONE);
 
         Log.e(TAG, "onResume: 重加载数据");
         loadSignData();

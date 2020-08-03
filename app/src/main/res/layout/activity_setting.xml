@@ -152,6 +152,25 @@
 
                 <TextView
                     style="@style/setting_text"
+                    android:text="显示人员统计" />
+
+                <Switch
+                    android:id="@+id/sw_show_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
                     android:text="@string/setting_welcome_speech" />
 
                 <EditText

@@ -128,6 +128,13 @@ public class SettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(Constants.Key.QRCODE_ENABLED, isChecked);
             }
         });
+
+        boolean showTotal = SpUtils.getBoolean(Constants.Key.SHOW_TOTAL, Constants.Default.SHOW_TOTAL);
+        Switch swShowTotal = findViewById(R.id.sw_show_total);
+        swShowTotal.setChecked(showTotal);
+        swShowTotal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SpUtils.saveBoolean(Constants.Key.SHOW_TOTAL, isChecked);
+        });
     }
 
     @Override
