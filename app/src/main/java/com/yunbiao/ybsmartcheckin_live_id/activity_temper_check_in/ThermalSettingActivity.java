@@ -475,7 +475,7 @@ public class ThermalSettingActivity extends BaseActivity {
 
         private void initView(View view) {
             Button btn_thermal_corr = view.findViewById(R.id.btn_thermal_corr);
-
+            View llBroadDelay = view.findViewById(R.id.ll_broad_delay);
             final TextView tvModelSetting = view.findViewById(R.id.tv_model_setting);
             CheckBox cbFace = view.findViewById(R.id.cb_face);
             CheckBox cbTemper = view.findViewById(R.id.cb_temper);
@@ -484,7 +484,7 @@ public class ThermalSettingActivity extends BaseActivity {
             int currTemperModule = SpUtils.getIntOrDef(ThermalConst.Key.TEMPER_MODULE,ThermalConst.Default.TEMPER_MODULE);
             boolean faceEnabled = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED,ThermalConst.Default.FACE_ENABLED);
             boolean temperEnabled = SpUtils.getBoolean(ThermalConst.Key.TEMPER_ENABLED,ThermalConst.Default.TEMPER_ENABLED);
-
+            llBroadDelay.setVisibility(faceEnabled ? View.GONE : View.VISIBLE);
             tvModelSetting.setText(temperModuleArray[currTemperModule]);
             cbFace.setChecked(faceEnabled);
             cbTemper.setChecked(temperEnabled);
@@ -519,6 +519,7 @@ public class ThermalSettingActivity extends BaseActivity {
                         UIUtils.showShort(getActivity(),getString(R.string.model_check_tip));
                         return;
                     }
+                    llBroadDelay.setVisibility(isChecked ? View.GONE : View.VISIBLE);
                     SpUtils.saveBoolean(ThermalConst.Key.FACE_ENABLED,isChecked);
                 } else {
                     boolean faceE = SpUtils.getBoolean(ThermalConst.Key.FACE_ENABLED, ThermalConst.Default.FACE_ENABLED);
