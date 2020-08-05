@@ -77,10 +77,15 @@
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity android:name=".activity_certificates.CertificatesSystemActivity" />
         <activity android:name=".activity_certificates.CertificatesSettingActivity" />
@@ -209,5 +214,45 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"/>
+
+
+
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
+    <!-- 权限列表 -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- 访问联网权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
+    <!-- 写入网络GPRS接入点设置 -->
+    <!-- <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" /> -->
+    <!-- 相机权限 -->
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!-- 添加拨出电话的权限 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- 允许使用GPS权限 -->
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <!-- 读写存储卡的权限 -->
+    <!-- 读取电话状态的权限 -->
+    <!-- 改变WIFI网络状态的权限 -->
+    <!-- 访问WIFI网络状态的权限 -->
+    <!-- 访问手机精准位置 -->
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <!-- Service开机自动 -->
+    <!-- 获取到运行中的task（任务） -->
+    <!-- 网络视频播放 -->
+
+    <!-- <uses-permission android:name="android.permission.RESTART_PACKAGES" /> -->
+    <!-- <uses-permission android:name="android.permission.HARDWARE_TEST" /> -->
+    <uses-feature android:name="android.hardware.usb.UsbDevice" />
+    <uses-feature android:name="android.hardware.usb.UsbManager" />
 
 </manifest>

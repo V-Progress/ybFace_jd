@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_certificates;
 
 import android.graphics.Bitmap;
 
+import com.csht.netty.entry.IdCard;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 
 public class CertificatesViewImpl implements CertificatesViewInterface {
@@ -57,7 +58,12 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
+    public void updateIdCardInfoByNetReader(IdCard idCard) {
+
+    }
+
+    @Override
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
 
     }
 

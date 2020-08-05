@@ -324,30 +324,16 @@ def getHTFace_SDK_KEY() {
     return "\"212ZpN5Yu7H3NKNhsM8mYqzJn6bpwcHPiSvf8AmnMRLs\""
 }
 
-/*
-多渠道范文
-YB {
-    buildConfigField "boolean", "IS_SK", "false"
-    buildConfigField "boolean", "IS_HT", "false"
-    buildConfigField 'int', 'APP_TYPE', "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.CHECK_IN"
-    manifestPlaceholders = [
-            app_name     : "@string/yb_check_in",
-            app_icon     : "@mipmap/ic_launcher",
-            UMENG_APPKEY : "5cbe87a60cafb210460006b3",
-            UMENG_CHANNEL: "YB"
-    ]
-}*/
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     /*测温模块*/
     implementation fileTree(includes: ['temperature-release.aar'], dir: 'libs')
     implementation fileTree(includes: ['seekware-4.1.0.0.aar'], dir: 'libs')
+    implementation fileTree(includes: ['zrgknfc220.aar'], dir: 'libs')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
 

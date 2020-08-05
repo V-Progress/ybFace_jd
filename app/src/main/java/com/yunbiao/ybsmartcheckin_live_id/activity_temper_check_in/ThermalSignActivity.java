@@ -119,7 +119,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温", "头像", "热像"};
+    private static String[] title = {"姓名", "员工编号", "部门", "职位", "日期", "时间", "体温(℃)","体温(℉)", "头像", "热像"};
 
     @Override
     protected void initData() {
@@ -130,7 +130,8 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 getResources().getString(R.string.sign_list_position),
                 getResources().getString(R.string.sign_list_date),
                 getResources().getString(R.string.sign_list_time),
-                getResources().getString(R.string.sign_list_temper),
+                getResources().getString(R.string.sign_list_temper) + "(℃)",
+                getResources().getString(R.string.sign_list_temper) + "(℉)",
                 getResources().getString(R.string.sign_list_head),
                 getResources().getString(R.string.sign_list_hot)};
 
@@ -405,6 +406,7 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 stringList.add(dateFormat1.format(sign.getTime()) + "");
                 stringList.add(dateFormat2.format(sign.getTime()) + "");
                 stringList.add(sign.getTemperature() + "");
+                stringList.add(formatF((float) (sign.getTemperature() * 1.8 + 32)) + "");
                 stringList.add(sign.getHeadPath());
                 stringList.add(sign.getHotImgPath());
                 stringListList.add(stringList);

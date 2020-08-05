@@ -65,6 +65,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Request;
+import timber.log.Timber;
 
 public class CertificatesSettingActivity extends BaseActivity {
     private static final String TAG = "SettingActivity";
@@ -108,6 +109,8 @@ public class CertificatesSettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //选择读卡器
+        initReaderSetting();
         //当前模式
         initModelSetting();
         //设置IP
@@ -198,6 +201,33 @@ public class CertificatesSettingActivity extends BaseActivity {
             }
         });
 //        findViewById(R.id.btn_thermal_corr).setVisibility(View.GONE);
+    }
+
+
+    private void initReaderSetting(){
+        TextView tvReader = findViewById(R.id.tv_reader_setting);
+        String[] readers = CertificatesConst.readers;
+        final int readerType = SpUtils.getIntOrDef(CertificatesConst.Key.READER, CertificatesConst.Default.READER);
+        tvReader.setText(readers[readerType]);
+        tvReader.setOnClickListener(v -> {
+            int currType = SpUtils.getIntOrDef(CertificatesConst.Key.READER, CertificatesConst.Default.READER);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CertificatesSettingActivity.this);
+            builder.setTitle("选择读卡器");
+            builder.setSingleChoiceItems(readers,currType,(dialog,which) -> {
+                Timber.d("选择的模式：" + which + ", " + readers[which]);
+                if(which == readerType){
+                    dialog.dismiss();
+                    return;
+                }
+
+                SpUtils.saveInt(CertificatesConst.Key.READER,which);
+                tvReader.setText(readers[which]);
+
+                dialog.dismiss();
+            });
+            builder.create().show();
+        });
+
     }
 
     private void initModelSetting() {

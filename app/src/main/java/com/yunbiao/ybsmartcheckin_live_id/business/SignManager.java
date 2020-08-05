@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.csht.netty.entry.IdCard;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -47,7 +48,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import io.reactivex.functions.Consumer;
 import okhttp3.Call;
@@ -783,7 +783,7 @@ public class SignManager {
         long l = DaoManager.get().addOrUpdate(verifyRecord);
     }
 
-    public VertifyRecord getIDCardVerifyRecord(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
+    public VertifyRecord getIDCardVerifyRecord(float temper, IdCardMsg msg, IdCard mIdCard, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
         long time = System.currentTimeMillis();
         File idCardFile = idCardBitmap != null ? saveBitmap("idCard_", time, idCardBitmap) : createEmptyFile();
         File faceFile = faceBitmap != null ? saveBitmap(time, faceBitmap) : createEmptyFile();
@@ -793,13 +793,13 @@ public class SignManager {
         vertifyRecord.setPersonHeadPath(faceFile.getPath());
         vertifyRecord.setHotImagePath(reFile.getPath());
         vertifyRecord.setSimilar(similar + "");
-        vertifyRecord.setName(msg.name.trim());
-        vertifyRecord.setSex(TextUtils.equals(msg.sex, "男") ? "1" : "0");
-        vertifyRecord.setNation(msg.nation_str);
-        vertifyRecord.setBirthDate(msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day);
-        vertifyRecord.setIdNum(msg.id_num);
-        vertifyRecord.setAddress(msg.address);
-        vertifyRecord.setTermDate(msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day);
+        vertifyRecord.setName(msg != null ? msg.name.trim() : mIdCard.getName());
+        vertifyRecord.setSex(msg != null ? (TextUtils.equals(msg.sex, "男") ? "1" : "0") : mIdCard.getSex());
+        vertifyRecord.setNation(msg != null ? msg.nation_str : mIdCard.getNation());
+        vertifyRecord.setBirthDate(msg != null ? (msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day) : mIdCard.getBirthday());
+        vertifyRecord.setIdNum(msg != null ? msg.id_num : mIdCard.getId());
+        vertifyRecord.setAddress(msg != null ? msg.address : mIdCard.getAddress());
+        vertifyRecord.setTermDate(msg != null ? (msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day) : mIdCard.getEndDate());
         vertifyRecord.setIsPass(isPass + "");
         vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");
         vertifyRecord.setTemper(temper + "");
@@ -869,15 +869,23 @@ public class SignManager {
      * 上传人证记录
      * @param temper
      * @param msg
+     * @param mIdCard
      * @param similar
      * @param isPass
      * @param idCardBitmap
      * @param faceBitmap
      * @param reBitmap
      */
-    public void uploadIdCardAndReImage(float temper, IdCardMsg msg, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
-        VertifyRecord vertifyRecord = getIDCardVerifyRecord(temper, msg, similar, isPass, idCardBitmap, faceBitmap, reBitmap);
+    public void uploadIdCardAndReImage(float temper, IdCardMsg msg, IdCard mIdCard, int similar, int isPass, Bitmap idCardBitmap, Bitmap faceBitmap, Bitmap reBitmap) {
+        if(msg == null && mIdCard == null){
+            return;
+        }
+        VertifyRecord vertifyRecord = getIDCardVerifyRecord(temper, msg, mIdCard,similar, isPass, idCardBitmap, faceBitmap, reBitmap);
         uploadIdCardAndReImage(vertifyRecord);
+    }
+
+    public void uploadIdCardAndReImageByNetReader(float temper, IdCard idCard,int similar,int isPass,Bitmap idCardBitmap,Bitmap faceBitmap,Bitmap reBitmap){
+
     }
 
     //*************************************************************************************************8

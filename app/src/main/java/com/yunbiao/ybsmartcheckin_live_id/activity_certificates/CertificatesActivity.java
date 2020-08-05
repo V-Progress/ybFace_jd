@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.csht.netty.entry.IdCard;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
@@ -225,7 +226,15 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
+    public void updateIdCardInfoByNetReader(IdCard idCard) {
+        ivIdCard.setImageBitmap(idCard.getPhoto());
+        tvName.setText(idCard.getName());
+        tvOriginT.setText(getResString(R.string.act_certificates_printer_native_place));
+        tvOrigin.setText(IDCardReader.getNativeplace(idCard.getId()));
+    }
+
+    @Override
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
         tvTemp.setText(finalTemper + "℃");
         tvSimilar.setText(getResString(R.string.act_certificates_similar) + similarInt + "%");
         tvTip.setText(Html.fromHtml(resultTip));
@@ -278,21 +287,24 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         BitmapDrawable bitmapDrawable = (BitmapDrawable) ivFace.getDrawable();
         Bitmap faceImage = bitmapDrawable.getBitmap();
         BitmapDrawable hotImageBitmap = (BitmapDrawable) ivHotImage.getDrawable();
-        Bitmap hotImage = hotImageBitmap.getBitmap();
+        Bitmap hotImage = null;
+        if(hotImageBitmap != null){
+            hotImage = hotImageBitmap.getBitmap();
+        }
         BitmapDrawable idCardDrawable = (BitmapDrawable) ivIdCard.getDrawable();
         Bitmap idCardImage = idCardDrawable.getBitmap();
         if (icCardMode) {
             SignManager.instance().addICCardVerifyRecordToDB(faceImage, hotImage, idCardImage, finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1));
         } else {
             if(collectPhone && isAlike){
-                VertifyRecord idCardVerifyRecord = SignManager.instance().getIDCardVerifyRecord(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+                VertifyRecord idCardVerifyRecord = SignManager.instance().getIDCardVerifyRecord(finalTemper, idCardMsg, mIdCard,similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
                 Intent intent = new Intent(this, CollectPhoneActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("verifyRecord",idCardVerifyRecord);
                 intent.putExtras(bundle);
                 startActivity(intent);
             } else {
-                SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
+                SignManager.instance().uploadIdCardAndReImage(finalTemper, idCardMsg,mIdCard, similarInt, (isAlike && isNormal ? 0 : 1), idCardImage, faceImage, hotImage);
             }
         }
     }

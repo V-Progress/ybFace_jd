@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.activity_certificates;
 
 import android.graphics.Bitmap;
 
+import com.csht.netty.entry.IdCard;
 import com.yunbiao.ybsmartcheckin_live_id.utils.IdCardMsg;
 
 public interface CertificatesViewInterface {
@@ -38,8 +39,15 @@ public interface CertificatesViewInterface {
      * @param bitmap
      */
     void updateIdCardInfo(IdCardMsg idCardMsg,Bitmap bitmap,boolean icCardMode);
+
+    /**
+     * 更新卡信息，网络读卡器
+     * @param idCard
+     */
+    void updateIdCardInfoByNetReader(IdCard idCard);
+
     //更新人证测温结果
-    void updateResultTip(String resultTip, IdCardMsg idCardMsg, float finalTemper, int similarInt, boolean isAlike, boolean isNormal,boolean isInWhite,boolean icCardMode);
+    void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode);
     //更新提示
     void updateTips(String tip);
     //重置所有UI

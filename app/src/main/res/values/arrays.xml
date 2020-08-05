@@ -8,6 +8,11 @@
         <item>Other</item>
     </string-array>
 
+    <string-array name="certificates_reader">
+        <item>脱机读卡器</item>
+        <item>网络读卡器</item>
+    </string-array>
+
     <!--
         <item>@string/act_certificates_idcard_infared</item>-->
     <string-array name="certificates_mode">

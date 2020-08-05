@@ -16,7 +16,7 @@ public class WltDec
 
 	static
 	{
-		System.loadLibrary("wlt2bmp");
+		System.loadLibrary("wlt2bmp_local");
 		//Log.i("WELLCOM", "success!");
 	}
 }

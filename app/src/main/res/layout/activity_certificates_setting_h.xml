@@ -209,6 +209,31 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/ll_reader_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:text="读卡器类型" />
+
+                    <TextView
+                        android:id="@+id/tv_reader_setting"
+                        style="@style/setting_text"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/shape_system_name"
+                        android:clickable="true"
+                        android:drawableRight="@mipmap/icon_arrow_down"
+                        android:drawablePadding="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -251,6 +276,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

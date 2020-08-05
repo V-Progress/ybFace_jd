@@ -10,6 +10,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -110,6 +111,8 @@ public class POIExport extends Export{
                 }
             }
 
+            autoCellSize(sheet,colName.length,sheet.getLastRowNum());
+
             Timber.d("创建数据完毕，准备写出");
             OutputLog.getInstance().addExportLog("准备写出");
             writeToFile(workbook, excelFile.getPath());
@@ -123,6 +126,37 @@ public class POIExport extends Export{
         }
     }
 
+    private void autoCellSize(Sheet sheet,int colNumber,int rowNumber){
+        // 让列宽随着导出的列长自动适应
+        for (int colNum = 0; colNum < colNumber; colNum++) {
+            int columnWidth1 = sheet.getColumnWidth(colNum);
+            Timber.d("当前列宽：" + columnWidth1);
+            int columnWidth = columnWidth1 / 256;
+            Timber.d("处理后列宽：" + columnWidth);
+            for (int rowNum = 0; rowNum < rowNumber; rowNum++) {
+                //获取当前行
+                Row currentRow = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+
+                if (currentRow.getCell(colNum) != null) {
+                    Cell currentCell = currentRow.getCell(colNum);
+                    if (currentCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+                        int length = currentCell.getStringCellValue()
+                                .getBytes().length;
+                        if (columnWidth < length) {
+                            columnWidth = length;
+                        }
+                    } else {
+
+                    }
+                }
+            }
+            if (colNum == 0) {
+                sheet.setColumnWidth(colNum, (columnWidth - 2) * 256);
+            } else {
+                sheet.setColumnWidth(colNum, (columnWidth + 4) * 256);
+            }
+        }
+    }
 
     private void writeHeaderRow(Workbook workbook, Sheet sheet, String[] colName) {
         CellStyle cellStyle = getColumnTopStyle(workbook);
