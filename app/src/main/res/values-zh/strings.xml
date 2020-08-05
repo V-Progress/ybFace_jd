@@ -12,6 +12,8 @@
     <string name="temper_error_btn_restart">重启</string>
     <string name="temper_error_btn_cancel">暂不处理</string>
 
+    <string name="main_tip_stranger">陌生人</string>
+
     <string name="import_please_select_excel">请选择文件(*.xls,*.xlsx)</string>
     <string name="import_title">导入</string>
     <string name="import_select_file">选择文件</string>
@@ -282,7 +284,6 @@
     <string name="sign_export_record_path">目录：</string>
     <string name="sign_export_record_failed">导出失败</string>
     <string name="sign_list_table_name">记录</string>
-
 
     <!--访客列表-->
     <string name="visitor_list_title">访客列表</string>

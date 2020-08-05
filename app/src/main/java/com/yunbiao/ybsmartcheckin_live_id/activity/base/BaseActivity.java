@@ -46,6 +46,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Request;
+import timber.log.Timber;
 
 public abstract class BaseActivity extends FragmentActivity {
     protected boolean isLog = true;
@@ -241,15 +242,11 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     protected void d(String log) {
-        if (isLog) {
-            Log.d(this.getClass().getSimpleName(), log);
-        }
+        Timber.d(log);
     }
 
     protected void e(String log) {
-        if (isLog) {
-            Log.e(this.getClass().getSimpleName(), log);
-        }
+        Timber.d(log);
     }
 
     public static Bitmap readBitMap(Context context, int resId) {

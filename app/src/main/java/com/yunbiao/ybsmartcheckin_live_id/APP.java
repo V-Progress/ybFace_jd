@@ -107,7 +107,7 @@ public class APP extends Application {
         super.onCreate();
         instance = this;
 
-        Timber.plant(new Timber.DebugTree());
+        Timber.plant(new CrashTree(this));
 
         cauchException();
 

@@ -1054,6 +1054,9 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     //显示UI
                     int bgId = getBgId(temperature);
                     String resultText = getResultText(mFEnabled, temperature);
+                    if(isTemperAndFace()){
+                        resultText += "\n" + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
+                    }
                     viewInterface.showResult(resultText, bgId);
                     if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
                         if(temperature >= mTempWarningThreshold){
@@ -1081,8 +1084,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                             }
                         } else if (temperature >= mTempWarningThreshold) {//高温
                             if (speechBean.isWarningEnabled()) {
-                                if (!TextUtils.isEmpty(name)) {
-                                    speechText += "，" + name;
+                                if(isTemperAndFace()){
+                                    speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
                                 }
                                 KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
                             } else {
@@ -1092,8 +1095,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                             }
                         } else {//正常
                             if (speechBean.isNormalEnabled()) {
-                                if (!TextUtils.isEmpty(name)) {
-                                    speechText += "，" + name;
+                                if(isTemperAndFace()){
+                                    speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
                                 }
                                 KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
                             } else {

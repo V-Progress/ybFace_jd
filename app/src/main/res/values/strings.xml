@@ -18,6 +18,8 @@
     <string name="clean_storage_please">The device ran out of memory, please clear the data, Are you sure you want to enter?</string>
     <string name="alvailable_space">Available space: %1$s%2$s</string>
 
+    <string name="main_tip_stranger">stranger</string>
+
     <!--导出-->
     <string name="import_please_select_excel">Please select Excel file(*.xls,*.xlsx)</string>
     <string name="import_title">Import</string>
