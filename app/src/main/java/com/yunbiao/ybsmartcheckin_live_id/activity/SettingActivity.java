@@ -357,14 +357,23 @@ public class SettingActivity extends BaseActivity {
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
         //人脸框镜像
         final boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
-        cbMirror.setChecked(!mirror);
+        cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(Constants.Key.IS_H_MIRROR,isChecked);
             }
         });
-
+        //纵向镜像
+        CheckBox cbVerticalMirror = findViewById(R.id.cb_mirror_vertical);
+        boolean verticalMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR, Constants.Default.IS_V_MIRROR);
+        cbVerticalMirror.setChecked(verticalMirror);
+        cbVerticalMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(Constants.Key.IS_V_MIRROR,isChecked);
+            }
+        });
     }
 
     //开始自动更新CPU温度

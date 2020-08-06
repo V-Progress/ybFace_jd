@@ -110,12 +110,35 @@
                     android:paddingRight="10dp"
                     android:textColor="@color/white" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/setting_text_child"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <TextView
                     style="@style/setting_text"
                     android:text="@string/setting_camera_mirror" />
 
                 <CheckBox
                     android:id="@+id/cb_mirror"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:checked="true"
+                    android:text="@string/setting_open"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    style="@style/setting_text"
+                    android:text="@string/setting_camera_vertical_mirror" />
+
+                <CheckBox
+                    android:id="@+id/cb_mirror_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
