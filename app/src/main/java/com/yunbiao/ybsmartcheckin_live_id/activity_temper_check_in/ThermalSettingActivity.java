@@ -1042,15 +1042,14 @@ public class ThermalSettingActivity extends BaseActivity {
                     edtCommunicationIp.setError(APP.getContext().getResources().getString(R.string.setting_please_set_ip));
                     return;
                 }
-                if (TextUtils.isEmpty(mResPort)) {
-                    edtResPort.setError(APP.getContext().getResources().getString(R.string.setting_please_set_res));
-                    return;
+                if(!TextUtils.isEmpty(mResPort)){
+                    int intResPort = Integer.parseInt(mResPort);
+                    if (intResPort > 65535) {
+                        edtResPort.setError(APP.getContext().getResources().getString(R.string.setting_res_port_error));
+                        return;
+                    }
                 }
-                int intResPort = Integer.parseInt(mResPort);
-                if (intResPort > 65535) {
-                    edtResPort.setError(APP.getContext().getResources().getString(R.string.setting_res_port_error));
-                    return;
-                }
+
                 if (TextUtils.isEmpty(mXmppPort)) {
                     edtXmppPort.setError(APP.getContext().getResources().getString(R.string.setting_please_set_xmpp));
                     return;

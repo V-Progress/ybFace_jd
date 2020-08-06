@@ -199,7 +199,7 @@ public class SplashActivity extends BaseActivity {
 
             switch (Constants.FLAVOR_TYPE) {
                 case FlavorType.XENON:
-                    setIp("api-eu.feverdefence.com", "34.247.168.20", "5222", "8080", "");
+                    setIp("api-eu.feverdefence.com", "34.247.168.20", "5222", "", "");
                     break;
                 /*case FlavorType.YB:
                     setIp("192.168.255.115","192.168.255.115","5222","80","ybface");

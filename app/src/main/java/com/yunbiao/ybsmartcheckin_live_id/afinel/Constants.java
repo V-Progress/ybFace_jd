@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.yunbiao.ybsmartcheckin_live_id.BuildConfig;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
@@ -13,7 +14,7 @@ import timber.log.Timber;
 public class Constants {
     public static final String API_KEY = "1234567890";
 
-    private static String PRE = "http://";
+    private static String PRE = Constants.FLAVOR_TYPE == FlavorType.XENON ? "https://" : "http://";
     private static String COLON = ":";
     //地址
     public static String XMPP_HOST = NetConfig.COMMUNICATION_HOST;
@@ -65,7 +66,7 @@ public class Constants {
             Constants.XMPP_HOST = xmppIp;
             Constants.XMPP_PORT = SpUtils.getStr(Constants.Key.JU_XMPP_PORT_CACHE);
 
-            Constants.RESOURCE_URL = PRE + Constants.RESOURCE_HOST + COLON + Constants.RESOURCE_PORT + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
+            Constants.RESOURCE_URL = PRE + Constants.RESOURCE_HOST + (TextUtils.isEmpty(Constants.RESOURCE_PORT) ? "" : COLON + Constants.RESOURCE_PORT) + "/" + (TextUtils.isEmpty(projectName)||TextUtils.equals("/",projectName) ? "" : (projectName + "/"));
             ResourceUpdate.refreshAddress();
         }
         logNetConfig(TAG);
