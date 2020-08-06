@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.yunbiao.ybsmartcheckin_live_id.temper_12inch.activity.Main12InchActivity.EventListener"/>
+        <import type="com.yunbiao.ybsmartcheckin_live_id.temper_12inch.databean.Main12InchDataBean"/>
+        <import type="android.view.View"/>
+
+        <variable
+            name="eventListener"
+            type="EventListener" />
+        <variable
+            name="main12InchDataBean"
+            type="Main12InchDataBean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fl_ad"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:onClick="@{eventListener::onClick}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_temp_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{main12InchDataBean.isShowResult ? View.VISIBLE : View.GONE}"
+            app:constraint_referenced_ids="iv_show_result_bg, iv_result_content_bg, iv_result_icon, tv_result_tip, tv_result_temp"/>
+
+        <ImageView
+            android:id="@+id/iv_show_result_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@{main12InchDataBean.resultBgRes}"/>
+
+        <ImageView
+            android:id="@+id/iv_result_content_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@{main12InchDataBean.resultContentBgRes}"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_show_result_bg"/>
+
+        <ImageView
+            android:id="@+id/iv_result_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@{main12InchDataBean.resultIconRes}"
+            app:layout_constraintTop_toTopOf="@id/iv_result_content_bg"
+            app:layout_constraintBottom_toBottomOf="@id/iv_result_content_bg"
+            app:layout_constraintStart_toStartOf="@id/iv_result_content_bg"
+            app:layout_constraintEnd_toStartOf="@id/tv_result_tip"/>
+
+        <TextView
+            android:id="@+id/tv_result_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="72sp"
+            android:text="@{main12InchDataBean.resultTipStr}"
+            app:layout_constraintTop_toTopOf="@id/iv_result_content_bg"
+            app:layout_constraintBottom_toTopOf="@id/tv_result_temp"
+            app:layout_constraintStart_toEndOf="@id/iv_result_icon"
+            app:layout_constraintEnd_toEndOf="@id/iv_result_content_bg"/>
+
+        <TextView
+            android:id="@+id/tv_result_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="38sp"
+            android:text="@{main12InchDataBean.resultTempStr}"
+            app:layout_constraintTop_toBottomOf="@id/tv_result_tip"
+            app:layout_constraintBottom_toBottomOf="@id/iv_result_content_bg"
+            app:layout_constraintStart_toStartOf="@id/tv_result_tip"
+            app:layout_constraintEnd_toEndOf="@id/tv_result_tip"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

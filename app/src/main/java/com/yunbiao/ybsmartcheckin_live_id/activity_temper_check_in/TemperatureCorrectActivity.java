@@ -435,6 +435,9 @@ public class TemperatureCorrectActivity extends BaseGpioActivity {
     protected void onDestroy() {
         super.onDestroy();
         TemperatureModule.getIns().closeHotImageK3232();
+        if (faceView != null) {
+            faceView.destory();
+        }
     }
 
 }

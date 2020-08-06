@@ -22,6 +22,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity_safety_check_double_light.Saf
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_check_in.ThermalImage2Activity;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
+import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.activity.Main12InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity;
 
 import java.util.ArrayList;
@@ -98,6 +99,9 @@ public class MyProtectService extends Service {
                 break;
             case Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH:
                 clazz = Main5InchActivity.class;
+                break;
+            case Constants.DeviceType.TEMPERATURE_MEASUREMENT_12_INCH:
+                clazz = Main12InchActivity.class;
                 break;
             default:
                 clazz = ThermalImage2Activity.class;

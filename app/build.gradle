@@ -222,6 +222,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "Touchless Entry","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","TOUCHLESS_ENTRY_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*12寸=====================================================================================*/
+        flavor(YB_12, "9",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_MEASUREMENT_12_INCH",
+                "@string/app_name", "@mipmap/icon_logo_5_inch", "5cbe87a60cafb210460006b3", "YB_12",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -290,6 +295,8 @@ String buildApkName(String param) {
             name += " Face_5寸网络版"
         } else if (param.contains("21")) {
             name += " Face_21寸"
+        } else if (param.contains("12")) {
+            name += " Face_12寸网络版"
         } else {
             name += "Face"
         }

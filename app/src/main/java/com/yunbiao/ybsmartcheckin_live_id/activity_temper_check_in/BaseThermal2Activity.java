@@ -158,6 +158,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     //亿莱顿则开启串口
                     if (TextUtils.equals("LXR", broadType) || Constants.DEVICE_TYPE == Constants.DeviceType.TEMPERATURE_CHECK_IN_215_INCH) {
                         isMLXRunning = true;
+                        isRedBuzzerLoop = true;
                         TemperatureModule.getIns().startMLX90621GgPort(lowTempModel, 16 * 32, 4 * 40, mlx90621GgTempCallBack);
                         TemperatureModule.getIns().initSerialPort(this, portPath, 9600);
                     } else if(TextUtils.equals("SMT",broadType)){

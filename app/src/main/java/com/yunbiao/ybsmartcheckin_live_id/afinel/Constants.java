@@ -145,6 +145,8 @@ public class Constants {
         int TEMPERATURE_MEASUREMENT_5_INCH = 21;//5寸
 
         int TEMPERATURE_CHECK_IN_215_INCH = 22;//21.5寸
+
+        int TEMPERATURE_MEASUREMENT_12_INCH = 23;//12寸
     }
 
     //默认摄像头ID

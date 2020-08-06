@@ -258,8 +258,11 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     //亿舜============================================================
+    protected boolean isRedBuzzerLoop = false;
     protected void ysLedWhite(){
-        TemperatureModule.getIns().controlExpandLight(1);
+        if (!isRedBuzzerLoop) {
+            TemperatureModule.getIns().controlExpandLight(1);
+        }
         if(gpioManager == null){
             return;
         }
@@ -289,7 +292,11 @@ public abstract class LedControlActivity extends BaseActivity {
     }
 
     protected void ysLedRed(){
-        TemperatureModule.getIns().controlExpandLight(3);
+        if (isRedBuzzerLoop) {
+            TemperatureModule.getIns().controlExpandLight(4);
+        } else {
+            TemperatureModule.getIns().controlExpandLight(3);
+        }
         if(gpioManager == null){
             return;
         }

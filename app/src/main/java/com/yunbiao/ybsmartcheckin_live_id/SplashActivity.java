@@ -30,6 +30,7 @@ import com.yunbiao.ybsmartcheckin_live_id.activity_certificates.CertificatesActi
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseActivity;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiThermalActivity;
+import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.activity.Main12InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.utils.CommonUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
@@ -246,7 +247,8 @@ public class SplashActivity extends BaseActivity {
             } else {
                 boolean canGo = Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK
                         && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
-                        && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH;
+                        && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH
+                        && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_12_INCH;
                 FaceSDKActive.active(canGo,activeCallback);
             }
         }).start();
@@ -401,6 +403,9 @@ public class SplashActivity extends BaseActivity {
             case Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH:
                 Constants.Default.CAMERA_ANGLE = 0;
                 startActivity(new Intent(this, Main5InchActivity.class));
+                break;
+            case Constants.DeviceType.TEMPERATURE_MEASUREMENT_12_INCH:
+                startActivity(new Intent(this, Main12InchActivity.class));
                 break;
         }
     }

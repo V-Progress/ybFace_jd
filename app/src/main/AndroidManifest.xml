@@ -106,6 +106,11 @@
         <activity android:name=".temper_5inch.activity.Setting5InchActivity"
             android:windowSoftInputMode="stateHidden|adjustPan"/>
 
+        <!-- 12寸 -->
+        <activity android:name=".temper_12inch.activity.Main12InchActivity" />
+        <activity android:name=".temper_12inch.activity.Setting12InchActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />

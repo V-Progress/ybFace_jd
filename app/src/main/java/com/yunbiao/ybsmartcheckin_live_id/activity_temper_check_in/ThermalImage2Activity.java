@@ -31,6 +31,7 @@ import com.yunbiao.faceview.FaceManager;
 import com.yunbiao.faceview.FaceView;
 import com.yunbiao.faceview.LivenessType;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
+import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.ReadCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.activity.Event.DisplayOrientationEvent;
@@ -678,6 +679,9 @@ public class ThermalImage2Activity extends BaseThermal2Activity implements Therm
     @SuppressLint("RestrictedApi")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (Constants.FLAVOR_TYPE == FlavorType.XENON) {
+            return super.dispatchKeyEvent(event);
+        }
         if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && ReadCardUtils.isInputFromReader(this, event)) {
             if (readCardUtils != null) {
                 readCardUtils.resolveKeyEvent(event);
