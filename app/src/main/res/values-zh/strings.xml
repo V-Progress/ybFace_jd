@@ -695,7 +695,7 @@
     <string name="setting_clear_policy_30">30天</string>
     <string name="setting_clear_policy_custom">自定义</string>
     <string name="setting_clear_policy_unit">天</string>
-    <string name="setting_clear_all_data">清除所有数据</string>
+    <string name="setting_clear_all_data">清除所有记录</string>
     <string name="clear_no_data">数据已清除完毕：</string>
     <string name="setting_no_face_temper">无人脸报温</string><!--保存-->
 

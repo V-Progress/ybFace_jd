@@ -712,7 +712,7 @@
     <string name="setting_clear_policy_30">30 days</string>
     <string name="setting_clear_policy_custom">Custom</string>
     <string name="setting_clear_policy_unit">days</string>
-    <string name="setting_clear_all_data">Clear all data</string>
+    <string name="setting_clear_all_data">Clear all records</string>
     <string name="clear_no_data">The data has been cleared：</string>
     <string name="setting_no_face_temper">No face temperature reporting</string>
 

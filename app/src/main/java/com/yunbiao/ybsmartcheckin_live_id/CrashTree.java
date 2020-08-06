@@ -23,6 +23,6 @@ public class CrashTree extends Timber.DebugTree {
 
     @Override
     protected boolean isLoggable(@Nullable String tag, int priority) {
-        return isLog;
+        return true;
     }
 }

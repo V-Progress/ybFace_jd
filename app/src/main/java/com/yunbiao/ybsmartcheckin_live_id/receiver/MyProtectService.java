@@ -56,11 +56,11 @@ public class MyProtectService extends Service {
         public boolean handleMessage(Message msg) {
             if (msg.what == CHECK_APP) {
                 Timber.e("守护进程：轮询");
-                if (isRunBackground(getApplicationContext())) {
+                /*if (isRunBackground(getApplicationContext())) {
                     Class currMainActivity = getCurrMainActivity();
                     Timber.e("守护进程：检测到程序在后台运行，启用到前台：%s", currMainActivity.getName());
                     backgroundToForeground(currMainActivity);
-                } else if (!isMyAppRunning(MyProtectService.this, packageName)) {
+                } else */if (!isMyAppRunning(MyProtectService.this, packageName)) {
                     Timber.e("守护进程：检测到程序未运行，启用APP");
                     startTargetActivity(MyProtectService.this, SplashActivity.class);
                 }

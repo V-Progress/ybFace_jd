@@ -904,7 +904,18 @@ public class ThermalSettingActivity extends BaseActivity {
                     .setTitle(getResources().getString(R.string.delete_user_dialog_title))
                     .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
                     .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
-                        SignManager.instance().clearAllData(getActivity());
+                        SignManager.instance().clearAllData(new SignManager.ClearListener() {
+                            @Override
+                            public void onStart() {
+                                UIUtils.showNetLoading(getActivity());
+                            }
+
+                            @Override
+                            public void onFinish(Integer size) {
+                                UIUtils.dismissNetLoading();
+                                UIUtils.showShort(getActivity(), getResources().getString(R.string.clear_no_data) + size);
+                            }
+                        });
                     }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
                         dialog.dismiss();
                     }).create();

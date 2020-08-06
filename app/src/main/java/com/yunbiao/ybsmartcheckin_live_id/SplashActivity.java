@@ -317,6 +317,8 @@ public class SplashActivity extends BaseActivity {
                 Constants.Default.POSTER_ENABLED = true;
                 ThermalConst.Default.SHOW_MAIN_INFO = true;
                 Constants.Default.QRCODE_ENABLED = false;
+                Constants.Default.IS_H_MIRROR = false;
+                Constants.Default.IS_V_MIRROR = false;
                 break;
             case FlavorType.TURKEY:
                 ThermalConst.Default.LOW_TEMP = false;

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -302,11 +301,8 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
 
                 UIUtils.showNetLoading(this);
                 SignManager.instance().uploadSignRecord(aBoolean -> {
-                    if (aBoolean) {
-                        EventBus.getDefault().post(new UpdateSignDataEvent());
-                    }
                     UIUtils.dismissNetLoading();
-                    UIUtils.showShort(ThermalSignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed)));
+                    runOnUiThread(() -> UIUtils.showShort(ThermalSignActivity.this, (aBoolean ? getString(R.string.sign_list_upload_success) : getString(R.string.sign_list_upload_failed))));
                 });
                 break;
             case R.id.iv_back:
@@ -420,11 +416,22 @@ public class ThermalSignActivity extends BaseActivity implements View.OnClickLis
                 .setTitle(getResources().getString(R.string.delete_user_dialog_title))
                 .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
                 .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
-                    SignManager.instance().clearAllData(this);
-                    loadSignList();
-                }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
-                    dialog.dismiss();
-                }).create();
+                    SignManager.instance().clearAllData(new SignManager.ClearListener() {
+                        @Override
+                        public void onStart() {
+                            view.setClickable(false);
+                            UIUtils.showNetLoading(ThermalSignActivity.this);
+                        }
+
+                        @Override
+                        public void onFinish(Integer size) {
+                            view.setClickable(true);
+                            UIUtils.dismissNetLoading();
+                            UIUtils.showShort(ThermalSignActivity.this,getResString(R.string.clear_no_data) + size);
+                            loadSignList();
+                        }
+                    });
+                }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> dialog.dismiss()).create();
         alertDialog.show();
     }
 }

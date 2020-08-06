@@ -48,6 +48,11 @@ public class AutoUpload {
     private static final String TAG = "AutoUpload";
     private ScheduledExecutorService scheduledExecutorService;
     private SimpleDateFormat paramsDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Consumer<Boolean> consumer;
+
+    public void setConsumer(Consumer<Boolean> consumer) {
+        this.consumer = consumer;
+    }
 
     public AutoUpload(){
         scheduledExecutorService = Executors.newScheduledThreadPool(3);
@@ -79,6 +84,14 @@ public class AutoUpload {
         int comid = SpUtils.getCompany().getComid();
 
         if(comid == Constants.NOT_BIND_COMPANY_ID){
+            if(consumer != null){
+                try {
+                    consumer.accept(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                consumer = null;
+            }
             return;
         }
 
@@ -87,6 +100,14 @@ public class AutoUpload {
         Timber.d("未上传条数 = " + unUploadCount);
         if (unUploadCount == 0) {
             uploadProgress = -1;
+            if(consumer != null){
+                try {
+                    consumer.accept(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                consumer = null;
+            }
             return;
         }
 
@@ -188,66 +209,23 @@ public class AutoUpload {
                 uploadProgress = -1;
                 uploadMap.clear();
                 EventBus.getDefault().post(new UpdateSignDataEvent());
+                if(consumer != null){
+                    try {
+                        consumer.accept(true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    consumer = null;
+                }
                 break;
         }
     }
-
-    //开始上传记录
-//    public void uploadSignRecord(final Consumer<Boolean> callback) {
-//        int comid = SpUtils.getCompany().getComid();
-//        //只取出30条数据
-//        List<Sign> signs = DaoManager.get().querySignByComIdAndUploadLimit(comid, false, 30);
-//        if (signs == null || signs.size() <= 0) {
-//            try {
-//                callback.accept(true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return;
-//        }
-//        Timber.d( "run: ------ 本次上传条数：" + signs.size());
-//
-//        List<Sign> entrySignList = new ArrayList<>();
-//        List<Sign> visitorSignList = new ArrayList<>();
-//        List<Sign> temperSignList = new ArrayList<>();
-//        for (Sign signBean : signs) {
-//            // TODO: 2020/3/18 离线功能
-//            if (signBean.getComid() == Constants.NOT_BIND_COMPANY_ID) {
-//                continue;
-//            }
-//            if (signBean.getType() == 0) {
-//                entrySignList.add(signBean);
-//            } else if (signBean.getType() == -9) {
-//                temperSignList.add(signBean);
-//            } else {
-//                visitorSignList.add(signBean);
-//            }
-//        }
-//
-//        if(entrySignList.size() <= 0 && visitorSignList.size() <= 0 && temperSignList.size() <= 0){
-//            try {
-//                callback.accept(true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return;
-//        }
-//
-//        //开始上传
-//        uploadProgress = 0;
-//
-//        //上传考勤数据
-//        uploadSignArray(entrySignList, callback);
-//        //上传访客数据
-//        uploadVisitorSignArray(visitorSignList, callback);
-//        //上传测温记录
-//        uploadTemperArray(temperSignList, callback);
-//    }
 
     //上传考勤记录
     private int uploadState1 = 0;
     private void uploadSignArray(Queue<List<Sign>> signQueue) {
         if (signQueue == null || signQueue.size() <= 0) {
+            Timber.d("考勤数据上传完毕");
             uploadProgress = 2;
             uploadSignRecord();
             return;
@@ -314,6 +292,7 @@ public class AutoUpload {
     //上传测温记录
     private void uploadTemperArray(final List<Sign> signs, Queue<List<Sign>> signQueue) {
         if(Constants.DEVICE_TYPE == Constants.DeviceType.CHECK_IN) {
+            Timber.d("测温数据上传完毕");
             if (uploadProgress == 1) {
                 uploadSignArray(signQueue);
             } else if (uploadProgress == 2) {
@@ -440,6 +419,7 @@ public class AutoUpload {
     private int uploadState2 = 0;
     private void uploadVisitorSignArray(Queue<List<Sign>> signQueue) {
         if (signQueue == null || signQueue.size() <= 0) {
+            Timber.d("访客数据上传完毕");
             uploadProgress = 4;
             uploadSignRecord();
             return;

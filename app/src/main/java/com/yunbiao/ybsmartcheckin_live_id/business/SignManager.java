@@ -1,11 +1,11 @@
 package com.yunbiao.ybsmartcheckin_live_id.business;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.csht.netty.entry.IdCard;
 import com.yunbiao.faceview.CompareResult;
 import com.yunbiao.ybsmartcheckin_live_id.OutputLog;
-import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.SignLogTest;
 import com.yunbiao.ybsmartcheckin_live_id.activity_temper_multiple.MultiTemperBean;
 import com.yunbiao.ybsmartcheckin_live_id.db2.Record5Inch;
@@ -28,7 +27,6 @@ import com.yunbiao.ybsmartcheckin_live_id.db2.Visitor;
 import com.yunbiao.ybsmartcheckin_live_id.system.HeartBeatClient;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SdCardUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
-import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -42,6 +40,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,10 +117,11 @@ public class SignManager {
 
     public void uploadSignRecord(Consumer<Boolean> consumer) {
         if (autoUpload != null && autoUpload.uploadProgress == -1) {
+            autoUpload.setConsumer(consumer);
             autoUpload.checkAndUploadSignRecord();
         } else {
             try {
-                consumer.accept(false);
+                consumer.accept(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1019,40 +1019,6 @@ public class SignManager {
         long add = DaoManager.get().add(record5Inch);
     }
 
-    public void clearAllData(@NonNull Activity activity){
-        List<Sign> signList = DaoManager.get().queryAll(Sign.class);
-        if(signList == null || signList.size() == 0){
-            UIUtils.showShort(activity,(activity.getString(R.string.clear_no_data) + "0"));
-            return;
-        }
-
-        int total = 0;
-        Iterator<Sign> iterator = signList.iterator();
-        while (iterator.hasNext()) {
-            Sign next = iterator.next();
-            String headPath = next.getHeadPath();
-            String hotImgPath = next.getHotImgPath();
-            if(next.getType() != 0){
-                if(!TextUtils.isEmpty(headPath)){
-                    File headFile = new File(headPath);
-                    if(headFile.exists()){
-                        headFile.delete();
-                    }
-                }
-            }
-            if(!TextUtils.isEmpty(hotImgPath)){
-                File hotFile = new File(hotImgPath);
-                if(hotFile.exists()){
-                    hotFile.delete();
-                }
-            }
-            DaoManager.get().deleteSign(next);
-            total ++;
-        }
-
-        UIUtils.showShort(activity,(activity.getString(R.string.clear_no_data) + total));
-    }
-
     public void checkStorageSpace(){
         SdCardUtils.Capacity capacity = SdCardUtils.getUsedCapacity();
         double remainingSpace = capacity.getAll_mb() - capacity.getUsed_mb();
@@ -1077,4 +1043,103 @@ public class SignManager {
             }
         }
     }
+    private ClearAsyncTask clearAsyncTask;
+    public void clearAllData(ClearListener clearListener){
+        if(clearAsyncTask != null && clearAsyncTask.isRunning){
+            return;
+        }
+        clearAsyncTask = new ClearAsyncTask(clearListener);
+        clearAsyncTask.execute();
+    }
+
+    public static class ClearAsyncTask extends AsyncTask<Void,Void,Integer>{
+        private ClearListener clearListener;
+        private boolean isRunning = false;
+        private List<File> deleteDirList = new ArrayList<>();
+
+        public ClearAsyncTask(ClearListener clearListener) {
+            this.clearListener = clearListener;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if(clearListener != null){
+                clearListener.onStart();
+            }
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            isRunning = true;
+
+            deleteDirList.clear();
+            File cacheDir = new File(Constants.CACHE_PATH);
+            checkDirByName(cacheDir,"rcd");
+
+            if(deleteDirList.size() == 0){
+                return 0;
+            }
+
+            for (File file : deleteDirList) {
+                Timber.d("要删除的文件夹：" + file.getPath());
+                deleteDirWithFile(file);
+            }
+
+            List<Sign> signList = DaoManager.get().queryAll(Sign.class);
+            if(signList != null && signList.size() > 0){
+                DaoManager.get().deleteAll(Sign.class);
+            }
+
+            return signList == null ? 0 : signList.size();
+        }
+
+        @Override
+        protected void onPostExecute(Integer size) {
+            isRunning = false;
+            if(clearListener != null){
+                clearListener.onFinish(size);
+            }
+        }
+
+        private void checkDirByName(File dir,@NonNull String dirName){
+            if(dir == null || !dir.exists() || !dir.isDirectory()){
+                return;
+            }
+
+            File[] files = dir.listFiles(pathname -> pathname.isDirectory());
+            if(files == null || files.length == 0){
+                return;
+            }
+
+            for (File file : files) {
+                if(TextUtils.equals(dirName,file.getName())){
+                    Timber.d("检测到目录：" + file.getPath());
+                    deleteDirList.add(file);
+                } else {
+                    checkDirByName(file,dirName);
+                }
+            }
+        }
+
+        //删除文件夹和文件夹里面的文件
+        void deleteDirWithFile(File dir) {
+            if (dir == null || !dir.exists() || !dir.isDirectory())
+                return;
+            for (File file : dir.listFiles()) {
+                if (file.isFile()){
+                    file.delete(); // 删除所有文件
+                } else if (file.isDirectory()){
+                    deleteDirWithFile(file); // 递规的方式删除文件夹
+                }
+            }
+            dir.delete();// 删除目录本身
+        }
+    }
+
+    public interface ClearListener{
+        void onStart();
+
+        void onFinish(Integer size);
+    }
+
 }

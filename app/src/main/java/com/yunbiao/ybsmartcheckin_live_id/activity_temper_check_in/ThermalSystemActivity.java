@@ -290,7 +290,7 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         tv_bindcode_syetem.setText(bindCode);
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
-        if (TextUtils.isEmpty(expDate)) {
+        if (Constants.FLAVOR_TYPE == FlavorType.XENON || TextUtils.isEmpty(expDate)) {
             expDate = getString(R.string.System_validityPeriod);
             llExpiry.setVisibility(View.GONE);
         } else {
