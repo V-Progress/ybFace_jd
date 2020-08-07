@@ -21,10 +21,8 @@ import com.yunbiao.ybsmartcheckin_live_id.printer.Utils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.Temper12InchConst;
 import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.databean.Main12InchDataBean;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.SpeechManager;
-import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.activity.Main5InchActivity;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.BigDecimalUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.TemperatureUnitUtils;
-import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.view.MeasureResultDialog;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.xmpp.ServiceManager;
 
@@ -142,7 +140,7 @@ public class Main12InchActivity extends Base12InchActivity {
             if (System.currentTimeMillis() - coverTime > 150) {
                 isCover = false;
             }
-            if (isStop || !isReport || MeasureResultDialog.getInstance().isShowing()) {
+            if (isStop || !isReport) {
                 tempValueList.clear();
                 return;
             }
@@ -267,6 +265,8 @@ public class Main12InchActivity extends Base12InchActivity {
     protected void onResume() {
         super.onResume();
         updateConfiguration();
+        TemperatureModule.getIns().setMLX90621YsI2CCallBack(mlx90621YsTempCallBack);
+        TOF10120Module.getIns().setTOF10120CallBack(tof10120CallBack);
         isStop = false;
     }
 

@@ -92,7 +92,7 @@ public class MultiThermalSettingActivity extends BaseActivity {
     protected void initView() {
         super.initView();
 
-        temperModule = SpUtils.getIntOrDef(MultiThermalConst.Key.MULTI_TEMPER_MODULE, MultiThermalConst.TemperModuleType.MI320);
+        temperModule = SpUtils.getIntOrDef(MultiThermalConst.Key.MULTI_TEMPER_MODULE, MultiThermalConst.TemperModuleType.K6080);
 
         initFaceRectMirrorSetting();
 

@@ -346,6 +346,10 @@ public class FaceView extends FrameLayout {
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
             boolean isHMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR, Constants.Default.IS_H_MIRROR);
             boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR, Constants.Default.IS_V_MIRROR);
+            if (Constants.DEVICE_TYPE == Constants.DeviceType.MULTIPLE_THERMAL
+                    || Constants.DEVICE_TYPE == Constants.DeviceType.HT_MULTIPLE_THERMAL) {
+                isVMirror = false;
+            }
 
             Camera.Size lastPreviewSize = previewSize;
             previewSize = camera.getParameters().getPreviewSize();

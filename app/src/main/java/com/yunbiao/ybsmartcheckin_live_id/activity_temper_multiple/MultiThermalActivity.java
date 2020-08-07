@@ -350,7 +350,7 @@ public class MultiThermalActivity extends BaseMultiThermalActivity {
         //开启多次回调
         faceView.enableMultiCallback(mMultiTrack);
 
-        temperModule = SpUtils.getIntOrDef(MultiThermalConst.Key.MULTI_TEMPER_MODULE, MultiThermalConst.TemperModuleType.MI320);
+        temperModule = SpUtils.getIntOrDef(MultiThermalConst.Key.MULTI_TEMPER_MODULE, MultiThermalConst.TemperModuleType.K6080);
         if (temperModule == MultiThermalConst.TemperModuleType.K6080) {
             startHotImage();
             ivHotImage.setVisibility(View.VISIBLE);

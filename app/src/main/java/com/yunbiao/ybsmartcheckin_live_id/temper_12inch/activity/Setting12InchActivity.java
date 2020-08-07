@@ -1,6 +1,7 @@
 package com.yunbiao.ybsmartcheckin_live_id.temper_12inch.activity;
 
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
@@ -11,19 +12,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import com.intelligence.hardware.temperature.TOF10120Module;
+import com.intelligence.hardware.temperature.TemperatureModule;
+import com.intelligence.hardware.temperature.callback.MLX90621YsTempCallBack;
+import com.intelligence.hardware.temperature.callback.TOF10120CallBack;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.afinel.Constants;
 import com.yunbiao.ybsmartcheckin_live_id.common.UpdateVersionControl;
 import com.yunbiao.ybsmartcheckin_live_id.databinding.Activity12inchSettingBinding;
+import com.yunbiao.ybsmartcheckin_live_id.printer.T;
 import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.Temper12InchConst;
 import com.yunbiao.ybsmartcheckin_live_id.temper_12inch.databean.Setting12InchDataBean;
-import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.Temper5InchConst;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.BigDecimalUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.ResourceUtils;
 import com.yunbiao.ybsmartcheckin_live_id.temper_5inch.utils.TemperatureUnitUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.NetWorkChangReceiver;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 import com.yunbiao.ybsmartcheckin_live_id.utils.UIUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableField;
@@ -51,8 +60,8 @@ public class Setting12InchActivity extends Base12InchActivity implements NetWork
         activity12inchSettingBinding = DataBindingUtil.setContentView(this, R.layout.activity_12inch_setting);
 
         setting12InchDataBean = new Setting12InchDataBean(
-                new ObservableField<>(String.valueOf(SpUtils.getFloat(Temper5InchConst.Key.CALIBRATION_VALUE, Temper5InchConst.Default.calibrationValueDef))),
-                new ObservableField<>(String.valueOf(SpUtils.getFloat(Temper5InchConst.Key.WARNING_VALUE, Temper5InchConst.Default.warningValueDef)))
+                new ObservableField<>(String.valueOf(SpUtils.getFloat(Temper12InchConst.Key.CALIBRATION_VALUE, Temper12InchConst.Default.calibrationValueDef))),
+                new ObservableField<>(String.valueOf(SpUtils.getFloat(Temper12InchConst.Key.WARNING_VALUE, Temper12InchConst.Default.warningValueDef)))
         );
 
         activity12inchSettingBinding.setSetting12InchDataBean(setting12InchDataBean);
@@ -96,41 +105,41 @@ public class Setting12InchActivity extends Base12InchActivity implements NetWork
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(netWorkChangReceiver, filter);
 
-        checkUpgrade(new CheckUpgradeCallback() {
-            @Override
-            public void onStart() {
-                activity12inchSettingBinding.flVersion5inchSystem.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void noUpgrade(String currVersionName) {
-                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_current) + currVersionName);
-                setting12InchDataBean.versionInfo.set(getResString(R.string.updateManager_dqbbwzxbb));
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.CENTER);
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.GREEN);
-            }
-
-            @Override
-            public void haveNewVersion(String newVersionName, String versionInfo) {
-                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_new) + newVersionName);
-                setting12InchDataBean.versionInfo.set(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.LEFT);
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.WHITE);
-            }
-
-            @Override
-            public void onError(String currVersionName, String s) {
-                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_current) + currVersionName);
-                setting12InchDataBean.versionInfo.set(getResString(R.string.update_check_failed));
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.CENTER);
-                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.GRAY);
-            }
-
-            @Override
-            public void onFinish() {
-                activity12inchSettingBinding.flVersion5inchSystem.setVisibility(View.GONE);
-            }
-        });
+//        checkUpgrade(new CheckUpgradeCallback() {
+//            @Override
+//            public void onStart() {
+//                activity12inchSettingBinding.flVersion5inchSystem.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void noUpgrade(String currVersionName) {
+//                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_current) + currVersionName);
+//                setting12InchDataBean.versionInfo.set(getResString(R.string.updateManager_dqbbwzxbb));
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.CENTER);
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.GREEN);
+//            }
+//
+//            @Override
+//            public void haveNewVersion(String newVersionName, String versionInfo) {
+//                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_new) + newVersionName);
+//                setting12InchDataBean.versionInfo.set(TextUtils.isEmpty(versionInfo) ? getResString(R.string.update_no_description) : versionInfo);
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.LEFT);
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.WHITE);
+//            }
+//
+//            @Override
+//            public void onError(String currVersionName, String s) {
+//                setting12InchDataBean.versionName.set(getResString(R.string.update_lable_current) + currVersionName);
+//                setting12InchDataBean.versionInfo.set(getResString(R.string.update_check_failed));
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setGravity(Gravity.CENTER);
+//                activity12inchSettingBinding.tvVersionInfo5inchSystem.setTextColor(Color.GRAY);
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                activity12inchSettingBinding.flVersion5inchSystem.setVisibility(View.GONE);
+//            }
+//        });
     }
 
     private void setNetStateInfo() {
@@ -174,7 +183,7 @@ public class Setting12InchActivity extends Base12InchActivity implements NetWork
             if (temperatureUnit == 1) {
                 SpUtils.saveFloat(Temper12InchConst.Key.WARNING_VALUE, Temper12InchConst.Default.warningValueDef);
             } else {
-                SpUtils.saveFloat(Temper12InchConst.Key.WARNING_VALUE, TemperatureUnitUtils.c2f(Temper5InchConst.Default.warningValueDef));
+                SpUtils.saveFloat(Temper12InchConst.Key.WARNING_VALUE, TemperatureUnitUtils.c2f(Temper12InchConst.Default.warningValueDef));
             }
         } else {
             SpUtils.saveFloat(Temper12InchConst.Key.WARNING_VALUE, Float.valueOf(setting12InchDataBean.warningContent.get()));
@@ -224,6 +233,91 @@ public class Setting12InchActivity extends Base12InchActivity implements NetWork
     public void disConnect() {
         isNetConnected = false;
         setNetStateInfo();
+    }
+
+    private boolean isCover = false;
+    private long coverTime = 0;
+    private boolean isReport = false;
+    private List<Float> tempValueList = new ArrayList<>();
+
+    private void startCalibration() {
+        TemperatureModule.getIns().setmCorrectionValue(0);
+        setting12InchDataBean.cmMeasurementValue.set(0f);
+
+        int temperatureUnit = SpUtils.getIntOrDef(Temper12InchConst.Key.TEMPERATURE_UNIT, Temper12InchConst.Default.temperatureUnitDef);
+        float calibrationValue = SpUtils.getFloat(Temper12InchConst.Key.CALIBRATION_VALUE, Temper12InchConst.Default.calibrationValueDef);
+
+        if (temperatureUnit == 1) {
+            setting12InchDataBean.cmCalibrationValue.set(calibrationValue);
+            setting12InchDataBean.cmBodyTemperatureValue.set(Temper12InchConst.defaultBodyValue);
+        } else {
+            setting12InchDataBean.cmCalibrationValue.set(BigDecimalUtils.mul(calibrationValue, 1.8f, 1).floatValue());
+            setting12InchDataBean.cmBodyTemperatureValue.set(TemperatureUnitUtils.c2f(Temper12InchConst.defaultBodyValue));
+        }
+
+        TemperatureModule.getIns().setMLX90621YsI2CCallBack(new MLX90621YsTempCallBack() {
+            @Override
+            public void newestHotImageData(Bitmap bitmap, float originalMaxT, float afterTreatmentF, float minT) {
+                setting12InchDataBean.hotImageBitmap.set(bitmap);
+
+                if (System.currentTimeMillis() - coverTime > 150) {
+                    isCover = false;
+                }
+                if (!isReport) {
+                    tempValueList.clear();
+                    return;
+                }
+                tempValueList.add(afterTreatmentF);
+                if (tempValueList.size() < 3) {
+                    return;
+                }
+                //开始处理温度数据
+                Collections.sort(tempValueList);
+                float temp = tempValueList.get(1);
+                isReport = false;
+                tempValueList.clear();
+                if (!isCover) {
+                    return;
+                }
+                float tempC = temp;
+                if (temperatureUnit == 2) {
+                    temp = TemperatureUnitUtils.c2f(temp);
+                }
+                cmSetMeasurementValue(temp);
+            }
+            @Override
+            public void dataRecoveryFailed() {}
+        });
+
+        TOF10120Module.getIns().setTOF10120CallBack(new TOF10120CallBack() {
+            @Override
+            public void initResult(int i) { }
+            @Override
+            public void newestDistance(int i) {
+                if (i < 500) {
+                    coverTime = System.currentTimeMillis();
+                    if (!isCover) {
+                        isCover = true;
+                        isReport = true;
+                    }
+                }
+            }
+        });
+
+        setting12InchDataBean.isCM.set(true);
+    }
+
+    private void cmSetCalibrationValue() {
+        float measurementValue = setting12InchDataBean.cmMeasurementValue.get();
+        if (measurementValue != 0) {
+            float bodyTemperature = setting12InchDataBean.cmBodyTemperatureValue.get();
+            setting12InchDataBean.cmCalibrationValue.set(BigDecimalUtils.sub(bodyTemperature, measurementValue, 1).floatValue());
+        }
+    }
+
+    private void cmSetMeasurementValue(float temp) {
+        setting12InchDataBean.cmMeasurementValue.set(temp);
+        cmSetCalibrationValue();
     }
 
     private SubOrAddThread subOrAddThread;
@@ -276,7 +370,40 @@ public class Setting12InchActivity extends Base12InchActivity implements NetWork
                     UIUtils.showTitleTip(Setting12InchActivity.this, getResString(R.string.setting_save_succ_please_restart));
                     break;
                 case R.id.btn_update_system:
-                    UpdateVersionControl.getInstance().checkUpdate(Setting12InchActivity.this);
+//                    UpdateVersionControl.getInstance().checkUpdate(Setting12InchActivity.this);
+                    break;
+                case R.id.btn_thermal_corr:
+                    startCalibration();
+                    break;
+                case R.id.fl_body_sub_btn:
+                    float subBodyTemperature = setting12InchDataBean.cmBodyTemperatureValue.get();
+                    subBodyTemperature = BigDecimalUtils.sub(subBodyTemperature, 0.1f, 1).floatValue();
+                    setting12InchDataBean.cmBodyTemperatureValue.set(subBodyTemperature);
+                    cmSetCalibrationValue();
+                    break;
+                case R.id.fl_body_add_btn:
+                    float addBodyTemperature = setting12InchDataBean.cmBodyTemperatureValue.get();
+                    addBodyTemperature = BigDecimalUtils.add(addBodyTemperature, 0.1f, 1).floatValue();
+                    setting12InchDataBean.cmBodyTemperatureValue.set(addBodyTemperature);
+                    cmSetCalibrationValue();
+                    break;
+                case R.id.btn_cm_cancel:
+                    TemperatureModule.getIns().setMLX90621YsI2CCallBack(null);
+                    TOF10120Module.getIns().setTOF10120CallBack(null);
+                    setting12InchDataBean.isCM.set(false);
+                    break;
+                case R.id.btn_cm_confirm:
+                    TemperatureModule.getIns().setMLX90621YsI2CCallBack(null);
+                    TOF10120Module.getIns().setTOF10120CallBack(null);
+                    int temperatureUnit = SpUtils.getIntOrDef(Temper12InchConst.Key.TEMPERATURE_UNIT, Temper12InchConst.Default.temperatureUnitDef);
+                    float calibrationValue = setting12InchDataBean.cmCalibrationValue.get();
+                    if (temperatureUnit == 2) {
+                        calibrationValue = BigDecimalUtils.div(calibrationValue, 1.8f, 1).floatValue();
+                    }
+                    SpUtils.saveFloat(Temper12InchConst.Key.CALIBRATION_VALUE, calibrationValue);
+                    setting12InchDataBean.calibrationContent.set(String.valueOf(calibrationValue));
+                    setting12InchDataBean.isCM.set(false);
+                    T.showShort(Setting12InchActivity.this, getResString(R.string.cm_save_tip));
                     break;
             }
         }
