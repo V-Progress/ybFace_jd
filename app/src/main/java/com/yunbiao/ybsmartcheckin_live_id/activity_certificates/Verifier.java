@@ -28,6 +28,8 @@ public class Verifier extends AsyncTask<Void,Void, Verifier.CompareResult> {
 
     private Verifier(VerifyCallback verifyCallback) {
         this.verifyCallback = verifyCallback;
+        waitFaceTime = 0;
+        waitTemperatureTime = 0;
     }
 
     public static synchronized void startCompare(@NonNull VerifyCallback verifyCallback){
@@ -76,11 +78,11 @@ public class Verifier extends AsyncTask<Void,Void, Verifier.CompareResult> {
             waitFaceTime = 0;//在有人脸的时候归零，以下步骤人离开后可以重置判断规则
 
             //温度检测流程
-            float temperature = -1f;
+            float temperature = 0.0f;
             if(verifyCallback != null){
                 temperature = verifyCallback.getTemperature();
             }
-            if(temperature == -1f){
+            if(temperature == 0.0f){
                 long currentTimeMillis = System.currentTimeMillis();
                 if(waitTemperatureTime == 0){
                     waitTemperatureTime = currentTimeMillis;
@@ -113,38 +115,40 @@ public class Verifier extends AsyncTask<Void,Void, Verifier.CompareResult> {
             //提取人脸特征+对比，每提取一次就对比，如果当时分数高于阈值，则判定立即通过
             FaceSimilar faceSimilar = null;
             for (int i = 0; i < WAIT_FEATURE_TIME; i++) {
-                if(isCancelled()){
-                    return null;
-                }
+//                if(isCancelled()){
+//                    return null;
+//                }
+                Timber.d("当前是第：" + i);
                 FaceFeature faceFeature = null;
                 if(verifyCallback != null){
                     faceFeature = verifyCallback.getFaceFeature();
                 }
+                Timber.d("提取特征完毕");
                 if(faceFeature == null){
+                    Timber.d("人脸特征为空");
                     continue;
                 }
+
                 //如果对比结果不为空且分数高于缓存分数，则赋值
                 FaceSimilar compare = null;
                 if(verifyCallback != null){
                     compare = verifyCallback.compare(idCardFeature, faceFeature);
-                }
-                if(faceSimilar == null || (compare != null && compare.getScore() > faceSimilar.getScore())){
-                    faceSimilar = compare;
+                    Timber.d("开始进行对比");
+                    if(faceSimilar == null || (compare != null && compare.getScore() > faceSimilar.getScore())){
+                        faceSimilar = compare;
+                    }
+                    Timber.d("对比结果：%s", (faceSimilar == null ? "NULL" : faceSimilar.getScore()));
                 }
                 //如果此时对比结果不为空且分数大于阈值则立即结束此流程
                 if(faceSimilar != null && faceSimilar.getScore() >= SIMILAR){
                     faceSimilar = compare;
+                    Timber.d("对比结束：" + faceSimilar.getScore());
                     break;
-                }
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
             //如果此时对比结果依然为空则判定为提取人脸特征失败
             if(faceSimilar == null){
+                Timber.d("对比结果为空");
                 return new CompareResult(-4);
             }
 

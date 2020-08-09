@@ -90,11 +90,15 @@ public class VertifyRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tvNation.setText(IDCardReader.getNativeplace(vertifyRecord.getIdNum()));
             }
 
-            tvTemper.setText(vertifyRecord.getTemper() + "℃");
-            if (Float.parseFloat(vertifyRecord.getTemper()) >= warningThreshold) {
-                tvTemper.setTextColor(Color.RED);
+            if(vertifyRecord.getTemper().contains("-")){
+                tvTemper.setText("");
             } else {
-                tvTemper.setTextColor(Color.GREEN);
+                tvTemper.setText(vertifyRecord.getTemper() + "℃");
+                if (Float.parseFloat(vertifyRecord.getTemper()) >= warningThreshold) {
+                    tvTemper.setTextColor(Color.RED);
+                } else {
+                    tvTemper.setTextColor(Color.GREEN);
+                }
             }
 
             tvSimilar.setText(vertifyRecord.getSimilar() + "％");

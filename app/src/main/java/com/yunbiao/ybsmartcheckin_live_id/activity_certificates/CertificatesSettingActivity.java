@@ -29,6 +29,8 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.alibaba.fastjson.JSONObject;
 import com.yunbiao.ybsmartcheckin_live_id.APP;
 import com.yunbiao.ybsmartcheckin_live_id.R;
@@ -149,7 +151,6 @@ public class CertificatesSettingActivity extends BaseActivity {
         Switch swICCard = findViewById(R.id.sw_ic_card_enabled);
         swICCard.setChecked(icCardMode);
         swICCard.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(CertificatesConst.Key.IC_CARD_MODE,isChecked));
-
     }
 
     private void initUsbPrinter(){
@@ -258,6 +259,11 @@ public class CertificatesSettingActivity extends BaseActivity {
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         });
+        //测温开关=============================================================================================
+        boolean temperEnabled = SpUtils.getBoolean(CertificatesConst.Key.TEMPERATURE_ENABLED, CertificatesConst.Default.TEMPERATURE_ENABLED);
+        Switch swTemperEnable = findViewById(R.id.sw_temperature_enable);
+        swTemperEnable.setChecked(temperEnabled);
+        swTemperEnable.setOnCheckedChangeListener((buttonView, isChecked) -> SpUtils.saveBoolean(CertificatesConst.Key.TEMPERATURE_ENABLED, isChecked));
 
         //热成像镜像==========================================================================================
         boolean thermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
@@ -332,24 +338,6 @@ public class CertificatesSettingActivity extends BaseActivity {
                 SpUtils.saveBoolean(CertificatesConst.Key.LOW_TEMP, isChecked);
             }
         });
-    }
-
-    class TextWatcherImpl implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
     }
 
     private EditText edtIp;

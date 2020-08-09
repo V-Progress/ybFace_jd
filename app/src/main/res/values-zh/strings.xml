@@ -392,6 +392,8 @@
     <string name="setting_switch_confirm">确定</string>
     <string name="setting_switch_cancel">取消</string>
     <string name="setting_privacy_mode">隐私模式</string>
+    <string name="setting_no_data_mode">无数据模式</string>
+    <string name="setting_no_data_mode_tips">开启时，不保存任何数据</string>
     <string name="setting_periodic_purge_policy">清除策略</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
     <string name="setting_show_main_logo">显示首页Logo</string>

@@ -30,6 +30,12 @@ public class Constants {
     public static String SPLASH_DIR_PATH = LOCAL_ROOT_PATH + "/splash/";
     public static String LOGO_DIR_PATH = LOCAL_ROOT_PATH + "/logo/";
     public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
+    /***
+     * 本地广告路径
+     * 1.在云端没有广告的时候，检查该路径有没有文件，如果有则自动生成一个规则，每5秒播放一个。
+     * 2.如果云端有数据，则把该文件集添加倒云端的数据中一起播放
+     */
+    public static String LOCAL_ADS_PATH = LOCAL_ROOT_PATH + "Local_Ads/";//本地广告路径
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
     public static String TEMP_PATH = CACHE_PATH + "temp/";//临时路径（未初始化公司时创建）
@@ -185,6 +191,7 @@ public class Constants {
         String JUMP_TAG = "jumpTag";//跳转标签
 
         String SHOW_TOTAL = "showTotal";//显示统计数据
+        String NODATA_MODE = "noDataMode";
     }
 
     public static class Default{
@@ -193,6 +200,7 @@ public class Constants {
         public static final int CLEAR_POLICY = 3;
         public static final int CLEAR_POLICY_CUSTOM = 30;
         public static final int SIMILAR_THRESHOLD = 80;
+        public static final boolean NODATA_MODE = false;
         public static boolean QRCODE_ENABLED = true;
         public static final boolean READ_CARD_ENABLED = false;
         public static boolean POSTER_ENABLED = false;

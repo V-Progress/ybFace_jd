@@ -69,7 +69,6 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private Float mMinThreshold;
     private Float mWarningThreshold;
     private int mSimilar;
-    private boolean isTemperature = false;
 
     private CertificatesViewInterface viewInterface;
     private CertificatesView mCertificatesView;
@@ -78,6 +77,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private boolean icCardMode;
     private int readerType;
     private ReadCardApiOtg readCardApiOtg;
+    private boolean temperEnabled;
+    private boolean isActivityPaused = false;
 
     @Override
     protected void initData() {
@@ -90,7 +91,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     @Override
     protected void onResume() {
         super.onResume();
-
+        isActivityPaused = false;
+        temperEnabled = SpUtils.getBoolean(CertificatesConst.Key.TEMPERATURE_ENABLED, CertificatesConst.Default.TEMPERATURE_ENABLED);
         icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE, CertificatesConst.Default.IC_CARD_MODE);
         mWhiteListEnable = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
         mThermalImgMirror = SpUtils.getBoolean(CertificatesConst.Key.THERMAL_MIRROR, CertificatesConst.Default.THERMAL_MIRROR);
@@ -103,23 +105,27 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         int mode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
         readerType = SpUtils.getIntOrDef(CertificatesConst.Key.READER, CertificatesConst.Default.READER);
 
-        if (mMode != mode) {
-            mMode = mode;
-            if (viewInterface != null) {
-                viewInterface.onModeChanged(mMode);
-            }
-        }
         initReader();
 
         startTemperModule();
 
         initScanQrCodeReader();
+
+        mMode = mode;
+        if (viewInterface != null) {
+            viewInterface.onModeChanged(mMode,temperEnabled);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isActivityPaused = true;
     }
 
     private void initReader(){
         Timber.d("当前模式: " + readerType);
         if (readerType == CertificatesConst.Reader.LOCAL_READER) {
-            IDCardReader.getInstance().closeReaderThread();
             IDCardReader.getInstance().startReaderThread(this, readListener);
         } else {
             readCardApiOtg = new ReadCardApiOtg(this,CertificatesConst.NET_READER_IP,CertificatesConst.NET_READER_PORT,CertificatesConst.NET_READER_APP_ID,readCardListener);
@@ -240,7 +246,6 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private HotImageK3232CallBack hotImageK3232CallBack = new HotImageK3232CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, float sensorT, float afterT, float v2, float v3, boolean b, int i) {
-            dismissAlert();
             handleTemper(bitmap, sensorT, afterT);
         }
 
@@ -251,7 +256,6 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private HotImageK1604CallBack hotImageK1604CallBack = new HotImageK1604CallBack() {
         @Override
         public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float afterF, final float minT) {
-            dismissAlert();
             handleTemper(bitmap, originalMaxT, afterF);
         }
 
@@ -263,6 +267,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private List<Float> mUpdateTemperList = new ArrayList<>();
 
     private void handleTemper(Bitmap bitmap, float sensorT, float afterT) {
+        if(!temperEnabled){
+            return;
+        }
         sendUpdateHotImageMessage(bitmap, sensorT);
         if (mHasFace) {
             if (afterT < mMinThreshold) {
@@ -320,10 +327,12 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     /*===刷卡事件====================================================================*/
     /*===刷卡事件====================================================================*/
     /*===刷卡事件====================================================================*/
-    //证件收集
     private IDCardReader.ReadListener readListener = new IDCardReader.ReadListener() {
         @Override
         public void getCardInfo(IdCardMsg msg) {
+            if(isActivityPaused){
+                return;
+            }
             d("贴卡，清除UI");
             sendClearUIMessage(0);
             KDXFSpeechManager.instance().playDingDong();
@@ -332,6 +341,10 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 return;
             }
             idCardMsg = msg;
+
+            byte[] bytes = IDCardReader.getInstance().decodeToBitmap(msg.ptoto);
+            msg.image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
             sendCardInfoMessage(msg);
 
             Verifier.startCompare(verifyCallback);
@@ -358,6 +371,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void onReadCardSuccess(int type, IdCard idCard, Info info) {
+            if(isActivityPaused){
+                return;
+            }
             Timber.d("读卡成功：" + type + ", " + idCard.getName() + ", " + idCard.getId());
             if(TextUtils.isEmpty(idCard.getName()) || TextUtils.isEmpty(idCard.getId())){
                 sendTipMessage(getResString(R.string.act_certificates_card_read_failed), true);
@@ -372,6 +388,9 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void onReadCardFail(int type, int state, String msg) {
+            if(isActivityPaused){
+                return;
+            }
             Timber.d("读卡失败：" + type + ", " + state + ", " + msg);
             sendTipMessage(getResString(R.string.act_certificates_card_read_failed), true);
         }
@@ -416,7 +435,12 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public float getTemperature() {
-            return !isTemperature ? 0.0f : mDetectTemperList.size() < 5 ? -1f : Collections.max(mDetectTemperList);
+            //如果未开启测温模式则返回-1
+            //如果缓存为5则返回最大值
+            //如果缓存
+            return !temperEnabled ? -1f :
+                    mDetectTemperList.size() >= 5 ? Collections.max(mDetectTemperList) :
+                            mDetectTemperList.size() > 0 ? mDetectTemperList.get(0) : 0.0f;
         }
 
         @Override
@@ -426,8 +450,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             if(icCardMode){
                 cardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
             } else if(readerType == CertificatesConst.Reader.LOCAL_READER){
-                byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
-                cardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                cardBitmap = idCardMsg.image;
             } else {
                 byte[] bytes = IDCardReader.getInstance().decodeToBitmap(mIdCard.getImage());
                 cardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -499,15 +522,15 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 if (readerType == CertificatesConst.Reader.LOCAL_READER) {
                     IdCardMsg idCardMsg = (IdCardMsg) msg.obj;
                     if (idCardMsg != null) {
-                        Bitmap mIdCardBitmap = null;
                         if (icCardMode) {
-                            mIdCardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+                            Bitmap mIdCardBitmap = BitmapFactory.decodeByteArray(idCardMsg.ptoto, 0, idCardMsg.ptoto.length);
+                            if (viewInterface != null) {
+                                viewInterface.updateIdCardInfo(idCardMsg, mIdCardBitmap, icCardMode,temperEnabled);
+                            }
                         } else {
-                            byte[] bytes = IDCardReader.getInstance().decodeToBitmap(idCardMsg.ptoto);
-                            mIdCardBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        }
-                        if (viewInterface != null) {
-                            viewInterface.updateIdCardInfo(idCardMsg, mIdCardBitmap, icCardMode);
+                            if (viewInterface != null) {
+                                viewInterface.updateIdCardInfo(idCardMsg, idCardMsg.image, icCardMode,temperEnabled);
+                            }
                         }
                     }
                 } else {
@@ -532,7 +555,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                 int similarInt = (int) msg.obj;
                 float finalTemper = msg.getData().getFloat("temper");
                 boolean isAlike = similarInt >= mSimilar;
-                boolean isNormal = finalTemper > mMinThreshold && finalTemper < mWarningThreshold;
+                boolean isNormal = !temperEnabled || finalTemper > mMinThreshold && finalTemper < mWarningThreshold;
                 boolean isInWhite = true;//白名单标识，如果不开启白名单，则此值不会变，也不会有相应的提示
                 if (mWhiteListEnable) {
                     String id_num;
@@ -578,13 +601,15 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     resultBuffer.append("<font color='#ff0000'>" + v2 + "</font>");//红字
                     speech += v2;
                 }
-                resultBuffer.append("<font color='#ffffff'>，</font>");//白字
-                if (isNormal) {
-                    resultBuffer.append("<font color='#00ff00'>" + t1 + "</font>");//绿字
-                    speech += "，" + t1;
-                } else {
-                    resultBuffer.append("<font color='#ff0000'>" + t2 + "</font>");//红字
-                    speech += "，" + t2;
+                if(temperEnabled){
+                    resultBuffer.append("<font color='#ffffff'>，</font>");//白字
+                    if (isNormal) {
+                        resultBuffer.append("<font color='#00ff00'>" + t1 + "</font>");//绿字
+                        speech += "，" + t1;
+                    } else {
+                        resultBuffer.append("<font color='#ff0000'>" + t2 + "</font>");//红字
+                        speech += "，" + t2;
+                    }
                 }
 
                 if (!isAlike || !isNormal) {
@@ -607,7 +632,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
                     printMsg(BaseCertificatesActivity.this.idCardMsg, mIdCard,finalTemper, isNormal, isInWhite);
                 }
                 if (viewInterface != null) {
-                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, mIdCard,finalTemper, similarInt, isAlike, isNormal, isInWhite, icCardMode);
+                    viewInterface.updateResultTip(resultBuffer.toString(), BaseCertificatesActivity.this.idCardMsg, mIdCard,finalTemper, similarInt, isAlike, isNormal, isInWhite, icCardMode,temperEnabled);
                 }
                 if (isAlike && isNormal && isInWhite) {
                     ledGreen();

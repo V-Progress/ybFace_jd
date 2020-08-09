@@ -208,7 +208,7 @@ android {
                 "Fever Defence", "@mipmap/xenon_logo", "5cbe87a60cafb210460006b3", "XENON_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*=====================================================================================*/
-        flavor(TURKEY_8,"com.yunbiao.ybsmartcheckin_live_id.FlavorType.TURKEY",
+        flavor(TURKEY_8, "com.yunbiao.ybsmartcheckin_live_id.FlavorType.TURKEY",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
                 "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "XENON_10",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
@@ -218,9 +218,9 @@ android {
                 "@string/app_name", "@mipmap/icon_logo_5_inch", "5cbe87a60cafb210460006b3", "YB_5",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         //8寸Touchless Entry=====================================================================
-        flavor(TOUCHLESS_ENTRY_10,"com.yunbiao.ybsmartcheckin_live_id.FlavorType.TOUCHLESS_ENTRY",
+        flavor(TOUCHLESS_ENTRY_10, "com.yunbiao.ybsmartcheckin_live_id.FlavorType.TOUCHLESS_ENTRY",
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
-                "Touchless Entry","@mipmap/ic_launcher","5cbe87a60cafb210460006b3","TOUCHLESS_ENTRY_8",
+                "Touchless Entry", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "TOUCHLESS_ENTRY_8",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
         /*12寸=====================================================================================*/
         flavor(YB_12, "9",
@@ -271,9 +271,9 @@ String buildApkName(String param) {
         name = "Xenon"
     } else if (param.contains("TURKEY")) {
         name = "TR"
-    } else if (param.contains("TOUCHLESS")){
+    } else if (param.contains("TOUCHLESS")) {
         name = "TOUCHLESS ENTRY"
-    }else {
+    } else {
         name = "YB"
     }
 

@@ -259,40 +259,54 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@mipmap/bg_info"
-            android:gravity="center_vertical"
             android:paddingLeft="20dp">
 
-            <TextView
-                android:id="@+id/tv_name_t"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/act_certificates_name"
-                android:textColor="@color/white"
-                android:textSize="24dp" />
-
-            <TextView
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_weight="1"
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="24dp" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tv_name_t"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/act_certificates_name"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
 
-            <TextView
-                android:id="@+id/tv_origin_t"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/act_certificates_native_place"
-                android:textColor="@color/white"
-                android:textSize="24dp" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_weight="1"
-                android:id="@+id/tv_origin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="24dp" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_origin_t"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/act_certificates_native_place"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
+
+                <TextView
+                    android:id="@+id/tv_origin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

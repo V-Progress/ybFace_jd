@@ -10,8 +10,9 @@ public interface CertificatesViewInterface {
     /***
      * 模式发生改变
      * @param mode
+     * @param temperEnabled
      */
-    void onModeChanged(int mode);
+    void onModeChanged(int mode, boolean temperEnabled);
     /***
      * 网络状态发生改变
      * @param isNet
@@ -37,8 +38,9 @@ public interface CertificatesViewInterface {
      * 更新卡信息
      * @param idCardMsg
      * @param bitmap
+     * @param temperEnabled
      */
-    void updateIdCardInfo(IdCardMsg idCardMsg,Bitmap bitmap,boolean icCardMode);
+    void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode, boolean temperEnabled);
 
     /**
      * 更新卡信息，网络读卡器
@@ -47,7 +49,7 @@ public interface CertificatesViewInterface {
     void updateIdCardInfoByNetReader(IdCard idCard);
 
     //更新人证测温结果
-    void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode);
+    void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode, boolean temperEnabled);
     //更新提示
     void updateTips(String tip);
     //重置所有UI

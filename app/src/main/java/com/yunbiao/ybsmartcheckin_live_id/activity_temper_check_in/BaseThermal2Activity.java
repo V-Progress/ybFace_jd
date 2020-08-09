@@ -53,6 +53,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
     private boolean highTempModel;//高温模式
     private boolean mFEnabled;//华氏度开关
     private boolean mPrivacyMode;//隐私模式
+    private boolean mNoDataMode;
     private long mTipTime = 0;//播报时间
 
     private Random random = new Random();
@@ -103,6 +104,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
         isActivityPaused = false;
         //隐私模式
         mPrivacyMode = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
+        //无数据模式
+        mNoDataMode = SpUtils.getBoolean(Constants.Key.NODATA_MODE, Constants.Default.NODATA_MODE);;
         //播报延时
         mSpeechDelay = SpUtils.getLong(ThermalConst.Key.SPEECH_DELAY, ThermalConst.Default.SPEECH_DELAY);
         //测温最小阈值
@@ -547,7 +550,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                         if (resultTemper < HIGHEST_TEMPER) {
                             //上传数据
                             Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                            SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
+                            SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode,mNoDataMode, sign -> {
                                 Log.e(TAG, "accept: 保存完成");
                                 sendUpdateSignMessage(sign);//发送列表更新事件
                             });
@@ -655,10 +658,12 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             if (resultTemper < HIGHEST_TEMPER) {
                 Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
-                    Log.e(TAG, "accept: 保存完成");
-                    sendUpdateSignMessage(sign);//发送列表更新事件
-                });
+                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                        mLastHotImage.copy(mLastHotImage.getConfig(), false),
+                        temperatureSign,
+                        mPrivacyMode,
+                        mNoDataMode,
+                        sign -> sendUpdateSignMessage(sign));
             }
         } else if (isTemperAndFace()) {
             mCacheTemperList.add(afterT);
@@ -731,10 +736,12 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
             if (resultTemper < HIGHEST_TEMPER) {
                 Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), mLastHotImage.copy(mLastHotImage.getConfig(), false), temperatureSign, mPrivacyMode, sign -> {
-                    Log.e(TAG, "accept: 保存完成");
-                    sendUpdateSignMessage(sign);//发送列表更新事件
-                });
+                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                        mLastHotImage.copy(mLastHotImage.getConfig(), false),
+                        temperatureSign,
+                        mPrivacyMode,
+                        mNoDataMode,
+                        sign -> sendUpdateSignMessage(sign));
             }
         } else {
             mCacheTemperList.add(afterT);
@@ -801,12 +808,12 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
                     if (resultTemper < HIGHEST_TEMPER) {
                         Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
-                        SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(), null, temperatureSign, false, new Consumer<Sign>() {
-                            @Override
-                            public void accept(Sign sign) throws Exception {
-                                sendUpdateSignMessage(sign);//发送列表更新事件
-                            }
-                        });
+                        SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                                null,
+                                temperatureSign,
+                                mPrivacyMode,
+                                mNoDataMode,
+                                sign -> sendUpdateSignMessage(sign));
                     }
                 }
             } else {
@@ -913,7 +920,8 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (sign == null) {
                 return;
             }
-            KDXFSpeechManager.instance().playNormal(sign.getName());
+
+            sendResultMessage(-1f,sign.getName());
             viewInterface.updateSignList(sign);
 
             if (sign.getType() == -2) {
@@ -948,6 +956,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     (mLastHotImage != null ? mLastHotImage.copy(mLastHotImage.getConfig(), false) : null),
                     sign,
                     mPrivacyMode,
+                    mNoDataMode,
                     sign1 -> viewInterface.updateSignList(sign1));
 
             //-2:访客超时，-9:陌生人，高温
@@ -1043,7 +1052,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 case 1://测温结果
                     float temperature = (float) msg.obj;
                     String name = msg.getData().getString("name");
-                    if (temperature <= 0.0f) {
+                    if (temperature == 0.0f) {
                         break;
                     }
                     //关闭正在进行的事件
@@ -1052,61 +1061,73 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                     KDXFSpeechManager.instance().stopNormal();
                     KDXFSpeechManager.instance().stopWarningRing();
                     isResultShown = true;
-                    //显示UI
-                    int bgId = getBgId(temperature);
-                    String resultText = getResultText(mFEnabled, temperature);
-                    if(isTemperAndFace()){
-                        resultText += "\n" + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
-                    }
-                    viewInterface.showResult(resultText, bgId);
-                    if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
-                        if(temperature >= mTempWarningThreshold){
-                            ledRed();
-                            KDXFSpeechManager.instance().playWarningSound();
-                            updateUIHandler.postDelayed(()->KDXFSpeechManager.instance().playWaningRing(),2400);
-                        } else {
+
+                    if(isOnlyFace()){
+                        viewInterface.showResult(name,R.mipmap.bg_verify_pass);
+                        KDXFSpeechManager.instance().playNormal(name, () -> {
                             ledGreen();
-                            KDXFSpeechManager.instance().playNormalSound();
                             if (isOnlyTemper()) {
                                 openDoor();
                             }
-                        }
-                        sendResetResultMessage();
+                            sendResetResultMessage();
+                        });
                     } else {
-                        Runnable resultRunnable = speechCallback(temperature);
-                        String speechText = getSpeechText(mFEnabled, temperature);
-                        if (temperature >= HIGHEST_TEMPER) {//超温
-                            if (speechBean.isWarningEnabled()) {
-                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
-                            } else {
+                        //显示UI
+                        int bgId = getBgId(temperature);
+                        String resultText = getResultText(mFEnabled, temperature);
+                        if(isTemperAndFace()){
+                            resultText += "\n" + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
+                        }
+                        viewInterface.showResult(resultText, bgId);
+                        if(TextUtils.equals("sl",KDXFSpeechManager.instance().getCurrentLanguage())){
+                            if(temperature >= mTempWarningThreshold){
                                 ledRed();
-                                KDXFSpeechManager.instance().playWaningRing();
-                                sendResetResultMessage();
-                            }
-                        } else if (temperature >= mTempWarningThreshold) {//高温
-                            if (speechBean.isWarningEnabled()) {
-                                if(isTemperAndFace()){
-                                    speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
-                                }
-                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
-                            } else {
-                                ledRed();
-                                KDXFSpeechManager.instance().playWaningRing();
-                                sendResetResultMessage();
-                            }
-                        } else {//正常
-                            if (speechBean.isNormalEnabled()) {
-                                if(isTemperAndFace()){
-                                    speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
-                                }
-                                KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                                KDXFSpeechManager.instance().playWarningSound();
+                                updateUIHandler.postDelayed(()->KDXFSpeechManager.instance().playWaningRing(),2400);
                             } else {
                                 ledGreen();
-                                KDXFSpeechManager.instance().playPassRing();
+                                KDXFSpeechManager.instance().playNormalSound();
                                 if (isOnlyTemper()) {
                                     openDoor();
                                 }
-                                sendResetResultMessage();
+                            }
+                            sendResetResultMessage();
+                        } else {
+                            Runnable resultRunnable = speechCallback(temperature);
+                            String speechText = getSpeechText(mFEnabled, temperature);
+                            if (temperature >= HIGHEST_TEMPER) {//超温
+                                if (speechBean.isWarningEnabled()) {
+                                    KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                                } else {
+                                    ledRed();
+                                    KDXFSpeechManager.instance().playWaningRing();
+                                    sendResetResultMessage();
+                                }
+                            } else if (temperature >= mTempWarningThreshold) {//高温
+                                if (speechBean.isWarningEnabled()) {
+                                    if(isTemperAndFace()){
+                                        speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
+                                    }
+                                    KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                                } else {
+                                    ledRed();
+                                    KDXFSpeechManager.instance().playWaningRing();
+                                    sendResetResultMessage();
+                                }
+                            } else {//正常
+                                if (speechBean.isNormalEnabled()) {
+                                    if(isTemperAndFace()){
+                                        speechText += "," + (TextUtils.isEmpty(name) ? getResString(R.string.main_tip_stranger) : name);
+                                    }
+                                    KDXFSpeechManager.instance().playNormal(speechText, resultRunnable);
+                                } else {
+                                    ledGreen();
+                                    KDXFSpeechManager.instance().playPassRing();
+                                    if (isOnlyTemper()) {
+                                        openDoor();
+                                    }
+                                    sendResetResultMessage();
+                                }
                             }
                         }
                     }

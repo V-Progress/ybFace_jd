@@ -40,9 +40,11 @@ public class CertificatesConst {
         String USB_PRINTER_ENABLED = "certificatesPrinterEnabled";
         String IC_CARD_MODE = "certificatesICCardMode";
         String COLLECT_PHONE_ENABLED = "certificatesCollectPhoneEnabled";
+        String TEMPERATURE_ENABLED = "certificatesTemperatureEnabled";
     }
 
     public static class Default{
+        public static final boolean TEMPERATURE_ENABLED = true;
         public static int READER = Reader.LOCAL_READER;
         public static final boolean USB_PRINTER_ENABLED = false;//打印机
         public static final boolean COLLECT_PHONE_ENABLED = false;//收集手机号

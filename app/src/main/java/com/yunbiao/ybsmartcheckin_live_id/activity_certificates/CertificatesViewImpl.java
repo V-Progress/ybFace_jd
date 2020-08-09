@@ -9,9 +9,10 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
     /***
      * 模式发生改变
      * @param mode
+     * @param temperEnabled
      */
     @Override
-    public void onModeChanged(int mode) {
+    public void onModeChanged(int mode, boolean temperEnabled) {
 
     }
 
@@ -53,7 +54,7 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
     }
 
     @Override
-    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode) {
+    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode, boolean temperEnabled) {
 
     }
 
@@ -63,7 +64,7 @@ public class CertificatesViewImpl implements CertificatesViewInterface {
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode, boolean temperEnabled) {
 
     }
 

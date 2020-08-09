@@ -61,7 +61,6 @@
     <string name="tip_delay_title">Voice prompt interval</string>
 
 
-
     <string name="tip_delete_depart_success">Department is deleted successfully</string>
     <string name="delete_user_dialog_title">Confirm delete</string>
     <string name="edit_user_dialog_title">Confirm modify</string>
@@ -109,6 +108,8 @@
 
     <!--logo设置-->
     <string name="setting_privacy_mode">Privacy Mode</string>
+    <string name="setting_no_data_mode">No data mode</string>
+    <string name="setting_no_data_mode_tips">When turned on, no data is saved</string>
     <string name="setting_periodic_purge_policy">Automatically delete data after</string>
     <string name="setting_clear_policy_tip">Automatically clear data %1$s days ago</string>
     <string name="setting_show_main_logo">Display LOGO</string>
@@ -754,4 +755,7 @@
     <string name="cm_confirm">Confirm</string>
     <string name="cm_cancel">Cancel</string>
     <string name="cm_save_tip">Saved Successfully</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

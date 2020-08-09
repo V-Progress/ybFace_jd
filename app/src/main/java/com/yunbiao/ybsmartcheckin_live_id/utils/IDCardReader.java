@@ -2,6 +2,7 @@ package com.yunbiao.ybsmartcheckin_live_id.utils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -78,12 +79,7 @@ public class IDCardReader {
                         int readResult = ReadBaseMsgToStr(msg);
                         if (readResult >= 0) {
                             Log.e(TAG, msg.toString());
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    readListener.getCardInfo(msg);
-                                }
-                            });
+                            activity.runOnUiThread(() -> readListener.getCardInfo(msg));
                         } else {
                             Log.e(TAG, "run: 读取失败");
                         }

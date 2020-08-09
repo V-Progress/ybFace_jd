@@ -259,7 +259,7 @@ public class CertificatesView extends FrameLayout {
         return faceFeature;
     }
 
-    public synchronized FaceFeature getFaceFeature() {
+    public FaceFeature getFaceFeature() {
         if(faceInfoList != null && faceInfoList.size() > 0){
             synchronized (this){
                 if(faceInfoList != null && faceInfoList.size() > 0){

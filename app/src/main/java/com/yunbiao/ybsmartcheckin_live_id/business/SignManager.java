@@ -180,7 +180,7 @@ public class SignManager {
      * @param isUpload
      * @return
      */
-    public Sign checkSignData(CompareResult compareResult, float temperature, boolean isUpload) {
+    public Sign checkSignData(CompareResult compareResult, float temperature, boolean isUpload,boolean isNoData) {
         int comid = SpUtils.getCompany().getComid();
         String userId = compareResult.getUserName();
         final Date currDate = new Date();
@@ -225,7 +225,7 @@ public class SignManager {
                         e.printStackTrace();
                     }
 
-                    if (isUpload) {
+                    if (!isNoData && isUpload) {
                         notifyInterviewed(visitor.getId(), visitor.getVisEntryId());
                         sendVisitRecord(sign);
                     }
@@ -253,7 +253,7 @@ public class SignManager {
 
                 SignLogTest.getInstance().addFaceContent(sign.getTime(),sign.getEmpId() + " --> " + sign.getName());
 
-                if (isUpload) {
+                if (!isNoData && isUpload) {
                     sendSignRecord(sign);
                 }
 
@@ -266,7 +266,8 @@ public class SignManager {
     //人脸打卡和访客打卡
     public Sign checkSignData(CompareResult compareResult, float temperature) {
         boolean isPrivacy = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
-        return checkSignData(compareResult, temperature, !isPrivacy);
+        boolean isNoData = SpUtils.getBoolean(Constants.Key.NODATA_MODE, Constants.Default.NODATA_MODE);
+        return checkSignData(compareResult, temperature, !isPrivacy,isNoData);
     }
 
     public Sign getTemperatureSign(float temperatureValue) {
@@ -394,7 +395,10 @@ public class SignManager {
      * @param isPrivacy
      * @param signConsumer
      */
-    public void uploadTemperatureSign(Bitmap headBitmap, Bitmap hotBitmap, final Sign sign, boolean isPrivacy, Consumer<Sign> signConsumer) {
+    public void uploadTemperatureSign(Bitmap headBitmap, Bitmap hotBitmap, final Sign sign, boolean isPrivacy, boolean isNoData, Consumer<Sign> signConsumer) {
+        if(isNoData){
+            return;
+        }
         long start = System.currentTimeMillis();
         String url = ResourceUpdate.UPLOAD_TEMPERETURE_EXCEPTION;
 
@@ -798,7 +802,7 @@ public class SignManager {
         vertifyRecord.setNation(msg != null ? msg.nation_str : mIdCard.getNation());
         vertifyRecord.setBirthDate(msg != null ? (msg.birth_year + "-" + msg.birth_month + "-" + msg.birth_day) : mIdCard.getBirthday());
         vertifyRecord.setIdNum(msg != null ? msg.id_num : mIdCard.getId());
-        vertifyRecord.setAddress(msg != null ? msg.address : mIdCard.getAddress());
+        vertifyRecord.setAddress(msg != null ? msg.address.trim() : mIdCard.getAddress().trim());
         vertifyRecord.setTermDate(msg != null ? (msg.useful_e_date_year + "-" + msg.useful_e_date_month + "-" + msg.useful_e_date_day) : mIdCard.getEndDate());
         vertifyRecord.setIsPass(isPass + "");
         vertifyRecord.setComId(SpUtils.getCompany().getComid() + "");

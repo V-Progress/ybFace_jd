@@ -1,6 +1,6 @@
 package com.yunbiao.ybsmartcheckin_live_id.utils;
 
-import java.util.Arrays;
+import android.graphics.Bitmap;
 
 public class IdCardMsg {
     public int type;
@@ -86,6 +86,8 @@ public class IdCardMsg {
     public String szHMTRes3;
 
     public byte[] ptoto;
+
+    public Bitmap image;
 
     @Override
     public String toString() {

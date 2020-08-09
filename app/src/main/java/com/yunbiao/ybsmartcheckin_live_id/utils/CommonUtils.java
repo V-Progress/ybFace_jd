@@ -525,7 +525,7 @@ public class CommonUtils {
         Log.e(TAG, "getBroadType2: " + broad_info);
         if (broad_info.contains("wxl")) {
             return "SMT";//视美泰
-        } else if (broad_info.contains("lxr")) {
+        } else if (broad_info.contains("lxr") || broad_info.contains("xx@xx")) {
             return "LXR";//亿莱顿
         } else if (broad_info.contains("harris") || broad_info.contains("silence")) {
             return "HARRIS";//亿晟

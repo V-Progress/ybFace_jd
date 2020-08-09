@@ -543,8 +543,24 @@ public class ThermalSettingActivity extends BaseActivity {
             boolean isPrivacyModeEnabled = SpUtils.getBoolean(Constants.Key.PRIVACY_MODE, Constants.Default.PRIVACY_MODE);
             Switch swPrivacy = view.findViewById(R.id.sw_privacy_mode);
             swPrivacy.setChecked(isPrivacyModeEnabled);
+
+            boolean noDataMode = SpUtils.getBoolean(Constants.Key.NODATA_MODE, Constants.Default.NODATA_MODE);
+            Switch swNoDataMode = view.findViewById(R.id.sw_no_data_mode);
+            swNoDataMode.setChecked(noDataMode);
+
             swPrivacy.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if(isChecked && swNoDataMode.isChecked()){
+                    swNoDataMode.setChecked(false);
+                }
                 SpUtils.saveBoolean(Constants.Key.PRIVACY_MODE, isChecked);
+            });
+
+            //无数据模式===================================================================================================
+            swNoDataMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if(isChecked && swPrivacy.isChecked()){
+                    swPrivacy.setChecked(false);
+                }
+                SpUtils.saveBoolean(Constants.Key.NODATA_MODE,isChecked);
             });
 
             //热成像镜像==========================================================================================

@@ -56,6 +56,8 @@ import butterknife.BindView;
 public class CertificatesActivity extends BaseCertificatesActivity implements CertificatesViewInterface {
 
     private static final String TAG = "CertificatesActivity";
+    @BindView(R.id.ll_hot_image_area)
+    View llhotImageArea;
     @BindView(R.id.iv_logo)
     ImageView ivLogo;
     @BindView(R.id.iv_face)
@@ -74,8 +76,12 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     TextView tvTip;
     @BindView(R.id.tv_alike)
     TextView tvSimilar;
+    @BindView(R.id.tv_tem_t)
+    TextView tvTempT;
     @BindView(R.id.tv_tem)
     TextView tvTemp;
+    @BindView(R.id.tv_status_t)
+    TextView tvStatusT;
     @BindView(R.id.tv_ostatus)
     TextView tvOStatus;
     @BindView(R.id.iv_status)
@@ -179,8 +185,40 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void onModeChanged(int mode) {
+    public void onModeChanged(int mode, boolean temperEnabled) {
         Log.e(TAG, "onModeChanged: 当前模式：" + mode);
+        collectPhone = SpUtils.getBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, CertificatesConst.Default.COLLECT_PHONE_ENABLED);
+        if(btnNoIdCard != null){
+            boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
+            if(icCardMode){
+                btnNoIdCard.setVisibility(View.GONE);
+            } else {
+                if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                    btnNoIdCard.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
+        if (aBoolean) {
+            tvWhiteLabel.setVisibility(View.VISIBLE);
+            llWhiteStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvWhiteLabel.setVisibility(View.GONE);
+            llWhiteStatus.setVisibility(View.GONE);
+        }
+
+        if(temperEnabled){
+            llhotImageArea.setVisibility(View.VISIBLE);
+            tvTempT.setText(getResString(R.string.act_certificates_temperature));
+            tvStatusT.setText(getResString(R.string.act_certificates_status));
+            btnNoIdCard.setVisibility(View.VISIBLE);
+        } else {
+            llhotImageArea.setVisibility(View.GONE);
+            tvTempT.setText("性别：");
+            tvStatusT.setText("民族：");
+            btnNoIdCard.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -212,7 +250,7 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode) {
+    public void updateIdCardInfo(IdCardMsg idCardMsg, Bitmap bitmap, boolean icCardMode, boolean temperEnabled) {
         Log.e(TAG, "updateIdCardInfo: " + idCardMsg.name);
         ivIdCard.setImageBitmap(bitmap);
         tvName.setText(idCardMsg.name);
@@ -222,6 +260,11 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         } else {
             tvOriginT.setText(getResString(R.string.act_certificates_printer_native_place));
             tvOrigin.setText(IDCardReader.getNativeplace(idCardMsg.id_num));
+        }
+
+        if(!temperEnabled){
+            tvTemp.setText(idCardMsg.sex);
+            tvOStatus.setText(idCardMsg.nation_str);
         }
     }
 
@@ -234,8 +277,11 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     }
 
     @Override
-    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode) {
-        tvTemp.setText(finalTemper + "℃");
+    public void updateResultTip(String resultTip, IdCardMsg idCardMsg, IdCard mIdCard, float finalTemper, int similarInt, boolean isAlike, boolean isNormal, boolean isInWhite, boolean icCardMode, boolean temperEnabled) {
+
+        if(temperEnabled){
+            tvTemp.setText(finalTemper + "℃");
+        }
         tvSimilar.setText(getResString(R.string.act_certificates_similar) + similarInt + "%");
         tvTip.setText(Html.fromHtml(resultTip));
         if (isAlike) {
@@ -246,16 +292,21 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
             ivSimilarIcon.setImageResource(R.mipmap.icon_warning);
         }
 
-        if (isNormal) {
-            tvOStatus.setText(getResString(R.string.act_certificates_normal));
-            tvOStatus.setTextColor(Color.GREEN);
-            tvTemp.setTextColor(Color.GREEN);
-            ivStatus.setImageResource(R.mipmap.icon_normal);
+        if(temperEnabled){
+            if (isNormal) {
+                tvOStatus.setText(getResString(R.string.act_certificates_normal));
+                tvOStatus.setTextColor(Color.GREEN);
+                tvTemp.setTextColor(Color.GREEN);
+                ivStatus.setImageResource(R.mipmap.icon_normal);
+            } else {
+                tvOStatus.setText(getResString(R.string.act_certificates_warning));
+                tvOStatus.setTextColor(Color.RED);
+                tvTemp.setTextColor(Color.RED);
+                ivStatus.setImageResource(R.mipmap.icon_warning);
+            }
         } else {
-            tvOStatus.setText(getResString(R.string.act_certificates_warning));
-            tvOStatus.setTextColor(Color.RED);
-            tvTemp.setTextColor(Color.RED);
-            ivStatus.setImageResource(R.mipmap.icon_warning);
+            tvOStatus.setTextColor(Color.WHITE);
+            tvTemp.setTextColor(Color.WHITE);
         }
 
         if (!verifyStatusTip.isShown()) {
@@ -541,27 +592,6 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
     @Override
     protected void onResume() {
         super.onResume();
-        collectPhone = SpUtils.getBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, CertificatesConst.Default.COLLECT_PHONE_ENABLED);
-        if(btnNoIdCard != null){
-            boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
-            if(icCardMode){
-                btnNoIdCard.setVisibility(View.GONE);
-            } else {
-                if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
-                    btnNoIdCard.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-
-        boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.WHITE_LIST, CertificatesConst.Default.WHITE_LIST);
-        if (aBoolean) {
-            tvWhiteLabel.setVisibility(View.VISIBLE);
-            llWhiteStatus.setVisibility(View.VISIBLE);
-        } else {
-            tvWhiteLabel.setVisibility(View.GONE);
-            llWhiteStatus.setVisibility(View.GONE);
-        }
-
         certificatesView.resume();
     }
 
