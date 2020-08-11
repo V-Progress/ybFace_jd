@@ -20,7 +20,6 @@ public class CertificatesConst {
     public interface Mode {
         int CERTIFICATES_THERMAL = 0;//人证+热成像（32*32）
         int CERTIFICATES_THERMAL_16_4 = 1;//人证+热成像（16*4）
-//        int CERTIFICATES_MLX_16_4 = 2;//热成像16*4
     }
 
     public interface Reader{

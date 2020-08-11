@@ -18,7 +18,6 @@
     <string-array name="certificates_mode">
         <item>@string/act_certificates_idcard_thermal</item>
         <item>@string/act_certificates_idcard_thermal_16_4</item>
-<!--        <item>MLX</item>-->
     </string-array>
 
     <integer-array name="hasFaceArray">

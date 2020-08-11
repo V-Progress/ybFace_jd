@@ -284,6 +284,12 @@ public class SplashActivity extends BaseActivity {
                     Constants.Default.CAMERA_ANGLE = 90;
                     Constants.Default.IS_H_MIRROR = false;
                     Constants.Default.IS_V_MIRROR = false;
+                    if(Constants.DEVICE_TYPE == Constants.DeviceType.HT_TEMPERATURE_CERTIFICATES){
+                        Constants.Default.PICTURE_ROTATION = 270;
+                        Constants.Default.CAMERA_ANGLE = 90;
+                        Constants.Default.IS_H_MIRROR = true;
+                        Constants.Default.IS_V_MIRROR = true;
+                    }
                     CertificatesConst.Default.MODE = CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4;
                     ThermalConst.Default.TEMPER_MODULE = TemperModuleType.MLX_16_4;
                     break;

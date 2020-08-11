@@ -151,10 +151,6 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
             tvBottomTitle.setVisibility(View.VISIBLE);
         }
 
-        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            btnNoIdCard.setVisibility(View.GONE);
-        }
-
         setDeviceInfo();
     }
 
@@ -190,10 +186,10 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
         collectPhone = SpUtils.getBoolean(CertificatesConst.Key.COLLECT_PHONE_ENABLED, CertificatesConst.Default.COLLECT_PHONE_ENABLED);
         if(btnNoIdCard != null){
             boolean icCardMode = SpUtils.getBoolean(CertificatesConst.Key.IC_CARD_MODE,CertificatesConst.Default.IC_CARD_MODE);
-            if(icCardMode){
+            if(temperEnabled && icCardMode){
                 btnNoIdCard.setVisibility(View.GONE);
             } else {
-                if(mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                if(temperEnabled && mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE){
                     btnNoIdCard.setVisibility(View.VISIBLE);
                 }
             }
@@ -212,11 +208,13 @@ public class CertificatesActivity extends BaseCertificatesActivity implements Ce
             llhotImageArea.setVisibility(View.VISIBLE);
             tvTempT.setText(getResString(R.string.act_certificates_temperature));
             tvStatusT.setText(getResString(R.string.act_certificates_status));
-            btnNoIdCard.setVisibility(View.VISIBLE);
         } else {
             llhotImageArea.setVisibility(View.GONE);
             tvTempT.setText("性别：");
             tvStatusT.setText("民族：");
+        }
+
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             btnNoIdCard.setVisibility(View.GONE);
         }
     }

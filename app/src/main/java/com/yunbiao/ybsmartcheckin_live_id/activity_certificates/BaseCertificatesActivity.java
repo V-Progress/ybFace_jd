@@ -106,16 +106,15 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         mLowTemp = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
         mHighTemp = SpUtils.getBoolean(CertificatesConst.Key.HIGH_TEMP,CertificatesConst.Default.HIGH_TEMP);
         mSimilar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
-        int mode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
+        mMode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
         readerType = SpUtils.getIntOrDef(CertificatesConst.Key.READER, CertificatesConst.Default.READER);
-
-        initReader();
 
         startTemperModule();
 
+        initReader();
+
         initScanQrCodeReader();
 
-        mMode = mode;
         if (viewInterface != null) {
             viewInterface.onModeChanged(mMode,temperEnabled);
         }
@@ -128,7 +127,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     }
 
     private void initReader(){
-        Timber.d("当前模式: " + readerType);
+        Timber.d("当前读卡器模式: " + readerType);
         if (readerType == CertificatesConst.Reader.LOCAL_READER) {
             IDCardReader.getInstance().startReaderThread(this, readListener);
         } else {
@@ -175,7 +174,6 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         mUpdateTemperList.clear();
     }
 
-    private boolean isMLXRunning = false;
     //开启测温模块
     private void startTemperModule() {
         //横竖屏判断端口号
@@ -193,17 +191,10 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         } else if (mMode == CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4) {
             d("当前模式：16——4");
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
-            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 1000);
-        } else {
-            Timber.d("当前模式：mlx");
-            resultHandler.postDelayed(() -> {
-                isMLXRunning = true;
-                TemperatureModule.getIns().startMLX90621YsI2C(mLowTemp, 16 * 30, 4 * 40, mlx90621YsTempCallBack);
-            }, 1000);
+            resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 2000);
         }
 
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
-
         TemperatureModule.getIns().setHotImageColdMode(mLowTemp);
         TemperatureModule.getIns().setHotImageHotMode(mHighTemp,42f);
     }
@@ -284,17 +275,6 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void dataRecoveryFailed() {
-        }
-    };
-    private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
-        @Override
-        public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
-            handleTemper(bitmap, originalMaxT, maxT);
-        }
-
-        @Override
-        public void dataRecoveryFailed() {
-
         }
     };
 
