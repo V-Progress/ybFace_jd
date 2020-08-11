@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Call;
+import timber.log.Timber;
 
 public class FaceSDKActive {
     private static String wifiMac = "";
@@ -99,16 +100,19 @@ public class FaceSDKActive {
         }
 
         if(!canGo){
+            Timber.d("不激活，回调结果");
             cb.onActiveResult(true,"");
             return;
         }
 
+        Timber.d("检查虹软激活信息");
         ActiveFileInfo activeFileInfo = new ActiveFileInfo();
         int code = FaceEngine.getActiveFileInfo(APP.getContext(), activeFileInfo);
         if(code == ErrorInfo.MOK
                 && !TextUtils.isEmpty(activeFileInfo.getAppId())
                 && !TextUtils.isEmpty(activeFileInfo.getSdkKey())){
             int activeCode = FaceEngine.active(APP.getContext(), activeFileInfo.getAppId(), activeFileInfo.getSdkKey());
+            Timber.d("激活结果：" + activeCode);
             if(activeCode == ErrorInfo.MOK || activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED){
                 writeActiveInfo(activeFileInfo.getAppId(),activeFileInfo.getSdkKey());
                 cb.onActiveResult(true,"");
@@ -116,13 +120,16 @@ public class FaceSDKActive {
             }
         } else {
             AF af = readActiveFile();
+            Timber.d("检查文件：" + (af == null ? "NULL" : af.toString()));
             if(af != null){
                 int activeCode = FaceEngine.active(APP.getContext(), af.appId, af.sdkKey);
                 if(activeCode == ErrorInfo.MOK || activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED){
+                    Timber.d("激活结果：" + activeCode);
                     writeActiveInfo(activeFileInfo.getAppId(),activeFileInfo.getSdkKey());
                     cb.onActiveResult(true,"");
                     return;
                 }
+                Timber.d("文件激活失败");
             }
         }
 
@@ -130,20 +137,25 @@ public class FaceSDKActive {
     }
 
     private static void requestAppIdAndKey(){
+        Timber.d("获取激活信息");
         String url = ResourceUpdate.GET_ACTIVE_CODE;
         Map<String,String> params = new HashMap<>();
         params.put("deviceNo", HeartBeatClient.getDeviceNo());
         params.put("type", "0");
         params.put("wifiMac", wifiMac);
         params.put("localMac", localMac);
-        OkHttpUtils.post().url(url).params(params).build().execute(new StringCallback() {
+        OkHttpUtils.post().url(url).params(params).build()
+                .connTimeOut(10000).writeTimeOut(10000).readTimeOut(10000)
+                .execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                Timber.d("获取失败：" + (e == null ? "NULL" : e.getMessage()));
                 cb.onActiveResult(false,(e == null ? "NetWorkException" : e.getMessage()));
             }
 
             @Override
             public void onResponse(String response, int id) {
+                Timber.d("获取结果：" +  response);
                 if (TextUtils.isEmpty(response)) {
                     cb.onActiveResult(false,"response is null");
                     return;
@@ -243,6 +255,14 @@ public class FaceSDKActive {
         public AF(String appId, String sdkKey) {
             this.appId = appId;
             this.sdkKey = sdkKey;
+        }
+
+        @Override
+        public String toString() {
+            return "AF{" +
+                    "appId='" + appId + '\'' +
+                    ", sdkKey='" + sdkKey + '\'' +
+                    '}';
         }
     }
 }

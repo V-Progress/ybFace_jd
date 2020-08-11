@@ -20,6 +20,7 @@ public class CertificatesConst {
     public interface Mode {
         int CERTIFICATES_THERMAL = 0;//人证+热成像（32*32）
         int CERTIFICATES_THERMAL_16_4 = 1;//人证+热成像（16*4）
+//        int CERTIFICATES_MLX_16_4 = 2;//热成像16*4
     }
 
     public interface Reader{
@@ -31,6 +32,7 @@ public class CertificatesConst {
         String READER = "certificates_reader";//读卡模块
         String MODE = "certificates_mode";//模式
         String LOW_TEMP = "certificatesLowTemp";//低温模式
+        String HIGH_TEMP = "certificatesHighTemp";//高温模式
         String MIN_THRESHOLD = "certificatesMinThreshold";//最低播报
         String WARNING_THRESHOLD = "certificatesWarningThreshold";//体温报警值
         String CORRECT_VALUE = "certificatesCorrectValue";//矫正
@@ -45,11 +47,12 @@ public class CertificatesConst {
 
     public static class Default{
         public static final boolean TEMPERATURE_ENABLED = true;
+        public static final boolean HIGH_TEMP = true;
         public static int READER = Reader.LOCAL_READER;
         public static final boolean USB_PRINTER_ENABLED = false;//打印机
         public static final boolean COLLECT_PHONE_ENABLED = false;//收集手机号
         public static int MODE = Mode.CERTIFICATES_THERMAL;
-        public static boolean LOW_TEMP = true;
+        public static boolean LOW_TEMP = false;
         public static float MIN_THRESHOLD = 35.5f;
         public static float WARNING_THRESHOLD = 37.3f;
         public static float CORRECT_VALUE = 0.0f;

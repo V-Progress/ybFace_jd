@@ -393,7 +393,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
-        /*if (isActivityPaused) {
+        if (isActivityPaused) {
             return;
         }
         if (isOnlyFace()) {
@@ -482,18 +482,19 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             if (resultTemper < HIGHEST_TEMPER) {
                 Sign temperatureSign = SignManager.instance().getTemperatureSign(resultTemper);
                 //发送列表更新事件
-                SignManager.instance().uploadTemperatureSign(viewInterface.getFacePicture(),
+                SignManager.instance().uploadTemperatureSign(
+                        viewInterface.getFacePicture(),
                         mLastHotImage.copy(mLastHotImage.getConfig(), false),
                         temperatureSign,
                         mPrivacyMode,
-                        this::sendUpdateSignMessage);
+                        mNoDataMode,
+                        sign -> sendUpdateSignMessage(sign));
             }
         } else if(isTemperAndFace()){
             mCacheTemperList.add(afterT);
         }
 
-*/
-        if (isActivityPaused) {
+        /*if (isActivityPaused) {
             return;
         }
         if (isOnlyFace()) {
@@ -595,7 +596,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             return;
         }
 
-        /*if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
+        *//*if (mCurrMode == ThermalConst.ONLY_INFRARED || mCurrMode == ThermalConst.FACE_INFRARED) {
             if (speechBean.isFrameEnabled() && !isFaceInsideRange) {
                 mCacheTime = 0;
                 if (mCacheTemperList.size() > 0) {
@@ -604,7 +605,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
                 sendTipsMessage(speechBean.getFrameContent());
                 return;
             }
-        }*/
+        }*//*
         //全部通过后清除提示框
         sendResetTipsMessage(0);
 
@@ -667,7 +668,7 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
             }
         } else if (isTemperAndFace()) {
             mCacheTemperList.add(afterT);
-        }
+        }*/
     }
 
     private boolean isTurkeyHighTemper = false;

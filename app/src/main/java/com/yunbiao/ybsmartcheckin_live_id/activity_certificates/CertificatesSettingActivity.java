@@ -240,7 +240,7 @@ public class CertificatesSettingActivity extends BaseActivity {
         tvMode.setText(items[model]);
         tvMode.setOnClickListener(v -> {
             final int currModel = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
-            Log.e(TAG, "initModelSetting: 当前模式：" + model);
+            Log.e(TAG,  "initModelSetting: 当前模式：" + model);
             AlertDialog.Builder builder = new AlertDialog.Builder(CertificatesSettingActivity.this);
             builder.setTitle(getResources().getString(R.string.setting_select_model));
             builder.setSingleChoiceItems(items, currModel, (dialog, whichModel) -> {
@@ -336,6 +336,17 @@ public class CertificatesSettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.saveBoolean(CertificatesConst.Key.LOW_TEMP, isChecked);
+            }
+        });
+
+        //===高温模式=========================================================
+        Switch swHighTempModel = findViewById(R.id.sw_high_temp_model_setting);
+        boolean highTemp = SpUtils.getBoolean(CertificatesConst.Key.HIGH_TEMP,CertificatesConst.Default.HIGH_TEMP);
+        swHighTempModel.setChecked(highTemp);
+        swHighTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(CertificatesConst.Key.HIGH_TEMP,isChecked);
             }
         });
     }
@@ -456,6 +467,26 @@ public class CertificatesSettingActivity extends BaseActivity {
         Button btnAngle = findViewById(R.id.btn_setAngle);
         int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
         btnAngle.setText(getString(R.string.setting_cam_angle) + ":" + angle);
+
+        Button btnPicRotation = findViewById(R.id.btn_picture_rotation);
+        int picRotation = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
+        btnPicRotation.setText(picRotation == -1 ? (getResources().getString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation));
+        btnPicRotation.setOnClickListener(v -> {
+            int picRotation1 = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
+            if (picRotation1 == -1) {
+                picRotation1 = 0;
+            } else if (picRotation1 == 0) {
+                picRotation1 = 90;
+            } else if (picRotation1 == 90) {
+                picRotation1 = 180;
+            } else if (picRotation1 == 180) {
+                picRotation1 = 270;
+            } else {
+                picRotation1 = -1;
+            }
+            btnPicRotation.setText(picRotation1 == -1 ? (getResources().getString(R.string.setting_picture_rotation)) : (getString(R.string.setting_cam_angle) + ":" + picRotation1));
+            SpUtils.saveInt(Constants.Key.PICTURE_ROTATION, picRotation1);
+        });
     }
 
     //初始化人脸框镜像设置
@@ -471,6 +502,15 @@ public class CertificatesSettingActivity extends BaseActivity {
             }
         });
 
+        CheckBox cbVertical = findViewById(R.id.cb_vertical_mirror);
+        boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR,Constants.Default.IS_V_MIRROR);
+        cbVertical.setChecked(isVMirror);
+        cbVertical.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.saveBoolean(Constants.Key.IS_V_MIRROR,Constants.Default.IS_V_MIRROR);
+            }
+        });
     }
 
     //开始自动更新CPU温度

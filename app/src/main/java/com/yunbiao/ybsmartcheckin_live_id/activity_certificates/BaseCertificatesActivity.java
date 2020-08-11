@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.intelligence.hardware.temperature.TemperatureModule;
 import com.intelligence.hardware.temperature.callback.HotImageK1604CallBack;
 import com.intelligence.hardware.temperature.callback.HotImageK3232CallBack;
+import com.intelligence.hardware.temperature.callback.MLX90621YsTempCallBack;
 import com.yunbiao.faceview.CertificatesView;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.activity.base.BaseGpioActivity;
@@ -79,6 +80,8 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     private ReadCardApiOtg readCardApiOtg;
     private boolean temperEnabled;
     private boolean isActivityPaused = false;
+    private boolean mHighTemp;
+    private NetWorkChangReceiver netWorkChangReceiver;
 
     @Override
     protected void initData() {
@@ -101,6 +104,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         mCorrectValue = SpUtils.getFloat(CertificatesConst.Key.CORRECT_VALUE, CertificatesConst.Default.CORRECT_VALUE);
         mUsbPrinterEnabled = SpUtils.getBoolean(CertificatesConst.Key.USB_PRINTER_ENABLED, CertificatesConst.Default.USB_PRINTER_ENABLED);
         mLowTemp = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
+        mHighTemp = SpUtils.getBoolean(CertificatesConst.Key.HIGH_TEMP,CertificatesConst.Default.HIGH_TEMP);
         mSimilar = SpUtils.getIntOrDef(CertificatesConst.Key.SIMILAR, CertificatesConst.Default.SIMILAR);
         int mode = SpUtils.getIntOrDef(CertificatesConst.Key.MODE, CertificatesConst.Default.MODE);
         readerType = SpUtils.getIntOrDef(CertificatesConst.Key.READER, CertificatesConst.Default.READER);
@@ -171,10 +175,13 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         mUpdateTemperList.clear();
     }
 
+    private boolean isMLXRunning = false;
     //开启测温模块
     private void startTemperModule() {
         //横竖屏判断端口号
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
+
+        Timber.d("当前测温模块：" + mMode);
 
         d("串口号：" + portPath);
         //判断模式
@@ -187,14 +194,23 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             d("当前模式：16——4");
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
             resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 1000);
+        } else {
+            Timber.d("当前模式：mlx");
+            resultHandler.postDelayed(() -> {
+                isMLXRunning = true;
+                TemperatureModule.getIns().startMLX90621YsI2C(mLowTemp, 16 * 30, 4 * 40, mlx90621YsTempCallBack);
+            }, 1000);
         }
 
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
+
+        TemperatureModule.getIns().setHotImageColdMode(mLowTemp);
+        TemperatureModule.getIns().setHotImageHotMode(mHighTemp,42f);
     }
 
     //注册网络状态
     private void registerNetState() {
-        NetWorkChangReceiver netWorkChangReceiver = new NetWorkChangReceiver(new NetWorkChangReceiver.NetWorkChangeListener() {
+        netWorkChangReceiver = new NetWorkChangReceiver(new NetWorkChangReceiver.NetWorkChangeListener() {
             @Override
             public void connect() {
                 if (viewInterface == null) {
@@ -216,6 +232,12 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
         registerReceiver(netWorkChangReceiver, filter);
     }
 
+    private void unRegisterNetState(){
+        if(netWorkChangReceiver != null){
+            unregisterReceiver(netWorkChangReceiver);
+        }
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -229,6 +251,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unRegisterNetState();
         closeCardReader();//关闭读卡器
         InfraredTemperatureUtils.getIns().closeSerialPort();
         KDXFSpeechManager.instance().destroy();
@@ -261,6 +284,17 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void dataRecoveryFailed() {
+        }
+    };
+    private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
+        @Override
+        public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
+            handleTemper(bitmap, originalMaxT, maxT);
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+
         }
     };
 

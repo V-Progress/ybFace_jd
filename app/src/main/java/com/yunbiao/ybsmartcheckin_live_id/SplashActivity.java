@@ -229,12 +229,14 @@ public class SplashActivity extends BaseActivity {
         APP.bindProtectService();
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            Timber.d("开始激活");
             FaceSDKActive.ActiveCallback activeCallback = (result, message) -> {
+                Timber.d("激活结果：" + result + ", " + message);
                 if (!result) {
                     runOnUiThread(() -> UIUtils.showLong(SplashActivity.this, getResources().getString(R.string.splash_active_failed) + "(" + message + ")"));
                 }
@@ -243,8 +245,10 @@ public class SplashActivity extends BaseActivity {
             };
 
             if(Constants.FLAVOR_TYPE == FlavorType.XENON){
+                Timber.d("爱尔兰版本，本地激活");
                 FaceSDKActive.activeLocal(FaceSDKActive.YB_APPID,FaceSDKActive.YB_SDKKEY,activeCallback);
             } else {
+                Timber.d("其他版本，网络激活");
                 boolean canGo = Constants.DEVICE_TYPE != Constants.DeviceType.TEMPER_SAFETY_CHECK
                         && Constants.DEVICE_TYPE != Constants.DeviceType.HT_TEMPER_SAFETY_CHECK
                         && Constants.DEVICE_TYPE != Constants.DeviceType.TEMPERATURE_MEASUREMENT_5_INCH

@@ -187,30 +187,29 @@ public class CertificatesView extends FrameLayout {
 
     public Bitmap getFaceBitmap(FaceInfo faceInfo) {
         if (faceInfo != null && mCurrBytes != null) {
-            try {
-                Bitmap bitmap = null;
-                YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
-                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
-                int width = bestRect.right - bestRect.left;
-                int height = bestRect.bottom - bestRect.top;
-                if (width <= 0 || height <= 0) {
-                    return null;
-                }
-                bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
-                int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
-                if (bmp != null && angle != 0) {
-                    bitmap = ImageUtils.rotateBitmap(bmp, angle);
-                }
-                stream.close();
+            Bitmap bitmap = null;
+            YuvImage image = new YuvImage(mCurrBytes, ImageFormat.NV21, cameraHelper.getWidth(), cameraHelper.getHeight(), null);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            image.compressToJpeg(new Rect(0, 0, cameraHelper.getWidth(), cameraHelper.getHeight()), 80, stream);
+            Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+            Rect bestRect = FaceManager.getBestRect(cameraHelper.getWidth(), cameraHelper.getHeight(), faceInfo.getRect());
+            int width = bestRect.right - bestRect.left;
+            int height = bestRect.bottom - bestRect.top;
+            if (width <= 0 || height <= 0) {
+                return null;
+            }
+            bitmap = Bitmap.createBitmap(bmp, bestRect.left, bestRect.top, width, height);
+            int angle = SpUtils.getIntOrDef(Constants.Key.CAMERA_ANGLE, Constants.Default.CAMERA_ANGLE);
+            int pictureRotation = SpUtils.getIntOrDef(Constants.Key.PICTURE_ROTATION, Constants.Default.PICTURE_ROTATION);
+            if (pictureRotation != -1) {
+                return ImageUtils.rotateBitmap(bitmap, pictureRotation);
+            } else if (bitmap != null && angle != 0) {
+                return ImageUtils.rotateBitmap(bitmap, angle);
+            } else {
                 return bitmap;
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
-        return null;
+        return getCurrCameraFrame();
     }
 
     //无人时清除证件照和数据的延时
@@ -309,11 +308,12 @@ public class CertificatesView extends FrameLayout {
         public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
             boolean isHMirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
             Log.e(TAG, "onCameraOpened: ---------- " + isHMirror);
+            boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR,Constants.Default.IS_V_MIRROR);
 
             Camera.Size lastPreviewSize = previewSize;
             previewSize = camera.getParameters().getPreviewSize();
             drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
-                    , cameraId, isMirror, isHMirror, false);
+                    , cameraId, isMirror, isHMirror, isVMirror);
             Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
             Log.i(TAG, "CameraDisplayOrientation: " + drawHelper.getCameraDisplayOrientation());
         }
