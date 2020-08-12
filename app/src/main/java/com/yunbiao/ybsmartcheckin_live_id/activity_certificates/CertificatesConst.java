@@ -20,6 +20,7 @@ public class CertificatesConst {
     public interface Mode {
         int CERTIFICATES_THERMAL = 0;//人证+热成像（32*32）
         int CERTIFICATES_THERMAL_16_4 = 1;//人证+热成像（16*4）
+        int CERTIFICATES_MLX_16_4 = 2;
     }
 
     public interface Reader{
@@ -46,7 +47,7 @@ public class CertificatesConst {
 
     public static class Default{
         public static final boolean TEMPERATURE_ENABLED = true;
-        public static final boolean HIGH_TEMP = true;
+        public static boolean HIGH_TEMP = true;
         public static int READER = Reader.LOCAL_READER;
         public static final boolean USB_PRINTER_ENABLED = false;//打印机
         public static final boolean COLLECT_PHONE_ENABLED = false;//收集手机号

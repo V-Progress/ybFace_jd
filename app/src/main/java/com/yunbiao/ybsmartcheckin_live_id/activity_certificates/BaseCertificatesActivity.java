@@ -175,6 +175,7 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
     }
 
     //开启测温模块
+    private boolean isMLXRunning = false;
     private void startTemperModule() {
         //横竖屏判断端口号
         String portPath = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? "/dev/ttyS3" : "/dev/ttyS4";
@@ -192,6 +193,13 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             d("当前模式：16——4");
             TemperatureModule.getIns().initSerialPort(this, portPath, 19200);
             resultHandler.postDelayed(() -> TemperatureModule.getIns().startHotImageK1604(mThermalImgMirror, mLowTemp, hotImageK1604CallBack), 2000);
+        } else if(mMode == CertificatesConst.Mode.CERTIFICATES_MLX_16_4){
+            if(!isMLXRunning){
+                resultHandler.postDelayed(() -> {
+                    isMLXRunning = true;
+                    TemperatureModule.getIns().startMLX90621YsI2C(mLowTemp, 16 * 30, 4 * 40, mlx90621YsTempCallBack);
+                }, 1000);
+            }
         }
 
         TemperatureModule.getIns().setmCorrectionValue(mCorrectValue);
@@ -236,7 +244,11 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
             TemperatureModule.getIns().closeHotImageK3232();
         } else if (mMode == CertificatesConst.Mode.CERTIFICATES_THERMAL_16_4) {
             TemperatureModule.getIns().closeHotImageK1604();
-        }
+        }/* else if(mMode == CertificatesConst.Mode.CERTIFICATES_MLX_16_4){
+            Timber.d("关闭MLX I2C测温头");
+            isMLXRunning = false;
+            TemperatureModule.getIns().closeMLX90621YsI2C();
+        }*/
     }
 
     @Override
@@ -275,6 +287,17 @@ public abstract class BaseCertificatesActivity extends BaseGpioActivity implemen
 
         @Override
         public void dataRecoveryFailed() {
+        }
+    };
+    private MLX90621YsTempCallBack mlx90621YsTempCallBack = new MLX90621YsTempCallBack() {
+        @Override
+        public void newestHotImageData(Bitmap bitmap, final float originalMaxT, final float maxT, final float minT) {
+            handleTemper(bitmap, originalMaxT, maxT);
+        }
+
+        @Override
+        public void dataRecoveryFailed() {
+
         }
     };
 

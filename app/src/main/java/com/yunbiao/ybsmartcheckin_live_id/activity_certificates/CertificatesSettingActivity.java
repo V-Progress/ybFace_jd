@@ -332,20 +332,28 @@ public class CertificatesSettingActivity extends BaseActivity {
         Switch swLowTempModel = findViewById(R.id.sw_low_temp_model_setting);
         boolean aBoolean = SpUtils.getBoolean(CertificatesConst.Key.LOW_TEMP, CertificatesConst.Default.LOW_TEMP);
         swLowTempModel.setChecked(aBoolean);
-        swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(CertificatesConst.Key.LOW_TEMP, isChecked);
-            }
-        });
 
         //===高温模式=========================================================
         Switch swHighTempModel = findViewById(R.id.sw_high_temp_model_setting);
         boolean highTemp = SpUtils.getBoolean(CertificatesConst.Key.HIGH_TEMP,CertificatesConst.Default.HIGH_TEMP);
         swHighTempModel.setChecked(highTemp);
+
+        swLowTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked && swHighTempModel.isChecked()){
+//                    swHighTempModel.setChecked(false);
+//                }
+                SpUtils.saveBoolean(CertificatesConst.Key.LOW_TEMP, isChecked);
+            }
+        });
+
         swHighTempModel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked && swLowTempModel.isChecked()){
+//                    swLowTempModel.setChecked(false);
+//                }
                 SpUtils.saveBoolean(CertificatesConst.Key.HIGH_TEMP,isChecked);
             }
         });
@@ -491,8 +499,8 @@ public class CertificatesSettingActivity extends BaseActivity {
 
     //初始化人脸框镜像设置
     private void initFaceRectMirrorSetting() {
+        //人脸框横向镜像
         CheckBox cbMirror = findViewById(R.id.cb_mirror);
-        //人脸框镜像
         final boolean mirror = SpUtils.getBoolean(Constants.Key.IS_H_MIRROR,Constants.Default.IS_H_MIRROR);
         cbMirror.setChecked(mirror);
         cbMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -502,13 +510,14 @@ public class CertificatesSettingActivity extends BaseActivity {
             }
         });
 
+        //人脸框纵向镜像
         CheckBox cbVertical = findViewById(R.id.cb_vertical_mirror);
         boolean isVMirror = SpUtils.getBoolean(Constants.Key.IS_V_MIRROR,Constants.Default.IS_V_MIRROR);
         cbVertical.setChecked(isVMirror);
         cbVertical.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.saveBoolean(Constants.Key.IS_V_MIRROR,Constants.Default.IS_V_MIRROR);
+                SpUtils.saveBoolean(Constants.Key.IS_V_MIRROR,isChecked);
             }
         });
     }
