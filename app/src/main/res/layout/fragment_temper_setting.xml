@@ -52,6 +52,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_model_desc"
             android:layout_marginTop="5dp"
             android:textSize="14dp"
             android:layout_gravity="center_vertical"

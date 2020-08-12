@@ -227,6 +227,11 @@ android {
                 "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_MEASUREMENT_12_INCH",
                 "@string/app_name", "@mipmap/icon_logo_5_inch", "5cbe87a60cafb210460006b3", "YB_12",
                 getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
+        /*卢卡日本客户======================================================================================*/
+        flavor(LUCA_JP,"com.yunbiao.ybsmartcheckin_live_id.FlavorType.LUCA_JP",
+                "com.yunbiao.ybsmartcheckin_live_id.afinel.Constants.DeviceType.TEMPERATURE_CHECK_IN",
+                "@string/yb_temper_check_in", "@mipmap/ic_launcher", "5cbe87a60cafb210460006b3", "LUCA_JP",
+                getYBFace_APP_ID(), getYBFace_SDK_KEY(), "10", "7")
     }
     compileOptions {
         sourceCompatibility = 1.8

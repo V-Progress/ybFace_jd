@@ -478,6 +478,10 @@ public class ThermalSettingActivity extends BaseActivity {
         }
 
         private void initView(View view) {
+            if(Constants.FLAVOR_TYPE == FlavorType.LUCA_JP){
+                view.findViewById(R.id.tv_model_desc).setVisibility(View.GONE);
+            }
+
             Button btn_thermal_corr = view.findViewById(R.id.btn_thermal_corr);
             View llBroadDelay = view.findViewById(R.id.ll_broad_delay);
             final TextView tvModelSetting = view.findViewById(R.id.tv_model_setting);
@@ -913,6 +917,10 @@ public class ThermalSettingActivity extends BaseActivity {
             view.findViewById(R.id.tv_power).setOnClickListener(v -> startActivity(new Intent(getActivity(), PowerOnOffActivity.class)));
 
             //设置IP=================================================================================
+            View llIpSetting = view.findViewById(R.id.ll_ip_setting);
+            if(Constants.FLAVOR_TYPE == FlavorType.LUCA_JP){
+                llIpSetting.setVisibility(View.GONE);
+            }
             initSetIp(view);
 
             //清除所有数据============================================================================

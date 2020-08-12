@@ -252,6 +252,7 @@
             android:text="@string/setting_restore_title" />
 
         <LinearLayout
+            android:id="@+id/ll_ip_setting"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

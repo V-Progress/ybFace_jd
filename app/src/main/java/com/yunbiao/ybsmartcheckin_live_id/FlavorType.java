@@ -12,4 +12,5 @@ public interface FlavorType {
     int XENON = 8;
     int TURKEY = 9;
     int TOUCHLESS_ENTRY = 10;
+    int LUCA_JP = 11;//卢卡日本客户
 }

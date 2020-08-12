@@ -22,14 +22,14 @@
 
     <string name="setting_tab_face">顔検出</string>
     <string name="setting_tab_page">画面</string>
-    <string name="setting_tab_temper">温度測定</string>
+    <string name="setting_tab_temper">測温</string>
     <string name="setting_tab_device">設備</string>
 
     <!--语音设置-->
-    <string name="speech_setting_title">音声放送設定</string>
+    <string name="speech_setting_title">音声設定</string>
     <string name="setting_broadcast_speed">音声速度</string><!--語音速度-->
     <string name="setting_welcome_speech">歓迎のことば</string><!--Welcome speech-->
-    <string name="temper_tips_close">接近アナウンス</string>
+    <string name="temper_tips_close">体温測定位置に誘導</string>
     <string name="setting_normal_speech_content">正常体温</string>
     <string name="setting_warning_speech_content">体温異常</string>
     <string name="speech_setting_open_or_close">ON/OFF</string>
@@ -40,7 +40,7 @@
     <string name="speech_setting_location_center">Sign position</string>
     <string name="speech_setting_location_end">behind</string>
 
-    <string name="speech_setting_alert">温度表示位置は＃記号で指定し、温度は自動的に表示されます。【例：36.5℃】</string>
+    <string name="speech_setting_alert">メッセージが不要な場合は、＃を記入します。上記の場合、体温のみ発生をします。</string>
     <string name="speech_setting_welcome_exmaple">歓迎のことば：</string>
     <string name="speech_setting_distance_exmaple">距離提示例：</string>
     <string name="speech_setting_normal_exmaple">正常体温例：</string>
@@ -118,7 +118,7 @@
     <string name="temp_measuring_setting">測定中</string>
     <string name="port_setting">シリアル</string>
     <string name="select_port_setting">シリアル選択</string>
-    <string name="auto_close_door_setting">(この時間以降ドアは自動的に閉じます)</string><!--Automatic closing-->
+    <string name="auto_close_door_setting">""</string><!--Automatic closing-->
     <string name="recommend_valuez_setting">推奨境界値：８０</string>
     <string name="current_model_setting">現在モード</string>
 
@@ -145,7 +145,7 @@
     <string name="System_local_service">ローカルサービス</string>
 
     <!--人员管理-->
-    <string name="employ_list_title">従業員リスト</string>
+    <string name="employ_list_title">社員一覧</string>
     <string name="employ_list_depart_sync">同期</string>
     <string name="employ_List_add_user">新規</string>
     <string name="employ_List_query_button">検索</string>
@@ -153,10 +153,10 @@
     <string name="employ_list_add_face_failed">顔ライブラリの追加に失敗しました</string>
     <string name="employ_list_update_head_failed">画像の更新に失敗しました</string>
     <string name="employ_list_field_index">番号</string>
-    <string name="employ_list_field_number">従業員番号</string>
+    <string name="employ_list_field_number">社員番号</string>
     <string name="employ_list_field_name">名前</string>
     <string name="employ_list_field_depart">部門</string>
-    <string name="employ_list_field_position">職位</string>
+    <string name="employ_list_field_position">役職</string>
     <string name="employ_list_field_control">操作</string>
     <string name="employ_list_item_delete">削除</string>
     <string name="employ_list_item_edit">編集</string>
@@ -178,13 +178,13 @@
     <string name="act_editEmploy_reset">リセット</string>
     <string name="act_editEmploy_jbxx">基本情報</string>
     <string name="act_editEmploy_kh">ナンバー:</string><!-- 员工编号 -->
-    <string name="act_editEmploy_name">姓&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
+    <string name="act_editEmploy_name">氏&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;名:</string>
     <string name="act_editEmploy_sex">性&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;别:</string>
     <string name="act_editEmploy_bm">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;署:</string>
-    <string name="act_editEmploy_ygbh">従業員番号:</string>
-    <string name="act_editEmploy_zw">職&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位:</string>
-    <string name="act_editEmploy_csrq">誕生日:</string>
-    <string name="act_editEmploy_gxqm">個性的な署名:</string>
+    <string name="act_editEmploy_ygbh">社員番号:</string>
+    <string name="act_editEmploy_zw">役&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;職:</string>
+    <string name="act_editEmploy_csrq">誕&#160;&#160;生&#160;&#160;日:</string>
+    <string name="act_editEmploy_gxqm">メ&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;モ:</string>
     <string name="act_editEmploy_tip_qxpz">まず写真を撮ってください</string>
     <string name="act_editEmploy_tip_qtxxm">名前を書いてください</string>
     <string name="act_editEmploy_tip_qxzxb">性別を選択してください</string>
@@ -211,15 +211,15 @@
     <string name="act_editEmploy_unknown_error">未知のエラー</string><!--未知错误-->
 
     <!--离线数据-->
-    <string name="sign_list_title">オフライン記録</string>
+    <string name="sign_list_title">記録</string>
     <string name="sign_list_all_type">全部</string>
     <string name="sign_list_sent">送信済み</string>
     <string name="sign_list_unsent">未送信</string>
     <string name="sign_list_export">データをエクスポート</string>
     <string name="sign_list_upload">データをアップロード</string>
-    <string name="sign_list_filed_index">序号</string>
+    <string name="sign_list_filed_index">番号</string>
     <string name="sign_list_filed_time">時間</string>
-    <string name="sign_list_filed_name">姓名</string>
+    <string name="sign_list_filed_name">氏名</string>
     <string name="sign_list_filed_depart">部署</string>
     <string name="sign_list_filed_job">职位</string>
     <string name="sign_list_filed_head">顔写真</string>
@@ -272,7 +272,7 @@
     <string name="setting_select_model">選択モード</string>
     <string name="setting_current_port_path">カレント・シリアル</string>
     <string name="setting_baud_rate">bps</string>
-    <string name="setting_open">開く</string>
+    <string name="setting_open">ON</string>
     <string name="setting_enable_distance_tips">距離ヒントをオンにする</string>
     <string name="setting_thermal_imaging_mirror">熱画像画面鏡像</string>
     <string name="setting_open_temperature_delay">温度測定の遅延をオンにする</string>
@@ -355,7 +355,7 @@
     <!--设置开关机-->
     <string name="setting_power_on_off">タイマー設定</string>
     <string name="act_power_title">タイマー設定</string>
-    <string name="act_power_power_on_strategy">起動運転ポリシー
+    <string name="act_power_power_on_strategy">週間スケジュール
 </string>
     <string name="act_power_power_off_strategy">シャットダウン運転ポリシー
 </string>

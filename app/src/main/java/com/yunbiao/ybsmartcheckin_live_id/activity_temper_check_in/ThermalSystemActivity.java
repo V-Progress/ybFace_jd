@@ -138,6 +138,10 @@ public class ThermalSystemActivity extends BaseActivity implements View.OnClickL
         btn_setting_system.setOnClickListener(this);
         btn_update_system.setOnClickListener(this);
 
+        if (Constants.FLAVOR_TYPE == FlavorType.LUCA_JP) {
+            findViewById(R.id.ll_server_net).setVisibility(View.GONE);
+            findViewById(R.id.ll_upgrade_area).setVisibility(View.GONE);
+        }
     }
 
     @Override

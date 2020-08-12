@@ -130,7 +130,9 @@
             </LinearLayout>
 
 
-            <LinearLayout style="@style/system_item_ll_h">
+            <LinearLayout
+                android:id="@+id/ll_server_net"
+                style="@style/system_item_ll_h">
 
                 <TextView
                     style="@style/system_item_lable_tv_h"
@@ -159,7 +161,6 @@
 
         <LinearLayout
             android:layout_marginStart="10dp"
-            android:gravity="bottom"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -267,6 +268,7 @@
             </TableLayout>
 
             <LinearLayout
+                android:id="@+id/ll_upgrade_area"
                 android:padding="5dp"
                 android:background="@drawable/shape_employ_button"
                 android:layout_marginTop="10dp"
