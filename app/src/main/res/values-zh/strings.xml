@@ -12,6 +12,9 @@
     <string name="temper_error_btn_restart">重启</string>
     <string name="temper_error_btn_cancel">暂不处理</string>
 
+    <string name="setting_restore_title">恢复出厂设置</string>
+    <string name="setting_restore_tips">此操作将会清除关于本应用的所有数据，包括：\n· 人员信息库\n· 记录数据\n· 设置数据\n· 自定义图片\n是否继续？</string>
+
     <string name="main_tip_stranger">陌生人</string>
 
     <string name="import_please_select_excel">请选择文件(*.xls,*.xlsx)</string>

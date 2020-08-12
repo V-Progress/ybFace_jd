@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import okhttp3.Call;
+import timber.log.Timber;
 
 public class ThermalAdsFragment extends Fragment implements AdsListener {
     private static final String TAG = "AdsFragment";
@@ -124,7 +125,7 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
     public void update(UpdateMediaEvent event){
         d("收到媒体更新事件");
         //初始化广告数据
-        getAdsData();
+        getAdsData(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -142,7 +143,7 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(AdsUpdateEvent updateEvent) {
         d("update: ----- 收到广告更新事件");
-        getAdsData();
+        getAdsData(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -166,12 +167,39 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
                 if (!TextUtils.isEmpty(ads)) {
                     AdvertBean advertBean = new Gson().fromJson(ads, AdvertBean.class);
                     checkAds(advertBean.getAdvertObject().getImgArray());
+                } else {
+                    loadCustomData();
                 }
             }
         });
     }
 
-    private void getAdsData() {
+    private void loadCustomData(){
+        AdsLoader.start(new AdsLoader.LoadCallback() {
+            @Override
+            public void onStart() {
+                Timber.d("开始加载");
+            }
+
+            @Override
+            public void onResult(AdsLoader.RuleBean playBean) {
+                Timber.d("加载结束：" + playBean.getResult());
+
+                Timber.d("加载结果：" + (playBean != null ? playBean.toString() : "NULL"));
+
+                if(playBean.getResult() == AdsLoader.LOAD_COMPLETE){
+                    mixedPlayer.setPlayTime(playBean.getPlayTimeSeconds());
+                    mixedPlayer.setDatas(playBean.getPlayList());
+                }
+            }
+        });
+    }
+
+    private int mCurrLoadStatus = 0;
+    private void getAdsData(boolean isCheckLastStatus) {
+        if(isCheckLastStatus && mCurrLoadStatus == 3){
+            return;
+        }
         int companyid = SpUtils.getInt(SpUtils.COMPANYID);
         int type = mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 1;
         final Map<String, String> map = new HashMap<>();
@@ -181,6 +209,10 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
             @Override
             public void onError(Call call, Exception e, int id) {
                 d("请求失败..." + e == null ? "NULL" : e.getMessage());
+                if(mCurrLoadStatus == -1){
+                    return;
+                }
+                mCurrLoadStatus = -1;
                 loadCacheAds();
             }
 
@@ -192,8 +224,14 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
                     return;
                 }
 
+                if(isCheckLastStatus && advertBean.getStatus() != 1 && mCurrLoadStatus == advertBean.getStatus()){
+                    return;
+                }
+                mCurrLoadStatus = advertBean.getStatus();
+
                 if(advertBean.getStatus() != 1 || advertBean.getAdvertObject() == null){
                     mixedPlayer.setDatas(null);
+                    loadCustomData();
                     return;
                 }
 
@@ -262,6 +300,24 @@ public class ThermalAdsFragment extends Fragment implements AdsListener {
             @Override
             public void finish() {
                 d("finish: ---------- 结束");
+                AdsLoader.start(new AdsLoader.LoadCallback() {
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onResult(AdsLoader.RuleBean playBean) {
+                        List<String> playList = playBean.getPlayList();
+                        if(playList != null && playList.size() > 0){
+                            for (String s : playList) {
+                                adsList.add(s);
+                            }
+                        }
+                        mixedPlayer.setDatas(adsList);
+                    }
+                });
+
                 mixedPlayer.setDatas(adsList);
             }
         });

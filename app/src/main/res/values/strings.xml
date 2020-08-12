@@ -12,6 +12,9 @@
     <string name="temper_error_btn_restart">Reboot</string>
     <string name="temper_error_btn_cancel">No processing</string>
 
+    <string name="setting_restore_title">Factory data reset</string>
+    <string name="setting_restore_tips">This action will clear all data about the application, including:\n· Personnel information base\n· Record data\n· Setting data\n· Custom images\nDo you want to continue?</string>
+
     <string name="space_insufficient_save_and_delete">There is not enough storage and the earliest record is deleted every time a record is written</string>
 
     <string name="clean_storage_must">The device ran out of memory, please clear the data.</string>

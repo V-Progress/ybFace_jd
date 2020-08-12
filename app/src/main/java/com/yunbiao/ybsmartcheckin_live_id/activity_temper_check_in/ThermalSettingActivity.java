@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,11 +18,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -912,26 +916,90 @@ public class ThermalSettingActivity extends BaseActivity {
             initSetIp(view);
 
             //清除所有数据============================================================================
-            view.findViewById(R.id.tv_clear_all).setOnClickListener(view1 -> showDialog());
+            view.findViewById(R.id.tv_clear_all).setOnClickListener(view1 ->
+                    showDialog(
+                            getResources().getString(R.string.delete_user_dialog_title),
+                            getResources().getString(R.string.clear_all_data_dialog_message),
+                            () -> SignManager.instance().clearAllData(new SignManager.ClearListener() {
+                                @Override
+                                public void onStart() {
+                                    UIUtils.showNetLoading(getActivity());
+                                }
+
+                                @Override
+                                public void onFinish(Integer size) {
+                                    UIUtils.dismissNetLoading();
+                                    UIUtils.showShort(getActivity(),getResources().getString(R.string.clear_no_data) + size);
+                                }
+                            })));
+
+            view.findViewById(R.id.tv_restore).setOnClickListener(view2 -> showDialog(
+                    APP.getContext().getString(R.string.setting_restore_title),
+                    APP.getContext().getString(R.string.setting_restore_tips),
+                    () -> inputPassword(
+                            () -> RestoreUtil.resetAllData())));
         }
 
-        private void showDialog(){
-            AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                    .setTitle(getResources().getString(R.string.delete_user_dialog_title))
-                    .setMessage(getResources().getString(R.string.clear_all_data_dialog_message))
-                    .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
-                        SignManager.instance().clearAllData(new SignManager.ClearListener() {
-                            @Override
-                            public void onStart() {
-                                UIUtils.showNetLoading(getActivity());
-                            }
+        private void inputPassword(Runnable runnable){
+            boolean passwordEnabled = SpUtils.getBoolean(Constants.Key.PASSWORD_ENABLED,Constants.Default.PASSWORD_ENABLED);
+            String pwd = SpUtils.getStr(SpUtils.MENU_PWD,SpUtils.DEFAULT_MENU_PWD);
+            if (passwordEnabled && !TextUtils.isEmpty(pwd)) {
+                inputPwd(runnable);
+                return;
+            }
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
 
-                            @Override
-                            public void onFinish(Integer size) {
-                                UIUtils.dismissNetLoading();
-                                UIUtils.showShort(getActivity(), getResources().getString(R.string.clear_no_data) + size);
-                            }
-                        });
+        //密码弹窗
+        private void inputPwd(final Runnable runnable) {
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.layout_input_pwd);
+
+            final Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_edt_shake);
+            final View rootView = dialog.findViewById(R.id.ll_input_pwd);
+            Button btnConfirm = (Button) dialog.findViewById(R.id.btn_input_confirm);
+            final EditText edtPwd = (EditText) dialog.findViewById(R.id.edt_input_pwd);
+            btnConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String pwd = edtPwd.getText().toString();
+                    if (TextUtils.isEmpty(pwd)) {
+                        edtPwd.setError(getString(R.string.act_wel_error_bywjsrmmo));
+                        rootView.startAnimation(animation);
+                        return;
+                    }
+                    String spPwd = SpUtils.getStr(SpUtils.MENU_PWD,SpUtils.DEFAULT_MENU_PWD);
+                    if (!TextUtils.equals(pwd, spPwd)) {
+                        edtPwd.setError(getString(R.string.act_wel_error_mmclqcxsrb));
+                        rootView.startAnimation(animation);
+                        return;
+                    }
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+            Resources resources = this.getResources();
+            DisplayMetrics dm = resources.getDisplayMetrics();
+            int width = dm.widthPixels;
+            final Window window = dialog.getWindow();
+            window.setWindowAnimations(R.style.mystyle);  //添加动画
+            window.setLayout(width / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        private void showDialog(String title,String message,Runnable runnable){
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(getResources().getString(R.string.setting_switch_confirm), (dialog, which) -> {
+                        if(runnable != null) runnable.run();
                     }).setNegativeButton(getResources().getString(R.string.setting_switch_cancel), (dialog, which) -> {
                         dialog.dismiss();
                     }).create();

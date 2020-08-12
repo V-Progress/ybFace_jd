@@ -9,6 +9,8 @@ import com.yunbiao.ybsmartcheckin_live_id.FlavorType;
 import com.yunbiao.ybsmartcheckin_live_id.R;
 import com.yunbiao.ybsmartcheckin_live_id.utils.SpUtils;
 
+import java.io.File;
+
 import timber.log.Timber;
 
 public class Constants {
@@ -30,11 +32,7 @@ public class Constants {
     public static String SPLASH_DIR_PATH = LOCAL_ROOT_PATH + "/splash/";
     public static String LOGO_DIR_PATH = LOCAL_ROOT_PATH + "/logo/";
     public static String APK_PATH = LOCAL_ROOT_PATH + "apk/";
-    /***
-     * 本地广告路径
-     * 1.在云端没有广告的时候，检查该路径有没有文件，如果有则自动生成一个规则，每5秒播放一个。
-     * 2.如果云端有数据，则把该文件集添加倒云端的数据中一起播放
-     */
+    public static String CUSTOM_ADS_PATH = LOCAL_ROOT_PATH + "customAds";
     public static String LOCAL_ADS_PATH = LOCAL_ROOT_PATH + "Local_Ads/";//本地广告路径
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
@@ -57,6 +55,21 @@ public class Constants {
         Constants.RECORD_PATH = Constants.CACHE_PATH + comid + "/rcd/";
         Constants.MEETING_PATH = Constants.CACHE_PATH + comid + "/meet/";
         Constants.INFO_PATH = Constants.CACHE_PATH + comid + "/info/";
+
+        File logoDir = new File(LOGO_DIR_PATH);
+        if(!logoDir.exists() || logoDir.isFile()){
+            logoDir.mkdirs();
+        }
+
+        File splashDir = new File(SPLASH_DIR_PATH);
+        if(!splashDir.exists() || splashDir.isFile()){
+            splashDir.mkdirs();
+        }
+
+        File customAdsDir = new File(CUSTOM_ADS_PATH);
+        if(!customAdsDir.exists() || customAdsDir.isFile()){
+            customAdsDir.mkdirs();
+        }
     }
 
     private static final String TAG = "Constants";

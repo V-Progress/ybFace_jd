@@ -121,6 +121,13 @@ public class DaoManager {
         daoSession.getSignDao().delete(sign);
     }
 
+    public void clearAll(){
+        if(daoSession == null){
+            return;
+        }
+        daoSession.clear();
+    }
+
     /***
      * 查询某公司下某天的所有打卡记录
      * @param comId

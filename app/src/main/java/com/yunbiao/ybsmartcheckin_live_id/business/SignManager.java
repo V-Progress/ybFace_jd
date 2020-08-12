@@ -424,12 +424,8 @@ public class SignManager {
         }
 
         sign.setUpload(false);
-        if (!isPrivacy) {
-            DaoManager.get().addOrUpdate(sign);
-            checkStorageSpace();
-        } else {
-            return;
-        }
+        DaoManager.get().addOrUpdate(sign);
+        checkStorageSpace();
 
         // TODO: 2020/3/18 离线功能
         if (sign.getComid() == Constants.NOT_BIND_COMPANY_ID) {

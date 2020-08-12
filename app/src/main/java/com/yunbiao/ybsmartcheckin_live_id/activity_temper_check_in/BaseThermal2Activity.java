@@ -393,16 +393,11 @@ public abstract class BaseThermal2Activity extends BaseGpioActivity implements F
 
     //温度处理的主要逻辑
     private void handleTemperature(Bitmap imageBmp, float originT, float afterT) {
-        if (isActivityPaused) {
-            return;
-        }
-        if (isOnlyFace()) {
-            return;
-        }
+        if (isActivityPaused) return;
 
-        if (imageBmp == null) {
-            imageBmp = selectInfaredImage(mHasFace);
-        }
+        if (isOnlyFace()) return;
+
+        if (imageBmp == null) imageBmp = selectInfaredImage(mHasFace);
 
         mLastHotImage = imageBmp;
         sendUpdateHotInfoMessage(imageBmp, afterT);

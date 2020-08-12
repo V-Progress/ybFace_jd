@@ -28,6 +28,7 @@ public class SpUtils {
     public static final String BIND_CODE = "bindCode";//绑定码
     public static final String CITYNAME = "city";//城市
     public static final String MENU_PWD = "menu_pwd";//用户访问密码
+    public static String DEFAULT_MENU_PWD = "";
     public static final String EXP_DATE = "expDate";//过期时间
     public static final String DISPLAYPOSITION = "displayPosition";//过期时间
     public static final String COMPANYID = "companyid";//公司ID
@@ -171,10 +172,11 @@ public class SpUtils {
         return def;
     }
 
-    public static void clear(Context context) {
+    public static boolean clear() {
         if (sp != null) {
-            sp.edit().clear().apply();
+            return sp.edit().clear().commit();
         }
+        return false;
     }
 
     public static void saveBoolean(String key, boolean b) {

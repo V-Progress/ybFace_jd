@@ -238,6 +238,18 @@
             android:layout_width="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/setting_clear_all_data" />
+        <TextView
+            android:id="@+id/tv_restore"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/shape_system_name"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/setting_restore_title" />
 
         <LinearLayout
             android:layout_marginTop="20dp"
